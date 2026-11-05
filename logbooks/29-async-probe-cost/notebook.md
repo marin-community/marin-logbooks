@@ -124,3 +124,15 @@ The original five-window runner supplied independent handles to the existing exe
 The diagnostic and cancelled-startup transfers completed. [The recovery record](preservation.json) now covers all nine GPU attempts: 38,593 objects and 1,767,803,527 bytes in immutable verified archives. The diagnostic's original trainer exception was read back from its durable recovery URI and matched the saved SHA256. [Fresh shutdown evidence](owned-job-shutdown.json) confirms all thirty-six controller task attempts are terminal and no owned pod remains. The last two temporary trees match their archives by every path, size and ETag; their cleanup is next.
 
 [Startup and warmup accounting](startup-and-warmup.json) separates the successful baseline's initial 585.79 seconds, complete thirty-cycle span and predefined first-three-cycle warmup. The failed probe-on windows and the diagnostic each reached their startup publication boundary after about 561 seconds but completed no full measured cycle. The cancelled off window ended before that boundary was recorded. All their allocated GPU spans remain counted. Warmup is a subset of the primary span; these overlapping phase figures must not be added together.
+
+
+## Finish temporary cleanup and qualify age populations
+
+[The final cleanup proof](final-temporary-cleanup.json) records removal of the last 12,462 temporary objects, with both source prefixes verified empty afterward and both readiness-manifest hashes unchanged. Across both cleanups, all nine temporary attempt trees are empty: 38,593 objects and 1,767,803,527 bytes removed after durable preservation. Canonical observer outputs occupy 3,392,860 bytes in 138 objects. Original model/data inputs, prior studies and other users' data are outside these prefixes.
+
+The trainer's raw async age mean includes the unknown sentinel in its loss-token denominator. The research summary now reports engine-stamp coverage and omits mean/max age if stamps are incomplete; per-cycle rows follow the same rule. [The population check](age-reporting-check.json) reads the full real baseline, verifies its saved SHA256 and confirms complete stamps in all thirty batches. Its age mean stays unchanged. A partial-stamp copy of that real result suppresses the age summaries while preserving elapsed cost. This changes report interpretation only; the paired elapsed-time method and runtime are unchanged.
+
+The additional sampler diagnostic is still proposed and unallocated. The three paired comparisons, cadence recommendation, final High GOAL review and three-PR publication remain outstanding.
+
+
+The final metadata-only storage snapshot is [recorded here](storage-footprint.json). Durable research objects occupy 1,802,318,165 bytes in 77,293 objects, including the verification records and curated evidence. Canonical observer outputs occupy another 3,392,860 bytes in 138 objects. The raw final cleanup, shutdown, startup, storage and local-check evidence is preserved under the verified final-evidence manifest in [the recovery record](preservation.json). These figures describe the experiment output prefixes, not existing model/data inputs or provider billing.

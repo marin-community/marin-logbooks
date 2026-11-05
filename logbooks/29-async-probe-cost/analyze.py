@@ -62,6 +62,7 @@ def summarize(run, result, digest):
     token_age = (
         sum(row["metrics"]["async/staleness_tokens_mean"] * row["trained_loss_tokens"] for row in cycles) / loss_tokens
     )
+    fully_stamped = all(row["metrics"]["async/staleness_tokens_stamped"] == 1 for row in cycles)
     summary = {
         **run,
         "completed_sha256": digest,
@@ -76,8 +77,14 @@ def summarize(run, result, digest):
         "response_length_p50_p95_p99": np.quantile(lengths, [0.5, 0.95, 0.99]).tolist(),
         "response_length_max": int(lengths.max()),
         "responses_ge2048": int((lengths >= 2048).sum()),
-        "mean_token_staleness": token_age,
-        "max_token_staleness": max(row["metrics"]["async/staleness_tokens_max"] for row in cycles),
+        "mean_token_staleness": token_age if fully_stamped else None,
+        "max_token_staleness": (
+            max(row["metrics"]["async/staleness_tokens_max"] for row in cycles) if fully_stamped else None
+        ),
+        "token_stamp_coverage": (
+            sum(row["metrics"]["async/staleness_tokens_stamped"] * row["trained_loss_tokens"] for row in cycles)
+            / loss_tokens
+        ),
         "raw_gradient_norm_min_max": [min(gradients), max(gradients)],
         "learning_rate_min_max": [min(learning_rates), max(learning_rates)],
         "published_policy_steps": sorted(published_steps),
@@ -118,7 +125,12 @@ def analyze(manifest, output):
                     "cycle_seconds": elapsed - previous,
                     "loss_tokens": cycle["trained_loss_tokens"],
                     "response_tokens": cycle["response_tokens"],
-                    "token_staleness": cycle["metrics"]["async/staleness_tokens_mean"],
+                    "token_staleness": (
+                        cycle["metrics"]["async/staleness_tokens_mean"]
+                        if cycle["metrics"]["async/staleness_tokens_stamped"] == 1
+                        else None
+                    ),
+                    "token_stamp_coverage": cycle["metrics"]["async/staleness_tokens_stamped"],
                 }
             )
             previous = elapsed
