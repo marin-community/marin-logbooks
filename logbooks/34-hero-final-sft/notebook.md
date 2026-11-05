@@ -4,7 +4,7 @@ task_issue: "https://github.com/marin-community/marin-logbooks/issues/34"
 research_branch: "codex/34-hero-final-sft"
 marin_base_revision: "33189166cfb244bf284f3d893e58ce0272215eac"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: continuation-preparing
+status: continuation-submitted
 ---
 
 # Compact SFT on the final Hero checkpoint
@@ -191,3 +191,21 @@ Adam, schedule count, deterministic data position and the fixed 128-update
 horizon. [continuation-template.json](continuation-template.json) pins the exact
 parent request and checkpoint; its source placeholder is resolved to the
 published commit at launch. The continuation has not been submitted yet.
+
+
+## 2026-11-05: continuation accepted
+
+Iris accepted `/dlwh/hero-final-sft-long-20261105-v1` on `cw-us-east-08a`
+from published source `e8ddebe1305ae8c543501fa4b8210e584425f5b3`. Its request
+SHA256 is `b9d37c34c5e3cebe34f6bf196ed9dbcc4d23b8e5ac2321df119178df9f448c3e`;
+[continuation-launch.json](continuation-launch.json) records the immutable
+request URI, output root and hardware/runtime limits. Preflight selected exactly
+the verified step-8 compact checkpoint and counters. It will perform 120
+additional updates, ending at 128 cumulative updates on the unchanged schedule.
+
+The continuation uses the same 64 GB200 GPUs and direct controller, with a
+three-hour runtime limit, one-hour scheduling limit and zero application-failure
+retries. Full compact state, 16K packing, 65K model settings, source/data/cache
+pins and peak learning rates remain unchanged. The existing heartbeat now owns
+this exact continuation; no second continuation should be submitted. Actual
+restoration/progress beyond update 8 and final completion remain pending.
