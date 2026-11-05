@@ -5944,3 +5944,39 @@ Evidence: subset-expansion-r01-started.json. Iris supplies IRIS_TASK_ID as
 The matcher was corrected using cached records without requery, and the
 expansion terminal validator and its one/four-host fixtures now require the
 same exact wire format. No training source or job was changed.
+
+### 2026-11-05 12:30 UTC — validate cell 15 and observe expansion updates
+
+Cell 15 (alpha 0.25, ridge 0.01, LR 0.001) passed full pilot validation at
+7,630 updates, with final C4 loss 4.254374980926514. All four hosts succeeded
+on their original attempt. Exact source/config/ONLINE joins, 7,630 finite
+metric rows, finished W&B runs, permanent 57-array checkpoint metadata and
+independently read stored counter 7630 passed. The cumulative nonzero record
+now contains eight results; with six alpha0 results, 14 initial pilots are
+validated. Sixteen initial jobs were RUNNING in the 12:25 UTC owner snapshots.
+Both alpha0.25 ridge groups remain incomplete; replay found no new expansion
+beyond the two already accepted alpha0.125 jobs. Global selection remains pending.
+Evidence: subset-training-r02-nonzero-completed.json and
+subset-training-r02-completion-readiness.json. No full checkpoint restore is claimed.
+
+Both alpha0.125 expansions at LR 0.00125 now have finite native training metrics.
+At 12:28 UTC, ridge 0.0001 reached native step label 41 with training loss
+11.39132022857666; ridge 0.01 reached label 7 with loss 12.216241836547852.
+These are early training observations, not final evaluation results. Fresh
+ONLINE configuration/source checks passed. Task/attempt identities relied on
+the saved startup joins; no new task-status reads were made. The current owner
+snapshots retained the same job/source bindings and failure/preemption counts. Both jobs had four running tasks and zero
+failures/preemptions in the owner's 12:21 UTC snapshots. The corrected observer
+parsed those responses successfully. Its next checks are scheduled for
+12:30:51 UTC. The original expansion00 log follower ended with Finelog
+`StatsError: Bad Gateway`; its log is preserved and it was not restarted.
+The independent ONLINE metrics establish training progress; the follower
+error alone does not establish worker failure. Evidence: subset-expansion-r01-first-progress.json.
+
+The R02 progress helper initially imported a superseded scratch validator
+because its script directory preceded PYTHONPATH. That local cache check
+rejected a previously reconciled worker identity before any ONLINE query.
+The helper now inserts the published logbook directory before importing the
+validator. The corrected invocation reused 13 validated results and observed
+progress in all 17 then-unvalidated native streams; cell 15 passed full
+validation afterward. Original errors and corrected observations are retained.
