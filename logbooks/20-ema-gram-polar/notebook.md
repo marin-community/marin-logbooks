@@ -5754,3 +5754,35 @@ one native stream for each of23 established pilots advanced, reaching maximum
 training-step label4981. Cell29 remains in ONLINE startup before its first loss.
 Its canonical snapshot is unchanged since the previous observation; this is not
 a second scheduled check without progress. Continue the existing pilot observer.
+
+### 2026-11-05 09:22 UTC — prepare expansion terminal validation
+
+Added finish_subset_expansions.py to plan reads from accepted registry entries
+and saved canonical terminal snapshots, then collect and verify terminal tasks.
+The existing collector permits at most one automatic read attempt per task
+identity and preserves ambiguous reads for reconciliation. Scientific validation
+requires one successful attempt per host, matching source, task and ONLINE run
+identities, the exact frozen configuration, all five required finite training
+metrics at labels0–7629, final C4 loss, finished ONLINE runs, permanent checkpoint
+metadata and independently read stored counter7630. Failed terminal outcomes
+remain collectable evidence; this validator rejects failed or retried jobs pending
+separate diagnosis and lineage adjudication. Previously validated completions
+are reused only after recorded evidence hashes and saved canonical outcomes agree.
+
+Offline one-host and four-host fixtures exercised planning, cached task collection,
+full artifact validation and completed-result reuse without further external reads.
+The validator rejected all ten invalid-artifact cases per topology, including
+wrong counters, missing final evaluation, conflicting history, metadata and
+source/tracking/host identity errors. Changed terminal owner or canonical evidence
+also blocked reuse. Git source lookup and worker reconstruction were mocked in
+the integration fixture, as were W&B and storage services. Separate worker decode
+and ONLINE nontraining checks are recorded in expansion-worker-preflight.json.
+Required lint passed. Evidence: expansion-terminal-validator-preflight.json.
+
+This prepares orchestration and validation; no expansion has launched and no
+full checkpoint restore is claimed. A complete validated predecessor alpha/ridge
+group must authorize each expansion before a fresh immutable campaign is created.
+The published R02 validator is unchanged. At09:19 all24 nonzero pilots continued
+advancing, reaching maximum native label5410; cell29 reached292. Six alpha0
+results remain the only validated completions, with no failures or preemptions
+in the canonical pilot snapshots. Keep the existing observer and all live jobs.

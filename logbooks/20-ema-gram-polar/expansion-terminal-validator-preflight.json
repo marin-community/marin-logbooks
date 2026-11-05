@@ -1,0 +1,80 @@
+{
+  "status": "PREPARED_OFFLINE",
+  "source_files": {
+    "prepare_expansion_terminal_collection.py": "992728b523cf6871913d5c89c772cece167681720a2cc4f27c581c0187269f77",
+    "verify_expansion_artifacts.py": "91486905c0301517791a0fc22547bbc03a5363bddf2e7816d44d99c0adb76d7f",
+    "finish_subset_expansions.py": "9f859bdfa86d7f98281f9910b87736abbd74897f7ca61873b0cae7bdfd45ec71",
+    "check_expansion_terminal_plan.py": "1783205f4b0ac870d9e00896d7a544a77c0a70049867aee64634b368d046ee4a",
+    "check_expansion_artifacts.py": "f2c0d68a1afab29e447eeea2d1c671e7aab90a3a712e1e49f9b8e4c45de850cd"
+  },
+  "fixtures": {
+    "20261105-expansion-artifacts-1host-draft-preflight.json": {
+      "passed": true,
+      "hosts": 1,
+      "negative_cases": [
+        "counter",
+        "final_eval",
+        "conflicting_history",
+        "metadata",
+        "native_source",
+        "native_offline",
+        "host_source",
+        "host_task",
+        "host_bundle",
+        "host_finish"
+      ],
+      "scope": "Mocked W&B/storage/counter; fabricated terminal expansion.",
+      "integration": "Plan, cached task collection, full verify and completed skip passed; changed terminal owner/canonical evidence rejected. Git/source resolve mocked; artifact validator exercised.",
+      "remaining": [
+        "First real terminal expansion validation"
+      ]
+    },
+    "20261105-expansion-artifacts-4host-draft-preflight.json": {
+      "passed": true,
+      "hosts": 4,
+      "negative_cases": [
+        "counter",
+        "final_eval",
+        "conflicting_history",
+        "metadata",
+        "native_source",
+        "native_offline",
+        "host_source",
+        "host_task",
+        "host_bundle",
+        "host_finish"
+      ],
+      "scope": "Mocked W&B/storage/counter; fabricated terminal expansion.",
+      "integration": "Plan, cached task collection, full verify and completed skip passed; changed terminal owner/canonical evidence rejected. Git/source resolve mocked; artifact validator exercised.",
+      "remaining": [
+        "First real terminal expansion validation"
+      ]
+    },
+    "20261105-expansion-terminal-plan-draft-preflight.json": {
+      "passed": true,
+      "checks": [
+        "Running jobs yield no terminal requests",
+        "Exact terminal job yields four task requests without scientific completion",
+        "Failed outcomes remain collectable evidence",
+        "Reject source, raw snapshot, terminal flag, input and job identity mismatches",
+        "Ambiguous launch guard never becomes a read request"
+      ],
+      "scope": "Synthetic local bindings and snapshots only; no RPC, W&B, storage access or training.",
+      "remaining": [
+        "First real terminal expansion validation"
+      ]
+    }
+  },
+  "checks": {
+    "lint": "Passed required repository checks",
+    "terminal_collection": "Published guarded task collector reused; integration exercised cached task results",
+    "completion_cache": "No task/W&B/storage reads for previously validated completed records; changed canonical evidence or terminal owner rejected"
+  },
+  "scope": "Offline fixtures only. Git source lookup and worker resolve mocked in integration; W&B, storage and scalar reads mocked. Worker decode/ONLINE nontraining logging qualified separately in expansion-worker-preflight.json. No live expansion or full checkpoint restore.",
+  "remaining": [
+    "Complete real alpha/ridge predecessor group",
+    "Fresh immutable campaign/source/input registry and observer",
+    "First real terminal expansion task, ONLINE and checkpoint validation",
+    "Separate lineage adjudication for multiple attempts"
+  ]
+}
