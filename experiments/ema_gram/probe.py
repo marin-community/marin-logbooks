@@ -191,6 +191,7 @@ def main():
     parser.add_argument("--configs", type=Path, required=True)
     parser.add_argument("--config-index", type=int, default=0)
     parser.add_argument("--checkpoint", required=True, help="Concrete checkpoint directory, including optimizer state")
+    parser.add_argument("--expected-counter", type=int)
     parser.add_argument("--dataset", default="uncheatable_eval/wikipedia_english")
     parser.add_argument("--batch-offset", type=int, default=0)
     parser.add_argument("--batches", type=int, default=8)
@@ -213,6 +214,8 @@ def main():
         state = load_checkpoint(
             template, args.checkpoint, axis_mapping=cfg.trainer.parameter_axis_mapping, allow_partial=False
         )
+        if args.expected_counter is not None and int(state.step) != args.expected_counter:
+            raise ValueError("Restored native counter differs from requested reference checkpoint")
         dataset = cfg.data.validation_sets(cfg.model.max_Pos)[args.dataset]
         loader = DataLoader(dataset, batch_size=cfg.trainer.EvalBatch, axis_resources=cfg.trainer.compute_axis_mapping)
         batches = list(islice(loader, args.batch_offset, args.batch_offset + args.batches))
