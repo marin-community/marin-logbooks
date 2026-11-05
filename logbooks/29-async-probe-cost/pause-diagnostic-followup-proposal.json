@@ -1,0 +1,19 @@
+{
+  "status": "proposed; user consultation pending; do not execute",
+  "purpose": "Capture stacks inside each actor even when Ray control/profile RPCs stop answering. This is a separate diagnostic, not an overhead measurement.",
+  "amends": "The single diagnostic in pause-diagnostic-plan.json has finished unsuccessfully. This proposal adds exactly one further attempt.",
+  "maximum_additional_attempts": 1,
+  "maximum_updates": 2,
+  "version": "2026.11.05.2",
+  "seed": 1701,
+  "interval": 10,
+  "gpus": 40,
+  "placement": "five eight-H100 batch nodes in cw-rno2a",
+  "job_timeout_seconds": 1800,
+  "approximate_maximum_H100_hours": 20,
+  "limit_caveat": "Thirty-minute GPU-job deadline plus teardown; this is not an exact provider-billing cap.",
+  "command": "uv run --frozen python -m experiments.post_training.async_probe_cost --version 2026.11.05.2 --interval 10 --seed 1701 --full --pause-diagnostic --max-concurrent 1 --run",
+  "instrumentation": "Existing pause-call entry/exit trace plus faulthandler.dump_traceback_later(20, repeat=True) inside each actor. Automatic Python thread stacks have no local values. CPU profiling RPCs are removed.",
+  "unchanged": "Original Grug model, Snowball inputs, sampling, K128, at most thirty-two probe positions per response, nonzero updates, normal async overlap, forty-H100 geometry, keep pause mode, clear_cache=true, thirty-second pause bound, pinned vLLM wheel, compact chat adapter, compilation and CUDA graphs.",
+  "after_attempt": "Preserve all evidence and allocation costs. No further GPU attempts or runtime-contract change without a new decision. The original three paired comparisons remain incomplete and no cadence recommendation is claimed."
+}

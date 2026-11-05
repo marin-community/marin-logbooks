@@ -1,0 +1,105 @@
+{
+  "observed_utc": "2026-11-05T21:47:25.065349+00:00",
+  "diagnostic_source_revision": "ac42797abbc0324e68ada8911cf6a6a55f788df7",
+  "diagnostic_admitted_to_comparison": false,
+  "terminal_reason": "Original existing thirty-second pause_generation timeout, before the eighteen-hundred-second job deadline. The observer then spent ten seconds trying to retrieve CPU profiles; that also timed out.",
+  "complete_cycles": 0,
+  "consumed_probe_record_saved": false,
+  "cpu_profiles_saved": false,
+  "engine_traces": {
+    "13203": {
+      "busy_pause_entry": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:21 - Probe pause diagnostic: operation=pause_scheduler_async state=enter"
+      ],
+      "busy_cache_exit": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:27 - Probe pause diagnostic: operation=clear_mm_cache_async state=exit returned=True seconds=0.000521"
+      ],
+      "busy_pause_exit": [],
+      "stderr_sha256": "b1d46a034bbdc5abe684c5d9421de09b3ec705402bef0630b3c71eeda65a2128"
+    },
+    "13198": {
+      "busy_pause_entry": [
+        "2026-11-05 21:29:35.102 | INFO     | experiments.post_training.async_probe_pause_trace:traced:21 - Probe pause diagnostic: operation=pause_scheduler_async state=enter"
+      ],
+      "busy_cache_exit": [
+        "2026-11-05 21:29:35.101 | INFO     | experiments.post_training.async_probe_pause_trace:traced:27 - Probe pause diagnostic: operation=clear_mm_cache_async state=exit returned=True seconds=0.015898"
+      ],
+      "busy_pause_exit": [],
+      "stderr_sha256": "0b73c5597062fbb15f58cfd618df6ecf66d877638cbdd56b7b44af13308d0491"
+    },
+    "13201": {
+      "busy_pause_entry": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:21 - Probe pause diagnostic: operation=pause_scheduler_async state=enter"
+      ],
+      "busy_cache_exit": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:27 - Probe pause diagnostic: operation=clear_mm_cache_async state=exit returned=True seconds=0.000571"
+      ],
+      "busy_pause_exit": [],
+      "stderr_sha256": "bca8e20f43011d4c71f609f8abdb9e458510fb66dc1a4760f1743c142e3b51f8"
+    },
+    "13202": {
+      "busy_pause_entry": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:21 - Probe pause diagnostic: operation=pause_scheduler_async state=enter"
+      ],
+      "busy_cache_exit": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:27 - Probe pause diagnostic: operation=clear_mm_cache_async state=exit returned=True seconds=0.000489"
+      ],
+      "busy_pause_exit": [],
+      "stderr_sha256": "ce18639ad2c94e3c4a1810c761502ba4a5b209b5b282d0c4403b24dc52914f76"
+    },
+    "13197": {
+      "busy_pause_entry": [],
+      "busy_cache_exit": [],
+      "busy_pause_exit": [],
+      "stderr_sha256": "635ec86e7d0ea17eaca67b9d24073bd7e7fa2256ce257391502021e13669cb72"
+    },
+    "13200": {
+      "busy_pause_entry": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:21 - Probe pause diagnostic: operation=pause_scheduler_async state=enter"
+      ],
+      "busy_cache_exit": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:27 - Probe pause diagnostic: operation=clear_mm_cache_async state=exit returned=True seconds=0.000691"
+      ],
+      "busy_pause_exit": [],
+      "stderr_sha256": "998dc8b11b52b5e3c082cadec1f1bf991fa9cafae32956c203d2446d4e317577"
+    },
+    "13204": {
+      "busy_pause_entry": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:21 - Probe pause diagnostic: operation=pause_scheduler_async state=enter"
+      ],
+      "busy_cache_exit": [
+        "2026-11-05 21:29:18.181 | INFO     | experiments.post_training.async_probe_pause_trace:traced:27 - Probe pause diagnostic: operation=clear_mm_cache_async state=exit returned=True seconds=0.000617"
+      ],
+      "busy_pause_exit": [],
+      "stderr_sha256": "d8bc7b31fe54bcc1977f549fda7a5d7d0e0e93346b125f9caef9f789be4a32f1"
+    },
+    "13199": {
+      "busy_pause_entry": [
+        "2026-11-05 21:29:18.180 | INFO     | experiments.post_training.async_probe_pause_trace:traced:21 - Probe pause diagnostic: operation=pause_scheduler_async state=enter"
+      ],
+      "busy_cache_exit": [
+        "2026-11-05 21:29:18.180 | INFO     | experiments.post_training.async_probe_pause_trace:traced:27 - Probe pause diagnostic: operation=clear_mm_cache_async state=exit returned=True seconds=0.000447"
+      ],
+      "busy_pause_exit": [],
+      "stderr_sha256": "8972abde52bff9526321d4a3f93820725cead85774b0d8ce51c5df642a9de7ac"
+    }
+  },
+  "conclusions": [
+    "Initial idle pauses completed on all eight engines.",
+    "Seven actors have captured entry traces for the first busy pause. Their cache-clear calls returned in under 0.016 seconds. No busy scheduler-pause return was captured.",
+    "PID 13197 (engine 001) has no captured busy-pause entry and continued generation logs through 21:30:23 UTC. This is an observation, not proof of why its pause request did not run.",
+    "The Iris on-demand and retained periodic captures lack the sampler actor frames; they cannot identify its blocking call.",
+    "The CPU-profiler diagnostic took much longer before the first training publication than either unprofiled failed window. It is excluded from all cost estimates. These observations do not isolate profiling as the cause.",
+    "The trainer-local all-zero request counters do not prove that the remote engines were idle."
+  ],
+  "root_cause": "Unresolved; no wheel, pause policy, deadline, sampling, endpoint, or product change is justified yet.",
+  "allocation_file": "failed-and-diagnostic-allocation.json",
+  "proof_sha256": {
+    "pause-final-1.json": "c6aa5ae29bd6820be0de2ec20aadf2c5c766ae52b8ceaccab03e4320f7e3daa6",
+    "pause-diagnostic-final-task-clocks.csv": "cb52d0170511d21ba3ffb730754d0f679215c71b589c5f817b4d8f85872d3155",
+    "pause-diagnostic-stop-clocks.json": "4f2c73079aaf25ba86287a701b30282511d502e977860c16607030317550fe0c",
+    "pause-diagnostic-priority-traces.json": "2bd2e6ef2e0beac25efcd778b6c20fea2f1f28576e17b56e0397c6c6742f03df",
+    "retained-experiment-profiles.jsonl": "c656f567ba6effeac5fb79f1c8fbaf2f619b214729ce54a74677c492342ad591",
+    "retained-sampler-stacks.jsonl": "91e03cc1aaa11d1134dce3d12e288336ba5323551a26f76a72a7902284d65bfe"
+  }
+}

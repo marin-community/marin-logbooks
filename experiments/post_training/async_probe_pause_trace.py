@@ -3,12 +3,16 @@
 
 """Trace the existing pause calls during the single bounded control diagnostic."""
 
+import faulthandler
 import time
 
 from loguru import logger
 
 
 def install_pause_trace(engine) -> None:
+    # Write stacks from inside each actor even if it stops answering Ray RPCs.
+    # This diagnostic has a thirty-minute job deadline; no locals are included.
+    faulthandler.dump_traceback_later(20, repeat=True)
     for owner, name in (
         (engine.llm.renderer, "clear_mm_cache_async"),
         (engine.llm.engine_core, "pause_scheduler_async"),
