@@ -4,7 +4,7 @@ task_issue: "https://github.com/marin-community/marin-logbooks/issues/34"
 research_branch: "codex/34-hero-final-sft"
 marin_base_revision: "33189166cfb244bf284f3d893e58ce0272215eac"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: smoke-running
+status: continuation-preparing
 ---
 
 # Compact SFT on the final Hero checkpoint
@@ -166,3 +166,28 @@ v2 request SHA256, semantic request digest
 `76856da1ff064fb9197b40fd56fe589667f780150ff84da125d704807352cf7f`
 and launched source. It records no recovery parent. This binds later telemetry
 and checkpoints to this execution rather than the rejected v1 identity.
+
+
+## 2026-11-05: smoke passed; preserve full state for 128 updates
+
+The smoke succeeded: all 16 tasks exited 0, with no application failures or
+preemptions. All eight updates had finite supervised loss, gradient norm and
+routing metrics. The optimizer audit contained only the intended compact state,
+and all 22 returned gradient leaves belonged to LoRA or the five-token
+vocabulary deltas. Peak HBM was 74077436232 bytes per GPU (about 69.0 GiB).
+
+Update 8 recorded loss 1.64170, gradient norm 0.91174, mean routed-assignment
+overflow 0.08299 and router z-loss 12.4396. Loss endpoints used different packed
+batches. These are runtime/training-source measurements; they establish no
+held-out or generation quality. [smoke-result.json](smoke-result.json) retains
+exact identities, counters and checkpoint pins.
+
+The completed compact checkpoint is step 8 with metadata digest
+`40d55592efd21db14c8092e151fef2c3de46910080ab9bb94b3aa4418fe0f0df`,
+8252608 processed and 5314600 supervised tokens. Its completion record matches
+the published request and actual attempt. A fresh continuation is prepared to
+perform 120 additional updates, ending at 128 total, while preserving full
+Adam, schedule count, deterministic data position and the fixed 128-update
+horizon. [continuation-template.json](continuation-template.json) pins the exact
+parent request and checkpoint; its source placeholder is resolved to the
+published commit at launch. The continuation has not been submitted yet.

@@ -1,0 +1,139 @@
+{
+  "name": "hero-final-sft-long-20261105-v1",
+  "version": "2026.10.21",
+  "source_revision": "0000000000000000000000000000000000000000",
+  "reference": {
+    "checkpoint": "s3://marin-us-east-02a/marin/grug/hero-ctx65k-step372k/2026.08.19.2/checkpoints/step-390251",
+    "metadata_digest": "16c01949576632fcc55f2cc0f478fdd9e198408f76362652e0d778d1c25e92b5",
+    "source_pt_step": 390251,
+    "config_path": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/inputs/source-model.json",
+    "config_digest": "ce31949afe42887255cb674f01ad5a2a080725dbb069862e3342c4002a5f9b25",
+    "manifest_digest": "4b6427b59d99daf9fe88fc20c15dd2c2ba9f532f57b683e6051dc1e4a831e378",
+    "tokenizer": "marin-community/marin-tokenizer",
+    "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+    "tokenizer_revision_evidence": "https://github.com/marin-community/marin-logbooks/issues/2; exact original cache publication hashes reverified in input-verification.json. Final pretraining config names this tokenizer without an immutable revision; this repeat explicitly selects the earlier pinned snapshot.",
+    "source_config_digest": "292123f0e857e3675bee1147365758840e943dc89f28c536e3c2bdd8a7436dcd",
+    "source_revision": "33189166cfb244bf284f3d893e58ce0272215eac"
+  },
+  "model": {
+    "vocab_size": 128256,
+    "hidden_dim": 6144,
+    "intermediate_dim": 3072,
+    "shared_expert_intermediate_dim": 3072,
+    "num_shared_experts": 2,
+    "num_experts": 384,
+    "num_experts_per_token": 8,
+    "latent_dim": 3072,
+    "qb_estimator": "hist",
+    "qb_hist_bins": 10000,
+    "num_layers": 48,
+    "num_heads": 48,
+    "num_kv_heads": 12,
+    "local_kv_heads": 12,
+    "global_kv_heads": 6,
+    "head_dim": 128,
+    "max_seq_len": 65536,
+    "sliding_window": 2048,
+    "global_every": 4,
+    "capacity_factor": 1.5,
+    "layer_norm_eps": 1e-05,
+    "initializer_std": 0.0063788795384978605,
+    "qk_mult": 1.66,
+    "qk_mult_long_scale": 1.0,
+    "sconv": true,
+    "sconv_kernel": 4,
+    "sconv_sites": [
+      "k",
+      "attn",
+      "mlp"
+    ],
+    "attention_implementation": "gpu_fa4_cute_sm100",
+    "moe_implementation": "ragged_all_to_all",
+    "expert_chunks": 1,
+    "pooled_transport_capacity_factor": 1.15,
+    "num_expert_waves": 3,
+    "report_capacity_overflow": true,
+    "remat_mode": "offload_carry",
+    "rope": {
+      "theta": 10000.0,
+      "scaling_factor": null
+    },
+    "rope_fused": true,
+    "ce_grad_in_forward_token_block_size": null
+  },
+  "sft": {
+    "rank": 16,
+    "alpha": 16.0,
+    "token_ids": [
+      128006,
+      128007,
+      128002,
+      128003,
+      128009
+    ],
+    "adapter_learning_rate": 0.0001,
+    "vocab_learning_rate": 1e-05,
+    "num_steps": 128,
+    "warmup_steps": 2,
+    "seed": 20261021,
+    "vocab_block_size": 4096,
+    "token_block_size": 256
+  },
+  "data_root": "s3://marin-us-east-02a/marin/grug/hero-format-sft/2026.10.21/sft-phase-2416e9d7/inputs/prepared-v3",
+  "data_manifest": "s3://marin-us-east-02a/marin/grug/hero-format-sft/2026.10.21/sft-phase-2416e9d7/inputs/prepared-v3/manifest.json",
+  "data_manifest_digest": "4f49c6532948f3d0d4754ced3e08943755cd056799f38a07f4484cfdff5af0ce",
+  "acquisition_panel": "s3://marin-us-east-02a/marin/grug/hero-format-sft/2026.10.21/sft-phase-2416e9d7/inputs/acquisition-v3.json",
+  "acquisition_panel_digest": "7e1792c2bf08e0d0e065e50de5c619bd1160f20e3c6ab19ddaa82774fc878066",
+  "cache_prefix": "s3://marin-us-east-02a/marin/grug/hero-format-sft/2026.10.21/sft-phase-2416e9d7/cache-v3",
+  "output_root": "s3://marin-us-east-08a/tmp/ttl=30d/users/dlwh/hero-final-sft/2026.11.05-v1/long-v1",
+  "resources": {
+    "cpu": 120.0,
+    "ram": "890g",
+    "disk": "1t",
+    "device": {
+      "variant": "GB200",
+      "kind": "gpu",
+      "count": 4
+    },
+    "preemptible": true,
+    "zone": null,
+    "target_cluster": null,
+    "replicas": 16,
+    "image": null,
+    "container_profile": null
+  },
+  "batch_size": 64,
+  "expert_axis_size": 64,
+  "context_axis_size": 1,
+  "replica_axis_size": 1,
+  "max_processed_tokens": 134217728,
+  "maximum_metrics": [
+    [
+      "loss",
+      20.0
+    ],
+    [
+      "gradient_norm",
+      1000.0
+    ],
+    [
+      "train/router/router_z_loss",
+      100.0
+    ]
+  ],
+  "train_sequence_length": 16384,
+  "stop_after_step": 128,
+  "recovery_parent": {
+    "request_uri": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/requests/smoke-v2/request.json",
+    "request_sha256": "e6777fc2bf342dc4dc566182b329ce52be0113f3be63ecb64748fdfa69b82973",
+    "request_digest": "de2839d0d933d000cd9be545fe0420355bf4b7d4a0d2ba1b388251ea8b0a78a6",
+    "path": "s3://marin-us-east-08a/tmp/ttl=30d/users/dlwh/hero-final-sft/2026.11.05-v1/smoke-v2/attempts/d361647db22a79a3/adapters/step-8",
+    "step": 8,
+    "metadata_digest": "40d55592efd21db14c8092e151fef2c3de46910080ab9bb94b3aa4418fe0f0df",
+    "counters": {
+      "sft_step": 8,
+      "processed_tokens": 8252608,
+      "supervised_tokens": 5314600
+    }
+  }
+}
