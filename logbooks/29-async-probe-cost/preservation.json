@@ -1,5 +1,5 @@
 {
-  "method": "Marin fsutil verified-copy streams every source object, checks destination content-derived ETags or readback SHA256, promotes verified objects, and writes its immutable completion manifest last. Full object identities, sizes and SHA256 hashes remain in each durable manifest. Temporary duplicates are retained until final cleanup. Canonical run outputs are already outside TTL storage and are accounted separately.",
+  "method": "Marin fsutil verified-copy streams every source object, checks destination content-derived ETags or readback SHA256, promotes verified objects, and writes its immutable completion manifest last. Full object identities, sizes and SHA256 hashes remain in each durable manifest. A temporary source is removed only after its consumers stop and its current paths, sizes and object identities match the archive; per-archive fields and the cleanup proof record this. Canonical run outputs are already outside TTL storage and are accounted separately.",
   "archives": [
     {
       "tag": "qwen-i10-seed1701-2026.11.05.1",
@@ -10,7 +10,8 @@
       "objects": 116,
       "bytes": 196700,
       "source_consumers_terminal": true,
-      "temporary_source_deleted": false
+      "temporary_source_deleted": true,
+      "temporary_source_verified_empty_utc": "2026-11-05T22:05:23.372440+00:00"
     },
     {
       "tag": "qwen-i10-seed1701-2026.11.05.2",
@@ -21,7 +22,8 @@
       "objects": 116,
       "bytes": 204884,
       "source_consumers_terminal": true,
-      "temporary_source_deleted": false
+      "temporary_source_deleted": true,
+      "temporary_source_verified_empty_utc": "2026-11-05T22:05:23.372440+00:00"
     },
     {
       "tag": "qwen-i10-seed1701-2026.11.05.3",
@@ -32,7 +34,8 @@
       "objects": 1035,
       "bytes": 1421880,
       "source_consumers_terminal": true,
-      "temporary_source_deleted": false
+      "temporary_source_deleted": true,
+      "temporary_source_verified_empty_utc": "2026-11-05T22:05:23.372440+00:00"
     },
     {
       "tag": "qwen-i10-seed1701-2026.11.05.4",
@@ -43,7 +46,8 @@
       "objects": 2051,
       "bytes": 41124050,
       "source_consumers_terminal": true,
-      "temporary_source_deleted": false
+      "temporary_source_deleted": true,
+      "temporary_source_verified_empty_utc": "2026-11-05T22:05:23.372440+00:00"
     },
     {
       "tag": "grug-i0-seed1701-2026.11.05.1",
@@ -54,7 +58,8 @@
       "objects": 8170,
       "bytes": 1066017443,
       "source_consumers_terminal": true,
-      "temporary_source_deleted": false
+      "temporary_source_deleted": true,
+      "temporary_source_verified_empty_utc": "2026-11-05T22:05:23.372440+00:00"
     },
     {
       "tag": "grug-i10-seed1701-2026.11.05.1",
@@ -65,7 +70,8 @@
       "objects": 7324,
       "bytes": 168935440,
       "source_consumers_terminal": true,
-      "temporary_source_deleted": false
+      "temporary_source_deleted": true,
+      "temporary_source_verified_empty_utc": "2026-11-05T22:05:23.372440+00:00"
     },
     {
       "tag": "grug-i10-seed2903-2026.11.05.1",
@@ -76,7 +82,8 @@
       "objects": 7319,
       "bytes": 172240100,
       "source_consumers_terminal": true,
-      "temporary_source_deleted": false
+      "temporary_source_deleted": true,
+      "temporary_source_verified_empty_utc": "2026-11-05T22:05:23.372440+00:00"
     }
   ],
   "archived_bytes": 1450140497,
@@ -87,5 +94,19 @@
     "manifest_sha256": "cc1ecebb1ac654dfdb099f18f39c89a98d45598096f83aeb4d9007d13877f17a",
     "bytes": 138375,
     "objects": 6
+  },
+  "pause_failure_accounting_inputs": {
+    "recovery_prefix": "s3://marin-us-east-08a/marin/users/romain/research/async-probe-cost-2026.11.05/evidence/pause-failure-accounting",
+    "manifest_uri": "s3://marin-us-east-08a/marin/users/romain/research/async-probe-cost-2026.11.05/evidence/pause-failure-accounting/.verified-copy-manifest.json",
+    "manifest_sha256": "c2729381fe4c0fff886edf5026d8d28586f387c494d7dd9088b3ed5e787019df",
+    "bytes": 198650,
+    "objects": 19
+  },
+  "temporary_cleanup_proof": {
+    "recovery_prefix": "s3://marin-us-east-08a/marin/users/romain/research/async-probe-cost-2026.11.05/evidence/temporary-cleanup",
+    "manifest_uri": "s3://marin-us-east-08a/marin/users/romain/research/async-probe-cost-2026.11.05/evidence/temporary-cleanup/.verified-copy-manifest.json",
+    "manifest_sha256": "1619462fb6ae6882a7ada70442ddc2ca1982c8c8667f1c3bafdb984a784581ca",
+    "bytes": 24038,
+    "objects": 4
   }
 }
