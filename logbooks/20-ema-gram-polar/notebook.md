@@ -1655,3 +1655,22 @@ the remaining initial groups and required expansions. Evidence:
 [group readiness](subset-training-r02-completion-readiness.json), and local
 scratch/20261105-expansion-r01-141307-progress.json and
 scratch/20261105-expansion-r02-141307-progress.json.
+
+### 2026-11-05 14:21 UTC — first training metric from the alpha 0.25 expansion
+
+The additional LR0.0005 pilot for alpha0.25/ridge0.0001 reported zero-based
+optimizer-step label7 and finite training loss12.216623306274414 in the14:21 UTC
+online observation. Its W&B run matches the frozen configuration and immutable
+source `1363a08b76d442fbbeb17659cec8f99ea21064a3`. The sole observer for campaign
+`ema-gram-20-expand-seed0-r02-20261105` recorded job00 RUNNING with four tasks
+and cumulative failure/preemption counts of zero at14:19 UTC. The unchanged
+counts permit reuse of the saved mappings between startup tasks, original
+attempt0 identities and online runs. No startup queries were repeated.
+
+This is an early training metric. The pilot must still finish all7,630 updates,
+final C4 evaluation and the [full completion checks](verify_expansion_artifacts.py).
+The alpha0.125/LR0.00125 pilots advanced to labels1743 at ridge0.0001 and1699
+at ridge0.01. All nine unfinished initial pilots also advanced;21 initial pilots
+remain fully validated. [Complete-group readiness](subset-training-r02-completion-readiness.json)
+requires no additional expansion now. Global selection awaits the unfinished
+pilots and required expansions. See [first progress](subset-expansion-r02-first-progress.json).
