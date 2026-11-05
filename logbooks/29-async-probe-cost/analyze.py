@@ -95,6 +95,12 @@ def summarize(run, result, digest):
 def analyze(manifest, output):
     output.mkdir(parents=True, exist_ok=True)
     admitted = [run for run in manifest["runs"] if run["kind"] == "grug" and run["admitted"]]
+    seeds = (1701, 2903, 4517)
+    keys = {(run["seed"], run["interval"]) for run in admitted}
+    if len(keys) != len(admitted):
+        raise ValueError("Repeated admitted seed/interval window")
+    if any((seed, interval) not in keys for seed in seeds for interval in (0, 10)):
+        raise ValueError("Need one admitted off and interval-ten window for each declared seed")
     summaries, rows = [], []
     for run in admitted:
         result, digest = read_result(run["completed_uri"])
@@ -119,7 +125,6 @@ def analyze(manifest, output):
     by_arm = {(run["seed"], run["interval"]): run for run in summaries}
     comparisons = {}
     for interval in sorted({run["interval"] for run in summaries} - {0}):
-        seeds = [1701, 2903, 4517]
         if any((seed, arm) not in by_arm for seed in seeds for arm in (0, interval)):
             raise ValueError(f"Incomplete paired comparison for interval {interval}")
         comparisons[str(interval)] = {

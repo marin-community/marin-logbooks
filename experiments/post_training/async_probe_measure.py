@@ -6,10 +6,12 @@
 import asyncio
 import hashlib
 import json
+import os
 import time
 
 import ray
 import torch
+from loguru import logger
 from omegaconf import OmegaConf
 from rigging.filesystem.buckets import filesystem_for
 from skyrl_train.entrypoints.main_base import BasePPOExp, run_ray_driver
@@ -35,6 +37,8 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
     original_optimize = trainer.train_critic_and_policy
     original_sync = trainer._sync_policy_for_rollouts
     smoke = cfg.trainer.placement.colocate_all
+    diagnostic = os.environ.get("ASYNC_PROBE_PAUSE_DIAGNOSTIC") == "1"
+    profiling = False
     engine_actors = [engine.inference_engine_actor for engine in trainer.inference_engine_client.engines]
     engine_info = ray.get([actor.performance_info.remote() for actor in engine_actors])
     if not all(
@@ -87,6 +91,8 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
         )
         original_finish(batch)
         probes[-1]["metrics"] = {key: value for key, value in trainer.all_metrics.items() if key.startswith("score_")}
+        if diagnostic:
+            write_json(root + f"/diagnostic-probe-{trainer.global_step:04d}.json", probes[-1])
 
     def optimize(batch):
         if any(key.startswith("score_") for key in batch):
@@ -94,7 +100,20 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
         return original_optimize(batch)
 
     async def sync(*, reason):
-        result = await original_sync(reason=reason)
+        nonlocal profiling
+        try:
+            result = await original_sync(reason=reason)
+        finally:
+            if diagnostic and profiling and reason == "training_step":
+                try:
+                    profiles = await asyncio.wait_for(
+                        asyncio.gather(*(actor.performance_stop_cpu_profile.remote() for actor in engine_actors)),
+                        timeout=10,
+                    )
+                    write_json(root + "/diagnostic-cpu-profiles.json", profiles)
+                except Exception:
+                    logger.exception("Could not collect pause diagnostic CPU profiles")
+                profiling = False
         row = {"step": trainer.global_step, "reason": reason}
         if smoke:
             name = "model.layers.0.self_attn.o_proj.weight"
@@ -110,6 +129,9 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
                 raise ValueError("Inference replicas disagree after weight publication")
             row["weight_sha256"] = hashes[0]
         publications.append(row)
+        if diagnostic and reason == "initial":
+            await asyncio.gather(*(actor.performance_start_cpu_profile.remote() for actor in engine_actors))
+            profiling = True
         return result
 
     def log(payload, step, kind="train"):

@@ -1,0 +1,25 @@
+{
+  "declared_utc": "2026-11-05T20:55:03.845669+00:00",
+  "purpose": "Locate the repeated sampler-pause failure before any further comparison allocation. Profiled diagnostic data do not enter the paired cost analysis.",
+  "maximum_attempts": 1,
+  "maximum_updates": 2,
+  "expected_H100_hours": 14,
+  "gpu_job_timeout_seconds": 1800,
+  "allocated_span_limit_basis": "Five eight-H100 batch nodes times thirty-minute job deadline is roughly twenty H100-hours, plus teardown. Unbound queue time is separate.",
+  "seed": 1701,
+  "interval": 10,
+  "model_data_training_sampling_and_geometry": "Same full Grug configuration as the fixed interval-ten recipe; only update cap and diagnostic instrumentation differ.",
+  "existing_pause_deadline_seconds": 30,
+  "existing_pause_mode": "keep",
+  "existing_clear_cache": true,
+  "profile_RPCS": [
+    "performance_start_cpu_profile",
+    "performance_stop_cpu_profile"
+  ],
+  "traced_existing_calls": [
+    "renderer.clear_mm_cache_async",
+    "engine_core.pause_scheduler_async"
+  ],
+  "consumed_probe_persisted_before_publication": true,
+  "decision_after_diagnostic": "Use the saved stages and profiles to localize the failure; consult before consequential runtime-contract changes. No further comparison allocation is submitted now."
+}
