@@ -5285,3 +5285,19 @@ Published subset-training-validation.json binds all sources and data manifests.
 Next dispatch all30 fresh pilots from a detached immutable execution worktree
 ema-gram-subset-seed0-20261105, version2026.11.04.03,24 v4-32/6 v4-8.
 The launcher must pass its full825-object catalog gate before submission.
+
+### 2026-11-05 03:04 UTC — recover failed pre-job submission transport
+
+The full825-object/26-component catalog gate passed, but30 simultaneous
+18.3MB launch RPCs timed out at180s and later exited1 with DNS/no-route-to-host.
+No queued/running training is claimed. At03:01:42UTC after connectivity
+returned, a canonical batch GetJobState for all30 exact IDs returned no jobs.
+Original guards remain set; empty observer54154 is retired with no followers.
+The parent launcher incorrectly returned0 despite30 child failures; r02 fixes
+that reporting. New r02 identities/ledger will reuse unchanged numerical
+sources, validated data and artifactversion2026.11.04.03 (no original job
+was created). Limit only simultaneous package-upload RPCs to8, with no cap
+on concurrent experiments once accepted. The slow615-object web metadata
+loop now uses16 parallel checks; full catalog identity, generation-bound JSON
+readback and edge checks remain. Seven static positive/negative fixtures pass.
+No network/IAM/security settings were changed and no remote job was cancelled.

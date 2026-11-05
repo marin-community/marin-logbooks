@@ -23,9 +23,17 @@ def catalog_digest(rows):
 def check_component(component, full):
     client = storage.Client()
     bucket = client.bucket(component["bucket"])
-    checked = []
-    for expected in component["required"]:
-        blob = bucket.get_blob(expected["name"])
+    catalog = None
+    digest = None
+    if full:
+        catalog = {b.name: b for b in client.list_blobs(bucket, prefix=component["prefix"])}
+        rows = [dict(name=b.name, size=b.size, crc32c=b.crc32c) for b in catalog.values()]
+        digest = catalog_digest(rows)
+        if len(rows) != component["objects"] or digest != component["catalog_sha256"]:
+            raise ValueError(f"Incomplete or changed original cache catalog: {component['prefix']}")
+
+    def check_required(expected):
+        blob = catalog.get(expected["name"]) if catalog is not None else bucket.get_blob(expected["name"])
         if blob is None:
             raise FileNotFoundError(f"gs://{bucket.name}/{expected['name']}")
         if (blob.size, blob.crc32c) != (expected["size"], expected["crc32c"]):
@@ -38,17 +46,15 @@ def check_component(component, full):
             data = blob.download_as_bytes(if_generation_match=blob.generation)
             json.loads(data)
             item["readback_sha256"] = hashlib.sha256(data).hexdigest()
-        checked.append(item)
+        return item
+
+    # Preserve every identity/readback check and manifest order while bounding
+    # concurrency for components with hundreds of independent metadata objects.
+    with ThreadPoolExecutor(max_workers=16) as pool:
+        checked = list(pool.map(check_required, component["required"]))
     result = dict(component=component["component"], required=checked)
     if full:
-        rows = [
-            dict(name=b.name, size=b.size, crc32c=b.crc32c)
-            for b in client.list_blobs(bucket, prefix=component["prefix"])
-        ]
-        digest = catalog_digest(rows)
-        if len(rows) != component["objects"] or digest != component["catalog_sha256"]:
-            raise ValueError(f"Incomplete or changed original cache catalog: {component['prefix']}")
-        result.update(objects=len(rows), catalog_sha256=digest)
+        result.update(objects=len(catalog), catalog_sha256=digest)
     return result
 
 

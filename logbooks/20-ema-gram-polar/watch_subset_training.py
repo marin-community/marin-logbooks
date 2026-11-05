@@ -18,9 +18,9 @@ def main():
     parser.add_argument("--worktree", type=Path, required=True)
     args = parser.parse_args()
     scratch = args.worktree / "scratch"
-    state_path = scratch / "20261104-subset-training-observers.json"
+    state_path = scratch / "20261105-subset-training-r02-observers.json"
     base = ["uv", "run", "--no-sync", "iris", "--cluster=marin"]
-    with (scratch / "20261104-subset-training-observers.lock").open("w") as lock:
+    with (scratch / "20261105-subset-training-r02-observers.lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         state = json.loads(state_path.read_text()) if state_path.exists() else {}
 
@@ -30,7 +30,7 @@ def main():
             temp.replace(state_path)
 
         def check(index, job_id):
-            path = scratch / f"subset-training-{index}-canonical-{time.time_ns()}.json"
+            path = scratch / f"subset-training-r02-{index}-canonical-{time.time_ns()}.json"
             with path.open("w") as handle:
                 result = subprocess.run(
                     [*base, "rpc", "controller", "get-job-status", "--job-id", job_id],
@@ -45,7 +45,7 @@ def main():
         followers = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
             while True:
-                ledger = json.loads((scratch / "20261104-subset-training-ledger.json").read_text())
+                ledger = json.loads((scratch / "20261105-subset-training-r02-ledger.json").read_text())
                 for index, cell in ledger["cells"].items():
                     if not cell.get("launched") or index in state:
                         continue
@@ -59,7 +59,7 @@ def main():
                     )
                     state[index] = record
                     save()  # Never create a second follower after an ambiguous local interruption.
-                    log = scratch / f"subset-training-{index}-follow.log"
+                    log = scratch / f"subset-training-r02-{index}-follow.log"
                     with log.open("w") as handle:
                         follow = subprocess.Popen(
                             [*base, "job", "logs", cell["job_id"], "--follow"],

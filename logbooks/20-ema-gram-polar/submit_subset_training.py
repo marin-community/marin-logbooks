@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = Path(__file__).parent
-LEDGER = ROOT / "scratch/20261104-subset-training-ledger.json"
+LEDGER = ROOT / "scratch/20261105-subset-training-r02-ledger.json"
 MUTEX = threading.Lock()
 
 
@@ -44,7 +44,7 @@ def ready_slots(status):
 
 
 def command(index, variant, source):
-    job = f"ema-gram-20-subset-seed0-{index:02d}-20261104"
+    job = f"ema-gram-20-subset-seed0-r02-{index:02d}-20261105"
     common = ["python", "-m", "experiments.ema_gram.subset_campaign", "--index", str(index), "--variant", variant]
     logging = shlex.join([*common, "--mode", "logging-check", "--output", "/tmp/campaign-host-logging.json"])
     worker = shlex.join([*common, "--mode", "worker", "--output", "/tmp/campaign-worker.json"])
@@ -119,6 +119,10 @@ def main():
     for path, sha in preflight["source_files"].items():
         assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == sha, path
     assert preflight["launcher_sha256"] == hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    assert (
+        preflight["cache_validator_sha256"]
+        == hashlib.sha256((BASE / "check_campaign_caches.py").read_bytes()).hexdigest()
+    )
     assert preflight["cells_sha256"] == hashlib.sha256((BASE / "subset-pilots.json").read_bytes()).hexdigest()
     validation = json.loads((BASE / "subset-training-validation.json").read_text())
     assert validation["source_files"] == preflight["source_files"] and validation["passed"]
@@ -188,14 +192,14 @@ def main():
                 source_commit=args.source_commit,
                 argv=argv,
                 launch_started=True,
-                job_id=f"/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-{index:02d}-20261104",
+                job_id=f"/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-{index:02d}-20261105",
                 submitted_utc=datetime.now(UTC).isoformat(),
                 launched=False,
             )
             with MUTEX:
                 ledger["cells"][str(index)] = record
                 persist(ledger)
-            output = ROOT / f"scratch/20261104-subset-training-{index:02d}-submit.log"
+            output = ROOT / f"scratch/20261105-subset-training-r02-{index:02d}-submit.log"
             with output.open("w") as handle:
                 result = subprocess.run(argv, stdout=handle, stderr=subprocess.STDOUT)
             with MUTEX:
@@ -208,8 +212,10 @@ def main():
             print(json.dumps(dict(index=index, **record)), flush=True)
 
         if selected:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=len(selected)) as pool:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=min(8, len(selected))) as pool:
                 list(pool.map(submit, selected))
+            if any(ledger["cells"][str(i)].get("submit_exit_code") != 0 for i, _, _ in selected):
+                raise RuntimeError("One or more submission RPCs failed; reconcile exact identities before recovery")
         return len(ledger["cells"]) < len(cells)
 
 

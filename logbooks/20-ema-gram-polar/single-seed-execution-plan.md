@@ -311,3 +311,15 @@ this worktree/source immutable while research notes continue on the research bra
 Normal batch queueing is already authorized for all30 cells. Requested408 v4
 devices do not imply allocation or an ETA. Existing failed campaigns and all
 data-stage identities/guards remain terminal and are never reused.
+
+## Submission transport recovery (2026-11-05 03:04 UTC)
+
+The first subset launch failed before any job was created; canonical
+reconciliation of all30 exact IDs returned no jobs. Its16b4aa568 worktree and
+guards remain immutable. Use new execution worktree
+`/Users/kaiyuew/Downloads/Project/marin/ema-gram-subset-seed0-r02-20261105`
+and publication branch `codex/20-ema-gram-subset-seed0-r02-20261105`.
+New jobs are `ema-gram-20-subset-seed0-r02-NN-20261105`, with ledger
+`scratch/20261105-subset-training-r02-ledger.json`. Upload at most8 request
+packages at once; this does not cap queued/running experiment concurrency.
+Dataset, numerical code, cells and artifactversion2026.11.04.03 are unchanged.
