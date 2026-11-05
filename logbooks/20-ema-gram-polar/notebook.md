@@ -5337,3 +5337,29 @@ the frozen validation. Initial local range assertion expected10rows from
 inclusive109..119; corrected to109..118 without training changes. This
 confirms actual new-data training startup, not pilot completion or an
 optimizer-speed result. Other cells retain their owned scheduling checks.
+
+### 2026-11-05 04:31 UTC — first two fixed-subset pilots fully validated
+
+Cells01 and03 (alpha0, LR0.0035355339 and0.0141421356, seed0) completed
+7630 updates from scratch. Both canonical task0/attempt0 succeeded, exit0,
+with no failures/preemptions. All7630 native labels0..7629 have finite ONLINE
+loss/duration/MFU/two LR metrics; final C4 losses are4.1497836113 and4.2295851707.
+Both native W&B runs are FINISHED, exact frozen subset configs/source2bca5a112
+verified, and exact task-attempt/run joins retained. Their permanent final
+checkpoints have generation/CRC/readback-verified metadata and57-array manifests;
+independent scalar reads confirmed stored counter7630 (directory label7629).
+This does not claim a full checkpoint array audit or restored training state.
+Evidence: subset-training-r02-first-completions.json. Two of30 pilots validated;
+no hyperparameter selection or scientific-core completion yet.
+
+Local collection corrections are preserved: Draccus coerced a jax_config bool
+into a string; comparison now uses the exact frozen JSON mapping. W&B pagination
+repeated seven identical boundary rows and omitted seven other labels; bounded
+exact-label reads recovered all seven, with raw responses retained. An empty
+min=max range was corrected. TensorStore's GCS driver could not parse the local
+ADC format; the documented read-only HTTP driver read only the two stored step
+scalars using the same ADC identity. No IAM change, credential output, worker
+failure, numerical change, new launch or restart resulted from these corrections.
+Sole observer52357 remains alive and retains every existing follow/launch guard.
+Remaining pilots continue. After grid/expansion validation, lock selection and
+launch seed0 confirmations with the required reference checkpoints and probes.
