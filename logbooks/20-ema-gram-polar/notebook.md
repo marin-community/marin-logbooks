@@ -2032,3 +2032,11 @@ the amendment allowing the selected alpha0 baseline to start before global
 selection. Also implement and validate adoption of this exact baseline in the eventual
 confirmation set so it is not submitted twice. A clean published execution
 worktree and full regional cache check are also required.
+
+At18:16 UTC, R05 startup validation joined four original task attempts to four
+distinct assigned workers and finished ONLINE W&B host preflight runs. The native
+run matches its frozen source and configuration, with an observed finite training
+loss12.246804 at label2. All six accepted expansions now have observed
+training progress. This is not final evaluation or expansion completion. Reuse
+[R05 startup evidence](subset-expansion-r05-started.json) without repeating the
+four task reads or five ONLINE startup queries.
