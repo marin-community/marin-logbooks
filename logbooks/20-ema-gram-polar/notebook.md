@@ -1804,3 +1804,27 @@ logs show compilation. These are startup checks, not training completion or an
 independent runtime JAX device audit. The initial validated count remains24/30.
 All four expansions now have running parent jobs; six initial alpha0.5 pilots
 remain running. See [startup evidence](subset-expansion-r03-started.json).
+
+### 2026-11-05 16:42 UTC — accept an independent restore qualification job
+
+Iris accepted a separate regional v4-8 job to read the validated alpha0.25,
+ridge0.01, LR0.002 pilot checkpoint at stored counter7630. This advances
+infrastructure preparation while pilot selection remains incomplete. It is
+not a confirmation run or a prescribed scientific reference checkpoint. The
+frozen request retains the full model and optimizer configuration; only the
+restore mesh changes from four hosts to one host with four TPU devices.
+
+Fresh ONLINE logging and a full-size abstract TrainerState check passed. The
+template matches the checkpoint manifest's57 array shapes and dtypes. Actual
+checkpoint reads and hardware restore remain unverified. The new worker refuses
+cross-region reads and partial restores. It checks metadata.json and manifest.json
+against their validated object generations and hashes, verifies the stored
+counter, and tests every restored array for finiteness. The restored state
+includes model, optimizer, counter and training PRNG; no data-position replay
+is verified. The job makes no optimizer updates or checkpoint writes.
+
+A permanent guard prevents duplicate submission, and one monitoring process
+owns the accepted job. Existing scientific runs continue unchanged. GPU runtime
+and numerical validation, GPU allocation retention, and larger-TPU full-training
+validation remain outstanding. See the [frozen request](restore-qualification-request.json),
+[worker](qualify_checkpoint_restore.py) and [launch evidence](restore-qualification-launched.json).
