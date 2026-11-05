@@ -1871,3 +1871,15 @@ at counters3733,18665,33597 specified in the
 [execution plan](single-seed-execution-plan.md). See the
 [frozen request](fullsize-probe-qualification-request.json) and
 [worker](qualify_fullsize_probe.py).
+
+### 2026-11-05 16:59 UTC — accept full-size probe qualification
+
+Iris accepted the independent full-size probe job, which requests a regional
+v4-8 allocation.
+Fresh ONLINE logging and abstract full-state shape/dtype checks passed for the
+published source. One monitoring process owns the job and preserves the launch
+guard; the first scheduled status check is17:01:38 UTC. The worker checks all26
+regional data-cache components before reading held-out batches, then performs
+the complete restore and probe calculations described above. Actual hardware
+execution and probe results remain unverified. Existing training jobs continue.
+See [launch and preflight evidence](fullsize-probe-qualification-launched.json).
