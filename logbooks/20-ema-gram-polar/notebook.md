@@ -5414,3 +5414,23 @@ Evidence: reference-probe-preflight.json. Initial lint exposed formatting and
 deliberately delayed numerical imports; corrected before publication/checks.
 A direct black command was unavailable, while the required repository pre-commit
 formatter completed successfully; no dependency workaround was needed.
+
+### 2026-11-05 04:50 UTC — SVD diagnostic CPU qualification passed
+
+Published b90b7aa1d2279592935c9f9fc357f81584821da4 adds a dedicated CPU
+SVD oracle behind the already-online tracked probe wrapper. It exercises all18
+attention/MLP alpha/ridge rows, compares the SVD directions to independent
+NumPy float64 eigendecomposition/SVD construction, and checks the reported
+cosine/relative errors against that reference. Three zero/rank-deficient
+rectangular cases and exact optimizer-state immutability also passed.
+Maximum absolute SVD-reference difference was6.5373167013e-06.
+CPU fixture timings are diagnostic only, not accelerator or training speed.
+
+Fresh ONLINE logging8b005ee44e81 and SVDcheck5ce418f21a16 both FINISHED/success;
+API source/config hashes verified. The prior norm-matching/paired-loss oracle
+was reused with unchanged numerical-source hashes, without rerunning it.
+Training code and accepted job source remain unchanged. No new training job,
+reference-checkpoint probe or allocation change occurred. Evidence:
+reference-probe-svd-preflight.json. A validated confirmation selection/reference
+checkpoint, fresh regional host logging, complete restore and regional output
+validation remain before production probe conclusions.
