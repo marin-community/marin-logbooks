@@ -75,6 +75,8 @@ def training_recipe(steps: int) -> dict:
     )
     # Thoughtcrime tasks advertise native tools; vLLM rejects tool requests without a parser.
     config["generator"]["engine_init_kwargs"].update(enable_auto_tool_choice=True, tool_call_parser="hermes")
+    # Most thoughtcrime variance is within a prompt, so more samples per prompt shrink its standard error.
+    config["generator"]["eval_n_samples_per_prompt"] = 4
     config["generator"]["trajectory_reward_shaping"] = {
         "enabled": True,
         # Enabling shaping would also apply the DAPO overlong penalty over the derived l_cache window.
