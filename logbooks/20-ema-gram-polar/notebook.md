@@ -6123,3 +6123,15 @@ subset-regional-probe-hq02.json. This clears new hq02 repair submissions only
 for observer-confirmed failed indices. Successful math57 (9,990,772tokens,
 3,323documents) is fully verified and reused, not rebuilt. Other original
 identities stay under observer74503 until their next owned canonical check.
+
+### 2026-11-05 00:01 UTC —54 repaired builds accepted; code and math retained
+
+All54 currently canonical-failed web indices were admitted once under hq02
+from the same source2d357613c; submit sessions46276/94775/80975 ended0.
+Observer2647 owns these follows/checks. Original indices25/46 remain under
+observer74503, last-known RUNNING, so they were not replaced or duplicated.
+Code56 succeeded with45,411,940tokens/22,006documents; math57 succeeded with
+9,990,772tokens/3,323documents. Both full native readbacks, successful task
+archives, exactsource/manifests and host/workerONLINE W&B were verified.
+The repaired web workers are already reporting successful full builds; final
+canonical checks remain owned by the existing observer. No training yet.
