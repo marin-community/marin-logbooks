@@ -1674,3 +1674,23 @@ at ridge0.01. All nine unfinished initial pilots also advanced;21 initial pilots
 remain fully validated. [Complete-group readiness](subset-training-r02-completion-readiness.json)
 requires no additional expansion now. Global selection awaits the unfinished
 pilots and required expansions. See [first progress](subset-expansion-r02-first-progress.json).
+
+### 2026-11-05 14:41 UTC — validate cell23
+
+Cell23 (alpha1/3, ridge0.01, LR0.002) passed all7,630-update completion checks,
+with final C4 loss4.260484218597412. The canonical job and all four original
+attempt0 tasks succeeded with exit0. Exact frozen subset/configuration/source,
+finished online W&B runs, all7,630 finite metric rows,checkpoint
+metadata covering57 array paths, shapes, dtypes and valid chunk geometries and independently read stored counter7630 passed. Empty terminal
+task and attempt worker IDs were reconciled against cached startup task/attempt
+UIDs, start times and assigned workers using [the published identity rule](terminal_worker_identity.py);
+raw blanks remain preserved. No new startup queries, full checkpoint byte audit
+or checkpoint restore were performed.
+
+Twenty-two of30 initial pilots are now validated. This alpha/ridge group still
+awaits LR0.0005 and0.001 (cells21/22), so no group winner or additional expansion
+is selected. The eight remaining initial pilots and three previously selected expansions
+continue. Initial-pilot owner snapshots at14:39 UTC and expansion owner snapshots
+at14:35–14:38 UTC report cumulative failure/preemption counts of zero.
+See [completed results](subset-training-r02-nonzero-completed.json) and
+[complete-group readiness](subset-training-r02-completion-readiness.json).
