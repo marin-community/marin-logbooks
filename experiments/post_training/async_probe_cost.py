@@ -96,7 +96,11 @@ def probe_recipe(interval: int, seed: int, smoke: bool) -> tuple[dict, SkyRLRole
         scheduler="constant_with_warmup",
         num_warmup_steps=0,
     )
-    trainer["rollout_buffer"].update(batch_policy="rolling", max_staleness_steps=2, max_in_flight=32 if smoke else 256)
+    trainer["rollout_buffer"].update(
+        batch_policy="full_batch" if smoke else "rolling",
+        max_staleness_steps=0 if smoke else 2,
+        max_in_flight=16 if smoke else 256,
+    )
     cfg["data"].update(shuffle=True)
     cfg["environment"]["task_sessions"].pop("daytona", None)
     cfg["config_groups"] = {"sc_default_study": "default"}

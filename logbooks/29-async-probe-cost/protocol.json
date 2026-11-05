@@ -2,7 +2,7 @@
   "declared_utc": "2026-11-05T05:33:52.722361+00:00",
   "question": "Cost of default periodic hypothetical probes during ordinary asynchronous PPO/TIS; recommend a cadence and leave product defaults unchanged.",
   "source_base": "6330720f1fdfa50c5c7be05a9592d416e5fffc57",
-  "product_stack_candidate": "99e9bfa00d1cb9b1f484416c82b6797f0b7cf077",
+  "product_stack_candidate": "7cb0acb7b31b9c98f787d02929d1e6892a3dd9d7",
   "model": {
     "id": "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05",
     "revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0",
@@ -132,5 +132,11 @@
     "estimate": "Tens of GB of ordinary trajectory/log evidence; no model checkpoints or exports.",
     "preservation": "Keep bulk evidence in object storage with exact inventories/hashes and recovery references; compact results and scripts in this archive. Clean only owned temporary duplicates after all consumers stop."
   },
-  "recommendation": "Use about 1% added average cycle time as a practical target. Retain interval ten if supported or inconclusive at small measured cost; compare interval twenty only under the frozen trigger. Explain observed coverage and uncertainty. Keep current defaults unchanged pending review."
+  "recommendation": "Use about 1% added average cycle time as a practical target. Retain interval ten if supported or inconclusive at small measured cost; compare interval twenty only under the frozen trigger. Explain observed coverage and uncertainty. Keep current defaults unchanged pending review.",
+  "artifact_storage": {
+    "canonical_prefix": "s3://marin-us-east-08a/marin/users/romain/checkpoints/async-probe-cost",
+    "temporary_prefix": "s3://marin-us-east-08a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/async-probe-cost",
+    "basis": "Current named-cluster MARIN_PREFIX default. Do not infer output storage from the input model/data region. Preserve temporary evidence before expiry."
+  },
+  "qualification": "Twelve-update colocated Qwen startup uses full_batch and staleness0, matching the existing working harness. Grug remains normal disaggregated rolling staleness2; Qwen is software qualification only."
 }
