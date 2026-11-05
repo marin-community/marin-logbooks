@@ -5658,3 +5658,18 @@ guarded submitter remain outstanding. Actual launches will also require a new
 immutable execution worktree and one expansion observer; the existing pilot
 observer continues unchanged. At08:03 UTC all18 active native streams advanced,
 with maximum label4250; six other nonzero pilots remain queued.
+
+### 2026-11-05 08:12 UTC — reconstruct expansion configs in fresh processes
+
+Added expansion_worker.py. It reconstructs the frozen expansion bundle from
+completed predecessor records and accepted launch bindings, then calls the
+unchanged native trainer. Three saved fictional configurations (one v4-8 and
+two v4-32) reconstructed in separate processes, each matching its saved frozen
+configuration SHA-256. Evidence: expansion-worker-offline-preflight.json.
+
+The first digest check exposed four RoPE values that Draccus converted from
+integers to floats. The adapter now restores their frozen input types before
+comparing digests. The adapter changes those fields' Python types; the native
+trainer code is unchanged. The initial mismatch was detected before tracking
+or training initialized. Fresh ONLINE nontraining logging
+is still required after source publication. No expansion job was submitted.
