@@ -5980,3 +5980,26 @@ The helper now inserts the published logbook directory before importing the
 validator. The corrected invocation reused 13 validated results and observed
 progress in all 17 then-unvalidated native streams; cell 15 passed full
 validation afterward. Original errors and corrected observations are retained.
+
+### 2026-11-05 12:59 UTC — validate cell 14
+
+Cell 14 (alpha 0.25, ridge 0.0001, LR 0.004) passed full pilot validation at
+7,630 updates, with final C4 loss 4.359232425689697. All four original task
+attempts succeeded with exit code 0. Exact subset/source/ONLINE identity joins,
+7,630 finite metric rows, finished W&B runs, permanent 57-array checkpoint
+metadata and independently read stored counter 7630 passed. All four terminal
+worker references were empty; [the published reconciliation rule](terminal_worker_identity.py)
+verified the original attempt UIDs and start times against saved startup assignments,
+retaining the empty raw fields and separate historical worker identities.
+No new startup queries or full checkpoint restore were used.
+
+Fifteen initial pilots are scientifically validated. Fifteen others were
+RUNNING in the owner's 12:53–12:54 UTC snapshots, with no failures or preemptions.
+The alpha0.25/ridge0.0001 group still lacks its LR0.002 result. Replaying all
+groups while leaving incomplete groups unresolved found no new expansion.
+The two accepted alpha0.125/LR0.00125 expansions continue, with finite native
+step labels 484 at ridge0.0001 and 443 at ridge0.01 at 12:58 UTC. Their saved
+startup identities were reused; fresh ONLINE source/configuration checks passed.
+Global selection remains pending. Evidence: subset-training-r02-nonzero-completed.json,
+subset-training-r02-completion-readiness.json and
+scratch/20261105-expansion-r01-125801-progress.json.
