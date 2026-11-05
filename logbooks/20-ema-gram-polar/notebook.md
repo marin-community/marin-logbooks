@@ -1874,12 +1874,22 @@ at counters3733,18665,33597 specified in the
 
 ### 2026-11-05 16:59 UTC — accept full-size probe qualification
 
-Iris accepted the independent full-size probe job, which requests a regional
-v4-8 allocation.
-Fresh ONLINE logging and abstract full-state shape/dtype checks passed for the
-published source. One monitoring process owns the job and preserves the launch
-guard; the first scheduled status check is17:01:38 UTC. The worker checks all26
-regional data-cache components before reading held-out batches, then performs
-the complete restore and probe calculations described above. Actual hardware
-execution and probe results remain unverified. Existing training jobs continue.
+Iris accepted the independent full-size probe job, requesting one v4-8 TPU
+allocation in us-central2. Fresh ONLINE W&B preflight runs passed logging and
+abstract TrainerState shape/dtype checks against the57-array checkpoint
+manifest at source0b8bced61. These checks do not establish an actual restore.
+One monitoring process checks the job; a permanent submission record prevents
+duplicate launches. Its first scheduled check is17:01:38 UTC on2026-11-05.
+The worker is configured to validate the26-component regional data-cache
+catalog before reading held-out batches, then restore state and run the probes
+described above. Actual hardware execution and probe results remain unverified.
+This submission did not modify existing training jobs.
 See [launch and preflight evidence](fullsize-probe-qualification-launched.json).
+
+At17:01 UTC, the first scheduled check reports one running task and zero
+failures or preemptions. Its original attempt UID matches the fresh ONLINE
+host and probe runs. The host logging check finished; the probe run reports
+four TPU devices on one host and is still running. This verifies startup,
+not successful probe calculations. Reuse the
+[startup evidence](fullsize-probe-qualification-started.json) and cached task
+identity without repeating startup queries.
