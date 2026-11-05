@@ -5257,3 +5257,16 @@ ledger assembly; actual regional mixture/validation loading remains required.
 The all-builds publication crossed the repository500KB notebook limit.
 Moved October30–31 entries verbatim to the linked archive; no historical
 evidence removed. This corrects the file-size check before assembly launch.
+
+### 2026-11-05 00:18 UTC — native assembly verified
+
+Assembly from29edd33f2 succeeded attempt0/exit0 and both execution-host
+logging and workerf9dfd2595448 are ONLINE FINISHED/API-success. Exact
+bounded archive/checksum and dataset/source/tokenizer identities verified.
+Three merged ledgers reference precisely the58 successful shard paths in
+manifest order; row/token totals match the successful reports. A local
+comparison initially assumed absolute finished_shards; native ledgers use
+relative names. Corrected the comparison and it passes, with no worker or
+data change. Failed partial outputs are preserved but not training shards.
+The frozen26-component catalog includes825 objects, retaining the original23
+evaluation identities. Actual regional loader qualification is next.
