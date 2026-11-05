@@ -1,0 +1,46 @@
+{
+  "kind": "GOAL",
+  "tier": "High",
+  "reviewed_source": "8732b8301479cbc90908edb5d40b5f0cd25b89cd",
+  "final_source": "6a64b548c67ab11e8355c372d3b252108cf8f5c1",
+  "reviewers": [
+    {
+      "provider": "Claude",
+      "requested_model": "claude-opus-5-5",
+      "requested_effort": "xhigh",
+      "observed_model": null,
+      "native_id": "b58e67ed-2dc7-43a0-a613-ac3567c3fefd",
+      "result": "Authentication failure before generation; no review invented."
+    },
+    {
+      "provider": "Codex",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "xhigh",
+      "observed_model": "gpt-6.1-sol",
+      "observed_effort": "xhigh",
+      "native_id": "01a1aa6a-caf4-7702-a9f0-f33c66b0e316",
+      "result": "One P2: require native TRTLLM availability for automatic activation."
+    },
+    {
+      "provider": "AGY",
+      "requested_model": "gemini-3.8-flash-high",
+      "observed_backend": "gemini-3.8-flash-n",
+      "observed_display": "Gemini 3.8 Flash (High)",
+      "observed_generation_records": 63,
+      "native_id": "55b5d93a-88a9-4aa9-a8b1-1b358e2a6f70",
+      "result": "No material blocker."
+    }
+  ],
+  "parent": {
+    "harness": "codex",
+    "namespace": "native-store:devbox:codex",
+    "native_id": "01a1aa2c-a5b8-7992-99ce-35f5f8a76a76"
+  },
+  "retention": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-kv-review-01a1aa2c/results/high-goal-review.tar-7b65b21e09bd01fc21e4d5b8adee512ebac08beaa66788827bdf316f87ca604f.tar.gz",
+    "sha256": "7b65b21e09bd01fc21e4d5b8adee512ebac08beaa66788827bdf316f87ca604f",
+    "readback_sha256": "7b65b21e09bd01fc21e4d5b8adee512ebac08beaa66788827bdf316f87ca604f",
+    "bytes": 125227
+  },
+  "disposition": "Codex P2 is fixed with native prefill and decode capability checks. Boundary-I/O regression reproduces both missing-artifact failures before the fix and passes all nine layout/availability cases after it on one GB200. Fifty-three other production methods and both decode-backend files are unchanged; no new full-Hero campaign is warranted. Clarify KV cache dtype auto and replace the evidence link before publication. AGY zero-overhead, exact tiling-cause and page-size-unit-test claims are not adopted. Its native identity discovery includes directory listing; actual identity/model/parent were independently verified and registered. Reviewer actions show no tests, linters, source/GitHub mutations or GPU work, only reads, own metadata/notebook and designated review writes. No repeat panel was requested."
+}

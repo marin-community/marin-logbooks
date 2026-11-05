@@ -1,0 +1,81 @@
+{
+  "source_commit": "6a64b548c67ab11e8355c372d3b252108cf8f5c1",
+  "before_source": "8732b8301479cbc90908edb5d40b5f0cd25b89cd",
+  "before_failures": [
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config7-FLASHINFER-None-False-None-12-True]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config8-FLASHINFER-None-False-None-None-True]"
+  ],
+  "before_passed": 7,
+  "after_passed": 9,
+  "after_failures": 0,
+  "after_skips": 0,
+  "test_names": [
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config0-FLASHINFER-None-False-None-6-False]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config1-FLASHINFER-True-False-None-6-False]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config2-FLASHINFER-None-False-None-12-False]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config3-TRITON_ATTN-None-False-None-12-False]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config4-FLASHINFER-False-False-None-12-False]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config5-FLASHINFER-None-False-fp8-12-False]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config6-FLASHINFER-None-True-None-12-False]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config7-FLASHINFER-None-False-None-12-True]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config8-FLASHINFER-None-False-None-None-True]"
+  ],
+  "loaded_source": {
+    "vllm/model_executor/models/grugmoe.py": {
+      "path": "/uv/cache/archive-v0/lfqeedpxA_N32uJh/lib/python3.12/site-packages/vllm/model_executor/models/grugmoe.py",
+      "sha256": "a4c178ac0ed58c05a50391700893f85f62ded76b88a4b145dc8d0bd10f96e36f"
+    },
+    "vllm/v1/attention/backends/flashinfer.py": {
+      "path": "/uv/cache/archive-v0/lfqeedpxA_N32uJh/lib/python3.12/site-packages/vllm/v1/attention/backends/flashinfer.py",
+      "sha256": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+    },
+    "vllm/v1/attention/backends/grug_logical_kv.py": {
+      "path": "/uv/cache/archive-v0/lfqeedpxA_N32uJh/lib/python3.12/site-packages/vllm/v1/attention/backends/grug_logical_kv.py",
+      "sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+    }
+  },
+  "candidate_wheel": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-kv-review-01a1aa2c/inputs/a6e110d02d73a3e027cf9bb1920450f31718fdd68c9facb0d18b4f608df4b2b6/vllm-0.0.0.dev20261105+marin.f6ae232ff374.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "a6e110d02d73a3e027cf9bb1920450f31718fdd68c9facb0d18b4f608df4b2b6",
+    "readback_sha256": "a6e110d02d73a3e027cf9bb1920450f31718fdd68c9facb0d18b4f608df4b2b6",
+    "name": "vllm-0.0.0.dev20261105+marin.f6ae232ff374.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "bytes": 250547390,
+    "receipt": {
+      "kind": "private_python_overlay",
+      "base_wheel_sha256": "c7dc011b001569a0cc88bfbb615575138e4f262845f8e4604f784e230e6de27a",
+      "source_commit": "6a64b548c67ab11e8355c372d3b252108cf8f5c1",
+      "changed_files": {
+        "vllm/model_executor/models/grugmoe.py": "a4c178ac0ed58c05a50391700893f85f62ded76b88a4b145dc8d0bd10f96e36f",
+        "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+      },
+      "added_files": {
+        "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+      },
+      "wheel_path": "/home/romain/work/marin-community/vllm/hero-cache-review-01a1aa2c-scratch/revision3/private/vllm-0.0.0.dev20261105+marin.f6ae232ff374.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "a6e110d02d73a3e027cf9bb1920450f31718fdd68c9facb0d18b4f608df4b2b6",
+      "wheel_bytes": 250547390,
+      "verified_unchanged_files": 5100,
+      "version": "0.0.0.dev20261105+marin.f6ae232ff374.cu132"
+    }
+  },
+  "archive_sha256": "82eafbbba27bd5b92edd09a8deb457f876fda88ca445eec9e7e2bf4150eb0a96",
+  "scope": "High GOAL P2 fix: use native TRTLLM prefill and decode availability predicates. Unavailable-artifact I/O is simulated at import discovery and HTTP boundaries. Observable cache specs remain twelve heads by default; explicit true fails at model construction. Positive qualified mode still stores six global heads. All BF16 forward methods and decode helper are unchanged from full-model-qualified source 8732b830. No second full-Hero group was allocated. One GB200 was used and released.",
+  "retention": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-kv-review-01a1aa2c/results/capability-regression.tar-82eafbbba27bd5b92edd09a8deb457f876fda88ca445eec9e7e2bf4150eb0a96.tar.gz",
+    "sha256": "82eafbbba27bd5b92edd09a8deb457f876fda88ca445eec9e7e2bf4150eb0a96",
+    "readback_sha256": "82eafbbba27bd5b92edd09a8deb457f876fda88ca445eec9e7e2bf4150eb0a96",
+    "bytes": 7517
+  },
+  "math_equivalence": {
+    "changed_methods": [
+      "GrugMoeModel.__init__"
+    ],
+    "unchanged_methods": 53,
+    "decode_backend_helper_unchanged": true
+  },
+  "resources": {
+    "one_gb200_used": true,
+    "released": true,
+    "provider_pods_remaining": 0
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "reviewed_pr": "https://github.com/marin-community/vllm/pull/110",
+  "reviewed_source": "6a64b548c67ab11e8355c372d3b252108cf8f5c1",
+  "status": "Draft and unmerged; private overlays are validation inputs. Shared adoption pins and production wheels are unchanged.",
+  "model": "Hero-535B step-144000 BF16 split export",
+  "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+  "precision": "bfloat16",
+  "quantization": null,
+  "kv_cache_dtype": "auto",
+  "tensor_parallel_size": 1,
+  "pipeline_parallel_size": 1,
+  "qualified_full_model_data_parallel_size": 16,
+  "qualified_full_model_expert_parallel_size": 16,
+  "attention": "SM100 FlashInfer TRTLLM prefill and trtllm-gen decode; both native capabilities must be available.",
+  "logical_cache_default": "Omit grug_logical_kv_cache; qualified configurations enable automatically.",
+  "explicit_disable_cli": [
+    "--additional-config",
+    "{\"grug_logical_kv_cache\":false}"
+  ],
+  "explicit_enable": "true remains available and rejects unsupported configurations",
+  "enable_prefix_caching": true,
+  "prefix_cache_retention_interval": 0,
+  "max_num_batched_tokens": 2048,
+  "max_num_seqs": 64,
+  "max_model_len": 262144,
+  "gpu_memory_utilization": 0.95,
+  "kernel_config": {
+    "moe_backend": "triton",
+    "enable_flashinfer_autotune": false
+  },
+  "numa_binding": "native GPU-local binding",
+  "compilation_config": {
+    "mode": 3,
+    "cudagraph_mode": "NONE",
+    "cudagraph_capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      2048
+    ],
+    "splitting_ops": [
+      "vllm::unified_attention_with_output",
+      "vllm::unified_mla_attention_with_output",
+      "vllm::mamba_mixer2",
+      "vllm::mamba_mixer",
+      "vllm::short_conv",
+      "vllm::qwen4_exp_ple_short_conv",
+      "vllm::qwen4_exp_qsa_with_output",
+      "vllm::linear_attention",
+      "vllm::qwen_gdn_attention_core",
+      "vllm::qwen_gdn_attention_core_fused_norm_packed",
+      "vllm::gdn_attention_core_xpu",
+      "vllm::olmo_hybrid_gdn_full_forward",
+      "vllm::sparse_attn_indexer",
+      "vllm::rocm_aiter_sparse_attn_indexer",
+      "vllm::deepseek_v4_attention",
+      "vllm::hpc_rope_norm_forward",
+      "vllm::unified_kv_cache_update",
+      "vllm::unified_mla_kv_cache_update",
+      "vllm::grug_moe_short_conv",
+      "vllm::moe_forward",
+      "vllm::moe_forward_shared"
+    ],
+    "inductor_compile_config": {
+      "emulate_precision_casts": true,
+      "max_autotune": false,
+      "coordinate_descent_tuning": false,
+      "deterministic": true,
+      "dynamic_scale_rblock": false,
+      "combo_kernels": false
+    }
+  },
+  "limits": "FP8 with logical storage, quantized KV, other hardware/parallel modes and a new performance hour remain outside qualification. Existing online FP8 uses the original cache layout."
+}
