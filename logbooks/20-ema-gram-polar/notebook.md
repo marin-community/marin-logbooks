@@ -1908,3 +1908,18 @@ all three final evaluations before selecting a boundary winner, so no further
 expansion is selected yet. These completion checks do not establish full checkpoint-byte
 restoration. Reuse [completion evidence](subset-training-r02-nonzero-completed.json)
 and [group readiness](subset-training-r02-completion-readiness.json).
+
+### 2026-11-05 17:17 UTC — validate the next alpha0.5 pilot
+
+The alpha=0.5, ridge0.01, LR0.00025 initial pilot passed completion validation.
+Final C4-en validation loss is4.5720028877. All7,630 training metric rows are
+finite. Stored checkpoint counter7,630 matches the requested update count,
+and57-array metadata matches the frozen schema. The ONLINE W&B run finished
+with the frozen source/configuration, and all four workers succeeded on
+original attempt0. Four empty terminal worker references were joined to the
+intended tasks using saved startup UIDs, start times and assignments; the raw
+empty fields are retained. No new startup query or checkpoint restore was
+performed. Initial completion is27/30. Remaining alpha0.5 pilots are
+ridge0.0001/LR0.001 and ridge0.01/LR0.0005,0.001. Both ridge groups remain
+incomplete; the expansion rule requires each group's final evaluations before
+selecting a boundary winner. See [completion evidence](subset-training-r02-nonzero-completed.json).
