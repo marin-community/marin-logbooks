@@ -1,0 +1,50 @@
+{
+  "source_base": "33189166cfb244bf284f3d893e58ce0272215eac",
+  "lint_and_type_check": {
+    "command": "./infra/pre-commit.py --changed-files",
+    "exit_code": 0
+  },
+  "focused_tests": {
+    "passed": 18,
+    "skipped": 37,
+    "command": "uv run --no-project --no-config .venv/bin/python -m pytest experiments/grug/moe_hero_ep/test_sft.py experiments/grug/moe_hero_ep/test_sft_heldout.py lib/levanter/tests/kernels/test_short_conv.py -q",
+    "hardware": "CPU; accelerator-only cases skipped"
+  },
+  "multi_device_probe": {
+    "devices": 4,
+    "hardware": "CPU",
+    "result": "Exact zero-adapter no-op and three finite compact updates on expert4 with 65K model capacity and 8-token actual inputs"
+  },
+  "affected_suite": {
+    "command": "uv run --no-project infra/ci/run_tests.py --workers 4",
+    "passed": 3913,
+    "skipped": 48,
+    "xfailed": 6,
+    "failed": 21,
+    "workflow_file_failures": 20,
+    "explanation": "20 tests read inherited CI workflow files intentionally removed from research branches. Those same 20 tests pass on unchanged source with its workflows present. The remaining test requires Linux bubblewrap and reproduces on unchanged source."
+  },
+  "harbor_isolated_suites": {
+    "passed": 1028
+  },
+  "baseline_workflow_recheck": {
+    "passed": 20,
+    "source": "33189166cfb244bf284f3d893e58ce0272215eac"
+  },
+  "baseline_linux_failure": {
+    "node": "experiments/post_training/task_curation/tests/test_driver.py::test_local_environments_grade_in_the_worker_with_the_runtime_built_from_their_lock",
+    "source": "33189166cfb244bf284f3d893e58ce0272215eac",
+    "reason": "The local bubblewrap backend requires Linux"
+  },
+  "independent_review": {
+    "result": "No smoke launch blocker found. Export requires zero preemption retries because its comparison report is create-only. This guard is now enforced.",
+    "scope": "Read-only source review; no full-size accelerator execution."
+  },
+  "unverified": [
+    "GB200 kernel execution",
+    "64-rank ragged transport and memory fit",
+    "full-size compact versus merged output differences",
+    "heldout quality",
+    "65K behavior"
+  ]
+}

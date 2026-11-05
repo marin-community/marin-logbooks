@@ -581,6 +581,37 @@ class ShortConv(eqx.Module):
         return short_conv(weight, x, segment_ids, batch_axes=_BATCH_AXES)
 
 
+class LoraProjection(eqx.Module):
+    """Low-rank correction in the Hero matrix layout, scaled by alpha / rank."""
+
+    a: jax.Array
+    b: jax.Array
+    scale: float = eqx.field(static=True)
+
+    @staticmethod
+    def init(weight: jax.Array, rank: int, alpha: float, *, key: PRNGKeyArray) -> "LoraProjection":
+        spec = _partition_spec_of(weight) or P(None, None)
+        return LoraProjection(
+            a=reshard(random.normal(key, (weight.shape[0], rank)) / math.sqrt(weight.shape[0]), P(spec[0], None)),
+            b=reshard(jnp.zeros((rank, weight.shape[1]), dtype=jnp.float32), P(None, spec[1])),
+            scale=alpha / rank,
+        )
+
+    def __call__(self, x: jax.Array, out_sharding: P | None = None) -> jax.Array:
+        # Trainable leaves and Adam moments remain FP32; GEMMs match the activation precision.
+        input_spec = _partition_spec_of(x) or P(*((None,) * x.ndim))
+        rank_spec = P(*(tuple(input_spec) + (None,) * x.ndim)[: x.ndim - 1], None)
+        low_rank = jnp.einsum("...d,dr->...r", x, self.a.astype(x.dtype), out_sharding=rank_spec)
+        return jnp.einsum("...r,ro->...o", low_rank, self.b.astype(x.dtype), out_sharding=out_sharding) * self.scale
+
+
+def _project(
+    x: jax.Array, weight: jax.Array, adapter: LoraProjection | None, out_sharding: P | None = None
+) -> jax.Array:
+    projected = jnp.einsum("...d,do->...o", x, weight, out_sharding=out_sharding)
+    return projected if adapter is None else projected + adapter(x, _partition_spec_of(projected))
+
+
 class CausalSelfAttention(eqx.Module):
     w_q: Float[Array, "D NH"]
     w_k: Float[Array, "D MH"]
@@ -589,6 +620,10 @@ class CausalSelfAttention(eqx.Module):
     attn_gate: Float[Array, "D N"]
     sconv_k: "ShortConv | None"  # SConv after the K projection (cfg.sconv)
     cfg: GrugModelConfig = eqx.field(static=True)
+    lora_q: LoraProjection | None = None
+    lora_k: LoraProjection | None = None
+    lora_v: LoraProjection | None = None
+    lora_o: LoraProjection | None = None
 
     @staticmethod
     def init(cfg: GrugModelConfig, *, key: PRNGKeyArray) -> "CausalSelfAttention":
@@ -618,9 +653,9 @@ class CausalSelfAttention(eqx.Module):
         # stay in it, the attention output returns to it, and `w_o` writes it.
         residual_seq_axis = _sequence_axis_of(x)
 
-        q_flat = jnp.einsum("bsh,hd->bsd", x, self.w_q)
-        k_flat = jnp.einsum("bsh,hd->bsd", x, self.w_k)
-        v_flat = jnp.einsum("bsh,hd->bsd", x, self.w_v)
+        q_flat = _project(x, self.w_q, self.lora_q)
+        k_flat = _project(x, self.w_k, self.lora_k)
+        v_flat = _project(x, self.w_v, self.lora_v)
         # SConv: depthwise causal conv after the K projection. segment_ids (packed-document
         # boundaries) come from the mask so the conv never mixes across a document boundary.
         _seg = mask.segment_ids if isinstance(mask, AttentionMask) else None
@@ -745,7 +780,7 @@ class CausalSelfAttention(eqx.Module):
             (*attn_out.shape[:-2], attn_out.shape[-2] * attn_out.shape[-1]),
             out_sharding=P(_BATCH_AXES, residual_seq_axis, "model"),
         )
-        return jnp.einsum("bsh,hd->bsd", attn_out, self.w_o, out_sharding=P(_BATCH_AXES, residual_seq_axis, None))
+        return _project(attn_out, self.w_o, self.lora_o, P(_BATCH_AXES, residual_seq_axis, None))
 
 
 class RMSNorm(eqx.Module):
@@ -795,6 +830,9 @@ class DenseMLP(eqx.Module):
     w_gate: jax.Array
     w_up: jax.Array
     w_down: jax.Array
+    lora_gate: LoraProjection | None = None
+    lora_up: LoraProjection | None = None
+    lora_down: LoraProjection | None = None
 
     @staticmethod
     def init(hidden_dim: int, intermediate_dim: int, initializer_std: float, *, key: PRNGKeyArray) -> "DenseMLP":
@@ -822,9 +860,9 @@ class DenseMLP(eqx.Module):
             activation_fn = activation
 
         x_flat = _flatten_tokens(x)
-        gate = jnp.einsum("td,dm->tm", x_flat, self.w_gate)
-        up = jnp.einsum("td,dm->tm", x_flat, self.w_up)
-        out_flat = jnp.einsum("tm,md->td", activation_fn(gate) * up, self.w_down, out_sharding=_token_spec())
+        gate = _project(x_flat, self.w_gate, self.lora_gate)
+        up = _project(x_flat, self.w_up, self.lora_up)
+        out_flat = _project(activation_fn(gate) * up, self.w_down, self.lora_down, _token_spec())
         return _unflatten_tokens(out_flat, x)
 
 
@@ -1327,12 +1365,18 @@ class Transformer(eqx.Module):
         self,
         token_ids: Int[Array, "B S"],
         mask: AttentionMask | jax.Array | None = None,
+        *,
+        embedding_delta: tuple[jax.Array, jax.Array] | None = None,
     ) -> tuple[Float[Array, "B S D"], dict[str, jax.Array]]:
         if mask is None:
             mask = AttentionMask.causal()
 
         cfg = self.config
         hidden = _embedding_gather(self.token_embed, token_ids)
+        if embedding_delta is not None:
+            selected_ids, delta = embedding_delta
+            matches = (token_ids[..., None] == selected_ids).astype(hidden.dtype)
+            hidden = hidden + matches @ delta.astype(hidden.dtype)
         hidden = self.embed_gated_norm(self.embed_norm(hidden))
 
         # Local layers use a sliding window; every global_every-th layer is full causal.
