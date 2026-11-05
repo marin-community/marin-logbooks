@@ -5363,3 +5363,30 @@ failure, numerical change, new launch or restart resulted from these corrections
 Sole observer52357 remains alive and retains every existing follow/launch guard.
 Remaining pilots continue. After grid/expansion validation, lock selection and
 launch seed0 confirmations with the required reference checkpoints and probes.
+
+### 2026-11-05 04:37 UTC — alpha0 pilot group complete; no LR expansion
+
+The remaining alpha0 cells00/02/04/05 have canonical task0/attempt0 success,
+exit0, and no failure/preemption. As for01/03, exact frozen source/config and
+native attempt/run joins, finished ONLINE tracking, all7630 finite short-metric
+rows, final C4 evaluation, generation/CRC-bound permanent checkpoint metadata
+and57-array manifests passed. Scalar-only reads independently confirmed stored
+native counter7630 in all four final checkpoints. Existing01/03 results were
+reused without polling their jobs or finished W&B runs.
+
+| Cell | Matrix LR | Final C4 loss |
+|---|---:|---:|
+| 00 | 0.00176776695 | 4.1904120445 |
+| 01 | 0.00353553391 | 4.1497836113 |
+| 02 | 0.00707106781 | 4.1689982414 |
+| 03 | 0.01414213562 | 4.2295851707 |
+| 04 | 0.02828427125 | 4.3551721573 |
+| 05 | 0.05656854249 | 4.4796938896 |
+
+The preregistered evaluated_groups/expand functions select cell01, an interior
+LR, and add zero alpha0 expansion cells. This resolves this group's LR search;
+it does not lock cross-exponent selection or authorize an outcome-dependent
+change to the protocol. Six of30 pilots are validated. All24 nonzero cells keep
+their accepted identities; the owned snapshot has9RUNNING/15PENDING, no failures
+or preemptions. Evidence: subset-training-r02-alpha0-completed.json. Continue
+the remaining groups and their required expansions before global selection.
