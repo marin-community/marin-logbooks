@@ -97,7 +97,8 @@ with tempfile.TemporaryDirectory() as folder:
             )
         )
         kwargs["stdout"].write(value)
-        return type("Result", (), {"returncode": 1 if error else 0})()
+        assert kwargs["stderr"] == m.subprocess.PIPE and kwargs["text"]
+        return type("Result", (), {"returncode": 1 if error else 0, "stderr": "fixture CLI diagnostic\n"})()
 
     def sleep(seconds):
         clock[0] += seconds
@@ -139,6 +140,7 @@ with tempfile.TemporaryDirectory() as folder:
         assert len(follows) == 1 and len(checks) == 2 and checks[0] == 1120 and checks[1] - checks[0] >= 570
         saved = json.loads((worktree / "scratch" / f"{campaign}-observers.json").read_text())
         assert saved["jobs"]["0"]["terminal"]
+        assert Path(saved["jobs"]["0"]["latest"]["stderr"]).read_text() == "fixture CLI diagnostic\n"
         before = (len(follows), len(checks))
         m.main()
         assert before == (len(follows), len(checks))

@@ -5872,3 +5872,75 @@ reconstructed exactly through the qualified worker without numerical kernels.
 Publish these inputs and create a dedicated immutable execution worktree before
 submission. Use normal batch priority, default preemption/retries, permanent
 launch guards and one expansion observer; leave all existing pilot jobs intact.
+
+### 2026-11-05 12:10 UTC — submit the two lower-LR expansions
+
+The full regional catalog check passed for all 26 components. Both alpha 0.125,
+LR 0.00125 expansions were accepted at normal batch priority, at ridges
+0.0001 and 0.01. Submission ended with exit code 0. The immutable execution source is
+1dffb9eb1c1e8b58487cf3716ed70549a859694b on branch
+codex/20-ema-gram-expand-seed0-r01-20261105, in worktree
+/Users/kaiyuew/Downloads/Project/marin/ema-gram-expand-seed0-r01-20261105.
+Campaign ema-gram-20-expand-seed0-r01-20261105 uses fresh artifact version
+2026.11.05.10. Each job requests v4-32 with four hosts; acceptance does not
+establish allocation or training progress. Default preemption/retries remain
+in effect, with no queue, task, training or wrapper wall-clock limits.
+
+The shared permanent expansion registry records both launch guards, exact
+source/config/input bindings, job identities and successful submission results.
+A dedicated observer owns these two jobs, with one guarded follower per job.
+Its first canonical checks are scheduled 120 seconds after discovery, followed
+by 570-second intervals. Existing pilot jobs and their observer are unchanged.
+Evidence: subset-expansion-r01-launched.json. Scientific completion still
+requires all terminal, ONLINE, history and checkpoint-counter gates; global
+selection and confirmations remain pending.
+
+### 2026-11-05 12:11 UTC — validate the first alpha 0.25 pilot
+
+Cell 12, alpha 0.25, ridge 0.0001 and LR 0.001, passed full pilot validation:
+one successful original attempt on each of four hosts, exact source/config and
+ONLINE joins, all 7,630 finite metric rows, final C4 loss 4.276551723480225,
+finished native/host W&B runs, permanent 57-array checkpoint metadata and
+independently read stored counter 7630. Its terminal task records retain all four assigned worker IDs.
+Evidence: subset-training-r02-nonzero-completed.json. Thirteen initial pilots
+are validated; 17 were observed running in the 12:05–12:06 UTC owner snapshots.
+This alpha 0.25 group is incomplete. The complete-group replay finds no new
+unguarded expansion: the two alpha 0.125 lower-LR cells are already accepted.
+The expansion execution worktree retains the 12-result input snapshot that
+authorized its launch; cell 12 was validated afterward.
+No global selection, full checkpoint restore or confirmation completion is claimed.
+
+### 2026-11-05 12:15 UTC — reconcile expansion observer output
+
+The expansion observer's first two RPCs succeeded at 12:11 UTC and reported
+both jobs RUNNING with four running tasks each, zero failures and zero
+preemptions. The observer merged stderr diagnostics into stdout, then failed
+to parse the mixed text as JSON. The raw responses were preserved. Its checker
+now stores stdout JSON and stderr separately and retains both paths on a parse
+error. Full-loop mocked regression and exclusive-owner/cadence/follower guards
+passed, as did required lint.
+
+After verifying the old observer's command and held lock, only that observer
+process was stopped. Its exit code was 143. Under the released exclusive lock,
+the two successful responses were decoded locally into separate JSON records;
+original mixed output and errors remain preserved. The replacement observer
+records its new process identity immediately. Both original follower PIDs and
+next-check times were verified unchanged, with no new RPC or follower during
+recovery. The next checks remain scheduled for 12:21:14 UTC. Training jobs,
+allocations and the original pilot observer were untouched.
+Evidence: expansion-r01-observer-recovery.json. This was a monitoring parser
+failure; the saved canonical responses show running workers.
+
+The expansion startup record now joins all eight assigned tasks to original
+attempt 0, matching attempt UIDs and finished ONLINE host logging runs. These
+short, non-training host checks record source/configuration identity before
+the native training process starts; their completion is expected. Host
+checks match the source, frozen configuration, bundle and qualified worker
+digests. Both fresh native ONLINE runs passed exact configuration validation;
+neither had a loss in the initial saved API snapshot. These joins establish
+four distinct assigned workers per job, not a separate runtime JAX-device audit.
+Evidence: subset-expansion-r01-started.json. Iris supplies IRIS_TASK_ID as
+`task_id:attempt_id`; the initial startup matcher assumed a bare task ID.
+The matcher was corrected using cached records without requery, and the
+expansion terminal validator and its one/four-host fixtures now require the
+same exact wire format. No training source or job was changed.

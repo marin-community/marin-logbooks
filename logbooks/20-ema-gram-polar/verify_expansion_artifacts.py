@@ -214,7 +214,7 @@ def verify_artifacts(root, request, task_directory, out):
                 or h["state"] != "finished"
                 or h["summary"].get("logging_check/success") != 1
                 or c["source_commit"] != source
-                or c["task"] != task["task_id"]
+                or c["task"] != f"{task['task_id']}:{task['current_attempt_id']}"
                 or c["attempt_uid"] != task["attempts"][0]["attempt_uid"]
                 or c["config_sha256"] != request["config_sha256"]
                 or c["bundle_sha256"] != request["bundle_sha256"]

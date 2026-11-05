@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-11-05T12:04:32.200357+00:00",
+  "observed_utc": "2026-11-05T12:11:51.117422+00:00",
   "source": "2bca5a11292d8631a0d200c5a1f9bfcc66bb2ce8",
   "validated_cells": [
     6,
@@ -7,7 +7,8 @@
     8,
     9,
     10,
-    11
+    11,
+    12
   ],
   "results": [
     {
@@ -2725,7 +2726,480 @@
           "bytes": 509
         }
       }
+    },
+    {
+      "metric_history_complete": true,
+      "scientifically_complete": true,
+      "expected_steps": 7630,
+      "native_final_label": 7629,
+      "final_c4_loss": 4.276551723480225,
+      "train_metric_rows": {
+        "train/loss": 7630,
+        "throughput/duration": 7630,
+        "throughput/mfu": 7630,
+        "optim/learning_rate": 7630,
+        "optim/adam_lr": 7630
+      },
+      "remaining_gates": [],
+      "index": 12,
+      "source": "2bca5a11292d8631a0d200c5a1f9bfcc66bb2ce8",
+      "online_state": "finished",
+      "run_id": "ema-gram-pilot-3e18-a0.25-seed0-54210226e9e1-2026.11.04.03-814e32cd7aa5",
+      "run_url": "https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0.25-seed0-54210226e9e1-2026.11.04.03-814e32cd7aa5",
+      "exact_subset_config_verified": true,
+      "stored_native_counter": 7630,
+      "stored_counter_dtype": "int32",
+      "counter_read": {
+        "counter": 7630,
+        "dtype": "int32",
+        "shape": [],
+        "scalar_sha256": "65af239d0ca769c4f59837e9756485f1bc1a1781c20388ae2339675fd2ad1a7d",
+        "method": "Same ADC read-only HTTP scalar read; no full checkpoint byte audit"
+      },
+      "checkpoint": {
+        "uri": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-54210226e9e1/2026.11.04.03/checkpoints/step-7629",
+        "metadata": {
+          "step": 7629,
+          "timestamp": "2026-11-05T12:03:43.384061",
+          "is_temporary": false
+        },
+        "arrays": 57,
+        "manifest_validation": {
+          "array_schema_matches": true,
+          "chunk_geometry_valid": true,
+          "changed_chunk_paths": [
+            "model/embeddings/token_embeddings/weight",
+            "model/lm_head/weight",
+            "model/transformer/layers/stacked/mlp/down_proj/weight",
+            "model/transformer/layers/stacked/mlp/gate_proj/weight",
+            "model/transformer/layers/stacked/mlp/up_proj/weight",
+            "model/transformer/layers/stacked/self_attn/o_proj/weight",
+            "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/embeddings/token_embeddings/weight",
+            "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/lm_head/weight",
+            "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/embeddings/token_embeddings/weight",
+            "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/lm_head/weight",
+            "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/left",
+            "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/momentum",
+            "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/left",
+            "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/momentum",
+            "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/momentum",
+            "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/right"
+          ],
+          "scope": "Manifest metadata only; topology-dependent chunks retained, no full array read or restore."
+        },
+        "files": {
+          "metadata.json": {
+            "generation": 1793880223482415,
+            "crc32c": "CPQJcQ==",
+            "sha256": "d3362adf6ea5b81a60aad3c2beb44acbd22d00a3c44a88df518a373d9b90bf8c",
+            "size": 80
+          },
+          "manifest.json": {
+            "generation": 1793880205987090,
+            "crc32c": "xoMpYw==",
+            "sha256": "464e28635baf0741afaec4450f0081c9583f5d7e85657abec8f1e5824e255332",
+            "size": 13629
+          }
+        }
+      },
+      "cell": {
+        "alpha": 0.25,
+        "ridge": 0.0001,
+        "learning_rate": 0.001,
+        "seed": 0,
+        "phase": "pilot",
+        "slug": "3e18",
+        "horizon": 100
+      },
+      "job_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105",
+      "canonical_job": {
+        "job_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105",
+        "state": "JOB_STATE_SUCCEEDED",
+        "exit_code": 0,
+        "error": "",
+        "started_at": {
+          "epoch_ms": "1793848755025"
+        },
+        "finished_at": {
+          "epoch_ms": "1793880339831"
+        },
+        "failure_count": 0,
+        "preemption_count": 0,
+        "name": "/kaiyuew/ema-gram-20-subset-seed0-r02-12-20261105",
+        "submitted_at": {
+          "epoch_ms": "1793847976682"
+        },
+        "resources": {
+          "cpu_millicores": 120000,
+          "memory_bytes": "274877906944",
+          "device": {
+            "tpu": {
+              "variant": "v4-32",
+              "count": 4
+            }
+          },
+          "disk_bytes": "53687091200"
+        },
+        "task_state_counts": {
+          "succeeded": 4
+        },
+        "task_count": 4,
+        "completed_count": 4,
+        "pending_reason": "",
+        "has_children": false,
+        "parent_job_id": "",
+        "backend_id": "default",
+        "cluster": "local",
+        "peer_status": "PEER_STATUS_NONE"
+      },
+      "tasks": [
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/0",
+          "state": "TASK_STATE_SUCCEEDED",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-0",
+          "worker_address": "10.130.0.22:10001",
+          "exit_code": 0,
+          "error": "",
+          "started_at": {
+            "epoch_ms": "1793848755301"
+          },
+          "finished_at": {
+            "epoch_ms": "1793880348476"
+          },
+          "current_attempt_id": 0,
+          "attempts": [
+            {
+              "attempt_id": 0,
+              "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-0",
+              "state": "TASK_STATE_SUCCEEDED",
+              "exit_code": 0,
+              "error": "",
+              "started_at": {
+                "epoch_ms": "1793848755301"
+              },
+              "finished_at": {
+                "epoch_ms": "1793880348476"
+              },
+              "is_worker_failure": false,
+              "attempt_uid": "aa72b5d49e25c30e",
+              "pod_name": "",
+              "pod_uid": "",
+              "node_name": "",
+              "terminal_reason": ""
+            }
+          ],
+          "container_id": "5b428afea13960900aa8cc0baa86c6a8f78fe5e0c5bfb781a4d6915d592d42c3",
+          "backend_id": "default",
+          "cluster": "local",
+          "submitted_at": {
+            "epoch_ms": "1793847976682"
+          }
+        },
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/1",
+          "state": "TASK_STATE_SUCCEEDED",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-1",
+          "worker_address": "10.130.0.25:10001",
+          "exit_code": 0,
+          "error": "",
+          "started_at": {
+            "epoch_ms": "1793848755301"
+          },
+          "finished_at": {
+            "epoch_ms": "1793880347237"
+          },
+          "current_attempt_id": 0,
+          "attempts": [
+            {
+              "attempt_id": 0,
+              "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-1",
+              "state": "TASK_STATE_SUCCEEDED",
+              "exit_code": 0,
+              "error": "",
+              "started_at": {
+                "epoch_ms": "1793848755301"
+              },
+              "finished_at": {
+                "epoch_ms": "1793880347237"
+              },
+              "is_worker_failure": false,
+              "attempt_uid": "64170163a85385fe",
+              "pod_name": "",
+              "pod_uid": "",
+              "node_name": "",
+              "terminal_reason": ""
+            }
+          ],
+          "container_id": "99b9fb0058150ff8db9e1bb8aa7d070e640f185cb1d2e7dba87ee36709c10268",
+          "backend_id": "default",
+          "cluster": "local",
+          "submitted_at": {
+            "epoch_ms": "1793847976682"
+          }
+        },
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/2",
+          "state": "TASK_STATE_SUCCEEDED",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-2",
+          "worker_address": "10.130.0.21:10001",
+          "exit_code": 0,
+          "error": "",
+          "started_at": {
+            "epoch_ms": "1793848755301"
+          },
+          "finished_at": {
+            "epoch_ms": "1793880350968"
+          },
+          "current_attempt_id": 0,
+          "attempts": [
+            {
+              "attempt_id": 0,
+              "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-2",
+              "state": "TASK_STATE_SUCCEEDED",
+              "exit_code": 0,
+              "error": "",
+              "started_at": {
+                "epoch_ms": "1793848755301"
+              },
+              "finished_at": {
+                "epoch_ms": "1793880350968"
+              },
+              "is_worker_failure": false,
+              "attempt_uid": "f2775868eab0f058",
+              "pod_name": "",
+              "pod_uid": "",
+              "node_name": "",
+              "terminal_reason": ""
+            }
+          ],
+          "container_id": "b5e9d8a3cb3dc41cf1946b922ee3e815f7b431d579bb43a807966eca4170fd35",
+          "backend_id": "default",
+          "cluster": "local",
+          "submitted_at": {
+            "epoch_ms": "1793847976682"
+          }
+        },
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/3",
+          "state": "TASK_STATE_SUCCEEDED",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-3",
+          "worker_address": "10.130.0.30:10001",
+          "exit_code": 0,
+          "error": "",
+          "started_at": {
+            "epoch_ms": "1793848755301"
+          },
+          "finished_at": {
+            "epoch_ms": "1793880350968"
+          },
+          "current_attempt_id": 0,
+          "attempts": [
+            {
+              "attempt_id": 0,
+              "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-3",
+              "state": "TASK_STATE_SUCCEEDED",
+              "exit_code": 0,
+              "error": "",
+              "started_at": {
+                "epoch_ms": "1793848755301"
+              },
+              "finished_at": {
+                "epoch_ms": "1793880350968"
+              },
+              "is_worker_failure": false,
+              "attempt_uid": "075241c6c51c4281",
+              "pod_name": "",
+              "pod_uid": "",
+              "node_name": "",
+              "terminal_reason": ""
+            }
+          ],
+          "container_id": "89d4676b9753bac4848976346af843b8eb9d6e77270bf646871659e88d6d59cf",
+          "backend_id": "default",
+          "cluster": "local",
+          "submitted_at": {
+            "epoch_ms": "1793847976682"
+          }
+        }
+      ],
+      "terminal_worker_reconciliation": [
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/0",
+          "attempt_uid": "aa72b5d49e25c30e",
+          "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-0",
+          "terminal_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-0",
+          "terminal_attempt_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-0",
+          "cleared_reference": false
+        },
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/1",
+          "attempt_uid": "64170163a85385fe",
+          "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-1",
+          "terminal_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-1",
+          "terminal_attempt_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-1",
+          "cleared_reference": false
+        },
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/2",
+          "attempt_uid": "f2775868eab0f058",
+          "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-2",
+          "terminal_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-2",
+          "terminal_attempt_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-2",
+          "cleared_reference": false
+        },
+        {
+          "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-12-20261105/3",
+          "attempt_uid": "075241c6c51c4281",
+          "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-3",
+          "terminal_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-3",
+          "terminal_attempt_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-3",
+          "cleared_reference": false
+        }
+      ],
+      "host_logging": [
+        {
+          "id": "ema-gram-subset-training-logging-check-036c43cb0671",
+          "state": "finished",
+          "source_files_verified": true
+        },
+        {
+          "id": "ema-gram-subset-training-logging-check-ba3cc23f1f04",
+          "state": "finished",
+          "source_files_verified": true
+        },
+        {
+          "id": "ema-gram-subset-training-logging-check-e16252cac0ab",
+          "state": "finished",
+          "source_files_verified": true
+        },
+        {
+          "id": "ema-gram-subset-training-logging-check-79d2d5a95557",
+          "state": "finished",
+          "source_files_verified": true
+        }
+      ],
+      "run_attempt_join_evidence": {
+        "tasks": [
+          {
+            "task": 0,
+            "attempt_id": 0,
+            "attempt_uid": "aa72b5d49e25c30e",
+            "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-0",
+            "host_logging_id": "ema-gram-subset-training-logging-check-036c43cb0671",
+            "state": "TASK_STATE_RUNNING",
+            "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task0.json",
+            "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task0-attempt0-wandb.log"
+          },
+          {
+            "task": 1,
+            "attempt_id": 0,
+            "attempt_uid": "64170163a85385fe",
+            "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-1",
+            "host_logging_id": "ema-gram-subset-training-logging-check-e16252cac0ab",
+            "state": "TASK_STATE_RUNNING",
+            "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task1.json",
+            "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task1-attempt0-wandb.log"
+          },
+          {
+            "task": 2,
+            "attempt_id": 0,
+            "attempt_uid": "f2775868eab0f058",
+            "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-2",
+            "host_logging_id": "ema-gram-subset-training-logging-check-79d2d5a95557",
+            "state": "TASK_STATE_RUNNING",
+            "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task2.json",
+            "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task2-attempt0-wandb.log"
+          },
+          {
+            "task": 3,
+            "attempt_id": 0,
+            "attempt_uid": "075241c6c51c4281",
+            "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc-worker-3",
+            "host_logging_id": "ema-gram-subset-training-logging-check-ba3cc23f1f04",
+            "state": "TASK_STATE_RUNNING",
+            "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task3.json",
+            "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/12-task3-attempt0-wandb.log"
+          }
+        ],
+        "native_run_tasks": {
+          "ema-gram-pilot-3e18-a0.25-seed0-54210226e9e1-2026.11.04.03-814e32cd7aa5": 0
+        },
+        "canonical_failure_count": 0,
+        "canonical_preemption_count": 0,
+        "observed_utc": "2026-11-05T05:02:06.505930+00:00",
+        "assigned_topology": "One v4-32 slice, four distinct hosts;16 JAX devices requested. Runtime JAX device count not separately audited.",
+        "source_commit": "2bca5a11292d8631a0d200c5a1f9bfcc66bb2ce8",
+        "scope": "Exact task-attempt to hostlogging/native ONLINE identity join. Snapshot only; final all-attempt validation remains required."
+      },
+      "verified_at": "2026-11-05T12:10:27.845229+00:00",
+      "scope": "Validated fixed-subset pilot with single fresh attempt on each host; no full checkpoint audit or resume claim.",
+      "evidence": {
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination-label-1668.json": {
+          "sha256": "f6815c6fbed1aef305da7151692aaaf58863903c0af0b16080a42d051f06712a",
+          "bytes": 512
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/history-raw.json": {
+          "sha256": "c2c89d49c360a6369d649de5dbad239c772df965c413cf4c50ab5d635055e587",
+          "bytes": 1935877
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/binding.json": {
+          "sha256": "5f248329767b86ad2cb2f7f44dc375917c9d2e0fc9ffe121110143c1a31448db",
+          "bytes": 334
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/config.json": {
+          "sha256": "cc8a8c2e3a15eba80b14a6ea9b405b29df1aff1b5edfb01db6302a1634842437",
+          "bytes": 26587
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination-label-2668.json": {
+          "sha256": "3b84871236fd23846b2fcbb8fbc329852a8f1f72e6d5a53ff738d7b812c3271d",
+          "bytes": 509
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/metadata.json": {
+          "sha256": "3f82238a094ee7268fe498bcc71764a78352315c94cb3ad1f44c9a0c3a39ac6b",
+          "bytes": 371
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination-label-3668.json": {
+          "sha256": "c2603323136b3fd9703101a04f3af7df76327da85e24596d204ab1ad81d7ad0b",
+          "bytes": 511
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination-label-668.json": {
+          "sha256": "9ca35c222102617816c3bac82075000a30e31e3b2888af4011fd0ffcb98433e1",
+          "bytes": 508
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/counter.json": {
+          "sha256": "5e439d4f8dd1d1f7af46ee0219b532d328be727ae8850e72f32c6dd72983eba0",
+          "bytes": 226
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/history-canonical.json": {
+          "sha256": "87753d738845c6e93097983a279967d4df148a521d3de415c0d9d4408d580c8d",
+          "bytes": 1935873
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination-label-6668.json": {
+          "sha256": "3c619d98323fba27f2096af0d1a0e4612d4a0bafc260e25fc49e1b19c2f16948",
+          "bytes": 513
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/eval-raw.json": {
+          "sha256": "c1b58188090e7f988c8efdfbe4077170340e62cd0f48618eb54bd12ca9a386c5",
+          "bytes": 821
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/manifest.json": {
+          "sha256": "cf7282d67c47d8c10878f9f6a7f21173e2e9461b5fa6ba7937c5b09c35824adb",
+          "bytes": 30262
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination-label-5668.json": {
+          "sha256": "af992fa9db73ff4e8037212fc0f4e47bc191f189f79ea829f6367d6118d3bfec",
+          "bytes": 511
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination.json": {
+          "sha256": "d3b1dac6fb0eb2d1925e75372aef84c6e90dcf6d558a048183f0c5d2ad00fca2",
+          "bytes": 201
+        },
+        "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-12-completion/pagination-label-4668.json": {
+          "sha256": "528cceaddef3f9f81e377fcafaa3d2efdf10bf83d3e93d9e9c9cc1ed37f0e07a",
+          "bytes": 512
+        }
+      }
     }
   ],
-  "scope": "Six completed alpha.125 R02 pilots; alpha0 results reused separately. No full byte audit or resume claim."
+  "scope": "Seven completed nonzero R02 pilots; alpha0 results reused separately. No full byte audit or resume claim."
 }

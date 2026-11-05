@@ -128,20 +128,31 @@ def main():
 
         def save():
             saved["owner_pid"] = os.getpid()
+            for record in state.values():
+                record["owner_pid"] = os.getpid()
             persist_registry(state_path, saved)
+
+        save()  # Record restored ownership without changing follower identities or cadence.
 
         def check(index, job_id):
             path = scratch / f"{args.campaign}-{index}-canonical-{time.time_ns()}.json"
+            stderr_path = path.with_suffix(".stderr.log")
             with path.open("x") as handle:
                 result = subprocess.run(
                     [*base, "rpc", "controller", "get-job-status", "--job-id", job_id],
                     cwd=worktree,
                     stdout=handle,
-                    stderr=subprocess.STDOUT,
+                    stderr=subprocess.PIPE,
+                    text=True,
                 )
+            stderr_path.write_text(result.stderr)
             if result.returncode:
-                return dict(error=f"Canonical RPC exit {result.returncode}", path=str(path))
-            return dict(job=json.loads(path.read_text())["job"], path=str(path))
+                return dict(error=f"Canonical RPC exit {result.returncode}", path=str(path), stderr=str(stderr_path))
+            try:
+                job = json.loads(path.read_text())["job"]
+            except (json.JSONDecodeError, KeyError) as exc:
+                return dict(error=repr(exc), path=str(path), stderr=str(stderr_path))
+            return dict(job=job, path=str(path), stderr=str(stderr_path))
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
             while True:
