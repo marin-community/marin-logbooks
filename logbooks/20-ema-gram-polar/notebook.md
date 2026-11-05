@@ -5536,3 +5536,12 @@ field as well as jax_config, retaining complete encoded equality. All four
 saved fictional configs passed reconstruction in a new process. Original
 failure: scratch/20261105-confirmation-worker-logging.log. No pilot worker,
 training source or numerical formula changed.
+
+Fresh nontraining ONLINE logging a21f2a914c93 then FINISHED successfully
+from published fcee69ce7. The API source, bundle/config digests, selection
+digest and reconstructed configuration were verified. W&B omitted two empty
+configuration dictionaries; only those known-empty mappings were restored
+for comparison, and the original complete config digest matched online.
+This used an explicitly fictional selection fixture, not a scientific lock.
+No training or numerical CPU check was run; native numerical sources remain
+unchanged. The separately guarded submission controller is still outstanding.
