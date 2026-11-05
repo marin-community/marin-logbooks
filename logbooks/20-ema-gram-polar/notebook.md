@@ -2136,3 +2136,25 @@ No additional alpha0.125 expansion is required. The other four already accepted
 expansions remain running with finite progress; no new eligible cell was found.
 The global selection lock and full confirmations remain pending. These checkpoint
 checks establish metadata and stored-counter consistency, not full byte restore.
+
+### 2026-11-05 23:03 UTC — validate alpha0.25 expansion and settle its settings
+
+R02 passed all pilot completion gates. At alpha0.25, ridge0.0001 and LR0.0005,
+final C4 loss was4.404330730438232. Its7,630 rows are finite for all five
+training metrics; stored counter is7,630 and all57 checkpoint array metadata
+entries match. Source, data and configuration match the accepted identity.
+The native ONLINE run finished, and all four original attempt0 tasks succeeded
+without failures or preemptions. Four finished host logging records were reused
+from startup caches. The sole observer recorded canonical success at22:57 UTC
+and exited naturally. Reuse the [validated result](subset-expansion-r02-completed.json);
+do not restart that observer or query these completed identities again.
+
+Replaying33 completed pilots closes both alpha0.25 ridge groups. Ridge0.0001
+has an interior winner at LR0.001 with C4 loss4.276551723480225; ridge0.01
+has an interior winner at LR0.002 with C4 loss4.211307048797607. Thus
+ridge0.01 and LR0.002 are the selected alpha0.25 seed0 pilot settings.
+No further alpha0.25 expansion is eligible. The three remaining candidates are
+already accepted R03-R05 jobs and continue with finite progress. The global
+selection lock, full confirmations and prescribed scientific probes remain
+pending. The alpha0 long run remains prepared and unsubmitted. These checkpoint
+checks establish metadata and stored-counter consistency, not full byte restore.
