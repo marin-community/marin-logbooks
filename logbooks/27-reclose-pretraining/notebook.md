@@ -303,6 +303,40 @@ status: active
   this notebook. Marin #10850's later replay with the #10519 reasoning-span
   format reached the same conclusion from the renderer side.
 
+### 2026-11-05 - Plan: does the base's plain-text close mark the SFT close positions?
+
+- Question or hypothesis and reason for trying it: the base never saw
+  `<|end_think|>`, but it saw plain `<think>`/`</think>` blocks. If the step 13
+  to 19 re-close spike reuses a base "close tag here" feature, then (1) the base's
+  p(`</think>`) at the probe positions should rank trajectories the way the
+  replay's p(`<|end_think|>`) does at step 15, beyond a generic end-of-segment
+  signal; and (2) seeding the close row from `</` should move the spike.
+- Experiment 1 (no training):
+  [`analysis/vllm_logprobs/base_tag_logprobs.py`](analysis/vllm_logprobs/base_tag_logprobs.py)
+  re-renders the 3,255 probe trajectories as pretraining renders chat
+  (`<role>\ncontent\n</role>`, reasoning in `<think>`) and has the base
+  (`open-athena/snowball-67b-a2b-base-262k-qk175-skew8` at `058ecaf2`) score
+  text-level p(`</think>`), p(`\n</think>`), p(`</thinking>`), p(`\n</thinking>`)
+  and the control p(`\n</assistant>`) at the first close, 10.05's re-close, up to
+  16 sentence or line ends and 4 other positions per continuation, stopping at
+  the first tool-call token (13 of 604 re-closes fall after one and are dropped).
+  The scores are compared with the `replay-10400-base300e` and
+  `replay-10400-meanseed` per-trajectory dumps by
+  [`analysis/base_tag_compare.py`](analysis/base_tag_compare.py)
+  (within group x lead-in Spearman, plus a partial correlation with the control
+  regressed out).
+- Experiment 2: `sft_start_replay.py --close-seed lt-slash`, 30 steps, otherwise
+  identical to `replay-10400-base300e`. `</` (id 524) is the first token of both
+  plain tags. 2,850 of the 3,255 first closes follow a `.` token, and BPE merges a
+  period with the tag into `.</`, so the `</` row should start low at most close
+  positions. Step 0 of this run is a direct reading of the base's `</` logit in
+  SFT format.
+- Expected readings: experiment 1 supports the shared-feature reading if the
+  partial correlation with step 15 `p_reclose` or `hazard` is clearly positive
+  (above about 0.2). Experiment 2 supports it if the hazard peak rises or arrives
+  earlier than with the `" answer"` seed (SWE 0.14 at step 19, tool-using 0.22 at
+  step 15).
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample

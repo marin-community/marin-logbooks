@@ -15,7 +15,9 @@ schedule (``schedule_num_train_steps_override``), and the same batches in the sa
   ``--checkpoint-root`` keeps one rolling checkpoint so a preemption resumes instead of restarting.
 
 ``--close-seed mean`` seeds the <|end_think|> LM-head row from the mean row instead of " answer", to test whether
-that anchor drives the re-close behavior. ``--trainable close-row`` freezes every parameter except that row, to test
+that anchor drives the re-close behavior. ``--close-seed lt-slash`` seeds it from the "</" row, the first token of
+the plain-text ``</think>`` and ``</thinking>`` tags, so the new close starts where the base model predicts a
+closing tag. ``--trainable close-row`` freezes every parameter except that row, to test
 whether the base model's hidden states already mark where a close belongs.
 
 ``--start sft1005`` scores the final 10.05 state with the same probe and no training, as the endpoint reference.
@@ -54,6 +56,7 @@ logger = logging.getLogger(__name__)
 ROOT = "s3://marin-rno2a/tmp/ttl=30d/dml/sft_replay_10400"
 BASE = f"{ROOT}/start/step-157000"
 END_THINK_ID = 128003
+LT_SLASH_ID = 524
 SFT10_FINAL_STEP = START_STEP + SFT10_STEPS
 
 
@@ -63,9 +66,10 @@ class Start(enum.StrEnum):
 
 
 class CloseSeed(enum.StrEnum):
-    """Source of the reset <|end_think|> LM-head row: 10.05's " answer" anchor, or the mean of the preserved rows."""
+    """Source of the reset <|end_think|> LM-head row: 10.05's " answer" anchor, the "</" row, or the mean row."""
 
     ANSWER = "answer"
+    LT_SLASH = "lt-slash"
     MEAN = "mean"
 
 
@@ -107,6 +111,12 @@ def train(
     anchor_ids = tuple(tuple(tokenizer.encode(text, add_special_tokens=False)) for _, text in ANCHORS)
     assert anchor_ids == EXPECTED_ANCHOR_IDS, anchor_ids
     assert tokenizer.convert_tokens_to_ids("<|end_think|>") == END_THINK_ID
+    if close_seed == CloseSeed.LT_SLASH:
+        assert tokenizer.encode("</think>", add_special_tokens=False)[0] == LT_SLASH_ID
+        anchor_ids = tuple(
+            (LT_SLASH_ID,) if token_id == END_THINK_ID else row
+            for token_id, row in zip(token_ids, anchor_ids, strict=True)
+        )
 
     microbatch = nodes * GPUS_PER_NODE // context_axis_size
     if BATCH % microbatch:
