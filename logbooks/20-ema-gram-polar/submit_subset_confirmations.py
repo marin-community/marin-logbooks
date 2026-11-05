@@ -19,6 +19,7 @@ from pathlib import Path
 
 from prepare_subset_confirmations import prepare
 from submit_subset_training import command as pilot_command
+from terminal_worker_identity import completed_workers
 
 from experiments.ema_gram.plan import Cell, read_lock
 
@@ -50,7 +51,7 @@ def validate_completions(lock, records):
             raise ValueError("Canonical job identity differs from completion record")
         if {t["task_id"] for t in tasks} != {f"{r['job_id']}/{i}" for i in range(expected_tasks)}:
             raise ValueError("Task identities do not belong to the completed job")
-        if len(tasks) != expected_tasks or len({t["worker_id"] for t in tasks}) != expected_tasks:
+        if len(tasks) != expected_tasks or len(set(completed_workers(r, tasks))) != expected_tasks:
             raise ValueError("Incomplete task evidence")
         for task in tasks:
             attempts = task["attempts"]

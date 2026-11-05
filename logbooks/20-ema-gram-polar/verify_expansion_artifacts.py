@@ -19,6 +19,7 @@ from collect_r02_terminal_tasks import save_new
 from google.auth.transport.requests import Request
 from google.cloud import storage
 from levanter.main.train_lm import TrainLmConfig
+from terminal_worker_identity import reconcile_worker
 from wandb.util import json_friendly_val
 
 from experiments.ema_gram.report import validate_run_config
@@ -43,7 +44,7 @@ def require_single_attempt_tasks(request, directory, join):
         raise ValueError("Incomplete or duplicate task join")
     if len({t["host_logging_id"] for t in join["tasks"]}) != len(request["task_ids"]):
         raise ValueError("Execution-host logging identity reused")
-    tasks = []
+    tasks, workers = [], []
     for number, task_id in enumerate(request["task_ids"]):
         record = json.loads((directory / (hashlib.sha256(task_id.encode()).hexdigest() + ".json")).read_text())
         if record["task_id"] != task_id:
@@ -68,10 +69,9 @@ def require_single_attempt_tasks(request, directory, join):
         ):
             raise ValueError("Attempt did not succeed")
         startup = next(t for t in join["tasks"] if t["task"] == number)
-        if attempt["attempt_uid"] != startup["attempt_uid"] or task["worker_id"] != startup["worker_id"]:
-            raise ValueError("Terminal task no longer matches verified startup attempt")
+        workers.append(reconcile_worker(task, startup)["assigned_worker_id"])
         tasks.append(task)
-    if len(tasks) != len(request["task_ids"]) or len({t["worker_id"] for t in tasks}) != len(tasks):
+    if len(tasks) != len(request["task_ids"]) or len(set(workers)) != len(tasks):
         raise ValueError("Expected distinct assigned hosts for every task")
     return tasks
 
@@ -338,6 +338,10 @@ def verify_artifacts(root, request, task_directory, out):
             job_id=request["job_id"],
             canonical_job=job,
             tasks=tasks,
+            terminal_worker_reconciliation=[
+                reconcile_worker(task, next(t for t in join["tasks"] if t["task"] == number))
+                for number, task in enumerate(tasks)
+            ],
             host_logging=host,
             run_attempt_join_evidence=join,
             verified_at=datetime.now(UTC).isoformat(),

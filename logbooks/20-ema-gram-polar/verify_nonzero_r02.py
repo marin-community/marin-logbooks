@@ -21,6 +21,7 @@ from google.auth.transport.requests import Request
 from google.cloud import storage
 from levanter.main.train_lm import TrainLmConfig
 from prepare_r02_terminal_collection import SOURCE, prepare
+from terminal_worker_identity import reconcile_worker
 from wandb.util import json_friendly_val
 
 from experiments.ema_gram.report import validate_run_config
@@ -41,7 +42,7 @@ def require_single_attempt_tasks(request, directory, join):
         raise ValueError("Failed or retried job requires separate diagnosis and lineage adjudication")
     if join is None or join["source_commit"] != SOURCE:
         raise ValueError("Missing qualified startup attempt joins")
-    tasks = []
+    tasks, workers = [], []
     for number, task_id in enumerate(request["task_ids"]):
         record = json.loads((directory / (hashlib.sha256(task_id.encode()).hexdigest() + ".json")).read_text())
         if record["task_id"] != task_id:
@@ -66,10 +67,9 @@ def require_single_attempt_tasks(request, directory, join):
         ):
             raise ValueError("Attempt did not succeed")
         startup = next(t for t in join["tasks"] if t["task"] == number)
-        if attempt["attempt_uid"] != startup["attempt_uid"] or task["worker_id"] != startup["worker_id"]:
-            raise ValueError("Terminal task no longer matches verified startup attempt")
+        workers.append(reconcile_worker(task, startup)["assigned_worker_id"])
         tasks.append(task)
-    if len(tasks) != 4 or len({t["worker_id"] for t in tasks}) != 4:
+    if len(tasks) != 4 or len(set(workers)) != 4:
         raise ValueError("Expected four distinct assigned hosts")
     return tasks
 
@@ -306,6 +306,10 @@ def verify(root, index):
             job_id=request["job_id"],
             canonical_job=job,
             tasks=tasks,
+            terminal_worker_reconciliation=[
+                reconcile_worker(task, next(t for t in join["tasks"] if t["task"] == number))
+                for number, task in enumerate(tasks)
+            ],
             host_logging=host,
             run_attempt_join_evidence=join,
             verified_at=datetime.now(UTC).isoformat(),

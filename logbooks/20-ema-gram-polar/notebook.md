@@ -5825,3 +5825,50 @@ The six completed alpha0 pilots retain their interior LR winner,
 0.003535533905932738. Global selection is not yet authorized by complete results, and confirmations and scientific probes remain outstanding.
 Evidence: subset-training-r02-completion-readiness.json. Continue the existing
 observer and all live jobs; exclude the eight validated runs from future queries.
+
+### 2026-11-05 12:08 UTC — finish the alpha 0.125 grid and prepare LR expansions
+
+All six alpha 0.125 pilots are scientifically validated at 7,630 updates.
+For ridge 0.0001, final C4 losses at learning rates 0.0025, 0.005 and 0.01
+are 4.168757438659668, 4.192734718322754 and 4.221353054046631.
+For ridge 0.01, the corresponding losses are 4.160338401794434,
+4.1679792404174805 and 4.230307579040527. The lowest observed loss in each ridge group occurs at LR 0.0025,
+the lower tested boundary. The preregistered factor-two rule therefore requires one new
+LR 0.00125 pilot for each ridge, each from scratch for 7,630 updates.
+Evidence: subset-training-r02-nonzero-completed.json and
+subset-training-r02-completion-readiness.json. Twelve initial pilots are
+validated; 18 remain running in the sole observer's 11:56 UTC snapshots.
+Global selection and confirmations still require the remaining groups and
+any further boundary expansions.
+
+Sixteen new terminal task snapshots confirmed canonical success, one original
+attempt per host and exit code 0 for cells 07, 08, 10 and 11. Cells 08 and 10
+initially failed validation because seven terminal worker references were
+empty. The empty fields are consistent with Iris remove_worker, which clears task
+and attempt worker references. The saved
+startup task snapshots match the terminal task IDs, original attempt UIDs and
+start times, and retain the assigned worker IDs. Validation now records these
+historical assignments separately while preserving the empty terminal fields.
+A nonempty conflicting worker, changed attempt UID/start time or missing startup
+evidence still rejects the result. The controller supports this deletion behavior;
+no separate worker-deletion event was queried. Portable assignment proofs are
+also checked by the complete-group selection and confirmation submission gate.
+Regression fixtures, full mocked R02 and one/four-host expansion validation,
+the expansion submitter fixture and required lint passed. Initial errors remain
+saved. Evidence: terminal-worker-reconciliation-preflight.json.
+
+All four new results also passed the exact subset/source/ONLINE joins, full
+finite metric-history and final C4 checks, finished W&B states, permanent
+57-array checkpoint metadata and independent stored-counter reads of 7630.
+Subsequent selection and expansion gates reuse saved validated results
+without new remote queries. No full checkpoint byte
+audit or full-state restore is claimed.
+
+Frozen expansion inputs are subset-expansion-r01-bundle.json,
+subset-expansion-r01-completions.json and subset-expansion-r01-accepted.json.
+They contain the two eligible cells, all 12 predecessor results and no prior
+expansions, with fresh artifact version 2026.11.05.10. Both configurations
+reconstructed exactly through the qualified worker without numerical kernels.
+Publish these inputs and create a dedicated immutable execution worktree before
+submission. Use normal batch priority, default preemption/retries, permanent
+launch guards and one expansion observer; leave all existing pilot jobs intact.

@@ -146,8 +146,14 @@ with tempfile.TemporaryDirectory(prefix="ema-expansion-fixture-") as temporary:
     for rec in join["tasks"]:
         task = json.loads(Path(rec["evidence"]).read_text())["task"]
         task["task_id"] = job_id + "/" + str(rec["task"])
+        startup_path = root / f"startup-{rec['task']}.json"
+        startup_path.write_text(json.dumps({"task": task}))
+        rec["evidence"] = str(startup_path)
         task["state"] = "TASK_STATE_SUCCEEDED"
         task["attempts"][0]["state"] = "TASK_STATE_SUCCEEDED"
+        if rec["task"] == 0:
+            task["worker_id"] = ""
+            task["attempts"][0]["worker_id"] = ""
         digest = hashlib.sha256(task["task_id"].encode()).hexdigest()
         response = terminal / (digest + ".response.json")
         response.write_text(json.dumps(dict(returncode=0, stdout=json.dumps(dict(task=task)), stderr="")))

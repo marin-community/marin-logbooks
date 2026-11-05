@@ -160,6 +160,9 @@ with tempfile.TemporaryDirectory(prefix="ema-terminal-fixture-") as temporary:
         task = json.loads(Path(record["evidence"]).read_text())["task"]
         task["state"] = "TASK_STATE_SUCCEEDED"
         task["attempts"][0]["state"] = "TASK_STATE_SUCCEEDED"
+        if record["task"] == 0:
+            task["worker_id"] = ""
+            task["attempts"][0]["worker_id"] = ""
         digest = hashlib.sha256(task["task_id"].encode()).hexdigest()
         response = terminal / (digest + ".response.json")
         response.write_text(json.dumps({"returncode": 0, "stdout": json.dumps({"task": task}), "stderr": ""}))
