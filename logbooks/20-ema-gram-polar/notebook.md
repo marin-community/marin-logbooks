@@ -1770,3 +1770,18 @@ LR0.004 pilot is prepared but has not yet been submitted. Global learning-rate/r
 checkpoint probes remain pending. See
 [completion evidence](subset-training-r02-nonzero-completed.json) and
 [group readiness](subset-training-r02-completion-readiness.json).
+
+### 2026-11-05 16:16 UTC — accept the alpha1/3 high-ridge expansion
+
+Iris accepted the required alpha1/3, ridge0.01, LR0.004 seed0 pilot after all
+26 data-cache components passed preflight. R03 uses immutable source commit
+`282ba9da0ae0ee71aa43847ab19b61e022dbcdef` and fresh artifact version
+`2026.11.05.12`. A permanent guard prevents duplicate submission. One monitoring
+process owns the accepted job; the first scheduled Iris status query and checks
+linking online W&B runs to the expected workers are pending.
+
+Four expansions are now accepted, and every currently required expansion has a
+submission guard. The initial validated count remains24/30. Global LR/ridge
+selection,37,335-update confirmation runs, and held-out direction/loss and
+polar-versus-SVD checkpoint probes remain pending. See the
+[accepted launch](subset-expansion-r03-launched.json).
