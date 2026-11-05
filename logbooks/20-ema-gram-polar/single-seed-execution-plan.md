@@ -299,3 +299,15 @@ common-loss target and3–4 seed0 full confirmations from scratch.
 No queue, task, training, or watchdog wallclock limits; retain default
 preemption/retries, all attempts, and fresh online tracking per process.
 GPU allocation retention remains mandatory before any GPU launch.
+
+## Qualified subset launch (2026-11-05 00:21 UTC)
+
+All58 builds, native assembly and regional26-component loader qualification
+passed. The exact data and source bindings are in subset-training-validation.json.
+Launch from detached worktree `/Users/kaiyuew/Downloads/Project/marin/ema-gram-subset-seed0-20261105`,
+with its own `scratch/20261104-subset-training-ledger.json` and observer state.
+Publish the launch commit on `codex/20-ema-gram-subset-seed0-20261105`; keep
+this worktree/source immutable while research notes continue on the research branch.
+Normal batch queueing is already authorized for all30 cells. Requested408 v4
+devices do not imply allocation or an ETA. Existing failed campaigns and all
+data-stage identities/guards remain terminal and are never reused.

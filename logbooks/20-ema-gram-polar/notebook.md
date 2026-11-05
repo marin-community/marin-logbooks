@@ -5270,3 +5270,18 @@ relative names. Corrected the comparison and it passes, with no worker or
 data change. Failed partial outputs are preserved but not training shards.
 The frozen26-component catalog includes825 objects, retaining the original23
 evaluation identities. Actual regional loader qualification is next.
+
+### 2026-11-05 00:21 UTC — actual regional loader gate passed
+
+Data-check from12a25a61b succeeded canonically, attempt0/exit0. Hostlogging
+5c280d7c5e48 and data-check077aa98e32ef are ONLINE FINISHED/API-success.
+Native loader reads all3 training components and23 original validation sets;
+seed0 first/pilot-end/confirmation-end sequence hashes replay exactly.
+Available sequences web474801/code11086/math2439 exceed the native
+confirmation-block bounds web290832/code6716/math1460. Loaded token/row
+counts equal the assembled ledgers. Exact numerical hashes reuse the prior
+online CPU harness and regressions; no unchanged numerical tests rerun.
+Published subset-training-validation.json binds all sources and data manifests.
+Next dispatch all30 fresh pilots from a detached immutable execution worktree
+ema-gram-subset-seed0-20261105, version2026.11.04.03,24 v4-32/6 v4-8.
+The launcher must pass its full825-object catalog gate before submission.
