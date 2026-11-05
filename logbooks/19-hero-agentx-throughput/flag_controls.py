@@ -56,6 +56,10 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
+    logical_kv_enabled = (
+        manifest.get("diagnostic_request", {}).get("additional_config", {}).get("grug_logical_kv_cache") is True
+        or manifest.get("diagnostic_request", {}).get("logical_kv_mode") == "automatic"
+    )
     server = json.loads((args.output / "diagnostic.json").read_text())
     assert server["status"] == "ready"
     command = server["server_command"]
@@ -121,7 +125,7 @@ def main() -> None:
     if source_reference := manifest.get("diagnostic_request", {}).get("source_reference"):
         assert (
             native_local_dp
-            or manifest["diagnostic_request"].get("additional_config", {}).get("grug_logical_kv_cache") is True
+            or logical_kv_enabled
             or (
                 manifest["diagnostic_request"].get("attention_backend") == "FLASH_ATTN"
                 and manifest["diagnostic_request"].get("attention_config") == {"flash_attn_version": 4}
@@ -244,7 +248,7 @@ def main() -> None:
             )
     for rank in manifest.get("diagnostic_request", {}).get("additional_numerical_ranks", []):
         assert rank in (7, 15)
-        assert native_local_dp or "grug_logical_kv_cache" in manifest["diagnostic_request"].get("additional_config", {})
+        assert native_local_dp or logical_kv_enabled or "grug_logical_kv_cache" in manifest["diagnostic_request"].get("additional_config", {})
         candidate = probe.copy()
         if "--compare-to" in candidate:
             index = candidate.index("--compare-to")
@@ -281,7 +285,7 @@ def main() -> None:
         receipt = batch_trace("http://127.0.0.1:38197", "capture_hero_compiler_sources", ["after-numerics"])
         (args.output / "compiler-sources-after-numerics.json").write_text(json.dumps(receipt, indent=2) + "\n")
     if manifest.get("diagnostic_request", {}).get("interior_reuse_probe"):
-        assert manifest["diagnostic_request"]["additional_config"]["grug_logical_kv_cache"] is True
+        assert logical_kv_enabled
         reuse_command = [
             *prefix,
             "python",
