@@ -91,6 +91,32 @@ def collect(index, cell, observed, manifest, stage):
     for line in lines:
         if f"attempt={attempt['attempt_id']} |" in line:
             ids.update(re.findall(r"ema-gram-subset-logging-check-[a-f0-9]{12}", line))
+    if not ids:
+        # A failed log follower is not a failed worker. Recover only the bounded
+        # logging identity from the already verified successful attempt.
+        log_path = SCRATCH / f"20261104-subset-{stage}-build-{index:02d}-logging-identity.log"
+        if not log_path.exists():
+            raw_log = subprocess.check_output(
+                [
+                    "uv",
+                    "run",
+                    "--no-sync",
+                    "iris",
+                    "--cluster=marin",
+                    "attempt",
+                    "logs",
+                    cell["job_id"] + f"/0:{attempt['attempt_id']}",
+                    "--substring",
+                    "ema-gram-subset-logging-check-",
+                    "--max-lines",
+                    "100",
+                ],
+                text=True,
+            )
+            log_path.write_text(raw_log)
+        for line in log_path.read_text().splitlines():
+            if f"attempt={attempt['attempt_id']} |" in line:
+                ids.update(re.findall(r"ema-gram-subset-logging-check-[a-f0-9]{12}", line))
     assert len(ids) == 1, ids
     logging_id = ids.pop()
     logging = api.run("marin-community/marin/" + logging_id)

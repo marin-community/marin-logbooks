@@ -6146,3 +6146,17 @@ Existing log follower PIDs were adopted; none were restarted or duplicated,
 and no remote job or allocation was signalled. If an adopted follower vanished,
 its exit code is explicitly unavailable rather than fabricated as0. Terminal
 jobs remain excluded from canonical polling. Training cadence remains unchanged.
+
+### 2026-11-05 00:10 UTC — retire the last two obsolete CPU writers
+
+All54 hq02 repairs succeeded canonically. Original25/46 still used the slow
+incremental GCS rewrite path and were actively writing, not stuck or failed.
+To apply the already validated I/O fix promptly, their exact current CPU
+attempts were explicitly operator-failed with a recorded migration reason.
+This is a repair decision, not a wall-clock cutoff or spontaneous worker
+failure; no accelerator allocation was involved. Their partial objects and
+attempt evidence remain. Only after observer-confirmed termination will the
+same pinned source/tokenizer/token budgets run under new hq02 guards.
+The54 earlier IncompleteRead failures remain separately classified.
+Collector now recovers bounded exact-attempt host logging IDs if a Finelog
+follower failed, without creating replacement followers.
