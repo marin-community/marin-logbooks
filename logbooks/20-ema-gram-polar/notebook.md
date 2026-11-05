@@ -2076,3 +2076,10 @@ from5,504,245 to7,569,680 ticks since the previous diagnostic, and the sampled
 process state was running. This shows CPU activity; it does not establish the
 cause of the missing SVD output or successful probe qualification. Preserve the
 existing observer and bounded diagnostic evidence without cancellation.
+
+At18:41 UTC, the [independent execution preparation](alpha0-long-run-execution-prepared.json)
+fixed source f99298782188e8f1c4e1ad8a1b2a507693d653e8 in a separate clean,
+published worktree for campaign `ema-gram-20-alpha0-seed0-r01-20261105`.
+Its dry plan and full26-component regional catalog check passed. Exact submit
+and observer arguments are recorded; neither was executed. No launch ledger,
+observer, allocation or training run exists for this baseline campaign yet.
