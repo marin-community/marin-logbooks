@@ -5390,3 +5390,27 @@ change to the protocol. Six of30 pilots are validated. All24 nonzero cells keep
 their accepted identities; the owned snapshot has9RUNNING/15PENDING, no failures
 or preemptions. Evidence: subset-training-r02-alpha0-completed.json. Continue
 the remaining groups and their required expansions before global selection.
+
+### 2026-11-05 04:44 UTC — qualify online reference-probe entrypoint locally
+
+Published c4422dd51358b97a6fb6a33a8abc70a787bd74c6 adds tracked_probe.py,
+which initializes a fresh ONLINE Levanter tracker before numerical work, records
+resolved subset config/source hashes and measured paired loss summaries, and
+keeps a separate output directory per process. It normalizes the frozen config
+wrapper and checks reference alpha/seed/horizon. The existing numerical probe
+now rejects a mismatched restored counter before loading evaluation batches;
+its direction/loss/SVD formulas are unchanged. Training source2bca5a112 and all
+accepted jobs remain unchanged. No production probe or additional training job
+was launched.
+
+Fresh ONLINE nontraining logging3693634ecd70 and CPU15eff3ffc5e6 both finished
+successfully; API configs and source hashes were verified. The existing tiny
+Qwen regression verifies matrix norm matching, fixed nonmatrix parameters and
+paired held-out quadratic loss changes against direct updates. This is local
+probe qualification, not full-size checkpoint/TPU proof. SVD-specific validation,
+a validated confirmation lock/reference checkpoint, and fresh regional host
+logging/complete restore remain required before production probe results.
+Evidence: reference-probe-preflight.json. Initial lint exposed formatting and
+deliberately delayed numerical imports; corrected before publication/checks.
+A direct black command was unavailable, while the required repository pre-commit
+formatter completed successfully; no dependency workaround was needed.
