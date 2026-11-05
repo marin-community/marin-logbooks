@@ -279,7 +279,8 @@ prefix, outside shared raw/ and tokenized/. No bucket/IAM changes.
 
 The distinct hq01 regional probe precedes 58 concurrent normal-batch CPU build
 jobs. Each guard is permanent even on ambiguous submission. Exactly one log
-follow per accepted job; canonical checks after120 seconds then570 seconds.
+follow per accepted job; short CPU data stages use canonical checks after
+120 seconds then60 seconds. Training checks remain120 then570 seconds.
 Require canonical success and ONLINE W&B success before ledger assembly.
 After assembly verify native mixture replay, all23 unchanged evaluation caches,
 and per-component capacity for the entire37,335-update confirmation schedule.

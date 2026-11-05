@@ -6160,3 +6160,14 @@ same pinned source/tokenizer/token budgets run under new hq02 guards.
 The54 earlier IncompleteRead failures remain separately classified.
 Collector now recovers bounded exact-attempt host logging IDs if a Finelog
 follower failed, without creating replacement followers.
+
+### 2026-11-05 00:14 UTC — all58 fixed-subset builds verified
+
+58 unique successful build reports cover2,000,188,501tokens and3,043,111
+documents. The188,469-token overshoot retains complete final documents.
+All reports match the pinned source/task/tokenizer manifest, full native
+token readback, successful exact task attempt/archive, and FINISHED ONLINE
+host logging plus worker runs. Final repaired25/46 succeeded attempt0; old
+operator-stopped attempts have no output archive and retain partial GCS objects
+and canonical reason separately. The ordered results are now ready for native
+ledger assembly; actual regional mixture/validation loading remains required.
