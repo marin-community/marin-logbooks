@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-11-05T13:54:14.698841+00:00",
+  "observed_utc": "2026-11-05T14:04:07.362915+00:00",
   "validated_cells": [
     0,
     1,
@@ -14,9 +14,11 @@
     10,
     11,
     12,
+    13,
     14,
     15,
     16,
+    17,
     18
   ],
   "groups": [
@@ -56,20 +58,26 @@
     {
       "alpha": 0.25,
       "ridge": 0.0001,
-      "rounds": 0,
-      "state": "awaiting_initial_pilots",
+      "rounds": 1,
+      "state": "awaiting_expansion",
       "missing": [
-        "ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b"
+        "ema-gram-pilot-3e18-a0.25-seed0-73cda33743af"
       ]
     },
     {
       "alpha": 0.25,
       "ridge": 0.01,
       "rounds": 0,
-      "state": "awaiting_initial_pilots",
-      "missing": [
-        "ema-gram-pilot-3e18-a0.25-seed0-211dec27a4f5"
-      ]
+      "state": "interior_winner",
+      "winner": {
+        "alpha": 0.25,
+        "ridge": 0.01,
+        "learning_rate": 0.002,
+        "seed": 0,
+        "phase": "pilot",
+        "slug": "3e18",
+        "horizon": 100
+      }
     },
     {
       "alpha": 0.3333333333333333,
@@ -115,7 +123,9 @@
       ]
     }
   ],
-  "proposed_expansions": [],
+  "proposed_expansions": [
+    "ema-gram-pilot-3e18-a0.25-seed0-73cda33743af"
+  ],
   "guarded_expansions": [
     "ema-gram-pilot-3e18-a0.125-seed0-56807b815d96",
     "ema-gram-pilot-3e18-a0.125-seed0-82fd596e7ff5"

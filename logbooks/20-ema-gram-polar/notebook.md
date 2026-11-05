@@ -1568,3 +1568,29 @@ awaits all groups and required expansions. Evidence:
 [completed results](subset-training-r02-nonzero-completed.json),
 [group readiness](subset-training-r02-completion-readiness.json), and local
 scratch/20261105-expansion-r01-135259-progress.json.
+
+### 2026-11-05 14:04 UTC — complete both alpha 0.25 groups
+
+Cells 13 and 17 passed all 7,630-update completion gates. Cell 13 (ridge0.0001,
+LR0.002) has final C4 loss 4.284524440765381; cell 17 (ridge0.01, LR0.004) has
+4.241844654083252. Both canonical jobs and all eight original attempt-0 tasks
+succeeded with exit code 0. Resolved configurations and source revisions match
+the frozen subset configurations and accepted launch ledger. All 7,630 finite
+metric rows per run, finished online W&B runs, checkpoint metadata covering 57 array schemas and chunk geometries,
+and independently read stored checkpoint counters 7630 passed. Terminal worker IDs match
+the saved startup identities. No full checkpoint byte audit or restore was
+performed. Nineteen of 30 initial pilots are validated; eleven remain RUNNING
+in the owner's 14:01 UTC snapshots, with no failures or preemptions.
+
+At alpha0.25/ridge0.0001, LR0.001 wins the complete three-point grid with
+C4 loss 4.276551723480225. This is the lower boundary, so the preregistered
+factor-two rule requires a new LR0.0005 pilot. At ridge0.01, LR0.002 wins with
+C4 loss 4.211307048797607 and is interior; that group needs no expansion.
+The [new expansion bundle](subset-expansion-r02-bundle.json) freezes one
+seed0, 7,630-update run from scratch at alpha0.25/ridge0.0001/LR0.0005 on v4-32,
+using artifact version2026.11.05.11. Its selection-evidence inputs contain all19 completed initial
+results and the two already accepted alpha0.125 expansions. The latter retain
+their existing job identities and permanent launch-started guards. The new campaign will use a separate
+immutable worktree and the shared permanent expansion registry. This entry
+records preparation; no new launch has occurred yet. Global alpha/ridge/LR selection awaits all initial pilots and required expansions. See [completed results](subset-training-r02-nonzero-completed.json)
+and [group readiness](subset-training-r02-completion-readiness.json).
