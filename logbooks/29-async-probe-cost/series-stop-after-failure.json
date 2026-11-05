@@ -1,0 +1,45 @@
+{
+  "purpose": "Avoid additional GPU allocations after an earlier fixed window fails.",
+  "mechanism": "Append the previous ArtifactStep to each later window dependency tuple using dataclasses.replace; use existing StepRunner dependency-failure propagation. No new runner or retry policy.",
+  "fixed_order": [
+    [
+      1701,
+      10
+    ],
+    [
+      2903,
+      10
+    ],
+    [
+      2903,
+      0
+    ],
+    [
+      4517,
+      0
+    ],
+    [
+      4517,
+      10
+    ]
+  ],
+  "five_recipe_fingerprint_payloads_match_standalone_windows": true,
+  "five_execution_settings_match_standalone_windows": true,
+  "stable_materialized_fields_match": true,
+  "runtime_materialization_note": "A handle materialized twice produces different attempt_id and launch_config_yaml fields because each materialization creates a new attempt identity. The check compares the canonical recipe payload, explicit execution settings and other stable materialized fields.",
+  "real_local_executor_failure_check": {
+    "window_count": 5,
+    "called_windows": [
+      "first"
+    ],
+    "later_windows_launched": 0,
+    "original_exception_propagated": true
+  },
+  "original_max_concurrent_one_guard_retained": true,
+  "ordinary_dry_run_exit": 0,
+  "root_precommit": "passed",
+  "GPU_jobs_submitted": 0,
+  "source_sha256": "5bb4b63dc3881e76c054cafb7802eea769016251bf3c6db9af44e710bb782652",
+  "check_log_sha256": "d5d1111d68d4d7671b51a9916c84f6c2c1f0bf042225e2b9622103f998362a23",
+  "dry_run_log_sha256": "268bbe8e165a65365ce302d5b3028050d494ded41301ab27fddc4bbb23167204"
+}
