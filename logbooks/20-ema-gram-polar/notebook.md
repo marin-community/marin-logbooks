@@ -1923,3 +1923,33 @@ performed. Initial completion is27/30. Remaining alpha0.5 pilots are
 ridge0.0001/LR0.001 and ridge0.01/LR0.0005,0.001. Both ridge groups remain
 incomplete; the expansion rule requires each group's final evaluations before
 selecting a boundary winner. See [completion evidence](subset-training-r02-nonzero-completed.json).
+
+### 2026-11-05 17:28 UTC — prepare the settled baseline and next expansion
+
+Two further alpha0.5 pilots passed all completion gates. Ridge0.0001/LR0.001
+has final C4-en validation loss5.5128903389; ridge0.01/LR0.0005 has4.4287953377.
+Each has7,630 finite metric rows, stored counter7,630,57-array metadata matching
+the frozen schema, a finished ONLINE source/configuration match and four
+original-attempt successful workers. Empty terminal worker references were
+matched using cached startup identities. Initial completion is29/30; only
+ridge0.01/LR0.001 remains. The completed ridge0.0001 group selects the lower
+boundary LR0.00025, so the protocol requires a new LR0.000125 pilot. Its
+[frozen expansion inputs](subset-expansion-r04-bundle.json) contain29 completed
+results and the exact configuration/source/job bindings of four accepted
+expansions. The LR rule halves a lower-boundary winner selected by final C4-en
+loss. See [completion evidence](subset-training-r02-nonzero-completed.json).
+
+The settled alpha0 baseline long-run configuration is now prepared separately:
+LR0.003535533905932738, seed0,37,335 updates from scratch, unchanged447M model
+and fixed subset, global batch8/context4096, native ONLINE tracking, v4-8,
+zero-based final checkpoint label37334. Validation of the
+[six saved baseline completion records](subset-training-r02-alpha0-completed.json)
+confirms the interior final-C4 winner within the alpha0 group; no model
+evaluation was repeated. Extracting the shared configuration builder preserves
+the complete serialized configuration in the saved confirmation fixture. This is a prepared
+configuration, not a global selection lock or a launched run. A common held-out
+loss target for comparing time-to-loss, an amendment if the baseline starts
+before global selection, and an exact source/job submission record with one
+monitoring owner remain to be fixed before launch. See the
+[prepared configuration](alpha0-long-run-prepared.json) and
+[preparation checks](alpha0-long-run-preparation-preflight.json).

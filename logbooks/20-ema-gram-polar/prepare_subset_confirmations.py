@@ -21,7 +21,8 @@ REFERENCE_COUNTERS = (3733, 18665, 33597)
 REFERENCE_KEEP = [{"every": counter - 1, "until": counter - 1} for counter in REFERENCE_COUNTERS]
 
 
-def prepare(lock, version):
+def materialize_cells(cells, version):
+    """Build exact full-schedule configs without declaring a scientific selection lock."""
     if not version or version == "2026.11.04.03" or "/" in version:
         raise ValueError("Use a distinct confirmation artifact version")
     validation = json.loads((BASE / "subset-training-validation.json").read_text())
@@ -31,9 +32,8 @@ def prepare(lock, version):
     for name in ("subset-inputs.json", "subset-dataset.json", "subset-cache-manifest.json"):
         if validation["artifacts"][name] != hashlib.sha256((BASE / name).read_bytes()).hexdigest():
             raise ValueError(f"Frozen subset artifact changed: {name}")
-    cells = [cell for cell in confirmations(lock) if cell.seed == 0]
-    if len(cells) not in (3, 4) or not {0, 0.25, 0.5}.issubset({cell.alpha for cell in cells}):
-        raise ValueError("Expected three or four seed0 confirmations")
+    if not cells or any(cell.phase != "confirmation" or cell.seed != 0 for cell in cells):
+        raise ValueError("Materialization requires seed0 confirmation cells")
     result = []
     for cell in cells:
         variant = "v4-8" if cell.alpha == 0 else "v4-32"
@@ -80,12 +80,16 @@ def prepare(lock, version):
                 final_checkpoint_label=37334,
             )
         )
+    return dict(artifact_version=version, source_files=hashes, source_numerical_validation_reused=True, cells=result)
+
+
+def prepare(lock, version):
+    cells = [cell for cell in confirmations(lock) if cell.seed == 0]
+    if len(cells) not in (3, 4) or not {0, 0.25, 0.5}.issubset({cell.alpha for cell in cells}):
+        raise ValueError("Expected three or four seed0 confirmations")
     return dict(
         selection_lock_digest=lock.sha256,
-        artifact_version=version,
-        source_files=hashes,
-        source_numerical_validation_reused=True,
-        cells=result,
+        **materialize_cells(cells, version),
         submitted=False,
         launch_ready=False,
         remaining_launch_gates=[
