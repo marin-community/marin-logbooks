@@ -74,6 +74,7 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
                 "positions": positions[valid].tolist(),
                 "source_policy_steps": batch["score_probe_source_steps"][valid].tolist(),
                 "response_lengths": lengths[valid.any(-1)].tolist(),
+                "sampled_positions_per_response": valid.sum(-1)[valid.any(-1)].tolist(),
                 "long_response_positions": int((valid & (lengths[:, None] >= 2048)).sum()),
             }
         )

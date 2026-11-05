@@ -1,0 +1,136 @@
+{
+  "declared_utc": "2026-11-05T05:33:52.722361+00:00",
+  "question": "Cost of default periodic hypothetical probes during ordinary asynchronous PPO/TIS; recommend a cadence and leave product defaults unchanged.",
+  "source_base": "6330720f1fdfa50c5c7be05a9592d416e5fffc57",
+  "product_stack_candidate": "99e9bfa00d1cb9b1f484416c82b6797f0b7cf077",
+  "model": {
+    "id": "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05",
+    "revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0",
+    "uri": "s3://marin-rno2a/marin/users/dml/models/grug-67b-a2b-datakit-sft-262k-2026.10.05-8c76b22a/2026.10.22/hf"
+  },
+  "data": {
+    "uri": "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1",
+    "training_rows": 89557,
+    "train_parquet_sha256": "54e40005a259f34d5234cc864bc3284bbb8a9db5ff0154b430a6d26553bb40ce",
+    "provenance": "Completed study #17 frozen-data.json at 4885c973e753a4c68012ef12a68f36205d0056d5. Reuse its training pool; no evaluation or new split."
+  },
+  "arms": {
+    "off": {
+      "interval": 0
+    },
+    "ten": {
+      "interval": 10
+    },
+    "twenty_conditional": {
+      "interval": 20
+    }
+  },
+  "shared_settings": {
+    "score_centering_enabled": false,
+    "score_centering_top_k": 128,
+    "positions_per_response_max": 32,
+    "loss": "regular clipped PPO with tokenwise TIS",
+    "policy_updates": 30,
+    "learning_rate": 1e-06,
+    "train_batch_prompts": 128,
+    "answers_per_prompt": 4,
+    "rolling_max_staleness": 2,
+    "max_in_flight": 256,
+    "packing": true,
+    "policy_geometry": "TP1/SP1/PP2/CP1/EP8; 32 learner GPUs",
+    "sampler_geometry": "8 H100s, DP8/EP8",
+    "request_window_tokens": 24576,
+    "max_new_tokens": 8192,
+    "KL_auxiliary": false,
+    "entropy_auxiliary": false,
+    "evaluation": false,
+    "checkpoints": false,
+    "HF_exports": false
+  },
+  "repetitions": {
+    "seeds": [
+      1701,
+      2903,
+      4517
+    ],
+    "initial_order": [
+      [
+        1701,
+        0
+      ],
+      [
+        1701,
+        10
+      ],
+      [
+        2903,
+        10
+      ],
+      [
+        2903,
+        0
+      ],
+      [
+        4517,
+        0
+      ],
+      [
+        4517,
+        10
+      ]
+    ],
+    "matching": "Each run restarts from the exact same initializer and matched trainer/data/generator seed. All arms use the same recipe, region, topology and H100 model. Record actual placement and scheduling; instances can differ across scheduler allocations."
+  },
+  "hardware": {
+    "cluster": "cw-rno2a",
+    "device": "H100_NVLINK_80GB",
+    "nodes": 5,
+    "GPUs": 40,
+    "priority": "batch",
+    "concurrency": "One Grug gang at a time; no changes of hardware class or region between arms. Qwen uses one interactive eight-GPU node and finishes first."
+  },
+  "measurement": {
+    "primary": "Wall-clock span immediately before initial rollout publication through return from update 30 after its weight publication, divided by 30 for mean cycle time. Generation, grading, capture, payload transport, scoring and optimization overlap normally. Do not sum stage timers.",
+    "startup": "Entrypoint to initial rollout publication, outside primary span; allocation start and teardown separately from Iris attempts.",
+    "warmup": "First three cycles reported separately. Primary retains them, including the default startup probe. Secondary warmed span is cycle30 minus cycle3, covering 27 cycles.",
+    "coverage": "Count consumed nonempty probes from the actual summary call, with source policy steps, sampled positions, response lengths, selected/finite tokens and long-response positions. Scheduled requests and empty windows do not count as consumed events.",
+    "workload": "Per-cycle loss/response tokens, length distribution, policy-age metrics, stage timings, actual node placement and queue/admission history. Report per-token cost as descriptive sensitivity only."
+  },
+  "uncertainty": {
+    "primary": "For each matched seed, log(on full-span / off full-span). Point estimate exp(mean(log ratios))-1. Two-sided 95% Student t interval on the mean of three paired log ratios (df=2), transformed back.",
+    "secondary": "Apply the same paired method to warmed spans and descriptive seconds per response/loss token. Show each pair and cycle distributions. Do not treat individual overlapping cycles as independent replications.",
+    "limits": "Three pairs cannot certify a 1% upper bound. Natural response and scheduling variation, changed physical instances and model trajectories limit causal precision. No learning benefit is measured."
+  },
+  "conditional_longer_cadence": {
+    "trigger": "Primary interval-ten point estimate exceeds 1% added complete-cycle time. Record the result before any conditional submission.",
+    "runs": [
+      [
+        1701,
+        20
+      ],
+      [
+        2903,
+        20
+      ],
+      [
+        4517,
+        20
+      ]
+    ],
+    "duration_updates": 30,
+    "comparison": "Reuse the matching off runs at the same window and initialization. Report later scheduling as an additional limitation. No new baseline or seed is added.",
+    "stopping": "Stop after these three conditional runs even if the result is inconclusive. Do not add repetitions until a desired result appears."
+  },
+  "expected_compute": {
+    "basis": "Prior study full-cycle spans around 185 seconds/update. Thirty updates * six arms * forty GPUs is about 370 H100-hours before startup/teardown.",
+    "initial_allocated_H100_hours_estimate": 450,
+    "conditional_extra_H100_hours_estimate": 225,
+    "Qwen_expected_H100_hours": 3,
+    "failures": "Report every allocated attempt, including startup and failed attempts. At most two Qwen repairs/retries and two Grug infrastructure replacement attempts total; replacements preserve the original arm/seed/initializer. No outcome-based selection or extension."
+  },
+  "storage": {
+    "estimate": "Tens of GB of ordinary trajectory/log evidence; no model checkpoints or exports.",
+    "preservation": "Keep bulk evidence in object storage with exact inventories/hashes and recovery references; compact results and scripts in this archive. Clean only owned temporary duplicates after all consumers stop."
+  },
+  "recommendation": "Use about 1% added average cycle time as a practical target. Retain interval ten if supported or inconclusive at small measured cost; compare interval twenty only under the frozen trigger. Explain observed coverage and uncertainty. Keep current defaults unchanged pending review."
+}
