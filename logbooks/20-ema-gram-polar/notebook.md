@@ -1626,3 +1626,32 @@ appeared yet. Saved follower logs provide the task/run joins. Each task was read
 once with a durable read-start guard, and the five-run API snapshot is cached.
 These assignments are not a separate runtime JAX-device audit. The next owner
 check is 14:19:02 UTC. See [startup evidence](subset-expansion-r02-started.json).
+
+### 2026-11-05 14:14 UTC — complete the alpha 1/3, ridge 0.0001 grid
+
+Cells 19 and 20 passed all 7,630-update completion gates. At alpha1/3 and
+ridge0.0001, LR0.001 has final C4 loss 4.415025234222412 and LR0.002 has
+4.65962028503418. Both canonical jobs and all eight original attempt-0 tasks
+succeeded with exit code 0. The validator matched each resolved configuration
+to its frozen subset configuration and its source revision to the accepted
+launch ledger. All 7,630 finite metric rows per run, finished online W&B runs,
+checkpoint metadata covering 57 array schemas and chunk geometries, and
+independently read stored checkpoint counters 7630 passed. Empty terminal task and attempt worker_id fields
+on all eight tasks were reconciled with cached startup task/attempt UIDs,
+start times and assigned worker IDs using [the published rule](terminal_worker_identity.py).
+Raw blanks and historical assignment proofs are retained. No new startup reads,
+full checkpoint byte audit or restore were performed.
+
+Together with cell18 at LR0.0005 (C4 loss4.432610034942627), these results complete
+this three-point grid. LR0.001 is the interior winner, so the preregistered
+factor-two boundary rule requires no expansion for this group. Twenty-one of30
+initial pilots pass the completion gates; nine remain RUNNING in the owner's
+14:10–14:11 UTC snapshots, with no failures or preemptions. The alpha0.125/LR0.00125 expansions advanced to native step label1612 at
+ridge0.0001 and1571 at ridge0.01 at14:13 UTC. The new alpha0.25/ridge0.0001/
+LR0.0005 expansion retains its verified online identity and four running tasks; its first
+optimizer-step metric is still pending. Global alpha/ridge/LR selection awaits
+the remaining initial groups and required expansions. Evidence:
+[completed results](subset-training-r02-nonzero-completed.json),
+[group readiness](subset-training-r02-completion-readiness.json), and local
+scratch/20261105-expansion-r01-141307-progress.json and
+scratch/20261105-expansion-r02-141307-progress.json.
