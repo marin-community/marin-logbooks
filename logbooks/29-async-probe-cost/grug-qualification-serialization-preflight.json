@@ -1,0 +1,66 @@
+{
+  "observed_utc": "2026-11-06T03:52:43.384802+00:00",
+  "real_coordinator_builder_Fray_submit_Iris_submit_and_wire_serializer": true,
+  "real_GPU_launch_Iris_submit_and_wire_serializer": true,
+  "requests": [
+    {
+      "kind": "coordinator",
+      "resources": {
+        "cpuMillicores": 4000,
+        "memoryBytes": "17179869184",
+        "diskBytes": "68719476736"
+      },
+      "replicas": 1,
+      "failure_retries": 0,
+      "preemption_retries": 0,
+      "total_failure_budget": 0,
+      "timeout": {
+        "milliseconds": "3600000"
+      },
+      "priority": 3,
+      "constraints": [
+        {
+          "key": "cluster",
+          "op": "CONSTRAINT_OP_EQ",
+          "value": {
+            "stringValue": "cw-rno2a"
+          },
+          "mode": "CONSTRAINT_MODE_REQUIRED"
+        }
+      ]
+    },
+    {
+      "kind": "GPU child",
+      "resources": {
+        "cpuMillicores": 64000,
+        "memoryBytes": "1932735283200",
+        "device": {
+          "gpu": {
+            "variant": "H100",
+            "count": 8
+          }
+        },
+        "diskBytes": "2199023255552"
+      },
+      "replicas": 5,
+      "failure_retries": 0,
+      "preemption_retries": 0,
+      "total_failure_budget": 0,
+      "timeout": {
+        "milliseconds": "1800000"
+      },
+      "priority": 3,
+      "constraints": [
+        {
+          "key": "cluster",
+          "op": "CONSTRAINT_OP_EQ",
+          "value": {
+            "stringValue": "cw-rno2a"
+          },
+          "mode": "CONSTRAINT_MODE_REQUIRED"
+        }
+      ]
+    }
+  ],
+  "limits": "Network launch RPC and workspace upload are replaced by in-memory transport; W&B credential lookup is replaced; secret-bearing request environment is not retained. No live submit or allocation occurred."
+}

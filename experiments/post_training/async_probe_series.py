@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Run the remaining fixed windows serially, stopping their chain after failure."""
+"""Run the fixed final-runtime windows serially, stopping their chain after failure."""
 
 from dataclasses import replace
 
@@ -19,7 +19,7 @@ def main():
         raise click.UsageError("The fixed comparison requires --max-concurrent 1.")
     version = resolve_version("async-probe-cost", None)
     windows = []
-    for seed, interval in ((1701, 10), (2903, 10), (2903, 0), (4517, 0), (4517, 10)):
+    for seed, interval in ((1701, 0), (1701, 10), (2903, 10), (2903, 0), (4517, 0), (4517, 10)):
         window = build_comparison(version, interval, seed, False)
         if windows:
             window = replace(window, deps=(*window.deps, windows[-1]))

@@ -49,18 +49,18 @@ def probe_recipe(interval: int, seed: int, smoke: bool) -> tuple[dict, SkyRLRole
 
 
 def build_comparison(
-    version: str, interval: int, seed: int, smoke: bool, *, pause_diagnostic: bool = False
+    version: str, interval: int, seed: int, smoke: bool, *, qualification: bool = False
 ) -> ArtifactStep:
-    if pause_diagnostic and (smoke or interval != 10 or seed != 1701):
-        raise click.UsageError("The pause diagnostic uses full Grug, interval ten and seed 1701.")
+    if qualification and (smoke or interval != 10 or seed != 1701):
+        raise click.UsageError("The qualification uses full Grug, interval ten and seed 1701.")
     cfg, plan = probe_recipe(interval, seed, smoke)
     kind = "qwen" if smoke else "grug"
     coordinator_timeout_hours = 4 if smoke else 12
     job_timeout_seconds = 10800 if smoke else 8 * 3600
-    if pause_diagnostic:
-        cfg["trainer"]["max_steps"] = 2
+    if qualification:
+        cfg["trainer"]["max_steps"] = 4
         cfg["extra_env"]["ASYNC_PROBE_PAUSE_DIAGNOSTIC"] = "1"
-        kind = "grug-pause-diagnostic"
+        kind = "grug-qualification"
         coordinator_timeout_hours = 1
         job_timeout_seconds = 1800
     data = ArtifactStep.adopt(
@@ -116,15 +116,15 @@ def build_comparison(
 @click.option("--interval", type=click.Choice(("0", "10", "20")), required=True)
 @click.option("--seed", type=click.Choice(("1701", "2903", "4517")), required=True)
 @click.option("--smoke/--full", default=False)
-@click.option("--pause-diagnostic", is_flag=True, help="Trace one bounded two-update Grug pause failure.")
+@click.option("--qualification", is_flag=True, help="Qualify four updates of the real asynchronous Grug probe path.")
 @rl_build_options
-def main(interval: str, seed: str, smoke: bool, pause_diagnostic: bool) -> ArtifactStep:
+def main(interval: str, seed: str, smoke: bool, qualification: bool) -> ArtifactStep:
     return build_comparison(
         resolve_version("async-probe-cost", None),
         int(interval),
         int(seed),
         smoke,
-        pause_diagnostic=pause_diagnostic,
+        qualification=qualification,
     )
 
 

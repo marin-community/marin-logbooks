@@ -1,0 +1,33 @@
+{
+  "declared_utc": "2026-11-06T03:56:20.858833+00:00",
+  "kind": "real disaggregated Grug probe-on qualification",
+  "version": "2026.11.05.1",
+  "product_revision": "1e728b6e2335f11ebefcb5e32956b492c4826d0d",
+  "expected_evidence": [
+    "four nonzero-LR updates with finite nonzero gradient norms",
+    "at least one actually consumed nonempty K128 probe, at most32 positions per response",
+    "at least one existing pause_scheduler_async entry with outstanding_requests>0 and a successful return",
+    "normal weight publications through step4"
+  ],
+  "topology": "normal32 learner +8 DP8/EP8 sampler H100, five batch nodes in cw-rno2a",
+  "settings": "normal frozen Grug/Snowball PPO/TIS recipe; SC off, interval10; only update cap and passive pause observer differ",
+  "maximum_physical_attempts": 1,
+  "coordinator_failure_and_preemption_retries": 0,
+  "GPU_failure_and_preemption_retries": 0,
+  "GPU_job_timeout_seconds": 1800,
+  "coordinator_overall_timeout_seconds": 3600,
+  "expected_allocated_H100_hours": 14,
+  "physical_GPU_span_limit_H100_hours": 20,
+  "bound_limits": "Queueing is not allocation. GPU deadline starts at task execution; overall coordinator deadline bounds submission lifetime. Account teardown and every attempt separately.",
+  "hypothesis": "Batch-wide logprob columns made ordinary num_logprobs=0 requests decode unused neighbor top-K entries. CPU source and real tokenizer checks show8623 vs112 token decodes with identical public payloads. This could starve busy pause RPC processing; GPU causation is unproved.",
+  "repair": "Existing SkyRL output hook trims only wide sampled-only ordinary logprob arrays to the retained first column. No wheel, sampling filter, compact chat API, timeout, compile or graph change.",
+  "observer": "Only entry/exit wrappers around existing renderer cache clear and scheduler pause; record actual remote outstanding request count. No profiler, watchdog, stack polling or faulthandler. Forward results and exceptions unchanged.",
+  "gate": "No long comparison follows unless all expected evidence is observed. Stop after startup/publication failure until classified or repaired. An empty probe or idle-only pause is not a pass.",
+  "local_preflight_files": [
+    "grug-qualification-config-preflight.json",
+    "grug-qualification-entrypoint-preflight.json",
+    "grug-qualification-serialization-preflight.json"
+  ],
+  "storage_refresh": "https://github.com/marin-community/marin/actions/runs/42158656359",
+  "source_pin": "Source commit is recorded in the launch receipt before GPU submission."
+}
