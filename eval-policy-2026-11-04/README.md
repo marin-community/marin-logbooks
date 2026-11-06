@@ -1,12 +1,12 @@
 # Interim evaluation evidence
 
-INTERIM update r8, as of 2026-11-06T11:08:02.614884+00:00. All 162 Evalchemy cells are reviewed; 44 current Harbor cells are admitted and 28 remain pending. Later admissions update existing issue comments and candidate-card sections.
+INTERIM update r9, as of 2026-11-06T13:31:18.557380+00:00. All 162 Evalchemy cells are reviewed; 45 current Harbor cells are admitted and 27 remain pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
 Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `7f849c9d46e7ea07c0fefc2ab562bb87b86ffddab0c132327d44364aa962f684`.
+`manifest.json` SHA256 `93ec910292ec946614398e67da9093e87788521a2067467a92c929220fd94980`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
@@ -95,6 +95,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/MOPD100--ot-tblite-recovery.json](receipts/MOPD100--ot-tblite-recovery.json) | admitted | `23c3dae8960b2ac9ac82f7b920c77259e1ad127505880cc57ebbce72cae40a8d` |
 | [receipts/MOPD100--piqa.json](receipts/MOPD100--piqa.json) | admitted | `8d2033c9af2e2b079c98b477387a410785fdeb673190649a1f794518fa0c210d` |
 | [receipts/MOPD100--swebench-verified.json](receipts/MOPD100--swebench-verified.json) | admitted | `a17c7e843c34b7f3000d377a0c1d9861629a114b02a8c6adc4cf82acf2f75e75` |
+| [receipts/MOPD100--tb2-recovery.json](receipts/MOPD100--tb2-recovery.json) | admitted | `dfa13dcfbb76e261d845c4bb3c7264481050798c27f7185efb2dc9198fe75de7` |
 | [receipts/MOPD100--triviaqa.json](receipts/MOPD100--triviaqa.json) | admitted | `711ee9f8dfcdfc9a446b25d2d8e7652c1fca13faa71bf9daabf161a653ecdfe7` |
 | [receipts/MOPD100--truthfulqa.json](receipts/MOPD100--truthfulqa.json) | admitted | `50910bd7f0641f5e798519050a5730bea6a5c85f9f027403d7974bed71a21829` |
 | [receipts/MOPD100--winogrande.json](receipts/MOPD100--winogrande.json) | admitted | `9d6556b9f4725b8ff3af1979fb6997890ff086dfd23e4130b62e0b677eee3b33` |
