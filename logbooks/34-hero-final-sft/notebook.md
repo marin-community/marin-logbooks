@@ -454,3 +454,23 @@ serving/RL throughput qualification. The source retains 65536 context capacity,
 but this experiment provides no long-context quality evidence. The only
 remaining administrative work is the separate-main logbooks index PR and its
 normal bounded review monitoring; no further compute is authorized.
+
+
+## 2026-11-05: index handoff published
+
+[Index PR #35](https://github.com/marin-community/marin-logbooks/pull/35) adds
+one row from a separate logbooks-main clone; it does not merge research
+history. The row links the completed evidence commit
+`85c71fd63d4aadded17358ce91e27eeb715a86ed` and preserves the earlier entry.
+Mechanical diff checks and an independent read-only row review found no
+findings; the commit-pinned notebook link is live. The index-only repository
+has no Marin lint-catalog harness. A first shared worktree inherited Marin's
+unavailable commit hook, so publication used a clean logbooks clone with its
+normal repository hooks. No index workflow or hook setting was changed.
+
+[index-handoff.json](index-handoff.json) records the PR/head identity and fixed
+12-hour monitoring deadline. At the initial baseline the PR is open and
+mergeable, with no comments, reviews or inline threads. The existing heartbeat
+now monitors only this PR for actionable feedback or terminal state, ending
+on merge, close, user stop or the recorded deadline. It will not merge without
+explicit permission. No compute work remains.
