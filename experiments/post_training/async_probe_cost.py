@@ -48,21 +48,8 @@ def probe_recipe(interval: int, seed: int, smoke: bool) -> tuple[dict, SkyRLRole
     return cfg, plan
 
 
-def build_comparison(
-    version: str, interval: int, seed: int, smoke: bool, *, qualification: bool = False
-) -> ArtifactStep:
-    if qualification and (smoke or interval != 10 or seed != 1701):
-        raise click.UsageError("The qualification uses full Grug, interval ten and seed 1701.")
+def build_comparison(version: str, interval: int, seed: int, smoke: bool) -> ArtifactStep:
     cfg, plan = probe_recipe(interval, seed, smoke)
-    kind = "qwen" if smoke else "grug"
-    coordinator_timeout_hours = 4 if smoke else 12
-    job_timeout_seconds = 10800 if smoke else 8 * 3600
-    if qualification:
-        cfg["trainer"]["max_steps"] = 4
-        cfg["extra_env"]["ASYNC_PROBE_PAUSE_DIAGNOSTIC"] = "1"
-        kind = "grug-qualification"
-        coordinator_timeout_hours = 1
-        job_timeout_seconds = 1800
     data = ArtifactStep.adopt(
         user_owned_name("documents/async-probe-cost-smoke" if smoke else "documents/async-probe-cost"),
         "2026.10.28.1",
@@ -82,7 +69,7 @@ def build_comparison(
         model = ArtifactHfModel(weights, GRUG_HF, GRUG_REVISION, relative_path="")
     return skyrl_step(
         SkyRLSpec(
-            name=user_owned_name(f"checkpoints/async-probe-cost/{kind}-i{interval}-seed{seed}"),
+            name=user_owned_name(f"checkpoints/async-probe-cost/{'qwen' if smoke else 'grug'}-i{interval}-seed{seed}"),
             version=version,
             config_yaml=yaml.safe_dump(cfg),
             model=model,
@@ -102,8 +89,8 @@ def build_comparison(
             max_retries=0,
             target_cluster="cw-rno2a",
             parent_cluster_config=IRIS_HUB_CLUSTER_CONFIG,
-            coordinator_timeout_hours=coordinator_timeout_hours,
-            job_timeout_seconds=job_timeout_seconds,
+            coordinator_timeout_hours=4 if smoke else 12,
+            job_timeout_seconds=10800 if smoke else 8 * 3600,
             container_profile=job_pb2.CONTAINER_PROFILE_PRIVILEGED,
             wandb_entity="marin-community",
             required_env_vars=("TOGETHER_API_KEY",),
@@ -116,16 +103,9 @@ def build_comparison(
 @click.option("--interval", type=click.Choice(("0", "10", "20")), required=True)
 @click.option("--seed", type=click.Choice(("1701", "2903", "4517")), required=True)
 @click.option("--smoke/--full", default=False)
-@click.option("--qualification", is_flag=True, help="Qualify four updates of the real asynchronous Grug probe path.")
 @rl_build_options
-def main(interval: str, seed: str, smoke: bool, qualification: bool) -> ArtifactStep:
-    return build_comparison(
-        resolve_version("async-probe-cost", None),
-        int(interval),
-        int(seed),
-        smoke,
-        qualification=qualification,
-    )
+def main(interval: str, seed: str, smoke: bool) -> ArtifactStep:
+    return build_comparison(resolve_version("async-probe-cost", None), int(interval), int(seed), smoke)
 
 
 if __name__ == "__main__":

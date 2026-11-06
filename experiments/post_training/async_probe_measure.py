@@ -5,9 +5,10 @@
 
 import asyncio
 import hashlib
+import importlib.util
 import json
-import os
 import time
+from pathlib import Path
 
 import ray
 import torch
@@ -36,7 +37,6 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
     original_optimize = trainer.train_critic_and_policy
     original_sync = trainer._sync_policy_for_rollouts
     smoke = cfg.trainer.placement.colocate_all
-    diagnostic = os.environ.get("ASYNC_PROBE_PAUSE_DIAGNOSTIC") == "1"
     engine_actors = [engine.inference_engine_actor for engine in trainer.inference_engine_client.engines]
     engine_info = ray.get([actor.performance_info.remote() for actor in engine_actors])
     if not all(
@@ -45,6 +45,27 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
     ):
         raise ValueError("The qualified pinned vLLM V2 path changed")
     write_json(root + "/engine-runtime.json", engine_info)
+    source_modules = (
+        "skyrl_train.objective.score_centering",
+        "skyrl_train.objective.score_centering_probe",
+        "skyrl_train.inference_engines.response_topk",
+        "skyrl_train.inference_engines.vllm.compact_chat",
+        "skyrl_train.inference_engines.vllm.vllm_engine",
+        "skyrl_train.trainer",
+        "skyrl_train.workers.megatron.megatron_model_wrapper",
+        "skyrl_train.rollouts.context",
+        "skyrl_train.rollouts.task_worker",
+        "skyrl_train.config.objective_spec",
+        "skyrl_train.utils.importance_ratio_diagnostics",
+        "experiments.post_training.async_probe_measure",
+    )
+    write_json(
+        root + "/runtime-source.json",
+        {
+            module: hashlib.sha256(Path(importlib.util.find_spec(module).origin).read_bytes()).hexdigest()
+            for module in source_modules
+        },
+    )
     write_json(root + "/config.json", OmegaConf.to_container(cfg, resolve=True))
 
     async def publish(step):
@@ -89,8 +110,6 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
         )
         original_finish(batch)
         probes[-1]["metrics"] = {key: value for key, value in trainer.all_metrics.items() if key.startswith("score_")}
-        if diagnostic:
-            write_json(root + f"/diagnostic-probe-{trainer.global_step:04d}.json", probes[-1])
 
     def optimize(batch):
         if any(key.startswith("score_") for key in batch):

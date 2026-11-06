@@ -2287,13 +2287,6 @@ class AsyncVLLMInferenceEngine(InferenceEngineInterface):
 
     async def pause_generation(self) -> None:
         """Apply the configured pause policy while the engine reloads weights."""
-        if os.environ.get("ASYNC_PROBE_PAUSE_DIAGNOSTIC") == "1" and not getattr(
-            self, "_pause_trace_installed", False
-        ):
-            from experiments.post_training.async_probe_pause_trace import install_pause_trace
-
-            install_pause_trace(self)
-            self._pause_trace_installed = True
         engine = self.llm
         outstanding_requests = len(engine.output_processor.request_states)
         policy = self._weight_sync_pause_policy

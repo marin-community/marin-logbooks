@@ -111,6 +111,9 @@ def analyze(manifest, output):
     summaries, rows = [], []
     for run in admitted:
         result, digest = read_result(run["completed_uri"])
+        source, _ = read_result(run["runtime_source_uri"])
+        if source != manifest["runtime_source_hashes"]:
+            raise ValueError(f"Measured runtime source differs from the pinned cohort: {run['tag']}")
         summaries.append(summarize(run, result, digest))
         previous = 0
         for cycle in result["cycles"]:
