@@ -337,6 +337,45 @@ status: active
   earlier than with the `" answer"` seed (SWE 0.14 at step 19, tool-using 0.22 at
   step 15).
 
+### 2026-11-05 - `</`-seeded close row, 20 steps (`replay-10400-ltslash`)
+
+- Published source revision: `876ac0c3b9`, `sft_start_replay.py --close-seed
+  lt-slash --steps 30 --nodes 16 --context-axis-size 4 --data-root
+  s3://marin-rno2a/tmp/ttl=30d/dml/sft_replay_10400`, Iris job
+  `/dml/replay-10400-ltslash-coord` on `cw-rno2a`. Cancelled after step 20 was
+  scored, since the control's no-lead-in peak ends by step 19.
+- External inputs and artifact references: probe output at
+  `s3://marin-rno2a/tmp/ttl=30d/dml/sft_replay_10400/reclose/replay-10400-ltslash/step-*.jsonl`
+  (30-day TTL). Per-step cell means for both runs, recomputed from the
+  per-trajectory dumps by
+  [`analysis/probe_compare_runs.py`](analysis/probe_compare_runs.py), are in
+  [`analysis/probe_ltslash_vs_answer.csv`](analysis/probe_ltslash_vs_answer.csv).
+- Result: `p_first_close` / `p_reclose`, `" answer"` seed versus `</` seed.
+
+  | Step | SWE | Tool-using | Plain |
+  | --- | --- | --- | --- |
+  | 10 | 0.030 / 0.065 vs 0.226 / 0.064 | 0.201 / 0.134 vs 0.181 / 0.042 | 0.105 / 0.163 vs 0.091 / 0.048 |
+  | 12 | 0.109 / 0.188 vs 0.479 / 0.206 | 0.396 / 0.266 vs 0.470 / 0.149 | 0.216 / 0.279 vs 0.251 / 0.146 |
+  | 15 | 0.351 / 0.330 vs 0.564 / 0.306 | 0.555 / 0.395 vs 0.597 / 0.258 | 0.333 / 0.380 vs 0.380 / 0.223 |
+  | 20 | 0.578 / 0.374 vs 0.566 / 0.289 | 0.562 / 0.411 vs 0.574 / 0.251 | 0.313 / 0.374 vs 0.348 / 0.187 |
+
+  No-lead-in hazard at step 20: SWE 0.132 vs 0.130, tool-using 0.140 vs 0.080,
+  plain 0.027 vs 0.007. The `</` arm's hazard starts high (SWE 0.43 at step 0)
+  because it sums p over every continuation token, and SWE continuations contain
+  literal closing tags where `</` is the next token. The hazard is not comparable
+  across these seeds before about step 15.
+- Interpretation and limitations: seeding the close row from the base's
+  closing-tag row speeds up the first close (SWE 0.23 against 0.03 at step 10)
+  and does not speed up the re-close. At step 20, with the first close at or
+  above the control, `p_reclose` is 23% (SWE), 39% (tool-using) and 50% (plain)
+  lower. This does not support the re-close being inherited through the base's
+  closing-tag prediction. One run per arm; the differences are 8 to 19 times
+  the 0.01 noise floor. Steps 21 onward were not run, so whether the gap
+  persists to the 0.4 plateau the control reaches is untested.
+- Decision and next action: if the gap matters for the recipe, extend this arm
+  to 50 to 100 steps and compare plateaus. Experiment 1 (base plain-tag scoring)
+  is still running.
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample
