@@ -474,3 +474,13 @@ mergeable, with no comments, reviews or inline threads. The existing heartbeat
 now monitors only this PR for actionable feedback or terminal state, ending
 on merge, close, user stop or the recorded deadline. It will not merge without
 explicit permission. No compute work remains.
+
+
+## 2026-11-05: index merged; monitoring complete
+
+With explicit user authorization, index PR #35 merged at 01:38:51 UTC on
+November 6 as `fed27a740bb149773b4d429d9ef40e434cfceb63`. The final check
+confirmed the unchanged one-row diff, no review feedback or reported checks,
+and the completed task entry in the merged index. The single heartbeat was
+deleted after verifying terminal state. The experiment, evidence publication
+and administrative handoff are complete.
