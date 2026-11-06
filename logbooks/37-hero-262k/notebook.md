@@ -1,7 +1,7 @@
 ---
 title: "Recipes and start checkpoint for the hero's 262K extension"
 source_repository: "marin-community/marin"
-task_issue: "https://github.com/marin-community/marin-logbooks/issues/PENDING"
+task_issue: "https://github.com/marin-community/marin-logbooks/issues/37"
 related_issues:
   - "https://github.com/marin-community/marin/issues/8435"
   - "https://github.com/marin-community/marin/issues/8506"
