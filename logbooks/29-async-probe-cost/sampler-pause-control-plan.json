@@ -1,0 +1,87 @@
+{
+  "status": "declared; local checks and fresh capacity/storage checks passed; not yet submitted",
+  "purpose": "Isolate the busy-pause failure on the same eight-H100 DP8/EP8 sampler without allocating the unused thirty-two learner GPUs for another diagnostic. This fixed-weight control cannot replace the asynchronous comparison.",
+  "authorization": "The original goal explicitly allows controlled fixed-weight diagnostics to explain costs. The finite three-pair comparison and all runtime contracts remain unchanged.",
+  "maximum_physical_allocations": 1,
+  "gpus": 8,
+  "batch_nodes": 1,
+  "cluster": "cw-rno2a",
+  "gpu_job_timeout_seconds": 1800,
+  "failure_retries": 0,
+  "preemption_retries": 0,
+  "expected_maximum_H100_hours_before_teardown": 4,
+  "configuration_source_uri": "s3://marin-us-east-08a/marin/users/romain/checkpoints/async-probe-cost/grug-pause-diagnostic-i10-seed1701/2026.11.05.2/exports/probe-cost/config.json",
+  "configuration_sha256": "95c2f9ff20d4575e97c04d5194b330b9c42b0a4d76f5df14045664401b1efa01",
+  "workload": "256 distinct seed-1701 Snowball prompt groups, four responses each, through the existing dataset and four rollout workers; first group receives the unchanged K128 probe request and thirty-two-position worker cap. Initial idle pause/resume, then one busy pause 150 seconds after dispatch.",
+  "unchanged": "Pinned Grug model and tokenizer, Snowball source, eight sampler H100s, DP8/EP8, temperature and filters, context/reply lengths, compact adapter, wheel, compilation, graphs, KEEP/cache policy and thirty-second pause bound.",
+  "differences": "No learner placement group, no optimizer or weight update, fixed pretrained weights. Only local input-staging/export paths change in the qualified config. Existing Iris SDK and SkyRL engine/runner factories are reused.",
+  "observer": "A Python thread takes referenced frames under the GIL every twenty seconds; filename, line and function only. Aggregate live candidate widths/numeric-capture membership and the active logprob processor width/decode flag are observed; original method arguments, returns and exceptions pass through unchanged. No faulthandler watchdog, CPU profile, local values, algorithm or fork/wheel edit.",
+  "outputs": "Native IRIS_OUTPUT_DIR record plus the eight actor stderr/stdout files; durable preservation and source-identity checks after terminal state.",
+  "after_control": "Preserve evidence and cost. Identify a narrow repair before launching further comparison windows; consult before any actual scope or runtime contract change.",
+  "declared_utc": "2026-11-06T01:24:41.653489+00:00",
+  "tokenizer_id": "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05",
+  "tokenizer_revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0",
+  "data_uri": "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1",
+  "capacity": {
+    "observed_utc": "2026-11-06T01:18:09.123149+00:00",
+    "semantics": "Ready, uncordoned H100 nodes and current Pending/Running GPU pod requests. Whole-node figures do not reserve capacity or certify CPU/memory fit; Iris/provider scheduling is authoritative.",
+    "pools": [
+      {
+        "cluster": "cw-rno2a",
+        "region": "RNO2A",
+        "context": "marin-rn02a_RNO2A",
+        "schedulable_h100_nodes": 60,
+        "allocatable_h100s": 480,
+        "active_requested_h100s": 444,
+        "active_gpu_pods_on_h100": 57,
+        "whole_h100_nodes_with_no_gpu_requests": 3,
+        "unbound_gpu_requests_all_types": 0
+      },
+      {
+        "cluster": "cw-us-east-02a",
+        "region": "US-EAST-02A",
+        "context": "marin-gpu_US-EAST-02A",
+        "schedulable_h100_nodes": 31,
+        "allocatable_h100s": 248,
+        "active_requested_h100s": 237,
+        "active_gpu_pods_on_h100": 31,
+        "whole_h100_nodes_with_no_gpu_requests": 1,
+        "unbound_gpu_requests_all_types": 0
+      }
+    ]
+  },
+  "storage_workflow": "https://github.com/marin-community/marin/actions/runs/42142751859",
+  "input_preflight": {
+    "config_sha256": "95c2f9ff20d4575e97c04d5194b330b9c42b0a4d76f5df14045664401b1efa01",
+    "metadata_staged_without_weight_shards": true,
+    "tokenizer_loaded": true,
+    "real_small_source_dataset_rows": 104,
+    "real_task_collation_and_probe_request": true,
+    "sampler_gpus": 8,
+    "DP": 8,
+    "EP": 8,
+    "TP": 1,
+    "PP": 1,
+    "max_logprobs": 129,
+    "KEEP_clear_cache": true,
+    "K": 128,
+    "max_probe_positions": 32,
+    "samples_per_prompt": 4,
+    "GPU_allocations": 0
+  },
+  "source_collection": "Native output also saves the actual installed vLLM pause/output-processing Python files and eight actor/core-worker logs for comparison with the pinned source reference.",
+  "storage": "storage-before-sampler-control.json",
+  "data_sha256": "54e40005a259f34d5234cc864bc3284bbb8a9db5ff0154b430a6d26553bb40ce",
+  "observer_forwarding_check": {
+    "scope": "Protocol smoke only: no claim of GPU/vLLM integration qualification.",
+    "original_argument_return_and_exception_identity": true,
+    "original_keep_and_clear_cache_keywords": true,
+    "gpu_allocations": 0
+  },
+  "source_sha256": {
+    "async_probe_sampler_pause.py": "508206a6942eff22e374e304f836a4ca26a4115a0a3e424bd134d6547222778e",
+    "async_probe_sampler_pause_measure.py": "0fd46fd96ff3d6442049397bb9c796dce31ea602404eed4b810e79c572a14c74",
+    "async_probe_pause_trace.py": "e83a42bc62521bb9c9beb807c542885a004ef96cbe8b076faee64bb2a4413b48"
+  },
+  "source_checks": "Required root pre-commit passed, including Ruff, Black, AST and Markdown checks."
+}
