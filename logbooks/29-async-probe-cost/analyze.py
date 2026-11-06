@@ -35,6 +35,27 @@ def paired_interval(ratios):
     }
 
 
+def comparable_config(run, config):
+    """Check each arm, then remove only its seed, cadence and output identities."""
+    trainer = config["trainer"]
+    algorithm = trainer["algorithm"]
+    if (
+        trainer["seed"] != run["seed"]
+        or trainer["max_steps"] != 30
+        or algorithm["score_centering_enabled"]
+        or algorithm["score_centering_top_k"] != 128
+        or algorithm["score_centering_probe"]["interval"] != run["interval"]
+        or algorithm["off_policy_correction"] != "tis"
+    ):
+        raise ValueError(f"Resolved configuration differs from the declared arm: {run['tag']}")
+    for key in ("seed", "ckpt_path", "export_path", "run_name"):
+        del trainer[key]
+    del algorithm["score_centering_probe"]["interval"]
+    retention = config["generator"]["trajectory_retention"]
+    del retention["output_path"], retention["run_id"]
+    return config
+
+
 def summarize(run, result, digest):
     cycles = result["cycles"]
     if [row["step"] for row in cycles] != list(range(1, 31)) or not result["optimizer_isolation"]:
@@ -43,6 +64,8 @@ def summarize(run, result, digest):
     observed = [row for row in result["probes"] if row["metrics"].get("score_centering_probe/observed", 0) > 0]
     if run["interval"] and not observed:
         raise ValueError(f"No consumed nonempty probes: {run['tag']}")
+    if not run["interval"] and result["probes"]:
+        raise ValueError(f"Disabled-probe control contains probe records: {run['tag']}")
     selected_lengths = [length for row in observed for length in row["response_lengths"]]
     counts = [count for row in observed for count in row["sampled_positions_per_response"]]
     if counts and max(counts) > 32:
@@ -108,13 +131,23 @@ def analyze(manifest, output):
         raise ValueError("Repeated admitted seed/interval window")
     if any((seed, interval) not in keys for seed in seeds for interval in (0, 10)):
         raise ValueError("Need one admitted off and interval-ten window for each declared seed")
-    summaries, rows = [], []
+    summaries, rows, common_config = [], [], None
     for run in admitted:
         result, digest = read_result(run["completed_uri"])
         source, _ = read_result(run["runtime_source_uri"])
         if source != manifest["runtime_source_hashes"]:
             raise ValueError(f"Measured runtime source differs from the pinned cohort: {run['tag']}")
-        summaries.append(summarize(run, result, digest))
+        summary = summarize(run, result, digest)
+        config_uri = run["completed_uri"].rsplit("/", 1)[0] + "/config.json"
+        config, config_digest = read_result(config_uri)
+        config = comparable_config(run, config)
+        if common_config is None:
+            common_config = config
+        elif config != common_config:
+            raise ValueError(f"Resolved settings differ between cohort windows: {run['tag']}")
+        summary["config_sha256"] = config_digest
+        summary["common_config_sha256"] = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
+        summaries.append(summary)
         previous = 0
         for cycle in result["cycles"]:
             elapsed = cycle["complete_cycle_elapsed_seconds"]
