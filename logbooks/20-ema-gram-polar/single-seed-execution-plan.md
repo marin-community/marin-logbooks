@@ -472,3 +472,12 @@ See reference-probe-r01-accepted.json. Permanent guard
 scratch/20261106-reference-counter-3733-launch.json must never be reset or reused.
 Reuse sole observer91651/PID70306 and follower70493; startup/restore/probe outputs
 remain unvalidated. Remaining counter18665/33597 probes have not been launched.
+
+2026-11-06 19:06 UTC: counter3733 reference probe startup validated once;
+see reference-probe-r01-started.json and
+scratch/20261106-reference-r01-startup/validated.json. Four
+original attempt0 UIDs/workers, four finished ONLINE logging checks and four
+native ONLINE runs match source/config/request through original task-tagged
+follower URLs. W&B config has no task UID; reconcile wrapper attempt archives
+at completion. Full restore and scientific outputs remain unvalidated. Reuse
+observer91651/PID70306/follower70493, never repeat unchanged startup/host reads.

@@ -2585,3 +2585,28 @@ The previous issue20 status comment approached GitHub's size limit. Its entire
 body is preserved in [the exact JSON archive](issue20-comment-history-20261106-1827.json)
 with its SHA256 and a [Markdown reading copy](issue20-comment-history-20261106-1827.md).
 The current issue comment links to this published history and summarizes active work.
+
+### 2026-11-06 19:06 UTC — first scientific probe startup validated
+
+The counter3733 alpha0.25 scientific probe is canonically RUNNING with four
+tasks and zero recorded failures or preemptions. The one-time startup collector
+cached four original attempt0 task UIDs and four distinct assigned workers,
+four finished ONLINE host logging checks, and four running native ONLINE probe
+runs. Each run matched the published source files, exact resolved training
+configuration and its requested mode. Native requests also matched checkpoint
+step-3732/counter3733, eight held-out Wikipedia batches at offset0, and the
+three common step sizes. See [startup evidence](reference-probe-r01-started.json).
+
+The original task/attempt-tagged follower lines join each task to its host and
+native W&B URLs. W&B configs do not themselves contain task UIDs; the wrapper's
+generation-bound attempt archive must reconcile those exact UIDs at terminal
+collection. Startup validation does not establish successful full restoration
+or scientific results. All four native summaries are empty in the cached startup snapshot. Preserve the original observer91651/PID70306 and
+follower70493. Never repeat startup task reads or finished host APIs absent an
+attempt/failure change; reuse scratch/20261106-reference-r01-startup/validated.json.
+
+The three nonzero long runs advanced at 19:05 UTC to log labels963,4553,6651
+for alpha0.125,0.25,0.5, respectively, with finite training losses and no
+investigation flags. Full 37,335-update outcomes, all three scientific probe
+results and final conclusions remain required. The later counter18665/33597
+probes are unlaunched.
