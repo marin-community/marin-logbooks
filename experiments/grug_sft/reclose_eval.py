@@ -11,7 +11,9 @@ pass gives p(``<|end_think|>``) at every position. Per trajectory it reports:
   sampling model's first re-close (or the end): the chance of closing again along this fixed text;
 * ``p_reclose``: p at the sampling model's own re-close, when it had one;
 * ``p_first_close``: p at the first close, i.e. whether the close token is learned at all;
-* ``p_premature``: mean p over the reasoning before the first close.
+* ``p_premature``: mean p over the reasoning before the first close;
+* ``p_ge1`` / ``p_ge2``: the chance of at least one / at least two closes anywhere along this fixed text, from
+  the first reasoning token through the same end as ``hazard``, treating each position as an independent draw.
 """
 
 import json
@@ -84,17 +86,32 @@ def pack(
     return tokens, segment_ids, placements
 
 
+# Keeps 1 - p positive in float64 when a close probability rounds to 1 in bfloat16.
+MAX_CLOSE_PROBABILITY = 1.0 - 1e-9
+
+
+def close_count_tail(p: np.ndarray) -> tuple[float, float]:
+    """P(at least one) and P(at least two) successes among independent draws with probabilities ``p``."""
+    p = np.clip(p.astype(np.float64), 0.0, MAX_CLOSE_PROBABILITY)
+    none = float(np.exp(np.log1p(-p).sum()))
+    exactly_one = none * float((p / (1.0 - p)).sum())
+    return 1.0 - none, max(0.0, 1.0 - none - exactly_one)
+
+
 def trajectory_stats(t: dict, p: np.ndarray) -> dict:
     """Stats for one trajectory from ``p[j]`` = p(next token is the close | ids[: j + 1])."""
     close, reclose = t["close"], t["reclose"]
     last = reclose if reclose is not None else len(t["ids"]) - 1
     continuation = p[close:last].astype(np.float64)
+    p_ge1, p_ge2 = close_count_tail(p[t["reasoning_start"] - 1 : last])
     return {
         "hazard": float(1.0 - np.prod(1.0 - continuation)),
         "mean_p": float(continuation.mean()),
         "p_reclose": float(p[reclose - 1]) if reclose is not None else None,
         "p_first_close": float(p[close - 1]),
         "p_premature": float(p[t["reasoning_start"] - 1 : close - 1].mean()),
+        "p_ge1": p_ge1,
+        "p_ge2": p_ge2,
     }
 
 
@@ -105,7 +122,7 @@ def aggregate(trajectories: list[dict], stats: list[dict]) -> dict[str, float]:
         cells[f"{t['group']}/lead_in" if t["bridge"] else f"{t['group']}/no_lead_in"].append(s)
     out = {}
     for cell, rows in cells.items():
-        for key in ("hazard", "mean_p", "p_first_close", "p_premature"):
+        for key in ("hazard", "mean_p", "p_first_close", "p_premature", "p_ge1", "p_ge2"):
             out[f"reclose/{cell}/{key}"] = float(np.mean([r[key] for r in rows]))
         recloses = [r["p_reclose"] for r in rows if r["p_reclose"] is not None]
         if recloses:
