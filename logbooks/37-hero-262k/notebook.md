@@ -236,6 +236,15 @@ Not tested at decision time:
 - Export of the second finalist. Hero exports refuse log scaling until serving support lands.
 - Commits on the deploy head that no arm ran, including Marin #10556, which skips short-convolution weight gradients for frozen weights. Reading `api.py:92`, the trained weight takes the old backward path, so we expect no effect on hero training, and a CPU check with stand-in kernels matched values, gradients and HLO op count. We did not check compiled GB200 code. The launcher path with the deploy constants has also not run at 262K.
 
+### 2026-11-06 - Second finalist's start and landing
+
+This entry updates the decision above, whose "undecided" start and "needs Marin #10986" no longer hold.
+
+- Start: the second finalist is a sibling of the first. It starts from the merged step-390251 and does not continue from the first finalist. Data, learning-rate schedule and shape match the first, and only the recipe changes.
+- Landing: it launches from a branch that carries Marin #10986 and its constants. That branch merges to main only if this recipe wins, at the comparison on Monday 2026-11-09. Marin #11041 stays the first finalist's deploy PR.
+- Check on the first finalist's head: W&B shows that no training run has used it. The only Global 1.84 run is the no-training eval.
+- Limit: the finalists share a start and differ in recipe, with one seed each, so training noise remains unmeasured in their comparison.
+
 ### [PENDING: first finalist run ID, links, launch time and results]
 
 ### [PENDING: second finalist results and comparison]
