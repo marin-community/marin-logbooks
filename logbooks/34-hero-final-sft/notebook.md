@@ -300,3 +300,40 @@ submitted. Its bounded compact-versus-merged comparison records observed
 output differences; it does not qualify serving parity. Selected compact
 preservation uses fsutil verified-copy into the durable `compact-step64`
 prefix; completion/readiness must be independently checked.
+
+
+## 2026-11-05: selected export completed; response panel prepared
+
+The selected export succeeded on all 16 tasks with no failures or preemptions.
+[export-result.json](export-result.json) pins its native checkpoint, permanent
+step-64 metadata, original base/SFT configuration, manifest hash and merge
+comparison. Native metadata digest is
+`a801744f9c895928b708f76a47f1cb42434c2fd86fdd2759ddb18c7c2e1e364f`.
+The donor substitutions, rank/alpha, frozen routing-control policy and BF16
+merge metadata match the evaluated state. No other checkpoint was exported.
+
+The bounded merge observation covers 64 final-EOT positions and the full
+128256-token vocabulary. All values are finite. Maximum/mean absolute logit
+difference is 2.85773/0.280662; maximum probability difference is 0.101664, with
+one greedy disagreement. There is no declared acceptance tolerance, and this
+comparison does not qualify serving parity. Generation must be reviewed on
+the actual exported weights. Compact verified-copy remains in progress; it
+had staged 746897274 bytes across 621 objects at the latest metadata check.
+
+The frozen 100-response panel is prepared against this exact export using
+`rollout_sanity prepare`. Cases, order, seeds, temperature 0.7 and the 2048-token
+cap match the archive exactly. Model context capacity remains 65536, with
+physical padding 4096, batch 64, EOT 128009 and the archived dropless native
+evaluation configuration. Exact normalized user-turn/full-conversation checks
+found no matches against either pinned SFT split; this does not establish
+absence of semantic or pretraining overlap.
+
+[rollout-launch.json](rollout-launch.json) pins the supported `rollout_sanity
+run request.json` command, source `f6ae0fe02bf00ed6eca5915f9cba649a90ce146d`,
+request SHA256
+`882e6c8d79f2ed7302ddebf22d86ea6a84fa6f9308ec70b599fa06fabe043f7e`,
+a fresh `rollout-v1` root, one 16-by-4 GB200 gang, two-hour runtime bound and
+zero failure/preemption retries. Source and configuration are published before
+submission, which must occur from a clean checkout at the pinned source.
+The panel has not yet run. Review all 100 raw outputs, stop/cap reasons, token
+anomalies and content failures before drawing a response-quality conclusion.
