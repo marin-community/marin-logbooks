@@ -30,10 +30,11 @@ The branch tree is arm code at `92958f7a84`. Its merge commit records, without c
 | `0fb0d0541f` | Memory diagnostics |
 | `d0d4e15f45` | Deploy head used for the one-rack stop-path test |
 | `70bf6bbc0a` | Head of the deploy PR, Marin #11041, when this record was written |
+| `133d4e4d55` | Frozen-bias arm: `1eed8fff84` plus one diagnostic commit and a test-only import sort |
 
 Files beside this notebook:
 
-- `results/mrcr/<arm>/`: per-source MRCR losses and metrics for the seven arms at step 390351.
+- `results/mrcr/<arm>/`: per-source MRCR losses and metrics at step 390351 for the seven arms and, in `frozen/`, the frozen-bias arm. `recovery_stat.py` tests the seven arms only.
 - `results/overnight/`: tables behind the overnight results, and the arms' resolved configs in `plan_configs.json`.
 - `results/merge/`: merge-study scores, with host topology fields removed.
 - `analysis/`: `recovery_stat.py` is the corrected test; run it with `results/mrcr` as its argument. The other scripts generated the tables. Many read a private bucket or W&B and need project credentials.
@@ -262,6 +263,57 @@ Global-only is lower on all 19 subsets at both values: by a mean of 0.0024 at 1.
 ### 2026-11-06 - Run length
 
 Each finalist trains 3,240 steps, from step 390251 to stop step 393491, or 149.5B tokens. This replaces the 200B and 4,335 steps planned earlier. About 27 h per finalist at 29.2 s/step with saves (estimate). The 100-step arms ran on the 4,335-step schedule. [PENDING: confirmation of the learning-rate schedule for this length.]
+
+### 2026-11-06 - Frozen router bias, not adopted
+
+The router bias is a per-layer, per-expert offset on routing scores. Each step, the hero replaces it with the values solved on the previous batch, so it follows one batch and is not a running average. In the Global 1.88 arm its norm rose from 67.23 to 73.52 over 100 steps. This arm asks whether holding the checkpoint's bias changes the results. The main risk is that a bias averaged over 65K training does not balance the 262K mix, so drops rise.
+
+- Rule, fixed before submission: launch as planned by default. Reject if drops rise over 2x. Adopting needs real-text loss better than the control by more than 0.0007, with drops and retrieval no worse. We could still decline, because 100 steps cannot show long-run drops.
+- Decision: not adopted. Both finalists stay unfrozen, Global 1.84 and log floor 65536 squared. Drops did not reach the reject line, and clean macro did not reach the adopt line.
+- Run: [`hero-lce11-frozen-global188`](https://wandb.ai/marin-community/marin_moe/runs/hero-lce11-frozen-global188), eval run `hero-mrcr-lce11-frozen-global188-step390351`. Control: `hero-lce11-merged-global188`.
+- Source: training at `133d4e4d55`. Evals at `fcf4573757` with the recipe flags of the control, whose no-training baseline also serves here.
+- Command: the Global 1.88 arm's command above, with its run ID and temporary prefix changed, and the environment variable that turns on the diagnostic:
+
+```bash
+HERO_FROZEN_ROUTER_BIAS=390251 python -m experiments.grug.moe_hero_ep.launch_diagnostics --run-id hero-lce11-frozen-global188 \
+  --qk-mult 1.66 --qk-mult-long-scale 1.133 <other flags as in the launch-scale arms>
+```
+
+- Environment: as the control, including merged step-390251, seed, data and queue 512. A token-by-token comparison of the dry-built specs found differences only in run ID, checkpoint path, output path and step fingerprint.
+- Freeze: after the restore, the diagnostic sets the pending bias to the negated stored `params.router_bias`, the average over 11 checkpoints, and keeps it. It does not use the checkpoint's own pending bias, which comes from one batch at norm 69.18. So the two runs apply different biases from the first step. The applied norm was 67.23333 on all 100 steps, and in the final checkpoint the largest element change from merged was 3e-8. That checkpoint is under the one-day prefix `s3://marin-us-east-08a/tmp/ttl=1d/hero-lce11-frozen/global188/`, so it expires unless copied.
+- Files: `results/mrcr/frozen/`, and `results/overnight/frozen_results.txt`, the output of `analysis/overnight/frozen_res.py` with `results` as its argument. It reads W&B.
+
+Results at step 390351, frozen and control, one seed each. Intervals resample documents only.
+
+| Measure | Frozen | Control | Change [95%] | Rule |
+|---|---|---|---|---|
+| Drop fraction, mean, all 100 steps | 3.083e-4 | 2.927e-4 | 1.05x | Reject over 2x |
+| Drop fraction, mean, first 20 | 3.193e-4 | 3.075e-4 | 1.04x | |
+| Drop fraction, mean, last 20 | 3.327e-4 | 3.115e-4 | 1.07x | |
+| Drop fraction, max | 6.235e-4 | 5.864e-4 | 1.06x | |
+| Clean macro, 4K | 1.6864 | 1.6866 | -0.00014 | Adopt needs over 0.0007 better |
+| Clean macro, 65K | 1.6474 | 1.6475 | -0.00014 | Adopt needs over 0.0007 better |
+| Clean macro, 262K | 1.6449 | 1.6451 | -0.00015 | Adopt needs over 0.0007 better |
+| MRCR full NLL | 0.0253 | 0.0263 | -0.0010 [-0.0015, -0.0006] | No threshold |
+| MRCR recovery | 0.9827 | 0.9831 | -0.0004 [-0.0012, +0.0004] | No threshold |
+| MRCR distractor NLL | 1.0653 | 1.0652 | +0.0001 [-0.0005, +0.0007] | |
+| Train cross-entropy, 100 steps | 0.8705 | 0.8708 | -3.20e-4 | |
+| Grad norm, median | 0.207 | 0.190 | | |
+| Grad norm, largest | 83.56 | 6.31 | | |
+| Steps clipped, all 100 | 5 | 7 | | |
+| Step time, median | 29.4 s | 29.2 s | | |
+| Peak memory | 132.52 GiB | 132.52 GiB | | |
+
+Unexplained gradient spike: the grad norm reached 83.56 at step 390318, against 0.186 in the control on the same step. It is the largest value in all eight 11-rack arms; the next largest is 19.65. The frozen arm's next-largest value is 5.74. Clipping scaled the step to norm 1.0. Train cross-entropy on that step is 0.9266 against 0.9269, about 0.1 above the steps next to it in both runs. Drops are 2.12e-4 against 2.25e-4. The next step's grad norm is 0.317. We have not found the cause, and one run cannot show whether freezing caused it. Because that is open, we cannot rule out a spike like this in an unfrozen run.
+
+Interpretation:
+
+- Clean macro is lower on 13 of 19 subsets at 262K, but the change is within checkpoint jitter of 0.0002 to 0.0007. `macro_loss` moves more at 65K and 262K (-0.0011, -0.0008), mostly from ptb (-0.0162, -0.0099), which we leave out of clean macro and which goes the other way at 4K (+0.0107).
+- Full NLL is lower, with an interval that excludes zero, and the rule set no threshold for it. As in the launch-scale arms, the interval excludes seed and checkpoint noise. Recovery does not separate.
+- Train cross-entropy is below the control on 99 of 100 steps. The mean gap of -3.20e-4 is larger than the one-rack repeat band of 1.2e-4 to 1.5e-4. It is -3.63e-4 over the first 20 steps and -2.55e-4 over the last 20.
+- Drops are higher on 63 of 100 steps, and the largest 10-step ratio is 1.19. The fitted change over 100 steps is +9.3e-6 frozen and -8.9e-6 control, small against step-to-step scatter. 100 steps cannot show long-run drops. W&B logs only total drops, so we have no per-layer view.
+- The spike at step 390252 remains with the bias held: 5.74 against 6.31. So a change of bias at that step does not explain it.
+- The frozen arm also logs the norm the solver would have applied: mean 73.94, range 69.62 to 80.05, with no trend across 10-step means. The solve depends on the current bias through each token's threshold, so this is the response to the frozen bias on these weights. It does not stand in for the unfrozen trajectory.
 
 ### [PENDING: first finalist run ID, links, launch time and results]
 
