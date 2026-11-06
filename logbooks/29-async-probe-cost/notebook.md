@@ -259,3 +259,7 @@ The interval-ten seed1701 version2 arm completed thirty updates and publications
 The [interval-ten seed2903 run](grug-i10-seed2903-2026.11.06.2-admission.json) completed thirty updates and publications0–30. Its source, full comparable configuration, optimizer isolation and consumed-probe coverage pass admission; all five GPU tasks succeeded. Its paired control has started next, as declared. Three of six primary windows are admitted. No three-pair overhead estimate or interval20 decision has been made.
 
 [Allocation through on2903](cohort-through-on2903-allocation.json) is181.424204H100-hours for the current cohort including the interruption, or320.677724 across all work before the active control. Completed on2903 evidence is copying; all fourteen earlier stopped temporary prefixes are verified empty with recovery retained.
+
+## Completed on2903 recovery is verified
+
+The [full on2903 version2 archive](cohort-on2903-v2-archive-verification.json) contains 8,270 payload files and 1,038,038,568 bytes. Every source and destination path, size and ETag matches its readiness manifest, SHA `054d3e9ffe204450eb475264c91d86956983d8db1f37ec0033cf6dbe8631ef76`. All five consumers succeeded, and their provider pods are gone. This recovery record is published before removing the exact temporary on2903 prefix. The active off2903 prefix is separate and remains protected. Fifteen archives retain 92,160 payload objects and 5,336,789,047 bytes; fourteen earlier sources are removed so far.
