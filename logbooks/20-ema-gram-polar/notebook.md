@@ -2249,3 +2249,14 @@ validator fields and binds each original full completion report by path and
 SHA256; raw evidence maps remain in those reports. This avoids duplicating
 large evidence indexes in the new snapshot. Numerical and launch gates are
 unchanged. The only new candidate is alpha0.5, ridge0.0001, LR0.0000625.
+
+### 2026-11-06 03:01 UTC — accept recursive R06 expansion
+
+R06 was accepted once as `ema-gram-20-expand-seed0-r06-20261106-00`, with alpha0.5,
+ridge0.0001, LR0.0000625 and seed0. The unchanged7630-update v4-32
+worker passed the full26-component catalog gate; source `08a1e57a552f42344ec57ddd6977fa4c255c7c31`
+is frozen in a dedicated clean published worktree. The shared permanent registry
+retains its launch guard. Sole observer94605/PID24368 owns polling
+and its original follower. [Acceptance evidence](subset-expansion-r06-launched.json)
+is not startup or scientific completion. Preserve default preemption/retries and
+the complete update schedule, with no wall-clock limit.

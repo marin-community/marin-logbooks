@@ -367,3 +367,18 @@ is not scientific completion; all long-run metric, checkpoint, ONLINE and
 terminal-attempt checks remain required. Use that accounting record when
 collecting final results rather than the unused alpha0 candidate in the new
 campaign's configuration bundle.
+
+## Baseline execution and recursive expansion update — 2026-11-06
+
+The user authorized execution of the settled baseline. Alpha0 seed0 was accepted
+once and its original attempt, execution-host ONLINE logging and finite native
+training were validated. The earlier preparation-only status above is historical.
+Use [the accepted receipt](alpha0-long-run-accepted.json) for exact-once adoption;
+retain the baseline's original observer and complete37,335 updates at target4.0.
+
+R01 through R04 are validated and their observers retired naturally. Reuse their
+completion caches. R04 leaves alpha0.5/ridge0.0001 at its lower LR boundary;
+[accepted R06](subset-expansion-r06-launched.json) tests LR0.0000625 under the
+same pilot schedule. R05 still requires terminal validation. Global selection,
+new nonbaseline confirmations and the prescribed scientific probes remain gated
+on the complete recursive selection protocol.
