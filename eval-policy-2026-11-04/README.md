@@ -1,12 +1,12 @@
 # Interim evaluation evidence
 
-INTERIM update r5, as of 2026-11-05T23:33:08.154680+00:00. All 162 Evalchemy cells are reviewed; 38 current Harbor cells are admitted and 34 remain pending. Later admissions update existing issue comments and candidate-card sections.
+INTERIM update r6, as of 2026-11-06T03:48:19.347085+00:00. All 162 Evalchemy cells are reviewed; 41 current Harbor cells are admitted and 31 remain pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
 Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `b154a6e8d6d24f4dfed27069570077e58c5557767c7fd959e4de715130d9aba0`.
+`manifest.json` SHA256 `9cf24620dd1670472d8ccbf3590fb7ee3dc7d35e3160c85715c35d50e5147a9e`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
@@ -99,8 +99,10 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/MOPD100--winogrande.json](receipts/MOPD100--winogrande.json) | admitted | `9d6556b9f4725b8ff3af1979fb6997890ff086dfd23e4130b62e0b677eee3b33` |
 | [receipts/MixedRS727--aime24.json](receipts/MixedRS727--aime24.json) | admitted | `a422304224c802c6e7a5447342cee0d660e1194461523272179748405e475c53` |
 | [receipts/MixedRS727--bfclparity-pi.json](receipts/MixedRS727--bfclparity-pi.json) | admitted | `c2acff3096774c631258cef640d750d2efe0f7873c2b37713742e78a0ddd8eec` |
+| [receipts/MixedRS727--bixbench-pi.json](receipts/MixedRS727--bixbench-pi.json) | admitted | `ceb0a3262fd5101c60d65063ab6e5f5164adec6339ab4321c74e660da3cd6f5e` |
 | [receipts/MixedRS727--boolq.json](receipts/MixedRS727--boolq.json) | admitted | `9cbe3b7d3612fc6c58a991bfd46d9c23a2657d60750c51b18c7430be4497f0f8` |
 | [receipts/MixedRS727--cruxeval.json](receipts/MixedRS727--cruxeval.json) | admitted | `baf51ade1c3cccc09726a42a1d49c62dd7404d1208958e285d5fca1168526449` |
+| [receipts/MixedRS727--ds-1000-local.json](receipts/MixedRS727--ds-1000-local.json) | admitted | `0df297224cec1b4224cd71995308baf16e83d21203e2f3b29342285d14c7a547` |
 | [receipts/MixedRS727--financebench.json](receipts/MixedRS727--financebench.json) | admitted | `475faf9457bf9f6ef9de65ff28b7ef384b47bbda46babc472a1b630e662d2a2d` |
 | [receipts/MixedRS727--gpqa-diamond.json](receipts/MixedRS727--gpqa-diamond.json) | admitted | `9e22fe8f000e3ae380e4f1eab201e778464cd695e247bd2f0825c8f4e281bdbe` |
 | [receipts/MixedRS727--gsm8k-0shot.json](receipts/MixedRS727--gsm8k-0shot.json) | admitted | `f03ec9f9459b107a1be7a222458d537fe5f7fe44155932c43921abc3cc218718` |
@@ -112,6 +114,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/MixedRS727--mrcr.json](receipts/MixedRS727--mrcr.json) | admitted | `90fe30d9686f3069d64170f6b7030fb2ee93ca6b0559c5c87190d5381038c5ee` |
 | [receipts/MixedRS727--nupa.json](receipts/MixedRS727--nupa.json) | admitted | `ac292f16d9cf5f53a4d3b5ca148ca0fb624dc91f04a6ebad456dabd4c84b8d73` |
 | [receipts/MixedRS727--olympiadbench.json](receipts/MixedRS727--olympiadbench.json) | admitted | `ca23dca3ea1145cd47d139fb12f20952f28a8652859c1a250362a22717f8bfce` |
+| [receipts/MixedRS727--ot-tblite-recovery.json](receipts/MixedRS727--ot-tblite-recovery.json) | admitted | `ff9bf4903fa3b978bba4d5b0b557aa20b68d934016f54e53c62ea7892931d056` |
 | [receipts/MixedRS727--piqa.json](receipts/MixedRS727--piqa.json) | admitted | `3af64162758499e31a6a8faa287810f2cd8ffeb88967dfe1d07b8144d9bcb680` |
 | [receipts/MixedRS727--swebench-verified.json](receipts/MixedRS727--swebench-verified.json) | reconstruction | `18aea6246cb8d31dac80940596a4f84287a8348f75161085d1ee3d9b9fcdf771` |
 | [receipts/MixedRS727--tau3-pi.json](receipts/MixedRS727--tau3-pi.json) | admitted | `8bfbbff9f5951a7f04ece6e89b32a363c427ef74d5e2b6ad096c46d31b28e621` |
