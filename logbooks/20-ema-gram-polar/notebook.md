@@ -2260,3 +2260,14 @@ retains its launch guard. Sole observer94605/PID24368 owns polling
 and its original follower. [Acceptance evidence](subset-expansion-r06-launched.json)
 is not startup or scientific completion. Preserve default preemption/retries and
 the complete update schedule, with no wall-clock limit.
+
+### 2026-11-06 03:04 UTC — validate R06 startup identities
+
+R06 is canonically RUNNING on four assigned workers, with zero failures or
+preemptions. All four original attempt0 identities join to finished ONLINE
+host logging checks; exact source, worker and bundle hashes, native configuration,
+seed and learning rate passed [startup validation](subset-expansion-r06-started.json).
+The native ONLINE run is `ema-gram-pilot-3e18-a0.5-seed0-9fd59fb65fba-2026.11.06.01-6adfdf90b19e`. It is compiling its first
+step; the startup snapshot has no training step or loss yet. Finite progress
+remains pending. Reuse these startup and finished host caches; the native-only
+helper06 and local progress recorder now cover this campaign.
