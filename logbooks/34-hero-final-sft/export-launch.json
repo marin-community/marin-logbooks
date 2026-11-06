@@ -1,0 +1,44 @@
+{
+  "name": "hero-final-sft-export-20261105-v1",
+  "source_revision": "e81d24d4328a1046043fdcf90dde8453f8d562ec",
+  "controller_cluster": "cw-us-east-08a",
+  "resources": {
+    "cpu": 120.0,
+    "ram": "890g",
+    "disk": "1t",
+    "device": {
+      "variant": "GB200",
+      "kind": "gpu",
+      "count": 4
+    },
+    "preemptible": true,
+    "zone": null,
+    "target_cluster": null,
+    "replicas": 16,
+    "image": null,
+    "container_profile": null
+  },
+  "processes_per_task": 4,
+  "command": [
+    "python",
+    "-m",
+    "experiments.grug.moe_hero_ep.sft_heldout",
+    "export",
+    "request.json",
+    "--step",
+    "64",
+    "--destination",
+    "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/native-step64-v1"
+  ],
+  "request_path": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/requests/heldout-v1/request.json",
+  "request_sha256": "05564dd2edcc05f7ccf3c39c0fbdf8e579f5f56816e09afd081b9ec2d6f7bbb4",
+  "output_root": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/native-step64-v1",
+  "moe_implementation": "ragged_all_to_all",
+  "remat_mode": "offload_carry",
+  "cache_prefix": "s3://marin-us-east-02a/marin/grug/hero-format-sft/2026.10.21/sft-phase-2416e9d7/cache-v3",
+  "priority": "interactive",
+  "runtime_hours": 1,
+  "scheduling_hours": 1,
+  "preemption_retries": 0,
+  "failure_retries": 0
+}

@@ -267,3 +267,36 @@ the earlier step. One existing heartbeat owns monitoring. No more gradient
 updates or duplicate evaluator launch is authorized. Report validation, one
 selected native export, durable compact preservation and the frozen
 100-response review remain pending.
+
+
+## 2026-11-05: held-out selection favors step 64
+
+The evaluator succeeded on all 16 tasks with zero failures or preemptions.
+Its exact request, canonical report digest, three checkpoint metadata pins,
+256 conversation identities and 48013 assistant targets match. Every recorded
+likelihood and routing metric is finite. [heldout-result.json](heldout-result.json)
+retains the full report URI, byte SHA256, semantic digest and summary.
+
+| Update | Assistant NLL | Final EOT mean NLL | EOT top-1 / 256 | Eligible |
+| --- | --- | --- | --- | --- |
+| 64 | 1.629725817 | 0.678626474 | 215 | yes |
+| 96 | 1.674105794 | 0.672852414 | 210 | no |
+| 128 | 1.698549492 | 0.672220265 | 210 | no |
+
+The fixed rule selects **step 64**. The longer runs have higher assistant NLL
+and lower EOT top-1 counts on this panel. Final EOT likelihood improves slightly
+while its top-1 count decreases; neither teacher-forced statistic measures
+generated stopping. This panel is used for selection, not an unbiased final
+test. Per-batch mean assignment overflow spans 0.08062 to 0.13393 across the
+three states, with finite routing counts, entropy and router z-loss.
+
+[export-launch.json](export-launch.json) prepares only step 64 for the fresh
+durable native destination `native-step64-v1`, using the exact evaluated
+request and source, one 16-by-4 GB200 job, a one-hour bound and zero failure or
+preemption retries. Because this notebook commit advances the research HEAD,
+the launcher must run from a clean detached checkout of the evaluated source
+`e81d24d4328a1046043fdcf90dde8453f8d562ec`. The export has not yet been
+submitted. Its bounded compact-versus-merged comparison records observed
+output differences; it does not qualify serving parity. Selected compact
+preservation uses fsutil verified-copy into the durable `compact-step64`
+prefix; completion/readiness must be independently checked.
