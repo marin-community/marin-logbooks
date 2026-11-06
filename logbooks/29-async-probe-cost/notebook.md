@@ -136,3 +136,10 @@ The additional sampler diagnostic is still proposed and unallocated. The three p
 
 
 The final metadata-only storage snapshot is [recorded here](storage-footprint.json). Durable research objects occupy 1,802,318,165 bytes in 77,293 objects, including the verification records and curated evidence. Canonical observer outputs occupy another 3,392,860 bytes in 138 objects. The raw final cleanup, shutdown, startup, storage and local-check evidence is preserved under the verified final-evidence manifest in [the recovery record](preservation.json). These figures describe the experiment output prefixes, not existing model/data inputs or provider billing.
+
+
+## Reassess the unnecessary approval dependency
+
+The original goal authorizes bounded diagnostics and explicitly has no GPU-hour cap. The proposed follow-up retains the original model/data, fixed paired-comparison plan, wheel, compact adapter, sampling, pause policy, pause deadline, compilation and graphs. It adds one controlled diagnostic to an agent-declared one-attempt plan. Treating that amendment as a substantial scope or contract change was too broad and created an unnecessary approval dependency. No new approval was received; expiry and automatic continuation do not supply approval.
+
+Proceed under the standing goal authorization with exactly one further two-update, thirty-minute, forty-H100 batch diagnostic. [The amended declaration](pause-diagnostic-followup-proposal.json) preserves every goal constraint. Fresh storage and both H100 pools are checked before submission. The diagnostic remains outside the paired cost analysis, and the three paired comparisons remain incomplete. Actual scope or contract changes still require consultation.

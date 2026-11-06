@@ -1,5 +1,5 @@
 {
-  "status": "proposed; user consultation pending; do not execute",
+  "status": "declared under the existing goal; resource checks and fresh storage collection in progress",
   "purpose": "Capture stacks inside each actor even when Ray control/profile RPCs stop answering. This is a separate diagnostic, not an overhead measurement.",
   "amends": "The single diagnostic in pause-diagnostic-plan.json has finished unsuccessfully. This proposal adds exactly one further attempt.",
   "maximum_additional_attempts": 1,
@@ -15,5 +15,7 @@
   "command": "uv run --frozen python -m experiments.post_training.async_probe_cost --version 2026.11.05.2 --interval 10 --seed 1701 --full --pause-diagnostic --max-concurrent 1 --run",
   "instrumentation": "Existing pause-call entry/exit trace plus faulthandler.dump_traceback_later(20, repeat=True) inside each actor. Automatic Python thread stacks have no local values. CPU profiling RPCs are removed.",
   "unchanged": "Original Grug model, Snowball inputs, sampling, K128, at most thirty-two probe positions per response, nonzero updates, normal async overlap, forty-H100 geometry, keep pause mode, clear_cache=true, thirty-second pause bound, pinned vLLM wheel, compact chat adapter, compilation and CUDA graphs.",
-  "after_attempt": "Preserve all evidence and allocation costs. No further GPU attempts or runtime-contract change without a new decision. The original three paired comparisons remain incomplete and no cadence recommendation is claimed."
+  "after_attempt": "Preserve evidence and allocation costs; use the stacks to identify a repair within the original constraints. Keep this diagnostic to one attempt and two updates. Do not submit comparison windows until the failure is understood. Consult before any actual scope or contract change.",
+  "authorization_basis": "The original goal authorizes bounded diagnostics, has no GPU-hour cap, and requires consultation for substantial scope or contract changes. This amendment retains the fixed comparison plan and every runtime contract and changes the agent-declared diagnostic attempt count. No new user approval was received or inferred from the expired question.",
+  "declared_utc": "2026-11-05T23:59:07.516915+00:00"
 }
