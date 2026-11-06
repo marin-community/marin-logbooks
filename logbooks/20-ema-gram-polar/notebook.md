@@ -2181,3 +2181,26 @@ expansions R04 and R05 remain. The global selection lock, full confirmations
 and prescribed scientific probes remain pending. The alpha0 long run remains
 prepared and unsubmitted. These checkpoint checks establish metadata and
 stored-counter consistency, not full byte restore.
+
+### 2026-11-06 01:42 UTC — launch the settled alpha0 long run
+
+Following the user's direction to start the prepared long run, the exact
+alpha0 seed0 baseline was accepted once as
+`ema-gram-20-alpha0-seed0-r01-20261105-00` on v4-8 in us-central2.
+It trains from scratch for 37,335 updates at LR0.003535533905932738,
+with the unchanged 447M model, context4096, batch8 and fixed subset.
+The predeclared C4 target remains4.0; training finishes the full schedule
+regardless of an earlier threshold crossing. No wall-clock limit was added,
+and default preemption and retry policy remain intact.
+
+The submitter repeated the full26-component catalog gate, verified the clean
+published source f99298782188e8f1c4e1ad8a1b2a507693d653e8 and unchanged logging
+qualification, and persisted its permanent guard before submission. Submission
+returned0. Sole observer7631/PID55651 owns canonical polling and follower55837.
+Acceptance is not startup or scientific completion: task allocation, execution
+host ONLINE identity and native training progress still require observation.
+The [accepted receipt](alpha0-long-run-accepted.json) freezes original source,
+input paths and ledger for exact-once adoption by final confirmations. Preserve
+the prepared bundle and dedicated execution worktree. Do not submit a duplicate
+baseline or start another observer. Global selection and nonbaseline confirmation
+gates remain unchanged while R04/R05 finish.
