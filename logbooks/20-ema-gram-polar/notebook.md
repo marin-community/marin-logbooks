@@ -2360,3 +2360,9 @@ amendment as an alternative to the original global-lock path. Config decoding,
 full completion validation, source/input binding, permanent pre-RPC guards and
 regional cache checks remain required. Preparation is complete; acceptance and
 startup will be recorded after execution.
+
+### 2026-11-06 10:40 UTC — three parallel long runs accepted
+
+All three authorized seed0 long runs were accepted once after the full26-component regional catalog passed. The execution source is `923d79510475df3ed0fef53d40b3290ae4c90fce`; campaign `ema-gram-20-confirm-seed0-r01-20261106` maps jobs00/01/02 to alpha0.125/0.25/0.5. Each requests v4-32 for37,335 updates from scratch. The permanent ledger records three successful submissions. Sole observer99712/PID96635 owns all three job snapshots and followers. Startup and finite numerical progress remain to be verified. The completed alpha0 baseline is excluded. See [accepted receipt](parallel-long-runs-r01-accepted.json).
+
+Before any final confirmation submission, reconcile this accepted campaign by exact configuration and source; do not call the ordinary submit path to duplicate these jobs. Alpha0.5 remains provisional until pilot-only selection finishes. R06 continues under its existing owner.
