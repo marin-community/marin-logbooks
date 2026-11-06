@@ -2220,3 +2220,32 @@ Reuse the startup task and finished host caches. Sole observer7631/PID55651
 continues canonical polling; the native progress helper queries only this
 unfinished run. No duplicate submission or observer is needed. Full completion,
 common-target accounting and final confirmation adoption remain pending.
+
+### 2026-11-06 02:57 UTC — validate R04 and continue its lower-boundary search
+
+R04 (alpha0.5, ridge0.0001, LR0.000125) finished with C4 loss
+4.876398086547852. All 7,630 rows of five training metrics are finite,
+the stored counter is7,630, and all57 checkpoint array metadata entries match.
+Exact source, data, configuration and native ONLINE finish passed. All four
+original attempt0 tasks succeeded with zero failures or preemptions; four
+finished host records were reused from startup caches. The original observer
+recorded canonical success at02:55 UTC and exited naturally. Reuse the
+[completion evidence](subset-expansion-r04-completed.json); no completed
+job, task, native run, host run or follower should be queried again.
+
+The replay of35 completed pilots leaves this group's best loss at the lower
+LR boundary, so the frozen factor-two rule requires LR0.0000625 with the same
+alpha, ridge and seed0. R05 is still awaiting terminal validation. No global
+selection lock is ready. The alpha0 long run is active and reached label8544
+with finite training loss3.9630069732666016; this is a training loss, not a
+held-out target crossing. Local OAuth endpoint DNS failures delayed observer
+queries; original observers retained their scheduled retries, and R04 recovered
+without a worker restart. Raw transport errors and the helper's terminal-PID
+race are retained. Checkpoint metadata verification is not full byte restore.
+
+R06 preparation freezes35 validated predecessors and six accepted expansion
+bindings at artifact version2026.11.06.01. The planning snapshot retains all
+validator fields and binds each original full completion report by path and
+SHA256; raw evidence maps remain in those reports. This avoids duplicating
+large evidence indexes in the new snapshot. Numerical and launch gates are
+unchanged. The only new candidate is alpha0.5, ridge0.0001, LR0.0000625.
