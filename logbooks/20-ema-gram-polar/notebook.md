@@ -2158,3 +2158,26 @@ already accepted R03-R05 jobs and continue with finite progress. The global
 selection lock, full confirmations and prescribed scientific probes remain
 pending. The alpha0 long run remains prepared and unsubmitted. These checkpoint
 checks establish metadata and stored-counter consistency, not full byte restore.
+
+### 2026-11-06 01:37 UTC — validate alpha1/3 expansion and settle its settings
+
+R03 passed all pilot completion gates. At alpha1/3, ridge0.01 and LR0.004,
+final C4 loss was 4.3078436851501465. All 7,630 rows are finite for each of
+five training metrics; the stored counter is 7,630 and all 57 checkpoint array
+metadata entries match. Source, data and configuration match the accepted
+identity. The native ONLINE run finished, and all four original attempt0 tasks
+succeeded without failures or preemptions. Four finished host logging records
+were reused from startup caches. The sole observer recorded canonical success
+at 01:34 UTC and exited naturally. Reuse the
+[validated result](subset-expansion-r03-completed.json); do not restart the
+observer or query these completed identities again.
+
+Replaying 34 completed pilots closes both alpha1/3 ridge groups. Ridge0.0001
+has an interior winner at LR0.001 with C4 loss 4.415025234222412; ridge0.01
+has an interior winner at LR0.002 with C4 loss 4.260484218597412.
+Thus ridge0.01 and LR0.002 are the selected alpha1/3 seed0 pilot settings.
+No further alpha1/3 expansion is eligible. Only the two accepted alpha0.5
+expansions R04 and R05 remain. The global selection lock, full confirmations
+and prescribed scientific probes remain pending. The alpha0 long run remains
+prepared and unsubmitted. These checkpoint checks establish metadata and
+stored-counter consistency, not full byte restore.
