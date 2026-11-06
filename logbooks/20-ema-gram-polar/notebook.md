@@ -2271,3 +2271,24 @@ The native ONLINE run is `ema-gram-pilot-3e18-a0.5-seed0-9fd59fb65fba-2026.11.06
 step; the startup snapshot has no training step or loss yet. Finite progress
 remains pending. Reuse these startup and finished host caches; the native-only
 helper06 and local progress recorder now cover this campaign.
+
+### 2026-11-06 03:12 UTC — validate R05 and settle its ridge-group learning rate
+
+R05 (alpha0.5, ridge0.01, LR0.002) passed all completion gates with final
+C4 loss4.459773540496826. All7,630 rows are finite for each of five
+training metrics, stored counter7,630 and57 checkpoint array metadata entries
+match, and exact source/data/configuration and native ONLINE finish passed.
+All four original attempt0 tasks succeeded with zero failures or preemptions;
+four finished host caches were reused. The sole observer recorded canonical
+success at03:08 UTC and exited naturally. Reuse the
+[completion evidence](subset-expansion-r05-completed.json); never poll or
+restart completed R05 identities. Metadata checks do not establish byte restore.
+
+Replaying36 completed pilots places this ridge group's winner at the interior
+LR0.001, C4=4.3975324630737305. No further upper-LR expansion is
+eligible. Only accepted R06 (alpha0.5, ridge0.0001, LR0.0000625) remains in
+the recursive search, so global selection and nonbaseline confirmations remain
+pending. R06 has now produced finite native progress at label7 with training
+loss12.217096328735352. Alpha0 long-run label10233 has finite training
+loss3.8518803119659424; these training losses do not establish held-out
+C4 target crossing. Both original observers and launch guards remain intact.

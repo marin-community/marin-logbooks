@@ -382,3 +382,9 @@ completion caches. R04 leaves alpha0.5/ridge0.0001 at its lower LR boundary;
 same pilot schedule. R05 still requires terminal validation. Global selection,
 new nonbaseline confirmations and the prescribed scientific probes remain gated
 on the complete recursive selection protocol.
+
+At03:12 UTC, R05 completion validated the alpha0.5/ridge0.01 group's interior
+winner at LR0.001 (C4=4.3975324630737305). No further expansion for that ridge
+is required. R01 through R05 are complete; only accepted R06 remains in the
+recursive pilot search. R06 has finite native training progress. The full global
+selection gate remains pending its outcome and any resulting boundary expansion.
