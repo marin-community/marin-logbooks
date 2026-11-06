@@ -4,10 +4,17 @@ task_issue: "https://github.com/marin-community/marin-logbooks/issues/34"
 research_branch: "codex/34-hero-final-sft"
 marin_base_revision: "33189166cfb244bf284f3d893e58ce0272215eac"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: heldout-preparing
+status: complete-provisional-handoff
 ---
 
 # Compact SFT on the final Hero checkpoint
+
+The bounded repeat is complete. The fixed held-out rule selected update 64;
+updates 96 and 128 had higher assistant NLL and lower EOT top-1 counts. The
+selected native export and compact state are durable. All 100 sampled
+responses stopped on EOT with no cap hits or unexpected raw special tokens,
+but manual review found content failures. Use the selected artifact as a
+provisional systems handoff, with the limits and exact references below.
 
 ## 2026-11-05: source verification and repeat design
 
@@ -365,3 +372,85 @@ preemptions. Attempt `ca3eb49eb6ba985c` is producing real responses: bounded
 rank-0 logs at 00:41 UTC show math and code cases ending on EOS. This verifies
 generation progress, not completion or content correctness. The 100-response
 review remains pending.
+
+
+## 2026-11-05: all 100 responses reviewed; bounded experiment complete
+
+The rollout succeeded on all 16 tasks, with zero failures or preemptions.
+The completion binds the exact request and final manifest. The manifest binds
+all six final artifact files; their hashes, exact model/runtime configuration,
+ordered 100-case identities, seeds and selected native checkpoint match. The
+first 64 completions exactly match the earlier saved wave.
+[rollout-result.json](rollout-result.json) records terminal state, hashes and
+raw-output checks.
+
+All 100 responses ended on EOT 128009, with zero cap/context-limit stops and
+11391 generated tokens (7 to 492 per response). Each contains one terminal EOT
+and no other generated special token. Selected-token and top-five log
+probabilities are finite and align with the raw token IDs. No replacement
+characters, unexpected control characters or formal structural failures were
+found. These results establish short-panel turn boundaries, not correctness.
+
+[response-review.json](response-review.json) records one content judgment per
+case, bound to the saved output hashes. Every prompt/history, complete response
+and supplied reference was inspected. Generated code was not executed.
+
+| Panel | Cases | Manual content result |
+| --- | --- | --- |
+| Math | 40 | 37 correct final answers, 1 unequivocally wrong, 2 ambiguous |
+| Code | 40 | 28 plausible by inspection, 10 with defects, 2 ambiguous |
+| Fixed-history follow-ups | 20 | 18 compliant, 2 narrow compliance failures |
+
+The incorrect insect answer is 22 rather than 16. Two other math responses
+differ from the intended reference under date-counting and pack-versus-bag
+price interpretations; they remain ambiguous. Two correct final answers carry
+reasoning/notation defects, including an irrelevant false calendar premise.
+
+Code defects include a prose-only rotation answer, a missing import, rejecting
+a valid scalar dictionary leaf, averaging first differences, negative GCD
+results, incomplete Unicode case handling, an escaped-whitespace regex,
+mutating/empty-list zero trimming, unsorted pair output and incorrect coin
+change handling. The two uncertain contracts concern generator-versus-list
+return type and integer-versus-general numeric ranges. These are static
+judgments, not executed test scores.
+
+The two fixed-history failures miss a returned item's current holder and
+introduce a pencil alongside a notebook despite an exactly-three-item limit.
+The latter is a narrow physical-item count interpretation. These are 20
+single follow-ups on fixed histories, not 20 interactive conversations.
+
+### Selected artifact handoff
+
+The canonical root is
+`s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1`.
+
+- Native weights: `native-step64-v1`; metadata digest
+  `a801744f9c895928b708f76a47f1cb42434c2fd86fdd2759ddb18c7c2e1e364f`.
+- Compact adapter/optimizer state: `compact-step64`; verified-copy readiness
+  marker `.verified-copy-manifest.json`, metadata digest
+  `ba75ea08023cb47f467764fddc597a6c25ca613f1dd4f449160d475fd440ab8b`.
+- Source forward model configuration: `inputs/source-model.json`, digest
+  `ce31949afe42887255cb674f01ad5a2a080725dbb069862e3342c4002a5f9b25`.
+- Held-out selection report: `heldout-v1/report.json`.
+- Complete response artifacts: `rollout-v1/attempts/ca3eb49eb6ba985c`.
+
+These storage paths require normal project credentials. Full response and
+probability artifacts remain in object storage; small summaries and individual
+review judgments are retained in this branch. Source/config/receipt identities
+and precise reproduction commands are recorded in the preceding entries and
+linked launch records.
+
+The repeat reached exactly 128 cumulative updates without resetting the
+optimizer or data cursor. No averaging, further tuning or additional native
+export was performed. Under the fixed selection rule the modestly longer
+training did not improve this panel, so step 64 is the retained provisional
+handoff. The held-out panel was used for selection; no paired comparison with
+the earlier intermediate-checkpoint model was run.
+
+Limits remain: generated content errors, only short prompts with physical
+padding 4096, explicit dropless native evaluation, observational BF16 merge
+differences without a parity tolerance, no generated-code execution and no
+serving/RL throughput qualification. The source retains 65536 context capacity,
+but this experiment provides no long-context quality evidence. The only
+remaining administrative work is the separate-main logbooks index PR and its
+normal bounded review monitoring; no further compute is authorized.

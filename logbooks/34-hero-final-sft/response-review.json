@@ -1,0 +1,1633 @@
+{
+  "source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef",
+  "source_manifest_sha256": "74b6f8e7190b68fb7eb3cb1ec4dcec36a1c0a5f06ed4dcc09905ea6d68559c11",
+  "source_attempt_root": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/rollout-v1/attempts/ca3eb49eb6ba985c",
+  "method": "Manual static content inspection of every full prompt/history, response and supplied reference. Generated code was not executed. Uncertain wording/API domains are kept separate. One sample per case on an archived diagnostic panel; counts are descriptive, not a benchmark or production acceptance score.",
+  "category_counts": {
+    "math": {
+      "incorrect": 1,
+      "correct": 37,
+      "uncertain": 2
+    },
+    "code": {
+      "plausible_by_inspection": 28,
+      "uncertain": 2,
+      "incorrect": 10
+    },
+    "chat": {
+      "compliant": 18,
+      "noncompliant": 2
+    }
+  },
+  "review_file_sha256": {
+    "wave0-math-review.json": "33d7110a6cbf307296747da28bb2d734e60885ce18119e940491e9586823d57d",
+    "wave1-math-review.json": "2759487608dabb54b11de717d6967f1af147a8d17587b964e1a483ec639d41ab",
+    "wave0-code-review.json": "9261d078c1a469d3dc627e5ef476538eb371907fb4222452b9f6811ffaeb7c7a",
+    "wave1-code-review.json": "15748ec98dc8d0d29915c74f035db00552b6e9107af8fec3125fdfa7d944b79f",
+    "wave0-chat-review.json": "8852b0cd67739a92230386f837aad7b73a0c1ad5514604ff68846b63688bf351",
+    "wave1-chat-review.json": "34405b85b9c47ef9d66237bd3f4349128d9ec58a779b5b63c4dda6b6335fcd72"
+  },
+  "rows": [
+    {
+      "id": "math-gsm8k-0500",
+      "verdict": "incorrect",
+      "final_answer": "22",
+      "expected_final_answer": "16",
+      "reasoning_verdict": "invalid",
+      "evidence_or_reason": "Misassigns the half-of-Bodhi relation to Lily, invents Bodhi=14 and David=7, and gives Lily=22. The constraints instead give David=9, Bodhi=18, Lily=16.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-sum-squares",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Generator sum squares each integer and returns 0 for empty input."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python follows the explanation.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-picnic",
+      "verdict": "compliant",
+      "evidence": "Offers bread-free hummus-cucumber salad with gluten-free crackers, retains apples and explicitly avoids nuts; the revised food remains vegetarian.",
+      "notes": "Changes the serving form for the picnic rather than spelling out a separate portion for one guest. Additional gluten-free crackers are not prohibited by the prompt; no material constraint failure.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0501",
+      "verdict": "correct",
+      "final_answer": "273",
+      "expected_final_answer": "273",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Adds 1/4+1/2=3/4 of a skein and computes 364*3/4=273 yards.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-stable-unique",
+      "verdict": "uncertain",
+      "findings": [
+        "The yielded values preserve first occurrence and order, but the function returns a generator rather than the list used by the supplied reference/examples. The prompt does not explicitly specify the result container, so this is an API ambiguity rather than a proven sequence-content bug."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python; return-container mismatch noted separately.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "return_type_ambiguity"
+      ],
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          [
+            3,
+            1,
+            3,
+            2,
+            1
+          ]
+        ],
+        "reference_result": [
+          3,
+          1,
+          2
+        ],
+        "observed_by_inspection": "A generator object; iterating it would yield 3, 1, 2."
+      },
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0502",
+      "verdict": "correct",
+      "final_answer": "26",
+      "expected_final_answer": "26",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Computes 2*5+3*2+10=26 gifts.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-palindrome",
+      "verdict": "incorrect",
+      "findings": [
+        "Space removal and reversal work for ordinary ASCII, but lower() does not implement all Unicode case-insensitive equivalences covered by the reference casefold()."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python; no missing implementation.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "unicode_case_handling"
+      ],
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          "\u03a3\u03c2"
+        ],
+        "expected": true,
+        "observed_by_inspection": "False: lowercasing leaves \u03c3\u03c2, whereas casefolding makes \u03c3\u03c3."
+      },
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-budget",
+      "verdict": "compliant",
+      "evidence": "Returns $52 and the correct calculation $120 - $35 - $24 - $9, replacing the old pen price and including tape.",
+      "notes": "Concise; correctly applies both corrections.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0503",
+      "verdict": "correct",
+      "final_answer": "18",
+      "expected_final_answer": "18",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Finds rug width 3+5=8, then couch length 2*8+2=18 feet.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-word-counts",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Whitespace splitting, lowercase normalization, frequency accumulation, punctuation retention and empty-input behavior match the task."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced code with no language tag.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0504",
+      "verdict": "correct",
+      "final_answer": "2",
+      "expected_final_answer": "2",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Green apple costs1; remaining strawberry cost7-2-1=4 split across two packs gives2 per pack.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-flatten-once",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Nested comprehension flattens exactly one list level in order, including empty groups."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python and examples.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-email",
+      "verdict": "compliant",
+      "evidence": "Addresses Noor formally and requests Thursday at 10 a.m.; does not introduce a reason for rescheduling.",
+      "notes": "Conventional greeting and closing add some length, but the message remains brief and satisfies the requested tone change.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0505",
+      "verdict": "correct",
+      "final_answer": "1600",
+      "expected_final_answer": "1600",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Buys four 2x8 pieces for24 and obtains4*400=1600 sticks, the higher sticks-per-dollar option.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-chunk-list",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Slice comprehension handles positive size, a shorter final chunk and empty input. Positive size is the stated precondition."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0506",
+      "verdict": "correct",
+      "final_answer": "144",
+      "expected_final_answer": "144",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Converts six four-legged dogs to12 pairs of snowshoes, then12*12=144 dollars.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-transpose",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "zip(*matrix) plus list conversion yields columns as lists and returns [] for an empty rectangular matrix."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-route",
+      "verdict": "compliant",
+      "evidence": "Returns Hall B followed by Hall D, correctly switching from the superseded blue route to green.",
+      "notes": "No extra content.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0507",
+      "verdict": "correct",
+      "final_answer": "2",
+      "expected_final_answer": "2",
+      "reasoning_verdict": "sound_with_notation_error",
+      "evidence_or_reason": "Uses the correct10 weekly trips,22 dollars in fares, and22-20=2 savings. The written chain 2*5=10*$2.20=$22 improperly equates a trip count with a monetary cost.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-balanced-brackets",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Stack checks matching types and nesting, rejects unmatched closers or remaining openers, and ignores other characters."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0508",
+      "verdict": "correct",
+      "final_answer": "120",
+      "expected_final_answer": "120",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Counts farm30 cows and10 sheep plus zoo60 cows and20 sheep, totaling120.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-merge-sorted",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Two advancing indices retain duplicates and append both remaining tails, giving O(len(a)+len(b)) total work without sorting the concatenation."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python. Prose incorrectly calls the final slicing/appending constant-time, but the total O(n+m) claim and code remain sound.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-garden",
+      "verdict": "compliant",
+      "evidence": "Says Cedar needs water and Birch and Elm do not, incorporating the neighbor's watering of Elm while retaining Birch's original status.",
+      "notes": "Concise and unambiguous.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0509",
+      "verdict": "correct",
+      "final_answer": "4",
+      "expected_final_answer": "4",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Divides both Rose counts by four:3 onions plus1 potato equals4 items.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-first-unique",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Counts exact characters then scans in original order; case/whitespace remain distinct and no unique character returns None."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0510",
+      "verdict": "uncertain",
+      "final_answer": "522.39",
+      "expected_final_answer": "525",
+      "reasoning_verdict": "conditional_on_unsupported_calendar_assumption",
+      "evidence_or_reason": "105000/201=522.39 is arithmetically correct for a201-day interval, but the response does not justify201 days with a leap-year or endpoint convention. The reference assumes200 days and525 per day; the prompt leaves the year/date-counting convention unspecified.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-run-length",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Imported itertools.groupby supplies consecutive runs, each consumed once into a count; empty input returns []."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python including its required import.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-tone",
+      "verdict": "compliant",
+      "evidence": "Explains water vapor becoming liquid water and cooling, using exactly two age-appropriate sentences.",
+      "notes": "Correctly changes the topic from evaporation to condensation.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0511",
+      "verdict": "correct",
+      "final_answer": "110",
+      "expected_final_answer": "110",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Uses an entire seven-day week:30*7-100=110 dollars.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-rotate-right",
+      "verdict": "incorrect",
+      "findings": [
+        "Response explains a possible algorithm but supplies no function definition or code, despite the explicit request. It also describes returning the original list for k=0, conflicting with the new-list requirement."
+      ],
+      "formatting_token_notes": [
+        "Prose only. The response ends after its explanation, with no code block or function body.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "noncode",
+        "incomplete_implementation"
+      ],
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          [
+            1,
+            2,
+            3
+          ],
+          1
+        ],
+        "expected": [
+          3,
+          1,
+          2
+        ],
+        "observed_by_inspection": "No callable rotate_right implementation is supplied."
+      },
+      "incomplete_implementation": true,
+      "noncode": true,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0512",
+      "verdict": "correct",
+      "final_answer": "120",
+      "expected_final_answer": "120",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Runs8*0.25=2 kilometers and needs2*60=120 milliliters.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-missing-number",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Arithmetic sum minus observed sum gives the missing member, including 0 for empty input, in linear time and constant auxiliary storage under the stated model."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-shopping",
+      "verdict": "compliant",
+      "evidence": "Returns only rice, tomatoes, coffee, beans in that order; removes yogurt and replaces tea.",
+      "notes": "Matches the required list-only format.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0513",
+      "verdict": "correct",
+      "final_answer": "300",
+      "expected_final_answer": "300",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Subtracts20% of500=100, then25% of the remaining400=100, leaving300.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-two-sum",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Checks for a complement before recording the current index, preventing entry reuse and ensuring the returned first index precedes the second, including equal-value pairs."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0514",
+      "verdict": "correct",
+      "final_answer": "90000",
+      "expected_final_answer": "90000",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Splits the total into a1:3 lot/house ratio, so the house receives3/4*120000=90000 dollars.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-longest-run",
+      "verdict": "incorrect",
+      "findings": [
+        "Uses itertools.groupby without importing itertools, so the supplied standalone function fails on every nonempty input. The grouping algorithm would otherwise compute the requested run length."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced function body, but required standard-library import is absent.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "missing_import"
+      ],
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          [
+            1
+          ]
+        ],
+        "expected": 1,
+        "observed_by_inspection": "NameError for undefined itertools in a fresh namespace."
+      },
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-sorting",
+      "verdict": "compliant",
+      "evidence": "Returns M2, T5, P9 in ascending numeric order and excludes K7.",
+      "notes": "Applies both the addition and removal.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0515",
+      "verdict": "uncertain",
+      "final_answer": "288",
+      "expected_final_answer": "160",
+      "reasoning_verdict": "valid_under_alternative_price_unit",
+      "evidence_or_reason": "The response explicitly prices each five-bag pack at4 dollars, giving cost8*4=32 and profit40*8-32=288. The supplied reference prices each individual bag at4 dollars and gives160 profit. The phrase 8 packs of5 canvas bags for$4 each leaves the unit of each ambiguous; this is an intended-reference mismatch, not an arithmetic error under the stated pack-price reading.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-binary-search",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Inclusive bounds shrink around the midpoint, returning the target index or -1; empty input exits immediately."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0516",
+      "verdict": "correct",
+      "final_answer": "375",
+      "expected_final_answer": "375",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Computes25 punches/minute*3 minutes/round*5 rounds=375.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-interval-union",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Sorting then merging whenever current end >= next start handles overlapping/touching closed intervals, arbitrary order and empty input. Iterating over the first interval again is redundant but harmless. Input sorting mutates the list; this task does not prohibit mutation."
+      ],
+      "formatting_token_notes": [
+        "Complete indented code block. Prose says remaining intervals, while the loop actually visits all intervals; no resulting functional error found.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-itinerary",
+      "verdict": "compliant",
+      "evidence": "Retains Saturday breakfast at 8, walk at 9, and lunch at noon; changes only the library visit from 11 to 10.",
+      "notes": "Correctly preserves unchanged events.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0517",
+      "verdict": "correct",
+      "final_answer": "18",
+      "expected_final_answer": "18",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Finds Josh36/4=9 and Kelsie2*9=18, matching the reference interpretation of two times more.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-safe-get",
+      "verdict": "incorrect",
+      "findings": [
+        "The dictionary-type check is applied after every lookup, including the terminal value, so legitimate scalar leaves are replaced with fallback."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python; empty keys would return mapping as requested.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "terminal_value_rejected"
+      ],
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          {
+            "a": {
+              "b": 0
+            }
+          },
+          [
+            "a",
+            "b"
+          ],
+          "x"
+        ],
+        "expected": 0,
+        "observed_by_inspection": "Returns x after retrieving 0 because 0 is not a dictionary."
+      },
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0518",
+      "verdict": "correct",
+      "final_answer": "32",
+      "expected_final_answer": "32",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Totals4*10+6*20=160, retains80 after giving half away, and subtracts3/5*80=48 to leave32.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-group-anagrams",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Sorted-character tuple groups anagrams, explicit first-seen key order preserves group order, and append preserves word order including duplicates."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-recipe",
+      "verdict": "compliant",
+      "evidence": "Gives 450 g tomatoes, 90 g onion, and 15 mL oil: triples the two-person recipe, then halves the normally scaled 30 mL oil.",
+      "notes": "All three quantities and units are present.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0519",
+      "verdict": "correct",
+      "final_answer": "280",
+      "expected_final_answer": "280",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Doubles two hours to four hours and adds40 minutes, giving280 minutes.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-invert-multimap",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Uses each original integer value as a dictionary key and appends original keys in iteration order; repeated values and empty mapping are handled."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python. Integer keys agree with the prompt; reference JSON serializes those keys as strings.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0520",
+      "verdict": "correct",
+      "final_answer": "63",
+      "expected_final_answer": "63",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Multiplies each outfit component by three and sums6+12+36+3+6=63 skeins.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-moving-average",
+      "verdict": "incorrect",
+      "findings": [
+        "Constructs first differences and averages windows of those differences instead of windows of the original values."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python; output is code for the requested task but its algorithm is wrong.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "wrong_algorithm"
+      ],
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          [
+            1,
+            3
+          ],
+          1
+        ],
+        "expected": [
+          1.0,
+          3.0
+        ],
+        "observed_by_inspection": "Returns [1.0, 2.0]; with [1,3,5,7], width 2 it gives [1.5,2.0,2.0] instead of [2.0,4.0,6.0]."
+      },
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-pronoun",
+      "verdict": "noncompliant",
+      "evidence": "Repeats the original lending events ('Jonah lent Priya a blue folder. Mira lent Jonah a red notebook.') without incorporating the latest return or answering who currently holds each item. The required current holders are Mira for the red notebook and Priya for the blue folder.",
+      "notes": "Failure to update conversational state and answer the latest turn. The response does not explicitly assert a false current holder, but omits the decisive return event and requested current ownership.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0521",
+      "verdict": "correct",
+      "final_answer": "39",
+      "expected_final_answer": "39",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Subtracts12+36 from100 to get52, then subtracts52/4=13 to leave39.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-prefix-sums",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Accumulates each prefix into a separate output list without mutating nums, including empty input."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python with modern standard Python type annotations.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0522",
+      "verdict": "correct",
+      "final_answer": "29",
+      "expected_final_answer": "29",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Finds the four rates6,5,10,8 and sums them to29 quarts/hour.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-dict-merge-sums",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Copies a, then adds b counts through get(...,0), retaining all keys and leaving both inputs unchanged."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-format",
+      "verdict": "compliant",
+      "evidence": "The answer body is exactly the valid JSON array [\"red\", \"amber\", \"green\", \"white\"], with no surrounding explanation.",
+      "notes": "Preserves the array structure, replaces blue, and appends white. The final EOT is protocol framing.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0523",
+      "verdict": "correct",
+      "final_answer": "74",
+      "expected_final_answer": "74",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Computes200-93-39=68 remaining and adds six returned loaves to reach74.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-gcd",
+      "verdict": "incorrect",
+      "findings": [
+        "Recursive Euclidean reduction does not normalize signs, violating the nonnegative-result contract for negative integers."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python. gcd(0,0) returns 0, but that does not fix the negative-input defect.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "sign_handling"
+      ],
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          -2,
+          0
+        ],
+        "expected": 2,
+        "observed_by_inspection": "Returns -2 immediately."
+      },
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0524",
+      "verdict": "correct",
+      "final_answer": "9",
+      "expected_final_answer": "9",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Computes36/6=6 red rows and24/8=3 blue rows, totaling9.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-primes",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Sieve marks composite multiples and collects only indices >=2 in ascending order; n<2 returns []. Starting each marking loop at 2*i is redundant relative to i*i but still correct."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "generated_code_executed": false,
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "category": "code",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "chat-packing",
+      "verdict": "noncompliant",
+      "evidence": "Retains the water bottle and light sweater but replaces the book with 'a small notebook with a pencil', introducing two physical objects. The resulting bag contains four items, contrary to the explicit requirement of exactly three.",
+      "notes": "The drawing suggestion and no-electronics restriction are satisfied. The defect is item-count compliance; grouping notebook and pencil into the third noun phrase does not make them one physical item.",
+      "category": "chat",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "math-gsm8k-0525",
+      "verdict": "correct",
+      "final_answer": "12",
+      "expected_final_answer": "12",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Allocates27/3=9 cups to cookies, then9/(3/4)=12 batches.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 0,
+      "review_source_samples_sha256": "ab02b9923d5107f3b0065ee432b509bf1ec4aebf43986f1d48890dcb0c4ef97f"
+    },
+    {
+      "id": "code-fibonacci",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Iterative a,b recurrence returns F(n), including F(0)=0 and F(1)=1, using n iterations and two accumulators under the stated operation-count model."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0526",
+      "verdict": "correct",
+      "final_answer": "21",
+      "expected_final_answer": "21",
+      "reasoning_verdict": "sound_under_explicit_unit_normalization",
+      "evidence_or_reason": "Normalizes the source's inconsistent power/energy wording to kWh per day and computes2*1.50*7=21 extra dollars weekly; before126 and after147 also agree.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-is-subsequence",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Two advancing positions preserve order and allow gaps; empty s returns True, and exhausted text fails unless all of s matched."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "chat-translation",
+      "verdict": "compliant",
+      "evidence": "Returns 'La ventana est\u00e1 cerrada.', changing only abierta to cerrada and retaining feminine agreement and the rest of the Spanish sentence.",
+      "notes": "Direct response; no extra explanation.",
+      "category": "chat",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0527",
+      "verdict": "correct",
+      "final_answer": "48",
+      "expected_final_answer": "48",
+      "reasoning_verdict": "sound_under_explicit_24_hour_day_assumption",
+      "evidence_or_reason": "Finds10 person-days for a house, converts to240 person-hours using24-hour days, and divides by five painters to get48 hours. This is the same conventional assumption as the reference; workday hours are unspecified.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-common-prefix",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Checks increasing first-word prefixes against every string and stops at the first failure; handles empty list, empty first word, and later empty words. No stronger complexity bound was requested."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0528",
+      "verdict": "correct",
+      "final_answer": "172",
+      "expected_final_answer": "172",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Finds Ophelia22 chairs and20 sofas, Jenna66 chairs and64 sofas, then totals88+84=172.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-second-largest",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Set removes duplicates; descending sort selects the second distinct value, with None for fewer than two distinct values, including empty input."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python and a separate illustrative print example.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "chat-calendar",
+      "verdict": "compliant",
+      "evidence": "Retains orientation on day 1 and correctly swaps the other activities to presentations on day 2 and practice on day 3.",
+      "notes": "Answers what happens on every day in order.",
+      "category": "chat",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0529",
+      "verdict": "correct",
+      "final_answer": "11",
+      "expected_final_answer": "11",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Subtracts the original4-dollar CD from48 to find44 dollars spent on headphones, enough for44/4=11 additional CDs.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-matrix-diagonal",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Adds both square-matrix diagonals and subtracts the odd-dimension center once; handles 0x0 and 1x1 cases."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0530",
+      "verdict": "correct",
+      "final_answer": "36",
+      "expected_final_answer": "36",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Accounts for all eight weeks with five at4 hours, two at5 hours, and one at6 hours:20+10+6=36.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-compress-spaces",
+      "verdict": "incorrect",
+      "findings": [
+        "The raw regex source contains two actual backslash characters before s. This pattern matches a literal backslash followed by s characters rather than whitespace; strip() only fixes outer whitespace."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python with import re. Literal source-line inspection confirmed two backslash characters; the generated code and regex were not executed.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "regex_escape_error"
+      ],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          "a\tb"
+        ],
+        "expected": "a b",
+        "observed_by_inspection": "Returns the interior tab unchanged (a\\tb), rather than compressing it to an ordinary space."
+      },
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "chat-priorities",
+      "verdict": "compliant",
+      "evidence": "Returns pay rent, buy groceries, call Ari in that order and excludes the completed bike task.",
+      "notes": "Carries forward the remaining priorities while applying the new insertion.",
+      "category": "chat",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0531",
+      "verdict": "correct",
+      "final_answer": "66",
+      "expected_final_answer": "66",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Updates passengers48-8+5*8=80 at the first stop, then80-21+21/3=66 at the second.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-character-bigrams",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Consecutive two-character slices overlap by one character, preserve spaces, and an empty range handles inputs shorter than two characters."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0532",
+      "verdict": "correct",
+      "final_answer": "25",
+      "expected_final_answer": "25",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Finds James22 now and30 in eight years, cousin55 then and47 now, with age gap47-22=25.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-partition-even",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Appends each input to the correct parity list in order; num%2==0 handles zero and negative even integers, with all remaining integers classified odd."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "chat-units",
+      "verdict": "compliant",
+      "evidence": "Correctly updates the container to 1850 mL and 1.85 liters, explicitly stating 1 L = 1000 mL and 1 mL = 0.001 L.",
+      "notes": "Does not write the intermediate equation 1650 + 200 = 1850, but the updated amount and requested conversion are correct and shown; the prompt does not require a particular equation format.",
+      "category": "chat",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0533",
+      "verdict": "correct",
+      "final_answer": "300",
+      "expected_final_answer": "300",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Prices printer1100-400=700, leaves2400-1100-700=600 for two monitors, and divides to get300 each.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-count-ranges",
+      "verdict": "uncertain",
+      "findings": [
+        "Counts duplicate integer entries correctly for integer bounds, but enumerates only integer values rather than testing each nums entry. The prompt does not expressly limit nums or range bounds to integers, so numeric-domain coverage is ambiguous. The O(n*m) prose is also inaccurate: runtime depends on the sum of numeric interval spans, potentially enormous even for a short nums list."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python; no requested asymptotic bound was specified, so the interval-span performance issue is recorded without independently failing the implementation.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "numeric_domain_ambiguity",
+        "inaccurate_complexity_explanation"
+      ],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          [
+            1.5
+          ],
+          [
+            [
+              1,
+              2
+            ]
+          ]
+        ],
+        "expected_under_literal_numeric_prompt": [
+          1
+        ],
+        "observed_by_inspection": [
+          0
+        ],
+        "domain_note": "If an unstated integers-only domain is intended, this example is outside that domain and the code is functionally plausible; float bounds would also raise TypeError in range()."
+      },
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0534",
+      "verdict": "correct",
+      "final_answer": "300",
+      "expected_final_answer": "300",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Finds ten boys and ten girls; boys bring600 shells, girls bring600+4*600=3000, giving300 per girl under the reference's equal-share reading.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-trim-trailing-zero",
+      "verdict": "incorrect",
+      "findings": [
+        "Pops directly from the original list instead of returning a copy. Accesses nums[-1] without an emptiness guard, failing for empty input and for all-zero input after popping the final element."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced code; stated modified-list behavior itself conflicts with the requested copy semantics.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "empty_input_error",
+        "input_mutation"
+      ],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          []
+        ],
+        "expected": [],
+        "observed_by_inspection": "IndexError at nums[-1]. For [1,0], it also modifies the caller list to [1], violating the copy requirement."
+      },
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "chat-story",
+      "verdict": "compliant",
+      "evidence": "Continues in one sentence: Vela arrives and sees a sign reading 'Closed', incorporating the required discovery at the previously established harbor.",
+      "notes": "Retains the name. The map is not mentioned, so no color inconsistency is introduced; the reference explicitly permits omission.",
+      "category": "chat",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0535",
+      "verdict": "correct",
+      "final_answer": "16",
+      "expected_final_answer": "16",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Reconstructs George's initial count as3+5=8 and doubles it for Nick's unchanged16 candies.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-difference",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "Set membership excludes all values present in b while comprehension preserves surviving a duplicates and order; empty lists are handled."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python. Time includes both building the b set and scanning a.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0536",
+      "verdict": "correct",
+      "final_answer": "8",
+      "expected_final_answer": "8",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Computes Alyana10-4=6 and Anne6+2=8 years old.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-sort-records",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "sorted() produces a new list using (-score,name), implementing descending score and ascending-name tie breaks."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "chat-clarification",
+      "verdict": "compliant",
+      "evidence": "Selects the plus plan, which the history establishes has offline access and costs $18, within the $20 budget.",
+      "notes": "Does not repeat the price comparison, but directly answers which plan meets both conditions. An explanation was not requested.",
+      "category": "chat",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0537",
+      "verdict": "correct",
+      "final_answer": "188",
+      "expected_final_answer": "188",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Finds book thicknesses31,50,45,62 millimeters and sums them correctly to188.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-unique-pairs",
+      "verdict": "incorrect",
+      "findings": [
+        "Seen-before complement checks ensure distinct positions, inner min/max ordering and a set remove duplicate value pairs. However, list(result) exposes unspecified set iteration order instead of the explicitly required sorted outer list."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python. This is an ordering-contract defect, not evidence that pair membership is wrong.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "unsorted_output"
+      ],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          [
+            1,
+            3,
+            2,
+            2
+          ],
+          4
+        ],
+        "expected": [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "observed_by_inspection": "Returns list({(1,3),(2,2)}) with no sorting guarantee; Python permits the reverse order. Exact host iteration order was not tested."
+      },
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0538",
+      "verdict": "correct",
+      "final_answer": "18",
+      "expected_final_answer": "18",
+      "reasoning_verdict": "sound_calculation_with_extraneous_false_calendar_claim",
+      "evidence_or_reason": "Correctly computes18+21+15=54 and72-54=18 vlogs. Its opening claim that there are four weeks in a month is not generally true and is unnecessary to this calculation; the final answer and subtraction remain correct.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-minimal-coin",
+      "verdict": "incorrect",
+      "findings": [
+        "Unreachable amounts retain None and are returned as None instead of the required -1. The early break when current_amount<coin additionally assumes coins are sorted, although the prompt gives no such precondition."
+      ],
+      "formatting_token_notes": [
+        "Complete fenced Python. Included assertion claiming min_coins([2],3)==-1 contradicts the supplied implementation; no assertion was executed.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [
+        "wrong_impossible_sentinel",
+        "unstated_sorted_input_assumption"
+      ],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "counterexample_or_contract_difference": {
+        "args": [
+          [
+            2
+          ],
+          3
+        ],
+        "expected": -1,
+        "observed_by_inspection": "Returns None. Also min_coins([2,1],1) breaks on coin 2 and returns None even though one coin of denomination 1 suffices."
+      },
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "chat-constraints",
+      "verdict": "compliant",
+      "evidence": "'Happy birthday, Sam! Have a joyful day!' is a cheerful birthday greeting containing Sam, no age, and seven whitespace-separated words, within the eight-word maximum.",
+      "notes": "Preserves the original constraints while shortening the greeting.",
+      "category": "chat",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "math-gsm8k-0539",
+      "verdict": "correct",
+      "final_answer": "35",
+      "expected_final_answer": "35",
+      "reasoning_verdict": "sound",
+      "evidence_or_reason": "Pays half the50-dollar bill plus the entire20% tip on that bill:25+10=35 dollars.",
+      "token_or_format_notes": "Clear final answer; only the expected terminal <|eot_id|> (128009) appears among special token IDs. No visible role leakage, repeated answer loop, or unmatched thinking delimiter.",
+      "category": "math",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    },
+    {
+      "id": "code-breadth-first",
+      "verdict": "plausible_by_inspection",
+      "findings": [
+        "FIFO traversal returns the first goal distance, respects missing adjacency keys, returns 0 for equal endpoints and None if unreachable. Marking visited on removal permits redundant queued/expanded copies, and pop(0) is slow, but no required complexity bound is violated and no functional error was found."
+      ],
+      "formatting_token_notes": [
+        "Complete unfenced Python.",
+        "Response ends with the expected EOT marker; the full raw-token/stop audit is recorded in rollout-result.json."
+      ],
+      "flags": [],
+      "incomplete_implementation": false,
+      "noncode": false,
+      "task_mismatch": false,
+      "generated_code_executed": false,
+      "category": "code",
+      "review_wave": 1,
+      "review_source_samples_sha256": "2a48c700e939c308b7be478bf86bf90e8fbc9ce3afc47dc0ae0fdb3cc7ef4cef"
+    }
+  ]
+}
