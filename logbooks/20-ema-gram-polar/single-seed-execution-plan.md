@@ -458,3 +458,10 @@ cached read-only scalar check. Probe direction comparisons now reduce global
 arrays in JAX before host scalar conversion. Requalify this edit with the
 extended sharded CPU oracle before scientific launch; no four-host probe has
 run. Reuse completed b33ed91cf logging/SVD qualification caches without APIs.
+
+2026-11-06 18:27 UTC: edited probe logging/SVD and eight sharded scalar
+comparison cases passed on four CPU devices at source843b2446b. Updated
+reference-probe-svd-preflight.json binds exact source hashes and finished ONLINE
+runs. Actual four-host TPU/full checkpoint restore remain untested. Next prepare
+immutable scientific request inputs, permanent submission guards and one observer;
+launch the available counter3733 probe when all execution preflight gates pass.

@@ -2537,3 +2537,17 @@ new edit. A read-only scalar read separately verified stored counter 3733 in
 the first alpha0.25 reference checkpoint. Its cache is
 scratch/20261106-reference-probe-preparation/counter-3733-metadata/counter.json.
 Full checkpoint restoration and the three prescribed probes remain pending.
+
+### 2026-11-06 18:27 UTC — sharded scalar comparison qualification passed
+
+At source 843b2446b12652ea96a13b80758b0a8449c87e6f, a fresh W&B online logging
+check and CPU SVD qualification run both finished successfully. The numerical
+check passed 18 attention/MLP polar-versus-SVD comparisons and three
+zero/rank-deficient cases. Eight additional row- and column-sharded rectangular
+matrix cases on four CPU devices matched NumPy reference calculations within
+the unchanged tolerances, with all diagnostic outputs replicated scalars.
+These checks qualify the edited probe code's logging and small-array numerics.
+Four CPU devices in one process do not validate four-host TPU execution or full
+checkpoint restoration. [Qualification evidence](reference-probe-svd-preflight.json)
+now records these results, previous qualification references and raw cache hashes.
+All three prescribed scientific probes remain unlaunched.
