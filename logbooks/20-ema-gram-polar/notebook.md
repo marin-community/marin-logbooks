@@ -2516,3 +2516,24 @@ prescribed permanent checkpoint, label 3732 (expected stored counter 3733),
 now has generation-bound metadata and a valid 57-array manifest matching the
 reference schemas. These checks establish metadata availability only; the
 stored scalar counter and full checkpoint restoration remain unvalidated.
+
+### 2026-11-06 18:24 UTC — scalar comparisons for sharded probe directions
+
+The reference-checkpoint probe converted complete direction matrices to NumPy
+arrays to calculate cosine similarity and relative error. JAX rejects this
+conversion when a matrix spans devices outside the current process. The probe
+now calculates these global reductions in JAX and transfers only scalar results
+to the host. The production polar and SVD functions are unchanged; timings still
+cover each synchronized direction calculation after its warm-up call.
+No actual four-host probe has run. Numerical validation of this edit remains
+pending; the CPU qualification now includes row- and column-sharded inputs,
+rectangular matrices, zero references and replicated scalar-output checks.
+
+The two ONLINE logging/SVD qualification runs at source
+b33ed91cf84bb2730ed0fa1a6869e62c94ca1d80 passed before this edit. Their cached
+results remain in scratch/20261106-reference-probe-requalification-r01; reuse
+them without querying those finished runs again. They do not validate this
+new edit. A read-only scalar read separately verified stored counter 3733 in
+the first alpha0.25 reference checkpoint. Its cache is
+scratch/20261106-reference-probe-preparation/counter-3733-metadata/counter.json.
+Full checkpoint restoration and the three prescribed probes remain pending.

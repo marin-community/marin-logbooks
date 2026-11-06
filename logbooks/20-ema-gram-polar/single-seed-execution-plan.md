@@ -452,3 +452,9 @@ probe qualification does not cover the edited source; revalidate it and audit
 four-host restore/SVD array access before launch. The first alpha0.25 prescribed
 checkpoint has validated permanent metadata and 57-array schema; stored counter
 and full restore remain pending. All three scientific probes remain unlaunched.
+
+2026-11-06 18:24 UTC: first reference checkpoint stored counter3733 passed a
+cached read-only scalar check. Probe direction comparisons now reduce global
+arrays in JAX before host scalar conversion. Requalify this edit with the
+extended sharded CPU oracle before scientific launch; no four-host probe has
+run. Reuse completed b33ed91cf logging/SVD qualification caches without APIs.

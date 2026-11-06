@@ -14,7 +14,7 @@ from levanter.optim.ema_gram import SVD, EmaGramConfig, EmaGramState, GramState,
 from levanter.optim.util import flatten_linear_layers
 from levanter.trainer_state import TrainerState
 
-from experiments.ema_gram.probe import decomposition_diagnostics, matrix_state
+from experiments.ema_gram.probe import decomposition_diagnostics, direction_comparison, matrix_state
 
 
 def numpy_polar(matrix):
@@ -28,6 +28,31 @@ def numpy_power(gram, alpha, ridge):
     normalized = (gram + gram.T) * 0.5 / (np.trace(gram) / len(gram))
     values, vectors = np.linalg.eigh(normalized)
     return (vectors * (np.maximum(values, 0) + ridge) ** (-alpha)) @ vectors.T
+
+
+def sharded_comparison_oracle():
+    rng = np.random.default_rng(319)
+    mesh = jax.sharding.Mesh(np.asarray(jax.devices()), ("probe",))
+    cases = []
+    for shape in [(8, 12), (12, 8)]:
+        for axis in [0, 1]:
+            spec = jax.sharding.PartitionSpec("probe", None) if axis == 0 else jax.sharding.PartitionSpec(None, "probe")
+            sharding = jax.sharding.NamedSharding(mesh, spec)
+            for zero in [False, True]:
+                approx = rng.normal(size=shape).astype(np.float32)
+                exact = np.zeros(shape, np.float32) if zero else rng.normal(size=shape).astype(np.float32)
+                result = direction_comparison(jax.device_put(approx, sharding), jax.device_put(exact, sharding))
+                assert all(x.is_fully_replicated and x.shape == () for x in result)
+                denominator = np.linalg.norm(approx) * np.linalg.norm(exact)
+                reference = [
+                    np.vdot(approx, exact) / (denominator if denominator else 1),
+                    np.linalg.norm(approx - exact) / (np.linalg.norm(exact) if np.linalg.norm(exact) else 1),
+                    denominator,
+                    np.linalg.norm(exact),
+                ]
+                np.testing.assert_allclose(list(map(float, result)), reference, rtol=2e-4, atol=2e-5)
+                cases.append(dict(shape=list(shape), partition_axis=axis, zero_reference=zero))
+    return dict(cases=cases, device_count=len(jax.devices()), scalar_outputs_replicated=True, numpy_oracle=True)
 
 
 def execute():
@@ -92,6 +117,7 @@ def execute():
         max_svd_absolute_error=max(errors),
         zero_and_rank_deficient_cases=len(edge_cases),
         state_immutable=True,
+        sharded_comparison=sharded_comparison_oracle(),
         scope="Tiny CPU numerical oracle only; timings are not an accelerator performance result; no training updates.",
         seeds=dict(model=1, state=2, numpy=317),
     )

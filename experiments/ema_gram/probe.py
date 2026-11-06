@@ -135,6 +135,17 @@ def loss_probes(state, loss_fn, batches, step_sizes: list[float], *, polar_steps
     return rows
 
 
+@jax.jit
+def direction_comparison(approx, exact):
+    """Reduce global direction arrays to replicated scalar diagnostics."""
+    approx_norm = jnp.linalg.norm(approx)
+    exact_norm = jnp.linalg.norm(exact)
+    denominator = approx_norm * exact_norm
+    cosine = jnp.vdot(approx, exact) / jnp.where(denominator > 0, denominator, 1)
+    relative_error = jnp.linalg.norm(approx - exact) / jnp.where(exact_norm > 0, exact_norm, 1)
+    return cosine, relative_error, denominator, exact_norm
+
+
 def decomposition_diagnostics(model, opt_state, *, polar_steps: int):
     """Offline SVD checks on one attention and one MLP matrix, with synchronized timings."""
     masked, _, state = matrix_state(model, opt_state)
@@ -160,8 +171,9 @@ def decomposition_diagnostics(model, opt_state, *, polar_steps: int):
                     start = time.perf_counter()
                     directions[method] = jax.block_until_ready(fn(s))
                     timings[method] = time.perf_counter() - start
-                approx, exact = (np.asarray(directions[k]) for k in (NEWTON_SCHULZ, SVD))
-                denom = np.linalg.norm(approx) * np.linalg.norm(exact)
+                cosine, relative_error, denom, exact_norm = map(
+                    float, direction_comparison(directions[NEWTON_SCHULZ], directions[SVD])
+                )
                 power = jax.jit(partial(relative_gram_power, alpha=alpha, ridge=ridge))
                 jax.block_until_ready((power(s.left), power(s.right)))
                 start = time.perf_counter()
@@ -175,12 +187,8 @@ def decomposition_diagnostics(model, opt_state, *, polar_steps: int):
                         alpha=alpha,
                         ridge=ridge,
                         seconds=timings,
-                        cosine=float(np.vdot(approx, exact) / denom) if denom else None,
-                        relative_error=(
-                            float(np.linalg.norm(approx - exact) / np.linalg.norm(exact))
-                            if np.linalg.norm(exact)
-                            else None
-                        ),
+                        cosine=cosine if denom else None,
+                        relative_error=relative_error if exact_norm else None,
                     )
                 )
     return rows
