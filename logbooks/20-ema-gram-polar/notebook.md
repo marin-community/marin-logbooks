@@ -2451,3 +2451,42 @@ all-three-running gate and one-time guards preserved. Keep the single observer s
 and [accepted identities](subset-final-confirmation-accounting.json). Full
 schedules and the three alpha0.25 checkpoint probes prescribed in the
 [execution plan](single-seed-execution-plan.md) remain required.
+
+### 2026-11-06 17:57 UTC — all three long-run startups validated
+
+The Iris observer's saved 17:54 UTC snapshots report RUNNING for all three
+nonzero EMA-Gram exponent settings: alpha 0.125, 0.25 and 0.5. Each run has four
+distributed training tasks, with zero recorded failures or preemptions.
+Startup validation joined all 12 original attempt 0 task UIDs and assigned
+workers to separate, finished ONLINE host logging checks. Each native W&B
+training run matches its configuration in parallel-long-runs-r01-bundle.json
+and Git source 923d79510475df3ed0fef53d40b3290ae4c90fce. See
+[startup evidence](parallel-long-runs-r01-started.json).
+
+The source-filtered W&B snapshot records finite training losses:
+
+| Alpha | Zero-based training label | Training loss |
+| --- | --- | --- |
+| 0.125 | 7 | 12.237302780151367 |
+| 0.25 | 3489 | 4.54071569442749 |
+| 0.5 | 5680 | 4.19376277923584 |
+
+Held-out C4 target 4.0 and full-schedule outcomes remain pending. Startup
+validation establishes task identity, configuration, logging and finite
+training progress; it does not establish scientific completion.
+
+The all-three-running gate passed before startup collection. A single bounded,
+non-following alpha 0.25 log snapshot recovered its missing W&B URLs; the
+collector checked those against original task UIDs, host checks and native
+configuration. Its 12 task reads and source-filtered ONLINE snapshot are cached
+under scratch/20261106-parallel-r01-startup. Preserve the collection guards
+there and reuse these caches. Both earlier Bad Gateway exits affected log
+followers; the new scheduler and W&B evidence shows training continued.
+No replacement follower or observer was created.
+
+Observer session 99712/PID 96635 retains Iris status polling. Native progress
+monitoring can now use the validated W&B run identities without repeating
+finished host checks or startup task reads. Each run's required schedule remains
+37,335 updates. The three alpha 0.25 checkpoint probes at completed-update
+counters 3,733, 18,665 and 33,597 remain required: held-out norm-matched direction
+and paired-loss comparisons, plus attention/MLP polar-versus-SVD comparisons.

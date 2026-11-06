@@ -435,3 +435,13 @@ unverified after its original follower exited with Bad Gateway while queued.
 Do not replace that follower. Obtain bounded source/attempt-bound evidence
 before startup validation; preserve the collector all-three-running gate and
 one-time caches. No new submission or observer is required.
+
+2026-11-06 17:57 UTC: all three nonzero long runs are canonically RUNNING.
+Startup validation passed for 12 original attempt 0 task/worker joins, 12 finished
+ONLINE host checks and exact native source/configuration. Finite training
+labels are 7/3489/5680 for alpha 0.125/0.25/0.5. See
+parallel-long-runs-r01-started.json and cached
+scratch/20261106-parallel-r01-startup/validated.json. Do not repeat startup
+collection or finished-host APIs. Reuse observer 99712/PID 96635 and prepared
+scratch/observe_parallel_r01_online.py for unfinished native progress only.
+Full 37,335 outcomes and three alpha 0.25 checkpoint probes remain pending.
