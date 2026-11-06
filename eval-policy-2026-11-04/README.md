@@ -1,12 +1,12 @@
 # Interim evaluation evidence
 
-INTERIM update r11, as of 2026-11-06T14:11:36.346175+00:00. All 162 Evalchemy cells are reviewed; 62 current Harbor cells are admitted and 10 remain pending. Later admissions update existing issue comments and candidate-card sections.
+INTERIM update r12, as of 2026-11-06T19:22:58.487193+00:00. All 162 Evalchemy cells are reviewed; 71 current Harbor cells are admitted and 1 remains pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
 Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `90b54fd6862e0667c61e6af70a180089cd73cef4809ab5ac0d1a6e59c6af9085`.
+`manifest.json` SHA256 `1cdc92d45be45d5f5279e1b4813f48207ba976a4aad6808df12064f73dc8ba36`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
@@ -29,6 +29,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/A13--olympiadbench.json](receipts/A13--olympiadbench.json) | admitted | `a114c7b5a5260553e7a000333b0bd7c9708cd4e907d5530b04430510be7a2ed0` |
 | [receipts/A13--ot-tblite-recovery.json](receipts/A13--ot-tblite-recovery.json) | admitted | `bbbe60c15080b5f140e800d3cbf5fb85c82bd6319026b684807ab3edea36b9d7` |
 | [receipts/A13--piqa.json](receipts/A13--piqa.json) | admitted | `3f5a788f45e66147957ce54f45e26b717d57a99fe2c56d774cb913e5fac9a9f3` |
+| [receipts/A13--sotopia-hard.json](receipts/A13--sotopia-hard.json) | admitted | `c67eb787830ef5038ac2c92bdc1e5990901d78ac98597257a4f05ba41540ee9a` |
 | [receipts/A13--swebench-verified.json](receipts/A13--swebench-verified.json) | admitted | `a9eda9077937726679786370726476b5e3af302a1d020752bb8e2e6b390cf183` |
 | [receipts/A13--tau3-pi.json](receipts/A13--tau3-pi.json) | admitted | `ee80b76fc4f31a444d3aac38206ac49931687ee531e9de764ac050bc4d2146a0` |
 | [receipts/A13--tb2-recovery.json](receipts/A13--tb2-recovery.json) | admitted | `7454cfc81a5499d8bf1e37ffc35583ea9d379b25085ce7a6d44e3d81105bf915` |
@@ -54,6 +55,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/A3--olympiadbench.json](receipts/A3--olympiadbench.json) | admitted | `ff2a1301b66134987345e4e6683d09a9a92649696b413fa074d33ff2e623c344` |
 | [receipts/A3--ot-tblite-recovery.json](receipts/A3--ot-tblite-recovery.json) | admitted | `a8770a999b5238badc2e987ac309c42a92932e3d6eca61c0268971870c4d9645` |
 | [receipts/A3--piqa.json](receipts/A3--piqa.json) | admitted | `4daf3731f51e2e825e3a67b07059358b0c9f21904c5e7f2a6d1171fc2b964f19` |
+| [receipts/A3--sotopia-hard.json](receipts/A3--sotopia-hard.json) | admitted | `c606d9da8b0b12d97d94fc9836c587631a432491a962cdddef1f55970c233949` |
 | [receipts/A3--swebench-verified.json](receipts/A3--swebench-verified.json) | admitted | `41b78727bef72702e1e24234fb9c122595eaec152deb1c26ef9790b74fe87201` |
 | [receipts/A3--tau3-pi.json](receipts/A3--tau3-pi.json) | admitted | `5e7298565968aad7dc22255b30f8177a3aba55b692961d35166d3ff09d57a6f0` |
 | [receipts/A3--triviaqa.json](receipts/A3--triviaqa.json) | admitted | `0551ae07c0a6d41919fb716d00a34f0b6fa40f0f2d3c01cbc4fbb969566dcb04` |
@@ -104,6 +106,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/MOPD100--olympiadbench.json](receipts/MOPD100--olympiadbench.json) | admitted | `612636c9e64f31bcc64a90d546c9bd7ba09f882520e060a0b7b4717f573d7b3f` |
 | [receipts/MOPD100--ot-tblite-recovery.json](receipts/MOPD100--ot-tblite-recovery.json) | admitted | `23c3dae8960b2ac9ac82f7b920c77259e1ad127505880cc57ebbce72cae40a8d` |
 | [receipts/MOPD100--piqa.json](receipts/MOPD100--piqa.json) | admitted | `8d2033c9af2e2b079c98b477387a410785fdeb673190649a1f794518fa0c210d` |
+| [receipts/MOPD100--sotopia-hard.json](receipts/MOPD100--sotopia-hard.json) | admitted | `95297651fb12c77919a5f06606efb0ea44225746f0ead1c983e7c99975272e37` |
 | [receipts/MOPD100--swebench-verified.json](receipts/MOPD100--swebench-verified.json) | admitted | `a17c7e843c34b7f3000d377a0c1d9861629a114b02a8c6adc4cf82acf2f75e75` |
 | [receipts/MOPD100--tau3-pi.json](receipts/MOPD100--tau3-pi.json) | admitted | `676a484f1c2dcdcf7aea72574164a8d63073af29e443dfc0378d3514abd1e41f` |
 | [receipts/MOPD100--tb2-recovery.json](receipts/MOPD100--tb2-recovery.json) | admitted | `dfa13dcfbb76e261d845c4bb3c7264481050798c27f7185efb2dc9198fe75de7` |
@@ -129,6 +132,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/MixedRS727--olympiadbench.json](receipts/MixedRS727--olympiadbench.json) | admitted | `ca23dca3ea1145cd47d139fb12f20952f28a8652859c1a250362a22717f8bfce` |
 | [receipts/MixedRS727--ot-tblite-recovery.json](receipts/MixedRS727--ot-tblite-recovery.json) | admitted | `ff9bf4903fa3b978bba4d5b0b557aa20b68d934016f54e53c62ea7892931d056` |
 | [receipts/MixedRS727--piqa.json](receipts/MixedRS727--piqa.json) | admitted | `3af64162758499e31a6a8faa287810f2cd8ffeb88967dfe1d07b8144d9bcb680` |
+| [receipts/MixedRS727--sotopia-hard.json](receipts/MixedRS727--sotopia-hard.json) | admitted | `6abf370e97311c50aab8e5c0d9e78e2637c20e67c906d68cb60373c19f007606` |
 | [receipts/MixedRS727--swebench-verified.json](receipts/MixedRS727--swebench-verified.json) | reconstruction | `18aea6246cb8d31dac80940596a4f84287a8348f75161085d1ee3d9b9fcdf771` |
 | [receipts/MixedRS727--tau3-pi.json](receipts/MixedRS727--tau3-pi.json) | admitted | `8bfbbff9f5951a7f04ece6e89b32a363c427ef74d5e2b6ad096c46d31b28e621` |
 | [receipts/MixedRS727--tb2-recovery.json](receipts/MixedRS727--tb2-recovery.json) | admitted | `497009b753ac71004625edb0f0676536cec23ef2169c6df38e95500980f6531e` |
@@ -154,6 +158,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/OPD75--olympiadbench.json](receipts/OPD75--olympiadbench.json) | admitted | `1862a7fdd56cc9a35aa5837956b4a6981a1fb30dba652dd74a9c3da698e313b0` |
 | [receipts/OPD75--ot-tblite-recovery.json](receipts/OPD75--ot-tblite-recovery.json) | admitted | `c9a400e068426b324d91d8302ce51d3f57076e1b7cbab6b852f3d294d07bb71d` |
 | [receipts/OPD75--piqa.json](receipts/OPD75--piqa.json) | admitted | `24d4e44dccacc7128f1622cc2906709032509bdf3abfcdf86046e5350e8d77b6` |
+| [receipts/OPD75--sotopia-hard.json](receipts/OPD75--sotopia-hard.json) | admitted | `0144ea97e31e986e05b4550653a717e9802cdfee62d04c3ad49f2351dc8292ca` |
 | [receipts/OPD75--swebench-verified.json](receipts/OPD75--swebench-verified.json) | admitted | `4c0f8db211fac85bad90425ec0de78d7daf4d13668bfe4f0a042733a38569661` |
 | [receipts/OPD75--tau3-pi.json](receipts/OPD75--tau3-pi.json) | admitted | `28062a185c6a0b3a8fc9ae07709c599cc055b72aee42c985a4310e42291ba04a` |
 | [receipts/OPD75--tb2-recovery.json](receipts/OPD75--tb2-recovery.json) | admitted | `1c3cc6daf7facfb310182eb5cc8171502f473ddc95c8772b00922b6e67b6d0db` |
@@ -179,6 +184,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/RS282--olympiadbench.json](receipts/RS282--olympiadbench.json) | admitted | `d084b93e3c2c84cbc4237b0a14e1707a6570b3976b825e3fdfb7354f39ccd5f1` |
 | [receipts/RS282--ot-tblite-recovery.json](receipts/RS282--ot-tblite-recovery.json) | admitted | `ed6eb977a500bc1117b31599162f258494f1c2d5a4dba78298d006e1eb02cd67` |
 | [receipts/RS282--piqa.json](receipts/RS282--piqa.json) | admitted | `184d9202a816c258dcfe0bbb599be26d1170249f9f4ecb4acf616cb9a3907ccf` |
+| [receipts/RS282--sotopia-hard.json](receipts/RS282--sotopia-hard.json) | admitted | `0c0bb36aea1f8d65f983c91536caff593ce8b11eb02d0804ce20ad2bf5e5f54e` |
 | [receipts/RS282--swebench-verified.json](receipts/RS282--swebench-verified.json) | admitted | `d3a990aadfc26e5cadbe6b2fb736fd96b0296a33b22bbe43e1c9710857ab494d` |
 | [receipts/RS282--tau3-pi.json](receipts/RS282--tau3-pi.json) | admitted | `5e2ed488ca99f2f6e450cf707648ab3faf0e2faf7578107cb0b380910f57e95d` |
 | [receipts/RS282--tb2-recovery.json](receipts/RS282--tb2-recovery.json) | admitted | `6161a77fd33749981d96fb5bfc35764667f022edfabe3861296d857d28667f4c` |
@@ -207,6 +213,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/plain--olympiadbench.json](receipts/plain--olympiadbench.json) | admitted | `cc7e42db6b68bd4c56f5457496ff8cb2ec41b20f63d93ad1e9f8a5d680a0fe08` |
 | [receipts/plain--ot-tblite-recovery.json](receipts/plain--ot-tblite-recovery.json) | admitted | `128e57bcc00c3d0f943959b082f779c2e4b9a8e8f4be0fa547e04c10d36c92b9` |
 | [receipts/plain--piqa.json](receipts/plain--piqa.json) | admitted | `5f8d94b78b3e2adc787adc26239500b4eaee246784780b6834d17e85a4a6a844` |
+| [receipts/plain--sotopia-hard.json](receipts/plain--sotopia-hard.json) | admitted | `0ef554a38b88a6ec123fb535507a0d1e37a8ef4eff0ae27a429c820c76dbae5d` |
 | [receipts/plain--swebench-verified.json](receipts/plain--swebench-verified.json) | reconstruction | `b8c488212be5b044cae2d5c8842e9923ece77d945e324ff4b128b3d18f306f37` |
 | [receipts/plain--tau3-pi.json](receipts/plain--tau3-pi.json) | admitted | `26949079f41524a6d328b27f5626163d2b61ffcf764801f3c7262a91d841000b` |
 | [receipts/plain--tb2-recovery.json](receipts/plain--tb2-recovery.json) | admitted | `158a2375eba28f07722aed269feb4953cdb4a016a53e4fa2d03502af22e58c71` |
@@ -236,6 +243,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/plateau--olympiadbench.json](receipts/plateau--olympiadbench.json) | admitted | `ae05b01334e91249b6603436ef9d73849c5c604a58141a0848b76062fe6b0869` |
 | [receipts/plateau--ot-tblite-recovery.json](receipts/plateau--ot-tblite-recovery.json) | admitted | `971911d36f4d1d823cdcd75f6f7fb2732e2d8d01c8d554bf4cec7a8e301b9c6c` |
 | [receipts/plateau--piqa.json](receipts/plateau--piqa.json) | admitted | `381cc2b61f56a77709f6b863dde69577cf62a97179aaf2c0c5ea228b6026bd58` |
+| [receipts/plateau--sotopia-hard.json](receipts/plateau--sotopia-hard.json) | admitted | `10aada020c8b3ca24a12c23e7d026f478c73ec5f9287c1443eac0049e8dfe3b2` |
 | [receipts/plateau--swebench-verified.json](receipts/plateau--swebench-verified.json) | admitted | `aaf21636f8e9c0870fe7b134f6f7c0dda0d9738a77429c913924ef94025d49e5` |
 | [receipts/plateau--tau3-pi.json](receipts/plateau--tau3-pi.json) | admitted | `c9a3ad3b3f3597fbcdf079d3c78d77f3871f6a0cabc2f48a8e304a07bdad2c59` |
 | [receipts/plateau--tb2-recovery.json](receipts/plateau--tb2-recovery.json) | admitted | `bc1d35799a5d4f7211d1b3bc9728c71d8378d500f62fb3247b7105db458c41f5` |
@@ -290,6 +298,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/v0.1--olympiadbench.json](receipts/v0.1--olympiadbench.json) | admitted | `61f7605b3d1b7221a92f5026403c65da667614227d5d6617229f144871553be0` |
 | [receipts/v0.1--ot-tblite-recovery.json](receipts/v0.1--ot-tblite-recovery.json) | admitted | `279bce8ed6b56605f1e7424036026bac739aeda503569e9921ce0fa99cdcc094` |
 | [receipts/v0.1--piqa.json](receipts/v0.1--piqa.json) | admitted | `65b6af5f424195fd5022cc50ef444afd477354ccdf67e7ee0b65489df14173e1` |
+| [receipts/v0.1--sotopia-hard.json](receipts/v0.1--sotopia-hard.json) | admitted | `4004ad3462b18a8bad74668695324c632351fc7292a2561df4568cac917c1810` |
 | [receipts/v0.1--swebench-verified.json](receipts/v0.1--swebench-verified.json) | admitted | `de7da23947f7f748f2f735efac55f3b3e486e5518b62ff78b2e3e2d30678d21a` |
 | [receipts/v0.1--tau3-pi.json](receipts/v0.1--tau3-pi.json) | admitted | `f4e5695dbc137385a906f0abf8fbb70864441e8931edc0da17e62eb552e6202f` |
 | [receipts/v0.1--tb2-recovery.json](receipts/v0.1--tb2-recovery.json) | admitted | `23889cf9a8e60b02bdf8c201bc4dfd7f63a36b507eb5c4862a8679379690f4c4` |
