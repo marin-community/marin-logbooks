@@ -426,6 +426,43 @@ status: active
   the lever. The 100-step `</`-seed run (`replay-10400-ltslash100`) tests
   whether that seed also lowers the re-close plateau.
 
+### 2026-11-06 - When the replay learns to close, and to close twice
+
+- Method: [`analysis/hazard_curves.py`](analysis/hazard_curves.py) turns the
+  per-trajectory probe dumps of the three seeds into per-step probabilities,
+  given `<|start_think|>`, on the fixed 10.05 trajectories: on time (the first
+  close lands where 10.05 closed, `(1 - p_premature)^L * p_first_close`), early
+  (`1 - (1 - p_premature)^L`), and double (on time, then again in 10.05's
+  continuation: on time x hazard). The dumps keep only the mean close
+  probability over the reasoning, so early is a lower bound and on time an
+  upper bound. Output:
+  [`analysis/hazard_curves.csv`](analysis/hazard_curves.csv),
+  [`analysis/hazard_curves.png`](analysis/hazard_curves.png).
+- Result: steps where each no-lead-in curve first reaches 10% / 50% of its own
+  peak over 100 steps.
+
+  | Seed | Group | On-time close | Double close | Double peak (step) |
+  | --- | --- | --- | --- | --- |
+  | `" answer"` | SWE | 12 / 17 | 13 / 16 | 0.101 (29) |
+  | `" answer"` | Tool-using | 10 / 20 | 10 / 12 | 0.048 (17) |
+  | `" answer"` | Plain | 11 / 32 | 9 / 12 | 0.011 (15) |
+  | mean | SWE | 47 / 52 | 50 / 54 | 0.056 (61) |
+  | mean | Tool-using | 45 / 51 | 50 / 54 | 0.010 (60) |
+  | mean | Plain | 48 / 55 | 52 / 84 | 0.001 (100) |
+
+  With the `</` seed (20 steps) SWE double close peaks at 0.183 at step 13,
+  inflated by literal closing tags in SWE continuations where the `</`-seeded
+  row fires; tool-using and plain peak at 0.041 and 0.007.
+- Interpretation: the model learns to double-close at the same time it learns
+  to close, within 0 to 5 steps at the 10% onset under both 100-step seeds,
+  and the mean seed delays both together by about 37 steps. Without a lead-in,
+  double close then falls (SWE 0.101 to 0.016 by step 100 with the `" answer"`
+  seed) while the on-time close keeps rising. With a forced lead-in it
+  plateaus (SWE about 0.5, tool-using 0.17, plain 0.05). Early closing with the
+  `" answer"` seed starts at 0.43 (tool-using) and 0.72 (plain) at step 0,
+  because the seed copies `" answer"`'s score at every reasoning token, so
+  "P(at least one close)" is not a usable learning signal for that seed.
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample
