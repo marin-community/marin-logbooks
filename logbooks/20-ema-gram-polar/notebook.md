@@ -2430,3 +2430,24 @@ Long-run startup validation, complete schedules and the three prescribed
 alpha0.25 checkpoint probes remain pending. Use the final accounting's original
 job/config/source identities for result collection. Never submit the core lock's
 configurations again.
+
+### 2026-11-06 13:55 UTC — reference long run allocated
+
+The original observer now records alpha0.25 RUNNING on four tasks;
+alpha0.5 also has four running tasks. The scheduler reports alpha0.125 pending
+four-host CPU/memory capacity. All three
+have zero recorded failures and preemptions. Alpha0.5's original follower has
+finite training progress through label2020 (loss5.092146873474121); this is a
+training loss, not a held-out target result. See
+[saved observer evidence](parallel-long-runs-r01-two-running.json).
+
+Canonical allocation does not establish native startup validation. The alpha0.25
+follower previously exited with a Bad Gateway transport error while queued;
+the follower exit does not establish a worker failure and it will not be
+restarted. Alpha0.25 lacks cached evidence joining its assigned tasks to host
+logging checks and its native training run. Collect that evidence with exact
+source and attempt identity checks before declaring startup validated. The startup collector remains unexecuted, with its existing
+all-three-running gate and one-time guards preserved. Keep the single observer session99712/PID96635
+and [accepted identities](subset-final-confirmation-accounting.json). Full
+schedules and the three alpha0.25 checkpoint probes prescribed in the
+[execution plan](single-seed-execution-plan.md) remain required.

@@ -427,3 +427,11 @@ provisional. New submissions and new observers required: zero. The ordinary
 global accounting path rejects an existing parallel acceptance receipt. Continue
 only the original long-run observer, startup verification, full completion
 validation and the three prescribed alpha0.25 scientific probes.
+
+2026-11-06 13:55 UTC: alpha0.25 and alpha0.5 are canonically RUNNING on four
+tasks each; alpha0.125 remains capacity-queued, with zero failures/preemptions.
+See parallel-long-runs-r01-two-running.json. Alpha0.25 native startup remains
+unverified after its original follower exited with Bad Gateway while queued.
+Do not replace that follower. Obtain bounded source/attempt-bound evidence
+before startup validation; preserve the collector all-three-running gate and
+one-time caches. No new submission or observer is required.
