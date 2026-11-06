@@ -396,3 +396,13 @@ first recorded target crossing is label 33,999 (34,000 updates), C4
 and original accepted receipt for exact-once adoption. Never repoll or restart
 completed baseline identities. Only R06 remains active; the global selection,
 remaining confirmations and prescribed scientific probes are still pending.
+
+On2026-11-06 the user authorized immediate parallel startup of all three
+remaining planned long runs. The frozen parallel-long-runs-r01-amendment.json
+supersedes the global-wait requirement for these three starts only. Use the
+current completed-pilot choices for alpha0.125/0.25/0.5; alpha0.5 is provisional
+while R06 continues. Keep the predeclared target4.0 and complete37,335 updates
+from scratch. Exclude long-run outcomes from pilot selection. Reconcile every
+accepted identity before any later confirmation submission; never duplicate the
+completed alpha0 or a matching accepted nonzero configuration. The final global
+selection record and prescribed scientific probes remain required.

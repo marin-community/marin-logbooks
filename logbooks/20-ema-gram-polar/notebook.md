@@ -2325,3 +2325,38 @@ Keep the original accepted receipt for exact-once adoption after global selectio
 R06 remains active (latest label 3,483); its outcome and any further boundary
 expansion still gate the selection lock and remaining confirmations. The required
 scientific probes and full scientific conclusions remain pending.
+
+### 2026-11-06 10:31 UTC — authorize immediate parallel long runs
+
+The user explicitly directed immediate startup of all remaining planned long
+runs. This supersedes the earlier requirement to wait for every recursive pilot
+before nonbaseline submission. Freeze the current pilot-only choices: alpha0.125,
+ridge0.01, LR0.0025; alpha0.25, ridge0.01, LR0.002; alpha0.5, ridge0.01, LR0.001.
+Here alpha is the EMA-Gram exponent, ridge is its regularization parameter,
+and LR is learning rate. All three use seed0 and start from scratch for37,335 updates, with native W&B ONLINE
+tracking, batch8 sequences/context4096 tokens and the existing447M model,
+fixed-subset data and validated optimizer, default scheduler
+preemption/retry, and no wall-clock limit. Each requests v4-32 in us-central2.
+
+The alpha0.5 choice is provisional because ridge0.0001 still has active
+recursive pilot R06. R06 continues under its original owner. Long-run outcomes
+are excluded from pilot selection; if the launched configuration differs from the eventual pilot winner,
+preserve its long-run result as provisional and reconcile the finally selected configuration separately. Alpha0.125
+has lower held-out C4 loss than alpha1/3 among completed pilots.
+The common held-out C4-en loss target remains4.0,
+with full schedules continuing after crossing. Alpha0.25 retains reference
+checkpoint counters3733/18665/33597 optimizer updates.
+
+The [frozen amendment](parallel-long-runs-r01-amendment.json),
+[36-pilot snapshot](parallel-long-runs-r01-completions.json), and
+[three configurations](parallel-long-runs-r01-bundle.json) record this change.
+The completed alpha0 baseline stays outside the new submission and observer
+set. At final selection, match the original accepted baseline receipt and this
+campaign ledger by exact configuration, and count matching jobs in the final
+comparison without submitting or observing them again. No global selection lock is claimed.
+
+The existing confirmation worker, submitter and observer now accept this explicit
+amendment as an alternative to the original global-lock path. Config decoding,
+full completion validation, source/input binding, permanent pre-RPC guards and
+regional cache checks remain required. Preparation is complete; acceptance and
+startup will be recorded after execution.

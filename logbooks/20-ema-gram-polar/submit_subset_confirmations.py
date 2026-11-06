@@ -18,6 +18,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from adopt_alpha0_long_run import accounting
+from prepare_parallel_long_runs import accounting as parallel_accounting
+from prepare_parallel_long_runs import resolve_bundle
 from prepare_subset_confirmations import prepare
 from submit_subset_training import command as pilot_command
 from terminal_worker_identity import completed_workers
@@ -71,7 +73,7 @@ def validate_completions(lock, records):
             raise ValueError("Missing online execution-host logging evidence")
 
 
-def command(index, variant, source, campaign, bundle, lock):
+def command(index, variant, source, campaign, bundle, lock, amendment=None, completions=None):
     argv = pilot_command(index, variant, source)
     argv[argv.index("--job-name") + 1] = f"{campaign}-{index:02d}"
     common = [
@@ -79,11 +81,13 @@ def command(index, variant, source, campaign, bundle, lock):
         "logbooks/20-ema-gram-polar/confirmation_worker.py",
         "--bundle",
         str(bundle),
-        "--lock",
-        str(lock),
+        "--lock" if amendment is None else "--amendment",
+        str(lock if amendment is None else amendment),
         "--index",
         str(index),
     ]
+    if amendment is not None:
+        common += ["--completions", str(completions)]
     logging = shlex.join([*common, "--mode", "logging-check", "--output", "/tmp/confirmation-host-logging.json"])
     worker = shlex.join([*common, "--mode", "worker", "--output", "/tmp/confirmation-worker.json"])
     gate = (
@@ -117,7 +121,9 @@ def claim(ledger, index, record):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", type=Path, required=True)
-    parser.add_argument("--lock", type=Path, required=True)
+    selection = parser.add_mutually_exclusive_group(required=True)
+    selection.add_argument("--lock", type=Path)
+    selection.add_argument("--amendment", type=Path)
     parser.add_argument("--completions", type=Path, required=True)
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--published-ref", required=True)
@@ -127,7 +133,7 @@ def main():
     args = parser.parse_args()
     if not re.fullmatch(r"ema-gram-20-confirm-seed0-[a-z0-9-]+", args.campaign):
         raise ValueError("Use a distinct confirmation campaign identity")
-    paths = [args.bundle, args.lock, args.completions]
+    paths = [args.bundle, args.lock if args.amendment is None else args.amendment, args.completions]
     if args.adopt_baseline is not None:
         paths.append(args.adopt_baseline)
     for path in paths:
@@ -136,12 +142,16 @@ def main():
         subprocess.run(["git", "ls-files", "--error-unmatch", str(path)], check=True, stdout=subprocess.DEVNULL)
         if subprocess.check_output(["git", "show", f"{args.source_commit}:{path}"]) != path.read_bytes():
             raise ValueError("Confirmation input differs from committed source")
-    lock = read_lock(args.lock)
-    bundle = json.loads(args.bundle.read_text())
-    if bundle != prepare(lock, bundle["artifact_version"]):
-        raise ValueError("Frozen bundle does not match locked configurations")
-    validate_completions(lock, json.loads(args.completions.read_text()))
-    allocations = accounting(ROOT, args.adopt_baseline, lock, bundle)
+    if args.amendment is None:
+        lock = read_lock(args.lock)
+        bundle = json.loads(args.bundle.read_text())
+        if bundle != prepare(lock, bundle["artifact_version"]):
+            raise ValueError("Frozen bundle does not match locked configurations")
+        validate_completions(lock, json.loads(args.completions.read_text()))
+        allocations = accounting(ROOT, args.adopt_baseline, lock, bundle)
+    else:
+        bundle = resolve_bundle(args.bundle, args.completions, args.amendment)
+        allocations = parallel_accounting(ROOT, args.adopt_baseline, bundle, args.amendment)
     launch_indexes = {row["index"] for row in allocations if row["disposition"] == "submit"}
     qualification = json.loads((BASE / "confirmation-worker-preflight.json").read_text())
     if not qualification["passed"] or not qualification["logging_check"]["success"]:
@@ -151,7 +161,16 @@ def main():
     if subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() != args.source_commit:
         raise ValueError("Execution HEAD differs from requested source")
     commands = [
-        command(i, row["variant"], args.source_commit, args.campaign, args.bundle, args.lock)
+        command(
+            i,
+            row["variant"],
+            args.source_commit,
+            args.campaign,
+            args.bundle,
+            args.lock,
+            args.amendment,
+            args.completions,
+        )
         for i, row in enumerate(bundle["cells"])
     ]
     if not args.launch:

@@ -14,6 +14,7 @@ from pathlib import Path
 import draccus
 from levanter.main.train_lm import TrainLmConfig
 from levanter.tracker.wandb import WandbConfig
+from prepare_parallel_long_runs import resolve_bundle
 from prepare_subset_confirmations import prepare
 
 from experiments.ema_gram.plan import read_lock
@@ -21,11 +22,16 @@ from experiments.ema_gram.subset_campaign import prepared
 from experiments.ema_gram.train import run_training
 
 
-def resolve(bundle_path, lock_path, index):
-    bundle = json.loads(bundle_path.read_text())
-    expected = prepare(read_lock(lock_path), bundle["artifact_version"])
-    if bundle != expected:
-        raise ValueError("Confirmation bundle differs from the qualified locked configuration")
+def resolve(bundle_path, lock_path, index, amendment_path=None, completions_path=None):
+    if amendment_path is not None:
+        bundle = resolve_bundle(bundle_path, completions_path, amendment_path)
+        digest = bundle["amendment_digest"]
+    else:
+        bundle = json.loads(bundle_path.read_text())
+        expected = prepare(read_lock(lock_path), bundle["artifact_version"])
+        if bundle != expected:
+            raise ValueError("Confirmation bundle differs from the qualified locked configuration")
+        digest = bundle["selection_lock_digest"]
     row = bundle["cells"][index]
     encoded = row["config"]
     config = draccus.decode(TrainLmConfig, encoded["train_config"])
@@ -48,22 +54,27 @@ def resolve(bundle_path, lock_path, index):
     )
     if draccus.encode(pod) != encoded:
         raise ValueError("Resolved native confirmation config differs from the frozen bundle")
-    return pod, row, bundle["selection_lock_digest"]
+    return pod, row, digest
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", type=Path, required=True)
-    parser.add_argument("--lock", type=Path, required=True)
+    selection = parser.add_mutually_exclusive_group(required=True)
+    selection.add_argument("--lock", type=Path)
+    selection.add_argument("--amendment", type=Path)
+    parser.add_argument("--completions", type=Path)
     parser.add_argument("--index", type=int, required=True)
     parser.add_argument("--mode", choices=("logging-check", "worker"), required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    pod, row, digest = resolve(args.bundle, args.lock, args.index)
+    pod, row, digest = resolve(args.bundle, args.lock, args.index, args.amendment, args.completions)
     record = dict(
         config=row["config"],
         config_sha256=row["config_sha256"],
-        selection_lock_digest=digest,
+        selection_lock_digest=digest if args.amendment is None else None,
+        amendment_digest=digest if args.amendment is not None else None,
+        global_selection_locked=args.amendment is None,
         bundle_sha256=hashlib.sha256(args.bundle.read_bytes()).hexdigest(),
         source_commit=os.environ.get("GIT_COMMIT"),
         task=os.environ.get("IRIS_TASK_ID"),
