@@ -273,3 +273,9 @@ The [off2903 version2 control](grug-i0-seed2903-2026.11.06.2-admission.json) pas
 ## Completed off2903 recovery is verified
 
 The [off2903 version2 archive](cohort-off2903-v2-archive-verification.json) retains 8,178 payload files and 1,027,390,615 bytes. All source and destination paths, sizes and ETags match the readiness manifest, SHA `4a42527b477a50b4854d1ca6318f11e3df840c32a231d02d8ea5e7893a1c37d6`. All five consumers succeeded and their provider pods are gone. The recovery record is published before removing this exact temporary duplicate. The active seed4517 control uses a separate protected prefix. Sixteen archives now retain 100,338 payload objects and 6,364,179,662 bytes; fifteen temporary sources are removed so far.
+
+## Fifth window admitted; final probe arm starts
+
+The [seed4517 control](grug-i0-seed4517-2026.11.06.2-admission.json) completed thirty updates and publications 0–30. Source, full comparable configuration, optimizer and behavior checks pass. Complete cycles took 4,149.451995 seconds, with 38,392,059 loss tokens, 5,691 long responses and no probes. All five GPU tasks succeeded at attempt0. The final interval-ten seed4517 arm has started next in the fixed order. No three-pair estimate or conditional interval20 decision has been made.
+
+[Terminal cohort allocation](cohort-through-off4517-allocation.json) is 296.683233 H100-hours, including the interrupted attempt, or 435.936753 across all work before the active final arm. The completed control's archive is copying. All sixteen earlier stopped temporary prefixes are verified empty with recovery retained.
