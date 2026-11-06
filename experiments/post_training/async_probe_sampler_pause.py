@@ -10,11 +10,11 @@ import shlex
 import sys
 from pathlib import Path
 
-from google.protobuf.duration_pb2 import Duration
 from iris.cli.connect import open_iris_client
 from iris.cluster.constraints import CLUSTER_CONSTRAINT_KEY, Constraint, ConstraintOp
 from iris.cluster.types import Entrypoint, EnvironmentSpec, ResourceSpec, gpu_device
 from iris.rpc import job_pb2
+from rigging.timing import Duration
 
 CONFIG_URI = (
     "s3://marin-us-east-08a/marin/users/romain/checkpoints/async-probe-cost/"
@@ -70,7 +70,7 @@ def submit():
             max_retries_failure=0,
             max_retries_preemption=0,
             max_task_failures=0,
-            timeout=Duration(seconds=1800),
+            timeout=Duration.from_seconds(1800),
         )
         print(f"Submitted sampler-only control: {job.job_id}", flush=True)
 

@@ -23,7 +23,7 @@
   "tokenizer_revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0",
   "data_uri": "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1",
   "capacity": {
-    "observed_utc": "2026-11-06T01:18:09.123149+00:00",
+    "observed_utc": "2026-11-06T01:30:00.744894+00:00",
     "semantics": "Ready, uncordoned H100 nodes and current Pending/Running GPU pod requests. Whole-node figures do not reserve capacity or certify CPU/memory fit; Iris/provider scheduling is authoritative.",
     "pools": [
       {
@@ -32,20 +32,20 @@
         "context": "marin-rn02a_RNO2A",
         "schedulable_h100_nodes": 60,
         "allocatable_h100s": 480,
-        "active_requested_h100s": 444,
-        "active_gpu_pods_on_h100": 57,
-        "whole_h100_nodes_with_no_gpu_requests": 3,
+        "active_requested_h100s": 286,
+        "active_gpu_pods_on_h100": 38,
+        "whole_h100_nodes_with_no_gpu_requests": 23,
         "unbound_gpu_requests_all_types": 0
       },
       {
         "cluster": "cw-us-east-02a",
         "region": "US-EAST-02A",
         "context": "marin-gpu_US-EAST-02A",
-        "schedulable_h100_nodes": 31,
-        "allocatable_h100s": 248,
-        "active_requested_h100s": 237,
+        "schedulable_h100_nodes": 32,
+        "allocatable_h100s": 256,
+        "active_requested_h100s": 234,
         "active_gpu_pods_on_h100": 31,
-        "whole_h100_nodes_with_no_gpu_requests": 1,
+        "whole_h100_nodes_with_no_gpu_requests": 2,
         "unbound_gpu_requests_all_types": 0
       }
     ]
@@ -79,9 +79,44 @@
     "gpu_allocations": 0
   },
   "source_sha256": {
-    "async_probe_sampler_pause.py": "508206a6942eff22e374e304f836a4ca26a4115a0a3e424bd134d6547222778e",
+    "async_probe_sampler_pause.py": "3ceb0e08bf9f181c01c1f0d004143e1dea611d2929a1ca17d3d05afa2fb249b1",
     "async_probe_sampler_pause_measure.py": "0fd46fd96ff3d6442049397bb9c796dce31ea602404eed4b810e79c572a14c74",
     "async_probe_pause_trace.py": "e83a42bc62521bb9c9beb807c542885a004ef96cbe8b076faee64bb2a4413b48"
   },
-  "source_checks": "Required root pre-commit passed, including Ruff, Black, AST and Markdown checks."
+  "source_checks": "Required root pre-commit passed, including Ruff, Black, AST and Markdown checks.",
+  "sdk_preflight": {
+    "resource": {
+      "cpuMillicores": 64000,
+      "memoryBytes": "1932735283200",
+      "device": {
+        "gpu": {
+          "variant": "H100",
+          "count": 8
+        }
+      },
+      "diskBytes": "2199023255552"
+    },
+    "constraint": {
+      "key": "cluster",
+      "op": "CONSTRAINT_OP_EQ",
+      "value": {
+        "stringValue": "cw-rno2a"
+      },
+      "mode": "CONSTRAINT_MODE_REQUIRED"
+    },
+    "timeout": {
+      "milliseconds": "1800000"
+    },
+    "replicas": 1,
+    "failure_retries": 0,
+    "preemption_retries": 0,
+    "scope": "Real resource, constraint and duration serializers; network submission replaced locally."
+  },
+  "local_launch_error": {
+    "type": "AttributeError: to_ms",
+    "cause": "Used protobuf Duration instead of rigging.timing.Duration. Corrected to the same type as the normal Iris backend.",
+    "request_sent": false,
+    "evidence": "The remote client converts timeout before calling launch_job. The hub prefix query found no job.",
+    "GPU_allocations": 0
+  }
 }
