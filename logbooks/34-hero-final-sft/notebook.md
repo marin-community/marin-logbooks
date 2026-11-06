@@ -337,3 +337,14 @@ zero failure/preemption retries. Source and configuration are published before
 submission, which must occur from a clean checkout at the pinned source.
 The panel has not yet run. Review all 100 raw outputs, stop/cap reasons, token
 anomalies and content failures before drawing a response-quality conclusion.
+
+
+## 2026-11-05: response sanity run accepted
+
+Iris accepted `/dlwh/hero-final-sft-rollout-20261105-v1` on `cw-us-east-08a`
+with the exact published source, request and selected native checkpoint.
+[rollout-receipt.json](rollout-receipt.json) records its accepted identity.
+At 00:35:41 UTC on November 6, all 16 tasks were running with zero failures
+or preemptions. Actual generation and completion remain pending. The existing
+heartbeat owns this job and the still-active selected compact verified-copy;
+no duplicate rollout or transfer should be submitted.

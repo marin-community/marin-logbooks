@@ -1,0 +1,43 @@
+{
+  "launch_digest": "1b00eb261eff79535cd4e2f2f5d2da3f8c25a7f598490f7051db2d1eb2572ae6",
+  "name": "hero-final-sft-rollout-20261105-v1",
+  "source_revision": "f6ae0fe02bf00ed6eca5915f9cba649a90ce146d",
+  "request_sha256": "882e6c8d79f2ed7302ddebf22d86ea6a84fa6f9308ec70b599fa06fabe043f7e",
+  "resources": {
+    "cpu": 120.0,
+    "ram": "890g",
+    "disk": "1t",
+    "device": {
+      "variant": "GB200",
+      "kind": "gpu",
+      "count": 4
+    },
+    "preemptible": true,
+    "regions": null,
+    "zone": null,
+    "target_cluster": null,
+    "replicas": 16,
+    "device_alternatives": null,
+    "image": null,
+    "container_profile": null
+  },
+  "processes_per_task": 4,
+  "command": [
+    "python",
+    "-m",
+    "experiments.grug.moe_hero_ep.rollout_sanity",
+    "run",
+    "request.json"
+  ],
+  "priority": "interactive",
+  "runtime_hours": 2,
+  "scheduling_hours": 1,
+  "preemption_retries": 0,
+  "failure_retries": 0,
+  "max_task_failures": 0,
+  "submission_requested": true,
+  "status": "submitted",
+  "job_id": "/dlwh/hero-final-sft-rollout-20261105-v1",
+  "request_uri": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/requests/rollout-v1/request.json",
+  "output_root": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/rollout-v1"
+}
