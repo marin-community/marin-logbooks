@@ -253,3 +253,9 @@ The interrupted old on1701 version1 archive is [independently verified](cohort-i
 The interval-ten seed1701 version2 arm completed thirty updates and publications0–30. Its five GPU tasks succeeded, with no automatic retry. [Its admission receipt](grug-i10-seed1701-2026.11.06.2-admission.json) passes the source/config/optimizer/coverage gates and records actual consumed probes and long-response positions. Complete cycles took4,217.034467seconds; the matched control took4,291.847733seconds. This one pair does not produce the predeclared three-pair estimate or decide the interval20 trigger. On2903 has started next in the fixed order.
 
 [Physical allocation through this pair](cohort-through-first-pair-allocation.json) is122.749378H100-hours for this cohort, including its interrupted attempt, or262.002898 across all work so far; the active on2903 allocation is additional and not yet terminal. Completed on1701 evidence is copying to its own version2 archive. All thirteen earlier stopped temporary prefixes are now independently checked empty with unchanged recovery manifests.
+
+## Third window admitted
+
+The [interval-ten seed2903 run](grug-i10-seed2903-2026.11.06.2-admission.json) completed thirty updates and publications0–30. Its source, full comparable configuration, optimizer isolation and consumed-probe coverage pass admission; all five GPU tasks succeeded. Its paired control has started next, as declared. Three of six primary windows are admitted. No three-pair overhead estimate or interval20 decision has been made.
+
+[Allocation through on2903](cohort-through-on2903-allocation.json) is181.424204H100-hours for the current cohort including the interruption, or320.677724 across all work before the active control. Completed on2903 evidence is copying; all fourteen earlier stopped temporary prefixes are verified empty with recovery retained.
