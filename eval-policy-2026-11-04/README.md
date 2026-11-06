@@ -1,18 +1,21 @@
 # Interim evaluation evidence
 
-INTERIM update r9, as of 2026-11-06T13:31:18.557380+00:00. All 162 Evalchemy cells are reviewed; 45 current Harbor cells are admitted and 27 remain pending. Later admissions update existing issue comments and candidate-card sections.
+INTERIM update r10, as of 2026-11-06T13:51:39.792985+00:00. All 162 Evalchemy cells are reviewed; 60 current Harbor cells are admitted and 12 remain pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
 Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `93ec910292ec946614398e67da9093e87788521a2067467a92c929220fd94980`.
+`manifest.json` SHA256 `dd00856b10b972c70e2c68f670c9227fbd7479fcfe6b474ffa166d1bc6b9de7c`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
 | [receipts/A13--aime24.json](receipts/A13--aime24.json) | admitted | `a4bbef5e23196f52d17eeddcad5e7873a924f697ffa38e0797e375c82469e93d` |
+| [receipts/A13--bfclparity-pi.json](receipts/A13--bfclparity-pi.json) | admitted | `2e6e82bea1f8bb5daf6c5539adb3886fedeb3dcb494391b243f3bfa01317c254` |
+| [receipts/A13--bixbench-pi.json](receipts/A13--bixbench-pi.json) | admitted | `7f8c38bfbd8b53a8bcdd5a64550ba0e3d4869a10529a9931fd970f91215db91c` |
 | [receipts/A13--boolq.json](receipts/A13--boolq.json) | admitted | `94833a5b3493c91059f6dec2609c9be835e2f9df8fdb5a958d4dd2fb33c21f7e` |
 | [receipts/A13--cruxeval.json](receipts/A13--cruxeval.json) | admitted | `9bfbc24aac0c547151fc50e77d8a81a942bd6bfb4261c28a9a612a4c0cf4f0dd` |
+| [receipts/A13--ds-1000-local.json](receipts/A13--ds-1000-local.json) | admitted | `89c143fcacc6cc39cf375e029f876b9c5ceae0c0e79d8b37616651939b3974f5` |
 | [receipts/A13--financebench.json](receipts/A13--financebench.json) | admitted | `bccac8a3ff6aa223d4764eab4c32b77f6da5bf1e01efdacf2d2b2b91f2e53357` |
 | [receipts/A13--gpqa-diamond.json](receipts/A13--gpqa-diamond.json) | admitted | `abb6710148de20692f16bb3679011d89d52daa3c8958611b33826248d554dcb3` |
 | [receipts/A13--gsm8k-0shot.json](receipts/A13--gsm8k-0shot.json) | admitted | `bc3fc72d10d892849b3e91b51fab3fddb4bf9257cf48d4ffc5c17f3e7553709c` |
@@ -24,15 +27,20 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/A13--mrcr.json](receipts/A13--mrcr.json) | admitted | `69d3b461836d147706c5e510dd775449a9787c2b01cd71cbd5f2ef74ad4cf327` |
 | [receipts/A13--nupa.json](receipts/A13--nupa.json) | admitted | `f261fe7bb34f94dceaad61d68785a78e2de7da4592fb89afdb7ed55ef67aea10` |
 | [receipts/A13--olympiadbench.json](receipts/A13--olympiadbench.json) | admitted | `a114c7b5a5260553e7a000333b0bd7c9708cd4e907d5530b04430510be7a2ed0` |
+| [receipts/A13--ot-tblite-recovery.json](receipts/A13--ot-tblite-recovery.json) | admitted | `bbbe60c15080b5f140e800d3cbf5fb85c82bd6319026b684807ab3edea36b9d7` |
 | [receipts/A13--piqa.json](receipts/A13--piqa.json) | admitted | `3f5a788f45e66147957ce54f45e26b717d57a99fe2c56d774cb913e5fac9a9f3` |
 | [receipts/A13--swebench-verified.json](receipts/A13--swebench-verified.json) | admitted | `a9eda9077937726679786370726476b5e3af302a1d020752bb8e2e6b390cf183` |
 | [receipts/A13--tau3-pi.json](receipts/A13--tau3-pi.json) | admitted | `ee80b76fc4f31a444d3aac38206ac49931687ee531e9de764ac050bc4d2146a0` |
+| [receipts/A13--tb2-recovery.json](receipts/A13--tb2-recovery.json) | admitted | `7454cfc81a5499d8bf1e37ffc35583ea9d379b25085ce7a6d44e3d81105bf915` |
 | [receipts/A13--triviaqa.json](receipts/A13--triviaqa.json) | admitted | `5df9f51e89d417490877583e3fff9a143fa16356a2f1f240dd7614b783b2b095` |
 | [receipts/A13--truthfulqa.json](receipts/A13--truthfulqa.json) | admitted | `2326924ac56d6e548b534b4db9fa13cba5b28fb27bfa7ea01c334cb775abf297` |
 | [receipts/A13--winogrande.json](receipts/A13--winogrande.json) | admitted | `7ee45b1618c66603ee1438193a246e43b9441f7e8a78b72aeb1979591e2a7e93` |
 | [receipts/A3--aime24.json](receipts/A3--aime24.json) | admitted | `aca6b83eb29eee4f8be143988617ae63618a7bd63545367f6734aeafd3d53c9b` |
+| [receipts/A3--bfclparity-pi.json](receipts/A3--bfclparity-pi.json) | admitted | `c76dc5e59b7d0195ad411dee2b681786ffeb409a6a14aeb05ead705d6ba83a97` |
+| [receipts/A3--bixbench-pi.json](receipts/A3--bixbench-pi.json) | admitted | `0f67692c870c4936fcba0f76b2f23902ed372822e68988341c49de9d9ccb5e70` |
 | [receipts/A3--boolq.json](receipts/A3--boolq.json) | admitted | `9c476ab6deac51b123888f390531fbc6e64a3b3a714a9406b7c731532621390b` |
 | [receipts/A3--cruxeval.json](receipts/A3--cruxeval.json) | admitted | `c3e8edbe75d5e051235e987818944f39e8ab78badfb57360e0ebf514859059ce` |
+| [receipts/A3--ds-1000-local.json](receipts/A3--ds-1000-local.json) | admitted | `dc8f06706b37860f6329ee5b5fee9edc0f49064e3407b3a3f56be7f5214e58d9` |
 | [receipts/A3--financebench.json](receipts/A3--financebench.json) | admitted | `95173432e2da7d03926a5c1767da6b5bbeb1f05d4268f96fd39602829b5ff320` |
 | [receipts/A3--gpqa-diamond.json](receipts/A3--gpqa-diamond.json) | admitted | `e172936e76097463e57e0e6a14e6f401b3a8a9db61f5dba775bf8d89888c85fa` |
 | [receipts/A3--gsm8k-0shot.json](receipts/A3--gsm8k-0shot.json) | admitted | `e8b037ad8892cb3ee5725ffdbb5f243300efaa1cffe9b98958a476ce62e29896` |
@@ -44,6 +52,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/A3--mrcr.json](receipts/A3--mrcr.json) | admitted | `b03d2ee446767709ff9ea39a612a1e1d676de6ae297cbfd725bb31e62aa2429c` |
 | [receipts/A3--nupa.json](receipts/A3--nupa.json) | admitted | `59d9f2ed2355a447e32c08f2b4547c31897c69cfe1f9564ab1b4c524b9a8a2d2` |
 | [receipts/A3--olympiadbench.json](receipts/A3--olympiadbench.json) | admitted | `ff2a1301b66134987345e4e6683d09a9a92649696b413fa074d33ff2e623c344` |
+| [receipts/A3--ot-tblite-recovery.json](receipts/A3--ot-tblite-recovery.json) | admitted | `a8770a999b5238badc2e987ac309c42a92932e3d6eca61c0268971870c4d9645` |
 | [receipts/A3--piqa.json](receipts/A3--piqa.json) | admitted | `4daf3731f51e2e825e3a67b07059358b0c9f21904c5e7f2a6d1171fc2b964f19` |
 | [receipts/A3--swebench-verified.json](receipts/A3--swebench-verified.json) | admitted | `41b78727bef72702e1e24234fb9c122595eaec152deb1c26ef9790b74fe87201` |
 | [receipts/A3--triviaqa.json](receipts/A3--triviaqa.json) | admitted | `0551ae07c0a6d41919fb716d00a34f0b6fa40f0f2d3c01cbc4fbb969566dcb04` |
@@ -143,6 +152,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/OPD75--olympiadbench.json](receipts/OPD75--olympiadbench.json) | admitted | `1862a7fdd56cc9a35aa5837956b4a6981a1fb30dba652dd74a9c3da698e313b0` |
 | [receipts/OPD75--ot-tblite-recovery.json](receipts/OPD75--ot-tblite-recovery.json) | admitted | `c9a400e068426b324d91d8302ce51d3f57076e1b7cbab6b852f3d294d07bb71d` |
 | [receipts/OPD75--piqa.json](receipts/OPD75--piqa.json) | admitted | `24d4e44dccacc7128f1622cc2906709032509bdf3abfcdf86046e5350e8d77b6` |
+| [receipts/OPD75--swebench-verified.json](receipts/OPD75--swebench-verified.json) | admitted | `4c0f8db211fac85bad90425ec0de78d7daf4d13668bfe4f0a042733a38569661` |
 | [receipts/OPD75--tau3-pi.json](receipts/OPD75--tau3-pi.json) | admitted | `28062a185c6a0b3a8fc9ae07709c599cc055b72aee42c985a4310e42291ba04a` |
 | [receipts/OPD75--tb2-recovery.json](receipts/OPD75--tb2-recovery.json) | admitted | `1c3cc6daf7facfb310182eb5cc8171502f473ddc95c8772b00922b6e67b6d0db` |
 | [receipts/OPD75--triviaqa.json](receipts/OPD75--triviaqa.json) | admitted | `1c04c34caa9af96aa3e34962d89a03a6d4e1f797c39ebfc31b69006216b033c2` |
@@ -167,6 +177,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/RS282--olympiadbench.json](receipts/RS282--olympiadbench.json) | admitted | `d084b93e3c2c84cbc4237b0a14e1707a6570b3976b825e3fdfb7354f39ccd5f1` |
 | [receipts/RS282--ot-tblite-recovery.json](receipts/RS282--ot-tblite-recovery.json) | admitted | `ed6eb977a500bc1117b31599162f258494f1c2d5a4dba78298d006e1eb02cd67` |
 | [receipts/RS282--piqa.json](receipts/RS282--piqa.json) | admitted | `184d9202a816c258dcfe0bbb599be26d1170249f9f4ecb4acf616cb9a3907ccf` |
+| [receipts/RS282--swebench-verified.json](receipts/RS282--swebench-verified.json) | admitted | `d3a990aadfc26e5cadbe6b2fb736fd96b0296a33b22bbe43e1c9710857ab494d` |
 | [receipts/RS282--tau3-pi.json](receipts/RS282--tau3-pi.json) | admitted | `5e2ed488ca99f2f6e450cf707648ab3faf0e2faf7578107cb0b380910f57e95d` |
 | [receipts/RS282--tb2-recovery.json](receipts/RS282--tb2-recovery.json) | admitted | `6161a77fd33749981d96fb5bfc35764667f022edfabe3861296d857d28667f4c` |
 | [receipts/RS282--triviaqa.json](receipts/RS282--triviaqa.json) | admitted | `555c892c0bbb72355b99f954eff1cfaf1d2b2d66db448171f49ff012512a55b4` |
@@ -257,9 +268,12 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/v0--truthfulqa.json](receipts/v0--truthfulqa.json) | historical_context_only | `c49ab987be764b77dacdf3c2099941b9822883c5c73ef47979e13e2749bd6c49` |
 | [receipts/v0--winogrande.json](receipts/v0--winogrande.json) | historical_context_only | `797fd35ed9080da08eaa5df51cf63b3d06060f9894aef67a8fbf2bd9586be3f9` |
 | [receipts/v0.1--aime24.json](receipts/v0.1--aime24.json) | admitted | `063f8df7b3c1db8077b930b5ae5ea2029d4400acad862101cc23d5075f3ab6f3` |
+| [receipts/v0.1--bfclparity-pi.json](receipts/v0.1--bfclparity-pi.json) | admitted | `58729a7cb19323476d74317b6dcab32676fdb7a8837f858b762341455fe56996` |
+| [receipts/v0.1--bixbench-pi.json](receipts/v0.1--bixbench-pi.json) | admitted | `161a7b4fae89aa39033c16aa72e21193a08e651c6154f5aeca960d2fb45c52a1` |
 | [receipts/v0.1--boolq.json](receipts/v0.1--boolq.json) | admitted | `705831b3e464b06b8598db92b73ff7066caa224a720e58de076252e2002be8cc` |
 | [receipts/v0.1--cruxeval--secondary.json](receipts/v0.1--cruxeval--secondary.json) | secondary_only | `c09c283a3e45007f1c32c1439356b008ad246356646e767d4101ececd51c7a77` |
 | [receipts/v0.1--cruxeval.json](receipts/v0.1--cruxeval.json) | admitted | `c4eede62bc72a784d890607985b37debff24cf8e2a0237cfdb0534cedd95be0c` |
+| [receipts/v0.1--ds-1000-local.json](receipts/v0.1--ds-1000-local.json) | admitted | `e2252dd917a06085faf17c3e9fdcf43878d624b53b64bbee17db7059cb8c20b4` |
 | [receipts/v0.1--financebench.json](receipts/v0.1--financebench.json) | admitted | `9fbdeed3a08b014da319601f05a8b4b1668c61851331d66c80abac023cddce14` |
 | [receipts/v0.1--gpqa-diamond.json](receipts/v0.1--gpqa-diamond.json) | admitted | `59fcbd8c23e4854d60971b27c781b6900e99f8d425fa9b54ec5d0dcf4473c00e` |
 | [receipts/v0.1--gsm8k-0shot.json](receipts/v0.1--gsm8k-0shot.json) | admitted | `35b9a55bc29d8fd6e780bcdcc20936fec746aa16d6228ee97d92845ab10bac7c` |
@@ -276,6 +290,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/v0.1--piqa.json](receipts/v0.1--piqa.json) | admitted | `65b6af5f424195fd5022cc50ef444afd477354ccdf67e7ee0b65489df14173e1` |
 | [receipts/v0.1--swebench-verified.json](receipts/v0.1--swebench-verified.json) | admitted | `de7da23947f7f748f2f735efac55f3b3e486e5518b62ff78b2e3e2d30678d21a` |
 | [receipts/v0.1--tau3-pi.json](receipts/v0.1--tau3-pi.json) | admitted | `f4e5695dbc137385a906f0abf8fbb70864441e8931edc0da17e62eb552e6202f` |
+| [receipts/v0.1--tb2-recovery.json](receipts/v0.1--tb2-recovery.json) | admitted | `23889cf9a8e60b02bdf8c201bc4dfd7f63a36b507eb5c4862a8679379690f4c4` |
 | [receipts/v0.1--triviaqa--secondary.json](receipts/v0.1--triviaqa--secondary.json) | secondary_only | `fbad10b79582c6905147b20d983c6e3cd0ab69571bacd27a5adfc3e88d90f7c6` |
 | [receipts/v0.1--triviaqa.json](receipts/v0.1--triviaqa.json) | admitted | `85f4cae6df67ff36abf51566a4f4fe31abdca06ce39c5dbb58a6e1bb8ca80513` |
 | [receipts/v0.1--truthfulqa.json](receipts/v0.1--truthfulqa.json) | admitted | `d257c733e3fff034348ee4bbf3301133f4c202f9d2ac6aa2d7d73ddd2b4db727` |
