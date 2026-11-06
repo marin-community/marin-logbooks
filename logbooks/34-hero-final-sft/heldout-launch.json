@@ -1,0 +1,44 @@
+{
+  "launch_digest": "2f2a826bb8afefdafb35e9e5be6612ef391ca60f5c1fa27543ea0311fd23d61b",
+  "name": "hero-final-sft-heldout-20261105-v1",
+  "source_revision": "e81d24d4328a1046043fdcf90dde8453f8d562ec",
+  "request_sha256": "05564dd2edcc05f7ccf3c39c0fbdf8e579f5f56816e09afd081b9ec2d6f7bbb4",
+  "resources": {
+    "cpu": 120.0,
+    "ram": "890g",
+    "disk": "1t",
+    "device": {
+      "variant": "GB200",
+      "kind": "gpu",
+      "count": 4
+    },
+    "preemptible": true,
+    "regions": null,
+    "zone": null,
+    "target_cluster": null,
+    "replicas": 16,
+    "device_alternatives": null,
+    "image": null,
+    "container_profile": null
+  },
+  "processes_per_task": 4,
+  "command": [
+    "python",
+    "-m",
+    "experiments.grug.moe_hero_ep.sft_heldout",
+    "evaluate",
+    "request.json"
+  ],
+  "priority": "interactive",
+  "runtime_hours": 1,
+  "scheduling_hours": 1,
+  "preemption_retries": 0,
+  "failure_retries": 0,
+  "max_task_failures": 0,
+  "submission_requested": true,
+  "status": "submitted",
+  "job_id": "/dlwh/hero-final-sft-heldout-20261105-v1",
+  "request_uri": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/requests/heldout-v1/request.json",
+  "output_root": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/heldout-v1",
+  "request_publication_marker": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/requests/heldout-v1/.verified-copy-manifest.json"
+}

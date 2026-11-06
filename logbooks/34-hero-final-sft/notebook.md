@@ -247,3 +247,23 @@ configuration. The evaluator runs only forward passes, with one separate
 A failed or interrupted evaluator requires inspection before using a fresh
 execution identity. Its source placeholder is resolved after publication.
 No held-out result, selected export or response-quality result exists yet.
+
+
+## 2026-11-05: held-out evaluator accepted
+
+The fixed 64/96/128 comparison is running as
+`/dlwh/hero-final-sft-heldout-20261105-v1` on `cw-us-east-08a` from
+published source `e81d24d4328a1046043fdcf90dde8453f8d562ec`. The request
+SHA256 is `05564dd2edcc05f7ccf3c39c0fbdf8e579f5f56816e09afd081b9ec2d6f7bbb4`.
+[heldout-launch.json](heldout-launch.json) records the exact immutable request
+publication, accepted receipt, command and output. At 00:18 UTC on November 6,
+all 16 tasks were running with no failures or preemptions; this scheduler state
+does not establish numerical evaluation progress or a completed report.
+
+The worker uses the pinned 256-conversation panel with 48013 assistant targets,
+batch 64 and physical padding 16384. The minimum assistant NLL among candidates
+whose EOT top-1 count is at least step 64 selects the export; exact ties select
+the earlier step. One existing heartbeat owns monitoring. No more gradient
+updates or duplicate evaluator launch is authorized. Report validation, one
+selected native export, durable compact preservation and the frozen
+100-response review remain pending.
