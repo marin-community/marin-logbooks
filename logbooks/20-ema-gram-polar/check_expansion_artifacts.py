@@ -26,12 +26,15 @@ m.SOURCE = "a" * 40
 R = Path.cwd()
 E = R.parent / "ema-gram-subset-seed0-r02-20261105"
 index = 6
+steps = 37335 if "--long-run" in sys.argv else 7630
 keys = m.TRAIN_KEYS
-rows = [{"global_step": i, **{k: 1.0 for k in keys}} for i in range(7630)]
+rows = [{"global_step": i, **{k: 1.0 for k in keys}} for i in range(steps)]
 raw = [r for r in rows if r["global_step"] != 668] + [rows[1000]]
 queries = []
 bundle = json.loads((R / "scratch/20261105-expansion-worker-fixture/bundle.json").read_text())
 expansion = bundle["cells"][0 if "--alpha0" in sys.argv else 1]
+if "--long-run" in sys.argv:
+    expansion = json.loads((R / "logbooks/20-ema-gram-polar/alpha0-long-run-prepared.json").read_text())["cells"][0]
 actual = expansion["config"]["train_config"]
 frozen = copy.deepcopy(actual)
 cfg = m.draccus.decode(m.TrainLmConfig, frozen)
@@ -61,7 +64,7 @@ class Run:
     def scan_history(self, **kwargs):
         queries.append(kwargs)
         if m.FINAL_KEY in kwargs["keys"]:
-            return [{"global_step": 7629, m.FINAL_KEY: 4.5}]
+            return [{"global_step": steps - 1, m.FINAL_KEY: 4.5}]
         if "min_step" in kwargs:
             assert kwargs["max_step"] == kwargs["min_step"] + 1
             return [rows[kwargs["min_step"]]]
@@ -76,7 +79,7 @@ class Blob:
         self.data = (
             (R / "scratch/20261105-r02-00-final-manifest.json").read_bytes()
             if name.endswith("manifest.json")
-            else json.dumps({"step": 7629, "is_temporary": False}).encode()
+            else json.dumps({"step": steps - 1, "is_temporary": False}).encode()
         )
         if name.endswith("manifest.json"):
             manifest = json.loads(self.data)
@@ -98,10 +101,10 @@ class Scalar:
     dtype = "int32"
 
     def __int__(self):
-        return 7630
+        return steps
 
     def tobytes(self):
-        return (7630).to_bytes(4, "little")
+        return steps.to_bytes(4, "little")
 
 
 class Future:
@@ -211,19 +214,19 @@ with tempfile.TemporaryDirectory(prefix="ema-expansion-fixture-") as temporary:
         return SimpleNamespace(run=run)
 
     m.wandb.Api = api
-    result = m.verify_artifacts(root, request, terminal, out)
+    result = m.verify_artifacts(root, request, terminal, out, expected_steps=steps)
     assert (
         result["scientifically_complete"]
-        and result["stored_native_counter"] == 7630
+        and result["stored_native_counter"] == steps
         and result["checkpoint"]["arrays"] == 57
         and result["final_c4_loss"] == 4.5
     )
     m.wandb.Api = lambda: (_ for _ in ()).throw(AssertionError("Repeated completed-run API query"))
-    assert m.verify_artifacts(root, request, terminal, out) == result
+    assert m.verify_artifacts(root, request, terminal, out, expected_steps=steps) == result
     m.wandb.Api = api
     host_file = join["tasks"][0]["host_logging_id"] + ".json"
     cases = [
-        ("counter", "counter.json", lambda d: {**d, "counter": 7629}),
+        ("counter", "counter.json", lambda d: {**d, "counter": steps - 1}),
         ("final_eval", "eval-raw.json", lambda d: []),
         ("conflicting_history", "history-raw.json", lambda d: [*d, {**rows[0], "train/loss": 99.0}]),
         ("metadata", "metadata.json", lambda d: {**d, "parsed": {**d["parsed"], "step": 1}}),
@@ -251,7 +254,7 @@ with tempfile.TemporaryDirectory(prefix="ema-expansion-fixture-") as temporary:
         target = candidate / filename
         target.write_text(json.dumps(mutate(json.loads(target.read_text()))))
         try:
-            m.verify_artifacts(root, request, terminal, candidate)
+            m.verify_artifacts(root, request, terminal, candidate, expected_steps=steps)
         except ValueError:
             pass
         else:
@@ -261,12 +264,15 @@ with tempfile.TemporaryDirectory(prefix="ema-expansion-fixture-") as temporary:
     counter.write_text("{}")
     m.wandb.Api = lambda: (_ for _ in ()).throw(AssertionError("API query before cached integrity gate"))
     try:
-        m.verify_artifacts(root, request, terminal, out)
+        m.verify_artifacts(root, request, terminal, out, expected_steps=steps)
     except ValueError:
         pass
     else:
         raise AssertionError("Changed verified evidence accepted")
     counter.write_bytes(original)
+    if "--long-run" in sys.argv:
+        print(json.dumps({"long_run": True, "steps": steps, "passed": True, "negative_cases": len(cases)}))
+        sys.exit(0)
     # Exercise the terminal-plan/CLI boundary using the same fabricated artifacts.
     from unittest.mock import patch
 

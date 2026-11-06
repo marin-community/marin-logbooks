@@ -76,7 +76,7 @@ def require_single_attempt_tasks(request, directory, join):
     return tasks
 
 
-def canonical_history(raw, repair):
+def canonical_history(raw, repair, expected_steps=7630):
     unique, duplicates = {}, []
     for row in raw:
         label = row["global_step"]
@@ -88,9 +88,9 @@ def canonical_history(raw, repair):
                 raise ValueError("Conflicting duplicate native metric row")
             duplicates.append(label)
         unique[label] = row
-    if set(unique) - set(range(7630)):
+    if set(unique) - set(range(expected_steps)):
         raise ValueError("Unexpected native labels")
-    missing = sorted(set(range(7630)) - set(unique))
+    missing = sorted(set(range(expected_steps)) - set(unique))
     for label in missing:
         found = [r for r in repair(label) if r["global_step"] == label]
         if len(found) != 1:
@@ -99,7 +99,7 @@ def canonical_history(raw, repair):
     return [unique[k] for k in sorted(unique)], {"identical_duplicates": duplicates, "repaired_labels": missing}
 
 
-def verify_artifacts(root, request, task_directory, out):
+def verify_artifacts(root, request, task_directory, out, expected_steps=7630):
     """Request must come from the frozen expansion terminal-plan gate; no job RPCs."""
     source = request["source_commit"]
     index = request["index"]
@@ -111,6 +111,8 @@ def verify_artifacts(root, request, task_directory, out):
     expected = request["config"]["train_config"]
     if hashlib.sha256(json.dumps(request["config"], sort_keys=True).encode()).hexdigest() != request["config_sha256"]:
         raise ValueError("Frozen expansion config hash mismatch")
+    if expected_steps not in (7630, 37335) or expected["trainer"]["num_train_steps"] != expected_steps:
+        raise ValueError("Requested completion schedule differs from frozen training config")
     completed = json.loads((root / "logbooks/20-ema-gram-polar/subset-training-r02-alpha0-completed.json").read_text())
     run_ids = list(join["native_run_tasks"])
     if len(run_ids) != 1:
@@ -193,12 +195,12 @@ def verify_artifacts(root, request, task_directory, out):
                 ),
             )
 
-        rows, pagination = canonical_history(raw, repair)
+        rows, pagination = canonical_history(raw, repair, expected_steps)
         if cached_json(out / "pagination.json", lambda: pagination) != pagination:
             raise ValueError("Cached pagination audit differs from raw rows")
         if cached_json(out / "history-canonical.json", lambda: rows) != rows:
             raise ValueError("Cached canonical history differs from raw rows")
-        gates = audit(rows + evaluations)
+        gates = audit(rows + evaluations, expected_steps=expected_steps)
         host = []
         for task, joined in zip(tasks, sorted(join["tasks"], key=lambda t: t["task"]), strict=True):
             host_id = joined["host_logging_id"]
@@ -236,7 +238,7 @@ def verify_artifacts(root, request, task_directory, out):
                     source_verification_scope="Accepted source and qualified worker digest; frozen config values/digest",
                 )
             )
-        uri = expected["trainer"]["checkpointer"]["base_path"] + "/step-7629"
+        uri = expected["trainer"]["checkpointer"]["base_path"] + f"/step-{expected_steps - 1}"
         if not uri.startswith("gs://marin-us-central2/") or "/tmp/" in uri:
             raise ValueError("Expected permanent regional checkpoint")
         bucket, path = uri[5:].split("/", 1)
@@ -258,7 +260,7 @@ def verify_artifacts(root, request, task_directory, out):
 
         metadata = cached_json(out / "metadata.json", lambda: read_metadata("metadata.json"))
         manifest = cached_json(out / "manifest.json", lambda: read_metadata("manifest.json"))
-        if metadata["parsed"]["step"] != 7629 or metadata["parsed"]["is_temporary"]:
+        if metadata["parsed"]["step"] != expected_steps - 1 or metadata["parsed"]["is_temporary"]:
             raise ValueError("Checkpoint metadata does not describe final permanent label")
         for record in [metadata, manifest]:
             raw_bytes = record["raw_text"].encode()
@@ -297,8 +299,8 @@ def verify_artifacts(root, request, task_directory, out):
                 arr = ts.open(spec, open=True, read=True, write=False).result().read().result()
             except Exception as exc:
                 raise RuntimeError(str(exc).replace(creds.token, "[REDACTED]")) from None
-            if arr.shape != () or int(arr) != 7630:
-                raise ValueError("Stored native counter is not7630")
+            if arr.shape != () or int(arr) != expected_steps:
+                raise ValueError("Stored native counter differs from complete schedule")
             return {
                 "counter": int(arr),
                 "dtype": str(arr.dtype),
@@ -308,7 +310,7 @@ def verify_artifacts(root, request, task_directory, out):
             }
 
         counter = cached_json(out / "counter.json", read_counter)
-        if counter["counter"] != 7630 or counter["shape"] != []:
+        if counter["counter"] != expected_steps or counter["shape"] != []:
             raise ValueError("Cached scalar counter mismatch")
         gates.update(
             index=index,
@@ -346,7 +348,7 @@ def verify_artifacts(root, request, task_directory, out):
             run_attempt_join_evidence=join,
             verified_at=datetime.now(UTC).isoformat(),
             scope=(
-                "Validated fixed-subset expansion pilot with single fresh attempt on each host; "
+                "Validated fixed-subset run with single fresh attempt on each host; "
                 "no full checkpoint audit or resume claim."
             ),
         )

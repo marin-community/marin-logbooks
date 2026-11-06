@@ -2292,3 +2292,36 @@ pending. R06 has now produced finite native progress at label7 with training
 loss12.217096328735352. Alpha0 long-run label10233 has finite training
 loss3.8518803119659424; these training losses do not establish held-out
 C4 target crossing. Both original observers and launch guards remain intact.
+
+### 2026-11-06 07:06 UTC — validate the complete alpha0 long run
+
+The early alpha0 seed0 baseline completed all 37,335 updates from scratch with
+final held-out C4 loss **3.792296886444092**. Every label 0–37,334 has
+five finite training metrics; the permanent final checkpoint stores counter
+37,335 with the expected 57 array metadata entries. Exact source, fixed data,
+configuration and ONLINE finish passed. The original attempt0 succeeded with
+zero failures or preemptions, and the finished startup host cache was reused.
+The original observer recorded success at 07:00 UTC and exited naturally.
+The monitoring helper's live-PID check then failed before any API call; its raw
+log is retained, and this is not a worker failure.
+
+The first recorded C4 below the predeclared 4.0 target is **3.9549849033355713**
+at label 33,999: 34,000 updates and 1,114,112,000 tokens. Its recorded native
+runtime is 17,173.085236197 seconds (about 4.77 hours), including compilation
+and evaluation and excluding queue time. This is an observed evaluation point,
+not an interpolated crossing. All 38 evaluation points and their timestamps are
+in [the completion report](alpha0-long-run-completed.json). Training continued
+to the full schedule; final evaluation runtime is 18,964.008649538 seconds.
+
+The shared terminal validator now checks the explicitly requested schedule
+against the frozen config. Offline fixtures passed for the 37,335-step baseline
+and the existing four-host 7,630-step pilot, with ten rejection cases and cached
+completion reuse without API access. W&B pagination's identical duplicates and
+37 missing boundary labels were preserved and repaired with exact-label queries.
+Metadata validation does not establish full checkpoint byte restore.
+
+Never query completed baseline identities again or restart its observer.
+Keep the original accepted receipt for exact-once adoption after global selection.
+R06 remains active (latest label 3,483); its outcome and any further boundary
+expansion still gate the selection lock and remaining confirmations. The required
+scientific probes and full scientific conclusions remain pending.

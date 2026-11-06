@@ -388,3 +388,11 @@ winner at LR0.001 (C4=4.3975324630737305). No further expansion for that ridge
 is required. R01 through R05 are complete; only accepted R06 remains in the
 recursive pilot search. R06 has finite native training progress. The full global
 selection gate remains pending its outcome and any resulting boundary expansion.
+
+At 07:00 UTC the baseline's original observer recorded success. The full
+37,335-step completion subsequently validated with final C4 3.792296886444092;
+first recorded target crossing is label 33,999 (34,000 updates), C4
+3.9549849033355713. Reuse [its completed evidence](alpha0-long-run-completed.json)
+and original accepted receipt for exact-once adoption. Never repoll or restart
+completed baseline identities. Only R06 remains active; the global selection,
+remaining confirmations and prescribed scientific probes are still pending.
