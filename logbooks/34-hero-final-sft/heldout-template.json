@@ -1,0 +1,111 @@
+{
+  "reference": {
+    "checkpoint": "s3://marin-us-east-02a/marin/grug/hero-ctx65k-step372k/2026.08.19.2/checkpoints/step-390251",
+    "metadata_digest": "16c01949576632fcc55f2cc0f478fdd9e198408f76362652e0d778d1c25e92b5",
+    "source_pt_step": 390251,
+    "config_path": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/inputs/source-model.json",
+    "config_digest": "ce31949afe42887255cb674f01ad5a2a080725dbb069862e3342c4002a5f9b25",
+    "manifest_digest": "4b6427b59d99daf9fe88fc20c15dd2c2ba9f532f57b683e6051dc1e4a831e378",
+    "tokenizer": "marin-community/marin-tokenizer",
+    "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+    "tokenizer_revision_evidence": "https://github.com/marin-community/marin-logbooks/issues/2; exact original cache publication hashes reverified in input-verification.json. Final pretraining config names this tokenizer without an immutable revision; this repeat explicitly selects the earlier pinned snapshot.",
+    "source_config_digest": "292123f0e857e3675bee1147365758840e943dc89f28c536e3c2bdd8a7436dcd",
+    "source_revision": "33189166cfb244bf284f3d893e58ce0272215eac"
+  },
+  "sft": {
+    "rank": 16,
+    "alpha": 16.0,
+    "token_ids": [
+      128006,
+      128007,
+      128002,
+      128003,
+      128009
+    ],
+    "adapter_learning_rate": 0.0001,
+    "vocab_learning_rate": 0.00001,
+    "num_steps": 128,
+    "warmup_steps": 2,
+    "seed": 20261021,
+    "vocab_block_size": 4096,
+    "token_block_size": 256
+  },
+  "model": {
+    "vocab_size": 128256,
+    "hidden_dim": 6144,
+    "intermediate_dim": 3072,
+    "shared_expert_intermediate_dim": 3072,
+    "num_shared_experts": 2,
+    "num_experts": 384,
+    "num_experts_per_token": 8,
+    "latent_dim": 3072,
+    "qb_estimator": "hist",
+    "qb_hist_bins": 10000,
+    "num_layers": 48,
+    "num_heads": 48,
+    "num_kv_heads": 12,
+    "local_kv_heads": 12,
+    "global_kv_heads": 6,
+    "head_dim": 128,
+    "max_seq_len": 65536,
+    "sliding_window": 2048,
+    "global_every": 4,
+    "capacity_factor": 1.5,
+    "layer_norm_eps": 0.00001,
+    "initializer_std": 0.0063788795384978605,
+    "qk_mult": 1.66,
+    "qk_mult_long_scale": 1.0,
+    "sconv": true,
+    "sconv_kernel": 4,
+    "sconv_sites": [
+      "k",
+      "attn",
+      "mlp"
+    ],
+    "attention_implementation": "gpu_fa4_cute_sm100",
+    "moe_implementation": "ragged_all_to_all",
+    "expert_chunks": 1,
+    "pooled_transport_capacity_factor": 1.15,
+    "num_expert_waves": 3,
+    "report_capacity_overflow": true,
+    "remat_mode": "offload_carry",
+    "rope": {
+      "theta": 10000.0,
+      "scaling_factor": null
+    },
+    "rope_fused": true,
+    "ce_grad_in_forward_token_block_size": null
+  },
+  "checkpoints": [
+    {
+      "uri": "s3://marin-us-east-08a/tmp/ttl=30d/users/dlwh/hero-final-sft/2026.11.05-v1/long-v1/attempts/0a3328348b80b978/adapters/step-64",
+      "run_id": "hero-final-sft-long-20261105-v1",
+      "step": 64,
+      "timestamp": "2026-11-05T21:30:07.809120",
+      "metadata_digest": "ba75ea08023cb47f467764fddc597a6c25ca613f1dd4f449160d475fd440ab8b"
+    },
+    {
+      "uri": "s3://marin-us-east-08a/tmp/ttl=30d/users/dlwh/hero-final-sft/2026.11.05-v1/long-v1/attempts/0a3328348b80b978/adapters/step-96",
+      "run_id": "hero-final-sft-long-20261105-v1",
+      "step": 96,
+      "timestamp": "2026-11-05T21:45:40.206763",
+      "metadata_digest": "2ba0e2d525eb82ef57545b8871b87bf995e0c96426b4c5943cd4d19f2bf2a750"
+    },
+    {
+      "uri": "s3://marin-us-east-08a/tmp/ttl=30d/users/dlwh/hero-final-sft/2026.11.05-v1/long-v1/attempts/0a3328348b80b978/adapters/step-128",
+      "run_id": "hero-final-sft-long-20261105-v1",
+      "step": 128,
+      "timestamp": "2026-11-05T22:01:52.388617",
+      "metadata_digest": "3361d13112181e94bf69cd1fd5f0f40395269849a40ce6c6347489d1d438459d"
+    }
+  ],
+  "panel_path": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/inputs/heldout-panel.json",
+  "panel_sha256": "545e4e2fa893875fdd84641cde4dee83e85b33843a260a25fa25591eeaa7f862",
+  "source_revision": "0000000000000000000000000000000000000000",
+  "destination": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/heldout-v1",
+  "batch_size": 64,
+  "physical_padding": 16384,
+  "expert_axis_size": 64,
+  "context_axis_size": 1,
+  "replica_axis_size": 1
+}

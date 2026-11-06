@@ -4,7 +4,7 @@ task_issue: "https://github.com/marin-community/marin-logbooks/issues/34"
 research_branch: "codex/34-hero-final-sft"
 marin_base_revision: "33189166cfb244bf284f3d893e58ce0272215eac"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: continuation-running
+status: heldout-preparing
 ---
 
 # Compact SFT on the final Hero checkpoint
@@ -225,3 +225,25 @@ The next evidence gates remain completion at 128 total updates, fixed held-out
 selection among 64/96/128, one selected export, durable compact preservation and
 review of all 100 response cases. No held-out or response-quality result exists
 yet. The logbooks index update remains for the completed experiment handoff.
+
+
+## 2026-11-05: 128-update training completed
+
+The continuation succeeded: all 16 tasks exited 0, with no failures or
+preemptions. The 120 new update records cover exactly steps 9 through 128;
+all supervised losses, gradient norms and recorded routing metrics are finite,
+and the compact optimizer audit passed. The final handoff and permanent
+step-128 metadata match the exact request and execution identity.
+[training-result.json](training-result.json) records counters, final measurements,
+checkpoint pins and the fixed 64/96/128 selection candidates. These training
+losses use different packed batches and do not establish held-out improvement.
+
+Next, run the predeclared 256-conversation held-out panel against the three
+compact states. [heldout-template.json](heldout-template.json) pins actual
+checkpoint metadata and the original panel SHA256. It retains batch 64,
+physical padding 16384, expert64/context1/replica1 and the same 65K forward
+configuration. The evaluator runs only forward passes, with one separate
+64-GB200 job, a one-hour runtime bound and zero application/preemption retries.
+A failed or interrupted evaluator requires inspection before using a fresh
+execution identity. Its source placeholder is resolved after publication.
+No held-out result, selected export or response-quality result exists yet.
