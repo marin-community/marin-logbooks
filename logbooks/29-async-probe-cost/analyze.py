@@ -187,7 +187,7 @@ def analyze(manifest, output):
     result = {"runs": summaries, "comparisons": comparisons, "method": manifest["protocol_uri"]}
     (output / "analysis.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     with (output / "per-cycle.csv").open("w") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     return result
