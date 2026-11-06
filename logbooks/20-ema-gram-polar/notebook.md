@@ -2610,3 +2610,59 @@ for alpha0.125,0.25,0.5, respectively, with finite training losses and no
 investigation flags. Full 37,335-update outcomes, all three scientific probe
 results and final conclusions remain required. The later counter18665/33597
 probes are unlaunched.
+
+### 2026-11-06 20:54 UTC — first scientific checkpoint probe completed and validated
+
+The first prescribed alpha0.25 probe, at completed-update counter3733
+(checkpoint step-3732), passed terminal validation. Iris recorded four original
+attempt0 successes, exit0 and zero failures/preemptions, finishing at 20:44:34 UTC.
+All four native ONLINE runs finished with probe/success=1. The wrapper's archived
+task IDs, attempt UIDs, source2fbdb4290, configuration digest and checkpoint
+matched the original startup joins. Four bounded task archives and all 24
+permanent diagnostic objects (five artifacts plus a manifest per host) passed
+generation-bound readback and SHA256 checks. Finished host logging records were
+reused without API calls. See [completion evidence](reference-probe-r01-completed.json)
+and [the collection and offline audit scripts](reference-probe-r01-terminal-audit.json).
+
+Each process returned 27 finite direction/step-size loss rows over the same eight
+held-out Wikipedia batches, plus 18 finite attention/MLP polar-versus-SVD
+comparisons. Paired means, sample standard deviations and SEMs were independently
+recomputed. Loss rows and direction diagnostics match exactly across all four
+processes; timings and device memory remain process-specific. Eight corrupted
+report cases were rejected by the offline validator. The four hosts replicate
+the same batches and do not increase the scientific sample size from eight.
+
+The frozen source loaded the full TrainerState with allow_partial=False and
+verified restored counter3733 before these computations. This validates actual
+four-host checkpoint restoration for the probe. It does not independently audit
+finiteness of all 57 restored arrays, perform an optimizer update, replay the
+training data position or establish training resume.
+
+The held-out baseline mean was 4.535014629364014. Mean candidate-minus-baseline
+loss changes ranged from -2.8014183e-5 to +6.8068504e-5; every negative mean was
+smaller in magnitude than its paired SEM. These small changes do not establish
+a preferred exponent at this checkpoint. Across the two selected matrices and
+nine exponent/ridge settings, production polar versus SVD cosine ranged from
+0.9489101 to 0.9994838, and relative direction error from 0.0335550 to 0.3197872.
+Relative error is the Frobenius norm of the direction difference divided by
+the SVD direction norm. These are
+measured approximation differences, not a claim that production polar equals
+SVD or that one checkpoint determines the final scientific conclusion.
+
+The original probe observer91651/PID70306 exited naturally after canonical
+success. Its original follower70493 had already exited on a log-transport
+timeout; neither was replaced. A temporary local DNS interruption recovered on
+the original observers' scheduled retries. Earlier read-only task0 health
+samples showed CPU activity while report files were absent; they did not prove
+scientific progress or identify the cause of the runtime. Complete outputs now
+resolve the pending output-validation question. Preserve those raw observations.
+
+Reuse scratch/20261106-reference-r01-completion/verified.json and the execution
+worktree's completion cache. Never repoll this completed probe's tasks, native
+runs, finished hosts or archives, or restart its observer/follower. The permanent
+counter3733 launch guard remains consumed. At 20:51 UTC the three nonzero long
+runs had advanced to labels2576/6170/8130 for alpha0.125/0.25/0.5, with finite
+training losses and no investigation flags. Continue their original observer
+99712/PID96635 and unfinished-native helper only. Counter18665 and33597 probes
+remain unlaunched; all three full 37,335-update outcomes, the remaining two
+probes and final conclusions are still required.

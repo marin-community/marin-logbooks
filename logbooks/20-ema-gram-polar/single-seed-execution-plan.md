@@ -481,3 +481,24 @@ native ONLINE runs match source/config/request through original task-tagged
 follower URLs. W&B config has no task UID; reconcile wrapper attempt archives
 at completion. Full restore and scientific outputs remain unvalidated. Reuse
 observer91651/PID70306/follower70493, never repeat unchanged startup/host reads.
+
+2026-11-06 20:54 UTC: first prescribed counter3733 probe COMPLETED_VALIDATED;
+see reference-probe-r01-completed.json and reference-probe-r01-terminal-audit.json.
+Four original attempt0 successes, four finished ONLINE native runs, exact
+wrapper/archive UID/source/config joins, generation-bound diagnostic readbacks,
+27 finite paired-loss rows and 18 finite decomposition rows per host passed.
+All four hosts returned identical loss and direction diagnostics over the same
+eight batches; they are not independent scientific samples. Full TrainerState
+load with allow_partial=False and restored counter3733 is validated for this
+probe, without an independent all-array finiteness or training-resume claim.
+
+Observer91651/PID70306 is naturally terminal. NEVER repoll/restart/resubmit this
+completed probe, its tasks/native runs/hosts/follower/archives. Reuse research
+scratch/20261106-reference-r01-completion/verified.json and execution completion
+cache; retain consumed launch guards and historical transport/health evidence.
+Continue only the three unfinished long runs under observer99712/PID96635 and
+scratch/observe_parallel_r01_online.py once per wake. Later counter18665/33597
+probes remain unlaunched and require exact checkpoint/request validation and
+fresh permanent guards. Remaining scientific work: all three nonzero full37335
+outcomes, two later probe results and final conclusions. The first probe's small
+paired loss changes alone do not establish a preferred exponent.
