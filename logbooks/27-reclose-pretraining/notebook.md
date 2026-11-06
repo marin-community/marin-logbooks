@@ -463,6 +463,50 @@ status: active
   because the seed copies `" answer"`'s score at every reasoning token, so
   "P(at least one close)" is not a usable learning signal for that seed.
 
+### 2026-11-06 - Correction: close counts at any position, not 10.05's close point
+
+- Why: the previous entry's "on time" and "double" metrics assume 10.05's first
+  close is the right place to close. That position is itself in question, so
+  this entry counts closes at any position: P(thinking closed at least once |
+  opened) and P(at least twice | opened), from the first reasoning token through
+  the end of the scored text (10.05's re-close, or the trajectory end), with
+  each position an independent chance to emit `<|end_think|>` along the fixed
+  10.05 text. It supersedes the previous entry's metrics; that entry's own
+  numbers are unchanged.
+- Method: [`analysis/hazard_curves.py`](analysis/hazard_curves.py) at the commit
+  recording this entry. The existing dumps keep only segment summaries, so each
+  multi-position segment is estimated as a binomial at its mean. That
+  overstates no-close, so P(at least one) is a lower bound, and the error on
+  P(at least two) has no fixed sign. `reclose_eval.py` now writes exact
+  `p_ge1` and `p_ge2` (commit `9893fb5798`, tested against enumeration in
+  `tests/grug/test_reclose_close_counts.py`). The 100-step `</`-seed run was
+  restarted as `replay-10400-ltslash100e` with that probe, so it gives exact
+  curves and measures the estimate's error.
+- Result, no lead-in, P(at least one) / P(at least two):
+
+  | Step | Mean seed SWE | Mean seed tool-using | Mean seed plain | `" answer"` SWE | `" answer"` tool-using | `" answer"` plain |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | 0 | 0.00 / 0.000 | 0.00 / 0.000 | 0.00 / 0.000 | 0.00 / 0.000 | 0.44 / 0.214 | 0.74 / 0.464 |
+  | 15 | 0.00 / 0.000 | 0.00 / 0.000 | 0.00 / 0.000 | 0.44 / 0.061 | 0.87 / 0.605 | 0.68 / 0.328 |
+  | 45 | 0.05 / 0.001 | 0.10 / 0.003 | 0.02 / 0.000 | 0.89 / 0.081 | 0.77 / 0.259 | 0.48 / 0.077 |
+  | 50 | 0.28 / 0.017 | 0.36 / 0.036 | 0.13 / 0.002 | 0.80 / 0.058 | 0.73 / 0.209 | 0.43 / 0.058 |
+  | 55 | 0.64 / 0.064 | 0.67 / 0.136 | 0.33 / 0.008 | 0.76 / 0.053 | 0.78 / 0.243 | 0.46 / 0.058 |
+  | 100 | 0.81 / 0.042 | 0.89 / 0.302 | 0.62 / 0.028 | 0.85 / 0.036 | 0.87 / 0.294 | 0.58 / 0.041 |
+
+  First step with P(at least one) >= 0.5 (k) and P(at least two) >= 0.05 (j),
+  mean seed: SWE 53 / 54, tool-using 53 / 51, plain 67 / not reached.
+- Interpretation and limitations: the mean seed is the clean timing test,
+  because its close token starts near 1e-8 everywhere. There, closing twice
+  appears in the same steps as closing at all (SWE and tool-using cross both
+  lines within three steps of each other). The `" answer"` and `</` seeds start
+  with closes already likely (tool-using 0.44 and plain 0.74 for `" answer"`;
+  SWE 0.44 for `</`, from literal closing tags), so k and j are not meaningful
+  for them. Counting early closes changes the plateau: by step 100, tool-using
+  P(at least two) is about 0.3 under both 100-step seeds, mostly a close inside
+  the reasoning followed by another, where the on-time metric gave 0.006 to
+  0.012. These are teacher-forced along 10.05's text and estimated from
+  segment means, so magnitudes wait on the exact run.
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample
