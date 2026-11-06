@@ -2394,3 +2394,39 @@ with zero failures/preemptions. Its original follower contains four host logging
 URLs and a native ONLINE URL. Alpha0.125 and alpha0.25 remain resource-queued.
 Full startup identity validation remains pending; the campaign collector has
 not executed. The three prescribed alpha0.25 checkpoint probes remain required.
+
+### 2026-11-06 11:43 UTC — lock pilot selection and reconcile accepted long runs
+
+The [final selection lock](subset-final-selection-lock.json) replays all 37
+validated pilots with the unchanged C4 target4.0. Every ridge group has an
+interior LR winner. Selection reads only pilot completion reports; the already
+completed baseline's long-run loss is excluded. The original global rule selects
+alpha0, alpha0.25 and alpha0.5 because alpha0 has the best pilot loss overall.
+The explicit parallel-start amendment also selects alpha0.125, the best other
+exponent versus alpha1/3. Both rules are recorded without changing the original
+core selection function.
+
+[Final accounting](subset-final-confirmation-accounting.json) regenerates each
+selected configuration at its original accepted artifact version, reads frozen
+inputs from the original Git source, and verifies submission commands, input
+hashes, target and permanent acceptance guards. All four accepted jobs match:
+alpha0 LR0.003535533905932738; alpha0.125 ridge0.01 LR0.0025; alpha0.25
+ridge0.01 LR0.002; alpha0.5 ridge0.01 LR0.001. Alpha0.5 is no longer
+provisional. No new submission or observer is required. Existing observers and
+completed caches retain ownership; acceptance accounting is separate from full
+scientific completion and startup verification.
+
+The ordinary global submit/observe accounting path now rejects a workspace
+containing the parallel accepted receipt before any remote call. Local replay
+and six rejection cases passed, including altered commands, ambiguous acceptance,
+changed source/input, incomplete pilot history and duplicate global accounting.
+The earlier baseline-adoption integration fixture passed with fake Iris; its
+pre-parallel fixture excludes the later receipt. Initial local schema/import
+errors were corrected and retained in scratch logs. See
+[validation evidence](subset-final-accounting-preflight.json). No training
+numerics or immutable execution worktree changed.
+
+Long-run startup validation, complete schedules and the three prescribed
+alpha0.25 checkpoint probes remain pending. Use the final accounting's original
+job/config/source identities for result collection. Never submit the core lock's
+configurations again.

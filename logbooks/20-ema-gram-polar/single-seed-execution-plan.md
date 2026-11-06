@@ -418,3 +418,12 @@ caches; no active pilot helper is needed. Publish final selection/accounting
 without duplicating any accepted long run. The original long-run observer
 records alpha0.5 RUNNING and alpha0.125/0.25 PENDING; startup validation and
 three prescribed reference probes remain pending.
+
+2026-11-06 11:43 UTC: final pilot-only selection is locked in
+subset-final-selection-lock.json, with explicit alpha0.125 amendment and all four
+accepted identities in subset-final-confirmation-accounting.json. Exact original
+source/configuration/target/command replay passed. Alpha0.5 is no longer
+provisional. New submissions and new observers required: zero. The ordinary
+global accounting path rejects an existing parallel acceptance receipt. Continue
+only the original long-run observer, startup verification, full completion
+validation and the three prescribed alpha0.25 scientific probes.

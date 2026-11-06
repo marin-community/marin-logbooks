@@ -64,6 +64,11 @@ def adoption(worktree, receipt, lock, bundle):
 
 def accounting(worktree, receipt_path, lock, bundle):
     """Return final-set accounting while leaving the global selection checks intact."""
+    if (worktree / "logbooks/20-ema-gram-polar/parallel-long-runs-r01-accepted.json").exists():
+        raise ValueError(
+            "Parallel long runs already accepted: use published final accounting and existing observers; "
+            "ordinary global submission/observation would duplicate accepted identities"
+        )
     rows = [dict(index=i, disposition="submit", config_sha256=r["config_sha256"]) for i, r in enumerate(bundle["cells"])]
     if receipt_path is None:
         protocol_path = worktree / "logbooks/20-ema-gram-polar/alpha0-long-run-protocol-draft.json"
