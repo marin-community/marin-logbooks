@@ -245,6 +245,20 @@ This entry updates the decision above, whose "undecided" start and "needs Marin 
 - Check on the first finalist's head: W&B shows that no training run has used it. The only Global 1.84 run is the no-training eval.
 - Limit: the finalists share a start and differ in recipe, with one seed each, so training noise remains unmeasured in their comparison.
 
+### 2026-11-06 - Why the first finalist changes global layers only
+
+The first finalist changes global layers only because, in the no-training sweep, global-only had lower clean macro than all layers at the same value, with about the same retrieval. Both columns use the same checkpoint, raw step 390251.
+
+| Measure | Global 1.84 | All layers 1.84 | Global 1.88 | All layers 1.88 |
+|---|---|---|---|---|
+| Clean macro, 4K | 1.68855 | 1.69105 | 1.68921 | 1.69265 |
+| Clean macro, 65K | 1.64963 | 1.65208 | 1.65034 | 1.65376 |
+| Clean macro, 262K | 1.64736 | 1.64978 | 1.64803 | 1.65146 |
+| Recovery | 0.933 | 0.938 | 0.971 | 0.969 |
+| Full NLL | 0.090 | 0.084 | 0.045 | 0.046 |
+
+Global-only is lower on all 19 subsets at both values: by a mean of 0.0024 at 1.84 and 0.0034 at 1.88. Recovery intervals overlap at both values. This is no-training evidence only. All-layers recipes were never trained at 262K, and the sweep's recipe gaps mostly closed within 100 training steps in the arms that did train.
+
 ### [PENDING: first finalist run ID, links, launch time and results]
 
 ### [PENDING: second finalist results and comparison]
