@@ -376,6 +376,56 @@ status: active
   to 50 to 100 steps and compare plateaus. Experiment 1 (base plain-tag scoring)
   is still running.
 
+### 2026-11-06 - Base plain-text close at the probe positions (`reclose27-base-tags`)
+
+- Published source revision: `876ac0c3b9`,
+  `analysis/vllm_logprobs/base_tag_logprobs.py --trajectories
+  s3://marin-rno2a/tmp/ttl=30d/dml/sft_replay_10400/trajectories.jsonl --output
+  .../logprobs/base_tags.json`, Iris job `/dml/reclose27-base-tags` on `cw-rno2a`
+  (one coordinator retry, cause not logged). The forced-token shortcut disagreed
+  with prompt logprobs by up to 0.99 nats on the validation sample, so the job
+  scored every token with prompt logprobs, the path that matched Levanter
+  earlier.
+- External inputs and artifact references: output
+  `s3://marin-rno2a/tmp/ttl=30d/dml/sft_replay_10400/logprobs/base_tags.json`
+  (30-day TTL); correlations in
+  [`analysis/base_tags.compare.json`](analysis/base_tags.compare.json) from
+  [`analysis/base_tag_compare.py`](analysis/base_tag_compare.py).
+- Result: within-cell Spearman between the base's p(`</think>`) and the
+  replay's p(`<|end_think|>`), raw / with the `\n</assistant>` control regressed
+  out (control alone in brackets).
+
+  | Replay checkpoint | First close | Re-close (n = 588) | Hazard |
+  | --- | --- | --- | --- |
+  | `" answer"` step 10 | -0.02 / 0.06 (-0.10) | 0.41 / 0.38 (0.21) | 0.14 / 0.14 |
+  | `" answer"` step 15 | 0.08 / 0.19 (-0.07) | 0.41 / 0.40 (0.18) | 0.14 / 0.18 |
+  | `" answer"` step 20 | 0.39 / 0.30 (0.25) | 0.50 / 0.47 (0.25) | 0.15 / 0.18 |
+  | `" answer"` step 100 | 0.48 / 0.35 (0.34) | 0.56 / 0.48 (0.34) | 0.05 / 0.07 |
+  | mean seed step 60 | 0.54 / 0.35 (0.42) | 0.59 / 0.54 (0.34) | 0.18 / 0.19 |
+  | `</` seed step 20 | 0.17 / -0.00 (0.14) | 0.35 / 0.40 (0.08) | 0.12 / 0.17 |
+
+  Median base p(`</think>` or `\n</think>`) at 10.05's re-close versus its first
+  close: SWE 0.084 vs 0.0069, tool-using 0.030 vs 5.0e-6, plain 0.033 vs 0.0054
+  (lead-in trajectories, which hold 585 of the 588 re-closes).
+- Interpretation and limitations: the base already marks the re-close
+  positions. Its plain-text close ranks trajectories the way the replay's
+  close token does at the re-close from step 10, before the replay has learned
+  the first close, and the ranking survives regressing out a generic
+  end-of-turn signal and appears under all three seeds. In plain text the base
+  rates 10.05's re-close position as a likelier end of a think block than
+  10.05's own first close. The `</`-seed result above shows this information
+  does not travel through the base's closing-tag output row; it is read from
+  the base's hidden states whichever way the row is seeded. Limitations: 0.8%
+  of position estimates (349 of 42,255) exceed 1, up to 63, where the
+  divided-out boundary token was itself improbable, so means are unreliable
+  (medians and ranks are used above); rankings are across trajectories
+  sampled by 10.05, so trajectory-level traits both models react to (lead-in
+  type, continuation length) could contribute beyond the end-of-turn control.
+- Decision and next action: pretraining primes where a re-close goes; SFT
+  supplies the token that acts on it. That keeps SFT counterexample data as
+  the lever. The 100-step `</`-seed run (`replay-10400-ltslash100`) tests
+  whether that seed also lowers the re-close plateau.
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample
