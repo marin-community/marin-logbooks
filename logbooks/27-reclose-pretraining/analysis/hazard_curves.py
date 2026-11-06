@@ -124,11 +124,10 @@ def main() -> None:
     rows = (
         ("no_lead_in", 0, "P(closed ≥1 | opened)", "linear", CLOSE_LEARNED),
         ("no_lead_in", 1, "P(closed ≥2 | opened)", "log", DOUBLE_LEARNED),
-        ("lead_in", 1, 'P(closed ≥2 | opened),\nforced "Wait,"-style lead-in', "log", DOUBLE_LEARNED),
     )
     plotted = {name: steps for name, steps in runs.items() if not name.endswith("(estimate)")}
     plt.rcParams.update({"font.size": 10, "axes.edgecolor": MUTED, "text.color": INK, "axes.labelcolor": INK})
-    fig, axes = plt.subplots(len(rows), len(GROUPS), figsize=(13, 10), sharex=True, facecolor=SURFACE)
+    fig, axes = plt.subplots(len(rows), len(GROUPS), figsize=(13, 7), sharex=True, facecolor=SURFACE)
     for col, (group, title) in enumerate(GROUPS.items()):
         for r, (lead, index, label, scale, threshold) in enumerate(rows):
             ax = axes[r][col]
@@ -157,7 +156,7 @@ def main() -> None:
     fig.text(
         0.5,
         -0.01,
-        "Teacher-forced on fixed 10.05 trajectories; any position may close. Runs without exact dumps use a"
+        "Teacher-forced on fixed 10.05 trajectories without a lead-in; any position may close. Runs without exact dumps use a"
         f" segment-mean estimate. Dashed lines: {CLOSE_LEARNED} and {DOUBLE_LEARNED}.",
         ha="center",
         color=MUTED,
