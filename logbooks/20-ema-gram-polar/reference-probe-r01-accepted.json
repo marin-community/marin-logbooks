@@ -1,0 +1,211 @@
+{
+  "observed_utc": "2026-11-06T18:34:29.426846+00:00",
+  "status": "ACCEPTED_STARTUP_UNVALIDATED",
+  "accepted_launch": {
+    "index": 0,
+    "campaign": "ema-gram-20-reference-seed0-r01-20261106",
+    "source_commit": "2fbdb4290a95ac7b7cad839d49569d258812bb5f",
+    "job_id": "/kaiyuew@stanford.edu/ema-gram-20-reference-seed0-r01-20261106-00",
+    "counter": 3733,
+    "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-3732",
+    "training_source": "923d79510475df3ed0fef53d40b3290ae4c90fce",
+    "config_sha256": "c5a329f59433060658c8c79939c3b146e07662373cbfacd0539a86d2e68cf9e0",
+    "inputs": {
+      "logbooks/20-ema-gram-polar/reference-probe-r01-request.json": "c5a329f59433060658c8c79939c3b146e07662373cbfacd0539a86d2e68cf9e0",
+      "logbooks/20-ema-gram-polar/reference-probes-r01-configs.json": "989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7",
+      "logbooks/20-ema-gram-polar/reference-probe-svd-preflight.json": "e87044fa3f420b464a7174707ebada1693f8393f6476252507600321615d8418"
+    },
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "iris",
+      "--cluster=marin",
+      "job",
+      "run",
+      "--no-wait",
+      "--no-cancel-on-exit",
+      "--job-name",
+      "ema-gram-20-reference-seed0-r01-20261106-00",
+      "--priority",
+      "batch",
+      "--enable-extra-resources",
+      "--tpu",
+      "v4-32",
+      "--cpu",
+      "120",
+      "--memory",
+      "256GB",
+      "--disk",
+      "50GB",
+      "--region",
+      "us-central2",
+      "--extra",
+      "tpu",
+      "--sync-package",
+      "marin-core",
+      "--sync-package",
+      "marin-levanter",
+      "--sync-package",
+      "marin-dupekit",
+      "-e",
+      "GIT_COMMIT",
+      "2fbdb4290a95ac7b7cad839d49569d258812bb5f",
+      "--",
+      "bash",
+      "-c",
+      "export PYTHONPATH=\"$PWD/logbooks/20-ema-gram-polar:$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\"\npython logbooks/20-ema-gram-polar/check_campaign_caches.py --manifest logbooks/20-ema-gram-polar/subset-cache-manifest.json --output \"${IRIS_OUTPUT_DIR:-/tmp}/cache-check.json\" && exec python logbooks/20-ema-gram-polar/run_reference_probe.py --configs logbooks/20-ema-gram-polar/reference-probes-r01-configs.json --configs-sha256 989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7 --config-index 0 --checkpoint gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-3732 --expected-counter 3733 --output-prefix gs://marin-us-central2/ema-gram-20-reference-probes/seed0-r01-20261106/counter-3733 --output-dir \"${IRIS_OUTPUT_DIR:-/tmp}/reference-probe\""
+    ],
+    "launch_started": true,
+    "launched": true,
+    "started_utc": "2026-11-06T18:32:50.958534+00:00",
+    "worktree": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-reference-seed0-r01-20261106",
+    "expected_tasks": 4,
+    "submit_exit_code": 0
+  },
+  "observer_session": 91651,
+  "observer": {
+    "binding": {
+      "source": "2fbdb4290a95ac7b7cad839d49569d258812bb5f",
+      "inputs": {
+        "logbooks/20-ema-gram-polar/reference-probe-r01-request.json": "c5a329f59433060658c8c79939c3b146e07662373cbfacd0539a86d2e68cf9e0",
+        "logbooks/20-ema-gram-polar/reference-probes-r01-configs.json": "989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7",
+        "logbooks/20-ema-gram-polar/reference-probe-svd-preflight.json": "e87044fa3f420b464a7174707ebada1693f8393f6476252507600321615d8418"
+      },
+      "argv_sha256": "d993dc77592eb830ea467e5ed20ea2451d95e1dfecb4cc80bdd093291a268b72"
+    },
+    "jobs": {
+      "0": {
+        "job_id": "/kaiyuew@stanford.edu/ema-gram-20-reference-seed0-r01-20261106-00",
+        "source_commit": "2fbdb4290a95ac7b7cad839d49569d258812bb5f",
+        "config_sha256": "c5a329f59433060658c8c79939c3b146e07662373cbfacd0539a86d2e68cf9e0",
+        "first_seen": 1793989996.856339,
+        "next_check": 1793990116.856339,
+        "terminal": false,
+        "follow_started": true,
+        "owner_pid": 70306,
+        "follow_pid": 70493,
+        "follow_log": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-reference-seed0-r01-20261106/scratch/ema-gram-20-reference-seed0-r01-20261106-0-follow.log"
+      }
+    },
+    "owner_pid": 70306
+  },
+  "execution_preflight": {
+    "passed": true,
+    "source": "2fbdb4290a95ac7b7cad839d49569d258812bb5f",
+    "request_sha256": "c5a329f59433060658c8c79939c3b146e07662373cbfacd0539a86d2e68cf9e0",
+    "catalog": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261106-reference-r01-full-catalog.json",
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "iris",
+      "--cluster=marin",
+      "job",
+      "run",
+      "--no-wait",
+      "--no-cancel-on-exit",
+      "--job-name",
+      "ema-gram-20-reference-seed0-r01-20261106-00",
+      "--priority",
+      "batch",
+      "--enable-extra-resources",
+      "--tpu",
+      "v4-32",
+      "--cpu",
+      "120",
+      "--memory",
+      "256GB",
+      "--disk",
+      "50GB",
+      "--region",
+      "us-central2",
+      "--extra",
+      "tpu",
+      "--sync-package",
+      "marin-core",
+      "--sync-package",
+      "marin-levanter",
+      "--sync-package",
+      "marin-dupekit",
+      "-e",
+      "GIT_COMMIT",
+      "2fbdb4290a95ac7b7cad839d49569d258812bb5f",
+      "--",
+      "bash",
+      "-c",
+      "export PYTHONPATH=\"$PWD/logbooks/20-ema-gram-polar:$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\"\npython logbooks/20-ema-gram-polar/check_campaign_caches.py --manifest logbooks/20-ema-gram-polar/subset-cache-manifest.json --output \"${IRIS_OUTPUT_DIR:-/tmp}/cache-check.json\" && exec python logbooks/20-ema-gram-polar/run_reference_probe.py --configs logbooks/20-ema-gram-polar/reference-probes-r01-configs.json --configs-sha256 989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7 --config-index 0 --checkpoint gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-3732 --expected-counter 3733 --output-prefix gs://marin-us-central2/ema-gram-20-reference-probes/seed0-r01-20261106/counter-3733 --output-dir \"${IRIS_OUTPUT_DIR:-/tmp}/reference-probe\""
+    ],
+    "expected_tasks": 4,
+    "guard": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261106-reference-counter-3733-launch.json"
+  },
+  "full_catalog": {
+    "path": "scratch/20261106-reference-r01-full-catalog.json",
+    "sha256": "9b8ff5fa845ea5b60f14ed4016767c8f9a18687023dd7764ef585c15a17ba016",
+    "passed": true,
+    "components": 26
+  },
+  "raw_evidence": [
+    {
+      "path": "scratch/submit_reference_r01.py",
+      "sha256": "06a8e95bbe8d278a6bf4e3ce6dd1dfa14927166ad2e077e434b0c9612d59020b"
+    },
+    {
+      "path": "scratch/watch_reference_r01.py",
+      "sha256": "a08a84051882107da0a890df986042d02cd1aa01edcdadf1419f48594b5def9a"
+    },
+    {
+      "path": "scratch/20261106-reference-r01-submit.log",
+      "sha256": "28bfcd682edf67d254b729d59541d9073cf4bbb4da4b3828e33c3463ec7bb7ee"
+    },
+    {
+      "path": "scratch/20261106-reference-counter-3733-launch.json",
+      "sha256": "371becead9e879c499c45bb05bff1708e3d04276e74abfa58bf9b6cc4cc47534"
+    }
+  ],
+  "startup_validated": false,
+  "scientifically_complete": false,
+  "remaining_counters": [
+    18665,
+    33597
+  ],
+  "first_scheduled_canonical_snapshot": {
+    "job": {
+      "job_id": "/kaiyuew@stanford.edu/ema-gram-20-reference-seed0-r01-20261106-00",
+      "state": "JOB_STATE_PENDING",
+      "exit_code": 0,
+      "error": "",
+      "failure_count": 0,
+      "preemption_count": 0,
+      "name": "/kaiyuew/ema-gram-20-reference-seed0-r01-20261106-00",
+      "submitted_at": {
+        "epoch_ms": "1793989975792"
+      },
+      "resources": {
+        "cpu_millicores": 120000,
+        "memory_bytes": "274877906944",
+        "device": {
+          "tpu": {
+            "variant": "v4-32",
+            "count": 4
+          }
+        },
+        "disk_bytes": "53687091200"
+      },
+      "task_state_counts": {
+        "pending": 4
+      },
+      "task_count": 4,
+      "completed_count": 0,
+      "pending_reason": "Scheduler: Coscheduling: need 4 workers in 'tpu-name' group 't1v-n-97beefb1', only 0 of 4 have capacity:\nInsufficient memory (need 256.0GB, available 136.5GB) - 4 worker(s)\n\nAutoscaler: Unsatisfied autoscaler demand: tier_blocked: 2 matching group(s) blocked by quota-pool tier monotonicity",
+      "has_children": false,
+      "parent_job_id": "",
+      "backend_id": "default",
+      "cluster": "local",
+      "peer_status": "PEER_STATUS_NONE"
+    },
+    "path": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-reference-seed0-r01-20261106/scratch/ema-gram-20-reference-seed0-r01-20261106-0-canonical-1793990116963441000.json",
+    "stderr": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-reference-seed0-r01-20261106/scratch/ema-gram-20-reference-seed0-r01-20261106-0-canonical-1793990116963441000.stderr.log"
+  },
+  "first_scheduled_canonical_check_epoch": 1793990121.969724
+}

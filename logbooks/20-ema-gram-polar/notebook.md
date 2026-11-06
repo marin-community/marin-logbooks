@@ -2551,3 +2551,37 @@ Four CPU devices in one process do not validate four-host TPU execution or full
 checkpoint restoration. [Qualification evidence](reference-probe-svd-preflight.json)
 now records these results, previous qualification references and raw cache hashes.
 All three prescribed scientific probes remain unlaunched.
+
+### 2026-11-06 18:34 UTC — first prescribed scientific probe accepted
+
+The first prescribed scientific probe was accepted by Iris at 18:32:55 UTC as
+ema-gram-20-reference-seed0-r01-20261106-00. It targets the alpha0.25 seed0
+long-run checkpoint at completed-update counter3733 (directory step-3732), using
+the unchanged recorded training configuration and requested v4-32 topology with
+four hosts. Source and request were published at
+2fbdb4290a95ac7b7cad839d49569d258812bb5f before submission. All 26 regional
+component catalogs matched the recorded object names, sizes and CRCs. Exact
+config/source checks, stored counter and 57-array metadata checks passed. See [acceptance evidence](reference-probe-r01-accepted.json).
+
+Submission returned exit0. The permanent counter3733 launch guard records this
+accepted identity. On the local research workstation, sole observer session91651/
+PID70306 and original follower70493 own observation. Their state lives in the
+ema-gram-reference-seed0-r01-20261106 execution worktree. Do not create replacements
+or resubmit this identity. The observer state captured in the acceptance record
+had not yet stored its first scheduled canonical snapshot. The first scheduled check at 18:35 UTC subsequently recorded four pending tasks,
+zero failures/preemptions, and insufficient memory for four-host coscheduling;
+the autoscaler also reported quota-pool tier blocking. Acceptance does not
+establish native startup, full checkpoint restoration or successful probe results.
+
+The probe requests 27 direction/step-size settings, each evaluated on the same
+eight held-out Wikipedia batches with paired baseline losses. All nine direction
+settings use step sizes 1e-5, 3e-5 and 1e-4. Separately, it requests 18 attention/
+MLP polar-versus-SVD matrix comparisons. It performs no optimizer update or
+checkpoint write. The other prescribed probes
+at counters18665 and33597 remain unlaunched. The three accepted long-training
+runs continue under their original observer; completed campaigns remain cached.
+
+The previous issue20 status comment approached GitHub's size limit. Its entire
+body is preserved in [the exact JSON archive](issue20-comment-history-20261106-1827.json)
+with its SHA256 and a [Markdown reading copy](issue20-comment-history-20261106-1827.md).
+The current issue comment links to this published history and summarizes active work.

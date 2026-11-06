@@ -465,3 +465,10 @@ reference-probe-svd-preflight.json binds exact source hashes and finished ONLINE
 runs. Actual four-host TPU/full checkpoint restore remain untested. Next prepare
 immutable scientific request inputs, permanent submission guards and one observer;
 launch the available counter3733 probe when all execution preflight gates pass.
+
+2026-11-06 18:34 UTC: first prescribed counter3733 probe accepted once as
+ema-gram-20-reference-seed0-r01-20261106-00, source2fbdb4290, v4-32/four hosts.
+See reference-probe-r01-accepted.json. Permanent guard
+scratch/20261106-reference-counter-3733-launch.json must never be reset or reused.
+Reuse sole observer91651/PID70306 and follower70493; startup/restore/probe outputs
+remain unvalidated. Remaining counter18665/33597 probes have not been launched.
