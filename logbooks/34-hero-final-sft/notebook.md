@@ -348,3 +348,20 @@ At 00:35:41 UTC on November 6, all 16 tasks were running with zero failures
 or preemptions. Actual generation and completion remain pending. The existing
 heartbeat owns this job and the still-active selected compact verified-copy;
 no duplicate rollout or transfer should be submitted.
+
+
+## 2026-11-05: selected compact checkpoint preserved durably
+
+fsutil verified-copy completed: 781 files and 881388283 bytes were copied into
+the durable `compact-step64` prefix. The readiness marker lists a SHA256 for
+each object. Its metadata hash matches the selected original step-64 metadata
+exactly; no training state was changed.
+[compact-preservation.json](compact-preservation.json) pins source, destination,
+readiness marker, manifest SHA256 and compact metadata digest. Intermediate
+compact states remain under the original 30-day temporary root.
+
+The response job remains healthy with all 16 tasks running and no failures or
+preemptions. Attempt `ca3eb49eb6ba985c` is producing real responses: bounded
+rank-0 logs at 00:41 UTC show math and code cases ending on EOS. This verifies
+generation progress, not completion or content correctness. The 100-response
+review remains pending.
