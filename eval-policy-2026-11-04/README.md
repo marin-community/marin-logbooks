@@ -1,12 +1,12 @@
 # Interim evaluation evidence
 
-INTERIM update r7, as of 2026-11-06T10:15:57.592299+00:00. All 162 Evalchemy cells are reviewed; 43 current Harbor cells are admitted and 29 remain pending. Later admissions update existing issue comments and candidate-card sections.
+INTERIM update r8, as of 2026-11-06T11:08:02.614884+00:00. All 162 Evalchemy cells are reviewed; 44 current Harbor cells are admitted and 28 remain pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
 Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `4362b6f2ad07733505bd8278966530b253a92b1de85b00cff1bba4914ac1b451`.
+`manifest.json` SHA256 `7f849c9d46e7ea07c0fefc2ab562bb87b86ffddab0c132327d44364aa962f684`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
@@ -119,6 +119,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/MixedRS727--piqa.json](receipts/MixedRS727--piqa.json) | admitted | `3af64162758499e31a6a8faa287810f2cd8ffeb88967dfe1d07b8144d9bcb680` |
 | [receipts/MixedRS727--swebench-verified.json](receipts/MixedRS727--swebench-verified.json) | reconstruction | `18aea6246cb8d31dac80940596a4f84287a8348f75161085d1ee3d9b9fcdf771` |
 | [receipts/MixedRS727--tau3-pi.json](receipts/MixedRS727--tau3-pi.json) | admitted | `8bfbbff9f5951a7f04ece6e89b32a363c427ef74d5e2b6ad096c46d31b28e621` |
+| [receipts/MixedRS727--tb2-recovery.json](receipts/MixedRS727--tb2-recovery.json) | admitted | `497009b753ac71004625edb0f0676536cec23ef2169c6df38e95500980f6531e` |
 | [receipts/MixedRS727--triviaqa.json](receipts/MixedRS727--triviaqa.json) | admitted | `d9fde70be799c6013928a21693ecb53082007ecb6af6ba2c0eaef8a2fb7f1e87` |
 | [receipts/MixedRS727--truthfulqa.json](receipts/MixedRS727--truthfulqa.json) | admitted | `0c42d2b1304248e027eb9c8c39e08fb91c64a6ef05c9ff6524adf32490cc2331` |
 | [receipts/MixedRS727--winogrande.json](receipts/MixedRS727--winogrande.json) | admitted | `c8ae41c6bd9f43e9b20a8432befa14cddd82a02c97b8c576e2defd7e2db8839c` |
