@@ -2204,3 +2204,19 @@ input paths and ledger for exact-once adoption by final confirmations. Preserve
 the prepared bundle and dedicated execution worktree. Do not submit a duplicate
 baseline or start another observer. Global selection and nonbaseline confirmation
 gates remain unchanged while R04/R05 finish.
+
+### 2026-11-06 01:45 UTC — verify alpha0 long-run startup and finite progress
+
+The accepted baseline is canonically RUNNING with one task and zero failures
+or preemptions. Its original attempt0 UID9fb79df70f232c10 and assigned worker
+join to the execution-host ONLINE check8770c3614a7e, which finished successfully.
+The exact source, worker and bundle hashes, seed0, LR0.003535533905932738,
+batch8 and37,335-update native configuration passed startup validation.
+The [native ONLINE run](https://wandb.ai/marin-community/marin/runs/ema-gram-confirmation-3e18-a0-seed0-994a222dc7b9-2026.11.05.14-0c1aa5489b5c) is running and reached label38 with finite
+training loss11.99289321899414. This establishes actual training progress,
+not merely acceptance. See [startup evidence](alpha0-long-run-started.json).
+
+Reuse the startup task and finished host caches. Sole observer7631/PID55651
+continues canonical polling; the native progress helper queries only this
+unfinished run. No duplicate submission or observer is needed. Full completion,
+common-target accounting and final confirmation adoption remain pending.
