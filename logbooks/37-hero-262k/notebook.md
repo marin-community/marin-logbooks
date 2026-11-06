@@ -259,6 +259,10 @@ The first finalist changes global layers only because, in the no-training sweep,
 
 Global-only is lower on all 19 subsets at both values: by a mean of 0.0024 at 1.84 and 0.0034 at 1.88. Recovery intervals overlap at both values. This is no-training evidence only. All-layers recipes were never trained at 262K, and the sweep's recipe gaps mostly closed within 100 training steps in the arms that did train.
 
+### 2026-11-06 - Run length
+
+Each finalist trains 3,240 steps, from step 390251 to stop step 393491, or 149.5B tokens. This replaces the 200B and 4,335 steps planned earlier. About 27 h per finalist at 29.2 s/step with saves (estimate). The 100-step arms ran on the 4,335-step schedule. [PENDING: confirmation of the learning-rate schedule for this length.]
+
 ### [PENDING: first finalist run ID, links, launch time and results]
 
 ### [PENDING: second finalist results and comparison]
