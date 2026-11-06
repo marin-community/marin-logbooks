@@ -2368,3 +2368,29 @@ All three authorized seed0 long runs were accepted once after the full26-compone
 Before any final confirmation submission, reconcile this accepted campaign by exact configuration and source; do not call the ordinary submit path to duplicate these jobs. Alpha0.5 remains provisional until pilot-only selection finishes. R06 continues under its existing owner.
 
 At10:42 UTC, the sole observer saved all three canonical states as PENDING, each with4 pending tasks and zero failures/preemptions. The scheduler reports insufficient capacity for a four-host coscheduled group (CPU/memory) and autoscaler quota-pool tier blocking. This is a resource queue, not a remaining pilot-selection gate. Preserve accepted identities and default scheduling policy. [Saved queue evidence](parallel-long-runs-r01-queued.json); startup collector is prepared but has not queried tasks or native runs.
+
+### 2026-11-06 11:39 UTC — complete recursive pilot selection
+
+R06 (alpha0.5, ridge0.0001, LR0.0000625) completed all 7,630 updates
+with final held-out C4 loss **5.104428291320801**. All five training
+metrics have 7,630 finite rows, the stored counter is 7,630, and 57 checkpoint
+array metadata entries match. Exact source/data/configuration, finished ONLINE
+tracking and all four original attempt0 successes passed. Four finished host
+logging records were reused. The sole observer recorded canonical success and
+exited naturally; never poll or restart these completed identities. See
+[completion evidence](subset-expansion-r06-completed.json). Metadata checks do
+not establish full checkpoint byte restore or training resume.
+
+Replaying all 37 validated pilots leaves every exponent/ridge group with an
+interior learning-rate winner and no further expansion candidate. For alpha0.5,
+ridge0.0001 settles at LR0.000125, C4=4.876398086547852; ridge0.01
+with LR0.001 wins across ridges at C4=4.3975324630737305. This matches
+the already accepted alpha0.5 long run. No long-run outcome entered selection.
+The global selection record and exact-source accounting of accepted long runs
+remain to be published; they must not cause duplicate submission.
+
+The existing long-run observer now records alpha0.5 RUNNING on four tasks,
+with zero failures/preemptions. Its original follower contains four host logging
+URLs and a native ONLINE URL. Alpha0.125 and alpha0.25 remain resource-queued.
+Full startup identity validation remains pending; the campaign collector has
+not executed. The three prescribed alpha0.25 checkpoint probes remain required.

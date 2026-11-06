@@ -408,3 +408,13 @@ completed alpha0 or a matching accepted nonzero configuration. The final global
 selection record and prescribed scientific probes remain required.
 
 2026-11-06 10:42 UTC execution: all three amended seed0 long runs are ACCEPTED and canonically PENDING (four tasks each, zero failures/preemptions). Execution source923d79510475df3ed0fef53d40b3290ae4c90fce; sibling ema-gram-confirm-seed0-r01-20261106; campaign ema-gram-20-confirm-seed0-r01-20261106; sole observer99712/PID96635. Reuse its snapshots and existing followers. Startup collector scratch/collect_parallel_r01_startup.py is prepared; run once only after RUNNING plus finished host checks and native URLs. Reconcile the accepted receipt before any future global submission to avoid duplicates.
+
+2026-11-06 11:39 UTC: R06 completion passed (C4=5.104428291320801;
+7,630 finite metric rows, stored counter 7,630, 57 array metadata entries, four
+original successful attempts, finished ONLINE). All 37 pilots now replay to
+interior group winners with no further expansion. Alpha0.5 remains ridge0.01,
+LR0.001, matching its accepted long run. Reuse completed R01–R06 and baseline
+caches; no active pilot helper is needed. Publish final selection/accounting
+without duplicating any accepted long run. The original long-run observer
+records alpha0.5 RUNNING and alpha0.125/0.25 PENDING; startup validation and
+three prescribed reference probes remain pending.
