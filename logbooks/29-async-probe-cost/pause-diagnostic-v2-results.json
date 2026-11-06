@@ -1,0 +1,102 @@
+{
+  "observed_utc": "2026-11-06T00:49:30.043659+00:00",
+  "source_revision": "818eb0fc97021dcfef4fb782dac0ea4bf103dbef",
+  "admitted_to_paired_cost_comparison": false,
+  "coordinator_submissions": 1,
+  "physical_gpu_allocations": 2,
+  "operator_resubmissions": 0,
+  "first_allocation": "Killed after scheduler preempted the CPU coordinator; Iris automatically retried preemption despite max_retries=0.",
+  "replacement_failure": "Inference actors disconnected unexpectedly during first-generation work, before the first training batch was admitted. Original trainer exception is RayTaskError(ExceptionGroup) containing ActorDiedError. This differs from the earlier completed-batch pause timeouts.",
+  "complete_measured_cycles": 0,
+  "consumed_probe_record_saved": false,
+  "cpu_profiles_saved": false,
+  "automatic_actor_stacks_saved": true,
+  "actors": [
+    {
+      "file": "worker-4cfc79db375d0dae76bea4f9c7cc54a52a84170ccd25e83deed68d80-06000000-13231.err",
+      "sha256": "991d54c998cd713f39286f400499191f78b766b4cae6f9cd913f41ef60060124",
+      "stack_dumps": 4,
+      "sample_logprob_update_frames": 0,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    },
+    {
+      "file": "worker-565a3e77c71750d9234f43b1257368cba8f5541b812970148133818b-06000000-13237.err",
+      "sha256": "291f4036e2071cec9ca8dd92660b3a39005ee7d5eb56938b398d67abb4ebfa35",
+      "stack_dumps": 3,
+      "sample_logprob_update_frames": 0,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    },
+    {
+      "file": "worker-79929c9edfbd5c4a9990013899f0a1d504850963ac3467edf9ae28ac-06000000-13232.err",
+      "sha256": "cbe9e14d054201d10e3a034861b42fb187b01dec7ef75d916c07b776daa230a7",
+      "stack_dumps": 4,
+      "sample_logprob_update_frames": 1,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    },
+    {
+      "file": "worker-a55aca7096917d4417717dc31fe6be547bed9c5545693be86d529259-06000000-13238.err",
+      "sha256": "7c324c017aa925d5bfaecde9a1d34b9c9507e71582018552dd75563b81c35bf5",
+      "stack_dumps": 4,
+      "sample_logprob_update_frames": 1,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    },
+    {
+      "file": "worker-a82473bfa73bb02f590e86271b6afc27614aa880b4c134e0af485c21-06000000-13235.err",
+      "sha256": "8570ac8b0eea3b3ebbf9dbba2601570cb376ddeb75c5772a6f05c11579d459e1",
+      "stack_dumps": 4,
+      "sample_logprob_update_frames": 0,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    },
+    {
+      "file": "worker-ca2c586e1c2361424973d884878cdc2a6599cf246aec8550da2cc229-06000000-13236.err",
+      "sha256": "2e5432955d51f82dfd14d191e724631556e6ff6532b68de5f0a080085ca7ba71",
+      "stack_dumps": 3,
+      "sample_logprob_update_frames": 0,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    },
+    {
+      "file": "worker-d37b6e3947aa44914d7203bcd59fa30cf9c0a356eb5dd7ed6c3ac298-06000000-13233.err",
+      "sha256": "04f9b4fb9bc8605b270ccc868e8d03a9644ff97c10dc48c05373a90e2955d9f1",
+      "stack_dumps": 4,
+      "sample_logprob_update_frames": 2,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    },
+    {
+      "file": "worker-ddbbd2beef26884703d20183168105d4167d06286f9cdc570fc0a9f2-06000000-13234.err",
+      "sha256": "0d62cc01c52fabe4d30b10172741a6c733ca9bfa3387871ce556c92198e45498",
+      "stack_dumps": 4,
+      "sample_logprob_update_frames": 0,
+      "pause_scheduler_entries": 1,
+      "busy_pause_scheduler_entries": 0
+    }
+  ],
+  "entrypoint_to_first_publish_seconds": 567.2606693627313,
+  "inference_actor_disconnects_utc": {
+    "13237": "2026-11-06T00:30:06.374Z",
+    "13236": "2026-11-06T00:30:06.375Z",
+    "13232": "2026-11-06T00:30:26.377Z"
+  },
+  "interpretation": [
+    "The actor files end partway through their twenty-second automatic stack dump. Death times align with the dump timer; diagnostic-induced process crashes are plausible, not proved.",
+    "Several saved stacks show ordinary token-logprob decoding in the actor event loop. The stack does not record candidate width, so it cannot establish that compact K128 capture entered decoded-head processing.",
+    "CPython reports threaded faulthandler crashes, including Python 3.12 examples. A bounded local Python 3.12.13 stress check completed without a crash in all three watchdog trials and the synchronous control. It did not reproduce the remote failure.",
+    "There is no justified runtime repair yet and no overhead estimate or confidence interval. The earlier uninstrumented pause failures remain unresolved."
+  ],
+  "related_primary_reports": [
+    "https://github.com/python/cpython/issues/116008",
+    "https://github.com/python/cpython/issues/158200"
+  ],
+  "local_observer_check": "faulthandler-race-check.json in the native evidence bundle",
+  "H100_hours": 13.506300001674228,
+  "all_work_H100_hours": 124.36435777945199,
+  "all_task_attempts_terminal": true,
+  "active_owned_pods": 0,
+  "archive_status": "verified-copy in progress; source retained until immutable manifest and source identities are checked"
+}
