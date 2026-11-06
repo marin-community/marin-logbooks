@@ -1,0 +1,61 @@
+{
+  "declared_utc": "2026-11-06T04:55:48.149876+00:00",
+  "status": "Before any final-cohort allocation or outcome",
+  "reason": "RNO now has zero wholly free H100 nodes; East has26 and no unbound GPU requests. Put every arm in the available pool.",
+  "placement": "All six primary windows and any declared conditional20 windows use cw-us-east-02a; no between-arm region or hardware change.",
+  "hardware_profiles": [
+    {
+      "cluster": "cw-rno2a",
+      "GPU_model": "H100_NVLINK_80GB",
+      "GPUs_per_node": 8,
+      "instance_types": [
+        "gd-8xh100ib-i128"
+      ],
+      "nodes": 60
+    },
+    {
+      "cluster": "cw-us-east-02a",
+      "GPU_model": "H100_NVLINK_80GB",
+      "GPUs_per_node": 8,
+      "instance_types": [
+        "gd-8xh100ib-i128"
+      ],
+      "nodes": 32
+    }
+  ],
+  "capacity_observation": {
+    "observed_utc": "2026-11-06T04:50:48.795048+00:00",
+    "semantics": "Ready, uncordoned H100 nodes and current Pending/Running GPU pod requests. Whole-node figures do not reserve capacity or certify CPU/memory fit; Iris/provider scheduling is authoritative.",
+    "pools": [
+      {
+        "cluster": "cw-rno2a",
+        "region": "RNO2A",
+        "context": "marin-rn02a_RNO2A",
+        "schedulable_h100_nodes": 60,
+        "allocatable_h100s": 480,
+        "active_requested_h100s": 447,
+        "active_gpu_pods_on_h100": 203,
+        "whole_h100_nodes_with_no_gpu_requests": 0,
+        "unbound_gpu_requests_all_types": 635
+      },
+      {
+        "cluster": "cw-us-east-02a",
+        "region": "US-EAST-02A",
+        "context": "marin-gpu_US-EAST-02A",
+        "schedulable_h100_nodes": 32,
+        "allocatable_h100s": 256,
+        "active_requested_h100s": 41,
+        "active_gpu_pods_on_h100": 6,
+        "whole_h100_nodes_with_no_gpu_requests": 26,
+        "unbound_gpu_requests_all_types": 0
+      }
+    ]
+  },
+  "qualification_reuse": "The real four-update Grug probe-on gate succeeded on RNO with the same H100_NVLINK_80GB hardware,32+8 geometry, pinned wheel, math, compact capture, optimizer flow and busy pause/publication. This placement change alters only Iris cluster/config/target literals. Revalidate the actual East requests locally. First off window checks East startup/publication; serial dependencies stop after any failure.",
+  "new_GPU_qualification": "No additional GPU diagnostic is submitted for unchanged software/geometry. Regional startup and scheduling remain measured limitations.",
+  "unchanged": "Three pairs, seeds/order,30 updates, source-hash admission, fixed normal training/sampling settings and conditional20 trigger.",
+  "unsubmitted_preparation_revision": "07950f04f2279f234b2a583144420a9d8d725389",
+  "GPU_allocations_from_preparation_revision": 0,
+  "actual_East_wire_validation": "final-cohort-east-preflight.json",
+  "supersedes_only": "The cw-rno2a placement field in final-runtime-cohort-plan.json; counts, order and uncertainty rules are unchanged."
+}
