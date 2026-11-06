@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "scope": "Exercise unmodified pinned vLLM Python methods with the real Grug tokenizer.\n\nAST selection avoids importing the unavailable CUDA stack. This proves this\nPython boundary, not a running vLLM engine or the cause of the GPU pause failure.\n",
+  "checks": [
+    {
+      "flat": false,
+      "positions": 64,
+      "wire_width": 130,
+      "requested_top_logprobs": 0,
+      "old_decode_calls": 8623,
+      "trimmed_decode_calls": 112,
+      "old_CPU_seconds": 0.06728609930723906,
+      "trimmed_CPU_seconds": 0.001436370424926281,
+      "chosen_scores_ranks_decoded_text_and_cumulative_logprob_equal": true
+    },
+    {
+      "flat": true,
+      "positions": 64,
+      "wire_width": 130,
+      "requested_top_logprobs": 0,
+      "old_decode_calls": 8623,
+      "trimmed_decode_calls": 112,
+      "old_CPU_seconds": 0.04226463567465544,
+      "trimmed_CPU_seconds": 0.0010343119502067566,
+      "chosen_scores_ranks_decoded_text_and_cumulative_logprob_equal": true
+    }
+  ],
+  "tokenizer_id": "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05",
+  "tokenizer_revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0",
+  "pinned_vllm_revision": "39e62869693c",
+  "pinned_source_manifest": "Source hashes retained in sampled-logprob-source-manifest.json; raw selected methods and local driver remain in the task evidence archive.",
+  "candidate_and_single_width_inputs_keep_identity": true,
+  "GPU_allocations": 0,
+  "interpretation": "Pinned scheduler retains batch-wide candidate width for sampled-token-only requests. The pinned processor decodes all columns before discarding unused heads. Trimming to the requested sampled column preserves its public result. Actual GPU pause causation remains unproved."
+}

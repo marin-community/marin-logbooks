@@ -21,8 +21,8 @@ CONFIG_URI = (
     "grug-pause-diagnostic-i10-seed1701/2026.11.05.2/exports/probe-cost/config.json"
 )
 CONFIG_SHA256 = "95c2f9ff20d4575e97c04d5194b330b9c42b0a4d76f5df14045664401b1efa01"
-OUTPUT_URI = "s3://marin-us-east-08a/marin/users/romain/research/async-probe-cost-2026.11.05/sampler-pause-control-v1"
-JOB_NAME = "async-probe-sampler-pause-control-01a1aa1b-v1"
+OUTPUT_URI = "s3://marin-us-east-08a/marin/users/romain/research/async-probe-cost-2026.11.05/sampler-pause-control-v2"
+JOB_NAME = "async-probe-sampler-pause-control-01a1aa1b-v2"
 DATA_URI = "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1"
 DATA_SHA256 = "54e40005a259f34d5234cc864bc3284bbb8a9db5ff0154b430a6d26553bb40ce"
 TOKENIZER_ID = "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05"

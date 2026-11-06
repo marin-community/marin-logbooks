@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "scope": "Compare the actual old/new SkyRL output hooks over pinned vLLM CPU processors.",
+  "before_revision": "7cb0acb7b31b9c98f787d02929d1e6892a3dd9d7",
+  "after_source_sha256": "ba37c70c624a138d38e4e8183c27bfe1754e521382fc5c6ca08e9c30954a6004",
+  "pinned_vllm_revision": "39e62869693c",
+  "positions_per_request": 64,
+  "requests": [
+    "ordinary-wide",
+    "ordinary-narrow",
+    "compact-head",
+    "public-head",
+    "pooling",
+    "already-aborted"
+  ],
+  "before_decode_calls": {
+    "ordinary-wide": 8623,
+    "ordinary-narrow": 112,
+    "compact-head": 0,
+    "public-head": 8623
+  },
+  "after_decode_calls": {
+    "ordinary-wide": 112,
+    "ordinary-narrow": 112,
+    "compact-head": 0,
+    "public-head": 8623
+  },
+  "all_public_payloads_cumulative_scores_and_policy_stamps_equal": true,
+  "ordinary_narrow_compact_public_head_and_aborted_wires_keep_identity": true,
+  "original_wire_arrays_unchanged": true,
+  "GPU_allocations": 0,
+  "limits": "Actual hooks and pinned processor methods selected by AST to avoid unavailable CUDA imports; request/output containers replace the engine boundary. This is not a running vLLM engine, busy pause or GPU qualification."
+}

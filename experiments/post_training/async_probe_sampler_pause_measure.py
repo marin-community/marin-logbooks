@@ -49,7 +49,6 @@ def main():
     if hashlib.sha256(raw).hexdigest() != CONFIG_SHA256:
         raise ValueError("The qualified control configuration changed")
     cfg = OmegaConf.create(json.loads(raw))
-    os.environ.update({key: str(value) for key, value in cfg.extra_env.items()})
     model = prepare_policy_model(
         SimpleNamespace(
             model_source_uri=cfg.trainer.policy.model.source_uri,
