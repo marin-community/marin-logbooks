@@ -1,12 +1,12 @@
 # Interim evaluation evidence
 
-INTERIM update r6, as of 2026-11-06T03:48:19.347085+00:00. All 162 Evalchemy cells are reviewed; 41 current Harbor cells are admitted and 31 remain pending. Later admissions update existing issue comments and candidate-card sections.
+INTERIM update r7, as of 2026-11-06T10:15:57.592299+00:00. All 162 Evalchemy cells are reviewed; 43 current Harbor cells are admitted and 29 remain pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
 Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `9cf24620dd1670472d8ccbf3590fb7ee3dc7d35e3160c85715c35d50e5147a9e`.
+`manifest.json` SHA256 `4362b6f2ad07733505bd8278966530b253a92b1de85b00cff1bba4914ac1b451`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
@@ -92,6 +92,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/MOPD100--mrcr.json](receipts/MOPD100--mrcr.json) | admitted | `07109c4a946235097ad2d42c97671ba629b28866f9f6ab15f299e157d8ca49a3` |
 | [receipts/MOPD100--nupa.json](receipts/MOPD100--nupa.json) | admitted | `adb68e08f160706ef093f5b8d6fca3b9bd9f7a2a523b6c3bfa67797f4c4e55b6` |
 | [receipts/MOPD100--olympiadbench.json](receipts/MOPD100--olympiadbench.json) | admitted | `612636c9e64f31bcc64a90d546c9bd7ba09f882520e060a0b7b4717f573d7b3f` |
+| [receipts/MOPD100--ot-tblite-recovery.json](receipts/MOPD100--ot-tblite-recovery.json) | admitted | `23c3dae8960b2ac9ac82f7b920c77259e1ad127505880cc57ebbce72cae40a8d` |
 | [receipts/MOPD100--piqa.json](receipts/MOPD100--piqa.json) | admitted | `8d2033c9af2e2b079c98b477387a410785fdeb673190649a1f794518fa0c210d` |
 | [receipts/MOPD100--swebench-verified.json](receipts/MOPD100--swebench-verified.json) | admitted | `a17c7e843c34b7f3000d377a0c1d9861629a114b02a8c6adc4cf82acf2f75e75` |
 | [receipts/MOPD100--triviaqa.json](receipts/MOPD100--triviaqa.json) | admitted | `711ee9f8dfcdfc9a446b25d2d8e7652c1fca13faa71bf9daabf161a653ecdfe7` |
@@ -171,6 +172,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/RS282--winogrande.json](receipts/RS282--winogrande.json) | admitted | `18967182033525585a7a4c2bce15a5a39780910a1278ca552b9779dea8ed02de` |
 | [receipts/plain--aime24.json](receipts/plain--aime24.json) | admitted | `4b3c866725841da755ab041c9b38c0d8898cfbb66faa34896a8739042a7f8d1c` |
 | [receipts/plain--bfclparity-pi.json](receipts/plain--bfclparity-pi.json) | admitted | `ca4309360668a63049fb09cbc080fe5ff76288e937ab7613e3662048032183a6` |
+| [receipts/plain--bixbench-pi.json](receipts/plain--bixbench-pi.json) | admitted | `caa4b21cf565a1a0584fc109322b20c5fa349c6cc52abb842b517ba91d8c3aa5` |
 | [receipts/plain--boolq.json](receipts/plain--boolq.json) | admitted | `7267fc7ee5787e2aee8507362922d28418350aa947a46fc133ce994f7ccfc8fe` |
 | [receipts/plain--crux-output-only-diagnostic.json](receipts/plain--crux-output-only-diagnostic.json) | diagnostic | `a546aeda4682036362f8f19c85ef80ae0dc77499d9377b2b1ffbced45462ef56` |
 | [receipts/plain--cruxeval--secondary.json](receipts/plain--cruxeval--secondary.json) | secondary_only | `7982c37e8deccaed992563185560f03772c19066eacb29b2b41639d98e154df9` |
