@@ -406,3 +406,5 @@ from scratch. Exclude long-run outcomes from pilot selection. Reconcile every
 accepted identity before any later confirmation submission; never duplicate the
 completed alpha0 or a matching accepted nonzero configuration. The final global
 selection record and prescribed scientific probes remain required.
+
+2026-11-06 10:42 UTC execution: all three amended seed0 long runs are ACCEPTED and canonically PENDING (four tasks each, zero failures/preemptions). Execution source923d79510475df3ed0fef53d40b3290ae4c90fce; sibling ema-gram-confirm-seed0-r01-20261106; campaign ema-gram-20-confirm-seed0-r01-20261106; sole observer99712/PID96635. Reuse its snapshots and existing followers. Startup collector scratch/collect_parallel_r01_startup.py is prepared; run once only after RUNNING plus finished host checks and native URLs. Reconcile the accepted receipt before any future global submission to avoid duplicates.
