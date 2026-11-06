@@ -6,7 +6,7 @@
 import argparse
 import json
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from functools import partial
 from itertools import islice
 from pathlib import Path
@@ -186,6 +186,22 @@ def decomposition_diagnostics(model, opt_state, *, polar_steps: int):
     return rows
 
 
+def resolve_config(encoded: dict) -> TrainLmConfig:
+    """Restore frozen union field types and reject config drift before checkpoint reads."""
+    cfg = draccus.decode(TrainLmConfig, encoded)
+    cfg = replace(
+        cfg,
+        trainer=replace(
+            cfg.trainer,
+            jax_config=encoded["trainer"]["jax_config"],
+            load_checkpoint_path=encoded["trainer"]["load_checkpoint_path"],
+        ),
+    )
+    if draccus.encode(cfg) != encoded:
+        raise ValueError("Decoded probe config differs from the frozen training config")
+    return cfg
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--configs", type=Path, required=True)
@@ -198,9 +214,11 @@ def main():
     parser.add_argument("--step-sizes", nargs="+", type=float, default=[1e-5, 3e-5, 1e-4])
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    cfg = draccus.decode(TrainLmConfig, json.loads(args.configs.read_text())[args.config_index]["train_config"])
+    cfg = resolve_config(json.loads(args.configs.read_text())[args.config_index]["train_config"])
     if not isinstance(cfg.optimizer, EmaGramConfig):
         raise ValueError("Select a reference EMA-Gram config")
+    for key, value in cfg.trainer.jax_config.items():
+        jax.config.update(key, value)
     with cfg.trainer.use_device_mesh():
         vocab = hax.partitioning.round_axis_for_partitioning(
             hax.Axis("vocab", len(cfg.data.the_tokenizer)), cfg.trainer.compute_axis_mapping

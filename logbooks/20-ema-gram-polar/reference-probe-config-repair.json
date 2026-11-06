@@ -1,0 +1,70 @@
+{
+  "status": "SOURCE_REPAIR_APPLIED_OFFLINE_VALIDATION_PASSED_RUNTIME_REQUALIFICATION_PENDING",
+  "scope": "Exact frozen config decoding and JAX config setter API only; no device enumeration, kernels, tracking, checkpoint reads or remote calls.",
+  "original_source_sha256": "c087824beae1a243181b7689016673fc451c6db69d71e80628b2ddc7d5e9c9c5",
+  "candidate_sha256": "88749c6f11b3dce5855c335a09abeb0ec50c63a1421e84f41ba6082af6fa3863",
+  "configs_sha256": "989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7",
+  "roundtrip_equal": true,
+  "union_types_preserved": true,
+  "jax_settings_applied_and_restored": {
+    "jax_softmax_custom_jvp": true,
+    "jax_threefry_partitionable": true
+  },
+  "remaining": [
+    "Revalidate affected source-bound logging and numerical probe qualification before launch.",
+    "Audit four-host restore and whether SVD outputs can be accessed from each process.",
+    "Validate stored checkpoint counter and prepare permanent submission guards before launching the three prescribed probes."
+  ],
+  "observed_utc": "2026-11-06T18:14:26.947582+00:00",
+  "actual_source": "experiments/ema_gram/probe.py",
+  "actual_source_sha256": "88749c6f11b3dce5855c335a09abeb0ec50c63a1421e84f41ba6082af6fa3863",
+  "actual_source_roundtrip_passed": true,
+  "lint": "infra/pre-commit.py --fix experiments/ema_gram/probe.py: PASS",
+  "scientific_probes_launched": false,
+  "first_checkpoint_metadata": {
+    "observed_utc": "2026-11-06T18:13:32.153785+00:00",
+    "status": "PERMANENT_CHECKPOINT_METADATA_VALIDATED",
+    "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-3732",
+    "expected_counter": 3733,
+    "accepted_source": "923d79510475df3ed0fef53d40b3290ae4c90fce",
+    "accepted_job": "/kaiyuew@stanford.edu/ema-gram-20-confirm-seed0-r01-20261106-01",
+    "config_sha256": "86caaa955d802294e55751575219539451d6061d63a5b5d1fabe02ce56160fb8",
+    "array_count": 57,
+    "manifest_validation": {
+      "array_schema_matches": true,
+      "chunk_geometry_valid": true,
+      "changed_chunk_paths": [
+        "model/embeddings/token_embeddings/weight",
+        "model/lm_head/weight",
+        "model/transformer/layers/stacked/mlp/down_proj/weight",
+        "model/transformer/layers/stacked/mlp/gate_proj/weight",
+        "model/transformer/layers/stacked/mlp/up_proj/weight",
+        "model/transformer/layers/stacked/self_attn/o_proj/weight",
+        "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/embeddings/token_embeddings/weight",
+        "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/lm_head/weight",
+        "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/embeddings/token_embeddings/weight",
+        "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/lm_head/weight",
+        "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/left",
+        "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/momentum",
+        "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/left",
+        "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/momentum",
+        "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/momentum",
+        "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/right"
+      ],
+      "scope": "Manifest metadata only; topology-dependent chunks retained, no full array read or restore."
+    },
+    "files": {
+      "metadata.json": {
+        "sha256": "b6b2c4bd0646a4b704f508875edbc8e1007d5bf0dc75f0c4ab5d35af5874eea3",
+        "generation": 1793988744877659,
+        "size": 80
+      },
+      "manifest.json": {
+        "sha256": "464e28635baf0741afaec4450f0081c9583f5d7e85657abec8f1e5824e255332",
+        "generation": 1793988723295442,
+        "size": 13629
+      }
+    },
+    "scope": "Metadata only. Stored scalar counter, complete byte restore and scientific probe remain unvalidated."
+  }
+}

@@ -445,3 +445,10 @@ scratch/20261106-parallel-r01-startup/validated.json. Do not repeat startup
 collection or finished-host APIs. Reuse observer 99712/PID 96635 and prepared
 scratch/observe_parallel_r01_online.py for unfinished native progress only.
 Full 37,335 outcomes and three alpha 0.25 checkpoint probes remain pending.
+
+2026-11-06 18:15 UTC: reference-probe-config-repair.json records a probe
+configuration decoding repair and offline validation. Existing source-bound
+probe qualification does not cover the edited source; revalidate it and audit
+four-host restore/SVD array access before launch. The first alpha0.25 prescribed
+checkpoint has validated permanent metadata and 57-array schema; stored counter
+and full restore remain pending. All three scientific probes remain unlaunched.

@@ -2490,3 +2490,29 @@ finished host checks or startup task reads. Each run's required schedule remains
 37,335 updates. The three alpha 0.25 checkpoint probes at completed-update
 counters 3,733, 18,665 and 33,597 remain required: held-out norm-matched direction
 and paired-loss comparisons, plus attention/MLP polar-versus-SVD comparisons.
+
+### 2026-11-06 18:15 UTC — reference-probe configuration repair
+
+The checkpoint probe decoded `jax_softmax_custom_jvp`,
+`jax_threefry_partitionable` and the checkpoint-path list as strings. It also
+omitted application of the JAX settings recorded in the training configuration.
+The probe now restores those field types, rejects differences between the
+re-encoded configuration and its input, and applies the JAX settings before
+reading a checkpoint or constructing model arrays. An offline check against the
+[accepted alpha 0.25 configuration](parallel-long-runs-r01-bundle.json) passed
+the full configuration round trip and verified the JAX setter values. This
+check executed no numerical kernels and read no checkpoint bytes. See
+[repair validation](reference-probe-config-repair.json).
+
+The [prior logging and SVD qualification](reference-probe-svd-preflight.json)
+remains historical evidence for its original source; it does not qualify this
+edited source for launch. Revalidate the affected qualification and audit
+four-host restoration and whether each process can read its SVD result arrays.
+The [three prescribed probes](single-seed-execution-plan.md) remain unlaunched.
+The accepted training jobs and their source are unchanged.
+
+The alpha 0.25 native run reached zero-based label 3737 at 18:12 UTC. Its first
+prescribed permanent checkpoint, label 3732 (expected stored counter 3733),
+now has generation-bound metadata and a valid 57-array manifest matching the
+reference schemas. These checks establish metadata availability only; the
+stored scalar counter and full checkpoint restoration remain unvalidated.
