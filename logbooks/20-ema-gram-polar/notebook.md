@@ -2697,3 +2697,38 @@ total schedule of 37,335 updates each; at 11:24 UTC alpha0.125/0.25/0.5 had fini
 labels16203/18697/20326. These training losses do not establish the held-out C4
 target result. Final long-run outcomes, results of this second probe and the unlaunched third probe and scientific
 conclusions remain required.
+
+
+## 2026-11-07 11:44 UTC — second prescribed probe startup validated
+
+The alpha0.25 confirmation checkpoint at counter18665 (18,665 completed training
+updates, zero-based label18664) is now being probed by four running tasks,
+indices0–3, representing the four hosts of one distributed probe.
+One-time startup collection verified four original attempt0 task UIDs on four
+distinct workers, four finished ONLINE logging checks and four running native
+ONLINE probe records. Their logged source hashes, frozen training configuration,
+checkpoint, expected counter, eight held-out Wikipedia batches and probe
+perturbation sizes match reference-probe-r02-request.json. See
+reference-probe-r02-started.json and
+scratch/20261107-reference-r02-startup/validated.json for the evidence.
+
+Startup validation does not establish successful checkpoint restore or scientific
+results. All four native summaries were empty at collection and at the first
+unfinished-native helper check at 11:44 UTC. W&B configuration does not contain
+task UID; original task/attempt-tagged follower lines link each task to its
+logging and native run URLs. Completion still requires exact wrapper attempt UID
+and archive reconciliation, full TrainerState restore with allow_partial=False
+and expected counter18665, all prescribed loss/direction outputs, finished ONLINE
+records and canonical success.
+
+Reuse sole observer session51423/PID27858 and follower PID28032; do not repeat
+remote startup-task or finished-host logging-record reads absent attempt/failure
+changes; local cached evidence remains available. Execution
+source6ec7fa98b842cdff03b46986d00e3ee4dc735615 and the permanent launch guard remain
+unchanged. The unfinished-native helper completed its first live check; run it
+sequentially with the long-run helper once per wake. The first counter3733 probe
+remains completed and uses cached evidence only. At 11:43 UTC, the three
+confirmation runs alpha0.125/0.25/0.5 advanced to training labels16508/18973/20601
+with finite losses and no investigation flags. All three still require total
+schedules of 37,335 updates. The second probe uses the frozen checkpoint while alpha0.25 training continues.
+The second probe's results, the third probe at alpha0.25 counter33597 and final scientific conclusions remain outstanding.

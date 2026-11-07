@@ -528,3 +528,21 @@ Never query completed first-probe identities or qualification records. The three
 long runs retain observer99712/PID96635; third counter33597 probe remains
 unlaunched. Full long-run outcomes, both remaining probe results and final
 conclusions remain required.
+
+
+2026-11-07 11:44 UTC: counter18665 probe STARTUP_VALIDATED_RESULTS_PENDING.
+See reference-probe-r02-started.json. The one-time collector passed four original
+attempt0 UID/worker joins, four finished ONLINE host logging checks and four
+running native ONLINE records against exact source/config/checkpoint/request.
+Reuse scratch/20261107-reference-r02-startup/validated.json; never repeat startup
+task or finished-host API reads absent changed attempt/failure lineage. W&B
+config has no task UID, so exact wrapper/archive joins remain required at completion.
+Full actual restore and scientific outputs remain unvalidated; native summaries
+were empty at 11:44. Original observer51423/PID27858/follower28032 remain sole owners.
+
+observe_reference_r02_online.py passed its first live invocation. Run it and
+observe_parallel_r01_online.py sequentially once per wake with the prescribed
+PYTHONPATH and .venv/bin/python; both write machine state. Completed first probe,
+pilots, baseline and qualifications remain cached without API calls. Third
+counter33597 probe remains unlaunched. Full three nonzero training outcomes,
+second/third probe results and final conclusions are still required.
