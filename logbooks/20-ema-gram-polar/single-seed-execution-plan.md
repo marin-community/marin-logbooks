@@ -546,3 +546,26 @@ PYTHONPATH and .venv/bin/python; both write machine state. Completed first probe
 pilots, baseline and qualifications remain cached without API calls. Third
 counter33597 probe remains unlaunched. Full three nonzero training outcomes,
 second/third probe results and final conclusions are still required.
+
+
+2026-11-07 11:52 UTC: counter18665 probe COMPLETED_VALIDATED (second of three).
+See reference-probe-r02-completed.json and reference-probe-r02-terminal-audit.json.
+Four original attempt0 successes, zero failures/preemptions, four finished ONLINE
+native records, exact wrapper task/UID/source/config/checkpoint/counter joins,
+four bounded task archives and 24 permanent generation-bound readbacks passed.
+Each host has 27 finite paired-loss rows over the same eight held-out batches
+and 18 finite polar/SVD comparisons. Statistics were independently recomputed;
+all loss/direction diagnostics agree exactly across hosts, which replicate the
+same batches. Full TrainerState allow_partial=False/counter18665 restore is
+validated for this probe; no independent57-array finiteness or resume claim.
+
+Observer51423/PID27858 and follower28032 exited naturally. NEVER poll/restart/
+resubmit this completed probe or query its tasks/native/hosts/archives. Reuse
+scratch/20261107-reference-r02-completion/verified.json and execution completion
+cache; observe_reference_r02_online.py already exits from completion cache before
+owner/API checks. No probe helper is needed each wake. Preserve all consumed
+guards, immutable sources and raw evidence. Continue ONLY
+observe_parallel_r01_online.py once per wake under observer99712/PID96635.
+Third prescribed alpha0.25 counter33597 probe remains unlaunched. Three nonzero
+full37,335-update outcomes, third probe results and final conclusions remain
+required; do not select a preferred exponent from this checkpoint alone.

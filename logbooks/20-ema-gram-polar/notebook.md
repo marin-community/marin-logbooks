@@ -2732,3 +2732,52 @@ confirmation runs alpha0.125/0.25/0.5 advanced to training labels16508/18973/206
 with finite losses and no investigation flags. All three still require total
 schedules of 37,335 updates. The second probe uses the frozen checkpoint while alpha0.25 training continues.
 The second probe's results, the third probe at alpha0.25 counter33597 and final scientific conclusions remain outstanding.
+
+
+## 2026-11-07 11:52 UTC — second prescribed probe completed and validated
+
+The alpha0.25 confirmation checkpoint at counter18665 (18,665 completed training
+updates, zero-based checkpoint label18664) passed the prescribed four-host probe.
+Iris recorded four original attempt0 successes, zero failures/preemptions, and
+canonical success at 11:46:32 UTC. All four native W&B runs finished ONLINE.
+Exact wrapper task/attempt UID, source, configuration, checkpoint and counter
+match startup evidence. Four bounded task archives and 24 generation-bound
+permanent objects were read back and verified. Each host returned 27 finite
+paired-loss rows over the same eight held-out Wikipedia batches and 18 finite
+production-polar-versus-SVD comparisons. Each loss row summarizes eight paired
+batches for one exponent/ridge setting and perturbation size: nine settings
+times three sizes gives 27 rows. Direction comparisons cover two selected
+matrices (attention and MLP) times nine settings. Paired mean/std/SEM were independently
+recomputed; eight corrupted-output cases were rejected by the offline validator.
+Parsed numeric loss and direction diagnostic values are exactly equal across
+four hosts; timings and device-memory records are process-specific. They are
+replicas over the same batches, not independent scientific samples.
+
+This validates actual full TrainerState restore with allow_partial=False and
+restored counter18665 for the four-host probe. It does not establish an independent
+57-array finiteness audit or training resume. See reference-probe-r02-completed.json
+and reference-probe-r02-terminal-audit.json for outputs, identities, receipts and
+validator source.
+
+The baseline mean held-out Wikipedia loss was 3.835104763507843.
+Candidate-minus-baseline mean loss changes ranged from -0.0002271533 to
++0.0004232228. The most negative row used diagnostic exponent alpha=1/3, ridge=0.01 and
+perturbation size3e-5
+and paired SEM0.0001049152. This checkpoint alone does not establish a preferred
+exponent; the third prescribed checkpoint and complete confirmation results
+remain required. Across attention/MLP matrices and nine exponent/ridge settings,
+polar-versus-SVD cosine ranged from 0.8948413 to 0.9995929 and relative direction
+error from 0.0295548 to 0.4707010. Relative error is the Frobenius norm of the
+direction difference divided by the SVD direction norm.
+
+The sole observer session51423/PID27858 and original follower PID28032 exited
+naturally. Never query this completed probe's jobs/tasks/native records,
+finished-host records or archives again, or resubmit/restart it. Reuse research
+scratch/20261107-reference-r02-completion/verified.json and the execution
+worktree completion cache. The consumed counter18665 guard and immutable source
+6ec7fa98b842cdff03b46986d00e3ee4dc735615 remain unchanged. Continue the three long
+runs under observer99712/PID96635; at 11:48 their zero-based training labels
+were16589/19013/20669 for alpha0.125/0.25/0.5, with finite losses and continued
+progress. Only the third prescribed alpha0.25 probe at counter33597 remains
+unlaunched; all three nonzero full 37,335-update outcomes and final conclusions
+are still required.
