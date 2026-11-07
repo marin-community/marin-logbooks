@@ -502,3 +502,29 @@ probes remain unlaunched and require exact checkpoint/request validation and
 fresh permanent guards. Remaining scientific work: all three nonzero full37335
 outcomes, two later probe results and final conclusions. The first probe's small
 paired loss changes alone do not establish a preferred exponent.
+
+
+2026-11-07 11:29 UTC: second prescribed counter18665 probe accepted once;
+see reference-probe-r02-request.json and reference-probe-r02-accepted.json.
+Exact checkpoint metadata, stored counter, unchanged qualified probe source and
+full 26-component catalog passed. Immutable execution source
+6ec7fa98b842cdff03b46986d00e3ee4dc735615; campaign
+ema-gram-20-reference-seed0-r02-20261107, four hosts/v4-32. Permanent guard
+scratch/20261107-reference-counter-18665-launch.json is consumed; never resubmit.
+Sole observer51423/PID27858/follower28032 owns canonical observation.
+Startup, actual four-host restore and scientific outputs remain unvalidated.
+
+Prepared scratch/collect_reference_r02_startup.py; run its local readiness mode
+only after the original observer saves its first canonical snapshot. Execute
+--collect once only when canonical RUNNING4 and all four task-tagged finished
+host logging/native URL joins are ready. Then use
+scratch/observe_reference_r02_online.py for unfinished native records, sequentially
+with observe_parallel_r01_online.py once per wake (both write machine state).
+Both new helpers passed syntax checks; neither has executed live collection yet.
+An initial local readiness check found no saved snapshot and failed before any
+API; its raw error is preserved. The collector now exits explicitly while
+waiting for the original observer snapshot.
+Never query completed first-probe identities or qualification records. The three
+long runs retain observer99712/PID96635; third counter33597 probe remains
+unlaunched. Full long-run outcomes, both remaining probe results and final
+conclusions remain required.

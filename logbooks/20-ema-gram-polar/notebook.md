@@ -2666,3 +2666,34 @@ training losses and no investigation flags. Continue their original observer
 99712/PID96635 and unfinished-native helper only. Counter18665 and33597 probes
 remain unlaunched; all three full 37,335-update outcomes, the remaining two
 probes and final conclusions are still required.
+
+
+## 2026-11-07 11:29 UTC — second prescribed checkpoint probe accepted
+
+Iris accepted the second prescribed scientific probe of the alpha0.25 confirmation
+run, using checkpoint counter18665 (18,665 completed updates, zero-based step18664). The checkpoint's 57-array metadata
+schema and stored scalar counter passed read-only validation. The full
+26-component data catalog also passed. Numeric probe code, exact training
+configuration, eight held-out Wikipedia batches and common step sizes remain the
+same as the completed counter3733 probe recorded in reference-probe-r01-completed.json.
+The probe perturbation sizes are 1e-5, 3e-5 and 1e-4. Actual four-host checkpoint restore and scientific
+outputs remain unvalidated.
+
+The immutable execution source is 6ec7fa98b842cdff03b46986d00e3ee4dc735615 on branch
+codex/20-ema-gram-reference-seed0-r02-20261107. Campaign
+ema-gram-20-reference-seed0-r02-20261107 has one job, suffix00, requesting v4-32
+across four hosts with Iris default retry/preemption policy and no wall-clock
+limit. The permanent counter18665 launch guard is consumed. Submission
+session7005 exited0. Sole observer51423/PID27858 and its original follower28032
+own observation; never resubmit this identity or replace either observer or
+follower. See reference-probe-r02-request.json and reference-probe-r02-accepted.json
+for the exact command, identities and hashes.
+
+Collect startup evidence once when the saved canonical snapshot is RUNNING with
+four tasks and all four original task-tagged host/native logging joins are ready.
+Reuse completed first-probe caches without APIs. The third prescribed probe at
+counter33597 remains unlaunched. Three nonzero confirmations still require their
+total schedule of 37,335 updates each; at 11:24 UTC alpha0.125/0.25/0.5 had finite training losses at
+labels16203/18697/20326. These training losses do not establish the held-out C4
+target result. Final long-run outcomes, results of this second probe and the unlaunched third probe and scientific
+conclusions remain required.

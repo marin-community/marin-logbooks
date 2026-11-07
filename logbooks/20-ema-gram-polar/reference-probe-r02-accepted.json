@@ -1,0 +1,173 @@
+{
+  "observed_utc": "2026-11-07T11:30:03.395431+00:00",
+  "status": "ACCEPTED_STARTUP_UNVALIDATED",
+  "accepted_launch": {
+    "index": 0,
+    "campaign": "ema-gram-20-reference-seed0-r02-20261107",
+    "source_commit": "6ec7fa98b842cdff03b46986d00e3ee4dc735615",
+    "job_id": "/kaiyuew@stanford.edu/ema-gram-20-reference-seed0-r02-20261107-00",
+    "counter": 18665,
+    "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-18664",
+    "training_source": "923d79510475df3ed0fef53d40b3290ae4c90fce",
+    "config_sha256": "ac21cf526572e285f112585e96cfa4136a872465de59c60070eb2f1edf121239",
+    "inputs": {
+      "logbooks/20-ema-gram-polar/reference-probe-r02-request.json": "ac21cf526572e285f112585e96cfa4136a872465de59c60070eb2f1edf121239",
+      "logbooks/20-ema-gram-polar/reference-probes-r01-configs.json": "989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7",
+      "logbooks/20-ema-gram-polar/reference-probe-svd-preflight.json": "e87044fa3f420b464a7174707ebada1693f8393f6476252507600321615d8418"
+    },
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "iris",
+      "--cluster=marin",
+      "job",
+      "run",
+      "--no-wait",
+      "--no-cancel-on-exit",
+      "--job-name",
+      "ema-gram-20-reference-seed0-r02-20261107-00",
+      "--priority",
+      "batch",
+      "--enable-extra-resources",
+      "--tpu",
+      "v4-32",
+      "--cpu",
+      "120",
+      "--memory",
+      "256GB",
+      "--disk",
+      "50GB",
+      "--region",
+      "us-central2",
+      "--extra",
+      "tpu",
+      "--sync-package",
+      "marin-core",
+      "--sync-package",
+      "marin-levanter",
+      "--sync-package",
+      "marin-dupekit",
+      "-e",
+      "GIT_COMMIT",
+      "6ec7fa98b842cdff03b46986d00e3ee4dc735615",
+      "--",
+      "bash",
+      "-c",
+      "export PYTHONPATH=\"$PWD/logbooks/20-ema-gram-polar:$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\"\npython logbooks/20-ema-gram-polar/check_campaign_caches.py --manifest logbooks/20-ema-gram-polar/subset-cache-manifest.json --output \"${IRIS_OUTPUT_DIR:-/tmp}/cache-check.json\" && exec python logbooks/20-ema-gram-polar/run_reference_probe.py --configs logbooks/20-ema-gram-polar/reference-probes-r01-configs.json --configs-sha256 989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7 --config-index 0 --checkpoint gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-18664 --expected-counter 18665 --output-prefix gs://marin-us-central2/ema-gram-20-reference-probes/seed0-r02-20261107/counter-18665 --output-dir \"${IRIS_OUTPUT_DIR:-/tmp}/reference-probe\""
+    ],
+    "launch_started": true,
+    "launched": true,
+    "started_utc": "2026-11-07T11:29:17.938890+00:00",
+    "worktree": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-reference-seed0-r02-20261107",
+    "expected_tasks": 4,
+    "submit_exit_code": 0
+  },
+  "submit_session": 7005,
+  "observer_session": 51423,
+  "observer": {
+    "binding": {
+      "source": "6ec7fa98b842cdff03b46986d00e3ee4dc735615",
+      "inputs": {
+        "logbooks/20-ema-gram-polar/reference-probe-r02-request.json": "ac21cf526572e285f112585e96cfa4136a872465de59c60070eb2f1edf121239",
+        "logbooks/20-ema-gram-polar/reference-probes-r01-configs.json": "989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7",
+        "logbooks/20-ema-gram-polar/reference-probe-svd-preflight.json": "e87044fa3f420b464a7174707ebada1693f8393f6476252507600321615d8418"
+      },
+      "argv_sha256": "e0b9added2f8f6ed11cebc596f61a607822776fc97562e361446120acd96de4c"
+    },
+    "jobs": {
+      "0": {
+        "job_id": "/kaiyuew@stanford.edu/ema-gram-20-reference-seed0-r02-20261107-00",
+        "source_commit": "6ec7fa98b842cdff03b46986d00e3ee4dc735615",
+        "config_sha256": "ac21cf526572e285f112585e96cfa4136a872465de59c60070eb2f1edf121239",
+        "first_seen": 1794050978.9665012,
+        "next_check": 1794051098.9665012,
+        "terminal": false,
+        "follow_started": true,
+        "owner_pid": 27858,
+        "follow_pid": 28032,
+        "follow_log": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-reference-seed0-r02-20261107/scratch/ema-gram-20-reference-seed0-r02-20261107-0-follow.log"
+      }
+    },
+    "owner_pid": 27858
+  },
+  "execution_preflight": {
+    "passed": true,
+    "source": "6ec7fa98b842cdff03b46986d00e3ee4dc735615",
+    "request_sha256": "ac21cf526572e285f112585e96cfa4136a872465de59c60070eb2f1edf121239",
+    "catalog": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261107-reference-r02-full-catalog.json",
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "iris",
+      "--cluster=marin",
+      "job",
+      "run",
+      "--no-wait",
+      "--no-cancel-on-exit",
+      "--job-name",
+      "ema-gram-20-reference-seed0-r02-20261107-00",
+      "--priority",
+      "batch",
+      "--enable-extra-resources",
+      "--tpu",
+      "v4-32",
+      "--cpu",
+      "120",
+      "--memory",
+      "256GB",
+      "--disk",
+      "50GB",
+      "--region",
+      "us-central2",
+      "--extra",
+      "tpu",
+      "--sync-package",
+      "marin-core",
+      "--sync-package",
+      "marin-levanter",
+      "--sync-package",
+      "marin-dupekit",
+      "-e",
+      "GIT_COMMIT",
+      "6ec7fa98b842cdff03b46986d00e3ee4dc735615",
+      "--",
+      "bash",
+      "-c",
+      "export PYTHONPATH=\"$PWD/logbooks/20-ema-gram-polar:$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\"\npython logbooks/20-ema-gram-polar/check_campaign_caches.py --manifest logbooks/20-ema-gram-polar/subset-cache-manifest.json --output \"${IRIS_OUTPUT_DIR:-/tmp}/cache-check.json\" && exec python logbooks/20-ema-gram-polar/run_reference_probe.py --configs logbooks/20-ema-gram-polar/reference-probes-r01-configs.json --configs-sha256 989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7 --config-index 0 --checkpoint gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-18664 --expected-counter 18665 --output-prefix gs://marin-us-central2/ema-gram-20-reference-probes/seed0-r02-20261107/counter-18665 --output-dir \"${IRIS_OUTPUT_DIR:-/tmp}/reference-probe\""
+    ],
+    "expected_tasks": 4,
+    "guard": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261107-reference-counter-18665-launch.json"
+  },
+  "full_catalog": {
+    "path": "scratch/20261107-reference-r02-full-catalog.json",
+    "sha256": "1fc70800124919d31a820e8ed09d35edb7879cc9f47dc378cc790db66227ac40",
+    "passed": true,
+    "components": 26
+  },
+  "startup_validated": false,
+  "scientifically_complete": false,
+  "remaining_unlaunched_counters": [
+    33597
+  ],
+  "raw_evidence": [
+    {
+      "path": "scratch/submit_reference_r02.py",
+      "sha256": "9c72765998f274cfa094e6866650a066be76a6b407bdc7a9b46f9893b657cee6"
+    },
+    {
+      "path": "scratch/watch_reference_r02.py",
+      "sha256": "09c4c1faca05f5bdf6c0e771d23322245b53757383f586b8322cbd8256549a8e"
+    },
+    {
+      "path": "scratch/20261107-reference-r02-submit.log",
+      "sha256": "5f82baecd3837be03d60500466716adbb9d3ef20029fd8e90c1cfb2c75554558"
+    },
+    {
+      "path": "scratch/20261107-reference-counter-18665-launch.json",
+      "sha256": "23ac579e174b64d536cb5ce0dd192152f7f3d409e963cddd0ddfa98ed989055d"
+    }
+  ],
+  "startup_readiness_note": "Initial local readiness inspection preceded the first observer snapshot and raised KeyError before any API. Raw error preserved in scratch/20261107-reference-r02-local-readiness.log; collector now exits explicitly while awaiting original observer snapshot. No startup task or W&B collection executed."
+}
