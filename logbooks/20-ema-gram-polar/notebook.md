@@ -3296,3 +3296,26 @@ missing-peer cleanup and accelerator retention remain unqualified. The concrete
 non-training runtime entrypoint and execution scope remain local preparation
 work; no new job is authorized. Scientific findings and historical classifications
 remain unchanged.
+
+
+## 2026-11-08 13:11 UTC: prepared CPU shutdown diagnostic
+
+The [CPU diagnostic preparation](shutdown-cpu-entrypoint.md) archives a concrete
+non-training worker CLI, source-bound manifest and CPU deployment mapping for
+candidate `2674b5d3975e5c1ecac05fb4310814c90ec736e1`. The default CLI performs
+read-only preflight. An explicit execution path exists but requires new job
+authorization. The proposed first stage has separate clean and injected-error
+scenarios with four CPU tasks and four scalar ONLINE records per rank.
+
+Twenty-seven distinct local checks have scoped passing evidence (12 entrypoint,
+11 manifest, four bootstrap), with unchanged checks reused and two portability
+checks also recorded. Review corrected the diagnostic's all-rank W&B failure
+policy; four affected/new controls pass. Source/archive lint passes. These are
+fake-service and source checks, not a fresh full runtime suite.
+
+No job, real runtime service, numerical kernel, terminal experiment read or
+accepted-source change occurred. CPU image/lock, tracking entity, region/placement,
+deployed controller and independent runtime evidence remain unresolved. The
+300-second per-rendezvous health budget is an unmeasured proposal, not a scheduler
+or wrapper limit. Accelerator retention remains unresolved for future GPU/TPU
+qualification. Scientific findings and historical classifications are unchanged.

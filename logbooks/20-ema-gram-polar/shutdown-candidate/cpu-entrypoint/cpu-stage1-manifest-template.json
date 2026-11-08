@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "campaign": "ema-gram-shutdown-cpu-stage1-proposed",
+  "scenario": "clean",
+  "candidate_commit": "2674b5d3975e5c1ecac05fb4310814c90ec736e1",
+  "source_hashes": {
+    "lib/levanter/src/levanter/tracker/wandb.py": "e12d2a874e40edd27c4046940165dde58879e4d4d674939c78b54ad632740fcd",
+    "lib/levanter/src/levanter/tracker/background.py": "f79c91f13da5d679e0cedca21e8077de95cca838b7613bf90b7e74c0441b7aa2",
+    "lib/levanter/src/levanter/tracker/finalization.py": "c21f48e559ba386df869bb045b8da2407e13daca47511766442de9528865c1f6",
+    "lib/levanter/src/levanter/tracker/tracker.py": "0fc8dc503ead90c413187f19354e5b8db0d4be4999c44a9c5c489d09b42c1e62",
+    "lib/levanter/src/levanter/distributed.py": "1dd435a6b9bea9a62323f17f8025e6bacafddd7dde89570d10d3896d26d1f632",
+    "lib/levanter/src/levanter/distributed_finalization.py": "f5862484ee71bf8e5c2baad836566ae423c3d14bcceb4c38364cb98747b708a6",
+    "lib/iris/src/iris/jax/init.py": "f321306105cf825aa620759146aa1be73be936f345e3dc1ce42e5e61230afdec",
+    "lib/iris/src/iris/cluster/client/job_info.py": "61a29af9b9eaecf06ec3eaa24c17d026bbc9b40f551867b728d4b39948e194ea"
+  },
+  "wandb": {
+    "entity": "UNRESOLVED",
+    "project": "ema-gram-shutdown-qualification",
+    "mode": "online",
+    "resume": "never",
+    "reinit": "create_new"
+  },
+  "communication_health": {
+    "finalization_rendezvous_ms": 300000,
+    "justification": "Clean/application-failure first stage has four scalar sentinels and no deliberate delay. Existing BackgroundTracker finish wait is120s;300s allows180s additional rank scheduling/local diagnostic skew before declaring rendezvous unhealthy. This margin is a design choice, not a measured bound or demonstrated cure. Each ready/read barrier uses the budget; no total job or wrapper deadline is imposed."
+  },
+  "resource_scope": {
+    "device": "cpu",
+    "tasks": 4,
+    "processes_per_task": 1,
+    "cpu_per_task": 4,
+    "memory_per_task": "8g",
+    "disk_per_task": "8g",
+    "training_steps": 0,
+    "sentinels_per_rank": 4
+  },
+  "deployment": {
+    "region": null,
+    "controller_revision": null,
+    "runtime_lock_sha256": null
+  }
+}

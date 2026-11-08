@@ -1,0 +1,86 @@
+{
+  "status": "SOURCE_REVIEWED_FIRST_STAGE_DESIGN_NOT_AUTHORIZED",
+  "updated_utc": "2026-11-08T12:18:48.011145+00:00",
+  "candidate_commit": "2674b5d3975e5c1ecac05fb4310814c90ec736e1",
+  "first_stage": {
+    "scenarios": [
+      "clean",
+      "application_failure"
+    ],
+    "tasks": 4,
+    "processes_per_task": 1,
+    "training_steps": 0,
+    "tensor_or_numerical_kernel_operations": 0,
+    "cpu_only": true,
+    "device_request": "Explicit job_pb2.DeviceConfig(cpu=job_pb2.CpuDevice(variant=\"cpu\")); do not rely on ResourceSpec(device=None) as proof of CPU-only placement.",
+    "backend": "JAX_PLATFORMS=cpu set before imports; source imports and distributed initialization remain unexecuted. CPU backend selection is independent of scheduler placement.",
+    "proposed_per_task_resources": {
+      "cpu": 4,
+      "memory": "8g",
+      "disk": "8g"
+    },
+    "region": null,
+    "controller_revision": null,
+    "communication_health_budget_ms": null,
+    "new_job_authorization": false,
+    "submission_command": null
+  },
+  "entrypoint_order": [
+    "Parse immutable explicit manifest; verify candidate module hashes from disk before runtime imports; reject unsupported scenarios, absent health budget, missing attempt identity or non-CPU requested configuration.",
+    "Read only allowlisted task identity fields; never serialize JobInfo credentials/env wholesale. Bind exact task wire ID, attempt UID, worker ID, campaign, scenario and per-process fresh random native run ID.",
+    "Initialize native W&B with mode=online and resume=never before JAX import/backend use; reject returned offline/disabled run. Persist run URL/config identity locally without secrets. This is local initialization evidence; independently audit native state/history later.",
+    "Import actual candidate WandbTracker/BackgroundTracker and distributed installer; initialize Iris JAX world with named endpoint scoped to task attempt. Do not create arrays, query memory, compile or step optimizers.",
+    "Create BackgroundTracker(WandbTracker(run=the_existing_online_run, suppress_logging=False)) on every rank for diagnostic sentinel delivery. This differs from training rank-zero-only publishing; installer still requires W&B only on rank zero, so all-rank native delivery remains independently audited.",
+    "Log a fixed small sequence of plain Python scalar sentinel IDs on each rank. Explicitly stop producers before finish. For application_failure inject SystemExit(23) on one declared rank after sentinel enqueue; preserve that error through finalization.",
+    "Call finish_with_report once per tracker and preserve application exception precedence if cleanup fails. Persist report and error type; no forced native finished state.",
+    "Install actual coordinated finalizer with local identity-bound observation after the last JAX use; propagate original application exception. Local output flush failures remain visible, no worker holder or watchdog.",
+    "Let Python atexit and scheduler/controller task aggregation run naturally; collect only newly authorized diagnostic evidence once. No terminal training evidence is reread."
+  ],
+  "cpu_scope_limits": [
+    "CPU placement and no-accelerator request must be verified from new task resource records when a job is authorized; JAX_PLATFORMS alone cannot prove placement.",
+    "No existing GPU allocation is canceled, resized or released. CPU-only stage avoids designing an accelerator holder for these new CPU diagnostics; it does not solve retention for any future accelerator qualification.",
+    "Four tasks do not guarantee four distinct physical workers. Record placements; do not claim cross-host qualification unless distinct hosts are observed.",
+    "No TPU/GPU backend teardown, model sharding, device memory pressure or checkpoint resume conclusion.",
+    "Native W&B lifecycle behavior is real only in future authorized execution; current source review supplies no online authentication or transport evidence."
+  ],
+  "health_budget_constraints": [
+    "Keep Iris scheduler default preemption/retry policies and no job/task/wrapper wallclock limits.",
+    "BackgroundTracker has an existing 120-second finish wait; JAX source defaults include 1800-second init,100-second heartbeat,120-second shutdown. These are source defaults, not measured upper bounds or a validated repaired budget.",
+    "A finalization rendezvous budget remains explicit and unset pending a justified scenario-specific choice. Do not infer historical cause or solve missing peers by increasing timeouts alone."
+  ],
+  "source_bindings": {
+    "lib/iris/src/iris/jax/init.py": {
+      "sha256": "f321306105cf825aa620759146aa1be73be936f345e3dc1ce42e5e61230afdec",
+      "scope": "local source only, deployed controller/runtime revision not established"
+    },
+    "lib/iris/src/iris/cluster/client/job_info.py": {
+      "sha256": "61a29af9b9eaecf06ec3eaa24c17d026bbc9b40f551867b728d4b39948e194ea",
+      "scope": "local source only, deployed controller/runtime revision not established"
+    },
+    "lib/iris/src/iris/cluster/types.py": {
+      "sha256": "0a1988833044aa573d0bdc20ec61fb7945639d51090c238a1b1851bf8b343623",
+      "scope": "local source only, deployed controller/runtime revision not established"
+    }
+  },
+  "remaining": [
+    "Implement the non-training entrypoint without importing/running runtime services in local checks.",
+    "Test startup ordering and application-versus-cleanup failure precedence with fake external boundaries; do not repeat published candidate tests.",
+    "Bind installed source/runtime/controller identity and fresh-attempt endpoint evidence before proposing execution.",
+    "Publish runnable scope and exact health-budget justification before requesting new-job authorization."
+  ],
+  "proposed_health_budget": {
+    "finalization_rendezvous_ms": 300000,
+    "status": "ENGINEERING_PROPOSAL_NOT_EXECUTED_OR_AUTHORIZED",
+    "reason": "Clean/application-failure first stage has four scalar sentinels and no deliberate delay. Existing BackgroundTracker finish wait is120s;300s allows180s additional rank scheduling/local diagnostic skew before declaring rendezvous unhealthy. This margin is a design choice, not a measured bound or demonstrated cure. Each ready/read barrier uses the budget; no total job or wrapper deadline is imposed.",
+    "unchanged_source_defaults": {
+      "JAX_init_seconds": 1800,
+      "JAX_heartbeat_seconds": 100,
+      "JAX_shutdown_seconds": 120
+    },
+    "limits": [
+      "Background finish wait does not bound arbitrary pre-finish blocking, Python scheduling or filesystem writes.",
+      "No guarantee of eventual cleanup under a missing peer or failed filesystem.",
+      "Future delayed-rank or missing-peer scenarios need separate justification and explicit scope."
+    ]
+  }
+}

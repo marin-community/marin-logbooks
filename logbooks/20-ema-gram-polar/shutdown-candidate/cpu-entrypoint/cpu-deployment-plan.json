@@ -1,0 +1,71 @@
+{
+  "status": "DRAFT_NOT_EXECUTABLE_OR_AUTHORIZED",
+  "candidate_commit": "2674b5d3975e5c1ecac05fb4310814c90ec736e1",
+  "source_sha256": {
+    "lib/iris/src/iris/client/client.py": "d69755090ffdbfcfa2bb38e1ad3e8c04a58cd169f27d86177b2ab9701539d14c",
+    "lib/iris/src/iris/cluster/types.py": "0a1988833044aa573d0bdc20ec61fb7945639d51090c238a1b1851bf8b343623",
+    "lib/iris/src/iris/jax/init.py": "f321306105cf825aa620759146aa1be73be936f345e3dc1ce42e5e61230afdec"
+  },
+  "first_stage": {
+    "scenarios": [
+      "clean",
+      "application_failure"
+    ],
+    "separate_fresh_job_per_scenario": true,
+    "replicas": 4,
+    "processes_per_task": 1,
+    "physical_hosts_claim": "none until independent worker/host evidence",
+    "training_steps": 0,
+    "arrays_or_kernels": 0
+  },
+  "submission_mapping": {
+    "resources": "ResourceSpec(cpu=4, memory=\"8g\", disk=\"8g\", device=job_pb2.DeviceConfig(cpu=job_pb2.CpuDevice(variant=\"cpu\")))",
+    "replicas": 4,
+    "environment": {
+      "env_vars": {
+        "JAX_PLATFORMS": "cpu"
+      },
+      "setup_scripts": [],
+      "rationale": "Use separately prepared, pinned CPU runtime image; [] suppresses implicit uv sync and Iris runtime setup. This requires all dependencies already installed and verified, including any callable runner dependencies."
+    },
+    "entrypoint": "Prepared worker_main.py CLI defaults to read-only preflight; --execute invokes diagnostic only with resolved declared bindings and fresh output directory. No submitter supplied; execution still requires explicit authorization.",
+    "omit_arguments": [
+      "timeout",
+      "scheduling_timeout",
+      "max_retries_preemption",
+      "max_retries_failure",
+      "max_task_failures",
+      "preemption_policy"
+    ],
+    "default_preemption_retry_source": 1000,
+    "default_preemption_retry_note": "Signature says 1000 while prose docstring says 100; omit override and bind actual installed controller/client revisions.",
+    "coscheduling": "Do not copy tpu-name grouping: CoschedulingConfig groups workers by shared attribute, not a distinct-host requirement. CPU concurrency/placement must be reviewed with chosen region before execution."
+  },
+  "import_and_bundle_gaps": [
+    "Selected solution: self-contained candidate Git clone in the future CPU image; worker preflight uses same commit/byte validation. Actual image/digest/build and checkout inclusion remain unverified.",
+    "Worker interpreter and CPU-only dependency lock/image digest unresolved. setup_scripts=[] alone is not environment qualification.",
+    "Worker bootstrap prepends candidate Levanter/Iris source roots and verifies top-level origins via PathFinder without importing packages; rejects preloaded Iris/Levanter/JAX. Post-import per-module checks remain. Custom meta finders and transitive packages are not exhaustively attested.",
+    "Harness and trace_contract must be included in pinned bundle, with import origin checks. Four scripts passing lint does not prove deployment packaging.",
+    "ONLINE native initialization precedes Levanter/JAX imports, but W&B and transitive imports can execute code; real package initialization remains unqualified."
+  ],
+  "fresh_attempt_evidence": [
+    "New job identity per scenario, random native run id per process, resume=never, exclusive local trace directory per attempt.",
+    "Initializer source keys coordinator endpoint by task-zero attempt number. Peers query task-zero current attempt, not their own attempt number.",
+    "Capture actual task-zero attempt/service endpoint evidence separately for each future attempt. A local suffix prediction is not proof of actual registry freshness or cleanup.",
+    "No registry proxy, additional service calls or barriers added to candidate. Existing endpoint unregister is an atexit hook; its actual ordering/lifetime must be observed in runtime qualification."
+  ],
+  "open_deployment_bindings": [
+    "tracking entity",
+    "region and CPU worker placement",
+    "immutable CPU runtime image and dependency lock",
+    "exact deployed controller/client revisions",
+    "worker bundle/import roots",
+    "fresh coordinator evidence acquisition"
+  ],
+  "retention": "CPU-only proposed first stage changes no existing accelerator allocation. It does not resolve accelerator retention for later TPU/GPU qualification.",
+  "execution_authorized": false,
+  "runtime_qualified": false,
+  "jobs_submitted": 0,
+  "source_checkout_policy": "Future pinned CPU image must contain a self-contained Git clone at a fixed candidate-root path, with exact candidate commit objects available to git show and matching working files. Do not copy the isolated worktree .git pointer or shared .venv. Image construction/install is not performed by this preparation.",
+  "worker_bootstrap_checks": "scratch/20261108-shutdown-qualification/worker-bootstrap-r01/worker-bootstrap-checks.json"
+}
