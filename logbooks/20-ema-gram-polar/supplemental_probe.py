@@ -83,6 +83,17 @@ def summarize_losses(losses, baseline):
     )
 
 
+def select_batches(loader, *, offset, count, available_sequences, batch_size):
+    """Reject incomplete ranges before loading and seek directly to the selected batch."""
+    full_batches = available_sequences // batch_size
+    if offset < 0 or count < 2 or offset + count > full_batches:
+        raise ValueError(f"Requested batches [{offset}, {offset + count}) exceed {full_batches} full batches")
+    batches = list(islice(loader.iter_from_step(offset), count))
+    if len(batches) != count:
+        raise ValueError("Dataset ended before its declared length")
+    return batches
+
+
 def run(settings, encoded_config, emit):
     """Restore three states in one process, reusing loss and direction compilation."""
     cfg = resolve_config(encoded_config)
@@ -101,9 +112,14 @@ def run(settings, encoded_config, emit):
         dataset = cfg.data.validation_sets(cfg.model.max_Pos)[settings["dataset"]]
         loader = DataLoader(dataset, batch_size=cfg.trainer.EvalBatch, axis_resources=cfg.trainer.compute_axis_mapping)
         offset, count = settings["batch_offset"], settings["batches"]
-        batches = list(islice(loader, offset, offset + count))
-        if len(batches) != count:
-            raise ValueError("Insufficient fresh held-out batches")
+        available_sequences = len(dataset.as_sync_dataset())
+        batches = select_batches(
+            loader,
+            offset=offset,
+            count=count,
+            available_sequences=available_sequences,
+            batch_size=cfg.trainer.eval_batch_size,
+        )
         # Record per-rank local shard fingerprints without transferring model arrays.
         fingerprints = []
         for batch in batches:
@@ -116,6 +132,7 @@ def run(settings, encoded_config, emit):
         emit(
             dict(
                 kind="data",
+                available_sequences=available_sequences,
                 batch_offset=offset,
                 batches=count,
                 local_shard_sha256=fingerprints,

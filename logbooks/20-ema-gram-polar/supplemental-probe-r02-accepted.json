@@ -1,0 +1,77 @@
+{
+  "status": "ACCEPTED_NOT_YET_SCIENTIFICALLY_VALIDATED",
+  "source": "d21c0d91efe406185600de0c32c6a8b764770ef5",
+  "campaign": "ema-gram-20-supplement-seed0-r02-20261108",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-supplement-seed0-r02-20261108-00",
+  "request": "supplemental-probe-r02-request.json",
+  "request_sha256": "0e6b18eecae75a739131e949a605ccc4fa674ca73db1468e89837891678acd6f",
+  "command": [
+    "uv",
+    "run",
+    "--no-sync",
+    "iris",
+    "--cluster=marin",
+    "job",
+    "run",
+    "--no-wait",
+    "--no-cancel-on-exit",
+    "--job-name",
+    "ema-gram-20-supplement-seed0-r02-20261108-00",
+    "--priority",
+    "batch",
+    "--enable-extra-resources",
+    "--tpu",
+    "v4-32",
+    "--cpu",
+    "120",
+    "--memory",
+    "224GB",
+    "--disk",
+    "50GB",
+    "--region",
+    "us-central2",
+    "--extra",
+    "tpu",
+    "--sync-package",
+    "marin-core",
+    "--sync-package",
+    "marin-levanter",
+    "--sync-package",
+    "marin-dupekit",
+    "-e",
+    "GIT_COMMIT",
+    "d21c0d91efe406185600de0c32c6a8b764770ef5",
+    "--",
+    "bash",
+    "-c",
+    "export PYTHONPATH=\"$PWD/logbooks/20-ema-gram-polar:$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD/lib/iris/src:$PWD\"\nexec python logbooks/20-ema-gram-polar/supplemental_entrypoint.py --request logbooks/20-ema-gram-polar/supplemental-probe-r02-request.json --request-sha256 0e6b18eecae75a739131e949a605ccc4fa674ca73db1468e89837891678acd6f --mode execute --output \"${IRIS_OUTPUT_DIR:-/tmp}/supplement\""
+  ],
+  "tasks": 4,
+  "oracle": {
+    "kind": "oracle",
+    "svd_matrices_checked": 14,
+    "production_parity": true,
+    "nonmatrices_fixed": true,
+    "state_unchanged": true,
+    "paired_summary_oracle": true
+  },
+  "online_checks": [
+    {
+      "id": "ema-gram-supplement-logging-check-f06c1e6daa98",
+      "url": "https://wandb.ai/marin-community/ema-gram-20-supplements/runs/ema-gram-supplement-logging-check-f06c1e6daa98",
+      "state": "finished"
+    },
+    {
+      "id": "ema-gram-supplement-oracle-74095002ba7e",
+      "url": "https://wandb.ai/marin-community/ema-gram-20-supplements/runs/ema-gram-supplement-oracle-74095002ba7e",
+      "state": "finished"
+    }
+  ],
+  "limits": [
+    "No cross-seed or failed-longrun replacement",
+    "No training-step or comparative peak-memory claim from matrix-direction timing",
+    "No deployment of shutdown repair candidate"
+  ],
+  "supersedes": "r01 withdrawn unstarted: four pending tasks, current_attempt_id=-1, no attempts, no worker assignments",
+  "reused_oracle_source": "684236952eb4adce89d3d8a3aa008e794be93222"
+}

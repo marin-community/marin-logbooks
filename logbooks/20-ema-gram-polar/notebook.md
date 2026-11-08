@@ -3463,3 +3463,30 @@ hashes; every new execution host still runs its own logging check.
 include2,722,103,296 bytes of left/right Gram state. This implementation retains
 and updates Grams for alpha0 as well; it is not a memory-minimal generic Muon
 baseline. Logical array storage does not establish peak host/device allocation.
+
+
+### 2026-11-08 18:16 UTC: supplement data range corrected before loss measurements
+
+The r02 supplement was accepted from `d21c0d91efe406185600de0c32c6a8b764770ef5`.
+All four logging checks finished ONLINE; all four probe runs failed with
+`Insufficient fresh held-out batches` before checkpoint restoration or loss
+measurements. Canonical FAILED and four original task/attempt/source/native
+joins, along with generation-verified partial artifacts, are cached in
+`scratch/20261108-supplement-r02`. [Failure evidence](supplemental-probe-r02-failed.json).
+
+The requested range64–79 was invalid: bounded offsets metadata establishes
+580,527 tokens,141 context4096 sequences and17 complete batches of8. This was
+an experimental setup error, not a scientific result or shutdown failure.
+The replacement [r03 request](supplemental-probe-r03-request.json) fixes the range
+to8–15: eight paired batches, disjoint from original probe0–7 and infrastructure
+probe16–17. No losses from the failed request informed this selection. These are
+fresh for the checkpoint probes, not a new untouched training-validation corpus.
+
+The loader now checks complete-batch capacity before fetching and seeks directly
+to the selected batch. Five scoped fake-loader regressions pass; AST comparison
+shows all five numerical helpers unchanged, reusing the previously finished
+ONLINE numerical oracle. [Correction evidence](supplemental-data-correction.json).
+Three checkpoints, one selected ridge, three step sizes, and the middle-checkpoint
+SVD loss control are retained, with half the originally proposed evaluation work.
+No cross-seed, failed-longrun rerun, full-training timing claim or shutdown repair
+candidate deployment is included.
