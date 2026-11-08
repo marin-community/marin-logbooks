@@ -1,0 +1,197 @@
+[
+  {
+    "path": "lib/finelog/pyproject.toml",
+    "sha256": "f73c5c864e7214dec73abe22c541d067f2507ef7b687a15d36ef6a05beff3ee1",
+    "build_system": {
+      "requires": [
+        "hatchling"
+      ],
+      "build-backend": "hatchling.build"
+    },
+    "hatch": {
+      "build": {
+        "targets": {
+          "sdist": {
+            "only-include": [
+              "src/finelog",
+              "config",
+              "tests"
+            ]
+          },
+          "wheel": {
+            "packages": [
+              "src/finelog"
+            ],
+            "force-include": {
+              "config": "config"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": "lib/finestore/pyproject.toml",
+    "sha256": "a0b0364be212c42d655cde9f32cda10c3492d5865c73509488af32366fcee2eb",
+    "build_system": {
+      "requires": [
+        "hatchling"
+      ],
+      "build-backend": "hatchling.build"
+    },
+    "hatch": {
+      "build": {
+        "targets": {
+          "wheel": {
+            "packages": [
+              "src/finestore"
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": "lib/fray/pyproject.toml",
+    "sha256": "8f117cbb3b3a6e519337140701d83ce40d2f44f11d985671192d40f77933744f",
+    "build_system": {
+      "requires": [
+        "hatchling"
+      ],
+      "build-backend": "hatchling.build"
+    },
+    "hatch": {
+      "build": {
+        "targets": {
+          "wheel": {
+            "packages": [
+              "src/fray"
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": "lib/haliax/pyproject.toml",
+    "sha256": "ba2db07c5e9711fd86de00eeb3184406cb09617ab3a84eaacb9553d7031ac59e",
+    "build_system": {
+      "requires": [
+        "hatchling"
+      ],
+      "build-backend": "hatchling.build"
+    },
+    "hatch": {
+      "version": {
+        "path": "src/haliax/__about__.py"
+      },
+      "build": {
+        "targets": {
+          "wheel": {
+            "packages": [
+              "src/haliax"
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": "lib/iris/pyproject.toml",
+    "sha256": "7f4b2b3088d8450d2b91cccdc70597c12cdc5cea38db7dbbfef5863a76fd2765",
+    "build_system": {
+      "requires": [
+        "hatchling"
+      ],
+      "build-backend": "hatchling.build"
+    },
+    "hatch": {
+      "build": {
+        "hooks": {
+          "custom": {
+            "path": "hatch_build.py"
+          }
+        },
+        "targets": {
+          "wheel": {
+            "packages": [
+              "src/iris"
+            ],
+            "force-include": {
+              "config": "iris/config"
+            }
+          },
+          "sdist": {
+            "only-include": [
+              "src/iris"
+            ],
+            "force-include": {
+              "config": "config"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": "lib/levanter/pyproject.toml",
+    "sha256": "57d418af13daec739a33acdb9d1f2a14e9efc860237197d80b06d3a1d412aa90",
+    "build_system": {
+      "requires": [
+        "uv_build>=0.7.19,<0.10.0"
+      ],
+      "build-backend": "uv_build"
+    },
+    "hatch": {}
+  },
+  {
+    "path": "lib/rigging/pyproject.toml",
+    "sha256": "556d20de3f96384c6cdbddfb41b470332defa1172e1f2ab7c9dddb80de0eadcf",
+    "build_system": {
+      "requires": [
+        "hatchling"
+      ],
+      "build-backend": "hatchling.build"
+    },
+    "hatch": {
+      "build": {
+        "targets": {
+          "wheel": {
+            "packages": [
+              "src/rigging"
+            ],
+            "force-include": {
+              "../../config": "rigging/clusters"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": "lib/zephyr/pyproject.toml",
+    "sha256": "ae4d962cd8f8bcde70f912cb630a21c4a73f0ea8c8c4af52fdd9d75a11bf3ee7",
+    "build_system": {
+      "requires": [
+        "hatchling"
+      ],
+      "build-backend": "hatchling.build"
+    },
+    "hatch": {
+      "build": {
+        "targets": {
+          "wheel": {
+            "packages": [
+              "src/zephyr"
+            ]
+          },
+          "sdist": {
+            "only-include": [
+              "src/zephyr"
+            ]
+          }
+        }
+      }
+    }
+  }
+]

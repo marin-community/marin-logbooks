@@ -3342,3 +3342,26 @@ runtime import/service, numerical kernel, job or terminal experiment query
 occurred. Candidate and frozen training source, scientific findings and failed-run
 classifications remain unchanged. Runtime execution and accelerator retention
 remain unqualified.
+
+
+## 2026-11-08 17:12 UTC: build-tool inputs and Iris packaging corrections
+
+The [build-input record](shutdown-build-inputs.md) pins and caches eight build-tool
+wheels, including Hatchling's extra editable dependency. Their hashes, Python
+3.12.12 requirements and declared dependency closure pass a metadata-only audit.
+The resolver's available-interpreter warning is retained; no real build ran.
+
+Source review found that the Iris hook tests the target name instead of the
+editable version. Six method-AST/fake controls reproduce current stamping and
+check a proposed one-line guard correction; the patch is archived but not applied.
+Read-only local Git queries also show that the prepared shallow copy reports an
+Iris date of 2026-11-08 while full history at the same candidate yields 2026-10-29.
+The earlier source-byte preflight did not check this derived identity. These are
+packaging findings, with no claim about the historical shutdown cause.
+
+Source/archive lint and patch applicability checks pass. Candidate and frozen
+execution source remain unchanged. No package installation, image build, real
+runtime service, numerical kernel, job or terminal experiment query occurred.
+Runtime wheels, base image/OS/installer, integration of the guard/date policy and
+independent controller/coordinator evidence remain unresolved. No new execution
+is authorized; scientific classifications and original success gates are unchanged.
