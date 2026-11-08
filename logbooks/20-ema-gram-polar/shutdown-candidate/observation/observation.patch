@@ -1,0 +1,427 @@
+From 2674b5d3975e5c1ecac05fb4310814c90ec736e1 Mon Sep 17 00:00:00 2001
+From: kaiyuew <kaiyuew@kaiyuews-MacBook-Air.local>
+Date: Sun, 8 Nov 2026 04:11:37 -0800
+Subject: [PATCH] Record candidate finalization lifecycle without hiding
+ failures
+
+---
+ lib/levanter/src/levanter/distributed.py      |  22 ++-
+ .../src/levanter/distributed_finalization.py  |  86 ++++++--
+ .../check_hook_integration.py                 | 184 +++++++++++++++++-
+ 3 files changed, 268 insertions(+), 24 deletions(-)
+
+diff --git a/lib/levanter/src/levanter/distributed.py b/lib/levanter/src/levanter/distributed.py
+index 787fbcb19..79d7d9ae1 100644
+--- a/lib/levanter/src/levanter/distributed.py
++++ b/lib/levanter/src/levanter/distributed.py
+@@ -18,7 +18,7 @@ from iris.client.client import iris_ctx
+ from iris.cluster.client.job_info import get_job_info
+ from iris.jax.init import initialize_jax as initialize_iris_jax
+ 
+-from levanter.distributed_finalization import finalize_and_shutdown
++from levanter.distributed_finalization import FinalizationObservation, finalize_and_shutdown
+ from levanter.megascale import configure_megascale_from_iris
+ from levanter.tracker.finalization import FinalizationReport, required_sinks_complete
+ 
+@@ -63,6 +63,7 @@ def install_coordinated_iris_finalizer(
+     *,
+     application_error: BaseException | None,
+     health_timeout_ms: int,
++    observation: FinalizationObservation | None = None,
+ ) -> None:
+     """Replace the default Iris exit hook after all outer-wrapper JAX work.
+ 
+@@ -84,6 +85,7 @@ def install_coordinated_iris_finalizer(
+     world_key = job_info.job_id.to_wire()
+     required_names = frozenset({"wandb"}) if rank == 0 else frozenset()
+     required_complete = report is not None and required_sinks_complete(report, required_names)
++    observation = observation if observation is not None else FinalizationObservation()
+ 
+     def finalize() -> None:
+         error = application_error if application_error is not None else getattr(sys, "last_exc", None)
+@@ -91,6 +93,7 @@ def install_coordinated_iris_finalizer(
+         if isinstance(error, SystemExit) and isinstance(error.code, int) and error.code != 0:
+             failure_code = error.code
+         try:
++            observation.emit("hook_enter", rank=rank, ranks=ranks, world_key=world_key)
+             finalize_and_shutdown(
+                 coordinator,
+                 world_key=world_key,
+@@ -100,14 +103,25 @@ def install_coordinated_iris_finalizer(
+                 application_failed=error is not None,
+                 health_timeout_ms=health_timeout_ms,
+                 shutdown=jax.distributed.shutdown,
++                observation=observation,
+             )
+-        except BaseException:
++            observation.emit("hook_return")
++            observation.require_complete()
++        except BaseException as finalization_error:
++            observation.emit("hook_error", error_type=type(finalization_error).__name__)
+             logger.exception("Coordinated Iris finalization failed")
+             os._exit(failure_code)
+ 
+-    _unregister_iris_exit_handler()
+-    _coordinated_exit_hook = finalize
++    # Register first so a registration failure leaves the existing handler
++    # intact and does not advertise an unregistered coordinated hook.
+     atexit.register(finalize)
++    try:
++        _unregister_iris_exit_handler()
++    except BaseException:
++        atexit.unregister(finalize)
++        raise
++    _coordinated_exit_hook = finalize
++    observation.emit("hook_install_return", rank=rank, ranks=ranks, world_key=world_key)
+ 
+ 
+ class LevanterSlurmCluster(clusters.SlurmCluster):
+diff --git a/lib/levanter/src/levanter/distributed_finalization.py b/lib/levanter/src/levanter/distributed_finalization.py
+index 80459dfe9..d64570edc 100644
+--- a/lib/levanter/src/levanter/distributed_finalization.py
++++ b/lib/levanter/src/levanter/distributed_finalization.py
+@@ -5,6 +5,7 @@
+ 
+ from collections.abc import Callable, Sequence
+ import json
++import hashlib
+ from typing import Protocol
+ 
+ 
+@@ -20,6 +21,33 @@ class DistributedFinalizationError(RuntimeError):
+     pass
+ 
+ 
++class FinalizationObservation:
++    """Record local boundaries without abandoning cleanup on a sink failure.
++
++    The sink must only append local diagnostics; it must not use JAX or network
++    services. Writes can block, so observation is not timing-neutral.
++    """
++
++    def __init__(self, sink: Callable[[str, dict[str, object]], None] | None = None):
++        self.sink = sink
++        self.failure_type: str | None = None
++
++    def emit(self, event: str, **fields: object) -> None:
++        if self.sink is None or self.failure_type is not None:
++            return
++        try:
++            self.sink(event, fields)
++        except BaseException as error:
++            # Keep the first failure; recursive error reporting could fail too.
++            self.failure_type = type(error).__name__
++
++    def require_complete(self) -> None:
++        if self.failure_type is not None:
++            raise DistributedFinalizationError(
++                f"local finalization observation failed ({self.failure_type})"
++            ) from None
++
++
+ def finalize_and_shutdown(
+     coordinator: FinalizationCoordinator,
+     *,
+@@ -30,6 +58,7 @@ def finalize_and_shutdown(
+     application_failed: bool,
+     health_timeout_ms: int,
+     shutdown: Callable[[], None],
++    observation: FinalizationObservation | None = None,
+ ) -> None:
+     """Wait for drain outcomes, shut down together, and preserve required failures.
+ 
+@@ -39,23 +68,44 @@ def finalize_and_shutdown(
+     The caller must keep that failure nonzero; real JAX cleanup on this path
+     requires runtime qualification. No force-completion operation is performed.
+     """
++    observation = observation if observation is not None else FinalizationObservation()
+     prefix = f"levanter/finalization/v1/{world_key}/"
+     payload = {"required_complete": required_complete, "application_failed": application_failed}
+-    coordinator.key_value_set(f"{prefix}{rank}", json.dumps(payload))
+-    coordinator.wait_at_barrier(f"{prefix}ready", health_timeout_ms, ranks)
+-    receipts = {
+-        int(key.removeprefix(prefix)): json.loads(value) for key, value in coordinator.key_value_dir_get(prefix)
+-    }
+-    if set(receipts) != set(ranks):
+-        raise DistributedFinalizationError("rank receipt membership does not match the execution")
+-    failed = any(
+-        receipt.get("required_complete") is not True or receipt.get("application_failed") is not False
+-        for receipt in receipts.values()
+-    )
+-    # A fast coordinator rank must not tear down its service while a slower
+-    # peer is still fetching receipts. Ready means all writes exist; this
+-    # second rendezvous means every rank has read and validated them.
+-    coordinator.wait_at_barrier(f"{prefix}read", health_timeout_ms, ranks)
+-    shutdown()
+-    if failed:
+-        raise DistributedFinalizationError("application or required telemetry failed on one or more ranks")
++    encoded = json.dumps(payload)
++    try:
++        observation.emit("receipt_write_enter", key=f"{prefix}{rank}")
++        coordinator.key_value_set(f"{prefix}{rank}", encoded)
++        observation.emit(
++            "receipt_write_return", key=f"{prefix}{rank}", value_sha256=hashlib.sha256(encoded.encode()).hexdigest()
++        )
++        observation.emit("ready_enter", key=f"{prefix}ready")
++        coordinator.wait_at_barrier(f"{prefix}ready", health_timeout_ms, ranks)
++        observation.emit("ready_return", key=f"{prefix}ready")
++        observation.emit("receipt_read_enter", prefix=prefix)
++        records = coordinator.key_value_dir_get(prefix)
++        observation.emit(
++            "receipt_read_return",
++            keys=[key for key, _ in records],
++            value_sha256=[hashlib.sha256(value.encode()).hexdigest() for _, value in records],
++        )
++        receipts = {int(key.removeprefix(prefix)): json.loads(value) for key, value in records}
++        if set(receipts) != set(ranks):
++            raise DistributedFinalizationError("rank receipt membership does not match the execution")
++        failed = any(
++            receipt.get("required_complete") is not True or receipt.get("application_failed") is not False
++            for receipt in receipts.values()
++        )
++        # Ready establishes writes; read acknowledges that every rank consumed
++        # them before the coordinator rank can tear down the service.
++        observation.emit("read_enter", key=f"{prefix}read")
++        coordinator.wait_at_barrier(f"{prefix}read", health_timeout_ms, ranks)
++        observation.emit("read_return", key=f"{prefix}read")
++        observation.emit("shutdown_enter")
++        shutdown()
++        observation.emit("shutdown_return")
++        if failed:
++            raise DistributedFinalizationError("application or required telemetry failed on one or more ranks")
++    except BaseException as error:
++        observation.emit("protocol_error", error_type=type(error).__name__)
++        raise
++    observation.require_complete()
+diff --git a/lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py b/lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py
+index 636568365..ad158f42e 100644
+--- a/lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py
++++ b/lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py
+@@ -15,6 +15,8 @@ import os
+ from pathlib import Path
+ import subprocess
+ import sys
++import tempfile
++import traceback
+ from types import SimpleNamespace
+ import unittest
+ 
+@@ -95,6 +97,7 @@ def load(hooks, coordinator, rank=0, exit_fn=None):
+         "FinalizationReport": receipt.FinalizationReport,
+         "required_sinks_complete": receipt.required_sinks_complete,
+         "finalize_and_shutdown": core.finalize_and_shutdown,
++        "FinalizationObservation": core.FinalizationObservation,
+         "atexit": hooks,
+         "jax": jax,
+         "jax_distributed": SimpleNamespace(global_state=SimpleNamespace(client=coordinator)),
+@@ -134,6 +137,128 @@ class Checks(unittest.TestCase):
+         self.assertEqual(events, ["shutdown"])
+         self.assertEqual(len(h.handlers), 1)
+ 
++    def test_observation_failure_still_shuts_down_and_fails_task(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator())
++
++        def broken_sink(event, fields):
++            raise OSError("injected local disk failure")
++
++        ns["install_coordinated_iris_finalizer"](
++            good(),
++            application_error=None,
++            health_timeout_ms=120000,
++            observation=core.FinalizationObservation(broken_sink),
++        )
++        with self.assertRaises(Exited) as raised:
++            h.run()
++        self.assertEqual(raised.exception.code, 1)
++        self.assertEqual(events, ["shutdown"])
++
++    def test_observation_failure_preserves_application_exit(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator())
++
++        def broken_sink(event, fields):
++            raise OSError("injected local disk failure")
++
++        ns["install_coordinated_iris_finalizer"](
++            good(),
++            application_error=SystemExit(9),
++            health_timeout_ms=120000,
++            observation=core.FinalizationObservation(broken_sink),
++        )
++        with self.assertRaises(Exited) as raised:
++            h.run()
++        self.assertEqual(raised.exception.code, 9)
++        self.assertEqual(events, ["shutdown"])
++
++    def test_hook_trace_contains_read_ack_before_shutdown(self):
++        h = Hooks()
++        ns, effects = load(h, Coordinator())
++        records = []
++        ns["install_coordinated_iris_finalizer"](
++            good(),
++            application_error=None,
++            health_timeout_ms=120000,
++            observation=core.FinalizationObservation(lambda event, fields: records.append((event, fields))),
++        )
++        h.run()
++        names = [event for event, _ in records]
++        self.assertLess(names.index("receipt_read_return"), names.index("read_return"))
++        self.assertLess(names.index("read_return"), names.index("shutdown_enter"))
++        self.assertEqual(names[-1], "hook_return")
++        self.assertEqual(effects, ["shutdown"])
++
++    def test_final_observation_failure_cannot_leave_successful_exit(self):
++        h = Hooks()
++        ns, effects = load(h, Coordinator())
++
++        def sink(event, fields):
++            if event == "hook_return":
++                raise OSError("injected final write failure")
++
++        ns["install_coordinated_iris_finalizer"](
++            good(), application_error=None, health_timeout_ms=120000, observation=core.FinalizationObservation(sink)
++        )
++        with self.assertRaises(Exited) as raised:
++            h.run()
++        self.assertEqual(raised.exception.code, 1)
++        self.assertEqual(effects, ["shutdown"])
++
++    def test_protocol_error_survives_error_observation_failure(self):
++        original = TimeoutError("injected coordinator error")
++
++        class BrokenCoordinator(Coordinator):
++            def wait_at_barrier(self, key, timeout, processes):
++                raise original
++
++        def sink(event, fields):
++            if event == "protocol_error":
++                raise OSError("injected disk failure")
++
++        effects = []
++        with self.assertRaises(TimeoutError) as raised:
++            core.finalize_and_shutdown(
++                BrokenCoordinator(),
++                world_key="test",
++                rank=0,
++                ranks=(0,),
++                required_complete=True,
++                application_failed=False,
++                health_timeout_ms=120000,
++                shutdown=lambda: effects.append("shutdown"),
++                observation=core.FinalizationObservation(sink),
++            )
++        self.assertIs(raised.exception, original)
++        self.assertEqual(effects, [])
++
++    def test_registration_failure_propagates_and_allows_clean_retry(self):
++        class RegistrationFailureHooks(Hooks):
++            fail_next = False
++
++            def register(self, fn, *args):
++                if self.fail_next:
++                    self.fail_next = False
++                    raise OSError("injected registration failure")
++                return super().register(fn, *args)
++
++        handlers = RegistrationFailureHooks()
++        ns, effects = load(handlers, Coordinator())
++        handlers.register(ns["_finalize_iris_jax_after_clean_exit"], lambda: effects.append("forced_complete"))
++        handlers.fail_next = True
++        with self.assertRaises(OSError):
++            ns["install_coordinated_iris_finalizer"](good(), application_error=None, health_timeout_ms=120000)
++        # An uncaught installer error must not turn the old handler into a
++        # successful completion. Its original application-error guard remains.
++        ns["sys"].last_exc = OSError("injected registration failure")
++        handlers.run()
++        self.assertEqual(effects, [])
++        ns["sys"].last_exc = None
++        ns["install_coordinated_iris_finalizer"](good(), application_error=None, health_timeout_ms=120000)
++        handlers.run()
++        self.assertEqual(effects, ["shutdown"])
++
+     def test_duplicate_install_does_not_duplicate_shutdown(self):
+         h = Hooks()
+         ns, events = load(h, Coordinator())
+@@ -196,13 +321,68 @@ class Checks(unittest.TestCase):
+             h.run()
+         self.assertEqual(events, ["shutdown"])
+ 
++    def test_observation_error_does_not_disclose_sink_message(self):
++        def sink(event, fields):
++            raise OSError("PRIVATE_SENTINEL_NOT_FOR_LOGGING")
++
++        observation = core.FinalizationObservation(sink)
++        observation.emit("test")
++        try:
++            observation.require_complete()
++        except core.DistributedFinalizationError as error:
++            formatted = "".join(traceback.format_exception(error))
++        else:
++            self.fail("failed observation must reject success")
++        self.assertNotIn("PRIVATE_SENTINEL_NOT_FOR_LOGGING", formatted)
++        self.assertIn("OSError", formatted)
++
++    def test_observed_atexit_persists_order_and_failure_codes(self):
++        for mode, expected_code in [("clean", 0), ("sink_failure", 1), ("application_and_sink_failure", 9)]:
++            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as folder:
++                path = Path(folder) / "trace.jsonl"
++                p = subprocess.run(
++                    [sys.executable, __file__, "--observed-child", mode, str(path)], capture_output=True
++                )
++                self.assertEqual(p.returncode, expected_code)
++                records = [json.loads(line) for line in path.read_text().splitlines()]
++                names = [row["event"] for row in records]
++                self.assertLess(names.index("read_return"), names.index("shutdown_enter"))
++                self.assertLess(names.index("shutdown_enter"), names.index("shutdown_return"))
++                self.assertEqual(names[-1], "hook_return" if mode == "clean" else "shutdown_return")
++                self.assertEqual([row["seq"] for row in records], list(range(len(records))))
++                self.assertNotIn(b"PRIVATE_SENTINEL_NOT_FOR_LOGGING", p.stderr)
++
+     def test_actual_process_exit_failure_code(self):
+         p = subprocess.run([sys.executable, __file__, "--child"], capture_output=True)
+         self.assertEqual(p.returncode, 7)
+ 
+ 
+ if __name__ == "__main__":
+-    if len(sys.argv) > 1:
++    if len(sys.argv) > 1 and sys.argv[1] == "--observed-child":
++        mode, output = sys.argv[2:]
++        stream = Path(output).open("x")
++        # Register close first: Python calls it after the installed finalizer.
++        # On os._exit the explicit per-record flush preserves preceding events.
++        atexit.register(stream.close)
++        sequence = [0]
++
++        def sink(event, fields):
++            if mode != "clean" and event == "hook_return":
++                raise OSError("PRIVATE_SENTINEL_NOT_FOR_LOGGING")
++            if mode == "application_and_sink_failure" and event == "protocol_error":
++                raise OSError("PRIVATE_SENTINEL_NOT_FOR_LOGGING")
++            stream.write(json.dumps({"seq": sequence[0], "event": event, "fields": fields}) + "\n")
++            stream.flush()
++            sequence[0] += 1
++
++        ns, effects = load(atexit, Coordinator(), exit_fn=os._exit)
++        ns["install_coordinated_iris_finalizer"](
++            good(),
++            application_error=SystemExit(9) if mode == "application_and_sink_failure" else None,
++            health_timeout_ms=120000,
++            observation=core.FinalizationObservation(sink),
++        )
++    elif len(sys.argv) > 1:
+         ns, events = load(atexit, Coordinator(), exit_fn=os._exit)
+         atexit.register(ns["_finalize_iris_jax_after_clean_exit"], lambda: None)
+         ns["install_coordinated_iris_finalizer"](good(), application_error=SystemExit(7), health_timeout_ms=120000)
+@@ -213,7 +393,7 @@ if __name__ == "__main__":
+                 {
+                     "passed": r.wasSuccessful(),
+                     "tests": r.testsRun,
+-                    "scope": "actual candidate core module and three distributed hook function ASTs; external coordinator/JAX boundaries faked; one real Python atexit subprocess",
++                    "scope": "actual candidate core module and three distributed hook function ASTs; external coordinator/JAX boundaries faked; four real Python atexit subprocesses",
+                     "runtime_qualified": False,
+                     "new_jobs": 0,
+                     "remote_calls": 0,
+-- 
+2.54.0
+

@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "status": "DESIGN_ONLY_RUNTIME_EXECUTION_NOT_AUTHORIZED",
+  "created_utc": "2026-11-08T11:41:52.608143+00:00",
+  "candidate_commit": "2674b5d3975e5c1ecac05fb4310814c90ec736e1",
+  "purpose": "Non-training teardown qualification design; no scientific samples or checkpoint restore.",
+  "execution_authorized": false,
+  "runtime_qualified": false,
+  "rank_count": 4,
+  "cases": [
+    {
+      "id": "clean",
+      "injection": "none",
+      "expected": "all original tasks naturally succeed; all native diagnostic runs finish online with every expected sentinel",
+      "proof": [
+        "all ranks observe identical complete receipt set",
+        "all receipt reads precede every shutdown entry",
+        "one replacement exit hook; no complete_job call"
+      ]
+    },
+    {
+      "id": "delayed_primary_drain",
+      "injection": "gate rank-zero required tracker finish with an explicit release event; bounded only by agreed communication-health test parameters",
+      "expected": "healthy peers remain in finalization rendezvous until primary reports; no premature JAX shutdown",
+      "proof": [
+        "record which host awaited drain and when release occurred",
+        "complete sentinel delivery and clean natural task exits"
+      ]
+    },
+    {
+      "id": "delayed_receipt_reader",
+      "injection": "gate one nonzero rank between ready rendezvous and receipt read",
+      "expected": "rank zero cannot enter shutdown until delayed reader acknowledges all records",
+      "proof": [
+        "read-completion barrier records from every rank",
+        "coordinator remains available throughout delayed read"
+      ]
+    },
+    {
+      "id": "required_sink_failure",
+      "injection": "one rank-zero required-sink write or finish reports an injected exception after online initialization",
+      "expected": "all available ranks exchange failure and no job is classified successful; history loss is reported",
+      "proof": [
+        "injected error retained in local receipt",
+        "natural nonzero task outcome and canonical FAILED without complete_job",
+        "available peer shutdown outcomes retained; native state recorded without forcing finished"
+      ]
+    },
+    {
+      "id": "application_and_cleanup_failure",
+      "injection": "application raises a distinguishable SystemExit code; separately inject cleanup error",
+      "expected": "original exit code and error survive cleanup, peers receive application failure",
+      "proof": [
+        "original traceback/code plus cleanup exception notes",
+        "no successful aggregate; preserve controller coscheduling side effects"
+      ]
+    },
+    {
+      "id": "missing_peer",
+      "injection": "one qualification process exits before publishing finalization record; preserve its allocation via independently authorized retention design",
+      "expected": "surviving ranks report communication failure and never claim success; actual cleanup behavior recorded",
+      "proof": [
+        "separate process exit, JAX callback entry/exit and controller outcome",
+        "no reinterpretation as scheduler preemption",
+        "no unconsented allocation release by test harness"
+      ]
+    },
+    {
+      "id": "partial_initialization",
+      "injection": "required tracker initialization fails before normal application entry",
+      "expected": "no training or optimizer activity; original error remains nonzero; memory diagnostics do not initialize devices",
+      "proof": [
+        "online initialization attempt and failure evidence without secrets",
+        "whether JAX world and default hook existed when failure occurred",
+        "candidate hook installation outcome and no false successful controller aggregate"
+      ]
+    },
+    {
+      "id": "fresh_attempt_identity",
+      "injection": "separate authorized fresh invocation after previous diagnostic process ends; do not manufacture scheduler preemption",
+      "expected": "new run identity and coordinator state; no reuse of prior receipt keys or W&B curve",
+      "proof": [
+        "attempt lineage and explicit from-scratch diagnostic state",
+        "no checkpoint resume claim",
+        "default scheduler preemption/retry policy unchanged"
+      ]
+    }
+  ],
+  "common_evidence": [
+    "candidate commit and installed module hashes",
+    "exact runtime package versions and deployed controller revision",
+    "Iris job/task/attempt UID and worker-to-JAX-rank mapping",
+    "fresh per-process ONLINE W&B run identity and config before numerical backend use",
+    "append-only local event sequence, monotonic time and per-event rank identity",
+    "all-attempt native/process/controller outcomes without force completion",
+    "independent bounded native history audit of diagnostic sentinel IDs; no scientific training curve reuse"
+  ],
+  "execution_boundaries": {
+    "new_jobs": 0,
+    "numerical_kernels_executed": 0,
+    "remote_experiment_reads": 0,
+    "training_steps": 0,
+    "offline_tracking_allowed": false,
+    "accepted_source_mutation_allowed": false,
+    "completed_run_repoll_allowed": false
+  },
+  "launch_configuration": {
+    "hardware_and_region": null,
+    "communication_health_budget_ms": null,
+    "budget_justification": null,
+    "queue_task_training_wrapper_wallclock_limits": null,
+    "scheduler_preemption_retry": "preserve Iris defaults; no zero-preemption-retry override",
+    "submission_command": null,
+    "launch_recipe": null
+  },
+  "retention": {
+    "status": "UNRESOLVED_BEFORE_ACCELERATOR_LAUNCH",
+    "constraint": "Do not release an accelerator allocation merely because a qualification process ends.",
+    "conflict_to_resolve": "A holder in the tested task prevents natural task termination; a separate holder has not been shown to retain that exact allocation. Controller natural-exit qualification and allocation retention need independent, source-supported ownership.",
+    "required_design": [
+      "separate allocation ownership from tested child process lifetime",
+      "survive injected child failure and successful child exit",
+      "record external scheduler expiry/preemption policy",
+      "obtain explicit consent before voluntary allocation release"
+    ],
+    "source_search_scope": "local Iris client/controller source only; no deployed capability inferred"
+  },
+  "remaining_local_work": [
+    "Prepare a concrete non-training runtime entrypoint using the optional installer observation seam.",
+    "Review expected-failure evidence joins and fresh per-attempt coordinator identity.",
+    "Prepare an explicitly CPU-only first qualification scope or resolve accelerator retention ownership.",
+    "Publish concrete launch scope before requesting any new-job authorization."
+  ],
+  "local_trace_contract": {
+    "status": "PROTOTYPE_ERROR_PATH_CHECKED",
+    "adapter": "scratch/20261108-shutdown-qualification/trace_contract.py",
+    "checks": "scratch/20261108-shutdown-qualification/trace-contract-checks.json",
+    "checks_passed": 9,
+    "connected_to_runtime": false,
+    "scope": "Pure-Python actual candidate core, fake coordinator and synthetic traces; no actual ONLINE/controller evidence."
+  },
+  "runtime_adapter_design": {
+    "status": "SOURCE_SEAM_LOCAL_CHECKED_REAL_RUNTIME_NOT_CONNECTED",
+    "protocol_stage": "Pass TracedCoordinator around the initialized real client into the pure finalization core; wrap shutdown with traced_shutdown. No added coordinator reads or barriers.",
+    "lifecycle_stage_gap": "Optional observation is now accepted by the actual installer and pure core. Fake-boundary atexit and persisted trace checks passed. The training wrapper does not yet expose this optional parameter; no runtime qualification entrypoint or launch recipe is supplied.",
+    "forbidden_shortcut": "Do not replace JAX global_state.client with a partial proxy or label protocol-only execution as full entrypoint qualification.",
+    "evidence_join": {
+      "common_identity": [
+        "campaign",
+        "scenario",
+        "execution_id",
+        "candidate_commit"
+      ],
+      "per_rank_identity": [
+        "task_uid",
+        "attempt_uid",
+        "worker_id",
+        "online_run_id"
+      ],
+      "source_attestation": "Resolved installed module hashes and package/runtime versions must accompany traces.",
+      "external_statuses": "Join independent native history/state and Iris task/attempt/canonical outcomes using exact cached identity; never infer them from local log strings.",
+      "failure_adjudication": "A failure trace is not a successful clean trace. Expected injected failure needs separate exact exit/error evidence and canonical failure; missing or killed siblings remain explicit.",
+      "clocks": "Only compare monotonic time within a process. Cross-host order must derive from rendezvous acknowledgements, not unsynchronized timestamps.",
+      "adjudication_contract": {
+        "verdicts": [
+          "PASS",
+          "FAIL",
+          "INCONCLUSIVE"
+        ],
+        "clean_pass": "Require all exact original task attempts naturally successful, expected rank coverage, source/runtime/controller attestations, clean complete traces and independent native ONLINE finished/sentinel audit. Missing evidence is INCONCLUSIVE; contradictory success evidence is FAIL.",
+        "injected_failure_pass": "PASS means only that the intended failure was detected and propagated. Require an exact injection marker from the intended task/attempt/rank, its original error or exit code, canonical FAILED and every available sibling outcome. Report killed/coscheduled siblings separately; never call this a completed scientific run or claim all peers completed teardown.",
+        "unrelated_failure": "A failure before the intended injection or a failed job without matching injection evidence is INCONCLUSIVE for that scenario; preserve actual execution failure independently.",
+        "attempts": "Record all attempts. Retries receive new native run identity and fresh distributed world; a later pass cannot overwrite an earlier failed attempt. No checkpoint or W&B resume claim.",
+        "native_identity": "Join by exact entity/project/run ID plus execution and per-rank task/attempt identity in native configuration; a URL or display name alone is insufficient.",
+        "controller_identity": "Bind the canonical job record and task attempts to a verified deployed controller revision. Local repository source is not proof of deployed behavior.",
+        "causality": "Use receipt content hashes and protocol rendezvous semantics for cross-host order. Local timestamps alone cannot prove that all remote reads preceded shutdown.",
+        "history": "Use unique diagnostic sentinel IDs with an expected count per rank. Local finish receipts cannot substitute for independent native history evidence; missing/duplicate sentinels remain failures of the diagnostic delivery criterion."
+      }
+    },
+    "proposed_observation_seam": {
+      "status": "SOURCE_IMPLEMENTED_LOCAL_CHECKED_RUNTIME_UNQUALIFIED",
+      "ownership": "Optional explicit observer passed into the actual installer and pure finalization core. Capture the real coordinator and real shutdown callback unchanged; never replace JAX global state.",
+      "events": [
+        "hook_install_return",
+        "hook_enter",
+        "receipt_write_enter",
+        "receipt_write_return",
+        "ready_enter",
+        "ready_return",
+        "receipt_read_enter",
+        "receipt_read_return",
+        "read_enter",
+        "read_return",
+        "shutdown_enter",
+        "shutdown_return",
+        "protocol_error",
+        "hook_return",
+        "hook_error"
+      ],
+      "event_fields": "Per-process sequence, immutable execution/attempt/rank identity, event name, receipt keys and payload hashes, required/application outcome, and error type only. Never serialize arbitrary exception messages, credentials or tracker configuration.",
+      "observer_failure_policy": "Latch the first observation failure in memory; stop subsequent observation callbacks. Continue the existing protocol and real shutdown path. If protocol otherwise succeeds, terminate nonzero for missing qualification evidence. If application/protocol already fails, preserve its exception and original nonzero SystemExit code. Persist an error type to stderr only on a best-effort basis; never certify a trace that failed to persist.",
+      "observer_constraints": "Synchronous local append only; no network, extra service reads, extra rendezvous or blocking gates. A local write can still block: this seam is not timing-neutral and delayed or blocked filesystem I/O remains a qualification limitation, not justification for a wrapper watchdog.",
+      "registration_failure": "Installer registers candidate before removing default; registration failure propagates and leaves old hook intact. Injected registration-failure and subsequent retry checked locally. Arbitrary partial failures within unregister remain unqualified.",
+      "scope_difference": "Existing traced_call is fail-fast at trace writes and is suitable only for the archived protocol prototype. Do not install that adapter as the lifecycle observer without implementing and checking the distinct observer-failure policy.",
+      "required_local_checks": [
+        "same coordinator call sequence with observer absent and healthy",
+        "observer write failure before receipt publication still reaches the existing shutdown path when peers are healthy and forces nonzero local result",
+        "observer failure cannot mask application SystemExit",
+        "protocol failure plus observer failure preserves protocol exception",
+        "one actual Python atexit subprocess observes replacement hook and natural exit code with fake external boundaries",
+        "installer failure preserves default-hook state or documents exact partial registration state"
+      ],
+      "coverage_limit": "A passing fake-boundary lifecycle check still does not exercise real package initialization, JAX service lifetime, native ONLINE delivery or controller aggregation."
+    }
+  },
+  "updated_utc": "2026-11-08T11:59:08.214908+00:00"
+}

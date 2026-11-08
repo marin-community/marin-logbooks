@@ -3277,3 +3277,22 @@ Actual JAX coordinator lifetime, missing-peer cleanup, live online multi-host
 tracking and deployed controller aggregation remain unqualified. No new job,
 numerical kernel or remote experiment read occurred. The prior candidate patch
 and its limitations remain archived; apply the correction after that patch.
+
+
+## 2026-11-08 12:14 UTC: local shutdown lifecycle observation
+
+The [observation record](shutdown-lifecycle-observation.md) archives isolated
+candidate `2674b5d3975e5c1ecac05fb4310814c90ec736e1`. An optional observer
+records exit-hook and protocol boundaries without replacing the JAX client.
+Observer write failures preserve normal cleanup and force local nonzero exit;
+application exit codes retain precedence. Registration failure leaves the old
+handler intact. Seventeen hook checks (including four Python atexit subprocesses),
+three persisted lifecycle-log checks and nine log-contract checks pass within
+fake external-service boundaries. Source and archive lint pass.
+
+No runtime job, numerical kernel, terminal experiment read or accepted-source
+change occurred. Real ONLINE multi-host behavior, deployed controller aggregation,
+missing-peer cleanup and accelerator retention remain unqualified. The concrete
+non-training runtime entrypoint and execution scope remain local preparation
+work; no new job is authorized. Scientific findings and historical classifications
+remain unchanged.
