@@ -3181,3 +3181,35 @@ retains its 112 missing metric labels. The remaining work is to determine which 
 without relaxing the original gates, investigate their shutdown failures,
 validate a proposed future repair before any new execution, and write the
 final single-seed conclusions. No new run or runtime change was made.
+
+
+## 2026-11-08 10:26 UTC: seed0 comparison and failed-run scientific adjudication
+
+The [seed0 findings](single-seed-findings.md) report compares all four
+confirmation records and all three prescribed checkpoint probes, with
+[scalar provenance](single-seed-comparison.json) and reproducible loss/token,
+paired-loss and elapsed-time figures. This analysis used local caches only.
+Alpha0 and alpha0.125 remain the two validated completions. Alpha0.125's final
+C4 is lower by0.008272171020507812 nats and its first target crossing uses
+1,000 fewer updates (33,000 versus34,000). Its deployed native time to target
+is7.469233209559757 times the baseline and device-hours are29.876932838239032
+times. Baseline uses four v4 devices with data4/model1; nonzero runs use16
+with data4/model4. These figures do not isolate matched-hardware optimizer
+overhead or establish cross-seed reproducibility.
+
+Failed alpha0.25 and alpha0.5 are explicitly admitted only as supplementary
+recovered endpoint/observed-crossing evidence. They remain outside completed-run
+claims; their failed/crashed gates are unchanged. Alpha0.25 retains112 missing
+metric labels and cannot support full-trajectory finite-history certification.
+Both failed final C4 values have no native runtime. No missing values were
+imputed, and no execution failure was attributed to optimizer instability.
+The probes show checkpoint-dependent local responses, with four hosts repeating
+the same eight batches. They do not establish a universal training exponent.
+
+The report concludes that seed0 gives a small loss/token benefit for the tuned
+alpha0.125 setting at higher observed deployment cost. A reproducible best
+exponent, matched profile attribution and a peak-memory comparison remain
+unestablished. No horizon or998M follow-up is triggered. The bounded scientific
+interpretation is published; research remains active for shutdown-cause
+investigation and qualification of a future repair before new execution.
+No runtime/source hotpatch, new job or repeated terminal remote read occurred.
