@@ -642,3 +642,59 @@ training labels were34881/35646/36768 for alpha0.125/0.25/0.5. Each must reach
 37335 total updates (final label37334) and pass outcome validation. The first two
 probes remain complete and use cached evidence. The third probe results and
 final scientific conclusions remain required.
+
+
+2026-11-08 07:31 UTC — third prescribed probe completed and validated
+
+The third reference checkpoint from training with Gram exponent alpha=0.25,
+at stored counter33597 (zero-based training label33596), passed the prescribed four-host probe. Iris recorded four
+original attempt0 successes, zero failures and zero preemptions. All four native
+W&B runs finished ONLINE. Exact wrapper task/attempt UIDs, source, configuration,
+checkpoint and counter match the startup records. Four bounded task archives
+and 24 permanent objects passed generation-bound readback and checksum checks.
+See [reference-probe-r03-completed.json](reference-probe-r03-completed.json) and
+[reference-probe-r03-terminal-audit.json](reference-probe-r03-terminal-audit.json)
+for results, identities, receipts and validator source.
+
+Each host returned 27 finite paired-loss rows: nine diagnostic exponent/ridge
+settings at three perturbation sizes, evaluated on the same eight held-out
+Wikipedia batches. These settings vary only the diagnostic directions; the
+checkpoint remains fixed. Each also returned 18 finite production-polar-versus-SVD
+comparisons: attention and MLP matrices at nine settings. These compare the
+production Newton–Schulz polar approximation with an SVD calculation of the
+optimizer direction. Paired mean, standard deviation and standard error were
+independently recomputed over eight batch-level candidate-minus-baseline losses; the offline validator
+rejected eight corrupted-output cases. Loss and direction diagnostics are exactly
+equal across the four hosts. The hosts replicate the same batches and provide no
+additional independent samples. Timings and device-memory records are specific
+to each process.
+
+This validates full TrainerState restore with allow_partial=False and counter33597
+for the four-host probe: the verified frozen source requires strict checkpoint
+loading and checks the restored counter before producing the completed report.
+It does not establish an independent finiteness audit of all checkpoint arrays,
+an optimizer update, data-position replay or training resume. Baseline mean
+Wikipedia loss was 3.5759398341178894. Every tested perturbation had a positive
+candidate-minus-baseline mean loss change, ranging across the 27 settings/size combinations from 0.0000848770 to
+0.0007255375. These local perturbation results alone do not establish a preferred
+training exponent. Polar-versus-SVD cosine ranged from 0.8638303 to 0.9997517;
+relative direction error ranged from 0.0227070 to 0.5213540. Relative error is the
+Frobenius norm of the direction difference divided by the SVD direction norm.
+
+All three prescribed reference probes at counters3733,18665,33597 are now
+completed and validated. The third probe's sole observer (session91778, PID62794) and
+original log follower (PID62975) exited naturally. Reuse
+scratch/20261108-reference-r03-completion/verified.json and the sibling
+ema-gram-reference-seed0-r03-20261108 worktree cache at
+scratch/ema-gram-20-reference-seed0-r03-20261108-00-completion/verified.json; never query completed probe jobs, tasks, native records,
+logging checks or archives again, or restart/resubmit them. Source
+109598125c54094a5f921efeb3dbd4c29ad5140b and the consumed counter33597 launch
+guard remain unchanged.
+
+Continue observe_parallel_r01_online.py once per wake under the original
+running observer (session99712, PID96635). At 2026-11-08 07:30 UTC, alpha0.125/0.25/0.5 training reached
+labels34986/35742/36858 with finite losses and no investigation flags. Each run
+must finish 37,335 updates (final label37334) and pass outcome validation, including complete finite metric histories,
+final held-out C4 loss, stored counter and checkpoint metadata, exact source/config,
+finished ONLINE records and original task success. The
+three nonzero-alpha training outcomes and final scientific conclusions remain required.
