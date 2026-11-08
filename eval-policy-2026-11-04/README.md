@@ -1,12 +1,12 @@
 # Interim evaluation evidence
 
-INTERIM update r12, as of 2026-11-06T19:22:58.487193+00:00. All 162 Evalchemy cells are reviewed; 71 current Harbor cells are admitted and 1 remains pending. Later admissions update existing issue comments and candidate-card sections.
+INTERIM update r13, as of 2026-11-08T17:23:01.716048+00:00. All 162 Evalchemy cells are reviewed; 72 current Harbor cells are admitted and none remain pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
 Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `1cdc92d45be45d5f5279e1b4813f48207ba976a4aad6808df12064f73dc8ba36`.
+`manifest.json` SHA256 `921e03de1de72651a439d4804078726e76db8fa7e24b2938fc76685e05ef0278`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
@@ -58,6 +58,7 @@ Per-cell receipts retain measurements and integrity hashes; scores are presented
 | [receipts/A3--sotopia-hard.json](receipts/A3--sotopia-hard.json) | admitted | `c606d9da8b0b12d97d94fc9836c587631a432491a962cdddef1f55970c233949` |
 | [receipts/A3--swebench-verified.json](receipts/A3--swebench-verified.json) | admitted | `41b78727bef72702e1e24234fb9c122595eaec152deb1c26ef9790b74fe87201` |
 | [receipts/A3--tau3-pi.json](receipts/A3--tau3-pi.json) | admitted | `5e7298565968aad7dc22255b30f8177a3aba55b692961d35166d3ff09d57a6f0` |
+| [receipts/A3--tb2-recovery.json](receipts/A3--tb2-recovery.json) | admitted | `f231132c27acf02b4192b6d8d171cf7a1efa29ecba373411f54f6e0d4c649700` |
 | [receipts/A3--triviaqa.json](receipts/A3--triviaqa.json) | admitted | `0551ae07c0a6d41919fb716d00a34f0b6fa40f0f2d3c01cbc4fbb969566dcb04` |
 | [receipts/A3--truthfulqa.json](receipts/A3--truthfulqa.json) | admitted | `5e18272bb03602964c4819cc4b45f8bc1bc972703f43eb0486228cdb9c66d346` |
 | [receipts/A3--winogrande.json](receipts/A3--winogrande.json) | admitted | `4d8cf3bea0f9d66e4b1b9d4d2931cd6fbed8a4e375c62f7ad5c0a8a2584c3e52` |
