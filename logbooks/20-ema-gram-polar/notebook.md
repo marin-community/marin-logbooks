@@ -2984,3 +2984,35 @@ The shutdown cause and whether the recovered failed-run evidence is sufficient
 for the scientific comparison remain unresolved. The prescribed alpha0.25 probes
 at counters3733,18665,33597 remain complete. Final conclusions await alpha0.125
 and alpha0.25 outcomes and explicit treatment of the failed alpha0.5 execution.
+
+## 2026-11-08 08:36 UTC — alpha0.25 W&B crashed state conflicts with ongoing training
+
+On2026-11-08 at08:34 UTC, the alpha0.25 native W&B record was observed as crashed,
+with last logged zero-based update label36495. The original observer's new08:36
+snapshot still records four tasks RUNNING, zero failures and zero preemptions.
+Four bounded original-attempt log snapshots show continued finite training:
+process0 (Iris task3) logged update label36667 at08:35:11, after the crashed-state
+observation. The four inspected tasks show training progress at08:34; their
+checkpoint-write logs show that temporary checkpoint label36592 committed and
+passed its synchronization barrier at08:30. This checkpoint has not been audited.
+These observations establish a discrepancy between tracking state and observed
+training activity. The initiating cause is unresolved; the inspected intervals do
+not establish a training-process exit. See
+[parallel-long-runs-r01-alpha025-native-crashed.json](parallel-long-runs-r01-alpha025-native-crashed.json).
+
+The native summary query is cached. The monitor now skips crashed, failed or
+killed native records before further API queries, while retaining the original
+scheduler observer. Four offline branch checks passed; no second live helper
+invocation was made for this wake. Source/config checks passed at the native
+observation; the log queries target original attempt0 identities. No tasks were
+restarted or resubmitted. All four bounded log snapshots and query guards are
+retained under scratch/20261108-parallel-r01-alpha025-native-crash. Future diagnosis
+must use new evidence intervals and saved observer snapshots, not repeat these reads.
+
+Completion of the prescribed37,335 updates and the final execution outcome remain
+unverified. No offline fallback or replacement W&B curve has been introduced.
+Alpha0.125 was running at label35984 with finite training loss at08:34. The
+alpha0.5 execution remains failed with recovered artifacts; the three prescribed
+reference probes at counters3733,18665,33597 remain complete. Continue the
+original observer99712/PID96635 and native observation only for alpha0.125 while
+investigating alpha0.25 through new scheduler/log evidence.
