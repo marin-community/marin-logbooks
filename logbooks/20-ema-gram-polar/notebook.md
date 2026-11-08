@@ -2952,3 +2952,35 @@ all submission guards and completion requirements. The three prescribed probes
 at counters3733,18665,33597 remain completed and cached, as recorded in
 reference-probe-r01-completed.json, reference-probe-r02-completed.json and
 reference-probe-r03-completed.json. Final scientific conclusions remain pending.
+
+## 2026-11-08 08:32 UTC — failed alpha0.5 artifacts recovered with separate provenance
+
+The failed seed0 alpha0.5 execution now has all five audited training metrics for all37,335
+updates, with explicit mixed provenance. W&B history supplies37,334 finite rows
+for all five training metrics at labels0..37333 and37 C4 evaluations. The original
+process0 attempt0 JSON log supplies the missing final label37334 row and final
+C4=3.9583799839019775, adding a distinct38th evaluation. Matching repeated local metric events were deduplicated;
+the merge found no conflicting values. The combined history passes the existing
+metric audit, and all five missing-final-metric negative tests were rejected. This does not
+change the scheduler FAILED or W&B crashed states, and does not satisfy the
+existing success/finished-ONLINE completion gates. See
+[parallel-long-runs-r01-alpha05-recovered.json](parallel-long-runs-r01-alpha05-recovered.json)
+for provenance, checksums, collection scripts, checkpoint receipts and audit results.
+
+Read-only checks verified the final permanent checkpoint's generation-bound
+metadata listing the expected57-array schema and scalar counter37335. This is not a full
+checkpoint byte-finiteness audit or restored training run. The first observed W&B
+C4 evaluation at or below4.0 was label35999:36,000 updates,1,179,648,000 tokens,
+C4=3.997650384902954,recorded W&B _runtime154756.717511608seconds. No interpolation is
+used. Native runtime includes compilation and evaluation, excluding queue time.
+The final local C4 event has no W&B runtime; none is inferred.
+
+All new history pages, metadata and counter reads have permanent guards and caches
+under scratch/20261108-alpha05-artifact-audit; reuse them without querying completed
+evidence again. The repaired monitor passed its first live invocation at2026-11-08 08:29 UTC,
+querying only unfinished alpha0.125/0.25; labels35925/36495 had finite training
+losses and no investigation flags. Original observer99712/PID96635 was active at that observation.
+The shutdown cause and whether the recovered failed-run evidence is sufficient
+for the scientific comparison remain unresolved. The prescribed alpha0.25 probes
+at counters3733,18665,33597 remain complete. Final conclusions await alpha0.125
+and alpha0.25 outcomes and explicit treatment of the failed alpha0.5 execution.
