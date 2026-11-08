@@ -1,0 +1,46 @@
+{
+  "status": "SOURCE_ONLY_API_GAP_RECORDED",
+  "updated_utc": "2026-11-08T13:44:02.510983+00:00",
+  "candidate_commit": "2674b5d3975e5c1ecac05fb4310814c90ec736e1",
+  "source_sha256": {
+    "lib/iris/src/iris/rpc/controller.proto": "c29c9a6a1c9ba349e67a9fda61ee464147277a8c20faa5f0f1716f4b4051e992",
+    "lib/iris/src/iris/cluster/controller/endpoints.py": "5e2d4db8deb1039caea8f07aa61c640a587b62576d51046221e8503544fc57ac",
+    "lib/iris/src/iris/cluster/client/endpoint_client.py": "21b6546a90cbd4c49a72282bbb7a11414531c65ac54b81caae834366ae34d771"
+  },
+  "reviewed_surface": "EndpointService and its local controller/client implementations; not a claim about deployed APIs or all external audit facilities.",
+  "rpc_methods": [
+    "RegisterEndpoint",
+    "UnregisterEndpoint",
+    "ListEndpoints"
+  ],
+  "list_response_fields": [
+    "endpoint_id",
+    "name",
+    "address",
+    "task_id",
+    "metadata",
+    "access",
+    "peer_id"
+  ],
+  "list_missing_fields": [
+    "attempt_number",
+    "attempt_uid",
+    "registered_at",
+    "lease_deadline",
+    "removal_reason",
+    "event_cursor"
+  ],
+  "findings": [
+    "ListEndpoints returns current live entries only. Its Endpoint message does not expose the independently required attempt, lease, registration-time or deletion-reason fields.",
+    "The inspected EndpointService has no watch or replay RPC. EndpointDelta and ProxyMappingDelta are local callback types, not this service API; deletes carry endpoint IDs without deletion reasons.",
+    "RegisterEndpoint handles both registration and renewal. It creates a row with Timestamp.now() for registered_at on each successful upsert, so that stored timestamp must not be labeled original registration time without additional evidence.",
+    "UnregisterEndpoint is idempotent and returns Empty even when no row existed. A successful unregister response alone does not establish that this call removed a live registration.",
+    "EndpointClient.unregister untracks lease renewal before sending unregister; close uses best-effort cleanup and failures can leave expiry to the lease. Local shutdown completion and disappearance are distinct observations."
+  ],
+  "collection_decision": "Do not implement a polling-only collector claiming full freshness/cleanup proof. It could record observed presence/absence but cannot supply missing lifecycle causes. Prepare separately authorized controller-side retained audit acquisition or leave those gates INCONCLUSIVE.",
+  "no_candidate_change": true,
+  "no_controller_change": true,
+  "remote_calls": 0,
+  "runtime_services_initialized": false,
+  "jobs": 0
+}

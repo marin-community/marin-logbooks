@@ -1,0 +1,160 @@
+{
+  "status": "BUILD_CONTRACT_PREPARED_UNRESOLVED_INPUTS",
+  "updated_utc": "2026-11-08T13:24:44.592982+00:00",
+  "target": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.12",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_python_implementation": "CPython",
+    "platform_release": "",
+    "platform_system": "Linux",
+    "platform_version": "",
+    "python_full_version": "3.12.12",
+    "python_version": "3.12",
+    "sys_platform": "linux",
+    "extra": ""
+  },
+  "candidate_commit": "2674b5d3975e5c1ecac05fb4310814c90ec736e1",
+  "harness_publication": "b43f0bf46835c1d8cc02fc0765f298838de13ede",
+  "workspace_builds": [
+    {
+      "path": "./lib/finelog",
+      "name": "marin-finelog",
+      "build_system": {
+        "requires": [
+          "hatchling"
+        ],
+        "build-backend": "hatchling.build"
+      },
+      "pyproject_sha256": "f73c5c864e7214dec73abe22c541d067f2507ef7b687a15d36ef6a05beff3ee1"
+    },
+    {
+      "path": "./lib/finestore",
+      "name": "marin-finestore",
+      "build_system": {
+        "requires": [
+          "hatchling"
+        ],
+        "build-backend": "hatchling.build"
+      },
+      "pyproject_sha256": "a0b0364be212c42d655cde9f32cda10c3492d5865c73509488af32366fcee2eb"
+    },
+    {
+      "path": "./lib/fray",
+      "name": "marin-fray",
+      "build_system": {
+        "requires": [
+          "hatchling"
+        ],
+        "build-backend": "hatchling.build"
+      },
+      "pyproject_sha256": "8f117cbb3b3a6e519337140701d83ce40d2f44f11d985671192d40f77933744f"
+    },
+    {
+      "path": "./lib/haliax",
+      "name": "marin-haliax",
+      "build_system": {
+        "requires": [
+          "hatchling"
+        ],
+        "build-backend": "hatchling.build"
+      },
+      "pyproject_sha256": "ba2db07c5e9711fd86de00eeb3184406cb09617ab3a84eaacb9553d7031ac59e"
+    },
+    {
+      "path": "./lib/iris",
+      "name": "marin-iris",
+      "build_system": {
+        "requires": [
+          "hatchling"
+        ],
+        "build-backend": "hatchling.build"
+      },
+      "pyproject_sha256": "7f4b2b3088d8450d2b91cccdc70597c12cdc5cea38db7dbbfef5863a76fd2765"
+    },
+    {
+      "path": "./lib/levanter",
+      "name": "marin-levanter",
+      "build_system": {
+        "requires": [
+          "uv_build>=0.7.19,<0.10.0"
+        ],
+        "build-backend": "uv_build"
+      },
+      "pyproject_sha256": "57d418af13daec739a33acdb9d1f2a14e9efc860237197d80b06d3a1d412aa90"
+    },
+    {
+      "path": "./lib/rigging",
+      "name": "marin-rigging",
+      "build_system": {
+        "requires": [
+          "hatchling"
+        ],
+        "build-backend": "hatchling.build"
+      },
+      "pyproject_sha256": "556d20de3f96384c6cdbddfb41b470332defa1172e1f2ab7c9dddb80de0eadcf"
+    },
+    {
+      "path": "./lib/zephyr",
+      "name": "marin-zephyr",
+      "build_system": {
+        "requires": [
+          "hatchling"
+        ],
+        "build-backend": "hatchling.build"
+      },
+      "pyproject_sha256": "ae4d962cd8f8bcde70f912cb630a21c4a73f0ea8c8c4af52fdd9d75a11bf3ee7"
+    }
+  ],
+  "backend_packages_in_root_lock": [],
+  "missing_pins": [
+    "CPU base image digest with Python3.12.12 and git",
+    "OS package snapshot/digests",
+    "hatchling exact version, wheel hash and build dependency closure",
+    "uv_build exact version in >=0.7.19,<0.10.0, wheel hash and build dependency closure",
+    "installer exact version and artifact digest",
+    "selected Linux x86_64 wheels and wheelhouse digest"
+  ],
+  "stages": [
+    {
+      "name": "source-context",
+      "operations": [
+        "Create a separate self-contained Git clone at candidate commit; include its Git objects, never candidate .git pointer or shared .venv.",
+        "Copy the archived harness at the publication commit, verify archive hashes and eight-source-file manifest before building.",
+        "Use dedicated build context with no credentials, user caches or execution artifacts."
+      ]
+    },
+    {
+      "name": "dependency-materialization",
+      "operations": [
+        "Preserve frozen universal export and exact Linux/CPython target marker inventory.",
+        "Separate eight workspace editables from registry requirements; install registry wheels with hash verification and no source fallback.",
+        "If any required compatible wheel is unavailable, report the missing artifact; do not silently compile or change version.",
+        "Prepare separate exact build-tools lock because root runtime uv.lock has neither hatchling nor uv-build."
+      ]
+    },
+    {
+      "name": "isolated-image-install",
+      "operations": [
+        "All installs occur only in the new image environment, never shared .venv.",
+        "Install pinned build tools and registry dependencies before eight workspace editables; use no dependency resolution and no build isolation when installing workspace packages.",
+        "Iris hatch hook imports iris.version at module load; image-build package execution is not covered by fake runtime checks. Do not build under the current source/fake-only preparation step.",
+        "Do not run diagnostic --execute, package import smoke checks, distributed initialization, W&B init or kernels as build validation."
+      ]
+    },
+    {
+      "name": "artifact-evidence",
+      "operations": [
+        "Record base image/OS/interpreter/installer/build-tools/runtime locks and wheel hashes, full candidate tree identity and harness publication.",
+        "Record installed distribution metadata without importing runtime modules; compare against planned closure and source roots.",
+        "Record final image digest and source manifest in the future attempt evidence; local metadata alone cannot certify deployed controller or ONLINE/native history."
+      ]
+    }
+  ],
+  "image_built": false,
+  "packages_installed": false,
+  "runtime_imports": false,
+  "jobs": 0,
+  "next_work": "Prepare deterministic registry/workspace split from cached export and strict build-input validation; obtain backend wheel pins without mutating candidate environment. Actual build/runtime qualification remains separate."
+}

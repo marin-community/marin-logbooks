@@ -1,0 +1,142 @@
+{
+  "status": "DRAFT_SOURCE_BOUND_EVIDENCE_COLLECTION_CONTRACT",
+  "updated_utc": "2026-11-08T13:44:02.510983+00:00",
+  "candidate_commit": "2674b5d3975e5c1ecac05fb4310814c90ec736e1",
+  "source_sha256": {
+    "lib/iris/src/iris/jax/init.py": "f321306105cf825aa620759146aa1be73be936f345e3dc1ce42e5e61230afdec",
+    "lib/iris/src/iris/cluster/controller/projections/endpoints.py": "b839c0edf392682ddfd18414cd65b2f0ac959cd03fbf9e49e3fbd479dcbbe673"
+  },
+  "observed_source_limits": [
+    {
+      "source": "lib/iris/src/iris/jax/init.py",
+      "symbols": [
+        "_log_jax_bootstrap_inputs",
+        "_coordinator_endpoint_name",
+        "_register_coordinator"
+      ],
+      "finding": "Bootstrap logs contain an endpoint name and requested port; registration returns endpoint_id but this helper does not log that returned ID. Peers derive discovery name from task zero current attempt. A predicted name or local bootstrap log is insufficient to identify an actual successful registration."
+    },
+    {
+      "source": "lib/iris/src/iris/cluster/controller/projections/endpoints.py",
+      "symbols": [
+        "EndpointsProjection.add",
+        "EndpointsProjection.remove",
+        "EndpointsProjection.remove_by_job_ids",
+        "EndpointsProjection.sweep_expired",
+        "EndpointsProjection.replace_remote_for_peer"
+      ],
+      "finding": "The inspected projection supports registration replacement, explicit removal, job removal, lease expiration and federation replacement. Reads hide expired rows before sweep. A later absent endpoint cannot alone prove the application unregister hook ran, or establish when the coordinator stopped."
+    }
+  ],
+  "required_independent_records": [
+    {
+      "kind": "source_image",
+      "join": [
+        "candidate_commit",
+        "harness_publication",
+        "full_source_tree",
+        "runtime_lock_sha256",
+        "image_digest"
+      ],
+      "origin": "Build artifact and worker deployment metadata, independently compared with preflight bytes; declarations alone insufficient."
+    },
+    {
+      "kind": "controller",
+      "join": [
+        "controller_deployment_id",
+        "controller_revision",
+        "controller_image_digest",
+        "observation_interval"
+      ],
+      "origin": "Actual deployed controller identity and revision evidence; candidate client Git hash must not substitute."
+    },
+    {
+      "kind": "task_attempt",
+      "join": [
+        "job_execution_id",
+        "task_id",
+        "attempt_number",
+        "attempt_uid",
+        "worker_id",
+        "process_rank",
+        "start_time",
+        "exit_status"
+      ],
+      "origin": "Independent scheduler/controller attempt records. Preserve every retry/preemption; no joining solely by task index."
+    },
+    {
+      "kind": "native",
+      "join": [
+        "entity",
+        "project",
+        "native_run_id",
+        "attempt_uid",
+        "task_id",
+        "process_rank",
+        "candidate_commit"
+      ],
+      "origin": "Independent ONLINE run state and four diagnostic history records per rank, checked against worker declaration and exact attempt; local finish return alone insufficient."
+    },
+    {
+      "kind": "coordinator_registration",
+      "join": [
+        "job_execution_id",
+        "task_zero_id",
+        "task_zero_attempt_number",
+        "task_zero_attempt_uid",
+        "endpoint_id",
+        "endpoint_name",
+        "address",
+        "registered_at",
+        "lease_deadline",
+        "controller_deployment_id"
+      ],
+      "origin": "Independent actual registry registration evidence captured during the future authorized attempt, not inferred from source naming."
+    },
+    {
+      "kind": "coordinator_removal",
+      "join": [
+        "endpoint_id",
+        "mutation_time",
+        "removal_reason",
+        "controller_deployment_id"
+      ],
+      "origin": "Independent retained lifecycle record distinguishing explicit unregister, expiry, replacement and job/federation cleanup. Absence in a final snapshot is inconclusive about reason."
+    },
+    {
+      "kind": "local_lifecycle",
+      "join": [
+        "job_execution_id",
+        "task_id",
+        "attempt_uid",
+        "process_rank",
+        "native_run_id",
+        "candidate_commit"
+      ],
+      "origin": "Per-attempt exclusive events and finalization traces, retained externally before local storage disposal; sequence/monotonic ordering only within each process."
+    }
+  ],
+  "collection_rules": [
+    "No collector is executed or authorized by this contract. It applies only to new explicitly authorized CPU attempts; all historical terminal no-read rules remain.",
+    "Preserve raw responses with request scope, acquisition time and SHA256. Normalize separate copies with explicit provenance references; never overwrite earlier observations.",
+    "Design acquisition before submission because endpoint projection is mutable and final snapshots lose lifecycle causes. Determine whether deployed APIs already retain event evidence; local source subscriptions are not proof of an available durable remote audit API.",
+    "Do not add registry calls, proxies or synchronization barriers to the candidate runtime to manufacture evidence. A separate approved observer must have a specified acquisition method and permissions.",
+    "A source/client version match, nonzero exit, all-rank local receipts or native finished states cannot substitute for another evidence family.",
+    "If required coordinator or controller evidence is unavailable, mark the corresponding qualification INCONCLUSIVE, preserving observed task outcomes. Do not change historical classifications.",
+    "Do not infer cross-host ordering from unsynchronized wall clocks or compare monotonic clocks across processes. Use protocol boundaries and controller event ordering where supported.",
+    "Inspected EndpointService ListEndpoints omits attempt UID/number, registration/lease timestamps and deletion reasons; a successful idempotent unregister response is not proof that a live row was removed. Registration timestamps are renewed-upsert times, not necessarily first registration. Preserve these distinctions in any future collector."
+  ],
+  "unresolved": [
+    "Deployed controller identity acquisition",
+    "Actual registry event retention and removal-reason acquisition",
+    "Region and CPU placement",
+    "Tracking entity",
+    "Pinned runtime image/build-tool closure",
+    "External persistence of per-attempt raw evidence"
+  ],
+  "execution_authorized": false,
+  "runtime_qualified": false,
+  "jobs": 0,
+  "services_initialized": false,
+  "endpoint_api_review": "endpoint-api-evidence-gap.json"
+}

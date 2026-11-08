@@ -3319,3 +3319,26 @@ deployed controller and independent runtime evidence remain unresolved. The
 300-second per-rendezvous health budget is an unmeasured proposal, not a scheduler
 or wrapper limit. Accelerator retention remains unresolved for future GPU/TPU
 qualification. Scientific findings and historical classifications are unchanged.
+
+
+## 2026-11-08 14:01 UTC: CPU source packaging and evidence preparation
+
+The [packaging record](shutdown-runtime-packaging.md) archives a preparer for a
+self-contained candidate Git checkout, a publication-bound diagnostic harness
+and a cached dependency split for a proposed Linux x86_64/CPython 3.12.12 image.
+The new local source copy passes read-only eight-file preflight with
+`launch_ready=false`. The frozen lock export selects 160 registry requirements
+and eight workspace packages; build tools, wheel availability and the base image
+remain unresolved. Ten distinct local checks have scoped passing evidence
+(seven splitter, three Git fixtures), with unchanged checks reused. Source and
+archive lint pass; the new context preflight is recorded separately.
+
+Source review also establishes an evidence limit: the inspected endpoint-list
+API lacks attempt, registration/lease-time and deletion-reason fields. A final
+absent endpoint cannot distinguish application unregister from expiry or other
+cleanup. Independent controller/coordinator evidence acquisition must be arranged
+before a future authorized attempt. No image build, package installation, real
+runtime import/service, numerical kernel, job or terminal experiment query
+occurred. Candidate and frozen training source, scientific findings and failed-run
+classifications remain unchanged. Runtime execution and accelerator retention
+remain unqualified.
