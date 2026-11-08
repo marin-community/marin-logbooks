@@ -9,11 +9,12 @@ its Qwen3/BPB results are not pooled with this two-sided Delphi/nats comparison.
 The fetched issues describe the experiment, but do not contain a direct comment
 from Ali spelling out a separate question list.
 
-The November 8 user direction is to answer from existing evidence, identify
-missing experiments, and **not rerun the failed longruns**. Shutdown repair and
-runtime packaging are deferred. No experiment below is submitted or authorized
-by its inclusion in the gap list. Historical failed-run classifications and
-completion gates remain unchanged.
+The user subsequently authorized minimal-compute supplements and explicitly
+excluded cross-seed work. [The completed supplement report](supplemental-findings.md)
+adds disjoint-batch contrasts, a recovered full-model SVD loss control, validated
+late-checkpoint measurements and bounded probe timings. Early/middle/SVD values
+retain failed-run recovery status. Failed longruns were not rerun; shutdown
+packaging remains deferred and original completion gates are unchanged.
 
 The matrix update uses
 `D_alpha = A^(-alpha) polar(A^(-alpha) M B^(-alpha)) B^(-alpha)`,
@@ -148,17 +149,33 @@ Gram updates, decompositions and exposed communication, and a comparable peak
 host/device-memory measurement, remain unestablished. Old synthetic or
 earlier-data profiles cannot fill those gaps.
 
+## New minimal-compute evidence
+
+At the late checkpoint33597 and the prespecified step3e-5, norm-matched quarter
+power beats zero and half on all eight new batches. Mean differences are
+−0.000685364 and−0.001069099 nats respectively; other steps do not show a uniform
+advantage. The middle-checkpoint SVD control has mixed effects by step size and
+is recovered evidence from a later OOM-failed probe. These results support a
+conditional local direction effect, not a better full-training exponent.
+
+Warm norm-matched probe directions take about0.097s for alpha0 and39.80s for
+alpha0.25/0.5 on the same topology. This includes norm-reference/rescaling and
+uses the probe layout; it is not a training-overhead ratio. Alpha0 and0.25 have
+equal logical stored state in this implementation. Full-training cost attribution
+and comparable peak memory remain unresolved. See [all settings, provenance,
+cost accounting and remaining limits](supplemental-findings.md).
+
 ## Which experiments would resolve the remaining questions?
 
-These are conditional evidence needs, not a launch queue. The current response
-can be published without any new experiment or a repaired shutdown runtime.
+The table records the remaining claim boundaries after the minimal supplements.
+No further job is queued; cross-seed remains explicitly excluded.
 
 | Missing claim | Smallest useful additional experiment or analysis | Priority and scope |
 |---|---|---|
-| A quarter-power direction advantage generalizes beyond the eight probe batches | Repeat the fixed checkpoint/ridge/step contrasts on new disjoint held-out batches; report all paired differences | First mechanism follow-up if that claim is pursued; no longrun restart |
-| Polar approximation explains the quality ranking | At the same retained states, compare norm-matched production-polar and exact-SVD perturbation losses on identical fresh batches | First isolate local loss effects; a favorable local result alone would not prove a full-training effect |
-| A stable advantage across training seeds | New paired seeds with pilot-locked settings and unchanged controls | Required only for a reproducibility claim; outside the user-amended seed0 scope, and not authorized |
-| Optimizer cost or memory overhead on equal hardware | First inspect any already-cached matching profiles; if unavailable, use a short same-topology, same-source profiling/memory experiment | Needed for attribution, not for the observed loss/token readout; no replacement longruns |
+| A quarter-power direction advantage generalizes beyond the eight probe batches | Repeat the fixed checkpoint/ridge/step contrasts on new disjoint held-out batches; report all paired differences | Supplemented at all three stages; early/middle are recovered evidence, late is validated |
+| Polar approximation explains the quality ranking | At the same retained states, compare norm-matched production-polar and exact-SVD perturbation losses on identical fresh batches | Middle checkpoint supplemented using recovered SVD losses; effects are mixed, not a full-training explanation |
+| A stable advantage across training seeds | New paired seeds with pilot-locked settings and unchanged controls | Explicitly omitted by the user; no cross-seed reproducibility claim |
+| Optimizer cost or memory overhead on equal hardware | First inspect any already-cached matching profiles; if unavailable, use a short same-topology, same-source profiling/memory experiment | Probe-path timing and logical storage supplemented; full-training attribution and peak memory still missing |
 | Better Gram horizon or scaling to 998M | Horizon 100/1,000/10,000 comparisons or the larger-model recipe | Deferred conditional follow-ups; current evidence does not satisfy the original reproducibility gate |
 
 Alpha=1/3 full training would be a scope expansion only if a broader full-budget

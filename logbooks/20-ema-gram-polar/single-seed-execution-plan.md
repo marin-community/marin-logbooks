@@ -1,9 +1,11 @@
 # Single-seed execution of the EMA-Gram exponent experiment
 
-**Current direction (2026-11-08, latest):** The user authorized minimal-compute
-checkpoint supplements and excluded cross-seed work. Execute the bound
-[supplement request](supplemental-probe-r04-request.json); do not rerun failed
-longruns. Shutdown packaging and larger-model/horizon campaigns remain deferred.
+**Current direction (2026-11-08, latest):** The user-scoped minimal supplement
+is concluded with [published findings and explicit limits](supplemental-findings.md).
+Late measurements are validated; early/middle/SVD are recovered failed-run evidence.
+No job remains active or queued. Cross-seed, failed-longrun reruns, full-training
+profiling, larger-model/horizon work and shutdown packaging remain outside the
+completed supplement. Do not automatically repeat terminal reads or launch follow-ups.
 
 **Current execution amendment (2026-11-04 23:35 UTC):** The original-data
 campaign below failed before training and remains historical. Execute all 30
@@ -1327,3 +1329,30 @@ path comparison. Full-training overhead and comparable peak memory remain open.
 Iris accepted r04 from `7e917a2be5c8744a4ec70742496b43b82a4e557a`. The
 [launch record](supplemental-probe-r04-accepted.json) binds the late-only request.
 No early/middle measurements are repeated; no full-budget training restarts.
+
+
+### 2026-11-08 19:26 UTC: minimal supplement findings, with failed-run provenance preserved
+
+The late-only r04 supplement completed: four successful attempt1 tasks and four
+finished ONLINE probe runs, nine identical finite loss rows per host, strict
+counter33597 restore, and generation/hash-bound artifacts. Attempt0's worker
+reconciliation failure and controller retry count1 remain visible; no provider
+preemption cause or training resume is inferred.
+
+[Supplement findings](supplemental-findings.md) report all18 quarter-versus-control
+contrasts over eight fresh batches. Late step3e-5 favors quarter on8/8 batches
+against both controls (−0.000685364/−0.001069099 nats), but other settings are mixed.
+The21 early/middle/SVD rows remain single-artifact recovery from the OOM-failed
+r03 job; no finished ONLINE or four-host agreement is claimed for them. Exact
+SVD effects change sign with step size and do not explain a full-training ranking.
+
+The validated warm norm-matched probe path takes0.09675s/39.80455s/39.80278s for
+alpha0/.25/.5. This includes norm-reference/rescaling in the probe layout, not
+full training. Logical checkpoint storage is equal; comparable peak memory and
+full-training attribution stay open. All supplement job spans total a conservative
+16.316 device-slot-hour bound, including failures and rescheduling wait, not billing.
+
+The user-scoped minimal supplement is concluded with these evidence limits.
+No cross-seed, failed-longrun rerun, horizon/998M campaign or shutdown-engineering
+execution is queued. All completed new task/native/artifact reads are cached;
+do not repeatedly query them or launch a follow-up automatically.
