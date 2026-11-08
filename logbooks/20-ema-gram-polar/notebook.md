@@ -3432,3 +3432,16 @@ request limit. The local check was interrupted before kernels or TPU submission;
 its run `ema-gram-supplement-logging-check-ce017eb01b21` is not a successful check.
 The new supplement uses project `ema-gram-20-supplements` in the same entity.
 Its ONLINE check must pass independently; no offline fallback or old-run rewrite.
+
+
+### 2026-11-08 17:58 UTC: minimal supplement accepted once
+
+One four-task v4-32 supplemental job was accepted from source
+`684236952eb4adce89d3d8a3aa008e794be93222`. The local ONLINE logging check and
+new numerical oracle both finished online;14 small-model matrices match the
+NumPy SVD oracle, the production path matches the prior probe, nonmatrices and
+optimizer state are unchanged, and paired summary arithmetic passes.
+[Launch and check evidence](supplemental-probe-accepted.json).
+
+The live owner follows only this new job; all historical terminal reads remain
+cached. Acceptance does not establish startup or scientific completion.
