@@ -11,12 +11,10 @@ status: active
 
 # Quarter-power EMA-Gram preconditioning on Delphi
 
-**Current direction (2026-11-08):** All jobs are terminal. Do not rerun the
-failed longruns. Answer the scientific questions from existing evidence and
-mark conditional experiments in [the issue response](ali-question-answers.md).
-The fixed HQ/code/math comparison remains seed0 only. Shutdown/runtime-packaging
-work is deferred; no new experiments are authorized.
-See [current execution plan](single-seed-execution-plan.md).
+**Current direction (2026-11-08, latest):** The user authorized minimal-compute
+checkpoint supplements and excluded cross-seed work. Execute the bound
+[supplement request](supplemental-probe-request.json); do not rerun failed
+longruns. Shutdown packaging and larger-model/horizon campaigns remain deferred.
 
 ## Question and decision criteria
 
@@ -3395,3 +3393,32 @@ conditional gaps. Horizon/998M work remains deferred. These are not a launch
 queue; no failed-run replacements, new jobs, package/runtime changes or
 terminal experiment reads occurred. The alpha1/4 missing 112 labels and both
 failed execution statuses remain explicit.
+
+
+## 2026-11-08 17:55 UTC: minimal-compute supplements authorized
+
+The user requested filling the remaining evidence gaps with minimal compute and
+explicitly excluded cross-seed work. Failed longruns remain closed. The new
+[supplement request](supplemental-probe-request.json) combines all three saved
+reference checkpoints in one v4-32 job so compilation and input loading can be
+reused. It evaluates fresh held-out Wikipedia batches64–79 (old scientific
+probes used0–7; infrastructure qualification used16–17), alpha0/0.25/0.5,
+pilot-selected ridge0.01 and the original three step sizes. Exact-SVD full-model
+loss controls are restricted to the prespecified middle checkpoint18665.
+There are30 loss rows per rank,16 paired batches each; hosts are replicas.
+
+At the middle state, warm forward/reversed-order measurements compare matrix
+direction kernels on equal hardware. These exclude gradient calculation, Gram
+updates and full training; cumulative device-memory snapshots are not a
+comparative training peak. Recorded logical matrix-state bytes quantify storage.
+No source-matched full-training profiles were found in the cached profile
+inventory; older November4 profiles are excluded from this comparison.
+
+A new tiny NumPy oracle must pass under ONLINE tracking before submission.
+The prepared worker also runs a non-training ONLINE check on each execution
+host. Source/config are published before execution; attempts and W&B identities
+are fresh. Prior reference source and shutdown candidate stay unchanged.
+One job only; no scheduler/wrapper wall-clock limit, default preemption/retries,
+regional storage and no cross-region checkpoint movement. TPU execution uses
+existing Iris fleet policy; no GPU allocation is requested or released.
+No larger-model/horizon/cross-seed campaign is authorized.
