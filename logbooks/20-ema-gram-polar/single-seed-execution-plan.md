@@ -1320,3 +1320,10 @@ helpers and verify timing order/synchronization. The local numerical oracle is
 reused through those unchanged functions; no partial early/middle row is rerun.
 Timing now explicitly includes the norm reference/rescaling and is only a probe
 path comparison. Full-training overhead and comparable peak memory remain open.
+
+
+### 2026-11-08 19:08 UTC: late-only supplement accepted
+
+Iris accepted r04 from `7e917a2be5c8744a4ec70742496b43b82a4e557a`. The
+[launch record](supplemental-probe-r04-accepted.json) binds the late-only request.
+No early/middle measurements are repeated; no full-budget training restarts.
