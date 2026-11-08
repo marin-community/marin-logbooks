@@ -1,0 +1,52 @@
+{
+  "status": "ISOLATED_SOURCE_CANDIDATE_LOCAL_CHECKS_PASS_RUNTIME_UNQUALIFIED",
+  "candidate_commit": "f6ef3108962a06bd3b39db50970a4d4a434ad372",
+  "base_commit": "73e35b11131e0f31c9409d7454854e4a003bca8f",
+  "patch_sha256": "14efda626bc474f0542ae45e57d6dc6f89099c18e934028c1d000044a5641224",
+  "source_sha256": {
+    "experiments/ema_gram/shutdown_checks/check_entrypoint_integration.py": "9e488b1ab1d715ebfac65717be726ed23abe21a916be1e3df514b98a61459ec4",
+    "experiments/ema_gram/shutdown_checks/run_checks.py": "9d52eb55aa8463fafa9e9d8f4551474b16909730a3b33b8db54dd63555fd1db0",
+    "experiments/ema_gram/train.py": "b137c86dbe1bd0cca9433e025af3b2db09202eee76448678144216c50d1ecd0e",
+    "lib/levanter/src/levanter/distributed.py": "64357e6d9b8e18249db708542e54fbb1e710ab88d3e5e0ca203a5387ccfd15d4",
+    "lib/levanter/src/levanter/distributed_finalization.py": "cd74a09ecd29dcfa366fdb915561153bf58f8160867c2fd89938a4925372f7f3",
+    "lib/levanter/src/levanter/main/train_lm.py": "f06ac4d7f7d305e321619a8f53d111ab4222c19a4e049c15d315e49ba9f04933",
+    "lib/levanter/src/levanter/tracker/background.py": "f79c91f13da5d679e0cedca21e8077de95cca838b7613bf90b7e74c0441b7aa2",
+    "lib/levanter/src/levanter/tracker/finalization.py": "c21f48e559ba386df869bb045b8da2407e13daca47511766442de9528865c1f6",
+    "lib/levanter/src/levanter/tracker/finelog_metrics.py": "c130d1c7a6ce3f51349f74b1b479cc0a890c101119eae0bc6be6c7b002817035",
+    "lib/levanter/src/levanter/tracker/telemetry.py": "d9c4c8abaa783da1fffa4afea060c74edbf64daf3c150daee404d79fe186599d",
+    "lib/levanter/src/levanter/tracker/tracker.py": "0fc8dc503ead90c413187f19354e5b8db0d4be4999c44a9c5c489d09b42c1e62",
+    "lib/levanter/src/levanter/tracker/wandb.py": "e12d2a874e40edd27c4046940165dde58879e4d4d674939c78b54ad632740fcd",
+    "lib/levanter/src/levanter/trainer.py": "75c0678ceb9f9da4f2d484b62dc2fa964b1b48c19e7940cfbaaf42cebff938c8",
+    "lib/levanter/tests/shutdown_candidate_checks/check_backend_integration.py": "25116633fe16a780d288c2ec0d52fb61a501c4b142fae2da33e39a275cdcff49",
+    "lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py": "1e1ef83e35a1c9df2a309e531c51823d628f1eec81559692c4757a395b7807e9",
+    "lib/levanter/tests/shutdown_candidate_checks/check_source_integration.py": "b0f2d0aaea7403790cb10056ead79da6406fa22292cd10d65a96e13bffd341c0",
+    "lib/levanter/tests/shutdown_candidate_checks/check_trainer_exit_integration.py": "fcc295d0e817a2dd5441c9cdc9429debb0323dc819563e0fcaf2f9edcce0cb98",
+    "lib/marin/src/marin/training/training.py": "1ad647f71694830461da5034aacc27860eebbdd05a67f86952cf2479157b6fe8"
+  },
+  "local_tests_passed": 36,
+  "test_groups": {
+    "tracker": 7,
+    "backend": 5,
+    "exit_hook": 9,
+    "trainer_cleanup": 6,
+    "outer_wrapper": 9
+  },
+  "check_run": "portable-checks-r02",
+  "validation_scope": "Five separate processes; actual source/AST with fake services, JAX and storage boundaries. No real imports/ONLINE/multi-host qualification. Final line-wrap-only edit after r02 did not change test semantics; tests not repeated.",
+  "publication_is_deployment": false,
+  "runtime_qualified": false,
+  "initiating_cause_proven": false,
+  "frozen_execution_changed": false,
+  "new_jobs": 0,
+  "remote_experiment_reads": 0,
+  "launch_recipe_selects_candidate": false,
+  "unresolved": [
+    "Real package initialization and live ONLINE tracking",
+    "Multi-host JAX missing-peer/partial-init cleanup",
+    "Deployed controller revision and natural task-status aggregation",
+    "Producer quiescence for every custom producer and fresh coordinator world across attempts"
+  ],
+  "post_check_edits": [
+    "Entry check scope string wrapped only; candidate background duplicate copyright header removed only. No behavior changed after portable r02."
+  ]
+}

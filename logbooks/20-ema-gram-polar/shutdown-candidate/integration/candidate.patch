@@ -1,0 +1,1889 @@
+From f6ef3108962a06bd3b39db50970a4d4a434ad372 Mon Sep 17 00:00:00 2001
+From: kaiyuew <kaiyuew@kaiyuews-MacBook-Air.local>
+Date: Sun, 8 Nov 2026 03:32:20 -0800
+Subject: [PATCH] Prepare isolated coordinated shutdown integration candidate
+
+Connect local tracker reports to an opt-in finalizer after outer-wrapper JAX use. Preserve application failures, record drain failures and serialize producer admission with shutdown. Keep launch recipes unchanged.
+
+Thirty-six local checks use fake external boundaries. Real package initialization, ONLINE multi-host behavior and controller aggregation remain unqualified. This is a development checkpoint, not a deployed repair.
+---
+ .../check_entrypoint_integration.py           | 224 +++++++++++++++++
+ .../ema_gram/shutdown_checks/run_checks.py    |  56 +++++
+ experiments/ema_gram/train.py                 |  72 +++++-
+ lib/levanter/src/levanter/distributed.py      |  64 ++++-
+ .../src/levanter/distributed_finalization.py  |  57 +++++
+ lib/levanter/src/levanter/main/train_lm.py    |   5 +-
+ .../src/levanter/tracker/background.py        | 133 +++++++++--
+ .../src/levanter/tracker/finalization.py      |  44 ++++
+ .../src/levanter/tracker/finelog_metrics.py   |   9 +
+ .../src/levanter/tracker/telemetry.py         |  11 +-
+ lib/levanter/src/levanter/tracker/tracker.py  |  19 ++
+ lib/levanter/src/levanter/tracker/wandb.py    |  12 +
+ lib/levanter/src/levanter/trainer.py          |  52 ++--
+ .../check_backend_integration.py              | 178 ++++++++++++++
+ .../check_hook_integration.py                 | 225 ++++++++++++++++++
+ .../check_source_integration.py               | 184 ++++++++++++++
+ .../check_trainer_exit_integration.py         | 142 +++++++++++
+ lib/marin/src/marin/training/training.py      |   2 +-
+ 18 files changed, 1432 insertions(+), 57 deletions(-)
+ create mode 100644 experiments/ema_gram/shutdown_checks/check_entrypoint_integration.py
+ create mode 100644 experiments/ema_gram/shutdown_checks/run_checks.py
+ create mode 100644 lib/levanter/src/levanter/distributed_finalization.py
+ create mode 100644 lib/levanter/src/levanter/tracker/finalization.py
+ create mode 100644 lib/levanter/tests/shutdown_candidate_checks/check_backend_integration.py
+ create mode 100644 lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py
+ create mode 100644 lib/levanter/tests/shutdown_candidate_checks/check_source_integration.py
+ create mode 100644 lib/levanter/tests/shutdown_candidate_checks/check_trainer_exit_integration.py
+
+diff --git a/experiments/ema_gram/shutdown_checks/check_entrypoint_integration.py b/experiments/ema_gram/shutdown_checks/check_entrypoint_integration.py
+new file mode 100644
+index 000000000..7be37e703
+--- /dev/null
++++ b/experiments/ema_gram/shutdown_checks/check_entrypoint_integration.py
+@@ -0,0 +1,224 @@
++# Copyright The Marin Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Execute candidate wrapper AST with fake training/JAX/storage boundaries."""
++import ast
++import importlib.util
++import json
++import os
++import sys
++import unittest
++from dataclasses import asdict, dataclass, replace
++from pathlib import Path
++from types import SimpleNamespace
++
++ROOT = next(parent for parent in Path(__file__).resolve().parents if (parent / "lib/levanter/src/levanter").is_dir())
++SOURCE = ROOT / "experiments/ema_gram/train.py"
++spec = importlib.util.spec_from_file_location("receipt", ROOT / "lib/levanter/src/levanter/tracker/finalization.py")
++receipt = importlib.util.module_from_spec(spec)
++sys.modules["receipt"] = receipt
++spec.loader.exec_module(receipt)
++
++
++@dataclass
++class Tracker:
++    id: str = "run"
++    resume: str = "never"
++    mode: str = "online"
++
++
++@dataclass
++class Trainer:
++    tracker: object
++    id: str = "run"
++
++
++@dataclass
++class TrainConfig:
++    trainer: object
++
++
++@dataclass
++class Config:
++    train_config: object
++    output_path: str = "fake-artifacts"
++
++
++def load(app_error=None, memory_error=None, install_error=None, handler_error=None):
++    events, writes, installed = [], {}, []
++
++    class FakePath:
++        def __init__(self, path):
++            self.path = str(path)
++
++        def __truediv__(self, part):
++            return FakePath(self.path + "/" + part)
++
++        def mkdir(self, **kwargs):
++            pass
++
++        def mkdirs(self):
++            pass
++
++        def write_text(self, value):
++            writes[self.path] = value
++
++    class Handler:
++        def __init__(self, *args):
++            pass
++
++        def close(self):
++            events.append("handler_close")
++            if handler_error is not None:
++                raise handler_error
++
++    logger = SimpleNamespace(
++        name="metrics",
++        addHandler=lambda h: None,
++        removeHandler=lambda h: events.append("handler_remove"),
++        info=lambda msg: None,
++        exception=lambda msg: events.append("exception_logged"),
++    )
++    good = receipt.FinalizationReport("wandb", receipt.FinalizationState.COMPLETE)
++
++    def train(config):
++        events.append("train")
++        tracker = config.train_config.trainer.tracker[0]
++        assert tracker.mode == "online" and tracker.resume == "never"
++        if app_error is not None:
++            raise app_error
++        return good
++
++    def memory():
++        events.append("memory")
++        if memory_error is not None:
++            raise memory_error
++        return {"bytes": 1}
++
++    def install(report, **kwargs):
++        events.append("install")
++        installed.append((report, kwargs))
++        if install_error is not None:
++            raise install_error
++
++    ns = dict(
++        asdict=asdict,
++        replace=replace,
++        json=json,
++        uuid=SimpleNamespace(uuid4=lambda: SimpleNamespace(hex="fixed-attempt")),
++        Path=FakePath,
++        StoragePath=FakePath,
++        AttemptLogHandler=Handler,
++        logging=SimpleNamespace(getLogger=lambda name: logger),
++        JsonLoggerConfig=lambda **kwargs: kwargs,
++        jax=SimpleNamespace(local_devices=lambda: [SimpleNamespace(memory_stats=memory)]),
++        run_levanter_train_lm=train,
++        install_coordinated_iris_finalizer=install,
++    )
++    names = {"run_training", "run_training_with_coordinated_finalization", "_run_training"}
++    nodes = [
++        node for node in ast.parse(SOURCE.read_text()).body if isinstance(node, ast.FunctionDef) and node.name in names
++    ]
++    assert len(nodes) == 3
++    exec(compile(ast.Module(body=nodes, type_ignores=[]), str(SOURCE), "exec"), ns)
++    return ns, events, writes, installed, Config(TrainConfig(Trainer(Tracker())))
++
++
++class Checks(unittest.TestCase):
++    def test_receipt_after_last_jax_use(self):
++        ns, events, writes, installed, cfg = load()
++        ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=1234)
++        self.assertEqual(events, ["train", "memory", "handler_remove", "handler_close", "install"])
++        self.assertEqual(installed[0][1]["health_timeout_ms"], 1234)
++        receipts = [json.loads(v) for k, v in writes.items() if k.endswith("/finalization.json")]
++        self.assertEqual(len(receipts), 2)
++        self.assertEqual(receipts[0]["tracker_report"]["state"], "complete")
++
++    def test_legacy_does_not_install_candidate(self):
++        ns, _events, writes, installed, cfg = load()
++        ns["run_training"](cfg)
++        self.assertEqual(installed, [])
++        self.assertFalse(any(k.endswith("finalization.json") for k in writes))
++
++    def test_original_application_error_preserved(self):
++        error = ValueError("original")
++        ns, _events, _writes, installed, cfg = load(app_error=error)
++        with self.assertRaises(ValueError) as caught:
++            ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=1234)
++        self.assertIs(caught.exception, error)
++        self.assertIs(installed[0][1]["application_error"], error)
++        self.assertIsNone(installed[0][0])
++
++    def test_failed_initialization_does_not_query_jax_devices(self):
++        error = RuntimeError("ONLINE tracker initialization failed")
++        ns, events, writes, _installed, cfg = load(app_error=error, memory_error=AssertionError("must not touch JAX"))
++        with self.assertRaises(RuntimeError) as caught:
++            ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=1234)
++        self.assertIs(caught.exception, error)
++        self.assertNotIn("memory", events)
++        self.assertIn("handler_close", events)
++        self.assertTrue(all(json.loads(value) is None for key, value in writes.items() if key.endswith("/memory.json")))
++
++    def test_cleanup_error_does_not_mask_application_error(self):
++        error = SystemExit(7)
++        ns, _events, _writes, installed, cfg = load(app_error=error, handler_error=RuntimeError("cleanup"))
++        with self.assertRaises(SystemExit) as caught:
++            ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=1234)
++        self.assertIs(caught.exception, error)
++        self.assertIs(installed[0][1]["application_error"], error)
++
++    def test_cleanup_error_is_failure(self):
++        error = RuntimeError("cleanup")
++        ns, _events, _writes, installed, cfg = load(memory_error=error)
++        with self.assertRaises(RuntimeError) as caught:
++            ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=1234)
++        self.assertIs(caught.exception, error)
++        self.assertIs(installed[0][1]["application_error"], error)
++
++    def test_install_failure_preserves_prior_error(self):
++        error = ValueError("original")
++        ns, _events, _writes, _installed, cfg = load(app_error=error, install_error=RuntimeError("install"))
++        with self.assertRaises(ValueError) as caught:
++            ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=1234)
++        self.assertIs(caught.exception, error)
++
++    def test_install_failure_without_prior_error_propagates(self):
++        error = RuntimeError("install")
++        ns, _events, _writes, _installed, cfg = load(install_error=error)
++        with self.assertRaises(RuntimeError) as caught:
++            ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=1234)
++        self.assertIs(caught.exception, error)
++
++    def test_invalid_health_budget_rejected_before_training(self):
++        for budget in [0, -1, True, 1.5, None]:
++            ns, events, _writes, _installed, cfg = load()
++            with self.assertRaises(ValueError):
++                ns["run_training_with_coordinated_finalization"](cfg, health_timeout_ms=budget)
++            self.assertEqual(events, [])
++
++
++if __name__ == "__main__":
++    result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Checks))
++    (Path(os.environ["EMA_GRAM_CHECK_RESULT_DIR"]) / "entrypoint-integration-checks.json").write_text(
++        json.dumps(
++            {
++                "passed": result.wasSuccessful(),
++                "tests": result.testsRun,
++                "scope": (
++                    "actual candidate three wrapper function ASTs and receipt dataclass; "
++                    "fake training, JAX, storage and installer boundaries"
++                ),
++                "runtime_qualified": False,
++                "new_jobs": 0,
++                "remote_calls": 0,
++                "limitations": [
++                    "No real package initialization or numerical kernels",
++                    "No real service, controller or multi-host cleanup qualification",
++                    "Failure before wrapper try/finally and abnormal process termination remain outside these checks",
++                ],
++            },
++            indent=2,
++        )
++        + "\n"
++    )
++    raise SystemExit(0 if result.wasSuccessful() else 1)
+diff --git a/experiments/ema_gram/shutdown_checks/run_checks.py b/experiments/ema_gram/shutdown_checks/run_checks.py
+new file mode 100644
+index 000000000..cc2d45d7c
+--- /dev/null
++++ b/experiments/ema_gram/shutdown_checks/run_checks.py
+@@ -0,0 +1,56 @@
++# Copyright The Marin Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Run the isolated candidate checks in separate non-training Python processes.
++
++No live services or numerical backends are initialized. These checks load
++source/AST bodies with external boundaries faked, not full runtime packages.
++"""
++
++import argparse
++import hashlib
++import json
++import os
++import subprocess
++import sys
++from pathlib import Path
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--output-dir", type=Path, required=True)
++    args = parser.parse_args()
++    root = next(p for p in Path(__file__).resolve().parents if (p / "lib/levanter/src/levanter").is_dir())
++    output = args.output_dir.resolve()
++    # Preserve each verification record rather than silently replacing it.
++    output.mkdir(parents=True, exist_ok=False)
++    scripts = [
++        root / "lib/levanter/tests/shutdown_candidate_checks" / f"check_{name}_integration.py"
++        for name in ["source", "backend", "hook", "trainer_exit"]
++    ] + [Path(__file__).with_name("check_entrypoint_integration.py")]
++    env = dict(os.environ, EMA_GRAM_CHECK_RESULT_DIR=str(output))
++    records = []
++    for script in scripts:
++        result = subprocess.run([sys.executable, str(script)], cwd=root, env=env, capture_output=True, text=True)
++        (output / (script.stem + ".log")).write_text(result.stdout + result.stderr)
++        records.append(
++            {
++                "script": str(script.relative_to(root)),
++                "exit_code": result.returncode,
++                "sha256": hashlib.sha256(script.read_bytes()).hexdigest(),
++            }
++        )
++    summary = {
++        "passed": all(r["exit_code"] == 0 for r in records),
++        "checks": records,
++        "runtime_qualified": False,
++        "new_jobs": 0,
++        "scope": "isolated Python source/AST checks with fake external boundaries; no package/runtime qualification",
++    }
++    (output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
++    print(json.dumps(summary, indent=2))
++    return 0 if summary["passed"] else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/ema_gram/train.py b/experiments/ema_gram/train.py
+index 8bc9a5b57..3268683cc 100644
+--- a/experiments/ema_gram/train.py
++++ b/experiments/ema_gram/train.py
+@@ -8,11 +8,12 @@ import json
+ import logging
+ import math
+ import uuid
+-from dataclasses import replace
++from dataclasses import asdict, replace
+ from pathlib import Path
+ 
+ import draccus
+ import jax
++from levanter.distributed import install_coordinated_iris_finalizer
+ from levanter.optim.ema_gram import EmaGramConfig
+ from levanter.tracker.json_logger import JsonLoggerConfig
+ from marin.execution.lazy import materialized_config
+@@ -53,6 +54,23 @@ class AttemptLogHandler(logging.FileHandler):
+ 
+ 
+ def run_training(config):
++    """Keep the existing entrypoint until coordinated teardown is qualified."""
++    return _run_training(config, finalization_health_timeout_ms=None)
++
++
++def run_training_with_coordinated_finalization(config, *, health_timeout_ms: int):
++    """Future opt-in entrypoint; the communication-health budget is explicit.
++
++    No launch recipe selects this entrypoint. Multi-host ONLINE qualification
++    and a justified rendezvous budget are required before a future submission.
++    This is not a queue, task, training-phase or scheduler-preemption limit.
++    """
++    if isinstance(health_timeout_ms, bool) or not isinstance(health_timeout_ms, int) or health_timeout_ms <= 0:
++        raise ValueError("Finalization communication-health budget must be a positive integer in milliseconds")
++    return _run_training(config, finalization_health_timeout_ms=health_timeout_ms)
++
++
++def _run_training(config, *, finalization_health_timeout_ms: int | None):
+     """Keep a distinct online W&B run for each process, including preemption retries."""
+     if config.output_path is None:
+         raise ValueError("Training requires an artifact output path for attempt evidence")
+@@ -73,15 +91,53 @@ def run_training(config):
+             trainer=replace(config.train_config.trainer, tracker=(tracker, JsonLoggerConfig(logger_name=logger.name))),
+         ),
+     )
++    report = None
++    application_error = None
+     try:
+-        return run_levanter_train_lm(config)
++        report = run_levanter_train_lm(config)
++    except BaseException as exc:
++        application_error = exc
++        raise
+     finally:
+-        memory = [d.memory_stats() for d in jax.local_devices()]
+-        logger.info(json.dumps({"event": "device_memory_stats", "devices": memory}))
+-        logger.removeHandler(handler)
+-        handler.close()
+-        (log_dir / "memory.json").write_text(json.dumps(memory))
+-        (artifact_dir / "memory.json").write_text(json.dumps(memory))
++        cleanup_error = None
++        try:
++            # Failed initialization may precede ONLINE tracker setup. Do not
++            # initialize/query devices while trying to report that failure.
++            memory = [d.memory_stats() for d in jax.local_devices()] if application_error is None else None
++            logger.info(json.dumps({"event": "device_memory_stats", "devices": memory}))
++            logger.removeHandler(handler)
++            handler.close()
++            (log_dir / "memory.json").write_text(json.dumps(memory))
++            (artifact_dir / "memory.json").write_text(json.dumps(memory))
++            if finalization_health_timeout_ms is not None:
++                evidence = {
++                    "tracker_report": asdict(report) if report is not None else None,
++                    "application_error_type": (
++                        type(application_error).__name__ if application_error is not None else None
++                    ),
++                    "evidence_scope": "local tracker finalization; remote history audited separately",
++                }
++                encoded = json.dumps(evidence, sort_keys=True)
++                (log_dir / "finalization.json").write_text(encoded)
++                (artifact_dir / "finalization.json").write_text(encoded)
++        except BaseException as exc:
++            cleanup_error = exc
++            if application_error is None:
++                raise
++            logger.exception("Attempt cleanup failed after an application error; preserving the application error")
++        finally:
++            if finalization_health_timeout_ms is not None:
++                original_error = application_error if application_error is not None else cleanup_error
++                try:
++                    install_coordinated_iris_finalizer(
++                        report,
++                        application_error=original_error,
++                        health_timeout_ms=finalization_health_timeout_ms,
++                    )
++                except BaseException:
++                    if original_error is None:
++                        raise
++                    logger.exception("Could not install coordinated finalization; preserving the earlier error")
+ 
+ 
+ def build_training_step(
+diff --git a/lib/levanter/src/levanter/distributed.py b/lib/levanter/src/levanter/distributed.py
+index 2a90ee08f..787fbcb19 100644
+--- a/lib/levanter/src/levanter/distributed.py
++++ b/lib/levanter/src/levanter/distributed.py
+@@ -13,13 +13,14 @@ from functools import partial
+ from typing import List, Optional, Union
+ 
+ import jax
+-from jax._src import clusters
++from jax._src import clusters, distributed as jax_distributed
+ from iris.client.client import iris_ctx
+ from iris.cluster.client.job_info import get_job_info
+ from iris.jax.init import initialize_jax as initialize_iris_jax
+ 
++from levanter.distributed_finalization import finalize_and_shutdown
+ from levanter.megascale import configure_megascale_from_iris
+-
++from levanter.tracker.finalization import FinalizationReport, required_sinks_complete
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -46,8 +47,67 @@ def _finalize_iris_jax_after_clean_exit(complete_job: Callable[[], None] | None
+         complete_job()
+ 
+ 
++_coordinated_exit_hook: Callable[[], None] | None = None
++
++
+ def _unregister_iris_exit_handler() -> None:
++    global _coordinated_exit_hook
+     atexit.unregister(_finalize_iris_jax_after_clean_exit)
++    if _coordinated_exit_hook is not None:
++        atexit.unregister(_coordinated_exit_hook)
++        _coordinated_exit_hook = None
++
++
++def install_coordinated_iris_finalizer(
++    report: FinalizationReport | None,
++    *,
++    application_error: BaseException | None,
++    health_timeout_ms: int,
++) -> None:
++    """Replace the default Iris exit hook after all outer-wrapper JAX work.
++
++    This candidate requires an initialized Iris JAX world. Rank zero publishes
++    W&B; the other ranks still contribute their application success/failure.
++    Natural task exits determine job status. The hook never calls complete_job.
++    """
++    global _coordinated_exit_hook
++    if _coordinated_exit_hook is not None:
++        raise RuntimeError("coordinated finalization is already installed for this world")
++    job_info = get_job_info()
++    coordinator = jax_distributed.global_state.client
++    if job_info is None or coordinator is None or not jax.distributed.is_initialized():
++        raise RuntimeError("coordinated finalization requires an initialized Iris JAX world")
++    rank = jax.process_index()
++    ranks = tuple(range(jax.process_count()))
++    # The coordinator service scopes this key to its distributed world. A fresh
++    # process attempt must initialize a fresh world, not reuse a finished one.
++    world_key = job_info.job_id.to_wire()
++    required_names = frozenset({"wandb"}) if rank == 0 else frozenset()
++    required_complete = report is not None and required_sinks_complete(report, required_names)
++
++    def finalize() -> None:
++        error = application_error if application_error is not None else getattr(sys, "last_exc", None)
++        failure_code = 1
++        if isinstance(error, SystemExit) and isinstance(error.code, int) and error.code != 0:
++            failure_code = error.code
++        try:
++            finalize_and_shutdown(
++                coordinator,
++                world_key=world_key,
++                rank=rank,
++                ranks=ranks,
++                required_complete=required_complete,
++                application_failed=error is not None,
++                health_timeout_ms=health_timeout_ms,
++                shutdown=jax.distributed.shutdown,
++            )
++        except BaseException:
++            logger.exception("Coordinated Iris finalization failed")
++            os._exit(failure_code)
++
++    _unregister_iris_exit_handler()
++    _coordinated_exit_hook = finalize
++    atexit.register(finalize)
+ 
+ 
+ class LevanterSlurmCluster(clusters.SlurmCluster):
+diff --git a/lib/levanter/src/levanter/distributed_finalization.py b/lib/levanter/src/levanter/distributed_finalization.py
+new file mode 100644
+index 000000000..08278a5d7
+--- /dev/null
++++ b/lib/levanter/src/levanter/distributed_finalization.py
+@@ -0,0 +1,57 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Host-side finalization exchange; remote history remains independently audited."""
++
++from collections.abc import Callable, Sequence
++import json
++from typing import Protocol
++
++
++class FinalizationCoordinator(Protocol):
++    def key_value_set(self, key: str, value: str, allow_overwrite: bool = False) -> None: ...
++
++    def key_value_dir_get(self, key: str) -> list[tuple[str, str]]: ...
++
++    def wait_at_barrier(self, barrier_id: str, timeout_in_ms: int, process_ids: Sequence[int]) -> None: ...
++
++
++class DistributedFinalizationError(RuntimeError):
++    pass
++
++
++def finalize_and_shutdown(
++    coordinator: FinalizationCoordinator,
++    *,
++    world_key: str,
++    rank: int,
++    ranks: tuple[int, ...],
++    required_complete: bool,
++    application_failed: bool,
++    health_timeout_ms: int,
++    shutdown: Callable[[], None],
++) -> None:
++    """Wait for drain outcomes, shut down together, and preserve required failures.
++
++    Call once per coordinator world, after the outer caller's final JAX uses.
++    The timeout bounds a communication-health rendezvous, not the training job.
++    On missing peers or coordinator failure, raise before calling shutdown.
++    The caller must keep that failure nonzero; real JAX cleanup on this path
++    requires runtime qualification. No force-completion operation is performed.
++    """
++    prefix = f"levanter/finalization/v1/{world_key}/"
++    payload = {"required_complete": required_complete, "application_failed": application_failed}
++    coordinator.key_value_set(f"{prefix}{rank}", json.dumps(payload))
++    coordinator.wait_at_barrier(f"{prefix}ready", health_timeout_ms, ranks)
++    receipts = {
++        int(key.removeprefix(prefix)): json.loads(value) for key, value in coordinator.key_value_dir_get(prefix)
++    }
++    if set(receipts) != set(ranks):
++        raise DistributedFinalizationError("rank receipt membership does not match the execution")
++    failed = any(
++        receipt.get("required_complete") is not True or receipt.get("application_failed") is not False
++        for receipt in receipts.values()
++    )
++    shutdown()
++    if failed:
++        raise DistributedFinalizationError("application or required telemetry failed on one or more ranks")
+diff --git a/lib/levanter/src/levanter/main/train_lm.py b/lib/levanter/src/levanter/main/train_lm.py
+index 1eecfa687..7a73677bd 100644
+--- a/lib/levanter/src/levanter/main/train_lm.py
++++ b/lib/levanter/src/levanter/main/train_lm.py
+@@ -37,6 +37,7 @@ from levanter.models.lm_model import LmConfig, LmExample, LmHeadModel, split_act
+ from levanter.optim.config import AdamConfig, OptimizerConfig
+ from levanter.trainer import Trainer, TrainerConfig
+ from levanter.trainer_state import trainables_only
++from levanter.tracker.finalization import FinalizationReport
+ from levanter.training_control import TrainingDashboard
+ from levanter.utils.jax_utils import parameter_count
+ 
+@@ -147,7 +148,7 @@ def _load_lm_model_from_configured_source(
+     return model
+ 
+ 
+-def main(config: TrainLmConfig):
++def main(config: TrainLmConfig) -> FinalizationReport:
+     tokenizer = config.data.the_tokenizer
+ 
+     # The three weight-init sources are mutually exclusive: HF conversion, native full-state restore, and
+@@ -437,7 +438,7 @@ def main(config: TrainLmConfig):
+         trainer.train(state, train_loader)
+ 
+     # This isn't necessary except when Levanter is run in a subprocess (as happens under Iris/Fray)
+-    trainer.tracker.finish()
++    return trainer.tracker.finish_with_report()
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/lib/levanter/src/levanter/tracker/background.py b/lib/levanter/src/levanter/tracker/background.py
+index 213173c27..c7d5d3161 100644
+--- a/lib/levanter/src/levanter/tracker/background.py
++++ b/lib/levanter/src/levanter/tracker/background.py
+@@ -43,11 +43,12 @@ import tempfile
+ import threading
+ import time
+ import typing
+-from typing import Any, Optional
++from enum import StrEnum
++from typing import Any
+ 
++from levanter.tracker.finalization import FinalizationReport, FinalizationState
+ from levanter.tracker.tracker import Tracker
+ 
+-
+ logger = logging.getLogger(__name__)
+ 
+ 
+@@ -64,7 +65,7 @@ class _StagedArtifact:
+     path: str
+ 
+     @classmethod
+-    def stage(cls, source) -> Optional["_StagedArtifact"]:
++    def stage(cls, source) -> _StagedArtifact | None:
+         """Copy ``source`` into a fresh temp dir, or return ``None`` if it is missing.
+ 
+         The basename is preserved so the artifact's contents and W&B's default
+@@ -98,6 +99,33 @@ _DROP_LOG_BURST = 5
+ _DROP_LOG_PERIOD = 1000
+ 
+ 
++class FinishState(StrEnum):
++    NOT_REQUESTED = "not_requested"
++    NOT_ENQUEUED = "not_enqueued"
++    QUEUED = "queued"
++    SUCCEEDED = "succeeded"
++    FAILED = "failed"
++
++
++@dataclasses.dataclass(frozen=True)
++class FinalizationReceipt:
++    """Local wrapper evidence only; this does not certify remote history integrity."""
++
++    finish_state: FinishState
++    worker_alive: bool
++    failed_calls: int
++    rejected_updates: int
++
++    @property
++    def locally_drained(self) -> bool:
++        return (
++            self.finish_state == FinishState.SUCCEEDED
++            and not self.worker_alive
++            and self.failed_calls == 0
++            and self.rejected_updates == 0
++        )
++
++
+ class BackgroundTracker(Tracker):
+     """Run another tracker's calls on a background thread, swallowing failures.
+ 
+@@ -123,6 +151,8 @@ class BackgroundTracker(Tracker):
+         self._queue: queue.Queue = queue.Queue(maxsize=max_queue_size)
+         self._finish_timeout = finish_timeout
+         self._dropped = 0
++        self._failed_calls = 0
++        self._finish_state = FinishState.NOT_REQUESTED
+         self._stopped = False
+         self._lock = threading.Lock()
+         self._thread = threading.Thread(
+@@ -144,6 +174,8 @@ class BackgroundTracker(Tracker):
+                 try:
+                     method(*args, **kwargs)
+                 except Exception:
++                    with self._lock:
++                        self._failed_calls += 1
+                     logger.exception(
+                         "Background tracker '%s' raised while processing %s; dropping update and continuing.",
+                         self.name,
+@@ -154,23 +186,30 @@ class BackgroundTracker(Tracker):
+ 
+     def _enqueue(self, method, *args, **kwargs) -> bool:
+         """Push a deferred call onto the worker queue. Returns whether it was accepted."""
+-        if self._stopped:
+-            logger.debug("Background tracker '%s' already stopped; dropping %s", self.name, method.__name__)
+-            return False
+-        try:
+-            self._queue.put_nowait((method, args, kwargs))
+-            return True
+-        except queue.Full:
+-            with self._lock:
++        # Serialize admission with finish's stop transition. Otherwise a producer
++        # can pass the stopped check, pause, and enqueue behind the shutdown
++        # sentinel after the worker has exited.
++        with self._lock:
++            if self._stopped:
+                 self._dropped += 1
+-                dropped = self._dropped
+-            if dropped <= _DROP_LOG_BURST or dropped % _DROP_LOG_PERIOD == 0:
+-                logger.error(
+-                    "Background tracker '%s' queue full; dropped %d update(s) so far.",
+-                    self.name,
+-                    dropped,
+-                )
+-            return False
++                stopped = True
++            else:
++                stopped = False
++                try:
++                    self._queue.put_nowait((method, args, kwargs))
++                    return True
++                except queue.Full:
++                    self._dropped += 1
++            dropped = self._dropped
++        if stopped:
++            logger.debug("Background tracker '%s' already stopped; dropping %s", self.name, method.__name__)
++        elif dropped <= _DROP_LOG_BURST or dropped % _DROP_LOG_PERIOD == 0:
++            logger.error(
++                "Background tracker '%s' queue full; dropped %d update(s) so far.",
++                self.name,
++                dropped,
++            )
++        return False
+ 
+     def _defer(self, prepare, method, payload, **kwargs) -> None:
+         """Prepare ``payload`` on the calling thread, then enqueue ``method``.
+@@ -180,11 +219,15 @@ class BackgroundTracker(Tracker):
+         rather than crashing the producer.
+         """
+         if self._stopped:
++            with self._lock:
++                self._dropped += 1
+             logger.debug("Background tracker '%s' already stopped; dropping %s", self.name, method.__name__)
+             return
+         try:
+             payload = prepare(payload)
+         except Exception:
++            with self._lock:
++                self._failed_calls += 1
+             logger.exception(
+                 "Background tracker '%s' failed to prepare payload for %s; dropping update.",
+                 self.name,
+@@ -202,8 +245,8 @@ class BackgroundTracker(Tracker):
+         self,
+         metrics: typing.Mapping[str, Any],
+         *,
+-        step: Optional[int],
+-        commit: Optional[bool] = None,
++        step: int | None,
++        commit: bool | None = None,
+     ) -> None:
+         self._defer(self.wrapped._prepare_log, self.wrapped.log, metrics, step=step, commit=commit)
+ 
+@@ -218,24 +261,30 @@ class BackgroundTracker(Tracker):
+         self,
+         artifact_path,
+         *,
+-        name: Optional[str] = None,
+-        type: Optional[str] = None,
++        name: str | None = None,
++        type: str | None = None,  # noqa: A002 - inherited Tracker artifact keyword
+     ) -> None:
+         # Stage the bytes on the producer thread so the caller may delete the source
+         # the moment this returns (callers often build it in a TemporaryDirectory).
+         try:
+             self.wrapped.validate_artifact(artifact_path, name=name, type=type)
+         except (OSError, ValueError):
++            with self._lock:
++                self._failed_calls += 1
+             logger.exception("Background tracker '%s': refusing artifact %s before staging.", self.name, artifact_path)
+             return
+         try:
+             staged = _StagedArtifact.stage(artifact_path)
+         except OSError:
++            with self._lock:
++                self._failed_calls += 1
+             logger.exception(
+                 "Background tracker '%s': failed to stage artifact %s; dropping it.", self.name, artifact_path
+             )
+             return
+         if staged is None:
++            with self._lock:
++                self._dropped += 1
+             logger.warning(
+                 "Background tracker '%s': artifact %s does not exist; dropping it.", self.name, artifact_path
+             )
+@@ -243,7 +292,9 @@ class BackgroundTracker(Tracker):
+         if not self._enqueue(self._upload_staged_artifact, staged, name=name, type=type):
+             staged.cleanup()
+ 
+-    def _upload_staged_artifact(self, staged: _StagedArtifact, *, name: Optional[str], type: Optional[str]) -> None:
++    def _upload_staged_artifact(
++        self, staged: _StagedArtifact, *, name: str | None, type: str | None  # noqa: A002 - inherited API
++    ) -> None:
+         """Worker-side: upload a staged artifact, then remove its staging dir."""
+         try:
+             self.wrapped.log_artifact(staged.path, name=name, type=type)
+@@ -260,8 +311,12 @@ class BackgroundTracker(Tracker):
+ 
+         # Enqueue the wrapped finish() so it runs after any pending logs.
+         try:
+-            self._queue.put_nowait((self.wrapped.finish, (), {}))
++            with self._lock:
++                self._finish_state = FinishState.QUEUED
++            self._queue.put_nowait((self._finish_wrapped, (), {}))
+         except queue.Full:
++            with self._lock:
++                self._finish_state = FinishState.NOT_ENQUEUED
+             logger.warning(
+                 "Background tracker '%s' queue full at shutdown; finish() may not be called on the wrapped tracker.",
+                 self.name,
+@@ -295,6 +350,34 @@ class BackgroundTracker(Tracker):
+                 self._dropped,
+             )
+ 
++    def _finish_wrapped(self) -> None:
++        try:
++            self.wrapped.finish()
++        except BaseException:
++            with self._lock:
++                self._finish_state = FinishState.FAILED
++            raise
++        else:
++            with self._lock:
++                self._finish_state = FinishState.SUCCEEDED
++
++    def finish_with_report(self) -> FinalizationReport:
++        self.finish()
++        receipt = self.finalization_receipt()
++        return FinalizationReport(
++            name=self.name,
++            state=FinalizationState.COMPLETE if receipt.locally_drained else FinalizationState.INCOMPLETE,
++            detail=receipt.finish_state.value,
++            failed_calls=receipt.failed_calls,
++            rejected_updates=receipt.rejected_updates,
++            worker_alive=receipt.worker_alive,
++        )
++
++    def finalization_receipt(self) -> FinalizationReceipt:
++        """Snapshot local drain evidence; callers must quiesce producers first."""
++        with self._lock:
++            return FinalizationReceipt(self._finish_state, self._thread.is_alive(), self._failed_calls, self._dropped)
++
+     # ---- Helpers (mostly for tests) -----------------------------------------
+ 
+     def _wait_until_idle(self, timeout: float = 5.0) -> bool:
+diff --git a/lib/levanter/src/levanter/tracker/finalization.py b/lib/levanter/src/levanter/tracker/finalization.py
+new file mode 100644
+index 000000000..f7109c497
+--- /dev/null
++++ b/lib/levanter/src/levanter/tracker/finalization.py
+@@ -0,0 +1,44 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Local tracker finalization evidence; independent of remote history auditing."""
++
++from dataclasses import dataclass
++from enum import StrEnum
++
++
++class FinalizationState(StrEnum):
++    COMPLETE = "complete"
++    INCOMPLETE = "incomplete"
++    UNVERIFIED = "unverified"
++
++
++@dataclass(frozen=True)
++class FinalizationReport:
++    name: str
++    state: FinalizationState
++    detail: str = ""
++    failed_calls: int | None = None
++    rejected_updates: int | None = None
++    worker_alive: bool | None = None
++    children: tuple["FinalizationReport", ...] = ()
++
++    def leaves(self) -> tuple["FinalizationReport", ...]:
++        if self.children:
++            return tuple(leaf for child in self.children for leaf in child.leaves())
++        return (self,)
++
++
++def required_sinks_complete(report: FinalizationReport, required_names: frozenset[str]) -> bool:
++    """Require exactly one complete report for each required sink on this rank.
++
++    The caller selects required names from the resolved execution policy.
++    Missing, duplicate, or unverified evidence cannot satisfy that policy.
++    A complete local report still does not certify remote history integrity.
++    """
++    leaves = report.leaves()
++    for name in required_names:
++        matched = [leaf for leaf in leaves if leaf.name == name]
++        if len(matched) != 1 or matched[0].state != FinalizationState.COMPLETE:
++            return False
++    return True
+diff --git a/lib/levanter/src/levanter/tracker/finelog_metrics.py b/lib/levanter/src/levanter/tracker/finelog_metrics.py
+index 494aa55ef..c5da5fc80 100644
+--- a/lib/levanter/src/levanter/tracker/finelog_metrics.py
++++ b/lib/levanter/src/levanter/tracker/finelog_metrics.py
+@@ -138,6 +138,15 @@ class LevanterMetricsWriter:
+     def close(self) -> None:
+         self._client.close()
+ 
++    def close_with_result(self) -> FlushResult:
++        """Report the final drain outcome without adding a second wait interval.
++
++        A successful final result does not account for drops consumed by an
++        earlier flush. Lifetime integrity still needs the history audit.
++        """
++        self.close()
++        return self._table.flush(timeout=0)
++
+     def _write(
+         self,
+         *,
+diff --git a/lib/levanter/src/levanter/tracker/telemetry.py b/lib/levanter/src/levanter/tracker/telemetry.py
+index 10d4a389d..270c30059 100644
+--- a/lib/levanter/src/levanter/tracker/telemetry.py
++++ b/lib/levanter/src/levanter/tracker/telemetry.py
+@@ -23,6 +23,7 @@ from rigging.telemetry.probes import nccl, nccl_client
+ from levanter.callbacks.progress_watchdog import ProgressTimeout
+ from levanter.tracker import Tracker, TrackerConfig, get_tracker
+ from levanter.tracker.finelog_metrics import LevanterMetricsWriter
++from levanter.tracker.finalization import FinalizationReport, FinalizationState
+ from levanter.tracker.histogram import SummaryStats
+ from levanter.tracker.tracker import NoopTracker
+ 
+@@ -227,6 +228,9 @@ class TelemetryTracker(Tracker):
+         pass
+ 
+     def finish(self):
++        self.finish_with_report()
++
++    def finish_with_report(self) -> FinalizationReport:
+         if self._nccl_ras_probe is not None:
+             try:
+                 self._nccl_ras_probe.shutdown()
+@@ -237,7 +241,12 @@ class TelemetryTracker(Tracker):
+         # already published above, and republishing it for the process's remaining
+         # lifetime tells the reader nothing new.
+         self._heartbeat.stop()
+-        self._writer.close()
++        result = self._writer.close_with_result()
++        return FinalizationReport(
++            self.name,
++            FinalizationState.COMPLETE if result == FlushResult.SUCCEEDED else FinalizationState.INCOMPLETE,
++            detail=f"final Finelog drain: {result.value}; prior flush loss is not certified",
++        )
+ 
+     def capture_stall_diagnostics(self) -> None:
+         """Stop periodic RAS polling, publish a fresh stall sample, and flush telemetry."""
+diff --git a/lib/levanter/src/levanter/tracker/tracker.py b/lib/levanter/src/levanter/tracker/tracker.py
+index bd43b7bea..fb8bb7ad5 100644
+--- a/lib/levanter/src/levanter/tracker/tracker.py
++++ b/lib/levanter/src/levanter/tracker/tracker.py
+@@ -10,6 +10,7 @@ from typing import Any, List, Optional
+ import draccus
+ import jax
+ 
++from levanter.tracker.finalization import FinalizationReport, FinalizationState
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -92,6 +93,11 @@ class Tracker(abc.ABC):
+         """
+         pass
+ 
++    def finish_with_report(self) -> FinalizationReport:
++        """Finish a backend whose normal return has no structured drain evidence."""
++        self.finish()
++        return FinalizationReport(self.name, FinalizationState.UNVERIFIED, "finish returned without drain evidence")
++
+     def __enter__(self):
+         # Deferred: tracker_fns eagerly imports the wandb/trackio backends, which import
+         # `background`, which imports this module -> a genuine cycle. __enter__ only needs
+@@ -119,6 +125,8 @@ class CompositeTracker(Tracker):
+     want isolation from latency.
+     """
+ 
++    name = "composite"
++
+     def __init__(self, loggers: List[Tracker]):
+         self.loggers = loggers
+ 
+@@ -156,6 +164,17 @@ class CompositeTracker(Tracker):
+         # flush at the very end of a run shouldn't crash the trainer's shutdown.
+         self._for_each("finish")
+ 
++    def finish_with_report(self) -> FinalizationReport:
++        reports = []
++        for tracker in self.loggers:
++            try:
++                reports.append(tracker.finish_with_report())
++            except Exception as exc:
++                reports.append(FinalizationReport(tracker.name, FinalizationState.INCOMPLETE, type(exc).__name__))
++        # Required sinks are evaluated individually. An auxiliary unverified
++        # backend must not erase a required backend's failure or certify it.
++        return FinalizationReport("composite", FinalizationState.UNVERIFIED, children=tuple(reports))
++
+ 
+ class TrackerConfig(draccus.PluginRegistry, abc.ABC):
+     discover_packages_path = "levanter.tracker"
+diff --git a/lib/levanter/src/levanter/tracker/wandb.py b/lib/levanter/src/levanter/tracker/wandb.py
+index 5d099ef1d..9d2b8b7fe 100644
+--- a/lib/levanter/src/levanter/tracker/wandb.py
++++ b/lib/levanter/src/levanter/tracker/wandb.py
+@@ -26,6 +26,7 @@ from rigging.provenance import Provenance
+ from rigging.secrets import get_secret
+ 
+ from levanter.tracker.background import maybe_wrap_background
++from levanter.tracker.finalization import FinalizationReport, FinalizationState
+ from levanter.tracker.helpers import generate_pip_freeze, infer_experiment_git_root
+ from levanter.tracker.histogram import SummaryStats
+ from levanter.tracker.tracker import Tracker, TrackerConfig
+@@ -248,6 +249,17 @@ class WandbTracker(Tracker):
+         self.run.finish()
+         self._write_replicate_file()
+ 
++    def finish_with_report(self) -> FinalizationReport:
++        if self._suppress_logging:
++            self.finish()
++            return FinalizationReport(self.name, FinalizationState.UNVERIFIED, "non-publishing rank")
++        self.finish()
++        return FinalizationReport(
++            self.name,
++            FinalizationState.COMPLETE,
++            "W&B finish returned; remote history and lifetime losslessness are audited separately",
++        )
++
+     def _write_replicate_file(self):
+         if self._replicate_path is None:
+             return
+diff --git a/lib/levanter/src/levanter/trainer.py b/lib/levanter/src/levanter/trainer.py
+index 1f78ae988..e23fcf91c 100644
+--- a/lib/levanter/src/levanter/trainer.py
++++ b/lib/levanter/src/levanter/trainer.py
+@@ -415,33 +415,49 @@ class Trainer:
+         return self
+ 
+     def __exit__(self, *args):
+-        problems = []
++        problems: list[BaseException] = []
++        application_error = args[1]
+ 
+-        # Block on any in-flight async checkpoint serialization before tearing down the tracker
+-        # and mesh. A run that has returned must have durably written its final checkpoint, and
+-        # letting the background commit thread finish here also avoids it logging into the
+-        # already-closed tracker/stdout during teardown.
++        # Drain checkpoint producers before closing tracker/mesh contexts.
++        # Cleanup failures must not replace an existing application exception.
+         if self._checkpointer is not None:
+-            with progress_event_scope(
+-                self.hooks.emit_event,
+-                ProgressEvent.CHECKPOINT_STARTED,
+-                ProgressEvent.CHECKPOINT_FINISHED,
+-            ):
+-                try:
++            try:
++                with progress_event_scope(
++                    self.hooks.emit_event,
++                    ProgressEvent.CHECKPOINT_STARTED,
++                    ProgressEvent.CHECKPOINT_FINISHED,
++                ):
+                     self._checkpointer.wait_until_finished()
+-                except Exception as e:
+-                    problems.append(e)
++            except BaseException as error:
++                problems.append(error)
+ 
+         for cmanager in reversed(self._cmanagers):
+             try:
+                 cmanager.__exit__(*args)
+-            except Exception as e:
+-                problems.append(e)
++            except BaseException as error:
++                problems.append(error)
+ 
+         self._cmanagers = []
+-        self.hooks.emit_event(ProgressEvent.TRAINING_FINISHED)
+-
+-        if len(problems) > 0:
++        try:
++            self.hooks.emit_event(ProgressEvent.TRAINING_FINISHED)
++        except BaseException as error:
++            problems.append(error)
++
++        if problems:
++            if application_error is not None:
++                for error in problems:
++                    application_error.add_note(f"Trainer cleanup also failed: {error!r}")
++                    logger.error("Trainer cleanup failed", exc_info=(type(error), error, error.__traceback__))
++                # Returning false keeps the original traceback and SystemExit code.
++                return False
++            if any(not isinstance(error, Exception) for error in problems):
++                # Do not convert a cleanup KeyboardInterrupt/SystemExit into success
++                # or replace its process-exit semantics with a RuntimeError.
++                primary = next(error for error in problems if not isinstance(error, Exception))
++                for error in problems:
++                    if error is not primary:
++                        primary.add_note(f"Trainer cleanup also failed: {error!r}")
++                raise primary
+             raise RuntimeError("Exception(s) occurred while exiting trainer", problems) from problems[0]
+ 
+     def initial_state(
+diff --git a/lib/levanter/tests/shutdown_candidate_checks/check_backend_integration.py b/lib/levanter/tests/shutdown_candidate_checks/check_backend_integration.py
+new file mode 100644
+index 000000000..7fef8eeb6
+--- /dev/null
++++ b/lib/levanter/tests/shutdown_candidate_checks/check_backend_integration.py
+@@ -0,0 +1,178 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++# Copyright The Marin Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Execute candidate backend method bodies with external services replaced by fakes.
++
++Imports of heavy backend modules and constructors that initialize tracking/JAX
++are deliberately excluded. This is not a live ONLINE logging qualification.
++"""
++import ast
++from enum import StrEnum, IntEnum
++import importlib.util
++import json
++import os
++import logging
++from pathlib import Path
++import sys
++import types
++import unittest
++
++ROOT = next(parent for parent in Path(__file__).resolve().parents if (parent / "lib/levanter/src/levanter").is_dir())
++SOURCE = ROOT / "lib/levanter/src/levanter/tracker"
++for name in ("levanter", "levanter.tracker"):
++    m = types.ModuleType(name)
++    m.__path__ = []
++    sys.modules[name] = m
++jax = types.ModuleType("jax")
++jax.device_get = lambda x: x
++sys.modules["jax"] = jax
++for name in ("finalization", "tracker", "background"):
++    full = "levanter.tracker." + name
++    spec = importlib.util.spec_from_file_location(full, SOURCE / (name + ".py"))
++    m = importlib.util.module_from_spec(spec)
++    sys.modules[full] = m
++    spec.loader.exec_module(m)
++f = sys.modules["levanter.tracker.finalization"]
++t = sys.modules["levanter.tracker.tracker"]
++b = sys.modules["levanter.tracker.background"]
++logging.disable(logging.CRITICAL)
++namespace = {
++    "Tracker": t.Tracker,
++    "FinalizationReport": f.FinalizationReport,
++    "FinalizationState": f.FinalizationState,
++    "logger": logging.getLogger("isolated-backend-check"),
++    "StrEnum": StrEnum,
++    "IntEnum": IntEnum,
++}
++
++
++def load_classes(path, names):
++    tree = ast.parse(path.read_text())
++    for node in tree.body:
++        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
++            try:
++                namespace[node.targets[0].id] = ast.literal_eval(node.value)
++            except (ValueError, TypeError):
++                pass
++    nodes = [n for n in tree.body if isinstance(n, ast.ClassDef) and n.name in names]
++    assert len(nodes) == len(names)
++    module = ast.Module(
++        body=[ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0), *nodes],
++        type_ignores=[],
++    )
++    exec(compile(ast.fix_missing_locations(module), str(path), "exec"), namespace)
++
++
++load_classes(ROOT / "lib/finelog/src/finelog/client/log_client.py", {"FlushResult"})
++load_classes(SOURCE / "finelog_metrics.py", {"LevanterMetricsWriter"})
++load_classes(SOURCE / "wandb.py", {"WandbTracker"})
++load_classes(SOURCE / "telemetry.py", {"TrainingPhase", "TelemetryTracker"})
++FlushResult = namespace["FlushResult"]
++
++
++class Run:
++    def __init__(self, fail=False):
++        self.fail = fail
++        self.finished = False
++
++    def finish(self):
++        if self.fail:
++            raise ConnectionError("injected W&B I/O failure")
++        self.finished = True
++
++
++class Checks(unittest.TestCase):
++    def wandb(self, run, suppressed=False):
++        w = object.__new__(namespace["WandbTracker"])
++        w.run = run
++        w._suppress_logging = suppressed
++        w._replicate_path = None
++        return w
++
++    def test_publishing_backend_success_report(self):
++        run = Run()
++        w = self.wandb(run)
++        report = b.BackgroundTracker(w, finish_timeout=5).finish_with_report()
++        self.assertTrue(run.finished)
++        self.assertTrue(f.required_sinks_complete(report, frozenset({"wandb"})))
++
++    def test_actual_backend_failure_survives_composition(self):
++        w = self.wandb(Run(fail=True))
++        aux = t.NoopTracker()
++        report = t.CompositeTracker([b.BackgroundTracker(w, finish_timeout=5), aux]).finish_with_report()
++        self.assertFalse(f.required_sinks_complete(report, frozenset({"wandb"})))
++        self.assertEqual(report.children[0].failed_calls, 1)
++
++    def test_suppressed_rank_cannot_certify_required_publisher(self):
++        run = Run()
++        report = self.wandb(run, True).finish_with_report()
++        self.assertFalse(run.finished)
++        self.assertEqual(report.state, f.FinalizationState.UNVERIFIED)
++        self.assertFalse(f.required_sinks_complete(report, frozenset({"wandb"})))
++
++    def test_direct_backend_reports_unknown_lifetime_counts(self):
++        report = self.wandb(Run()).finish_with_report()
++        self.assertEqual(report.state, f.FinalizationState.COMPLETE)
++        self.assertIsNone(report.failed_calls)
++        self.assertIsNone(report.rejected_updates)
++
++    def test_finelog_result_and_heartbeat_order(self):
++        for outcome in FlushResult:
++            with self.subTest(outcome=outcome):
++                events = []
++
++                class Table:
++                    def flush(self, timeout):
++                        events.append(("flush", timeout))
++                        return outcome
++
++                class Client:
++                    def close(self):
++                        events.append("close")
++
++                class Heartbeat:
++                    def publish(self, phase):
++                        events.append("phase")
++
++                    def stop(self):
++                        events.append("stop")
++
++                writer = object.__new__(namespace["LevanterMetricsWriter"])
++                writer._client = Client()
++                writer._table = Table()
++                tracker = object.__new__(namespace["TelemetryTracker"])
++                tracker._writer = writer
++                tracker._heartbeat = Heartbeat()
++                tracker._nccl_ras_probe = None
++                report = tracker.finish_with_report()
++                self.assertEqual(events, ["phase", "stop", "close", ("flush", 0)])
++                expected = (
++                    f.FinalizationState.COMPLETE
++                    if outcome == FlushResult.SUCCEEDED
++                    else f.FinalizationState.INCOMPLETE
++                )
++                self.assertEqual(report.state, expected)
++                self.assertIn(outcome.value, report.detail)
++
++
++result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Checks))
++(Path(os.environ["EMA_GRAM_CHECK_RESULT_DIR"]) / "backend-integration-checks.json").write_text(
++    json.dumps(
++        {
++            "passed": result.wasSuccessful(),
++            "tests": result.testsRun,
++            "finelog_outcomes_checked": 3,
++            "scope": "actual candidate backend class AST method bodies plus actual candidate core modules; external services faked; initialization and package imports excluded",
++            "runtime_qualified": False,
++            "new_jobs": 0,
++            "remote_calls": 0,
++            "numerical_kernels": 0,
++        },
++        indent=2,
++    )
++    + "\n"
++)
++raise SystemExit(0 if result.wasSuccessful() else 1)
+diff --git a/lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py b/lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py
+new file mode 100644
+index 000000000..636568365
+--- /dev/null
++++ b/lib/levanter/tests/shutdown_candidate_checks/check_hook_integration.py
+@@ -0,0 +1,225 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++# Copyright The Marin Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Candidate exit-hook source with external JAX/coordinator/atexit boundaries faked."""
++import ast
++import atexit
++from collections.abc import Callable
++import importlib.util
++import json
++import logging
++import os
++from pathlib import Path
++import subprocess
++import sys
++from types import SimpleNamespace
++import unittest
++
++ROOT = next(parent for parent in Path(__file__).resolve().parents if (parent / "lib/levanter/src/levanter").is_dir())
++SRC = ROOT / "lib/levanter/src/levanter"
++for name, path in [
++    ("receipt", SRC / "tracker/finalization.py"),
++    ("finalize_core", SRC / "distributed_finalization.py"),
++]:
++    spec = importlib.util.spec_from_file_location(name, path)
++    m = importlib.util.module_from_spec(spec)
++    sys.modules[name] = m
++    spec.loader.exec_module(m)
++receipt = sys.modules["receipt"]
++core = sys.modules["finalize_core"]
++logging.disable(logging.CRITICAL)
++
++
++class Hooks:
++    def __init__(self):
++        self.handlers = []
++
++    def register(self, fn, *args):
++        self.handlers.append((fn, args))
++        return fn
++
++    def unregister(self, fn):
++        self.handlers = [(f, a) for f, a in self.handlers if f != fn]
++
++    def run(self):
++        for f, a in reversed(self.handlers):
++            f(*a)
++
++
++class Coordinator:
++    def __init__(self, peer_failed=False, fail=False):
++        self.data = {}
++        self.peer_failed = peer_failed
++        self.fail = fail
++
++    def key_value_set(self, k, v, allow_overwrite=False):
++        self.data[k] = v
++
++    def wait_at_barrier(self, key, timeout, processes):
++        if self.fail:
++            raise TimeoutError("injected missing peer")
++        prefix = key.removesuffix("ready")
++        for rank in processes:
++            self.data.setdefault(
++                prefix + str(rank), json.dumps({"required_complete": True, "application_failed": self.peer_failed})
++            )
++
++    def key_value_dir_get(self, prefix):
++        return [(k, v) for k, v in self.data.items() if k.startswith(prefix)]
++
++
++class Exited(BaseException):
++    def __init__(self, code):
++        self.code = code
++
++
++def load(hooks, coordinator, rank=0, exit_fn=None):
++    events = []
++
++    def shutdown():
++        events.append("shutdown")
++
++    def exit_default(code):
++        raise Exited(code)
++
++    jax = SimpleNamespace(
++        distributed=SimpleNamespace(is_initialized=lambda: True, shutdown=shutdown),
++        process_index=lambda: rank,
++        process_count=lambda: 4,
++    )
++    ns = {
++        "Callable": Callable,
++        "FinalizationReport": receipt.FinalizationReport,
++        "required_sinks_complete": receipt.required_sinks_complete,
++        "finalize_and_shutdown": core.finalize_and_shutdown,
++        "atexit": hooks,
++        "jax": jax,
++        "jax_distributed": SimpleNamespace(global_state=SimpleNamespace(client=coordinator)),
++        "sys": SimpleNamespace(last_exc=None),
++        "os": SimpleNamespace(_exit=exit_fn or exit_default),
++        "logger": logging.getLogger("hook-check"),
++        "get_job_info": lambda: SimpleNamespace(job_id=SimpleNamespace(to_wire=lambda: "local-job")),
++        "_coordinated_exit_hook": None,
++    }
++    tree = ast.parse((SRC / "distributed.py").read_text())
++    names = {
++        "_finalize_iris_jax_after_clean_exit",
++        "_unregister_iris_exit_handler",
++        "install_coordinated_iris_finalizer",
++    }
++    nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in names]
++    assert len(nodes) == 3
++    mod = ast.Module(
++        body=[ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0), *nodes],
++        type_ignores=[],
++    )
++    exec(compile(ast.fix_missing_locations(mod), str(SRC / "distributed.py"), "exec"), ns)
++    return ns, events
++
++
++def good():
++    return receipt.FinalizationReport("wandb", receipt.FinalizationState.COMPLETE)
++
++
++class Checks(unittest.TestCase):
++    def test_replacement_removes_force_completion_hook(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator())
++        h.register(ns["_finalize_iris_jax_after_clean_exit"], lambda: events.append("forced_complete"))
++        ns["install_coordinated_iris_finalizer"](good(), application_error=None, health_timeout_ms=120000)
++        h.run()
++        self.assertEqual(events, ["shutdown"])
++        self.assertEqual(len(h.handlers), 1)
++
++    def test_duplicate_install_does_not_duplicate_shutdown(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator())
++        install = ns["install_coordinated_iris_finalizer"]
++        install(good(), application_error=None, health_timeout_ms=120000)
++        with self.assertRaises(RuntimeError):
++            install(good(), application_error=None, health_timeout_ms=120000)
++        h.run()
++        self.assertEqual(events, ["shutdown"])
++
++    def test_unregister_removes_candidate_hook(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator())
++        ns["install_coordinated_iris_finalizer"](good(), application_error=None, health_timeout_ms=120000)
++        ns["_unregister_iris_exit_handler"]()
++        h.run()
++        self.assertEqual(events, [])
++
++    def test_peer_application_failure_preserved_after_shutdown(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator(peer_failed=True))
++        ns["install_coordinated_iris_finalizer"](good(), application_error=None, health_timeout_ms=120000)
++        with self.assertRaises(Exited) as raised:
++            h.run()
++        self.assertEqual(raised.exception.code, 1)
++        self.assertEqual(events, ["shutdown"])
++
++    def test_local_application_exit_code_preserved(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator())
++        ns["install_coordinated_iris_finalizer"](good(), application_error=SystemExit(7), health_timeout_ms=120000)
++        with self.assertRaises(Exited) as raised:
++            h.run()
++        self.assertEqual(raised.exception.code, 7)
++        self.assertEqual(events, ["shutdown"])
++
++    def test_error_after_registration_preserves_exit_code(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator())
++        ns["install_coordinated_iris_finalizer"](good(), application_error=None, health_timeout_ms=120000)
++        ns["sys"].last_exc = SystemExit(9)
++        with self.assertRaises(Exited) as raised:
++            h.run()
++        self.assertEqual(raised.exception.code, 9)
++        self.assertEqual(events, ["shutdown"])
++
++    def test_missing_peer_fails_without_successful_shutdown(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator(fail=True))
++        ns["install_coordinated_iris_finalizer"](good(), application_error=None, health_timeout_ms=120000)
++        with self.assertRaises(Exited):
++            h.run()
++        self.assertEqual(events, [])
++
++    def test_nonpublisher_still_requires_application_report(self):
++        h = Hooks()
++        ns, events = load(h, Coordinator(), rank=1)
++        ns["install_coordinated_iris_finalizer"](None, application_error=None, health_timeout_ms=120000)
++        with self.assertRaises(Exited):
++            h.run()
++        self.assertEqual(events, ["shutdown"])
++
++    def test_actual_process_exit_failure_code(self):
++        p = subprocess.run([sys.executable, __file__, "--child"], capture_output=True)
++        self.assertEqual(p.returncode, 7)
++
++
++if __name__ == "__main__":
++    if len(sys.argv) > 1:
++        ns, events = load(atexit, Coordinator(), exit_fn=os._exit)
++        atexit.register(ns["_finalize_iris_jax_after_clean_exit"], lambda: None)
++        ns["install_coordinated_iris_finalizer"](good(), application_error=SystemExit(7), health_timeout_ms=120000)
++    else:
++        r = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Checks))
++        (Path(os.environ["EMA_GRAM_CHECK_RESULT_DIR"]) / "hook-integration-checks.json").write_text(
++            json.dumps(
++                {
++                    "passed": r.wasSuccessful(),
++                    "tests": r.testsRun,
++                    "scope": "actual candidate core module and three distributed hook function ASTs; external coordinator/JAX boundaries faked; one real Python atexit subprocess",
++                    "runtime_qualified": False,
++                    "new_jobs": 0,
++                    "remote_calls": 0,
++                },
++                indent=2,
++            )
++            + "\n"
++        )
++        raise SystemExit(0 if r.wasSuccessful() else 1)
+diff --git a/lib/levanter/tests/shutdown_candidate_checks/check_source_integration.py b/lib/levanter/tests/shutdown_candidate_checks/check_source_integration.py
+new file mode 100644
+index 000000000..bc6e51791
+--- /dev/null
++++ b/lib/levanter/tests/shutdown_candidate_checks/check_source_integration.py
+@@ -0,0 +1,184 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++# Copyright The Marin Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Load candidate source modules with JAX device_get faked; no numerical runtime."""
++import importlib.util
++import json
++import os
++import logging
++from pathlib import Path
++import sys
++import types
++import threading
++import unittest
++
++ROOT = next(parent for parent in Path(__file__).resolve().parents if (parent / "lib/levanter/src/levanter").is_dir())
++SOURCE = ROOT / "lib/levanter/src/levanter/tracker"
++for name in ("levanter", "levanter.tracker"):
++    mod = types.ModuleType(name)
++    mod.__path__ = []
++    sys.modules[name] = mod
++jax = types.ModuleType("jax")
++jax.device_get = lambda value: value
++sys.modules["jax"] = jax
++for name in ("finalization", "tracker", "background"):
++    full = "levanter.tracker." + name
++    spec = importlib.util.spec_from_file_location(full, SOURCE / (name + ".py"))
++    mod = importlib.util.module_from_spec(spec)
++    sys.modules[full] = mod
++    spec.loader.exec_module(mod)
++f = sys.modules["levanter.tracker.finalization"]
++t = sys.modules["levanter.tracker.tracker"]
++b = sys.modules["levanter.tracker.background"]
++logging.disable(logging.CRITICAL)
++
++
++class Sink(t.NoopTracker):
++    def __init__(self, name, fail=None):
++        self.name = name
++        self.fail = fail
++        self.finished = False
++        self.rows = []
++
++    def log(self, metrics, **kwargs):
++        if self.fail == "log":
++            raise OSError("injected sink log failure")
++        self.rows.append(metrics)
++
++    def finish(self):
++        if self.fail == "finish":
++            raise OSError("injected sink finish failure")
++        self.finished = True
++
++
++class Checks(unittest.TestCase):
++    def required(self, report):
++        return f.required_sinks_complete(report, frozenset({"wandb"}))
++
++    def test_actual_composition_preserves_required_success_and_aux_failure(self):
++        w = Sink("wandb")
++        aux = Sink("telemetry", "finish")
++        report = t.CompositeTracker([b.BackgroundTracker(w, finish_timeout=5), aux]).finish_with_report()
++        self.assertTrue(self.required(report))
++        self.assertTrue(w.finished)
++        self.assertEqual(report.children[1].state, f.FinalizationState.INCOMPLETE)
++
++    def test_required_sink_failure_does_not_skip_other_backends(self):
++        w = Sink("wandb", "finish")
++        aux = Sink("json")
++        report = t.CompositeTracker([b.BackgroundTracker(w, finish_timeout=5), aux]).finish_with_report()
++        self.assertFalse(self.required(report))
++        self.assertTrue(aux.finished)
++        self.assertEqual(report.children[0].failed_calls, 1)
++
++    def test_prior_log_failure_is_not_erased_by_finish(self):
++        w = Sink("wandb", "log")
++        bg = b.BackgroundTracker(w, finish_timeout=5)
++        bg.log({"loss": 1.0}, step=0)
++        report = t.CompositeTracker([bg]).finish_with_report()
++        self.assertTrue(w.finished)
++        self.assertFalse(self.required(report))
++        self.assertEqual(report.children[0].failed_calls, 1)
++
++    def test_plain_return_is_unverified_for_required_sink(self):
++        w = Sink("wandb")
++        report = t.CompositeTracker([w]).finish_with_report()
++        self.assertTrue(w.finished)
++        self.assertFalse(self.required(report))
++        self.assertEqual(report.children[0].state, f.FinalizationState.UNVERIFIED)
++
++    def test_nested_composition_keeps_required_failure(self):
++        aux = Sink("json")
++        w = Sink("wandb", "finish")
++        report = t.CompositeTracker(
++            [t.CompositeTracker([b.BackgroundTracker(w, finish_timeout=5)]), aux]
++        ).finish_with_report()
++        self.assertTrue(aux.finished)
++        self.assertFalse(self.required(report))
++        self.assertEqual(len(report.leaves()), 2)
++
++    def test_enqueue_admission_is_atomic_with_finish(self):
++        sink = Sink("wandb")
++        bg = b.BackgroundTracker(sink, finish_timeout=5)
++        producer_entered = threading.Event()
++        release_producer = threading.Event()
++        finalizer_entered = threading.Event()
++        original_lock = bg._lock
++
++        class ObservedLock:
++            def __enter__(self):
++                if threading.current_thread().name == "test-finalizer":
++                    finalizer_entered.set()
++                original_lock.acquire()
++                return self
++
++            def __exit__(self, *args):
++                original_lock.release()
++
++        bg._lock = ObservedLock()
++        original_put = bg._queue.put_nowait
++
++        def gated_put(item):
++            if threading.current_thread().name == "test-producer":
++                producer_entered.set()
++                if not release_producer.wait(5):
++                    raise RuntimeError("test gate not released")
++            return original_put(item)
++
++        bg._queue.put_nowait = gated_put
++        producer = threading.Thread(name="test-producer", target=lambda: bg.log({"loss": 1.0}, step=0))
++        finalizer = threading.Thread(name="test-finalizer", target=bg.finish)
++        producer.start()
++        try:
++            self.assertTrue(producer_entered.wait(5))
++            finalizer.start()
++            self.assertTrue(finalizer_entered.wait(5))
++            # Finalizer has attempted the lock; admission still owns it.
++            self.assertFalse(bg._stopped)
++        finally:
++            release_producer.set()
++            producer.join(5)
++            if finalizer.ident is not None:
++                finalizer.join(5)
++            else:
++                bg.finish()
++        self.assertFalse(producer.is_alive())
++        self.assertFalse(finalizer.is_alive())
++        self.assertEqual(sink.rows, [{"loss": 1.0}])
++        self.assertTrue(bg.finalization_receipt().locally_drained)
++        self.assertEqual(bg._queue.unfinished_tasks, 0)
++
++    def test_late_producer_rejection_is_visible_in_fresh_receipt(self):
++        sink = Sink("wandb")
++        bg = b.BackgroundTracker(sink, finish_timeout=5)
++        bg.finish()
++        before = bg.finalization_receipt()
++        self.assertTrue(before.locally_drained)
++        bg.log({"loss": 1.0}, step=0)
++        self.assertFalse(bg.finalization_receipt().locally_drained)
++        self.assertEqual(bg.finalization_receipt().rejected_updates, 1)
++        # An immutable earlier snapshot cannot certify later producer behavior.
++        self.assertTrue(before.locally_drained)
++
++
++r = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Checks))
++(Path(os.environ["EMA_GRAM_CHECK_RESULT_DIR"]) / "source-integration-checks.json").write_text(
++    json.dumps(
++        {
++            "passed": r.wasSuccessful(),
++            "tests": r.testsRun,
++            "candidate_worktree": str(ROOT),
++            "scope": "actual candidate Tracker/CompositeTracker/BackgroundTracker modules; fake external sink and JAX device_get; package __init__ not imported",
++            "numerical_kernels": 0,
++            "remote_calls": 0,
++            "runtime_qualified": False,
++            "execution_hook_connected": False,
++        },
++        indent=2,
++    )
++    + "\n"
++)
++raise SystemExit(0 if r.wasSuccessful() else 1)
+diff --git a/lib/levanter/tests/shutdown_candidate_checks/check_trainer_exit_integration.py b/lib/levanter/tests/shutdown_candidate_checks/check_trainer_exit_integration.py
+new file mode 100644
+index 000000000..25c2aee80
+--- /dev/null
++++ b/lib/levanter/tests/shutdown_candidate_checks/check_trainer_exit_integration.py
+@@ -0,0 +1,142 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++# Copyright The Marin Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Actual Trainer exit method with non-numerical fake cleanup boundaries."""
++import ast
++from contextlib import contextmanager
++import json
++import os
++import logging
++from pathlib import Path
++from types import SimpleNamespace
++import unittest
++
++ROOT = next(parent for parent in Path(__file__).resolve().parents if (parent / "lib/levanter/src/levanter").is_dir())
++SOURCE = ROOT / "lib/levanter/src/levanter/trainer.py"
++logging.disable(logging.CRITICAL)
++
++
++@contextmanager
++def progress_event_scope(emit, start, end):
++    emit(start)
++    try:
++        yield
++    finally:
++        emit(end)
++
++
++ns = dict(
++    progress_event_scope=progress_event_scope,
++    ProgressEvent=SimpleNamespace(CHECKPOINT_STARTED="start", CHECKPOINT_FINISHED="end", TRAINING_FINISHED="finished"),
++    logger=logging.getLogger("trainer-exit-check"),
++)
++cls = next(n for n in ast.parse(SOURCE.read_text()).body if isinstance(n, ast.ClassDef) and n.name == "Trainer")
++method = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == "__exit__")
++exec(compile(ast.Module(body=[method], type_ignores=[]), str(SOURCE), "exec"), ns)
++
++
++class FakeTrainer:
++    __exit__ = ns["__exit__"]
++
++    def __init__(self, checkpoint_error=None, context_error=None, event_error=None):
++        self.events = []
++
++        def wait():
++            self.events.append("checkpoint")
++            if checkpoint_error is not None:
++                raise checkpoint_error
++
++        def close(*args):
++            self.events.append("context")
++            if context_error is not None:
++                raise context_error
++
++        def emit(event):
++            self.events.append(event)
++            if event == "finished" and event_error is not None:
++                raise event_error
++
++        self._checkpointer = SimpleNamespace(wait_until_finished=wait)
++        self._cmanagers = [SimpleNamespace(__exit__=close), SimpleNamespace(__exit__=close)]
++        self.hooks = SimpleNamespace(emit_event=emit)
++
++    def __enter__(self):
++        return self
++
++
++class Checks(unittest.TestCase):
++    def test_success_drains_before_contexts(self):
++        trainer = FakeTrainer()
++        with trainer:
++            pass
++        self.assertEqual(trainer.events, ["start", "checkpoint", "end", "context", "context", "finished"])
++        self.assertEqual(trainer._cmanagers, [])
++
++    def test_original_application_error_survives_all_cleanup_failures(self):
++        original = ValueError("application")
++        trainer = FakeTrainer(OSError("checkpoint"), RuntimeError("context"), RuntimeError("event"))
++        with self.assertRaises(ValueError) as caught:
++            with trainer:
++                raise original
++        self.assertIs(caught.exception, original)
++        self.assertEqual(len(original.__notes__), 4)
++        self.assertEqual(trainer.events.count("context"), 2)
++        self.assertEqual(trainer._cmanagers, [])
++
++    def test_original_system_exit_code_survives_cleanup(self):
++        original = SystemExit(7)
++        with self.assertRaises(SystemExit) as caught:
++            with FakeTrainer(context_error=RuntimeError("cleanup")):
++                raise original
++        self.assertIs(caught.exception, original)
++        self.assertEqual(caught.exception.code, 7)
++
++    def test_cleanup_failure_without_application_error_stays_failure(self):
++        error = OSError("checkpoint")
++        trainer = FakeTrainer(checkpoint_error=error)
++        with self.assertRaises(RuntimeError) as caught:
++            with trainer:
++                pass
++        self.assertIs(caught.exception.__cause__, error)
++        self.assertEqual(trainer.events.count("context"), 2)
++
++    def test_cleanup_system_exit_not_converted(self):
++        error = SystemExit(9)
++        trainer = FakeTrainer(context_error=error)
++        with self.assertRaises(SystemExit) as caught:
++            with trainer:
++                pass
++        self.assertIs(caught.exception, error)
++        self.assertEqual(caught.exception.code, 9)
++        self.assertEqual(trainer.events[-1], "finished")
++
++    def test_training_finished_callback_does_not_mask_application(self):
++        original = KeyboardInterrupt()
++        with self.assertRaises(KeyboardInterrupt) as caught:
++            with FakeTrainer(event_error=RuntimeError("callback")):
++                raise original
++        self.assertIs(caught.exception, original)
++        self.assertEqual(len(original.__notes__), 1)
++
++
++if __name__ == "__main__":
++    result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Checks))
++    (Path(os.environ["EMA_GRAM_CHECK_RESULT_DIR"]) / "trainer-exit-integration-checks.json").write_text(
++        json.dumps(
++            {
++                "passed": result.wasSuccessful(),
++                "tests": result.testsRun,
++                "scope": "actual candidate Trainer.__exit__ AST used in real Python with statements; checkpoint/context/event boundaries faked",
++                "runtime_qualified": False,
++                "numerical_kernels": 0,
++                "remote_calls": 0,
++                "new_jobs": 0,
++            },
++            indent=2,
++        )
++        + "\n"
++    )
++    raise SystemExit(0 if result.wasSuccessful() else 1)
+diff --git a/lib/marin/src/marin/training/training.py b/lib/marin/src/marin/training/training.py
+index caafb5889..f07351e10 100644
+--- a/lib/marin/src/marin/training/training.py
++++ b/lib/marin/src/marin/training/training.py
+@@ -582,7 +582,7 @@ def run_levanter_train_lm(config: TrainLmOnPodConfig):
+     )
+ 
+     _apply_env_to_process(env)
+-    importlib.import_module("levanter.main.train_lm").main(train_config)
++    return importlib.import_module("levanter.main.train_lm").main(train_config)
+ 
+ 
+ def run_levanter_train_dpo(config: TrainDpoOnPodConfig):
+-- 
+2.54.0
+

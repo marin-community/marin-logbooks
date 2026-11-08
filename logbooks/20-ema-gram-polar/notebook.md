@@ -3239,3 +3239,24 @@ missing-peer cleanup and real multi-host ONLINE qualification remain pending.
 Frozen source, launch guards and completion/integrity gates are unchanged.
 Research remains active for the authorized local integration work; no new
 training or qualification job is authorized by this publication.
+
+
+## 2026-11-08 11:33 UTC: isolated shutdown source integration
+
+The [source integration report](shutdown-source-integration.md) publishes a
+reviewable patch and source hashes for candidate commit
+`f6ef3108962a06bd3b39db50970a4d4a434ad372`. Thirty-six portable local checks
+pass with fake service/JAX boundaries; source lint and type checks pass.
+Tracker reports now reach an explicit outer entrypoint that replaces the
+default exit hook after final device-memory use. The candidate preserves
+application errors, records local drain failures, and serializes producer
+admission with shutdown. These source findings do not establish the historical
+initiating cause.
+
+The patch remains isolated and unqualified. No launch recipe selects it, no
+accepted source changed, and no new job or terminal experiment read occurred.
+Local success does not certify remote history. Producer quiescence, real
+package initialization, ONLINE multi-host behavior, missing-peer/partial-init
+cleanup and the deployed controller still require qualification. No new
+training or qualification job is authorized. Scientific findings and historical
+failed-run gates remain unchanged.
