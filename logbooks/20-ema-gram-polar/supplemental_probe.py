@@ -24,17 +24,23 @@ from levanter.utils.tree_utils import inference_mode
 from experiments.ema_gram.probe import matrix_state, resolve_config
 
 
-@eqx.filter_jit
+@partial(jax.jit, static_argnames=("alpha", "ridge", "method", "polar_steps"))
+def matched_bank(bank, alpha, ridge, method, polar_steps):
+    reference = gram_direction(bank, alpha=0.0, ridge=ridge, polar_steps=polar_steps)
+    candidate = gram_direction(bank, alpha=alpha, ridge=ridge, polar_steps=polar_steps, polar_method=method)
+    target = jnp.linalg.norm(reference, axis=(-2, -1), keepdims=True)
+    actual = jnp.linalg.norm(candidate, axis=(-2, -1), keepdims=True)
+    return candidate * target / jnp.where(actual > 0, actual, 1)
+
+
 def matched_direction(model, opt_state, alpha, ridge, method, polar_steps):
-    """Match every candidate matrix to the production alpha-zero Frobenius norm."""
+    """Match each matrix, bounding decomposition temporaries to one stored bank."""
     masked, treedef, state = matrix_state(model, opt_state)
     directions = []
     for bank in state.matrices:
-        reference = gram_direction(bank, alpha=0.0, ridge=ridge, polar_steps=polar_steps)
-        candidate = gram_direction(bank, alpha=alpha, ridge=ridge, polar_steps=polar_steps, polar_method=method)
-        target = jnp.linalg.norm(reference, axis=(-2, -1), keepdims=True)
-        actual = jnp.linalg.norm(candidate, axis=(-2, -1), keepdims=True)
-        directions.append(candidate * target / jnp.where(actual > 0, actual, 1))
+        result = matched_bank(bank, alpha, ridge, method, polar_steps)
+        jax.block_until_ready(result)
+        directions.append(result)
     direction = unflatten_linear_layers(masked, treedef.unflatten(directions))
     return jax.tree.map(
         lambda d, p: jax.tree.map(jnp.zeros_like, p) if isinstance(d, optax.MaskedNode) else d,
