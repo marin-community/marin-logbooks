@@ -3016,3 +3016,36 @@ alpha0.5 execution remains failed with recovered artifacts; the three prescribed
 reference probes at counters3733,18665,33597 remain complete. Continue the
 original observer99712/PID96635 and native observation only for alpha0.125 while
 investigating alpha0.25 through new scheduler/log evidence.
+
+
+## 2026-11-08 09:26 UTC: alpha0.125 tracking crash with continued training
+
+At 09:24:23 UTC, alpha0.125's native W&B record was observed crashed at its
+last recorded training label 36593. Labels are zero-based: label 36593 corresponds
+to 36,594 updates. The monitor verified the original source and configuration
+identity at that observation. These checks do not establish tracking health.
+The original scheduler observer's 09:24 snapshot still records all four
+alpha0.125 tasks running, with zero failures or preemptions. Four bounded
+original-attempt0 log reads show training activity. Task1, the process0 JSON
+logger, reached label 36830 with finite loss 3.15659761428833 at 09:25:11, after
+the W&B crash observation. The other three task logs show training at 09:24:19.
+This establishes a discrepancy between W&B state and continued training;
+its initiating cause remains unresolved.
+
+The crashed native record and all four log reads are cached. Seven malformed
+JSON events remain preserved in the raw logs and are excluded from the local
+metric extraction. The existing native helper now skips the cached crashed
+records for alpha0.125, alpha0.25 and the failed alpha0.5 execution before API
+calls. The separate scheduler observer99712/PID96635 remains the sole owner of
+canonical polling. Further diagnosis uses new bounded log intervals and saved
+scheduler snapshots. No task was restarted or resubmitted, and no offline
+fallback or replacement W&B curve was introduced.
+
+For alpha0.25, newly cached process0 logs reached final training label 37334,
+reported saving the final checkpoint at 09:23:20, and showed final evaluation
+in progress at 09:24:05. Its W&B record remains cached crashed. The reported
+checkpoint has not been verified; complete metric history, final evaluation
+and execution outcome remain unaudited. These logs do not establish scientific
+completion. See
+[parallel-long-runs-r01-alpha0125-native-crashed.json](parallel-long-runs-r01-alpha0125-native-crashed.json)
+for scheduler snapshots, native identity evidence and the bounded task logs.
