@@ -918,3 +918,54 @@ The exact failure is now registered for the existing cache-skip branch.
 Remaining work is alpha0.125's outcome, failed-run scientific adjudication,
 teardown investigation and qualified future repair, and final scientific
 conclusions. Completed native, task, log, history and checkpoint reads stay cached.
+
+
+## 2026-11-08 10:12 UTC: alpha0.125 completed and validated
+
+This seed0 EMA-Gram run uses alpha0.125, ridge0.01 and learning rate0.0025;
+four TPU hosts execute one distributed training run. The original Iris
+monitoring process recorded it as SUCCEEDED at 10:02:52 UTC. The
+scheduler's job finish time is 10:01:17.446. Four guarded terminal task reads
+confirm four successful original attempt0 executions, zero failures and zero
+preemptions. Their UIDs, start times and worker assignments match the cached
+startup records. No task was restarted or resubmitted.
+
+The earlier 09:24 W&B crashed observation remains preserved. New Iris scheduler
+success, four task successes and process0 logs reporting W&B synchronization
+completion justified one W&B state read protected by a persistent read guard
+and cache. It returned finished on the original W&B run identity, with matching source and scientific
+configuration. The startup cache verifies fresh ONLINE tracking with resume
+set to never and four finished execution-host logging checks. No tracking
+state or history was rewritten. The cause of the earlier tracking interruption
+remains unresolved.
+
+A targeted history audit recovered all 37,335 W&B rows for training loss,
+update duration, model FLOP utilization, matrix learning rate and Adam learning
+rate, plus 38 C4 evaluations. Labels0..37334 count completed updates from zero;
+the stored counter37335 counts the same updates from one. All required values are finite; the
+unchanged full-history validator passed. Identical pagination duplicates were
+deduplicated and isolated boundary omissions were queried once. No local
+metric rows were needed to complete the native history. Final held-out C4 loss
+is 3.784024715423584, matching the complete local final JSON event. The first
+observed C4<=4.0 evaluation was label32999: 33,000 updates, 1,081,344,000 tokens,
+C4=3.9806714057922363 and native runtime128269.778556803 seconds. The final
+native evaluation runtime is 144768.645205913 seconds. These runtimes include
+compilation and evaluation and exclude queue time; no interpolation is used.
+
+Reads pinned to the stored object generations validate permanent checkpoint
+metadata for 57 arrays against the reference shapes, types and chunk layout,
+and a read-only scalar check returns counter37335. This does not establish all-array byte
+finiteness, a full-state restore or training resume. The source commit and frozen input hashes match the accepted submission,
+including its configuration and data recipe. The original task lineage, finished ONLINE state,
+complete finite history and final checkpoint metadata/counter gates pass.
+See [parallel-long-runs-r01-alpha0125-completed.json](parallel-long-runs-r01-alpha0125-completed.json).
+
+All three parallel jobs are now terminal. The original observer
+session99712/PID96635 exited naturally; do not restart it or its followers,
+or run the live native helper again. Completed task, native, history and
+checkpoint reads are cached. The research program remains active: alpha0.25
+and alpha0.5 retain their failed-execution classifications, and alpha0.25
+retains its 112 missing metric labels. The remaining work is to determine which comparisons the failed runs support
+without relaxing the original gates, investigate their shutdown failures,
+validate a proposed future repair before any new execution, and write the
+final single-seed conclusions. No new run or runtime change was made.
