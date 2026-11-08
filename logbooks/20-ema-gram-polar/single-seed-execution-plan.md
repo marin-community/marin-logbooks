@@ -569,3 +569,40 @@ observe_parallel_r01_online.py once per wake under observer99712/PID96635.
 Third prescribed alpha0.25 counter33597 probe remains unlaunched. Three nonzero
 full37,335-update outcomes, third probe results and final conclusions remain
 required; do not select a preferred exponent from this checkpoint alone.
+
+
+2026-11-08 05:03 UTC — third prescribed checkpoint probe accepted
+
+The third alpha0.25 checkpoint probe, at counter33597 (zero-based label33596),
+was accepted once by Iris at 05:02:58 UTC. Submission acceptance does not
+establish startup or successful restore. The permanent checkpoint passed the exact
+57-array metadata schema check and a read-only stored-counter check. All 26
+regional data-catalog checks passed. The probe uses the unchanged qualified
+source and configuration bound by reference-probe-svd-preflight.json,
+with eight held-out Wikipedia batches, 27 paired-loss
+comparisons and 18 attention/MLP polar-versus-SVD comparisons.
+
+Execution source109598125c54094a5f921efeb3dbd4c29ad5140b is published in the
+dedicated ema-gram-reference-seed0-r03-20261108 worktree. Campaign
+ema-gram-20-reference-seed0-r03-20261108 has one job requesting v4-32 across
+four hosts. It retains default preemption retries and has no queue, task,
+training or wrapper wall-clock limit. See reference-probe-r03-request.json
+and reference-probe-r03-accepted.json for exact inputs and launch arguments.
+The counter33597 launch guard is consumed; never make a duplicate submission.
+Iris retains its default retries after preemption.
+
+Sole observer session91778/PID62794 polls canonical job state; original
+follower PID62975 streams logs tagged by task and attempt from all four hosts.
+Startup validation, actual full TrainerState restore and scientific outputs
+remain pending. The prepared scratch/collect_reference_r03_startup.py reads only local
+readiness by default. It uses execution scratch/ema-gram-20-reference-seed0-r03-20261108-observers.json.
+Invoke --collect once after that saved canonical snapshot shows all
+four tasks running and the original follower records each task’s completed
+ONLINE logging check and native run URL. Do not repeat completed startup reads
+unless an attempt changes or the scheduler records a new failure.
+
+The first two probes remain completed and use cached evidence without remote
+queries. The three long runs retain observer99712/PID96635. At 05:00 UTC their
+training labels were32637/33621/34858 for alpha0.125/0.25/0.5, with finite
+losses and no investigation flags. Each long run must complete 37,335 updates and its frozen outcome-validation gates. The
+third probe results and final scientific conclusions remain required.
