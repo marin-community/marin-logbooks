@@ -3049,3 +3049,36 @@ and execution outcome remain unaudited. These logs do not establish scientific
 completion. See
 [parallel-long-runs-r01-alpha0125-native-crashed.json](parallel-long-runs-r01-alpha0125-native-crashed.json)
 for scheduler snapshots, native identity evidence and the bounded task logs.
+
+
+## 2026-11-08 09:32 UTC: alpha0.25 shutdown abort observed
+
+By 09:32 UTC, four new bounded original-attempt0 logs for alpha0.25 had been
+cached. They record a JAX shutdown-barrier failure around 09:27:14 and abort
+messages. The barrier reports 3/4 participants and names missing task3; the
+service's numbering is retained without equating it to JAX process indices.
+The process0 logger is Iris task3. Its background W&B tracker reported
+abandoning its finish thread after 120 seconds at 09:27:13. The fatal stack
+shows the main thread in Finelog metrics close; background W&B finish also
+raised HandleAbandonedError. These observations establish a teardown
+synchronization failure. The reason W&B finish did not complete, and its
+relationship to the shutdown-barrier failure, remain unresolved. No
+optimizer-instability conclusion follows from these logs.
+
+The process0 JSON log records held-out C4 loss 3.844011068344116 at the prescribed
+final training label 37334. This is a recovered local metric, not a validated
+finished-ONLINE result. A prior log reported completion of final checkpoint
+saving at 09:23:20. The complete five-metric history, checkpoint metadata and
+stored counter remain unaudited. The latest saved scheduler snapshot predates
+the abort and still marks four tasks RUNNING. Terminal scheduler outcome and
+original attempt exits await the existing observer. No extra scheduler polling
+was introduced. See
+[parallel-long-runs-r01-alpha025-shutdown-abort.json](parallel-long-runs-r01-alpha025-shutdown-abort.json).
+
+All four bounded log intervals and the crashed native record are cached; do not
+repeat them. Alpha0.125 continues through original task1 logs, reaching label
+36905 with finite loss 3.3658785820007324 at 09:29:42. Six malformed JSON events
+in that new interval were preserved and excluded from metric extraction.
+The original observer, launch guards and execution source remain unchanged;
+no task was restarted or resubmitted. The alpha0.5 recovered-artifact evidence
+and all three completed reference probes remain cached.
