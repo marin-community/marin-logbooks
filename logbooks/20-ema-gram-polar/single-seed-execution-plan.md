@@ -2,7 +2,7 @@
 
 **Current direction (2026-11-08, latest):** The user authorized minimal-compute
 checkpoint supplements and excluded cross-seed work. Execute the bound
-[supplement request](supplemental-probe-request.json); do not rerun failed
+[supplement request](supplemental-probe-r02-request.json); do not rerun failed
 longruns. Shutdown packaging and larger-model/horizon campaigns remain deferred.
 
 **Current execution amendment (2026-11-04 23:35 UTC):** The original-data
@@ -1237,3 +1237,21 @@ optimizer state are unchanged, and paired summary arithmetic passes.
 
 The live owner follows only this new job; all historical terminal reads remain
 cached. Acceptance does not establish startup or scientific completion.
+
+
+### 2026-11-08 18:06 UTC: fit the unstarted probe to ready host memory
+
+The new r01 supplement was still pending on all four tasks, with empty worker
+IDs, current_attempt_id=-1 and no attempts. Its256GiB host-memory request
+prevented use of a ready v4-32 group whose limiting host had240.5GiB available.
+The unstarted request was withdrawn and an r02 request prepared with224GiB per
+host; TPU count, CPU, source kernels, data, checkpoints and scientific settings
+are unchanged. No scientific worker had run and no GPU allocation was involved.
+The earlier local ONLINE/numerical evidence is reused for identical source
+hashes; every new execution host still runs its own logging check.
+
+[Cached checkpoint storage](supplemental-logical-storage.json) shows the same
+7,350,834,212 logical array bytes (about6.85GiB) in alpha0 and alpha0.25. Both
+include2,722,103,296 bytes of left/right Gram state. This implementation retains
+and updates Grams for alpha0 as well; it is not a memory-minimal generic Muon
+baseline. Logical array storage does not establish peak host/device allocation.
