@@ -1,0 +1,88 @@
+{
+  "status": "ANSWERED_WITH_EXPLICIT_EVIDENCE_GAPS",
+  "primary_issue": "https://github.com/marin-community/marin/issues/10784",
+  "execution_issue": "https://github.com/marin-community/marin-logbooks/issues/20",
+  "prior_context": "https://github.com/marin-community/marin/pull/6588",
+  "updated_utc": "2026-11-08T17:24:04.173241+00:00",
+  "user_direction": "Do not rerun failed longruns. Answer the experiment questions from existing evidence and mark missing experiments. Defer shutdown engineering.",
+  "source_evidence": {
+    "single-seed-findings.md": "14f78f50e0b302433cc61f6a614641966b26b8c060d3589da514a364a667b21e",
+    "single-seed-comparison.json": "c8ffe3f20d14a1b554f4df8c00f20fd6783b79c4062654ffeaf4b4e65d3af908",
+    "ali-norm-matched-contrasts.json": "7cf6feb1be4cf5f2ba88ab2fd4788c41bce3b8f1820d73c51bd2e701d6cb19c1",
+    "paired_probe_contrasts.py": "ff64fc555cc2f66fa12837d4593c017b91a4f3f11b696fbe8bd0f55603d0b6db",
+    "reference-probe-r01-completed.json": "caa0bd67ef8139ad15d8710944dbccbb043fd8293e3b25548e57e9bee2d87dd8",
+    "reference-probe-r02-completed.json": "0d9d9fa0475a062535fab0b7dd72c749cac1f3254fe2b2b8b8352a6bdc59f4a4",
+    "reference-probe-r03-completed.json": "ae37568e5e1f6f1373ca7ed58440aba563a87b313cd35d17a1ddf59e37b4b93f"
+  },
+  "new_analysis": {
+    "script": "paired_probe_contrasts.py",
+    "data": "ali-norm-matched-contrasts.json",
+    "contrasts": 36,
+    "independent_batches_per_checkpoint": 8,
+    "fresh_remote_experiment_reads": 0,
+    "new_experiments": 0,
+    "validation": "Batch identity/length and paired mean versus cached mean-difference assertions pass. Published script agrees with initial scratch derivation."
+  },
+  "classification_policy": "Alpha 0 and 1/8 are validated completions. Alpha 1/4 and 1/2 remain failed executions, admitted only as supplementary recovered observations. Missing 112 alpha1/4 rows are not imputed.",
+  "questions": [
+    {
+      "question": "Does quarter power beat alpha0 and half power after tuning?",
+      "answer": "Recovered quarter endpoint is worse than alpha0 and better than recovered half; does not support superiority to both controls.",
+      "status": "BOUNDED_SINGLE_SEED_SUPPLEMENTARY"
+    },
+    {
+      "question": "Does the benefit survive norm matching?",
+      "answer": "Stage/setting-dependent local contrasts; no consistent quarter superiority to both controls or causal training claim.",
+      "status": "LOCAL_PROBES_ONLY"
+    },
+    {
+      "question": "Does polar approximation explain quality?",
+      "answer": "Direction discrepancies measured; paired production/SVD loss experiment missing.",
+      "status": "OPEN_CAUSAL_QUESTION"
+    },
+    {
+      "question": "Is compute/memory efficient?",
+      "answer": "Recorded deployed time/device costs higher for nonzero alpha; matched-hardware attribution and memory comparison missing.",
+      "status": "DESCRIPTIVE_COST_ONLY"
+    },
+    {
+      "question": "Is the effect reproducible or scalable?",
+      "answer": "Single seed only; horizon and larger-model conditions not met.",
+      "status": "OUTSIDE_CURRENT_EXECUTED_SCOPE"
+    }
+  ],
+  "additional_experiments": [
+    {
+      "id": "fresh_norm_probes",
+      "purpose": "Generalize local directional comparison",
+      "proposal": "New disjoint held-out batches at fixed saved states/settings; all paired contrasts retained",
+      "authorization": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "polar_loss_controls",
+      "purpose": "Test local loss effect of approximation",
+      "proposal": "Same-state norm-matched production versus exact-SVD loss perturbations on common fresh batches",
+      "authorization": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "paired_new_seeds",
+      "purpose": "Reproducibility claim",
+      "proposal": "New paired seeds with frozen pilot settings; outside seed0 scope",
+      "authorization": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "matched_cost_memory",
+      "purpose": "Cost attribution and peak memory",
+      "proposal": "Use matching cached traces if available; otherwise short same-topology experiment",
+      "authorization": "NOT_AUTHORIZED"
+    },
+    {
+      "id": "horizon_scaling",
+      "purpose": "Horizon sensitivity and 998M transfer",
+      "proposal": "Deferred until reproducibility gate, no automatic follow-up",
+      "authorization": "NOT_AUTHORIZED"
+    }
+  ],
+  "failed_longrun_replacements": "DO_NOT_RERUN",
+  "shutdown_engineering": "DEFERRED_BY_USER_DIRECTION"
+}

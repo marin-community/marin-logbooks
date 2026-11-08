@@ -11,8 +11,11 @@ status: active
 
 # Quarter-power EMA-Gram preconditioning on Delphi
 
-**Current execution:** all30 seed0 pilots use the fixed2B-token HQ/code/math
-subset. Original-data runs remain historical; confirmations use only seed0.
+**Current direction (2026-11-08):** All jobs are terminal. Do not rerun the
+failed longruns. Answer the scientific questions from existing evidence and
+mark conditional experiments in [the issue response](ali-question-answers.md).
+The fixed HQ/code/math comparison remains seed0 only. Shutdown/runtime-packaging
+work is deferred; no new experiments are authorized.
 See [current execution plan](single-seed-execution-plan.md).
 
 ## Question and decision criteria
@@ -3365,3 +3368,30 @@ runtime service, numerical kernel, job or terminal experiment query occurred.
 Runtime wheels, base image/OS/installer, integration of the guard/date policy and
 independent controller/coordinator evidence remain unresolved. No new execution
 is authorized; scientific classifications and original success gates are unchanged.
+
+## 2026-11-08 17:25 UTC: answer the scientific questions; no longrun reruns
+
+The user directed that the failed longruns must not be rerun. Active work now
+answers the hypothesis and requested readout in Marin #10784 from the existing
+results; shutdown repair and runtime-packaging work are deferred. No new
+experiment is authorized by the list of remaining evidence needs.
+
+[Question-by-question answers](ali-question-answers.md) retain alpha0 and 1/8
+as validated completions and quarter/half power as supplementary recovered
+measurements. The quarter endpoint is worse than alpha0 and better than half
+power in this seed0 record. No full-trajectory or cross-seed claim is added.
+The original scientific synthesis and plots are reused without regeneration.
+
+New scalar analysis directly pairs the cached norm-matched quarter-power loss
+with zero/half-power losses on the same eight batches. Quarter power is lower
+than alpha0 in 4/6, 4/6 and 5/6 settings across the three checkpoints, and lower
+than half power in 2/6 at each checkpoint. All 36 contrasts and batch-level
+uncertainty are retained; settings/hosts are not independent replicates and
+counts are not significance tests. Batch alignment and arithmetic checks pass.
+
+The answer marks fresh-batch directional tests, production-versus-SVD loss
+controls, paired new seeds and matched-hardware cost/memory evidence as
+conditional gaps. Horizon/998M work remains deferred. These are not a launch
+queue; no failed-run replacements, new jobs, package/runtime changes or
+terminal experiment reads occurred. The alpha1/4 missing 112 labels and both
+failed execution statuses remain explicit.
