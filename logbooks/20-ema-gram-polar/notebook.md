@@ -2818,3 +2818,39 @@ queries. The three long runs retain observer99712/PID96635. At 05:00 UTC their
 training labels were32637/33621/34858 for alpha0.125/0.25/0.5, with finite
 losses and no investigation flags. Each long run must complete 37,335 updates and its frozen outcome-validation gates. The
 third probe results and final scientific conclusions remain required.
+
+
+## 2026-11-08 07:24 UTC — third prescribed checkpoint probe startup validated
+
+The third alpha0.25 reference probe, at stored counter33597 (training label33596),
+passed startup validation. The original observer saved four RUNNING tasks with
+zero failures or preemptions. Four original attempt0 task UIDs map to four distinct
+workers. Each worker completed its ONLINE logging check and started a native
+ONLINE probe run. Source109598125c54094a5f921efeb3dbd4c29ad5140b, the logged
+training configuration, checkpoint path and probe request match the frozen inputs.
+See [reference-probe-r03-started.json](reference-probe-r03-started.json) for task
+identities, run URLs and validation evidence.
+
+The one-time startup collector saved
+scratch/20261108-reference-r03-startup/validated.json. Reuse its task snapshots
+and finished ONLINE logging-check records unless a new attempt or failure is
+recorded. W&B configs omit task UIDs; the original task/attempt-tagged follower
+joins the runs to tasks. Completion validation must match each archive's wrapper
+attempt UID to its original scheduler attempt UID, then verify the permanent
+objects at the storage generations recorded by the wrapper.
+
+Native summaries were empty during startup collection. The first native-only
+check at 07:24 UTC found all four runs finished with probe/success=1 and cached
+the records. Scheduler SUCCEEDED status, successful original task attempts and
+complete output validation remain pending. The claimed full TrainerState restore
+and paired-loss and polar/SVD outputs still need verification from those archives.
+
+Observer91778/PID62794 continues scheduler polling; original follower62975 retains
+log collection. At each five-minute automation wake, run
+scratch/observe_reference_r03_online.py and observe_parallel_r01_online.py
+sequentially for native W&B progress. They reuse terminal native records.
+The long runs remain healthy under observer99712/PID96635; at 07:23 UTC their
+training labels were34881/35646/36768 for alpha0.125/0.25/0.5. Each must reach
+37335 total updates (final label37334) and pass outcome validation. The first two
+probes remain complete and use cached evidence. The third probe results and
+final scientific conclusions remain required.
