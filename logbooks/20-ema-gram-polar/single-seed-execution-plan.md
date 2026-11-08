@@ -870,3 +870,51 @@ in that new interval were preserved and excluded from metric extraction.
 The original observer, launch guards and execution source remain unchanged;
 no task was restarted or resubmitted. The alpha0.5 recovered-artifact evidence
 and all three completed reference probes remain cached.
+
+
+## 2026-11-08 09:39 UTC: alpha0.25 failed with partial artifact recovery
+
+The original observer saved alpha0.25's canonical FAILED outcome at 09:33:54 UTC;
+the scheduler finish time is 09:27:20.518. Scheduler task2 reports exit139/SIGSEGV,
+while cached stderr also reports signal6. Their relationship remains unresolved.
+Three siblings are COSCHED_FAILED. All four terminal task reads match their
+original attempt0 UIDs and startup times. Cleared worker references reconcile
+with cached startup assignments. The inspected run has zero preemptions and
+no additional attempts; no restart or resubmission was performed. No usable
+output archive is reported. Previously cached shutdown logs, crashed native
+metadata and finished host checks were reused without querying them again.
+See [parallel-long-runs-r01-alpha025-failed.json](parallel-long-runs-r01-alpha025-failed.json).
+
+A separate guarded artifact audit validates generation-bound permanent
+checkpoint metadata for 57 arrays and stored scalar counter37335. This does
+not establish payload completeness, all-array finiteness, restoration or
+training resume. One targeted W&B history collection returned 37,088 finite
+complete five-metric rows at labels0..37087 and 37 C4 evaluations. Identical
+page-boundary duplicates were deduplicated and isolated missing labels read
+once. W&B history lacks final label37334. Combining that history with previously
+cached complete local JSON events supplies the final label and yields 37,223
+finite five-metric rows and 38 evaluations. Labels37140..37251 remain missing
+for all five metrics; the unchanged full-history validator rejects the combined
+record. The failed 09:14 log collection preserved a local credential-refresh
+transport error; its interval was not recovered. No history or tracking state
+was rewritten.
+
+Final C4=3.844011068344116 comes from the local label37334 event and has no W&B
+runtime. The first observed target4.0 crossing was label33999: 34,000 updates,
+1,114,112,000 tokens, C4=3.985281467437744 and reported native runtime
+142442.128474992 seconds. Native runtime includes compilation and evaluation
+and excludes queue time; no interpolation is used. The failed scheduler state,
+crashed native state and incomplete metric history remain explicit. The record
+retains scientifically_complete=false and does not meet the prescribed
+success/finished-ONLINE/full-history gates. See
+[parallel-long-runs-r01-alpha025-partial-recovery.json](parallel-long-runs-r01-alpha025-partial-recovery.json).
+
+Alpha0.125's original task1 reached label36992 with finite loss3.309948444366455
+in the 09:34 wake's bounded log snapshot. The sole scheduler observer remains
+session99712/PID96635, with a saved 09:33:59 RUNNING snapshot for alpha0.125.
+The 09:34 native helper rejected the newly failed alpha0.25 canonical state
+before any native API call; its error is preserved, and it was not rerun.
+The exact failure is now registered for the existing cache-skip branch.
+Remaining work is alpha0.125's outcome, failed-run scientific adjudication,
+teardown investigation and qualified future repair, and final scientific
+conclusions. Completed native, task, log, history and checkpoint reads stay cached.
