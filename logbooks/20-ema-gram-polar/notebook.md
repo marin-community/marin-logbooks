@@ -2910,3 +2910,45 @@ must finish 37,335 updates (final label37334) and pass outcome validation, inclu
 final held-out C4 loss, stored counter and checkpoint metadata, exact source/config,
 finished ONLINE records and original task success. The
 three nonzero-alpha training outcomes and final scientific conclusions remain required.
+
+## 2026-11-08 08:25 UTC — alpha0.5 failed during shutdown; artifact audit pending
+
+The original observer's saved 08:17 UTC snapshot records the seed0 alpha=0.5
+long run as failed at 08:10 UTC. Iris recorded task2 exit139/SIGSEGV and three
+coscheduled sibling failures, with zero preemptions. Its task2 error also quotes
+stderr raising signal6; both records are preserved without resolving that discrepancy.
+All four task records have their original attempt0 UIDs, matching startup evidence.
+See [parallel-long-runs-r01-alpha05-failed.json](parallel-long-runs-r01-alpha05-failed.json)
+for scheduler and task records, native metadata, bounded attempt logs and checksums.
+
+The logs report saving the final checkpoint at zero-based label37334 and completing
+final evaluation. Process0's JSON logger records held-out C4 loss3.9583799839019775
+at that label. This is a recovered local metric: the native W&B run is crashed,
+and its summary stops at label37333. Full metric history, final checkpoint metadata
+and stored counter still require separate audit. The existing completion requirements
+of scheduler success and a finished ONLINE native record are not satisfied.
+
+JAX reported that only three of four processes reached its shutdown synchronization
+barrier; process0 was missing. Process0's main-thread stack was waiting for a thread
+in Finelog.close, while sibling processes were in JAX shutdown. These observations
+show a shutdown synchronization failure; the initiating cause remains unresolved.
+They do not establish optimizer numerical instability. The frozen source places
+tracker.finish after trainer.train; the running execution source has not been changed.
+
+The same observer (session99712, PID96635) remains active. Its saved 08:17 UTC
+snapshots show jobs00/01 (alpha0.125/0.25) RUNNING with four tasks each and zero
+failures/preemptions. The 08:19 native helper queried those runs before rejecting
+the changed failure count of job02; it did not persist those two native responses
+and was not rerun that wake. The latest persisted native labels remain35659/36367
+from08:14 UTC. The helper now skips the exact cached failed job02 before API calls.
+Four offline checks verify that skip, rejection of changed or unrecognized failure
+evidence, and preservation of the running-job observation path.
+
+Continue the native helper once per wake for jobs00/01 and retain the original
+observer. Reuse all cached terminal evidence for job02; never restart or resubmit
+it. Next, audit recoverable scientific artifacts separately and investigate a
+future teardown repair with runtime validation before any new execution. Preserve
+all submission guards and completion requirements. The three prescribed probes
+at counters3733,18665,33597 remain completed and cached, as recorded in
+reference-probe-r01-completed.json, reference-probe-r02-completed.json and
+reference-probe-r03-completed.json. Final scientific conclusions remain pending.
