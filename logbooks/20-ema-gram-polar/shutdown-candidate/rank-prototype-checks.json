@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "tests": 5,
+  "scope": "pure Python fake coordinator; no JAX initialization, numerical kernels, remote reads or jobs",
+  "proves": "Readiness-exchange ordering and preservation of failure receipts under the fake coordinator contract.",
+  "does_not_prove": [
+    "Actual coordinator heartbeat/lifetime semantics",
+    "Safe JAX shutdown or atexit ordering",
+    "Remote telemetry delivery",
+    "Canonical success gating after shutdown"
+  ],
+  "runtime_qualified": false,
+  "production_integrated": false
+}

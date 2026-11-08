@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "tests": 8,
+  "cases": [
+    {
+      "case": "test_blocked_finish_keeps_immutable_incomplete_receipt",
+      "finish_state": "queued",
+      "worker_alive": true,
+      "failed_calls": 0,
+      "rejected_updates": 0,
+      "locally_drained": false
+    },
+    {
+      "case": "test_finish_exception_observable",
+      "finish_state": "failed",
+      "worker_alive": false,
+      "failed_calls": 1,
+      "rejected_updates": 0,
+      "locally_drained": false
+    },
+    {
+      "case": "test_full_queue_preserves_drops_and_missing_finish",
+      "finish_state": "not_enqueued",
+      "worker_alive": true,
+      "failed_calls": 0,
+      "rejected_updates": 1,
+      "locally_drained": false
+    },
+    {
+      "case": "test_log_failure_not_erased_by_successful_finish",
+      "finish_state": "succeeded",
+      "worker_alive": false,
+      "failed_calls": 1,
+      "rejected_updates": 0,
+      "locally_drained": false
+    },
+    {
+      "case": "test_missing_artifact_rejects_clean_receipt",
+      "finish_state": "succeeded",
+      "worker_alive": false,
+      "failed_calls": 0,
+      "rejected_updates": 1,
+      "locally_drained": false
+    },
+    {
+      "case": "test_post_finish_update_is_visible",
+      "finish_state": "succeeded",
+      "worker_alive": false,
+      "failed_calls": 0,
+      "rejected_updates": 1,
+      "locally_drained": false
+    },
+    {
+      "case": "test_prepare_failure_observable",
+      "finish_state": "succeeded",
+      "worker_alive": false,
+      "failed_calls": 1,
+      "rejected_updates": 0,
+      "locally_drained": false
+    },
+    {
+      "case": "test_success_and_idempotence",
+      "finish_state": "succeeded",
+      "worker_alive": false,
+      "failed_calls": 0,
+      "rejected_updates": 0,
+      "locally_drained": true
+    }
+  ],
+  "scope": "isolated prototype; fake sink, stub abstract Tracker base; no JAX/W&B imports or network",
+  "runtime_qualified": false,
+  "production_integrated": false
+}

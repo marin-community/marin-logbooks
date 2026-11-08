@@ -3213,3 +3213,29 @@ unestablished. No horizon or998M follow-up is triggered. The bounded scientific
 interpretation is published; research remains active for shutdown-cause
 investigation and qualification of a future repair before new execution.
 No runtime/source hotpatch, new job or repeated terminal remote read occurred.
+
+
+## 2026-11-08 10:52 UTC: local shutdown repair candidate
+
+The [shutdown repair design](shutdown-repair-design.md) records an isolated
+prototype with 19 passing local checks: eight telemetry-receipt checks, five
+rank-exchange checks and six finalizer checks. Fake sinks and an in-memory
+coordinator exercise delayed drain, lost updates, failed receipts, missing
+peers and coordinator/shutdown errors. Two checks use actual local Python
+process exits to verify that an atexit failure produces a nonzero status.
+No numerical kernels, remote experiment reads or cluster jobs were used.
+
+The candidate exposes local drain evidence, exchanges rank receipts before
+JAX shutdown, and preserves required-telemetry failures. It keeps auxiliary
+Finelog diagnostics separate. The inspected complete_job API can mark
+unfinished tasks successful and stop them; the candidate instead leaves
+status aggregation to natural task exits. The deployed controller revision
+was not established, and this design does not reclassify historical runs.
+
+Asymmetric telemetry drain remains a mechanism to test, not a proven initiating
+cause. The prototype is not installed in an execution path. Required W&B
+receipt integration, original application-error handling, hook replacement,
+missing-peer cleanup and real multi-host ONLINE qualification remain pending.
+Frozen source, launch guards and completion/integrity gates are unchanged.
+Research remains active for the authorized local integration work; no new
+training or qualification job is authorized by this publication.

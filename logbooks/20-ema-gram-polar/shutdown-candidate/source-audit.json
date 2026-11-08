@@ -1,0 +1,76 @@
+{
+  "source_commit": "923d79510475df3ed0fef53d40b3290ae4c90fce",
+  "status": "ISOLATED_LOCAL_PROTOTYPE_ONLY",
+  "production_integrated": false,
+  "runtime_qualified": false,
+  "initiating_cause_proven": false,
+  "remote_experiment_calls": 0,
+  "source_sha256": {
+    "lib/levanter/src/levanter/tracker/background.py": "26250100dd49fed55f247e1a596f99982e57962b18863fd78ebd3d3a386634b7",
+    "lib/levanter/src/levanter/tracker/tracker.py": "9e018374d057aac6024f45ad04c7d7c35dc5a93369df67bc97de1ece8a31e6c9",
+    "lib/levanter/src/levanter/distributed.py": "1a709ac3e67ec9438a7281037f7c7693899ed0261d00af3d04c69f9c3963f41e",
+    "lib/levanter/src/levanter/main/train_lm.py": "2d4b63411bbd030690211b7bffb15d096c0dfaf96e3a410679301f85741a761c",
+    "lib/finelog/src/finelog/client/log_client.py": "e067cb3340913c05a94ca88d688c5e7f0cf96b01dcf410712122c125fb0bb24f",
+    "lib/iris/src/iris/jax/init.py": "f321306105cf825aa620759146aa1be73be936f345e3dc1ce42e5e61230afdec",
+    "lib/levanter/src/levanter/trainer.py": "74544ee899603f3305613fecf2b3ef7e12c557be4c1332d64dd2c0ad98d2616d",
+    "experiments/ema_gram/train.py": "bf14af8db4ddb9c48fc252ce0f024561bd5c7f5f1bd8af21dd4be5044aee1f5b",
+    "lib/levanter/src/levanter/tracker/telemetry.py": "38b32bd2329154be3267eb25b0c8cd63dc1c96126412f14f455ac50b275fe9a9",
+    "lib/levanter/src/levanter/tracker/finelog_metrics.py": "7e3b8372b016d00ec7b39ceaad39cdbbf6c141e554a5ee6d050263c13257ed3a",
+    "lib/iris/src/iris/jax/compile_guard.py": "f936e95f30365769fe1166e0eaa70a62bc17b6c5f7307535188cd94f305fae82",
+    "lib/iris/src/iris/cluster/controller/reconcile/batches.py": "46f56b89b3386178344008ab8d574a270277afa4d1bdd884cca11d388791be3c",
+    "lib/iris/src/iris/cluster/controller/reconcile/job.py": "fc0e16b3dde5323700bbf253b42c80c286a680e8a7047d5261f402a6e0b8fb4e",
+    "lib/iris/src/iris/cluster/types.py": "0a1988833044aa573d0bdc20ec61fb7945639d51090c238a1b1851bf8b343623"
+  },
+  "candidate_checks": {
+    "receipt": 8,
+    "rank_exchange": 5,
+    "finalizer": 6,
+    "total": 19
+  },
+  "source_findings": [
+    "The EMA-Gram wrapper calls jax.local_devices()/device.memory_stats() in its finally block after run_levanter_train_lm returns. A repair must not shut JAX down inside train_lm before this wrapper completes.",
+    "TelemetryTracker.finish publishes FINISHED, stops its heartbeat, then closes Finelog. This phase marker is an application phase, not an acknowledgment of delivered telemetry.",
+    "LevanterMetricsWriter already exposes Finelog FlushResult through flush(timeout). Reuse this evidence instead of interpreting close() returning None as success.",
+    "Finelog flush consumes the dropped-since-last-flush counter; one final successful flush cannot certify lifetime losslessness. Persist/aggregate earlier receipts if used for integrity.",
+    "Existing Iris compile_guard uses host coordinator key_value_set/dir_get and wait_at_barrier. This supports a candidate host-only exchange API, but does not establish shutdown placement or health behavior."
+  ],
+  "completion_gate_review": {
+    "source_sha256": {
+      "lib/iris/src/iris/cluster/controller/reconcile/batches.py": "46f56b89b3386178344008ab8d574a270277afa4d1bdd884cca11d388791be3c",
+      "lib/iris/src/iris/cluster/controller/reconcile/job.py": "fc0e16b3dde5323700bbf253b42c80c286a680e8a7047d5261f402a6e0b8fb4e",
+      "lib/iris/src/iris/cluster/types.py": "0a1988833044aa573d0bdc20ec61fb7945639d51090c238a1b1851bf8b343623"
+    },
+    "findings": [
+      "In the accepted checkout, complete_job is a force-completion operation: it sets unfinished tasks successful and stops them. It is not a read-only acknowledgment of their natural exit.",
+      "The same checkout also supports natural job success through recompute_state when all task states are SUCCEEDED.",
+      "The callable runner preserves uncaught errors in sys.last_exc for the existing atexit guard. Ordinary atexit exceptions alone do not guarantee nonzero process exit."
+    ],
+    "candidate_decision": "The isolated future finalizer never calls complete_job. It leaves canonical aggregation to natural per-task exits, avoiding a local completion call masking a late peer failure. This choice still needs controller/runtime qualification.",
+    "limits": [
+      "The deployed controller revision was not established by this source review.",
+      "No historical task status, finished-ONLINE result or scientific classification is changed by this design observation.",
+      "No claim that force completion caused either observed shutdown failure."
+    ]
+  },
+  "limitations": [
+    "Caller must quiesce producers before requesting a receipt; concurrent producer/finalizer safety is not established.",
+    "Local successful sink return is not a remote-delivery or complete-history certificate. Existing canonical/ONLINE/history gates remain necessary.",
+    "CompositeTracker and Finelog finalization outcomes are not yet integrated.",
+    "Outstanding background workers and asymmetric multi-rank teardown remain unresolved. No coordinator barrier or timeout changes applied.",
+    "Actual coordinator heartbeat/lifetime semantics",
+    "Safe JAX shutdown or atexit ordering",
+    "Remote telemetry delivery",
+    "Canonical success gating after shutdown"
+  ],
+  "artifact_sha256": {
+    "background_receipt_prototype.py": "9ffbbcab9d01f3283c74835cbc8dd9348e13dcb8e740b8ab4fafcabdc03560eb",
+    "finalize_rank_prototype.py": "954e67ce9f2287df0e73c92dc65c2629d64f55a095694d3858f717035edbb70a",
+    "finalizer-prototype-checks.json": "f1af2f785a2423a2e8e9078f612bb91d414dd2a992127b1f11550b21fa2cd80b",
+    "rank-prototype-checks.json": "1b53a800bfa25e5c411c50f3be9fcb58c89fab75721ca5b628dbebf706f12694",
+    "rank_finalization_prototype.py": "b9239de43e2262f3ff38d9a5bc02177ec04898a89e28ee40de3c9b2fff0b8335",
+    "receipt-prototype-checks.json": "5cd704eb61d3a2a1150adcdcfb3ecb78129a7a1879440216efdccf4b7de8efb4",
+    "test_finalize_rank_prototype.py": "afaa6ae49d4e534dbc0a2d77c7715c84f85303365ea7680c7b45121b177ba0be",
+    "test_rank_finalization_prototype.py": "fd06030b4986ac766cb89cdce2008959e0ae63ae44f618d7a7d48695ac97997c",
+    "test_receipt_prototype.py": "d67670f48bb46b69cc106bca5674200c62ff9b6a7863550c73a76575fbb8287a"
+  }
+}
