@@ -3490,3 +3490,12 @@ Three checkpoints, one selected ridge, three step sizes, and the middle-checkpoi
 SVD loss control are retained, with half the originally proposed evaluation work.
 No cross-seed, failed-longrun rerun, full-training timing claim or shutdown repair
 candidate deployment is included.
+
+
+### 2026-11-08 18:18 UTC: corrected eight-batch supplement accepted
+
+Iris accepted r03 from `0019824a13ee93eeedd89652793428f8d7c85c3f`.
+[Exact request and command](supplemental-probe-r03-accepted.json) bind the
+corrected data range. Follow only this fresh job through evidence collection;
+acceptance is not scientific completion. r01 was withdrawn before any attempt;
+r02 failed during data selection and produced no loss measurements.
