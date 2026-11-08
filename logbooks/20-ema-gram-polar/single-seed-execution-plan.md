@@ -2,7 +2,7 @@
 
 **Current direction (2026-11-08, latest):** The user authorized minimal-compute
 checkpoint supplements and excluded cross-seed work. Execute the bound
-[supplement request](supplemental-probe-r03-request.json); do not rerun failed
+[supplement request](supplemental-probe-r04-request.json); do not rerun failed
 longruns. Shutdown packaging and larger-model/horizon campaigns remain deferred.
 
 **Current execution amendment (2026-11-04 23:35 UTC):** The original-data
@@ -1291,3 +1291,32 @@ Iris accepted r03 from `0019824a13ee93eeedd89652793428f8d7c85c3f`.
 corrected data range. Follow only this fresh job through evidence collection;
 acceptance is not scientific completion. r01 was withdrawn before any attempt;
 r02 failed during data selection and produced no loss measurements.
+
+
+### 2026-11-08 19:07 UTC: recover two stages; isolate the remaining supplement
+
+The r03 job failed after44.02 minutes. The controller records container-memory
+OOM killing task0's numerical subprocess; siblings lost the JAX coordinator.
+This occurred after21 loss rows and before the bulk tuple benchmark returned.
+The all-bank compiled benchmark was a preparation mistake; it is removed from
+the follow-up. This does not establish a training-memory limit or an optimizer
+instability. There were no preemptions.
+
+[Recovered partial evidence](supplemental-probe-r03-partial.json) binds task0's
+small archive and permanent objects to hashes/generations. Early and middle
+checkpoint rows and the middle SVD control are finite; only one full replica
+artifact is recovered, and the native run still reported running on its one-time
+terminal check. Keep FAILED/unqualified status; no completed-run claim or native
+state rewrite. The other terminal attempt responses have no archive descriptor.
+The interrupted log follower was reconnected once from its last timestamp;
+its transport timeout did not establish a worker failure.
+
+The [r04 request](supplemental-probe-r04-request.json) runs only the missing late
+checkpoint and nine losses. It reuses the already warmed norm-matched direction
+path for two forward/reverse-order timing repetitions, serializing banks as in
+the working probes. It does not compile a tuple of all matrix-bank outputs.
+[Source/fake checks](supplemental-timing-correction.json) preserve numerical
+helpers and verify timing order/synchronization. The local numerical oracle is
+reused through those unchanged functions; no partial early/middle row is rerun.
+Timing now explicitly includes the norm reference/rescaling and is only a probe
+path comparison. Full-training overhead and comparable peak memory remain open.

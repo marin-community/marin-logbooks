@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "campaign": "ema-gram-20-supplement-seed0-r04-20261108",
+  "configs": "logbooks/20-ema-gram-polar/reference-probes-r01-configs.json",
+  "configs_sha256": "989d236ba14ef178f8787db5be72de08bdb6563184d81608a9bde9308de5cea7",
+  "source_files": {
+    "logbooks/20-ema-gram-polar/supplemental_probe.py": "6053ac05222890992c139237a35d49c70d09bf5b0131275f50a7c6b4cbc1f7dd",
+    "logbooks/20-ema-gram-polar/supplemental_entrypoint.py": "0c54a575bb1d4e071b4783c87c14ef4567c6cad8e862bd8accf31da00eceb8a8",
+    "logbooks/20-ema-gram-polar/check_supplemental_probe.py": "616f13a0c1845d11b2762e64f13f16f6f8f11d67b40c2add911e38f33f2410fc",
+    "logbooks/20-ema-gram-polar/probe_svd_check.py": "1be52ddeb670905d93d4bf750ca6f7b39e12fc5afe9aedf8cb696d26d2b104b9",
+    "logbooks/20-ema-gram-polar/run_reference_probe.py": "6e844ed99ecbc70ad407242c6f5ed4dcd3d40308f805e15526a034736ff047ea",
+    "experiments/ema_gram/probe.py": "eab028bd55178c0145b620a1703aafd175e47e08b0de07e33c7346622d652b2e",
+    "lib/levanter/src/levanter/optim/ema_gram.py": "1250b09c9b8de7b3f978c3f33e6170480ad9ddbe6c9e944a837ffa45aa002a7d"
+  },
+  "checkpoints": [
+    {
+      "counter": 33597,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-33596"
+    }
+  ],
+  "dataset": "uncheatable_eval/wikipedia_english",
+  "batch_offset": 8,
+  "batches": 8,
+  "alphas": [
+    0.0,
+    0.25,
+    0.5
+  ],
+  "ridge": 0.01,
+  "step_sizes": [
+    1e-05,
+    3e-05,
+    0.0001
+  ],
+  "svd_counter": 18665,
+  "output_prefix": "gs://marin-us-central2/ema-gram-20-supplement-probes/seed0-r04-20261108",
+  "hardware": {
+    "tpu": "v4-32",
+    "tasks": 4,
+    "region": "us-central2",
+    "cpu": 120,
+    "memory": "224GB",
+    "disk": "50GB"
+  },
+  "expected_loss_rows_per_rank": 9,
+  "cross_seed": false,
+  "longrun_reruns": false,
+  "wandb_project": "ema-gram-20-supplements",
+  "timing_counter": 33597,
+  "timing_scope": "Warm norm-matched probe directions, two repeats; no full-training or raw production-kernel claim"
+}

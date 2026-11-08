@@ -50,22 +50,14 @@ def matched_direction(model, opt_state, alpha, ridge, method, polar_steps):
     )
 
 
-@partial(jax.jit, static_argnames=("alpha", "ridge", "polar_steps"))
-def production_bank_directions(banks, alpha, ridge, polar_steps):
-    """Compute matrix directions only; exclude gradient, Gram updates and norm matching."""
-    return tuple(gram_direction(b, alpha=alpha, ridge=ridge, polar_steps=polar_steps) for b in banks)
-
-
-def direction_timings(banks, ridge, polar_steps):
-    """Record warm, synchronized kernel timings in forward and reversed alpha order."""
-    alphas = (0.0, 0.25, 0.5)
-    for alpha in alphas:
-        jax.block_until_ready(production_bank_directions(banks, alpha, ridge, polar_steps))
+def direction_timings(model, opt_state, ridge, polar_steps):
+    """Time the already-warm norm-matched probe path, one bank at a time."""
     rows = []
-    for repeat in range(4):
-        for alpha in alphas if repeat % 2 == 0 else alphas[::-1]:
+    alphas = (0.0, 0.25, 0.5)
+    for repeat in range(2):
+        for alpha in alphas if repeat == 0 else alphas[::-1]:
             start = time.perf_counter()
-            outputs = production_bank_directions(banks, alpha, ridge, polar_steps)
+            outputs = matched_direction(model, opt_state, alpha, ridge, NEWTON_SCHULZ, polar_steps)
             jax.block_until_ready(outputs)
             rows.append(dict(alpha=alpha, repeat=repeat, seconds=time.perf_counter() - start))
             del outputs
@@ -193,14 +185,19 @@ def run(settings, encoded_config, emit):
                     )
                     del candidate
                 del direction
-            if counter == settings["svd_counter"]:
+            if counter == settings["timing_counter"]:
                 banks = matrix_state(state.model, state.opt_state).optimizer.matrices
                 emit(
                     dict(
                         kind="matrix_direction_timings",
                         counter=counter,
-                        scope="Same stored banks; Gram powers plus production polar only; no training-step claim",
-                        rows=direction_timings(banks, settings["ridge"], cfg.optimizer.polar_steps),
+                        scope=(
+                            "Warm norm-matched probe directions; includes alpha0 reference "
+                            "and rescaling; no training-step claim"
+                        ),
+                        rows=direction_timings(
+                            state.model, state.opt_state, settings["ridge"], cfg.optimizer.polar_steps
+                        ),
                         state_bytes={
                             field: sum(getattr(b, field).size * getattr(b, field).dtype.itemsize for b in banks)
                             for field in ("momentum", "left", "right")
