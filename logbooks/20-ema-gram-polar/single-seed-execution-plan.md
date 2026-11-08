@@ -1048,3 +1048,20 @@ package initialization, ONLINE multi-host behavior, missing-peer/partial-init
 cleanup and the deployed controller still require qualification. No new
 training or qualification job is authorized. Scientific findings and historical
 failed-run gates remain unchanged.
+
+
+## 2026-11-08 11:38 UTC: candidate finalization-read race correction
+
+The [correction record](shutdown-read-ack-correction.md) documents a race in
+the isolated candidate: the coordinator rank could shut down after reading
+finalization records while another rank was still fetching them. A four-thread
+fake coordinator reproduces the failure on exact candidate f6ef3108962a06bd3b39db50970a4d4a434ad372.
+Candidate 689fe209f8102a588ebac1bc59cf04289137a3ad adds a read-completion
+rendezvous before shutdown. The same simulation and nine affected exit-hook
+checks pass; 27 unchanged local checks were reused.
+
+This corrects the undeployed candidate, not the historical experiment record.
+Actual JAX coordinator lifetime, missing-peer cleanup, live online multi-host
+tracking and deployed controller aggregation remain unqualified. No new job,
+numerical kernel or remote experiment read occurred. The prior candidate patch
+and its limitations remain archived; apply the correction after that patch.

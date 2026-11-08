@@ -1,0 +1,159 @@
+From 689fe209f8102a588ebac1bc59cf04289137a3ad Mon Sep 17 00:00:00 2001
+From: kaiyuew <kaiyuew@kaiyuews-MacBook-Air.local>
+Date: Sun, 8 Nov 2026 03:38:02 -0800
+Subject: [PATCH] Wait for all finalization record reads before shutdown
+
+A fast coordinator rank could shut down after reading records while a slower peer was still fetching them. Add a read-completion rendezvous before shutdown, matching the existing compile identity exchange ordering.
+
+A four-thread fake coordinator reproduces the prior failure and passes with the correction. The new regression and nine affected exit-hook checks pass; actual multi-host JAX behavior remains unqualified.
+---
+ .../ema_gram/shutdown_checks/run_checks.py    |   2 +-
+ .../src/levanter/distributed_finalization.py  |   4 +
+ .../check_read_ack_integration.py             | 107 ++++++++++++++++++
+ 3 files changed, 112 insertions(+), 1 deletion(-)
+ create mode 100644 lib/levanter/tests/shutdown_candidate_checks/check_read_ack_integration.py
+
+diff --git a/experiments/ema_gram/shutdown_checks/run_checks.py b/experiments/ema_gram/shutdown_checks/run_checks.py
+index cc2d45d7c..27fe90351 100644
+--- a/experiments/ema_gram/shutdown_checks/run_checks.py
++++ b/experiments/ema_gram/shutdown_checks/run_checks.py
+@@ -26,7 +26,7 @@ def main():
+     output.mkdir(parents=True, exist_ok=False)
+     scripts = [
+         root / "lib/levanter/tests/shutdown_candidate_checks" / f"check_{name}_integration.py"
+-        for name in ["source", "backend", "hook", "trainer_exit"]
++        for name in ["source", "backend", "hook", "trainer_exit", "read_ack"]
+     ] + [Path(__file__).with_name("check_entrypoint_integration.py")]
+     env = dict(os.environ, EMA_GRAM_CHECK_RESULT_DIR=str(output))
+     records = []
+diff --git a/lib/levanter/src/levanter/distributed_finalization.py b/lib/levanter/src/levanter/distributed_finalization.py
+index 08278a5d7..80459dfe9 100644
+--- a/lib/levanter/src/levanter/distributed_finalization.py
++++ b/lib/levanter/src/levanter/distributed_finalization.py
+@@ -52,6 +52,10 @@ def finalize_and_shutdown(
+         receipt.get("required_complete") is not True or receipt.get("application_failed") is not False
+         for receipt in receipts.values()
+     )
++    # A fast coordinator rank must not tear down its service while a slower
++    # peer is still fetching receipts. Ready means all writes exist; this
++    # second rendezvous means every rank has read and validated them.
++    coordinator.wait_at_barrier(f"{prefix}read", health_timeout_ms, ranks)
+     shutdown()
+     if failed:
+         raise DistributedFinalizationError("application or required telemetry failed on one or more ranks")
+diff --git a/lib/levanter/tests/shutdown_candidate_checks/check_read_ack_integration.py b/lib/levanter/tests/shutdown_candidate_checks/check_read_ack_integration.py
+new file mode 100644
+index 000000000..65c651717
+--- /dev/null
++++ b/lib/levanter/tests/shutdown_candidate_checks/check_read_ack_integration.py
+@@ -0,0 +1,107 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Exercise receipt-read completion before fake coordinator teardown on four threads."""
++import hashlib
++import json
++import os
++from pathlib import Path
++import threading
++import types
++
++ROOT = next(p for p in Path(__file__).resolve().parents if (p / "lib/levanter/src/levanter").is_dir())
++REL = "lib/levanter/src/levanter/distributed_finalization.py"
++
++
++def exercise(source):
++    module = types.ModuleType("isolated_core")
++    exec(compile(source, REL, "exec"), module.__dict__)
++    data = {}
++    lock = threading.Lock()
++    ready = threading.Barrier(4)
++    read = threading.Barrier(4)
++    fast_progress = threading.Event()
++    closed = threading.Event()
++    read_ranks = set()
++    shutdowns = []
++    errors = []
++
++    class Coordinator:
++        def __init__(self, rank):
++            self.rank = rank
++
++        def key_value_set(self, key, value, allow_overwrite=False):
++            with lock:
++                data[key] = value
++
++        def wait_at_barrier(self, key, timeout, processes):
++            if key.endswith("/ready"):
++                ready.wait(3)
++            elif key.endswith("/read"):
++                if self.rank == 0:
++                    fast_progress.set()
++                read.wait(3)
++            else:
++                raise AssertionError(key)
++
++        def key_value_dir_get(self, prefix):
++            if self.rank == 3 and not fast_progress.wait(3):
++                raise AssertionError("no fast rank progress")
++            with lock:
++                if closed.is_set():
++                    raise ConnectionError("coordinator service already shut down")
++                read_ranks.add(self.rank)
++                return [(key, value) for key, value in data.items() if key.startswith(prefix)]
++
++    def worker(rank):
++        def shutdown():
++            with lock:
++                shutdowns.append({"rank": rank, "read_ranks": sorted(read_ranks)})
++            if rank == 0:
++                closed.set()
++                fast_progress.set()
++
++        try:
++            module.finalize_and_shutdown(
++                Coordinator(rank),
++                world_key="local-fake-world",
++                rank=rank,
++                ranks=(0, 1, 2, 3),
++                required_complete=True,
++                application_failed=False,
++                health_timeout_ms=3000,
++                shutdown=shutdown,
++            )
++        except BaseException as exc:
++            with lock:
++                errors.append({"rank": rank, "error": type(exc).__name__, "detail": str(exc)})
++
++    threads = [threading.Thread(target=worker, args=(rank,)) for rank in range(4)]
++    for thread in threads:
++        thread.start()
++    for thread in threads:
++        thread.join(5)
++    assert not any(thread.is_alive() for thread in threads)
++    return {"errors": errors, "shutdowns": shutdowns, "read_ranks": sorted(read_ranks)}
++
++
++if __name__ == "__main__":
++    source = (ROOT / REL).read_text()
++    observed = exercise(source)
++    assert observed["errors"] == [], observed
++    assert len(observed["shutdowns"]) == 4, observed
++    assert all(len(event["read_ranks"]) == 4 for event in observed["shutdowns"]), observed
++    result = {
++        "passed": True,
++        "tests": 1,
++        "source_sha256": hashlib.sha256(source.encode()).hexdigest(),
++        "observed": observed,
++        "scope": "actual core; four threads and a fake coordinator teardown boundary",
++        "runtime_qualified": False,
++        "new_jobs": 0,
++        "remote_calls": 0,
++        "numerical_kernels": 0,
++    }
++    (Path(os.environ["EMA_GRAM_CHECK_RESULT_DIR"]) / "read-ack-integration-checks.json").write_text(
++        json.dumps(result, indent=2) + "\n"
++    )
+-- 
+2.54.0
+

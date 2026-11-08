@@ -1,0 +1,89 @@
+{
+  "baseline_commit": "f6ef3108962a06bd3b39db50970a4d4a434ad372",
+  "baseline_sha256": "cd74a09ecd29dcfa366fdb915561153bf58f8160867c2fd89938a4925372f7f3",
+  "candidate_sha256": "3b05a27a7555ace9754b5d11e1b4f980b5c503593d519b1eb40218d764a8051d",
+  "baseline": {
+    "errors": [
+      {
+        "rank": 1,
+        "error": "ConnectionError",
+        "detail": "coordinator service already shut down"
+      },
+      {
+        "rank": 2,
+        "error": "ConnectionError",
+        "detail": "coordinator service already shut down"
+      },
+      {
+        "rank": 3,
+        "error": "ConnectionError",
+        "detail": "coordinator service already shut down"
+      }
+    ],
+    "shutdowns": [
+      {
+        "rank": 0,
+        "read_ranks": [
+          0
+        ]
+      }
+    ],
+    "read_ranks": [
+      0
+    ]
+  },
+  "candidate": {
+    "errors": [],
+    "shutdowns": [
+      {
+        "rank": 3,
+        "read_ranks": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "rank": 0,
+        "read_ranks": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "rank": 1,
+        "read_ranks": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "rank": 2,
+        "read_ranks": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "read_ranks": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "passed": true,
+  "scope": "actual published and modified pure-Python core; four local threads with fake coordinator lifecycle",
+  "runtime_qualified": false,
+  "incident_cause_proven": false,
+  "numerical_kernels": 0,
+  "new_jobs": 0,
+  "remote_calls": 0
+}

@@ -1,0 +1,20 @@
+{
+  "candidate_commit": "689fe209f8102a588ebac1bc59cf04289137a3ad",
+  "parent_candidate_commit": "f6ef3108962a06bd3b39db50970a4d4a434ad372",
+  "source_sha256": {
+    "experiments/ema_gram/shutdown_checks/run_checks.py": "45199a3d3fe0b77f62ba3ec74f142f588a1318450072b4cd556f4d6c13cd5905",
+    "lib/levanter/src/levanter/distributed_finalization.py": "3b05a27a7555ace9754b5d11e1b4f980b5c503593d519b1eb40218d764a8051d",
+    "lib/levanter/tests/shutdown_candidate_checks/check_read_ack_integration.py": "3b7b3ce9aa0c2295f2a72f851bdaf7130935b705d63e9e4724f1769abb4a856c"
+  },
+  "patch_sha256": "3325b6fe936423f314e31328a23bd73d864b6ecaeefe013c415ad58fdddeb1cb",
+  "validation": "One new four-thread regression and nine affected exit-hook checks PASS; other 27 local checks reused unchanged. Negative control on exact parent core fails at delayed read.",
+  "runtime_qualified": false,
+  "initiating_cause_proven": false,
+  "new_jobs": 0,
+  "remote_experiment_reads": 0,
+  "apply_order": [
+    "../integration/candidate.patch",
+    "correction.patch"
+  ],
+  "source_reference": "lib/iris/src/iris/jax/compile_guard.py:check_distributed_compile_fingerprint"
+}
