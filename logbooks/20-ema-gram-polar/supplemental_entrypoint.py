@@ -27,7 +27,7 @@ def worker(mode, settings, config, output):
     destination.mkdir()
     run = wandb.init(
         entity="marin-community",
-        project="marin",
+        project=settings["wandb_project"],
         id=identity,
         name=identity,
         group=settings["campaign"],

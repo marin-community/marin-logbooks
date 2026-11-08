@@ -3422,3 +3422,13 @@ One job only; no scheduler/wrapper wall-clock limit, default preemption/retries,
 regional storage and no cross-region checkpoint movement. TPU execution uses
 existing Iris fleet policy; no GPU allocation is requested or released.
 No larger-model/horizon/cross-seed campaign is authorized.
+
+
+### 2026-11-08: isolate supplemental tracking from shared-project saturation
+
+The local nonnumerical ONLINE check initialized in project `marin`, but its
+file stream repeatedly returned429, explicitly identifying the per-project
+request limit. The local check was interrupted before kernels or TPU submission;
+its run `ema-gram-supplement-logging-check-ce017eb01b21` is not a successful check.
+The new supplement uses project `ema-gram-20-supplements` in the same entity.
+Its ONLINE check must pass independently; no offline fallback or old-run rewrite.
