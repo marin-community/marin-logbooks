@@ -3,7 +3,9 @@
 
 """When a replay learns to close thinking, and to close it again, per step.
 
-Usage: hazard_curves.py TRAJECTORIES_JSONL OUT_PREFIX NAME=DIR [NAME=DIR ...] [ref:NAME=PATH ...]
+Usage: hazard_curves.py [--linear] TRAJECTORIES_JSONL OUT_PREFIX NAME=DIR [NAME=DIR ...] [ref:NAME=PATH ...]
+
+``--linear`` draws the hazard row on a linear axis instead of a log axis.
 
 A ``ref:`` entry is a finished checkpoint drawn as a horizontal reference: a directory with one probe dump, or
 a ``reclose_logprobs.py`` JSON whose ``trajectories`` follow TRAJECTORIES_JSONL's order. That vLLM path reads
@@ -89,11 +91,14 @@ def first_step(series: dict[int, float], threshold: float, falling: bool) -> int
 
 
 def main() -> None:
-    trajectories = read_jsonl(Path(sys.argv[1]))
+    args = sys.argv[1:]
+    linear = "--linear" in args
+    args = [a for a in args if a != "--linear"]
+    trajectories = read_jsonl(Path(args[0]))
     lengths = {key(t): t["close"] - t["reasoning_start"] for t in trajectories}
-    out = sys.argv[2]
+    out = args[1]
     runs, refs = {}, {}
-    for spec in sys.argv[3:]:
+    for spec in args[2:]:
         name, path = spec.split("=", 1)
         if name.startswith("ref:"):
             refs[name.removeprefix("ref:")] = reference_means(path, trajectories, lengths)
@@ -133,7 +138,7 @@ def main() -> None:
 
     rows = (
         ("p_ge1", "P(closed ≥1 | opened)", "linear"),
-        ("hazard", "P(closes again |\na close is in the text)", "log"),
+        ("hazard", "P(closes again |\na close is in the text)", "linear" if linear else "log"),
     )
     plt.rcParams.update({"font.size": 10, "axes.edgecolor": MUTED, "text.color": INK, "axes.labelcolor": INK})
     fig, axes = plt.subplots(len(rows), len(GROUPS), figsize=(13, 7), sharex=True, facecolor=SURFACE)
@@ -160,7 +165,12 @@ def main() -> None:
                     color=MUTED,
                 )
             ax.set_yscale(scale)
-            ax.set_ylim(*((0, 1.02) if scale == "linear" else (1e-5, 1)))
+            if scale == "log":
+                ax.set_ylim(1e-5, 1)
+            elif metric == "p_ge1":
+                ax.set_ylim(0, 1.02)
+            else:
+                ax.set_ylim(0, None)
             ax.grid(True, color=GRID, linewidth=0.8)
             ax.tick_params(colors=MUTED)
             for side in ("top", "right"):
