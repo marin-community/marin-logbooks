@@ -131,3 +131,33 @@ def test_microbatched_step_matches_full_batch_step_with_unlikelihood():
     env = {**os.environ, "JAX_PLATFORMS": "cpu", "JAX_NUM_CPU_DEVICES": "2"}
     result = subprocess.run([sys.executable, "-c", script], env=env, capture_output=True, text=True)
     assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+
+
+def test_post_close_positions_match_with_the_sequence_sharded():
+    # The replay splits each sequence across devices; the mask must match the unsharded one.
+    script = textwrap.dedent(
+        """
+        import jax
+        import jax.numpy as jnp
+        import numpy as np
+        from jax.sharding import PartitionSpec as P, reshard
+        from levanter.grug.sharding import compact_grug_mesh
+        from experiments.grug_sft.special_token_train import CloseUnlikelihoodConfig, post_close_positions
+
+        config = CloseUnlikelihoodConfig(3, 2, (1, 4, 5), weight=1.0)
+        tokens = jnp.array([[4, 2, 9, 3, 9, 9, 5, 4], [2, 3, 9, 2, 9, 3, 9, 9]], jnp.int32)
+        segments = jnp.array([[0] * 6 + [1] * 2, [0] * 8], jnp.int32)
+        weights = jnp.ones(tokens.shape, jnp.float32)
+        expected = post_close_positions(tokens, segments, weights, config)
+        with jax.set_mesh(compact_grug_mesh(replica_axis_size=1, context_axis_size=2)):
+            spec = P(None, "context")
+            sharded = jax.jit(
+                lambda t, s, w: post_close_positions(reshard(t, spec), reshard(s, spec), reshard(w, spec), config)
+            )(tokens, segments, weights)
+            assert sharded.sharding.spec[1] == "context"
+        np.testing.assert_array_equal(np.asarray(sharded), np.asarray(expected))
+        """
+    )
+    env = {**os.environ, "JAX_PLATFORMS": "cpu", "JAX_NUM_CPU_DEVICES": "2"}
+    result = subprocess.run([sys.executable, "-c", script], env=env, capture_output=True, text=True)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"

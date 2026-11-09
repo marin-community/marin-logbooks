@@ -22,7 +22,7 @@ import optax
 from fray.cluster import ResourceConfig
 from haliax import Axis
 from haliax.partitioning import set_mesh
-from jax.sharding import Mesh, NamedSharding
+from jax.sharding import Mesh, NamedSharding, reshard
 from jax.sharding import PartitionSpec as P
 from jax.tree_util import register_dataclass
 from jaxtyping import PRNGKeyArray
@@ -40,6 +40,7 @@ from levanter.models.lm_model import LmExample
 from levanter.optim.config import AdamConfig, OptimizerConfig
 from levanter.pipeline import reshape_batch_into_microbatches
 from levanter.schedule import BatchSchedule
+from levanter.sharding import partition_spec_of
 from levanter.trainer import TrainerConfig
 from levanter.utils.jax_utils import parameter_count
 from levanter.utils.logging import LoadingTimeTrackerIterator
@@ -77,6 +78,12 @@ def post_close_positions(
     A close at position ``p`` marks ``p`` (predicting ``p + 1``) and later positions until an open, a turn
     boundary or a new segment. Positions whose true next token is the close itself are left out.
     """
+    spec = partition_spec_of(tokens)
+    if spec is not None and len(spec) > 1 and spec[1] is not None:
+        # The scan and shift run along the sequence; gather that axis, then return the mask in the token layout.
+        gathered = P(spec[0], None)
+        tokens, segment_ids, loss_weight = (reshard(x, gathered) for x in (tokens, segment_ids, loss_weight))
+        return reshard(post_close_positions(tokens, segment_ids, loss_weight, config), spec)
     index = jnp.arange(tokens.shape[-1])
     resets = jnp.isin(tokens, jnp.asarray((config.open_token_id, *config.turn_boundary_token_ids)))
     segment_start = jnp.concatenate(
