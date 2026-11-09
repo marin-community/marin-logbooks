@@ -35,9 +35,9 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-import matplotlib
+import matplotlib as mpl
 
-matplotlib.use("Agg")
+mpl.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -83,8 +83,9 @@ def reference_means(path: str, trajectories: list[dict], lengths: dict[tuple, in
     return group_means(rows, lengths)
 
 
-def first_step(series: dict[int, float], threshold: float) -> int | None:
-    return next((s for s in sorted(series) if series[s] >= threshold), None)
+def first_step(series: dict[int, float], threshold: float, falling: bool) -> int | None:
+    """First step at or past ``threshold``: at or below it when ``falling``, else at or above it."""
+    return next((s for s in sorted(series) if (series[s] <= threshold if falling else series[s] >= threshold)), None)
 
 
 def main() -> None:
@@ -114,12 +115,12 @@ def main() -> None:
         print(
             f"reference {ref}: " + "  ".join(f"{g} {levels[g]['p_ge1']:.3f}/{levels[g]['hazard']:.4f}" for g in GROUPS)
         )
-    print("first step reaching each reference level, P(>=1 | opened) then hazard")
+    print("first step reaching each reference level: P(>=1 | opened) rising to it, then hazard falling to it")
     for name, steps in runs.items():
         for group in GROUPS:
             series = {k: {s: g[group][k] for s, g in steps.items()} for k in METRICS}
             reached = [
-                f"{metric} {ref}={first_step(series[metric], levels[group][metric])}"
+                f"{metric} {ref}={first_step(series[metric], levels[group][metric], falling=metric == 'hazard')}"
                 for metric in METRICS
                 for ref, levels in refs.items()
             ]

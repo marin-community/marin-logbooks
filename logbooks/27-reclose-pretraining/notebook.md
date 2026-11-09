@@ -507,6 +507,98 @@ status: active
   0.012. These are teacher-forced along 10.05's text and estimated from
   segment means, so magnitudes wait on the exact run.
 
+### 2026-11-07 - Exact 100-step close curves, `" answer"` vs `</` seed
+
+- Runs: `replay-10400-answer100e` and `replay-10400-ltslash100e` on cw-rno2a at
+  commit 9893fb5798. They use the same exported 10.05 batches in the same order,
+  the same LR and the same special-token row reset; the only difference is the
+  seed for the `<|end_think|>` LM-head row. Both training sub-jobs succeeded and
+  wrote probes for steps 0 to 100. The parent jobs report `failed` only because
+  the `" answer"` run's restarts (attempts 1 to 4, coordinator connection
+  errors) used up the job's allowed task failures.
+- Metrics: exact P(closed at least once | opened) and the hazard after 10.05's
+  close (P(closes again | a close is in the text)), with no lead-in,
+  teacher-forced on the 3,255 fixed 10.05 trajectories.
+  [`analysis/hazard_curves.py`](analysis/hazard_curves.py) writes
+  [`hazard_curves.png`](analysis/hazard_curves.png) and
+  [`hazard_curves.csv`](analysis/hazard_curves.csv). The reference levels are
+  the in-training probe on the 10.05 endpoint and vLLM top-20 lower bounds on
+  09.21.
+- Results at step 100, P(at least once) / hazard:
+
+  | group | `" answer"` | `</` | 10.05 | 09.21 |
+  |---|---|---|---|---|
+  | SWE | 0.88 / 0.020 | 0.84 / 0.012 | 0.97 / 0.0008 | 0.99 / 0.0040 |
+  | tool-using | 0.89 / 0.020 | 0.89 / 0.012 | 0.86 / 0.0065 | 0.84 / 0.0048 |
+  | plain | 0.59 / 0.0019 | 0.64 / 0.0013 | 0.91 / 0.0001 | 0.84 / 0.0006 |
+
+- When the replay learns to close: tool-using reaches both reference levels by
+  step 80 under both seeds. SWE and plain do not reach either level in 100
+  steps. The peak near step 13 is the early-close transient, not learned
+  closing.
+- When it learns to close twice: under the `" answer"` seed, the SWE hazard
+  starts at 1.5e-4, below both references. It passes 10.05's level at step 4
+  and 09.21's at step 7, peaks near 0.14 at step 18, then decays slowly. The `</`
+  seed starts with the hazard already high (0.44 on SWE), so it gives no timing
+  signal. By step 100 the two seeds differ by about 1.7x on SWE and tool-using;
+  both remain 15 to 25x above 10.05 on SWE. The only reference crossing is
+  `</` plain at step 57 (09.21's level), and it drifts back up to about 2x
+  that level by step 100.
+- Interpretation and limitations: double-closing appears within the first 15
+  steps and SFT trains it back out slowly. That is consistent with the issue's
+  observation at step 15. The early spike in the hazard is partly an artifact:
+  the probe forces a close token into the text before the model has learned
+  to produce one, and the model may then copy it. Treat "double-closing before
+  closing" as unconfirmed. Single run per seed, teacher-forced on 10.05's text,
+  no sampled check.
+
+### 2026-11-07 - What the replay batches teach about closing
+
+- Question: does the 10.05 SFT data contain double-close examples, and do
+  batch-to-batch probe changes track batch content?
+- Method: the 100 exported replay batches (copied locally from the cw-rno2a
+  replay bucket, 5.7 GB). [`analysis/batch_scan/scan_batches.py`](analysis/batch_scan/scan_batches.py)
+  walks every special-token assistant turn with loss and counts open/close
+  patterns and plain-text tags.
+  [`source_mix.py`](analysis/batch_scan/source_mix.py) labels each packed
+  segment by source.
+  [`batch_effects.py`](analysis/batch_scan/batch_effects.py) and
+  [`mix_effects.py`](analysis/batch_scan/mix_effects.py) take Spearman
+  correlations between per-batch features and the probe change from step k to
+  k+1, averaged over both seeds. Outputs:
+  [`batch_scan.jsonl`](analysis/batch_scan/batch_scan.jsonl) and
+  [`source_mix.jsonl`](analysis/batch_scan/source_mix.jsonl).
+- Results:
+  - Across the 100 steps, 1,148,142 trained assistant turns think. 148 re-open
+    thinking after a close and close again. None close twice without an open in
+    between, none close without opening, and 20 never close. There are no
+    plain-text `</think>` tags in special-token assistant turns; the 3,011
+    plain-text tags all sit outside them, in raw-text reasoning.
+  - Segments either think on every assistant turn or on none; mixed segments
+    are rare (77 of about 26k at step 1).
+  - Loss covers every token, including system, user and tool turns. Trained
+    tokens by source: thinking chat 52%, thinking chat with tools 16%, no-think
+    chat with tools 9%, no-think chat 2%, raw pretraining text 15%,
+    continuation fragments 6%. Post-close assistant text is 6 to 9% of trained
+    tokens (about 5M per step); thinking is 44 to 56%.
+  - The seeds agree on per-step P(at least once) changes after step 30 (r =
+    0.77 SWE, 0.94 tool-using, 0.92 plain), so specific batches drive them. They
+    agree little on hazard changes (r = 0.03 to 0.37).
+  - No source share or post-close share predicts the shared changes: |rho| <=
+    0.28 over 90 steps, and <= 0.26 over steps 30 to 99, across 84 tests.
+- Interpretation: the data contains no examples of a second close. The rise in
+  the hazard comes from generalization (base priming plus copying the close
+  token), not from imitating examples. The only pressure against it is
+  ordinary loss on the 5M post-close tokens per step. That push is small where
+  the model rarely wants to re-close, and it is strongest exactly where the
+  model does want to re-close, positions this data rarely contains. That fits
+  the slow decay. There are no batches or sources to remove.
+- Next: test direct pressure in the replay harness, for example an
+  unlikelihood term on `<|end_think|>` at every position after a turn's first
+  close, or 10.05 re-close trajectories with the second close deleted. At
+  inference, a decoding rule that blocks `<|end_think|>` after the first close
+  removes the symptom without retraining.
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample
