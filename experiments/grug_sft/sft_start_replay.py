@@ -20,7 +20,8 @@ the plain-text ``</think>`` and ``</thinking>`` tags, so the new close starts wh
 closing tag. ``--trainable close-row`` freezes every parameter except that row, to test
 whether the base model's hidden states already mark where a close belongs.
 ``--close-unlikelihood-weight W`` adds ``W * -log(1 - p(<|end_think|>))`` at every trained position after a
-close until the next open or turn boundary, to test whether direct pressure removes the re-close hazard.
+close until the next open (across tool calls, tool responses and turn boundaries), to test whether direct
+pressure removes the re-close hazard.
 
 ``--start sft1005`` scores the final 10.05 state with the same probe and no training, as the endpoint reference.
 """
@@ -64,8 +65,6 @@ ROOT = "s3://marin-rno2a/tmp/ttl=30d/dml/sft_replay_10400"
 BASE = f"{ROOT}/start/step-157000"
 START_THINK_ID = 128002
 END_THINK_ID = 128003
-# <|begin_of_text|>, <|start_header_id|>, <|eom_id|> and <|eot_id|> end a turn's thinking state.
-TURN_BOUNDARY_IDS = (128000, 128006, 128008, 128009)
 LT_SLASH_ID = 524
 SFT10_FINAL_STEP = START_STEP + SFT10_STEPS
 
@@ -119,9 +118,6 @@ def train(
         assert json.load(handle)["step"] == first_step
     tokenizer = load_tokenizer(SFT10_RENO.tokenizer)
     assert tokenizer.convert_tokens_to_ids("<|start_think|>") == START_THINK_ID
-    assert tokenizer.convert_tokens_to_ids(
-        ["<|begin_of_text|>", "<|start_header_id|>", "<|eom_id|>", "<|eot_id|>"]
-    ) == list(TURN_BOUNDARY_IDS)
     token_ids = tuple(token_id for token_id, _ in ANCHORS)
     anchor_ids = tuple(tuple(tokenizer.encode(text, add_special_tokens=False)) for _, text in ANCHORS)
     assert anchor_ids == EXPECTED_ANCHOR_IDS, anchor_ids
@@ -217,7 +213,7 @@ def train(
                 save_checkpoints=checkpoint_root is not None,
                 microbatches=BATCH // microbatch,
                 close_unlikelihood=(
-                    CloseUnlikelihoodConfig(END_THINK_ID, START_THINK_ID, TURN_BOUNDARY_IDS, close_unlikelihood_weight)
+                    CloseUnlikelihoodConfig(END_THINK_ID, START_THINK_ID, close_unlikelihood_weight)
                     if close_unlikelihood_weight is not None
                     else None
                 ),
@@ -253,7 +249,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--close-unlikelihood-weight",
         type=float,
-        help="Penalize <|end_think|> after the block has closed with this unlikelihood weight; off if unset",
+        help="Penalize <|end_think|> from a close to the next open with this unlikelihood weight; off if unset",
     )
     args = parser.parse_args()
     train(

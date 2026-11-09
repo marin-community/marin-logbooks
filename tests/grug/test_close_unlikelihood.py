@@ -15,10 +15,8 @@ from levanter.grug.sharding import compact_grug_mesh
 from experiments.grug_sft.special_token_train import CloseUnlikelihoodConfig, post_close_positions
 from experiments.june_tpu_67b_a2b.moe.model import GrugModelConfig, TokenUnlikelihood, Transformer
 
-BOT, OPEN, CLOSE, HDR, EOT = 1, 2, 3, 4, 5
-CONFIG = CloseUnlikelihoodConfig(
-    close_token_id=CLOSE, open_token_id=OPEN, turn_boundary_token_ids=(BOT, HDR, EOT), weight=2.0
-)
+OPEN, CLOSE, HDR, EOT = 2, 3, 4, 5
+CONFIG = CloseUnlikelihoodConfig(close_token_id=CLOSE, open_token_id=OPEN, weight=2.0)
 MODEL = GrugModelConfig(
     vocab_size=16,
     hidden_dim=8,
@@ -39,13 +37,14 @@ MODEL = GrugModelConfig(
 )
 
 
-def test_post_close_positions_cover_a_closed_block_until_it_reopens_or_the_turn_ends():
+def test_post_close_positions_cover_a_closed_block_across_turns_until_it_reopens():
     # Turn 1: open, reason, close, answer, eot. Turn 2: open, close, open again, close, answer. Then a new segment.
     tokens = jnp.array([[HDR, OPEN, 9, CLOSE, 9, 9, EOT, HDR, OPEN, CLOSE, OPEN, 9, CLOSE, 9, 9, 9]])
     segments = jnp.array([[0] * 14 + [1] * 2])
     weights = jnp.ones_like(tokens).at[0, 4].set(0)
     expected = np.zeros(16, dtype=bool)
-    expected[[3, 5]] = True  # the close predicts the answer; untrained position 4 is out; eot ends the turn
+    # The span runs from the close through the eot and the next header until the open at 8; untrained 4 is out.
+    expected[[3, 5, 6, 7]] = True
     expected[[9, 12, 13]] = True  # a close then a reopen still penalizes a second close at 9
     # Position 11 predicts a close (its true next token), so it is out; segment 1 starts fresh at 14.
     np.testing.assert_array_equal(np.asarray(post_close_positions(tokens, segments, weights, CONFIG))[0], expected)
@@ -97,7 +96,7 @@ def test_microbatched_step_matches_full_batch_step_with_unlikelihood():
             attention_implementation="reference", moe_implementation="scatter",
             disable_pko=True, disable_long_rope=True, use_array_stacked_blocks=True,
         )
-        unlikelihood = CloseUnlikelihoodConfig(3, 2, (1, 4, 5), weight=5.0)
+        unlikelihood = CloseUnlikelihoodConfig(3, 2, weight=5.0)
         tokens = jax.random.randint(jax.random.PRNGKey(1), (4, 8), 6, 16, dtype=jnp.int32)
         tokens = tokens.at[:, 2].set(3).at[1, 5].set(5)
         segment_ids = jnp.array([[0] * 8, [0] * 4 + [1] * 4, [0] * 6 + [-1] * 2, [0] * 3 + [1] * 5], jnp.int32)
@@ -144,7 +143,7 @@ def test_post_close_positions_match_with_the_sequence_sharded():
         from levanter.grug.sharding import compact_grug_mesh
         from experiments.grug_sft.special_token_train import CloseUnlikelihoodConfig, post_close_positions
 
-        config = CloseUnlikelihoodConfig(3, 2, (1, 4, 5), weight=1.0)
+        config = CloseUnlikelihoodConfig(3, 2, weight=1.0)
         tokens = jnp.array([[4, 2, 9, 3, 9, 9, 5, 4], [2, 3, 9, 2, 9, 3, 9, 9]], jnp.int32)
         segments = jnp.array([[0] * 6 + [1] * 2, [0] * 8], jnp.int32)
         weights = jnp.ones(tokens.shape, jnp.float32)

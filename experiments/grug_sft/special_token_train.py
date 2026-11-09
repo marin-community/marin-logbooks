@@ -58,25 +58,24 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class CloseUnlikelihoodConfig:
-    """Penalize emitting a thinking-close token again after the current thinking block has closed.
+    """Penalize a thinking-close token wherever the last thinking block has already closed.
 
-    Adds ``weight * -log(1 - p(close))`` at every trained position from a close up to the next open, turn
-    boundary or document start (marin-community/marin#10400).
+    Adds ``weight * -log(1 - p(close))`` at every trained position from a close up to the next open or document
+    start, across tool calls, tool responses and turn boundaries (marin-community/marin#10400).
     """
 
     close_token_id: int
     open_token_id: int
-    turn_boundary_token_ids: tuple[int, ...]
     weight: float
 
 
 def post_close_positions(
     tokens: jax.Array, segment_ids: jax.Array, loss_weight: jax.Array, config: CloseUnlikelihoodConfig
 ) -> jax.Array:
-    """True where a trained next-token prediction follows a close in the same, not yet reopened, block.
+    """True where a trained next-token prediction comes after a close with no open since.
 
-    A close at position ``p`` marks ``p`` (predicting ``p + 1``) and later positions until an open, a turn
-    boundary or a new segment. Positions whose true next token is the close itself are left out.
+    A close at position ``p`` marks ``p`` (predicting ``p + 1``) and later positions until an open or a new
+    segment; turn boundaries do not end the span. Positions whose true next token is the close are left out.
     """
     spec = partition_spec_of(tokens)
     if spec:
@@ -93,7 +92,7 @@ def _post_close_positions(
     tokens: jax.Array, segment_ids: jax.Array, loss_weight: jax.Array, config: CloseUnlikelihoodConfig
 ) -> jax.Array:
     index = jnp.arange(tokens.shape[-1])
-    resets = jnp.isin(tokens, jnp.asarray((config.open_token_id, *config.turn_boundary_token_ids)))
+    resets = tokens == config.open_token_id
     segment_start = jnp.concatenate(
         [jnp.ones_like(segment_ids[..., :1], dtype=bool), segment_ids[..., 1:] != segment_ids[..., :-1]], axis=-1
     )
