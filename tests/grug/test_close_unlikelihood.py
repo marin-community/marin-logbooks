@@ -150,11 +150,12 @@ def test_post_close_positions_match_with_the_sequence_sharded():
         weights = jnp.ones(tokens.shape, jnp.float32)
         expected = post_close_positions(tokens, segments, weights, config)
         with jax.set_mesh(compact_grug_mesh(replica_axis_size=1, context_axis_size=2)):
-            spec = P(None, "context")
+            # As in the replay: tokens split by batch, segment ids and weights split along the sequence.
+            batch, sequence = P("data", None), P(None, "context")
             sharded = jax.jit(
-                lambda t, s, w: post_close_positions(reshard(t, spec), reshard(s, spec), reshard(w, spec), config)
+                lambda t, s, w: post_close_positions(reshard(t, batch), reshard(s, sequence), reshard(w, sequence), config)
             )(tokens, segments, weights)
-            assert sharded.sharding.spec[1] == "context"
+            assert sharded.sharding.spec == batch
         np.testing.assert_array_equal(np.asarray(sharded), np.asarray(expected))
         """
     )

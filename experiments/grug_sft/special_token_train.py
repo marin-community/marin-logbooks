@@ -79,11 +79,19 @@ def post_close_positions(
     boundary or a new segment. Positions whose true next token is the close itself are left out.
     """
     spec = partition_spec_of(tokens)
-    if spec is not None and len(spec) > 1 and spec[1] is not None:
-        # The scan and shift run along the sequence; gather that axis, then return the mask in the token layout.
+    if spec:
+        # The inputs can arrive in different layouts (the replay splits segment ids along the sequence), and the
+        # scan and shift run along the sequence: put all three in the tokens' batch layout with the sequence
+        # gathered, then return the mask in the tokens' layout.
         gathered = P(spec[0], None)
         tokens, segment_ids, loss_weight = (reshard(x, gathered) for x in (tokens, segment_ids, loss_weight))
-        return reshard(post_close_positions(tokens, segment_ids, loss_weight, config), spec)
+        return reshard(_post_close_positions(tokens, segment_ids, loss_weight, config), spec)
+    return _post_close_positions(tokens, segment_ids, loss_weight, config)
+
+
+def _post_close_positions(
+    tokens: jax.Array, segment_ids: jax.Array, loss_weight: jax.Array, config: CloseUnlikelihoodConfig
+) -> jax.Array:
     index = jnp.arange(tokens.shape[-1])
     resets = jnp.isin(tokens, jnp.asarray((config.open_token_id, *config.turn_boundary_token_ids)))
     segment_start = jnp.concatenate(
