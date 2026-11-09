@@ -48,11 +48,44 @@ from experiments.grug_sft.reclose_eval import RecloseEvalConfig, RecloseEvaluato
 from experiments.grug_sft.replay_data import ReplayBatchDataset
 from experiments.june_tpu_67b_a2b.checkpointing import restore_grug_state_from_checkpoint
 from experiments.june_tpu_67b_a2b.dispatch import dispatch_grug_training_run
-from experiments.june_tpu_67b_a2b.moe.model import Block, GrugModelConfig, Transformer
+from experiments.june_tpu_67b_a2b.moe.model import Block, GrugModelConfig, TokenUnlikelihood, Transformer
 
 # Copy of the legacy MoE SFT trainer with exact LM-head row copies and frozen router biases.
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class CloseUnlikelihoodConfig:
+    """Penalize emitting a thinking-close token again after the current thinking block has closed.
+
+    Adds ``weight * -log(1 - p(close))`` at every trained position from a close up to the next open, turn
+    boundary or document start (marin-community/marin#10400).
+    """
+
+    close_token_id: int
+    open_token_id: int
+    turn_boundary_token_ids: tuple[int, ...]
+    weight: float
+
+
+def post_close_positions(
+    tokens: jax.Array, segment_ids: jax.Array, loss_weight: jax.Array, config: CloseUnlikelihoodConfig
+) -> jax.Array:
+    """True where a trained next-token prediction follows a close in the same, not yet reopened, block.
+
+    A close at position ``p`` marks ``p`` (predicting ``p + 1``) and later positions until an open, a turn
+    boundary or a new segment. Positions whose true next token is the close itself are left out.
+    """
+    index = jnp.arange(tokens.shape[-1])
+    resets = jnp.isin(tokens, jnp.asarray((config.open_token_id, *config.turn_boundary_token_ids)))
+    segment_start = jnp.concatenate(
+        [jnp.ones_like(segment_ids[..., :1], dtype=bool), segment_ids[..., 1:] != segment_ids[..., :-1]], axis=-1
+    )
+    last_close = jax.lax.cummax(jnp.where(tokens == config.close_token_id, index, -1), axis=tokens.ndim - 1)
+    last_reset = jax.lax.cummax(jnp.where(resets | segment_start, index, -1), axis=tokens.ndim - 1)
+    next_tokens = jnp.concatenate([tokens[..., 1:], jnp.zeros_like(tokens[..., :1])], axis=-1)
+    return (last_close > last_reset) & (next_tokens != config.close_token_id) & (loss_weight > 0)
 
 
 @dataclass(frozen=True)
@@ -103,6 +136,9 @@ class GrugTrainerConfig:
 
     microbatches: int = 1
     """Split each batch into this many sequential microbatches and accumulate gradients."""
+
+    close_unlikelihood: CloseUnlikelihoodConfig | None = None
+    """Unlikelihood penalty on a thinking close after the block has already closed; none when unset."""
 
     replay_batches: str | None = None
     """Directory of exported per-step batches (``replay_data``) to train on in order instead of ``data``."""
@@ -467,20 +503,20 @@ def init_weights_only_from_checkpoint(
     return dataclasses.replace(state, **updates)
 
 
-def _accumulated_loss_and_grads(loss_fn, params, batch, microbatches: int):
+def _accumulated_loss_and_grads(loss_fn, params, batch, microbatches: int, summed_loss_keys: tuple[str, ...]):
     """Batch-mean loss and gradients computed over sequential microbatches.
 
-    Each microbatch contributes its weighted cross-entropy sum over the whole batch's loss weight, plus
-    its share of the router auxiliary loss, so the result equals a single full-batch "mean" step when
-    every microbatch holds the same number of tokens. Integer metrics are summed; the rest are averaged.
+    Each microbatch contributes its ``summed_loss_keys`` terms (weighted sums such as the cross-entropy)
+    over the whole batch's loss weight, plus its share of the router auxiliary loss, so the result equals a
+    single full-batch "mean" step when every microbatch holds the same number of tokens. Integer metrics
+    are summed; the rest are averaged.
     """
     total_weight = jnp.sum(batch.loss_weight.astype(jnp.float32))
 
     def microbatch_loss(p, example):
         _, metrics = loss_fn(p, example, "sum")
-        loss = metrics["train/cross_entropy_loss"] / total_weight + metrics["train/router/aux_loss_weighted"] / (
-            microbatches
-        )
+        summed = sum(metrics[k] for k in summed_loss_keys)
+        loss = summed / total_weight + metrics["train/router/aux_loss_weighted"] / microbatches
         return loss, metrics
 
     def body(acc, example):
@@ -492,7 +528,8 @@ def _accumulated_loss_and_grads(loss_fn, params, batch, microbatches: int):
     metrics = jax.tree.map(
         lambda x: jnp.sum(x, axis=0) if jnp.issubdtype(x.dtype, jnp.integer) else jnp.mean(x, axis=0), metrics
     )
-    metrics["train/cross_entropy_loss"] = jnp.sum(metrics["train/cross_entropy_loss"]) * microbatches / total_weight
+    for k in summed_loss_keys:
+        metrics[k] = metrics[k] * microbatches / total_weight
     return jnp.sum(losses), metrics, grads
 
 
@@ -507,11 +544,15 @@ def _make_train_step(
     special_token_lr_multiplier: float = 1.0,
     microbatches: int = 1,
     trainable_output_rows: tuple[int, ...] | None = None,
+    close_unlikelihood: CloseUnlikelihoodConfig | None = None,
 ):
     if microbatches < 1:
         raise ValueError(f"microbatches must be positive, got {microbatches}")
     one = jnp.array(1, dtype=jnp.int32)
     z_loss = z_loss_weight if z_loss_weight > 0 else None
+    summed_loss_keys = ("train/cross_entropy_loss",)
+    if close_unlikelihood is not None:
+        summed_loss_keys += ("train/unlikelihood_loss",)
     if watch_config is not None:
         if isinstance(watch_config.watch_targets, str):
             watch_targets = tuple(t.strip() for t in watch_config.watch_targets.split(","))
@@ -537,6 +578,12 @@ def _make_train_step(
                 replace_fn=jax.lax.stop_gradient,
             )
             compute_params = mp.cast_to_compute(params)
+            unlikelihood = None
+            if close_unlikelihood is not None:
+                positions = post_close_positions(
+                    example.tokens, example.attn_mask.segment_ids[0], example.loss_weight, close_unlikelihood
+                )
+                unlikelihood = TokenUnlikelihood(close_unlikelihood.close_token_id, close_unlikelihood.weight, positions)
             return compute_params.next_token_loss(
                 example.tokens,
                 example.loss_weight,
@@ -544,6 +591,7 @@ def _make_train_step(
                 reduction=reduction,
                 logsumexp_weight=z_loss,
                 return_router_metrics=True,
+                unlikelihood=unlikelihood,
             )
 
         if microbatches == 1:
@@ -551,8 +599,14 @@ def _make_train_step(
                 qb_params
             )
         else:
-            loss, summarized_metrics, grads = _accumulated_loss_and_grads(loss_fn, qb_params, batch, microbatches)
+            loss, summarized_metrics, grads = _accumulated_loss_and_grads(
+                loss_fn, qb_params, batch, microbatches, summed_loss_keys
+            )
         metrics = {"train/loss": loss, **summarized_metrics}
+        if close_unlikelihood is not None:
+            # p_sum was averaged over microbatches like other float metrics; undo that before dividing.
+            p_sum = metrics.pop("train/unlikelihood_p_sum") * microbatches
+            metrics["train/unlikelihood_mean_p"] = p_sum / jnp.maximum(metrics["train/unlikelihood_positions"], 1)
         updates, opt_state = optimizer.update(grads, state.opt_state, qb_params)
         if special_token_lr_ids:
             # Scale after Adam normalization so the multiplier changes the effective LR.
@@ -743,6 +797,7 @@ def _run_grug_local(config: GrugRunConfig) -> None:
             special_token_lr_multiplier=config.trainer.special_token_lr_multiplier,
             microbatches=config.trainer.microbatches,
             trainable_output_rows=config.trainer.trainable_output_rows,
+            close_unlikelihood=config.trainer.close_unlikelihood,
         )
 
         @jax.jit

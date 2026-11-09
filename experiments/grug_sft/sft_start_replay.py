@@ -19,6 +19,8 @@ that anchor drives the re-close behavior. ``--close-seed lt-slash`` seeds it fro
 the plain-text ``</think>`` and ``</thinking>`` tags, so the new close starts where the base model predicts a
 closing tag. ``--trainable close-row`` freezes every parameter except that row, to test
 whether the base model's hidden states already mark where a close belongs.
+``--close-unlikelihood-weight W`` adds ``W * -log(1 - p(<|end_think|>))`` at every trained position after a
+close until the next open or turn boundary, to test whether direct pressure removes the re-close hazard.
 
 ``--start sft1005`` scores the final 10.05 state with the same probe and no training, as the endpoint reference.
 """
@@ -47,7 +49,12 @@ from experiments.grug_sft.reclose_eval import RecloseEvalConfig
 from experiments.grug_sft.sft10_continuation import GPUS_PER_NODE, SFT10_STEPS, _reno
 from experiments.grug_sft.sft10_continuation import RENO as SFT10_RENO
 from experiments.grug_sft.special_token_lr import ANCHORS, BATCH, CONTEXT, EXPECTED_ANCHOR_IDS, START_STEP
-from experiments.grug_sft.special_token_train import GrugRunConfig, GrugTrainerConfig, run_grug
+from experiments.grug_sft.special_token_train import (
+    CloseUnlikelihoodConfig,
+    GrugRunConfig,
+    GrugTrainerConfig,
+    run_grug,
+)
 from experiments.june_tpu_67b_a2b.moe.heuristic_muonh import MoeMuonHHeuristic
 from experiments.june_tpu_67b_a2b.moe.optimizer import GrugMoeMuonHConfig
 
@@ -55,7 +62,10 @@ logger = logging.getLogger(__name__)
 
 ROOT = "s3://marin-rno2a/tmp/ttl=30d/dml/sft_replay_10400"
 BASE = f"{ROOT}/start/step-157000"
+START_THINK_ID = 128002
 END_THINK_ID = 128003
+# <|begin_of_text|>, <|start_header_id|>, <|eom_id|> and <|eot_id|> end a turn's thinking state.
+TURN_BOUNDARY_IDS = (128000, 128006, 128008, 128009)
 LT_SLASH_ID = 524
 SFT10_FINAL_STEP = START_STEP + SFT10_STEPS
 
@@ -95,6 +105,7 @@ def train(
     close_seed: CloseSeed,
     checkpoint_root: str | None,
     trainable: Trainable,
+    close_unlikelihood_weight: float | None,
 ) -> None:
     initialize_from, first_step = (BASE, START_STEP) if start == Start.BASE else (SFT10_RENO.start, SFT10_FINAL_STEP)
     if start == Start.SFT1005 and steps != 0:
@@ -107,6 +118,10 @@ def train(
     with fs.open(metadata_path) as handle:
         assert json.load(handle)["step"] == first_step
     tokenizer = load_tokenizer(SFT10_RENO.tokenizer)
+    assert tokenizer.convert_tokens_to_ids("<|start_think|>") == START_THINK_ID
+    assert tokenizer.convert_tokens_to_ids(
+        ["<|begin_of_text|>", "<|start_header_id|>", "<|eom_id|>", "<|eot_id|>"]
+    ) == list(TURN_BOUNDARY_IDS)
     token_ids = tuple(token_id for token_id, _ in ANCHORS)
     anchor_ids = tuple(tuple(tokenizer.encode(text, add_special_tokens=False)) for _, text in ANCHORS)
     assert anchor_ids == EXPECTED_ANCHOR_IDS, anchor_ids
@@ -201,6 +216,11 @@ def train(
                 context_axis_size=context_axis_size,
                 save_checkpoints=checkpoint_root is not None,
                 microbatches=BATCH // microbatch,
+                close_unlikelihood=(
+                    CloseUnlikelihoodConfig(END_THINK_ID, START_THINK_ID, TURN_BOUNDARY_IDS, close_unlikelihood_weight)
+                    if close_unlikelihood_weight is not None
+                    else None
+                ),
                 replay_batches=f"{data_root}/batches",
                 reclose_eval=RecloseEvalConfig(
                     trajectories=f"{data_root}/trajectories.jsonl",
@@ -230,6 +250,11 @@ if __name__ == "__main__":
     parser.add_argument("--close-seed", type=CloseSeed, choices=list(CloseSeed), default=CloseSeed.ANSWER)
     parser.add_argument("--trainable", type=Trainable, choices=list(Trainable), default=Trainable.ALL)
     parser.add_argument("--checkpoint-root", help="Write a rolling resume checkpoint under this prefix; none if unset")
+    parser.add_argument(
+        "--close-unlikelihood-weight",
+        type=float,
+        help="Penalize <|end_think|> after the block has closed with this unlikelihood weight; off if unset",
+    )
     args = parser.parse_args()
     train(
         args.run_id,
@@ -241,4 +266,5 @@ if __name__ == "__main__":
         args.close_seed,
         args.checkpoint_root,
         args.trainable,
+        args.close_unlikelihood_weight,
     )

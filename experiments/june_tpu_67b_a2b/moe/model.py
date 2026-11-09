@@ -107,6 +107,21 @@ def _layer_attention_masks(mask: AttentionMask, *, sliding_window: int) -> tuple
 
 
 LONG_ATTENTION_INTERVAL = 4
+# Floor on -log p(token) inside the unlikelihood term, so -log(1 - p) stays finite as p reaches 1.
+MIN_UNLIKELIHOOD_NLL = 1e-4
+
+
+@dataclass(frozen=True)
+class TokenUnlikelihood:
+    """Unlikelihood penalty ``weight * -log(1 - p(token_id))`` on the next-token predictions at ``positions``.
+
+    Normalized like the cross-entropy term: summed for ``reduction="sum"`` and divided by the loss-weight
+    total for ``reduction="mean"``.
+    """
+
+    token_id: int
+    weight: float
+    positions: Bool[Array, "B S"]
 
 
 @dataclass(frozen=True)
@@ -831,7 +846,10 @@ class Transformer(eqx.Module):
         logsumexp_weight: float | None = None,
         loss_dtype: jnp.dtype = jnp.float32,
         return_router_metrics: bool = False,
+        unlikelihood: TokenUnlikelihood | None = None,
     ) -> jax.Array | tuple[jax.Array, dict[str, jax.Array | SummaryStats]]:
+        if unlikelihood is not None and reduction == "none":
+            raise ValueError("unlikelihood needs a 'sum' or 'mean' reduction")
         hidden, router_metrics = self(token_ids, mask=mask)
         labels = jnp.concatenate([token_ids[:, 1:], token_ids[:, :1] * 0], axis=1).astype(jnp.int32)
         loss_weight = loss_weight.astype(loss_dtype)
@@ -851,10 +869,32 @@ class Transformer(eqx.Module):
         rzl = jnp.sum(router_metrics["router_z_loss_per_layer"]) / num_moe_layers
         aux_loss = self.config.router_z_loss_coef * rzl
         loss = cross_entropy_loss + aux_loss if reduction != "none" else cross_entropy_loss
+        unlikelihood_metrics: dict[str, jax.Array] = {}
+        if unlikelihood is not None:
+            token_nll = fused_linear_softmax_cross_entropy_loss(
+                hidden,
+                self.output_proj,
+                jnp.full(labels.shape, unlikelihood.token_id, dtype=jnp.int32),
+                reduction="none",
+                dtype=loss_dtype,
+                implementation=self.config.ce_implementation,
+            )
+            token_nll = jnp.maximum(token_nll.astype(loss_dtype), MIN_UNLIKELIHOOD_NLL)
+            positions = unlikelihood.positions.astype(loss_dtype)
+            penalty = unlikelihood.weight * jnp.sum(positions * -jnp.log(-jnp.expm1(-token_nll)))
+            if reduction == "mean":
+                penalty = penalty / jnp.sum(loss_weight)
+            loss = loss + penalty
+            unlikelihood_metrics = {
+                "train/unlikelihood_loss": penalty,
+                "train/unlikelihood_positions": jnp.sum(unlikelihood.positions, dtype=jnp.int32),
+                "train/unlikelihood_p_sum": jax.lax.stop_gradient(jnp.sum(positions * jnp.exp(-token_nll))),
+            }
         if return_router_metrics:
             summarized_metrics = _summarize_router_metrics(router_metrics)
             summarized_metrics["train/cross_entropy_loss"] = cross_entropy_loss
             summarized_metrics["train/router/aux_loss_weighted"] = aux_loss
+            summarized_metrics.update(unlikelihood_metrics)
             summarized_metrics[MOE_DROPPED_ASSIGNMENTS_METRIC] = router_metrics["capacity_overflow_per_layer"]
             summarized_metrics[MOE_SKIPPED_PADDING_ASSIGNMENTS_METRIC] = router_metrics["skipped_assignments_per_layer"]
             summarized_metrics[MOE_VALID_ASSIGNMENTS_METRIC] = jnp.sum(
