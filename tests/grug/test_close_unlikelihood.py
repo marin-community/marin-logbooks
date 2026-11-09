@@ -152,9 +152,10 @@ def test_post_close_positions_match_with_the_sequence_sharded():
         with jax.set_mesh(compact_grug_mesh(replica_axis_size=1, context_axis_size=2)):
             # As in the replay: tokens split by batch, segment ids and weights split along the sequence.
             batch, sequence = P("data", None), P(None, "context")
-            sharded = jax.jit(
-                lambda t, s, w: post_close_positions(reshard(t, batch), reshard(s, sequence), reshard(w, sequence), config)
-            )(tokens, segments, weights)
+            def mask(t, s, w):
+                return post_close_positions(reshard(t, batch), reshard(s, sequence), reshard(w, sequence), config)
+
+            sharded = jax.jit(mask)(tokens, segments, weights)
             assert sharded.sharding.spec == batch
         np.testing.assert_array_equal(np.asarray(sharded), np.asarray(expected))
         """
