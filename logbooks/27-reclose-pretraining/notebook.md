@@ -599,6 +599,61 @@ status: active
   inference, a decoding rule that blocks `<|end_think|>` after the first close
   removes the symptom without retraining.
 
+### 2026-11-10 - Unlikelihood on a re-close, weights 10 and 100 (`replay-10400-answer-ulwide10`, `-ulwide100`)
+
+- Question: does direct pressure against `<|end_think|>` after a close stop the
+  double close without stopping the first close?
+- Method: the `" answer"`-seeded 30-step replay with
+  `--close-unlikelihood-weight W`, which adds `W * -log(1 - p(close))` at every
+  trained position from a close until the next `<|start_think|>` or document
+  start, across tool calls, tool responses and turn headers (commit
+  b4bfa309d3). Weights 10 and 100; the plain `answer100e` replay is the
+  control. All three use the in-loop teacher-forced probe, so the numbers
+  compare directly (they are not on the scale of `hazard_curves.py`).
+  [`analysis/unlikelihood/matched_reclose.py`](analysis/unlikelihood/matched_reclose.py)
+  compares each penalized step to the control's hazard at the same P(at least
+  one close), read from the control's rising phase. That separates fewer
+  re-closes from learning to close later. Series:
+  [`none_inloop.tsv`](analysis/unlikelihood/none_inloop.tsv),
+  [`ulwide10_inloop.tsv`](analysis/unlikelihood/ulwide10_inloop.tsv),
+  [`ulwide100_inloop.tsv`](analysis/unlikelihood/ulwide100_inloop.tsv); output
+  [`matched_reclose.out`](analysis/unlikelihood/matched_reclose.out).
+- Result at step 30:
+
+  | run | SWE P(>=1) | SWE hazard | SWE hazard / control at same P(>=1) | tool P(>=1) | tool hazard | tool ratio | SWE p_first_close |
+  |---|---|---|---|---|---|---|---|
+  | control | 0.92 | 0.53 | 1 | 0.81 | 0.26 | 1 | 0.82 |
+  | W = 10 | 0.86 | 0.41 | 0.84 | 0.78 | 0.19 | 0.71 | 0.75 |
+  | W = 100 | 0.63 | 0.21 | 0.51 | 0.64 | 0.094 | 0.50 | 0.53 |
+
+  - W = 10 tracks the control for 15 steps (ratio 0.93 to 1.01), then reaches
+    about 0.8. Its gradient on the close logit is about `W * p`, and p is
+    about 0.003 on the penalized span, so it barely acts until a re-close is
+    already likely.
+  - W = 100 halves the hazard at equal closing by step 25 (ratio 0.5 to 0.6,
+    both groups). It also slows learning to close: SWE P(>=1) is 0.63 at step
+    30, a level the control passed at step 12, and the probability of closing
+    at the trained position falls from 0.82 to 0.53. The suppression is not
+    confined to the post-close span; pushing the close logit down there also
+    lowers it at the first close.
+  - At W = 100 the SWE hazard held near 0.15 from step 15 to 26 while P(>=1)
+    rose from 0.25 to 0.45. That is the target separation, but it began to
+    rise with closing after step 26.
+  - Both runs took about 3 minutes per step. The W = 100 run was preempted
+    three times on cw-rno2a at interactive priority. Its restart from step 0
+    reproduced steps 0 to 3 to within 0.0002, and it resumed the last attempt
+    from the step-22 checkpoint.
+- Interpretation: the unlikelihood term works in the right direction, but a
+  single weight trades re-close suppression against learning the first close.
+  The `-log(1 - p)` form is weakest where the model rarely re-closes and
+  strongest where closing is the right answer one position away, so a larger
+  weight mostly delays closing. Single seed per arm; 30 steps.
+- Next: target the second close without touching the first. Options: a
+  log-odds hinge on the post-close span (penalize only while the close logit
+  is above a margin below the best alternative); a matching positive term on
+  the first close to hold it in place; or a weight warm-up that starts after
+  the model has learned to close (around step 15).
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample
