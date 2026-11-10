@@ -82,3 +82,38 @@ verification remains pending.
 The full sequence manifest remains a local derived artifact and can be
 regenerated from the pinned inputs. The validation panel is reserved: no scores
 have been computed, and its outcomes must not guide pilot prompt selection.
+
+## 2026-11-10: Independent reference verification and scoring transport
+
+Source commit `79f9823cc567a74b901f539ee47d5f8b176ff479` was published before
+running `verify_reference.py --panels panels.json --output ensembl-reference.jsonl`.
+The checker used nine sequential requests, at most 50 regions each, to the
+[documented Ensembl sequence API](https://rest.ensembl.org/documentation/info/sequence_region_post),
+explicitly requesting GRCh38. All 402 full 255-base reference windows matched.
+The raw public responses and summary are archived alongside this notebook.
+This completes the independent genome check left open in the previous entry.
+
+The scoring client uses `/v1/completions` with echoed prompt log probabilities,
+zero generated tokens, and token-ID output. It verifies echoed IDs and the full
+continuation boundary, scores only observed target tokens, and stops on a model
+or serving-fingerprint mismatch. A/B continuations must each be one contextual
+token. Empty-prefix likelihood requires the tokenizer to supply a valid leading
+context token; it must not silently omit the first DNA token. Exact requests and
+responses belong in a private stream because model metadata may identify the
+internal service. No credentials or endpoint URL are included in this archive.
+
+`run_panel` prepares all four approaches, both strands, both answer mappings,
+and an explicit-sequence format check on three positive and three control pilot
+variants. It accepts an authenticated client supplied by the private launcher.
+Each score is flushed immediately; only a completed matrix gets a completion
+record. The client enforces caller-specified request and time limits and bounds
+its tokenizer cache. It makes no assumption that prompt likelihood requests
+reuse server KV cache.
+
+Scoring transport is not live-validated. The intended endpoint remains
+unavailable. No likelihoods, rankings, or model-quality metrics exist yet.
+
+Five offline tests passed after adding the OpenAI completion parser and full
+scoring target matrix (0.18 seconds; peak RSS 85,436 KiB). The repository lint
+entry point passed for all changed source and evidence files. This validates
+local parsing and prompt construction, not the live serving protocol.

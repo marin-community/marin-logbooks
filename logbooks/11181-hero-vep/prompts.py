@@ -3,7 +3,6 @@
 
 """Render the issue's exact prompts and select teacher-forced target scores."""
 
-import math
 from pathlib import Path
 
 HEALTHY_PREFIX = "The following sequence is from a healthy individual:\n"
@@ -41,17 +40,3 @@ def continuation_start(prefix_ids: list[int], full_ids: list[int], single_token:
     if single_token:
         assert len(full_ids) == len(prefix_ids) + 1, "Candidate must be exactly one token"
     return len(prefix_ids)
-
-
-def target_logprob(token_ids: list[int], prompt_logprobs: list[dict | None], start: int) -> float:
-    """Sum observed-token probabilities from the vLLM prompt-logprob format."""
-    assert len(token_ids) == len(prompt_logprobs)
-    assert 0 < start < len(token_ids), "A scored token needs a preceding context token (including BOS)"
-    scores = []
-    for token, probabilities in zip(token_ids[start:], prompt_logprobs[start:], strict=True):
-        assert probabilities is not None
-        observed = probabilities[str(token)]
-        score = float(observed["logprob"])
-        assert math.isfinite(score)
-        scores.append(score)
-    return math.fsum(scores)
