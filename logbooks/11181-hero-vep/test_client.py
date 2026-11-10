@@ -5,7 +5,8 @@ import pytest
 from client import completion_score
 
 
-def test_echo_scoring_excludes_prefix_and_requires_exact_token_alignment():
+@pytest.mark.parametrize("internal_tokens", [0, 1])
+def test_echo_scoring_excludes_prefix_and_requires_exact_token_alignment(internal_tokens):
     response = {
         "choices": [
             {
@@ -15,7 +16,7 @@ def test_echo_scoring_excludes_prefix_and_requires_exact_token_alignment():
                 }
             }
         ],
-        "usage": {"prompt_tokens": 4, "completion_tokens": 0},
+        "usage": {"prompt_tokens": 4, "completion_tokens": internal_tokens},
     }
     assert completion_score(response, [1, 8, 9, 10], 2) == pytest.approx(-1.1)
     assert completion_score(response, [1, 8, 9, 10], 3) == pytest.approx(-0.7)

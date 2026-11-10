@@ -21,7 +21,9 @@ def completion_score(response: dict, token_ids: list[int], start: int) -> float:
     assert probabilities["tokens"] == [f"token_id:{token}" for token in token_ids]
     assert len(probabilities["token_logprobs"]) == len(token_ids)
     assert response["usage"]["prompt_tokens"] == len(token_ids)
-    assert response["usage"]["completion_tokens"] == 0
+    # Some vLLM builds account for one internal token when max_tokens=0.
+    # Exact echoed-token equality above ensures no generated token is scored.
+    assert response["usage"]["completion_tokens"] in {0, 1}
     scores = probabilities["token_logprobs"][start:]
     assert all(score is not None and math.isfinite(score) for score in scores)
     return math.fsum(scores)

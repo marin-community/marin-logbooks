@@ -117,3 +117,42 @@ Five offline tests passed after adding the OpenAI completion parser and full
 scoring target matrix (0.18 seconds; peak RSS 85,436 KiB). The repository lint
 entry point passed for all changed source and evidence files. This validates
 local parsing and prompt construction, not the live serving protocol.
+
+## 2026-11-10: Score aggregation and native metric reporting
+
+`aggregate.py` requires a complete score matrix, matches each record to its
+exact prompt hash, and refuses duplicate or missing targets. It computes
+reference-minus-alternate likelihoods and pathogenic-minus-benign answer
+log probabilities, preserves strand differences, and averages reversed answer
+mappings with the correct sign.
+
+`report_metrics.py` imports the existing MarinDNA metric implementation instead
+of reimplementing AUPRC or bootstrap sampling. The source file is checked against
+SHA-256 `bee720324d61ea8b88a4644b6bd036569e9bab6f8e931d6335d165fb2e2b2395`.
+Use the `snakemake/analysis/evals_v2/src` directory from the MarinDNA repository
+at commit `922e41149c8f9bdb3130f780f66163a0241ff045` on `PYTHONPATH`; the hash check is authoritative if checking
+out a newer revision. Execute the script using `uv run --locked --script` and
+its adjacent dependency lock. Bootstrap sampling resamples whole match groups,
+and method deltas use paired resamples. Ten-group pilot metrics are explicitly
+exploratory. Standard subset/global/macro reporting retains the existing
+30-group minimum. Within-group ranking counts ties as half a win.
+
+Synthetic fixtures with 10 and 30 matched groups verified perfect-ranking AP=1,
+zero paired deltas for identical methods, and the reporting threshold. These
+are implementation checks, not model results. Both fixture runs exited 0;
+peak RSS was below 161 MiB. Details are in `metrics-validation.json`.
+Seven offline tests passed in 0.11 seconds (peak RSS 85,252 KiB).
+
+The original successful service probe reported one internally accounted
+completion token despite returning only prompt tokens. The parser now permits
+that usage value while requiring the echoed token IDs to equal the input
+exactly; a regression test covers both zero and one internally counted token.
+
+The serving registry was checked again and currently reports no serving
+endpoints. Public Slack searches have not identified a replacement for the
+intended checkpoint. The experiment awaits a live endpoint. No deployment was
+provisioned, no dataset inference was launched, and no model quality or caching
+claim can be made. Once access is restored, confirm the execution budget, run
+the small live protocol check, then the pilot; freeze methods before using the
+reserved 300-variant panel. The archive index entry and final issue conclusion
+remain pending with the experiment.
