@@ -60,3 +60,25 @@ including reversed option/answer mapping, reverse-complement alleles, query-labe
 independence, and scored-token selection. The shared interpreter lacks pytest-xdist;
 the successful invocation retained the full default marker exclusions and session
 timeout guard while removing parallel-worker flags.
+
+## 2026-11-10: Prepared autosomal panels
+
+Source commit: `e9c61b9c43883f966a57afbf20abba8f9eb0c869`, published before execution.
+Run `python logbooks/11181-hero-vep/prepare.py --inputs INPUT_DIRECTORY
+--output panels.json --seed 11181 --validation-groups 30` with the two pinned
+parquet files named in `prepare.py`. Python 3.12 with pyarrow, single-threaded
+execution. Start/end: 20:41:51 UTC; elapsed 0.59 seconds; exit 0; peak RSS
+82,132 KiB. No remote model calls.
+
+Found 493 complete autosomal missense groups. Prepared two chromosome-1
+examples, ten pilot groups (100 variants, ten positives), and 30 disjoint fresh
+development groups (300 variants, 30 positives). Source/harness identity,
+label, allele, length, and reverse-complement checks passed for every selected
+variant. Pilot and fresh validation windows do not overlap. Independent genome
+verification remains pending.
+
+`selected-variants.json` records identities, labels, groups, and sequence hashes;
+`preparation-result.json` records counts and the reproducible full-panel hash.
+The full sequence manifest remains a local derived artifact and can be
+regenerated from the pinned inputs. The validation panel is reserved: no scores
+have been computed, and its outcomes must not guide pilot prompt selection.
