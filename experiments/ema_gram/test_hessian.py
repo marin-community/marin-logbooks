@@ -10,7 +10,8 @@ from levanter.models.lm_model import LmExample
 from levanter.models.qwen import QwenConfig
 from levanter.optim.util import flatten_linear_layers
 
-from experiments.ema_gram.hessian import block_functions, select_basis
+from experiments.ema_gram.curvature_resolution import projected_resolution
+from experiments.ema_gram.hessian import block_functions, projected_difference_column, select_basis
 
 
 def test_block_hvp_matches_dense_hessian_and_native_loss():
@@ -61,3 +62,35 @@ def test_selected_basis_matches_kronecker_operator():
         a = left / (np.trace(left) / 6) + 0.01 * np.eye(6)
         b = right / (np.trace(right) / 4) + 0.01 * np.eye(4)
         np.testing.assert_allclose(a @ e @ b, ridged[i, i] * e, rtol=1e-5, atol=2e-7)
+
+
+def test_resolution_screen_respects_scale_and_rejects_uncertain_curvature():
+    mean = np.diag([1e-8, 1.0, 1e4])
+    batches = np.stack([mean, mean])
+    references = np.stack([batches * 1.001, batches * 0.999])
+    result = projected_resolution(batches, references)
+    assert result["status"] == "empirically_resolved"
+    assert result["margin_ratio"] > 400
+    uncertain = references.copy()
+    uncertain[0, :, 0, 0] = 0.4e-8
+    assert projected_resolution(batches, uncertain)["status"] == "unresolved"
+    indefinite = batches.copy()
+    indefinite[:, 0, 0] = -1e-8
+    assert projected_resolution(indefinite, np.stack([indefinite, indefinite]))["status"] == "indefinite"
+
+
+def test_projected_finite_differences_preserve_mixing_and_reject_wrong_hvp():
+    operator = jnp.array([[2.0, 0.4], [0.4, 3.0]])
+    matrix = jnp.array([[0.2, 0.7]])
+    basis = np.eye(2, dtype=np.float32).reshape(2, 1, 2)
+
+    def loss(w, model, batch):
+        return (w.ravel() @ operator @ w.ravel()) / 2
+
+    grad = jax.grad(loss)
+    actual = np.asarray(operator[:, 0]).reshape(1, 2)
+    check, references = projected_difference_column(matrix, basis[0], None, None, grad, actual, basis, None)
+    assert check["passed"]
+    np.testing.assert_allclose(references, np.tile(np.asarray(operator[:, 0]), (2, 1)), rtol=2e-6)
+    rejected, reference = projected_difference_column(matrix, basis[0], None, None, grad, actual * 2, basis, None)
+    assert not rejected["passed"] and reference is None

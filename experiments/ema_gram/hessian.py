@@ -31,7 +31,10 @@ from levanter.trainer_state import TrainerState
 from levanter.utils.tree_utils import inference_mode
 from rigging.secrets import require_secret
 
+from experiments.ema_gram.curvature_resolution import projected_resolution
 from experiments.ema_gram.probe import matrix_state, resolve_config
+
+FD_STEPS = (3.0, 1.0, 0.3, 0.1, 0.03, 0.01, 0.003, 0.001, 0.0003, 0.0001, 0.00003, 0.00001, 0.000003, 0.000001)
 
 
 def host_array(value):
@@ -121,22 +124,7 @@ def derivative_checks(matrix, directions, model, batch, loss, grad, hvp):
         e = jnp.asarray(directions[index])
         he = products[index]
         relative_errors = []
-        for delta in (
-            3.0,
-            1.0,
-            0.3,
-            0.1,
-            0.03,
-            0.01,
-            0.003,
-            0.001,
-            0.0003,
-            0.0001,
-            0.00003,
-            0.00001,
-            0.000003,
-            0.000001,
-        ):
+        for delta in FD_STEPS:
             plus = host_array(grad(matrix + delta * e, model, batch)).astype(np.float64)
             minus = host_array(grad(matrix - delta * e, model, batch)).astype(np.float64)
             fd = (plus - minus) / (2 * delta)
@@ -170,21 +158,54 @@ def derivative_checks(matrix, directions, model, batch, loss, grad, hvp):
     )
 
 
+def projected_difference_column(matrix, direction, model, batch, grad, product, basis, preferred_steps):
+    """Retain two finite-difference projections for every measured HVP column."""
+    records = []
+    projections = []
+    e = jnp.asarray(direction)
+    steps = list(preferred_steps) if preferred_steps else list(FD_STEPS)
+    for delta in steps:
+        plus = host_array(grad(matrix + delta * e, model, batch)).astype(np.float64)
+        minus = host_array(grad(matrix - delta * e, model, batch)).astype(np.float64)
+        fd = (plus - minus) / (2 * delta)
+        error = float(np.linalg.norm(fd - product) / max(np.linalg.norm(product), 1e-30))
+        if not np.isfinite(error):
+            raise ValueError("Nonfinite finite-difference comparison")
+        records.append(dict(delta=delta, relative_error=error))
+        projections.append(np.einsum("iab,ab->i", basis, fd))
+    valid_pairs = [
+        i for i in range(len(records) - 1) if max(records[i]["relative_error"], records[i + 1]["relative_error"]) < 0.02
+    ]
+    if not valid_pairs and preferred_steps:
+        return projected_difference_column(matrix, direction, model, batch, grad, product, basis, None)
+    if not valid_pairs:
+        return dict(passed=False, steps=None, trials=records), None
+    index = valid_pairs[0]
+    selected = records[index : index + 2]
+    return (
+        dict(passed=True, steps=[r["delta"] for r in selected], trials=records),
+        np.stack(projections[index : index + 2]),
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--configs", type=Path, required=True)
+    parser.add_argument("--config-index", type=int, default=0)
+    parser.add_argument("--expected-alpha", type=float, default=0.25)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--expected-counter", type=int, required=True)
     parser.add_argument("--output-prefix", required=True)
     parser.add_argument("--seed", type=int, default=20261110)
     parser.add_argument("--groups", type=int, default=8)
     parser.add_argument("--directions", type=int, default=12)
+    parser.add_argument("--projected-checks", action="store_true")
     parser.add_argument("--logging-check", action="store_true")
     args = parser.parse_args()
-    encoded = json.loads(args.configs.read_text())[0]["config"]["train_config"]
+    encoded = json.loads(args.configs.read_text())[args.config_index]["config"]["train_config"]
     cfg = resolve_config(encoded)
-    if cfg.optimizer.alpha != 0.25 or cfg.optimizer.ridge != 0.01:
-        raise ValueError("Expected the quarter-power reference config")
+    if cfg.optimizer.alpha != args.expected_alpha or cfg.optimizer.ridge != 0.01:
+        raise ValueError("Training alpha or ridge differs from the declared reference")
     identity = "ema-gram-hessian-" + uuid.uuid4().hex[:12]
     destination = Path(os.environ.get("IRIS_OUTPUT_DIR", "scratch/hessian")) / identity
     destination.mkdir(parents=True)
@@ -205,6 +226,7 @@ def main():
             source_commit=os.environ.get("GIT_COMMIT"),
             groups=args.groups,
             directions=args.directions,
+            projected_checks=args.projected_checks,
             logging_check=args.logging_check,
         ),
     )
@@ -352,12 +374,15 @@ def main():
                 )
                 d = len(directions)
                 curvature = np.zeros((args.groups, d, d), np.float64)
+                finite_difference = np.full((2, args.groups, d, d), np.nan, np.float64)
+                projected_checks = []
                 leakage = np.zeros((args.groups, d), np.float64)
                 total_norm = 0.0
                 residual_norm = 0.0
                 durations = []
                 for j, direction in enumerate(directions):
                     mean_hvp = np.zeros_like(direction, dtype=np.float64)
+                    preferred_steps = None
                     for bi, batch in enumerate(batches):
                         start = time.perf_counter()
                         value = host_array(hvp(matrix, jnp.asarray(direction), model, batch)).astype(np.float64)
@@ -370,6 +395,15 @@ def main():
                         leakage[bi, j] = np.sqrt(max(0.0, norm2 - np.sum(projection**2)) / max(norm2, 1e-300))
                         mean_hvp += value / args.groups
                         durations.append(elapsed)
+                        if args.projected_checks:
+                            check, reference = projected_difference_column(
+                                matrix, direction, model, batch, grad, value, directions, preferred_steps
+                            )
+                            projected_checks.append(dict(direction=j, group=bi, **check))
+                            if reference is not None:
+                                finite_difference[:, bi, :, j] = reference
+                                if bi == 0:
+                                    preferred_steps = check["steps"]
                         progress(
                             dict(
                                 event="hvp",
@@ -385,11 +419,13 @@ def main():
                     total_norm += norm2
                     residual_norm += max(0.0, norm2 - np.sum(projection**2))
                     save(label + "-partial.json", dict(completed_directions=j + 1, curvature_batches=curvature.tolist()))
+                    if args.projected_checks:
+                        save(label + "-projected-checks.json", projected_checks)
                 metadata = dict(
                     curvature_kind="hessian",
                     checkpoint=args.checkpoint,
                     block=block,
-                    trajectory="alpha0.25_seed0",
+                    trajectory=f"alpha{cfg.optimizer.alpha}_seed{cfg.trainer.seed}",
                     precision="FP32 parameters, forward, derivatives; highest matmul; FP64 eigendecomposition",
                     curvature_shift=0.0,
                     source_commit=os.environ.get("GIT_COMMIT"),
@@ -405,11 +441,17 @@ def main():
                     derivative_checks=checks,
                     hvp_seconds=durations,
                     measurement_resolution="Assess derivative/batch stability; 1e-12 is only a numerical gate",
+                    projected_checks_requested=args.projected_checks,
                 )
+                if args.projected_checks:
+                    resolution = projected_resolution(curvature, finite_difference)
+                    save(label + "-precision-resolution.json", resolution)
+                    metadata["projected_resolution"] = resolution
                 path = destination / (label + ".npz")
                 np.savez_compressed(
                     path,
                     curvature_batches=curvature,
+                    finite_difference_batches=finite_difference,
                     gram_raw=raw,
                     gram_ridged=ridged,
                     leakage=leakage,

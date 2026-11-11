@@ -3689,3 +3689,39 @@ limits explicitly retained. No additional training, fresh-Gram campaign or
 automatic follow-up is launched. Durable artifact manifests bind exact GCS
 generations, sizes, CRC32C and local SHA256 values; bounded reports are archived
 on the research branch, and six NPZ exports accompany the local results package.
+
+### 2026-11-11: motivation-aligned follow-up authorized
+
+The user requested additional experiments wherever the initial measurements
+did not address the original motivation. The report remains pending until the
+follow-up evidence is incorporated. The motivating question is why alpha=1/8
+performed well in the previous single-seed comparison, not whether a sparse
+quarter-power projection admits a numerical matrix logarithm.
+
+First measure the actual eighth-power trajectory, using the archived exact
+training configuration and regional checkpoints. Storage lists available labels
+3733, 18665 and 33597, one update later than the prior quarter-power labels.
+Metadata and config round trips are checked locally; full execution-host
+restoration must verify the actual counters before measurement. The local
+TensorStore client cannot parse the current ADC credential format, although
+ordinary storage SDK metadata reads succeed; no access restriction is bypassed.
+
+Add projected finite-difference checks for every direction and every data group.
+Use the largest adjacent pair from the declared 3-to-1e-6 sweep satisfying the
+unchanged 2% full-HVP criterion. Reuse the first group's scales when they pass;
+otherwise apply the same sweep to that group. Save both projected references.
+For positive mean curvature, apply diagonal congruence scaling and require its
+minimum eigenvalue to exceed ten times the largest spectral discrepancy among
+the HVP matrix and the two finite-difference references. This is an empirical
+agreement screen, not a rigorous bound on all systematic errors. Retain the
+original symmetry gate and all unmodified eigenvalues. Failed screens remain
+unresolved; indefinite curvature remains a valid negative finding.
+
+After the middle eighth-power pilot, repeat at the available early/late states
+and apply the same stronger validation to the quarter-power middle control.
+Further controls will compare two independent frozen-weight fresh Gram histories
+against the stored history in one fixed basis, compare a nested wider subspace
+against the original twelve directions, and measure held-out loss changes of
+the actual polar matrix-update rule. Each control needs its own predeclared data
+partition and validation before launch. Frozen proposals do not constitute a
+new training trajectory or identify the globally best training exponent.
