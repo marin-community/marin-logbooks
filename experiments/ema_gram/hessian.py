@@ -121,7 +121,22 @@ def derivative_checks(matrix, directions, model, batch, loss, grad, hvp):
         e = jnp.asarray(directions[index])
         he = products[index]
         relative_errors = []
-        for delta in (3.0, 1.0, 0.3, 0.1, 0.03, 0.01, 0.003):
+        for delta in (
+            3.0,
+            1.0,
+            0.3,
+            0.1,
+            0.03,
+            0.01,
+            0.003,
+            0.001,
+            0.0003,
+            0.0001,
+            0.00003,
+            0.00001,
+            0.000003,
+            0.000001,
+        ):
             plus = host_array(grad(matrix + delta * e, model, batch)).astype(np.float64)
             minus = host_array(grad(matrix - delta * e, model, batch)).astype(np.float64)
             fd = (plus - minus) / (2 * delta)

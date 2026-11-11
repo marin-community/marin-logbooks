@@ -3624,3 +3624,13 @@ No full curvature export or power fit exists; early/late runs were not launched.
 Further launches are stopped under the repeated/unclear failure rule in the
 Iris monitoring reference. A smaller-step diagnostic is the concrete next study,
 without relaxing the gate or treating symmetry alone as validation.
+
+### 2026-11-10: authorized smaller-step derivative investigation
+
+The user explicitly authorized continuing numerical debugging after the second
+failure. Extend the existing declared step sweep through 0.001, 0.0003, 0.0001,
+0.00003, 0.00001, 0.000003, and 0.000001, keeping the same 2% adjacent-scale
+requirement and the same frozen checkpoint, basis, data and precision. The
+existing fail-closed runner collects curvature only after every tested mode
+passes. This tests whether the strongest mode has a convergence window at
+smaller perturbations; it does not assume that explanation is correct.
