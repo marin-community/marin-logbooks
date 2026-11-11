@@ -3606,3 +3606,21 @@ The increasing error as steps shrink motivates a declared wider sweep
 high Gram modes, retaining HVP and gradient-difference norms. The 2% tolerance
 is unchanged and now must hold at two adjacent scales in every tested mode.
 No curvature data from the failed gate will be used.
+
+### 2026-11-10 17:12 PST: real Hessian pilot blocked at strong-mode validation
+
+The revised middle pilot ran from `bbf7847b72fc8f44e85b1bea56695a75e5e24e8f`.
+It again restored counter 18,665 and the same eight disjoint data groups. The
+HQ/code/math object catalogs match their archived checksums. Low and middle
+Gram modes passed the unchanged 2% adjacent-scale test; the strongest mode
+failed, with best relative error 0.8357 at the smallest tested step 0.003.
+Its HVP norm is 12.5594, versus 0.000103842 for the weak mode. Smaller strong-mode
+steps remain untested; no cause is established by this result alone.
+
+[Pilot findings](hessian-pilot-findings.md) retain both failures, data validation,
+the second launch and generation-bound diagnostics. Iris reports terminal failed,
+one failed task and three coscheduled sibling failures, with zero preemptions.
+No full curvature export or power fit exists; early/late runs were not launched.
+Further launches are stopped under the repeated/unclear failure rule in the
+Iris monitoring reference. A smaller-step diagnostic is the concrete next study,
+without relaxing the gate or treating symmetry alone as validation.
