@@ -3808,3 +3808,30 @@ thresholds. Continue the focused numerical correction under the user's existing
 “Continue numerical debugging” authorization and request for aligned experiments.
 Preserve both failed attempts. Relaunch from the original complete frozen state
 with fresh tracking identities; no training-resume claim applies.
+
+
+### November 11 — Verified the motivating trajectory at three stages
+
+The eighth-power early/middle/late measurements all completed on their original
+attempts: canonical Iris success (4/4 tasks), completed GCS artifacts, and eight
+finished online tracking runs per job including logging preflights. Complete
+restores verified counters 3734, 18666, and 33598. All six original/follow-up
+12-direction data manifests are identical, including sequence hashes and weights.
+
+Accepted mean fits under both numerical and empirical requirements are early
+attention and both middle blocks. Raw fit-derived alpha values are 0.37008,
+0.39213, and 0.40598, respectively. Empirical precision margins are 10.905,
+29.203, and 36.418 (required >10). Strict bootstrap acceptance is 511, 619, and
+585 out of 1000. Intervals remain conditional on acceptance and the fixed proxy.
+Early MLP and late attention fail positivity. Late MLP passes the original
+numerical gate but its empirical margin is 4.784; its raw alpha 0.42436 is
+unresolved and must not be included among accepted fits. Negative signs are not
+separately calibrated by the screen, which exits on nonpositive mean curvature.
+
+The native-precision correction is validated through fresh-gradient execution:
+quarter-controls attempt02 completed its first 512-batch history and progressed
+through the second. The first two failed control attempts remain preserved and
+produced no fresh Gram or optimizer-loss result. Eighth-controls attempt02 was
+then submitted from published source 9ca969f8a, with no wall-clock limit and no
+preemption override. Both 48-direction measurements remain running. No training
+trajectory is advanced by any of these measurements.
