@@ -251,7 +251,8 @@ def main():
     initialize_jax()
     for key, value in cfg.trainer.jax_config.items():
         jax.config.update(key, value)
-    jax.config.update("jax_default_matmul_precision", "highest")
+    if not args.controls_only:
+        jax.config.update("jax_default_matmul_precision", "highest")
     # Vanilla attention and unfused cross entropy provide differentiable FP32 paths.
     model_config = cfg.model if args.controls_only else replace(cfg.model, attn_backend=AttentionBackend.VANILLA)
     bucket_name, prefix = args.output_prefix.removeprefix("gs://").rstrip("/").split("/", 1)
@@ -277,6 +278,17 @@ def main():
             bucket.blob(prefix + "/measurements.jsonl").upload_from_filename(str(destination / "measurements.jsonl"))
 
     try:
+        save(
+            "numerical-configuration.json",
+            dict(
+                controls_only=args.controls_only,
+                configured_jax_options=cfg.trainer.jax_config,
+                effective_default_matmul_precision=jax.config.jax_default_matmul_precision,
+                mixed_precision_policy=str(cfg.trainer.mp),
+                attention_backend=str(model_config.attn_backend),
+                reason="Native training precision for controls; FP32 highest precision for curvature derivatives",
+            ),
+        )
         with cfg.trainer.use_device_mesh():
             vocab = hax.partitioning.round_axis_for_partitioning(
                 hax.Axis("vocab", len(cfg.data.the_tokenizer)), cfg.trainer.compute_axis_mapping

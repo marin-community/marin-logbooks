@@ -3788,3 +3788,23 @@ empirical precision. Fresh-proxy comparisons require matching basis archive size
 and CRC before sharing coordinates. Native local-update comparisons use paired
 batch bootstrap intervals, conditional on the one update-gradient batch and the
 saved state; no multiple-comparison or training-seed claim is made.
+
+### Native-control precision correction
+
+Both already-submitted controls failed at their first fresh-gradient compilation,
+before producing a Gram history or optimizer-loss result. The TPU Mosaic error
+reported a bf16 attention matmul with an FP32 contraction precision and `Bad lhs
+type`. The shared Hessian entrypoint had unconditionally forced
+jax_default_matmul_precision=highest, despite controls-only restoring the native
+attention backend. The frozen training configs do not specify that override.
+Local Splash attention source uses lax.dot_general without an explicit precision
+argument, so this global setting propagates into the kernel.
+
+The correction applies highest precision only to curvature measurements; native
+controls retain the training-config/default setting. A numerical-configuration
+artifact records the effective precision and backend. This restores the intended
+native control protocol and does not weaken the 2% HVP or empirical resolution
+thresholds. Continue the focused numerical correction under the user's existing
+“Continue numerical debugging” authorization and request for aligned experiments.
+Preserve both failed attempts. Relaunch from the original complete frozen state
+with fresh tracking identities; no training-resume claim applies.
