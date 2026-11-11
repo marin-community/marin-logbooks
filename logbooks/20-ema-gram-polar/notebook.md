@@ -3762,3 +3762,29 @@ Scientific acceptance remains separate from artifact export. The unchanged
 package can label a numerical fit valid even when the new empirical precision
 screen is unresolved. Follow-up summaries must require both checks before calling
 a power fit accepted; negative or unresolved measurements remain in the archive.
+
+### Submitted aligned campaign and acceptance postprocessing
+
+Seven jobs are bound to dated launch JSON records: eighth early/middle/late;
+eighth and quarter frozen controls; eighth and quarter nested 48-direction
+Hessians. The middle pilot uses e5acf9e20; the other six use c194c6872. All retain
+default scheduler preemption/retries, request v4-32 in us-central2, and impose no
+wall-clock limit. Every measurement has a separate online tracking identity and
+a CPU logging preflight before TPU initialization. These are frozen measurements,
+not restarted or resumed training runs.
+
+The middle eighth pilot fully restored counter18666. Its attention block has
+positive mean curvature and passes the declared empirical screen (margin29.203,
+threshold10). This is preliminary block evidence while the job remains running.
+Raw descriptive r=1.24226, rho=0.974253 and alpha_log=0.392129. The new
+postprocessor reapplies both numerical and empirical gates to every bootstrap
+sample: 619/1000 accepted, 178 indefinite and203 empirically unresolved. These
+conditional intervals must not be described as unconditional uncertainty.
+
+The acceptance postprocessor preserves the original supplied-script results and
+adds a separate accepted_positive_power decision. Synthetic validation accepts
+an exact fourth-power case and rejects a numerically valid fit with unresolved
+empirical precision. Fresh-proxy comparisons require matching basis archive size
+and CRC before sharing coordinates. Native local-update comparisons use paired
+batch bootstrap intervals, conditional on the one update-gradient batch and the
+saved state; no multiple-comparison or training-seed claim is made.
