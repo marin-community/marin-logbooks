@@ -3562,3 +3562,25 @@ The user-scoped minimal supplement is concluded with these evidence limits.
 No cross-seed, failed-longrun rerun, horizon/998M campaign or shutdown-engineering
 execution is queued. All completed new task/native/artifact reads are cached;
 do not repeatedly query them or launch a follow-up automatically.
+
+### 2026-11-10: frozen-checkpoint Hessian pilot
+
+The user requested the real checkpoint experiment from the Hessian-power package.
+Start with counter 18,665 and the first q_proj and gate_proj slices, then repeat
+at early/late counters after derivative and data checks pass. The five supplied
+NumPy synthetic checks pass; they contain no Marin measurements.
+
+The new runner uses the existing complete-state restore and matrix_state mapping,
+FP32 parameters/forward/derivatives, highest matmul precision, vanilla attention
+and unfused cross entropy with configured z-loss. It measures 12 distinct Gram
+eigenvector products across eight disjoint sampled sequence groups, retains all
+projected entries and computes leakage from averaged full block HVPs. Fresh
+sampling uses the fixed training caches, not a claim of unseen training data.
+Each group retains the native valid-token-normalized objective and equal group
+weight; valid token counts and token hashes are recorded.
+
+[The frozen pilot request](hessian-middle-request.json) records the input hash,
+measurement selection and resource plan. Source/configuration will be published
+before submission. Local ADC reads confirm permanent checkpoint metadata remains
+available; complete restoration and actual counter validation occur on the host.
+No new training, shift, GGN substitution or GPU allocation is involved.
