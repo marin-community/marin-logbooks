@@ -3591,3 +3591,18 @@ The pilot was submitted at 16:52 PST as
 logbooks and documentation while retaining the exact frozen configuration.
 [The launch record](hessian-middle-launched.json) preserves the command, flags,
 and validation. Two numerical tests and lint passed; real results remain pending.
+
+The first attempt restored counter 18,665 completely and loaded eight groups
+of 32,768 tokens (32,760 valid weights each), with no duplicate sequences.
+It stopped before curvature collection: the weakest selected q_proj direction
+had finite-difference relative errors 0.0501, 0.2489, 0.3163 at steps 0.1, 0.03,
+0.01, while bilinear symmetry error was 2.65e-10.
+[Diagnostics](hessian-attempt01/attention-derivative-checks.json) and the data
+manifest are preserved. This is a derivative-validation failure, not an
+indefinite-Hessian result or a completed power fit.
+
+The increasing error as steps shrink motivates a declared wider sweep
+{3, 1, 0.3, 0.1, 0.03, 0.01, 0.003}. The next attempt checks low, middle and
+high Gram modes, retaining HVP and gradient-difference norms. The 2% tolerance
+is unchanged and now must hold at two adjacent scales in every tested mode.
+No curvature data from the failed gate will be used.

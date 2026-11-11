@@ -10,7 +10,7 @@ import os
 import time
 import uuid
 from dataclasses import replace
-from itertools import islice
+from itertools import islice, pairwise
 from pathlib import Path
 
 import equinox as eqx
@@ -109,30 +109,49 @@ def block_functions(model, block_path, z_loss_weight):
 
 
 def derivative_checks(matrix, directions, model, batch, loss, grad, hvp):
-    """Check two bilinear forms and central gradient differences at three scales."""
-    e, f = map(jnp.asarray, directions[:2])
-    he = host_array(hvp(matrix, e, model, batch))
-    hf = host_array(hvp(matrix, f, model, batch))
-    a, b = float(np.sum(directions[1] * he)), float(np.sum(directions[0] * hf))
-    symmetry_scale = max(np.linalg.norm(he), np.linalg.norm(hf), 1e-30)
-    symmetry = abs(a - b) / symmetry_scale
-    relative_errors = []
-    for delta in (0.1, 0.03, 0.01):
-        plus = host_array(grad(matrix + delta * e, model, batch))
-        minus = host_array(grad(matrix - delta * e, model, batch))
-        fd = (plus - minus) / (2 * delta)
-        relative_errors.append(
-            dict(delta=delta, relative_error=float(np.linalg.norm(fd - he) / max(np.linalg.norm(he), 1e-30)))
+    """Validate low, middle and high Gram modes over a declared step-size sweep."""
+    indices = sorted(set((0, len(directions) // 2, len(directions) - 1)))
+    products = {i: host_array(hvp(matrix, jnp.asarray(directions[i]), model, batch)).astype(np.float64) for i in indices}
+    first, last = indices[0], indices[-1]
+    a = float(np.sum(directions[last] * products[first]))
+    b = float(np.sum(directions[first] * products[last]))
+    symmetry = abs(a - b) / max(np.linalg.norm(products[first]), np.linalg.norm(products[last]), 1e-30)
+    checks = []
+    for index in indices:
+        e = jnp.asarray(directions[index])
+        he = products[index]
+        relative_errors = []
+        for delta in (3.0, 1.0, 0.3, 0.1, 0.03, 0.01, 0.003):
+            plus = host_array(grad(matrix + delta * e, model, batch)).astype(np.float64)
+            minus = host_array(grad(matrix - delta * e, model, batch)).astype(np.float64)
+            fd = (plus - minus) / (2 * delta)
+            relative_errors.append(
+                dict(
+                    delta=delta,
+                    relative_error=float(np.linalg.norm(fd - he) / max(np.linalg.norm(he), 1e-30)),
+                    gradient_difference_norm=float(np.linalg.norm(plus - minus)),
+                    gradient_norm=float(np.linalg.norm(plus)),
+                )
+            )
+        valid = [r["relative_error"] < 0.02 for r in relative_errors]
+        checks.append(
+            dict(
+                direction=index,
+                hvp_norm=float(np.linalg.norm(he)),
+                passed=any(x and y for x, y in pairwise(valid)),
+                finite_difference=relative_errors,
+            )
         )
     baseline = float(loss(matrix, model, batch))
-    passed = np.isfinite(baseline) and symmetry < 1e-4 and sum(x["relative_error"] < 0.02 for x in relative_errors) >= 2
+    passed = np.isfinite(baseline) and symmetry < 1e-4 and all(c["passed"] for c in checks)
     return dict(
         passed=bool(passed),
         baseline_loss=baseline,
         symmetry_relative=float(symmetry),
-        finite_difference=relative_errors,
+        directions=checks,
         symmetry_tolerance=1e-4,
         fd_tolerance=0.02,
+        requirement="Two adjacent step sizes below 2% relative HVP error in each tested mode",
     )
 
 
