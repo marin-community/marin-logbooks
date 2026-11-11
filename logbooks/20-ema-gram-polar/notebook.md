@@ -3584,3 +3584,10 @@ measurement selection and resource plan. Source/configuration will be published
 before submission. Local ADC reads confirm permanent checkpoint metadata remains
 available; complete restoration and actual counter validation occur on the host.
 No new training, shift, GGN substitution or GPU allocation is involved.
+
+The pilot was submitted at 16:52 PST as
+`/kaiyuew@stanford.edu/ema-gram-hessian-middle-20261110-01`, using source
+`be4552103096bec8b9da94d4190d112af3bbc600`. The 16 MB bundle excludes historical
+logbooks and documentation while retaining the exact frozen configuration.
+[The launch record](hessian-middle-launched.json) preserves the command, flags,
+and validation. Two numerical tests and lint passed; real results remain pending.

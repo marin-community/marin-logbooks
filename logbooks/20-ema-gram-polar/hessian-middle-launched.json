@@ -1,0 +1,60 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-hessian-middle-20261110-01",
+  "dashboard": "https://iris.oa.dev/#/job/%2Fkaiyuew%40stanford.edu%2Fema-gram-hessian-middle-20261110-01",
+  "source_commit": "be4552103096bec8b9da94d4190d112af3bbc600",
+  "submitted_local": "2026-11-10 16:52:21 America/Los_Angeles",
+  "cluster_config": "lib/iris/config/marin.yaml",
+  "tasks": 4,
+  "bundle_megabytes": 16.0,
+  "command": [
+    "python",
+    "-m",
+    "experiments.ema_gram.run_hessian",
+    "--configs",
+    "logbooks/20-ema-gram-polar/reference-probes-r01-configs.json",
+    "--checkpoint",
+    "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-18664",
+    "--expected-counter",
+    "18665",
+    "--output-prefix",
+    "gs://marin-us-central2/ema-gram-20-hessian/20261110/middle"
+  ],
+  "submission_flags": [
+    "--no-wait",
+    "--no-cancel-on-exit",
+    "--priority",
+    "batch",
+    "--enable-extra-resources",
+    "--tpu",
+    "v4-32",
+    "--cpu",
+    "120",
+    "--memory",
+    "256GB",
+    "--disk",
+    "50GB",
+    "--region",
+    "us-central2",
+    "--extra",
+    "tpu",
+    "--sync-package",
+    "marin-levanter",
+    "--exclude",
+    "^docs/",
+    "--exclude",
+    "^logbooks/(?!20-ema-gram-polar/reference-probes-r01-configs.json$)"
+  ],
+  "environment": {
+    "GIT_COMMIT": "be4552103096bec8b9da94d4190d112af3bbc600",
+    "IRIS_PORT_JAX": "32913"
+  },
+  "status": "submitted; actual restore and measurements not yet observed",
+  "validation": [
+    "five supplied synthetic examples passed",
+    "two CPU numerical tests passed",
+    "frozen config decoded and round-tripped",
+    "lint passed",
+    "checkpoint metadata available"
+  ],
+  "attempt_notes": "Earlier local submission attempts failed before acceptance: mismatched old client configuration, oversized bundle, and old-client server rejection. The accepted submission uses this research checkout Iris client; no duplicate job was launched."
+}
