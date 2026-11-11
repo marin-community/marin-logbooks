@@ -3725,3 +3725,40 @@ against the original twelve directions, and measure held-out loss changes of
 the actual polar matrix-update rule. Each control needs its own predeclared data
 partition and validation before launch. Frozen proposals do not constitute a
 new training trajectory or identify the globally best training exponent.
+
+### Frozen controls and nested subspaces
+
+The follow-up controls use the original model attention configuration and mixed
+precision for first derivatives. Two separately randomized histories each collect
+512 accepted batches at frozen weights, with the native global clip and beta=0.99.
+Their finite EMAs are bias corrected. Entire candidate batches containing repeated
+sequence hashes are rejected; accepted source positions and rejection counts are
+recorded. Curvature, history, update-gradient and evaluation data are disjoint
+within this measurement, not claimed unseen during prior training. All projected
+Gram entries are retained, including off-diagonal entries. The controls select a
+nested 48-direction basis so both its original 12-direction restriction and wider
+projection can be analyzed without rebuilding the histories.
+
+Full native optimizer candidates use alpha=0, 0.125, 0.25, 0.375, 0.5 with the same
+saved optimizer state, one fresh gradient and native LR/decay. Sixteen paired
+batches evaluate fractions 0.1, 0.3 and 1.0 of each update. A separate diagnostic
+matches the entire update norm to alpha0; this also rescales AdamW and decay and
+must not be described as isolating only matrix direction. Evaluation uncertainty
+conditions on the single update gradient. No training trajectory is advanced.
+
+Expanded Hessian bases retain the original 12 directions. Preliminary derivative
+checks use actual Gram-product ranks, not appended-array positions. Leakage for
+the original 12 HVP inputs is evaluated against both the original and expanded
+output projections, with the same denominator. This avoids conflating a changed
+input distribution with improved response capture.
+
+Validation: five numerical tests passed; a tiny-model end-to-end control test
+exercises all 30 update branches, forced duplicate rejection, common evaluation
+batches, equal norms in the matching arm and unchanged source model/optimizer
+state. A separate native-update comparison agrees with take_train_step for all
+five alphas. These checks do not substitute for execution-host validation.
+
+Scientific acceptance remains separate from artifact export. The unchanged
+package can label a numerical fit valid even when the new empirical precision
+screen is unresolved. Follow-up summaries must require both checks before calling
+a power fit accepted; negative or unresolved measurements remain in the archive.

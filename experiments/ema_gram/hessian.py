@@ -32,6 +32,7 @@ from levanter.utils.tree_utils import inference_mode
 from rigging.secrets import require_secret
 
 from experiments.ema_gram.curvature_resolution import projected_resolution
+from experiments.ema_gram.frozen_controls import run_controls
 from experiments.ema_gram.probe import matrix_state, resolve_config
 
 FD_STEPS = (3.0, 1.0, 0.3, 0.1, 0.03, 0.01, 0.003, 0.001, 0.0003, 0.0001, 0.00003, 0.00001, 0.000003, 0.000001)
@@ -57,11 +58,16 @@ def select_basis(left, right, count=12, rtol=1e-5):
     products = lv[li, None] * rv[None, ri]
     order = np.argsort(products.ravel(), kind="stable")
     logs = np.log(products.ravel())
-    targets = np.linspace(logs.min(), logs.max(), min(count, products.size))
+    initial_count = min(12, count, products.size)
+    targets = list(np.linspace(logs.min(), logs.max(), initial_count))
+    if count > initial_count:
+        targets.extend(np.linspace(logs.min(), logs.max(), min(count, products.size))[1:-1])
     selected = []
     for target in targets:
         candidates = order[np.argsort(np.abs(logs[order] - target), kind="stable")]
         selected.append(next(int(x) for x in candidates if int(x) not in selected))
+        if len(selected) == min(count, products.size):
+            break
     pairs = [(int(li[x // len(ri)]), int(ri[x % len(ri)])) for x in selected]
     directions = np.stack([np.outer(eigenvectors[0][:, i], eigenvectors[1][:, j]) for i, j in pairs])
     raw = np.array([lv[i] * rv[j] for i, j in pairs])
@@ -75,7 +81,8 @@ def select_basis(left, right, count=12, rtol=1e-5):
         right_excluded=len(rv) - len(ri),
         normalization_means=[float(lv.mean()), float(rv.mean())],
         ridge=0.01,
-        rule="Distinct products nearest equally spaced log-product targets; stable index tie breaking",
+        rule="First 12 log-product targets retained; append distinct wider-grid targets; stable index tie breaking",
+        nested_initial_count=initial_count,
     )
     return directions.astype(np.float32), np.diag(raw), np.diag(ridged), info
 
@@ -111,9 +118,9 @@ def block_functions(model, block_path, z_loss_weight):
     return loss, grad, hvp
 
 
-def derivative_checks(matrix, directions, model, batch, loss, grad, hvp):
+def derivative_checks(matrix, directions, model, batch, loss, grad, hvp, indices=None):
     """Validate low, middle and high Gram modes over a declared step-size sweep."""
-    indices = sorted(set((0, len(directions) // 2, len(directions) - 1)))
+    indices = list(indices) if indices is not None else sorted(set((0, len(directions) // 2, len(directions) - 1)))
     products = {i: host_array(hvp(matrix, jnp.asarray(directions[i]), model, batch)).astype(np.float64) for i in indices}
     first, last = indices[0], indices[-1]
     a = float(np.sum(directions[last] * products[first]))
@@ -200,6 +207,8 @@ def main():
     parser.add_argument("--groups", type=int, default=8)
     parser.add_argument("--directions", type=int, default=12)
     parser.add_argument("--projected-checks", action="store_true")
+    parser.add_argument("--controls-only", action="store_true")
+    parser.add_argument("--history-batches", type=int, default=512)
     parser.add_argument("--logging-check", action="store_true")
     args = parser.parse_args()
     encoded = json.loads(args.configs.read_text())[args.config_index]["config"]["train_config"]
@@ -227,6 +236,8 @@ def main():
             groups=args.groups,
             directions=args.directions,
             projected_checks=args.projected_checks,
+            controls_only=args.controls_only,
+            history_batches=args.history_batches,
             logging_check=args.logging_check,
         ),
     )
@@ -242,7 +253,7 @@ def main():
         jax.config.update(key, value)
     jax.config.update("jax_default_matmul_precision", "highest")
     # Vanilla attention and unfused cross entropy provide differentiable FP32 paths.
-    model_config = replace(cfg.model, attn_backend=AttentionBackend.VANILLA)
+    model_config = cfg.model if args.controls_only else replace(cfg.model, attn_backend=AttentionBackend.VANILLA)
     bucket_name, prefix = args.output_prefix.removeprefix("gs://").rstrip("/").split("/", 1)
     bucket = storage.Client().bucket(bucket_name)
     prefix += "/" + identity
@@ -343,6 +354,7 @@ def main():
             ]
             if len(selected) != 2:
                 raise ValueError(f"Expected q_proj and gate_proj, found {[p for p, _ in selected]}")
+            control_blocks = []
             for block, gram_state in selected:
                 label = "attention" if "q_proj" in block else "mlp"
                 matrix = full_paths[block].reshape((-1, *gram_state.momentum.shape[-2:]))[0]
@@ -354,12 +366,17 @@ def main():
                 np.savez_compressed(basis_file, directions=directions, gram_raw=raw, gram_ridged=ridged)
                 if jax.process_index() == 0:
                     bucket.blob(prefix + "/" + basis_file.name).upload_from_filename(str(basis_file))
+                if args.controls_only:
+                    control_blocks.append(dict(label=label, path=block, shape=matrix.shape, directions=directions))
+                    continue
                 loss, grad, hvp = [
                     hax.named_jit(fn, axis_resources=cfg.trainer.compute_axis_mapping)
                     for fn in block_functions(model, block, cfg.z_loss_weight)
                 ]
                 start = time.perf_counter()
-                checks = derivative_checks(matrix, directions, model, batches[0], loss, grad, hvp)
+                product_order = np.argsort(np.diag(raw))
+                check_indices = product_order[[0, len(product_order) // 2, -1]].tolist()
+                checks = derivative_checks(matrix, directions, model, batches[0], loss, grad, hvp, check_indices)
                 checks["seconds_including_compile"] = time.perf_counter() - start
                 save(label + "-derivative-checks.json", checks)
                 if not checks["passed"]:
@@ -379,6 +396,7 @@ def main():
                 leakage = np.zeros((args.groups, d), np.float64)
                 total_norm = 0.0
                 residual_norm = 0.0
+                initial_total = initial_residual = expanded_residual = 0.0
                 durations = []
                 for j, direction in enumerate(directions):
                     mean_hvp = np.zeros_like(direction, dtype=np.float64)
@@ -418,6 +436,10 @@ def main():
                     norm2 = np.sum(mean_hvp**2)
                     total_norm += norm2
                     residual_norm += max(0.0, norm2 - np.sum(projection**2))
+                    if j < min(12, d):
+                        initial_total += norm2
+                        initial_residual += max(0.0, norm2 - np.sum(projection[:12] ** 2))
+                        expanded_residual += max(0.0, norm2 - np.sum(projection**2))
                     save(label + "-partial.json", dict(completed_directions=j + 1, curvature_batches=curvature.tolist()))
                     if args.projected_checks:
                         save(label + "-projected-checks.json", projected_checks)
@@ -442,6 +464,14 @@ def main():
                     hvp_seconds=durations,
                     measurement_resolution="Assess derivative/batch stability; 1e-12 is only a numerical gate",
                     projected_checks_requested=args.projected_checks,
+                    nested_leakage=dict(
+                        input_directions=min(12, d),
+                        original_output_directions=min(12, d),
+                        expanded_output_directions=d,
+                        original=float(np.sqrt(initial_residual / max(initial_total, 1e-300))),
+                        expanded=float(np.sqrt(expanded_residual / max(initial_total, 1e-300))),
+                        definition="Same first 12 HVP inputs and denominator; compare original and expanded projections",
+                    ),
                 )
                 if args.projected_checks:
                     resolution = projected_resolution(curvature, finite_difference)
@@ -466,6 +496,19 @@ def main():
                         block=label,
                         output="gs://" + bucket_name + "/" + prefix + "/" + path.name,
                     )
+                )
+            if args.controls_only:
+                run_controls(
+                    state,
+                    model,
+                    cfg,
+                    control_blocks,
+                    save,
+                    progress,
+                    host_array,
+                    history_batches=args.history_batches,
+                    curvature_seed=args.seed,
+                    curvature_groups=args.groups,
                 )
             save(
                 "completed.json",

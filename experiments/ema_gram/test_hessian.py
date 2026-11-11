@@ -11,6 +11,7 @@ from levanter.models.qwen import QwenConfig
 from levanter.optim.util import flatten_linear_layers
 
 from experiments.ema_gram.curvature_resolution import projected_resolution
+from experiments.ema_gram.frozen_controls import effective_ema_samples, project_grams, rank_one_factors
 from experiments.ema_gram.hessian import block_functions, projected_difference_column, select_basis
 
 
@@ -62,6 +63,24 @@ def test_selected_basis_matches_kronecker_operator():
         a = left / (np.trace(left) / 6) + 0.01 * np.eye(6)
         b = right / (np.trace(right) / 4) + 0.01 * np.eye(4)
         np.testing.assert_allclose(a @ e @ b, ridged[i, i] * e, rtol=1e-5, atol=2e-7)
+    wider, _, _, _ = select_basis(left, right, 20)
+    np.testing.assert_array_equal(wider[:12], directions)
+
+
+def test_fresh_gram_projection_preserves_off_diagonal_entries():
+    rng = np.random.default_rng(7)
+    basis, _, _, _ = select_basis(np.diag([1.0, 2, 4]), np.diag([1.0, 3]), 5)
+    u, v = rank_one_factors(basis)
+    x, y = rng.normal(size=(3, 3)), rng.normal(size=(2, 2))
+    left, right = x @ x.T + np.eye(3), y @ y.T + np.eye(2)
+    raw, ridged = project_grams(left, right, u, v)
+    explicit = np.array([[np.sum(e * (left @ f @ right)) for f in basis] for e in basis])
+    np.testing.assert_allclose(raw, explicit, rtol=1e-6)
+    assert np.linalg.norm(raw - np.diag(np.diag(raw))) > 0.1
+    a, b = left / (np.trace(left) / 3) + 0.01 * np.eye(3), right / (np.trace(right) / 2) + 0.01 * np.eye(2)
+    explicit = np.array([[np.sum(e * (a @ f @ b)) for f in basis] for e in basis])
+    np.testing.assert_allclose(ridged, explicit, rtol=1e-6)
+    assert 196 < effective_ema_samples(0.99, 512) < 199
 
 
 def test_resolution_screen_respects_scale_and_rejects_uncertain_curvature():
