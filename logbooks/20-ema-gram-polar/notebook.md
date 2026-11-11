@@ -3634,3 +3634,31 @@ requirement and the same frozen checkpoint, basis, data and precision. The
 existing fail-closed runner collects curvature only after every tested mode
 passes. This tests whether the strongest mode has a convergence window at
 smaller perturbations; it does not assume that explanation is correct.
+
+### 2026-11-10 21:16 PST: middle pilot completed; early and late submitted
+
+Attempt 3 from `579fc3ade` passed both derivative gates and completed all 192
+HVPs. The strong q_proj mode passed at 1e-4, 3e-5 and 1e-5 with errors 0.00339,
+0.00192 and 0.00402. All four Iris tasks succeeded, and all four online W&B
+measurement runs are `finished`. The publishing run is
+[035397d82a6b](https://wandb.ai/marin-community/marin/runs/ema-gram-hessian-035397d82a6b).
+
+The [attention analysis](hessian-middle/attention-fit.json) rejects both proxies:
+the unshifted mean has minimum eigenvalue -0.07669 and leakage 0.9274. All 1,000
+conditional batch resamples remain indefinite. The [MLP analysis](hessian-middle/mlp-fit.json)
+passes the supplied numerical positivity gate: raw r=1.1941, rho=0.91595,
+alpha_log=0.38353 (conditional 95% interval [0.38136, 0.38627]); ridged
+alpha_log=0.41190. All 1,000 fit resamples are positive. MLP leakage is 0.2968,
+so this is a projected-subspace descriptor, not a full-block or training optimum.
+
+MLP's minimum/maximum eigenvalue ratio is 4.23e-8: a global relative gate of
+1e-7 would reject it. Diagonal scaling gives minimum eigenvalue 0.835, indicating
+the large condition number primarily reflects scale differences. Neither that
+diagnostic nor batch bootstrap establishes a calibrated floating-point error
+bound. These sensitivity limits accompany the numerical fit.
+
+The early and late repetitions were accepted at 21:15 PST from published source
+`72acf6036`, with identical numerical code, seed, mixture and thresholds.
+[Early launch](hessian-early-launch.json) and [late launch](hessian-late-launch.json)
+retain their exact commands. They restore counters 3,733 and 33,597 respectively;
+each must pass its own derivative and data checks before exporting curvature.

@@ -1,5 +1,9 @@
 # Frozen-checkpoint Hessian pilot: validation blocked
 
+Historical report for attempts 1 and 2. After the user authorized numerical
+debugging, attempt 3 passed both blocks' derivative gates and completed. See
+the subsequent notebook entry and `hessian-middle/` for the successful pilot.
+
 The real middle checkpoint was restored and evaluated on a v4-32 TPU slice.
 The pilot did not pass derivative validation, so it produced no projected
 curvature export or power fit. Early and late checkpoint runs were not launched.
