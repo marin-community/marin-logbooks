@@ -13,6 +13,9 @@ import numpy as np
 def diagnostics(path, repetitions=1000, seed=20261110):
     with np.load(path, allow_pickle=False) as data:
         batches = data["curvature_batches"]
+    asymmetries = np.linalg.norm(batches - batches.transpose(0, 2, 1), axis=(1, 2)) / np.linalg.norm(
+        batches, axis=(1, 2)
+    )
     batches = (batches + batches.transpose(0, 2, 1)) / 2
     mean = batches.mean(axis=0)
     values = np.linalg.eigvalsh(mean)
@@ -22,6 +25,9 @@ def diagnostics(path, repetitions=1000, seed=20261110):
         for _ in range(repetitions)
     ]
     result = dict(
+        spectra_target="Symmetric part for diagnostics only; does not override the supplied analysis gates",
+        per_group_relative_asymmetry=asymmetries.tolist(),
+        passes_input_symmetry_gate=bool(np.max(asymmetries) <= 1e-5),
         mean_eigenvalues=values.tolist(),
         per_group_minimum_eigenvalues=np.linalg.eigvalsh(batches)[:, 0].tolist(),
         bootstrap_minimum_eigenvalue_percentile95=np.quantile(minima, [0.025, 0.975]).tolist(),

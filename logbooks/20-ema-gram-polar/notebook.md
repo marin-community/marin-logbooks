@@ -3662,3 +3662,30 @@ The early and late repetitions were accepted at 21:15 PST from published source
 [Early launch](hessian-early-launch.json) and [late launch](hessian-late-launch.json)
 retain their exact commands. They restore counters 3,733 and 33,597 respectively;
 each must pass its own derivative and data checks before exporting curvature.
+
+### 2026-11-10 21:29 PST: requested three-checkpoint Hessian experiment completed
+
+The early and late jobs both succeeded on all four hosts, with all eight online
+W&B measurement runs verified `finished`. Together with middle, this yields six
+8-by-12-by-12 curvature exports. Token hashes match across all checkpoints.
+Both blocks pass the 2% adjacent-scale derivative checks at every checkpoint.
+
+[Final findings](hessian-findings.md) preserve the original postprocessor's
+acceptance decisions. Early/middle attention are indefinite. Late attention is
+rejected by the separate input symmetry gate (batch 7: 1.55066e-5 > 1e-5);
+its symmetric-part spectrum is only a diagnostic, not an accepted fit.
+No shift, eigenvalue flooring, absolute-value replacement or relaxed tolerance
+was used to obtain a result.
+
+MLP raw alpha_log is 0.3766, 0.3835 and 0.4101 at early/middle/late; production
+ridging gives 0.4052, 0.4119 and 0.4365. Late has 228/1,000 invalid bootstrap
+replicates, so its interval is conditional on the 772 valid replicates. Leakage
+is 0.4905, 0.2968 and 0.3824: none is a full-block training-power recommendation.
+All MLP minimum/maximum eigenvalue ratios are below 1e-7; resolution sensitivity
+and diagonal-scaling diagnostics accompany the default-gate numerical fits.
+
+The requested measurement stage is complete with these failures and uncertainty
+limits explicitly retained. No additional training, fresh-Gram campaign or
+automatic follow-up is launched. Durable artifact manifests bind exact GCS
+generations, sizes, CRC32C and local SHA256 values; bounded reports are archived
+on the research branch, and six NPZ exports accompany the local results package.
