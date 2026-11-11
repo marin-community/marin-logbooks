@@ -4,8 +4,11 @@
 """Apply the supplied fit plus the declared empirical resolution gate."""
 
 import argparse
+import hashlib
 import importlib.util
+import inspect
 import json
+import platform
 from pathlib import Path
 
 import numpy as np
@@ -187,6 +190,7 @@ def paired_losses(folder):
                 matching=row["matching"],
                 step_fraction=row["step_fraction"],
                 update_norm=row["update_norm"],
+                applied_update_norm=row["applied_update_norm"],
                 delta_mean=float(delta.mean()),
                 conditional_delta_interval=np.quantile(delta[indices].mean(axis=1), [0.025, 0.975]).tolist(),
                 versus_eighth_mean=float(paired.mean()),
@@ -197,6 +201,7 @@ def paired_losses(folder):
         rows=rows,
         scope="Paired batch bootstrap; one gradient and saved state fixed; descriptive without multiplicity correction",
         repetitions=10000,
+        norm_definition="update_norm is before rescaling; applied_update_norm includes norm matching and step fraction",
     )
 
 
@@ -206,11 +211,22 @@ def main():
     parser.add_argument("--controls", type=Path)
     parser.add_argument("--package", type=Path, required=True)
     args = parser.parse_args()
+    provenance = dict(
+        postprocessor_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        empirical_screen_sha256=hashlib.sha256(
+            Path(inspect.getsourcefile(projected_resolution)).read_bytes()
+        ).hexdigest(),
+        supplied_script_sha256=hashlib.sha256(args.package.read_bytes()).hexdigest(),
+        python=platform.python_version(),
+        numpy=np.__version__,
+    )
     if args.measurement:
         result = analyze_measurement(args.measurement, load_package(args.package), args.controls)
+        result["analysis_provenance"] = provenance
         (args.measurement / "aligned-analysis.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     if args.controls and (args.controls / "full-update-losses.json").exists():
         result = paired_losses(args.controls)
+        result["analysis_provenance"] = provenance
         (args.controls / "paired-loss-analysis.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
 
 

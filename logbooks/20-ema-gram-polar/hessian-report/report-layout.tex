@@ -1,0 +1,29 @@
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\setstretch{1.25}
+\RaggedRight
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\setlength{\emergencystretch}{3em}
+\setcounter{secnumdepth}{-1}
+\titleformat{\section}{\Large\bfseries\color{black}}{}{0pt}{}
+\titleformat{\subsection}{\large\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{1.8em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.2em}{0.4em}
+\let\reportsection\section
+\renewcommand{\section}{\Needspace{9\baselineskip}\reportsection}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\small Marin curvature experiments}
+\fancyfoot[R]{\small \thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\AtBeginEnvironment{longtable}{\small\setstretch{1.15}}
+
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\widowpenalty=10000
+\clubpenalty=10000

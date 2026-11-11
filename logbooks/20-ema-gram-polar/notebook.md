@@ -3835,3 +3835,56 @@ produced no fresh Gram or optimizer-loss result. Eighth-controls attempt02 was
 then submitted from published source 9ca969f8a, with no wall-clock limit and no
 preemption override. Both 48-direction measurements remain running. No training
 trajectory is advanced by any of these measurements.
+
+### November 11 — Completed all seven aligned measurements
+
+All seven added experiments are now verified complete: four successful Iris
+hosts, completed durable artifacts, and all eight online tracking runs finished
+per experiment. Both controls use corrected source 9ca969f8a; the two failed
+native-control attempts remain archived. No new training trajectory was run.
+The eight curvature data manifests (original three plus five follow-ups) are
+byte-identical. Both widened twelve-direction restrictions reproduce their
+original middle curvature matrices exactly. Four fresh histories each contain
+512 batches; the two controls have identical accepted and rejected sequence
+manifests, 8,392 unique complete sequences, and 25 rejected candidate batches.
+This excludes duplicate complete sequences, not shared fragments/documents.
+
+The quarter middle MLP now passes the empirical screen at dimensions12 and48
+(margins193.133 and42.011). Saved raw alpha is0.38353 and0.38467; ridged alpha
+is0.41190 and0.41283. Strict bootstrap acceptance falls from1000/1000 to663/1000
+at48 (247 indefinite,90 unresolved). Quarter attention has negative measured
+mean curvature and one direction/group lacking a valid derivative reference;
+no accepted fit. Eighth middle attention passes at12 but fails positivity at48
+(minimum-5.156e-7, sign not separately calibrated). Eighth MLP passes at12 but
+is unresolved at48 (margin7.100<10). No thresholds were relaxed.
+
+With the same original12 HVP inputs, enlarging only the output projection to48
+barely reduces leakage: quarter attention0.927401->0.926993, quarter
+MLP0.296787->0.296575, eighth attention0.387614->0.387059, eighth
+MLP0.513949->0.513878. These are norm ratios, not squared-energy fractions.
+
+Fresh proxies agree more closely with each other than with the saved proxy in
+both dimensions and for raw/ridged definitions. At48, raw centered-log distances
+fresh/fresh versus saved/fresh are respectively0.178 versus0.838/0.869
+(quarter attention),0.264 versus1.741/1.754 (quarter MLP),0.151 versus
+0.627/0.665 (eighth attention), and0.156 versus1.144/1.155 (eighth MLP).
+This suggests history dependence; two windows do not identify a noise/drift
+variance decomposition. Accepted fresh raw fits yield alpha0.431–0.477 and
+r1.042–1.142, not either proposed one-eighth pattern.
+
+All60 full-optimizer hypothetical branches completed. At the quarter state,
+all five full native mean loss changes are positive; negative means at smaller
+steps have conditional intervals spanning zero. At the eighth state, native
+candidate1/4 versus1/8 has paired loss difference-0.000276
+(conditional95% interval[-0.000361,-0.000183]). After matching whole-update
+norms, their mean changes are nearly identical (-0.00050436,-0.00050458),
+with paired difference interval[-0.000165,+0.000169]. Every candidate improves
+at0.1 and0.3 native fractions in that state, with conditional intervals below0.
+One gradient/state is fixed per control; no multiple-comparison correction or
+cross-seed/long-horizon conclusion is claimed. Fresh diagnostic histories were
+not substituted into these optimizer controls.
+
+The report explains the motivation, actual measurements, numerical rejection,
+leakage, fresh statistics, and full-update controls. The geometric hypotheses do
+not explain the earlier training ranking in these selected measurements.
+Repeated controlled training remains a future causal test, not a claimed result.
