@@ -1,0 +1,1790 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Marin curvature experiment report</title><style>img{max-width:100%;height:auto}figure{margin:1.5em 0}figcaption{font-size:.9em;line-height:1.6}body{font-family:Verdana,Arial,sans-serif;font-size:18px;line-height:1.8;color:#202329;background:#faf9f5;margin:0}main{max-width:68ch;margin:0 auto;padding:44px 26px 80px}h1,h2,h3{line-height:1.35;color:#142b3b}h1{font-size:2em}h2{font-size:1.5em;margin-top:2.6em;border-top:1px solid #c9cdd1;padding-top:1em}h3{font-size:1.12em;margin-top:1.7em}p{margin:0 0 1.25em}table{border-collapse:collapse;width:100%;font-size:.9em;margin:1.3em 0 2em}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid #d5d8dc}th{background:#edf1f3}a{color:#155b8c}nav{background:#edf1f3;padding:18px 24px;border-radius:8px}code{font-size:.9em}strong{font-weight:700}@media(max-width:650px){body{font-size:17px}main{padding:20px 17px}table{display:block;overflow-x:auto}th,td{min-width:6em}}@media print{body{background:white;font-size:12pt}main{max-width:none}nav{display:none}}</style></head><body><main><h1 id="why-did-one-eighth-power-work-well">Why did one-eighth power
+work well?</h1>
+<p>A guide to the Marin Hessian and gradient-Gram experiments</p>
+<p>Prepared for Kaiyue • 11 November 2026</p>
+<h2 id="start-here">Start here</h2>
+<p><strong>These measurements do not yet establish why one-eighth power
+gave lower final evaluation loss.</strong></p>
+<p>An earlier comparison found a small loss advantage for power 1/8 in
+one training seed. The package proposed two explanations based on
+curvature, the local shape of the loss. We tested them using real saved
+model states.</p>
+<p>The original measurements used the 1/4 training run. The added
+experiments examine the 1/8 trajectory, numerical accuracy, more
+directions, fresh gradient statistics, and actual optimizer updates.</p>
+<p>Keep three questions separate:</p>
+<ol type="1">
+<li><strong>Shape:</strong> Do the gradient statistics match the
+proposed curvature relationship?</li>
+<li><strong>Trust:</strong> Are the measurements accurate and broad
+enough?</li>
+<li><strong>Behavior:</strong> Does an optimizer step improve loss?</li>
+</ol>
+<p><strong>Reading route.</strong> Sections 1–3 explain the question and
+method. Sections 4–6 explain the original results, rejected fits, and
+leakage. Sections 7–8 cover the added experiments. Section 9 interprets
+the evidence. Appendix A gives optional formulas.</p>
+<h2 id="the-motivation">1. The motivation</h2>
+<h3 id="what-the-optimizer-is-trying-to-do">What the optimizer is trying
+to do</h3>
+<p>A language model has many adjustable numbers, called
+<strong>weights</strong>. A <strong>loss</strong> is a score for
+prediction error. Lower loss is better on the same data and under the
+same scoring rule.</p>
+<p>Training repeatedly changes the weights to reduce loss. An
+<strong>optimizer</strong> is the rule that chooses those changes.</p>
+<p>The <strong>gradient</strong> describes how loss changes under a very
+small change in the weights. For a sufficiently small step, moving
+against a nonzero gradient reduces this loss. The
+<strong>Hessian</strong> describes how that gradient changes as the
+weights move. It measures local curvature: some directions can bend
+sharply while others bend gently.</p>
+<p>Unequal curvature can make optimization difficult. A step that is
+reasonable in a gentle direction may be too large in a sharp direction.
+<strong>Preconditioning</strong> means rescaling directions to account
+for these differences.</p>
+<p>The optimizer in this experiment builds its rescaling from past
+gradients. It stores two <strong>Gram matrices</strong> for each matrix
+of weights. A Gram matrix summarizes products of gradient entries. The
+left Gram matrix is formed by multiplying a gradient matrix by its
+transpose. The right Gram matrix reverses that multiplication. A
+transpose swaps rows and columns. These two products describe
+relationships along the two dimensions of the gradient matrix.</p>
+<p>These statistics are <strong>exponential moving averages</strong>,
+abbreviated EMA. Each new gradient receives a small weight. Older
+gradients receive progressively smaller weights. Here each update
+retains 99% of the previous Gram average and adds 1% of the new gradient
+product.</p>
+<p>The parameter <strong>alpha</strong>, written α, controls the
+strength of the inverse power used in rescaling. Inverse powers reduce
+directions with larger Gram values relative to directions with smaller
+values. They can amplify directions with small values. A larger alpha
+strengthens this relative rescaling; it does not necessarily make the
+whole update smaller.</p>
+<p><strong>Training alpha</strong> is the setting used to produce a
+saved model. <strong>Fit-derived alpha</strong> is a value calculated
+afterward from a curvature measurement. They answer different questions
+and need not agree.</p>
+<h3 id="why-18-was-interesting">Why 1/8 was interesting</h3>
+<p>The earlier single-seed comparison found final loss 3.784025 for α =
+1/8 and 3.792297 for α = 0 on its held-out C4 text evaluation. Held-out
+text is text reserved for evaluation rather than used in the training
+sample. Lower is better. The observed difference was 0.008272.</p>
+<p>The first recorded evaluation at or below C4 loss 4.0 occurred after
+33,000 updates for α = 1/8 and 34,000 for α = 0. These correspond to
+1.081 billion and 1.114 billion training tokens. A token is a unit of
+text processed by the model. This is an observed token advantage at that
+target, without interpolating between evaluations.</p>
+<p>The 1/8 run nevertheless took longer to reach that target in its
+actual deployment. The runs used different hardware layouts, so this
+does not isolate the optimizer’s intrinsic computational cost. The
+motivating benefit concerns loss and observed training tokens, not
+faster execution.</p>
+<p>A <strong>seed</strong> controls random choices such as
+initialization and data order. One seed is one realization, not a test
+of how consistently the result repeats.</p>
+<p>The comparison also used different tuned learning rates and different
+amounts of Gram stabilization. That stabilization is called a ridge and
+is explained in Section 3. A <strong>learning rate</strong> controls the
+overall size of an update. The completed and verified configurations
+included α = 0 and α = 1/8. The α = 1/4 and α = 1/2 runs had shutdown
+failures. Their recorded final evaluation losses were recovered from
+local logs. Those values provide supplementary evidence despite the job
+failures.</p>
+<p>The earlier comparison was:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>Training α</th>
+<th style="text-align: right;">Matrix learning rate</th>
+<th style="text-align: right;">Ridge</th>
+<th style="text-align: right;">Final C4 loss</th>
+<th>Evidence status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align: right;">0.003535534</td>
+<td style="text-align: right;">0.0001</td>
+<td style="text-align: right;">3.792297</td>
+<td>Verified completion</td>
+</tr>
+<tr>
+<td>1/8</td>
+<td style="text-align: right;">0.0025</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">3.784025</td>
+<td>Verified completion</td>
+</tr>
+<tr>
+<td>1/4</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">3.844011</td>
+<td>Failed job; final evaluation recovered</td>
+</tr>
+<tr>
+<td>1/2</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">3.958380</td>
+<td>Failed job; final evaluation recovered</td>
+</tr>
+</tbody>
+</table>
+<p>The learning-rate column concerns the weight matrices using this
+optimizer. At α = 0, Gram rescaling is bypassed, so its ridge value does
+not affect that matrix direction. The separately tuned learning rates
+remain an important difference between the runs.</p>
+<p>Thus, “1/8 worked best” is a motivating observation about that
+comparison. It is not an established universal optimum.</p>
+<h3 id="two-explanations-make-different-predictions">Two explanations
+make different predictions</h3>
+<p>A <strong>proxy</strong> is a substitute statistic used to represent
+something else. Let <strong>H</strong> mean the Hessian in the
+directions we measure. Let <strong>K</strong> mean the gradient-Gram
+proxy in those same directions.</p>
+<p>The raw proxy acts on a proposed weight change by multiplying it on
+the left by the left Gram matrix and on the right by the right Gram
+matrix. We then measure the components of that response along the chosen
+directions. This defines K. It puts the proxy and the Hessian into the
+same coordinates.</p>
+<p>The proposed power relationship is K approximately equal to a
+positive constant times H raised to a power <strong>r</strong>. The
+fitted number r describes how rapidly Gram values change relative to
+curvature values.</p>
+<p>An <strong>eigenvalue</strong> is the scaling factor associated with
+a special direction of a matrix, called an <strong>eigenvector</strong>.
+A <strong>symmetric matrix</strong> has the same entries when its row
+and column indices are exchanged. For a symmetric Hessian, eigenvalues
+are curvatures. For a Gram matrix, they are gradient-statistic
+scales.</p>
+<p>A <strong>matrix logarithm</strong> applies the ordinary logarithm to
+positive eigenvalues while retaining their eigenvectors.</p>
+<p>The fit also produces <strong>rho</strong>, written ρ. It measures
+how much of the variation in the matrix logarithm of K is explained by
+the fitted matrix logarithm of H, after removing overall scale.</p>
+<p>The geometric goal is to make curvature more uniform after rescaling
+by an inverse power of K on both sides. <strong>Centering</strong>
+removes the mean of the log eigenvalues. The simplified calculation
+compares two centered matrix logarithms: the log Hessian and twice alpha
+times the log proxy. It minimizes the squared size of their
+difference.</p>
+<p>This is an approximation to making rescaled curvature uniform; the
+exact grid check described in Section 3 evaluates the rescaled matrix
+directly.</p>
+<p>For a positive fitted power, the approximation suggests α = ρ/(2r).
+The table applies this relation; Appendix A states the full formulas.
+This positive-matrix analysis requires every measured Hessian eigenvalue
+to be positive.</p>
+<table>
+<thead>
+<tr>
+<th>Explanation</th>
+<th style="text-align: right;">Expected r</th>
+<th style="text-align: right;">Expected ρ</th>
+<th style="text-align: right;">Fit-derived α</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An accurate fourth-power proxy</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1/8</td>
+</tr>
+<tr>
+<td>An imperfect squared-curvature proxy</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1/2</td>
+<td style="text-align: right;">1/8</td>
+</tr>
+<tr>
+<td>An accurate squared-curvature proxy</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1/4</td>
+</tr>
+</tbody>
+</table>
+<p>These are proposed diagnostic patterns. Finding α near 1/8 alone
+would not distinguish the first two explanations. We also need r and
+ρ.</p>
+<p><strong>Rho is not a direct measurement of noise.</strong> A poor fit
+could arise from sampling variation, changing weights during the stored
+history, different matrix directions, or an incorrect power-law model.
+Fresh measurements are needed to investigate those possibilities.</p>
+<h2 id="what-was-actually-measured">2. What was actually measured</h2>
+<h3 id="saved-models-not-new-training">Saved models, not new
+training</h3>
+<p>A <strong>checkpoint</strong> is a saved model together with its
+training state. The original experiment restored three complete
+checkpoints from the α = 1/4, seed-0 trajectory. A
+<strong>trajectory</strong> is the sequence of states produced by one
+training run.</p>
+<p>The supplied ZIP contained code for fitting exported matrices, but no
+real checkpoint measurements. A Marin measurement runner was added to
+produce those matrices from saved checkpoints. The supplied analysis
+program then fitted the exported results.</p>
+<p>The recorded update counters were 3,733, 18,665, and 33,597. We call
+these early, middle, and late. The weights stayed fixed while curvature
+was measured.</p>
+<p>The model has about 447 million parameters, another name for
+adjustable weights. It is an 11-layer Qwen-style transformer, a
+language-model architecture that repeatedly combines information across
+tokens and transforms features. A <strong>layer</strong> is one repeated
+processing stage. Each sequence contained 4,096 tokens, where a token is
+a unit of text used by the model.</p>
+<h3 id="two-weight-matrices-and-twelve-directions">Two weight matrices
+and twelve directions</h3>
+<p>Measuring the full Hessian of a 447-million-parameter model is
+impractical here. Instead, the experiment measured two individual weight
+matrices. <strong>Attention</strong> combines information across token
+positions. The <strong>MLP</strong>, or multilayer perceptron,
+transforms features at each position. The query projection helps form
+the comparisons used by attention. The gate projection helps control
+which transformed MLP features pass through.</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr>
+<th>Block</th>
+<th>Weight matrix</th>
+<th style="text-align: right;">Shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attention</td>
+<td>The first query projection matrix</td>
+<td style="text-align: right;">1,024 × 1,024</td>
+</tr>
+<tr>
+<td>MLP</td>
+<td>The first gate projection in the feed-forward part</td>
+<td style="text-align: right;">4,096 × 1,024</td>
+</tr>
+</tbody>
+</table>
+<p>Only the named matrix was allowed to change when its Hessian was
+differentiated. All other weights were held fixed.</p>
+<p>For each matrix, the experiment selected twelve weight-change
+directions from the saved Gram matrices. The directions were selected
+before computing the Hessian. Each direction combines one left Gram
+eigenvector with one right Gram eigenvector. Multiplying every entry of
+the left vector by every entry of the right vector produces a
+matrix-shaped weight-change direction.</p>
+<p>The selection excluded eigenvalues of either Gram matrix at or below
+one hundred-thousandth of that matrix’s largest eigenvalue. For each
+candidate direction, it multiplied the associated left and right
+eigenvalues. It spread the twelve choices over the logarithms of those
+products. This targets a broad range of scales. It does not sample all
+weight directions uniformly.</p>
+<p>The selected directions span a <strong>subspace</strong>: all changes
+that can be made by combining those twelve directions. The subspace is
+tiny compared with either full weight matrix.</p>
+<h3 id="how-the-curvature-was-calculated">How the curvature was
+calculated</h3>
+<p>For each selected direction, the code calculated a
+<strong>Hessian-vector product</strong>, abbreviated HVP. An HVP tells
+us how the gradient responds to movement in that direction, without
+constructing the enormous full Hessian.</p>
+<p>The code measured the component of that response along every selected
+direction. This operation is called <strong>projection</strong>. Thus,
+the measurement retained the full 12 × 12 matrix of interactions. It did
+not keep only twelve diagonal values.</p>
+<p>The loss was next-token cross entropy plus the configured small
+z-loss term. Cross entropy penalizes assigning low probability to the
+correct next token. The z-loss term keeps the normalization of the
+model’s prediction scores under control. Normalization converts those
+scores into probabilities that sum to one. The z-loss coefficient was
+0.0000001.</p>
+<p>Curvature used 32-bit floating-point weights and derivatives.
+Floating-point arithmetic stores approximate real numbers with a fixed
+number of bits. The calculation requested the highest available
+matrix-multiplication precision. Its attention and loss implementations
+supported the derivatives needed for the Hessian. Weight decay, which is
+a separate optimizer shrinkage term, was not included in the
+Hessian.</p>
+<p>The stored Gram history came from globally combined, clipped training
+gradients. A <strong>norm</strong> measures size; here the gradient norm
+is the square root of the sum of squared gradient entries. Clipping
+shrinks a gradient when needed to keep that total norm at or below 0.1.
+Training used <strong>mixed precision</strong>, meaning that different
+parts of the computation used different numerical storage precisions.
+Therefore, the stored history and the smooth Hessian share the loss
+formula but do not use an identical numerical or clipping procedure.</p>
+<h3 id="which-data-were-used">Which data were used</h3>
+<p>Each checkpoint used eight disjoint groups. Each group contained
+eight sequences of 4,096 tokens. This totals 262,144 token positions,
+with 262,080 valid next-token prediction positions after excluding
+positions without a scored next token.</p>
+<p>The experiment used the same sequences at all three checkpoints. It
+verified this with hashes, compact identifiers computed from each
+sequence to detect matching content. This makes checkpoint comparisons
+less sensitive to changes in the sampled text.</p>
+<p>The sequences came from a fresh permutation of the existing training
+caches, which are stored text prepared for the training data loader.
+They were fresh for this measurement. They were not certified as unseen
+during the original training run.</p>
+<p>The group Hessians were averaged before taking a matrix logarithm.
+Each group received equal weight. Within each group, losses were
+weighted by the dataset’s valid prediction weights and divided by their
+sum.</p>
+<p>There were 192 main HVP evaluations per checkpoint, or 576 across the
+three successful measurements. Additional derivative checks were
+separate from this count. The four cooperating TPU hosts were parts of
+one distributed calculation, not four statistical repetitions.</p>
+<h2 id="how-the-analysis-turns-measurements-into-a-fit">3. How the
+analysis turns measurements into a fit</h2>
+<h3 id="the-raw-and-ridged-proxies-answer-different-questions">The raw
+and ridged proxies answer different questions</h3>
+<p>Here H is curvature projected onto the chosen directions. K is the
+gradient-Gram proxy in those same coordinates. The Gram factors are the
+stored left and right Gram matrices.</p>
+<p>The <strong>raw proxy</strong> multiplies a weight change on the left
+and right by the respective stored Gram factors, then projects the
+result onto the selected directions.</p>
+<p>The <strong>ridged proxy</strong> first divides each factor by its
+own mean eigenvalue. It then adds 0.01 to each diagonal entry before
+combining the factors. A ridge keeps extremely small factor directions
+from producing unbounded inverse powers.</p>
+<p>The ridged proxy is closer to the geometry used in the actual
+optimizer. It is not obtained by adding 0.01 to the diagonal of the
+already combined raw proxy.</p>
+<p>Both proxies are expressed in the same selected directions as H. We
+analyze them separately.</p>
+<h3 id="three-numbers-have-different-meanings">Three numbers have
+different meanings</h3>
+<p><strong>The fitted power r</strong> describes the relationship
+between the two matrix logarithms.</p>
+<p><strong>Centering</strong> removes the mean of the log eigenvalues,
+so the comparison concerns differences among directions rather than an
+overall scale. <strong>The fit quality ρ</strong> is the fraction of
+squared variation in this centered log proxy explained by the fitted
+relationship. It is not the fraction of model behavior, loss, or full
+curvature explained.</p>
+<p><strong>The log-based exponent α</strong> is the rescaling strength
+suggested by a simplified geometric objective. For a positive fitted
+power, the package computes α = ρ/(2r).</p>
+<p>If K were exactly a positive constant times H raised to r, and the
+matrices shared eigenvectors, the ideal geometric exponent would be
+1/(2r). In that exact case, ρ equals 1. The two expressions then
+agree.</p>
+<p>For example, consider two curvature values, 1 and 4. An exact
+fourth-power proxy has values 1 and 256. Applying its inverse one-eighth
+power on both sides of the Hessian makes both resulting curvatures equal
+to 1. This explains why a fourth-power relationship would suggest 1/8 in
+the idealized geometry.</p>
+<p>The code also directly checks a grid of exponents from 0 to 0.5. It
+evaluates how uneven the rescaled log curvatures remain. The grid
+spacing is 0.005, with additional theoretical values included. A grid
+minimum is the best tested value for this geometric criterion. It is not
+a training-performance optimum.</p>
+<h2 id="the-original-quarter-power-results">4. The original
+quarter-power results</h2>
+<p><strong>The original MLP measurements did not show either proposed
+1/8 pattern in their selected directions.</strong></p>
+<p>The raw proxy gave powers near 1.1–1.2 and fit qualities near
+0.92–0.94. Those values differ from both the proposed fourth-power
+pattern and the proposed imperfect squared-curvature pattern.</p>
+<p>The following numbers are <strong>descriptive fit values for these
+twelve directions</strong>. The original experiment had not yet
+established the stronger empirical precision check described later. The
+later wider measurement adds that check for middle MLP; Section 8
+reports it. Early and late values remain descriptive.</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th style="text-align: right;">Raw r</th>
+<th style="text-align: right;">Raw ρ</th>
+<th style="text-align: right;">Raw fit-derived α</th>
+<th style="text-align: right;">Ridged fit-derived α</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early</td>
+<td style="text-align: right;">1.245</td>
+<td style="text-align: right;">0.938</td>
+<td style="text-align: right;">0.377</td>
+<td style="text-align: right;">0.405</td>
+</tr>
+<tr>
+<td>Middle</td>
+<td style="text-align: right;">1.194</td>
+<td style="text-align: right;">0.916</td>
+<td style="text-align: right;">0.384</td>
+<td style="text-align: right;">0.412</td>
+</tr>
+<tr>
+<td>Late</td>
+<td style="text-align: right;">1.134</td>
+<td style="text-align: right;">0.930</td>
+<td style="text-align: right;">0.410</td>
+<td style="text-align: right;">0.437</td>
+</tr>
+</tbody>
+</table>
+<p>The direct geometric grid minima were 0.375, 0.385, and 0.410 for the
+raw proxy. For the ridged proxy, they were 0.405, 0.410, and 0.435.</p>
+<p><strong>These values do not recommend changing the training exponent
+to about 0.4.</strong> The measurement covers a small subspace, uses the
+quarter-power trajectory, and optimizes a geometric approximation. The
+full optimizer includes a nonlinear operation that the approximation
+does not model.</p>
+<h3 id="what-the-uncertainty-intervals-do-and-do-not-say">What the
+uncertainty intervals do and do not say</h3>
+<p>A fit is retained only when its input passes the symmetry-error check
+defined in Section 5 and all measured Hessian and proxy eigenvalues are
+positive enough for the numerical logarithm. The smallest eigenvalue
+must exceed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>12</mn></mrow></msup><annotation encoding="application/x-tex">10^{-12}</annotation></semantics></math>
+times the largest eigenvalue. The stronger empirical precision screen
+was not part of the original analysis.</p>
+<p>The package used a <strong>bootstrap</strong>: it repeatedly
+resampled the eight curvature groups with replacement and recalculated
+the fit. This estimates variation associated with those sampled groups
+while holding the checkpoint, Gram history, and selected directions
+fixed.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th style="text-align: right;">Raw fit-derived α interval</th>
+<th style="text-align: right;">Ridged fit-derived α interval</th>
+<th style="text-align: right;">Valid bootstrap repetitions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early</td>
+<td style="text-align: right;">0.371–0.384</td>
+<td style="text-align: right;">0.399–0.413</td>
+<td style="text-align: right;">1,000 / 1,000</td>
+</tr>
+<tr>
+<td>Middle</td>
+<td style="text-align: right;">0.381–0.386</td>
+<td style="text-align: right;">0.410–0.415</td>
+<td style="text-align: right;">1,000 / 1,000</td>
+</tr>
+<tr>
+<td>Late</td>
+<td style="text-align: right;">0.408–0.419</td>
+<td style="text-align: right;">0.434–0.447</td>
+<td style="text-align: right;">772 / 1,000</td>
+</tr>
+</tbody>
+</table>
+<p>The intervals contain the middle 95% of the <strong>valid</strong>
+bootstrap results. At the late checkpoint, 228 repetitions failed the
+positivity requirement. The late interval therefore describes only the
+surviving repetitions. It is not an unconditional 95% interval.</p>
+<p>These intervals do not include uncertainty from other training seeds,
+changing the selected directions, noise in the stored Gram history, or
+systematic numerical error.</p>
+<h2 id="what-no-accepted-fits-means">5. What “no accepted fits”
+means</h2>
+<p><strong>“No accepted fits” means that no fit passed the requirements
+for the stated analysis. It does not mean that no measurements were
+made.</strong></p>
+<p>The matrix-log analysis requires positive curvature in every measured
+direction. A symmetric matrix with all positive eigenvalues is called
+<strong>positive definite</strong>. Its real matrix logarithm is
+available for this analysis.</p>
+<p>A Hessian can contain both positive and negative eigenvalues. Such a
+Hessian is <strong>indefinite</strong>. Negative curvature is possible
+for a neural network’s loss. It is not automatically a programming
+error.</p>
+<p>A true Hessian is <strong>symmetric</strong>: exchanging two
+directions leaves their interaction unchanged. The input check measures
+the difference between a calculated matrix and its transpose. It divides
+the square root of the sum of squared differences by the square root of
+the sum of squared matrix entries. Each group must have a ratio at most
+0.00001.</p>
+<p>The original attention results were:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th>Why the original analysis rejected the fit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early</td>
+<td>The mean projected Hessian had a negative eigenvalue, about
+−0.00107.</td>
+</tr>
+<tr>
+<td>Middle</td>
+<td>The mean projected Hessian had a negative eigenvalue, about
+−0.0767.</td>
+</tr>
+<tr>
+<td>Late</td>
+<td>One group’s measured matrix exceeded the symmetry-error
+tolerance.</td>
+</tr>
+</tbody>
+</table>
+<p>A diagnostic also replaced the late mean matrix by the average of
+itself and its transpose. The set of eigenvalues is called the
+<strong>spectrum</strong>. This diagnostic spectrum included negative
+values. That calculation was diagnostic only; it did not repair the
+failed input check.</p>
+<p>The code did not replace negative eigenvalues by their absolute
+values. It did not add a shift to make the Hessian positive. Those
+changes would answer a different question.</p>
+<p>This result limits the proposed positive-power explanation in the
+measured attention subspace. It does not prove that the optimizer is
+ineffective. It also does not prove that the full model has no useful
+curvature structure.</p>
+<p>The phrase can refer to different filters in different outputs. A
+rejection due to negative curvature, failed symmetry, unresolved
+precision, or an invalid bootstrap sample should always be accompanied
+by its specific reason.</p>
+<h2 id="what-leakage-means">6. What “leakage” means</h2>
+<p><strong>Leakage is the part of a curvature response that leaves the
+selected directions. It is not a data leak.</strong></p>
+<p>Imagine that we chose twelve directions in which to move a weight
+matrix. We move in one of them and ask how the gradient changes. The
+gradient’s response may point partly along those twelve directions and
+partly elsewhere.</p>
+<p>The response that points elsewhere is the leaked component. It still
+lies within the same weight matrix in this experiment. Responses in
+other layers were not measured.</p>
+<p>The size of a response is measured by the square root of the sum of
+its squared entries. The reported leakage is a ratio of these norms: the
+size of the response outside the subspace divided by the size of the
+full response, combining all tested directions. The group responses are
+averaged first.</p>
+<table>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th style="text-align: right;">Attention leakage</th>
+<th style="text-align: right;">MLP leakage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early</td>
+<td style="text-align: right;">0.419</td>
+<td style="text-align: right;">0.490</td>
+</tr>
+<tr>
+<td>Middle</td>
+<td style="text-align: right;">0.927</td>
+<td style="text-align: right;">0.297</td>
+</tr>
+<tr>
+<td>Late</td>
+<td style="text-align: right;">0.693</td>
+<td style="text-align: right;">0.382</td>
+</tr>
+</tbody>
+</table>
+<p>For example, middle attention has leakage about 0.927. The outside
+component has about 92.7% of the full response’s norm. This does not
+mean that 92.7% of examples, parameters, or loss escaped the
+analysis.</p>
+<figure>
+<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIKICAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjQ4OS42cHQiIGhlaWdodD0iMjMwLjRwdCIgdmlld0JveD0iMCAwIDQ4OS42IDIzMC40IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSI+CiA8bWV0YWRhdGE+CiAgPHJkZjpSREYgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICA8Y2M6V29yaz4KICAgIDxkYzp0eXBlIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiLz4KICAgIDxkYzpkYXRlPjIwMjYtMTEtMTFUMDE6Mjc6MzUuMTY0ODc4PC9kYzpkYXRlPgogICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICA8ZGM6Y3JlYXRvcj4KICAgICA8Y2M6QWdlbnQ+CiAgICAgIDxkYzp0aXRsZT5NYXRwbG90bGliIHYzLjEwLjgsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmcvPC9kYzp0aXRsZT4KICAgICA8L2NjOkFnZW50PgogICAgPC9kYzpjcmVhdG9yPgogICA8L2NjOldvcms+CiAgPC9yZGY6UkRGPgogPC9tZXRhZGF0YT4KIDxkZWZzPgogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+KntzdHJva2UtbGluZWpvaW46IHJvdW5kOyBzdHJva2UtbGluZWNhcDogYnV0dH08L3N0eWxlPgogPC9kZWZzPgogPGcgaWQ9ImZpZ3VyZV8xIj4KICA8ZyBpZD0icGF0Y2hfMSI+CiAgIDxwYXRoIGQ9Ik0gMCAyMzAuNCAKTCA0ODkuNiAyMzAuNCAKTCA0ODkuNiAwIApMIDAgMCAKegoiIHN0eWxlPSJmaWxsOiAjZmZmZmZmIi8+CiAgPC9nPgogIDxnIGlkPSJheGVzXzEiPgogICA8ZyBpZD0icGF0Y2hfMiI+CiAgICA8cGF0aCBkPSJNIDEwMy40MzIxMzEgMTgxLjk3ODIzIApRIDEzMy4xMDI2MDcgMTgxLjk3ODIzIDE2MC4yMDE2MDQgMTgxLjk3ODIzIAoiIGNsaXAtcGF0aD0idXJsKCNwYzc0M2U4MTE5YikiIHN0eWxlPSJmaWxsOiBub25lOyBzdHJva2UtZGFzaGFycmF5OiA4LjUxLDMuNjg7IHN0cm9rZS1kYXNob2Zmc2V0OiAwOyBzdHJva2U6ICM1ZjYzNjg7IHN0cm9rZS13aWR0aDogMi4zOyBzdHJva2UtbGluZWNhcDogcm91bmQiLz4KICAgIDxwYXRoIGQ9Ik0gMTUzLjQwMTYwNCAxNzguNTc4MjMgCkwgMTYwLjIwMTYwNCAxODEuOTc4MjMgCkwgMTUzLjQwMTYwNCAxODUuMzc4MjMgCnoKIiBjbGlwLXBhdGg9InVybCgjcGM3NDNlODExOWIpIiBzdHlsZT0iZmlsbDogIzVmNjM2ODsgc3Ryb2tlLWRhc2hhcnJheTogOC41MSwzLjY4OyBzdHJva2UtZGFzaG9mZnNldDogMDsgc3Ryb2tlOiAjNWY2MzY4OyBzdHJva2Utd2lkdGg6IDIuMzsgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kIi8+CiAgIDwvZz4KICAgPGcgaWQ9InBhdGNoXzMiPgogICAgPHBhdGggZD0iTSAxNjIuNzczMDgyIDE4MS45NzgyMyAKUSAxNjIuNzczMDgyIDEwOC40MTg2NCAxNjIuNzczMDgyIDM3LjQzMDUyOSAKIiBjbGlwLXBhdGg9InVybCgjcGM3NDNlODExOWIpIiBzdHlsZT0iZmlsbDogbm9uZTsgc3Ryb2tlLWRhc2hhcnJheTogOC41MSwzLjY4OyBzdHJva2UtZGFzaG9mZnNldDogMDsgc3Ryb2tlOiAjZmY3ZjBlOyBzdHJva2Utd2lkdGg6IDIuMzsgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kIi8+CiAgICA8cGF0aCBkPSJNIDE1OS4zNzMwODIgNDQuMjMwNTI5IApMIDE2Mi43NzMwODIgMzcuNDMwNTI5IApMIDE2Ni4xNzMwODIgNDQuMjMwNTI5IAp6CiIgY2xpcC1wYXRoPSJ1cmwoI3BjNzQzZTgxMTliKSIgc3R5bGU9ImZpbGw6ICNmZjdmMGU7IHN0cm9rZS1kYXNoYXJyYXk6IDguNTEsMy42ODsgc3Ryb2tlLWRhc2hvZmZzZXQ6IDA7IHN0cm9rZTogI2ZmN2YwZTsgc3Ryb2tlLXdpZHRoOiAyLjM7IHN0cm9rZS1saW5lY2FwOiByb3VuZCIvPgogICA8L2c+CiAgIDxnIGlkPSJwYXRjaF80Ij4KICAgIDxwYXRoIGQ9Ik0gMTAzLjQzMjEzMSAxODEuOTc4MjMgClEgMTMzLjEwMjYwNyAxMDguNDE4NjQgMTYxLjgxMTE3IDM3LjI0Mzg0MSAKIiBjbGlwLXBhdGg9InVybCgjcGM3NDNlODExOWIpIiBzdHlsZT0iZmlsbDogbm9uZTsgc3Ryb2tlOiAjMWY3N2I0OyBzdHJva2Utd2lkdGg6IDIuMzsgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kIi8+CiAgICA8cGF0aCBkPSJNIDE1Ni4xMTQzMzQgNDIuMjc4MzI4IApMIDE2MS44MTExNyAzNy4yNDM4NDEgCkwgMTYyLjQyMDY1OCA0NC44MjIwMDIgCnoKIiBjbGlwLXBhdGg9InVybCgjcGM3NDNlODExOWIpIiBzdHlsZT0iZmlsbDogIzFmNzdiNDsgc3Ryb2tlOiAjMWY3N2I0OyBzdHJva2Utd2lkdGg6IDIuMzsgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kIi8+CiAgIDwvZz4KICAgPGcgaWQ9ImxpbmUyZF8xIj4KICAgIDxwYXRoIGQ9Ik0gMTU0LjA0ODA5OCAxODEuOTc4MjMgCkwgMTU0LjA0ODA5OCAxNzMuMjUzMjQ2IApMIDE2Mi43NzMwODIgMTczLjI1MzI0NiAKIiBjbGlwLXBhdGg9InVybCgjcGM3NDNlODExOWIpIiBzdHlsZT0iZmlsbDogbm9uZTsgc3Ryb2tlOiAjNWY2MzY4OyBzdHJva2UtbGluZWNhcDogc3F1YXJlIi8+CiAgIDwvZz4KICAgPGcgaWQ9InRleHRfMSI+CiAgICA8dGV4dCBzdHlsZT0iZm9udC1zaXplOiAxM3B4OyBmb250LWZhbWlseTogJ0FyaWFsJzsgdGV4dC1hbmNob3I6IG1pZGRsZTsgZmlsbDogIzVmNjM2OCIgeD0iMTMzLjEwMjYwNyIgeT0iMjA1LjU2MDYzMiIgdHJhbnNmb3JtPSJyb3RhdGUoLTAgMTMzLjEwMjYwNyAyMDUuNTYwNjMyKSI+SW5zaWRlPC90ZXh0PgogICA8L2c+CiAgIDxnIGlkPSJ0ZXh0XzIiPgogICAgPHRleHQgc3R5bGU9ImZvbnQtc2l6ZTogMTNweDsgZm9udC1mYW1pbHk6ICdBcmlhbCc7IHRleHQtYW5jaG9yOiBzdGFydCIgeD0iMTczLjg3NzYwNyIgeT0iMTExLjc3OTM0MyIgdHJhbnNmb3JtPSJyb3RhdGUoLTAgMTczLjg3NzYwNyAxMTEuNzc5MzQzKSI+T3V0c2lkZTwvdGV4dD4KICAgPC9nPgogICA8ZyBpZD0icGF0Y2hfNSI+CiAgICA8cGF0aCBkPSJNIDkxLjMwNDEzOSA5Mi42MDA1NzUgClEgMTEyLjcwNDY0NSA5Ni42NDU5NTEgMTM0LjEwNTE1MiAxMDAuNjkxMzI4IAoiIHN0eWxlPSJmaWxsOiBub25lOyBzdHJva2U6ICMxZjc3YjQ7IHN0cm9rZS1saW5lY2FwOiByb3VuZCIvPgogICA8L2c+CiAgIDxnIGlkPSJ0ZXh0XzMiPgogICAgPHRleHQgc3R5bGU9ImZvbnQtc2l6ZTogMTNweDsgZm9udC1mYW1pbHk6ICdBcmlhbCc7IGZpbGw6ICMxZjc3YjQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUwLjEyNzI2OCA4My4yODIzMjUpIj5GdWxsPC90ZXh0PgogICAgPHRleHQgc3R5bGU9ImZvbnQtc2l6ZTogMTNweDsgZm9udC1mYW1pbHk6ICdBcmlhbCc7IGZpbGw6ICMxZjc3YjQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMzLjg2MzA1IDk3LjAzMjI2MikiPnJlc3BvbnNlPC90ZXh0PgogICA8L2c+CiAgPC9nPgogIDxnIGlkPSJ0ZXh0XzQiPgogICA8dGV4dCBzdHlsZT0iZm9udC13ZWlnaHQ6IDcwMDsgZm9udC1zaXplOiAxM3B4OyBmb250LWZhbWlseTogJ0FyaWFsJzsgdGV4dC1hbmNob3I6IHN0YXJ0IiB4PSIyNjkuMjgiIHk9IjQzLjc3NiIgdHJhbnNmb3JtPSJyb3RhdGUoLTAgMjY5LjI4IDQzLjc3NikiPlNjYWxlIHRoZSBmdWxsIG5vcm0gdG8gMTo8L3RleHQ+CiAgPC9nPgogIDxnIGlkPSJ0ZXh0XzUiPgogICA8dGV4dCBzdHlsZT0iZm9udC1zaXplOiAxM3B4OyBmb250LWZhbWlseTogJ0FyaWFsJzsgdGV4dC1hbmNob3I6IHN0YXJ0OyBmaWxsOiAjMWY3N2I0IiB4PSIyNjkuMjgiIHk9Ijc4LjMzNiIgdHJhbnNmb3JtPSJyb3RhdGUoLTAgMjY5LjI4IDc4LjMzNikiPkZ1bGwgcmVzcG9uc2UgICAxLjAwMDwvdGV4dD4KICA8L2c+CiAgPGcgaWQ9InRleHRfNiI+CiAgIDx0ZXh0IHN0eWxlPSJmb250LXNpemU6IDEzcHg7IGZvbnQtZmFtaWx5OiAnQXJpYWwnOyB0ZXh0LWFuY2hvcjogc3RhcnQ7IGZpbGw6ICM1ZjYzNjgiIHg9IjI2OS4yOCIgeT0iMTEyLjg5NiIgdHJhbnNmb3JtPSJyb3RhdGUoLTAgMjY5LjI4IDExMi44OTYpIj5JbnNpZGUgbm9ybSAgICAgIDAuMzc0PC90ZXh0PgogIDwvZz4KICA8ZyBpZD0idGV4dF83Ij4KICAgPHRleHQgc3R5bGU9ImZvbnQtc2l6ZTogMTNweDsgZm9udC1mYW1pbHk6ICdBcmlhbCc7IHRleHQtYW5jaG9yOiBzdGFydCIgeD0iMjY5LjI4IiB5PSIxNDcuNDU2IiB0cmFuc2Zvcm09InJvdGF0ZSgtMCAyNjkuMjggMTQ3LjQ1NikiPk91dHNpZGUgbm9ybSAgICAwLjkyNzwvdGV4dD4KICA8L2c+CiAgPGcgaWQ9InRleHRfOCI+CiAgIDx0ZXh0IHN0eWxlPSJmb250LXNpemU6IDEzcHg7IGZvbnQtZmFtaWx5OiAnQXJpYWwnOyB0ZXh0LWFuY2hvcjogc3RhcnQiIHg9IjI2OS4yOCIgeT0iMTkzLjUzNiIgdHJhbnNmb3JtPSJyb3RhdGUoLTAgMjY5LjI4IDE5My41MzYpIj5MZWFrYWdlID0gMC45MjcgLyAxLjAwMDwvdGV4dD4KICA8L2c+CiA8L2c+CiA8ZGVmcz4KICA8Y2xpcFBhdGggaWQ9InBjNzQzZTgxMTliIj4KICAgPHJlY3QgeD0iNDMuMTUwNDI2IiB5PSIxMy44MjQiIHdpZHRoPSIxNjMuMzk1MTQ4IiBoZWlnaHQ9IjE5My41MzYiLz4KICA8L2NsaXBQYXRoPgogPC9kZWZzPgo8L3N2Zz4K" style="width:100.0%"
+alt="The response splits into components inside and outside the selected directions. This triangle illustrates the combined norms for original middle attention. It does not represent a two-dimensional model." />
+<figcaption aria-hidden="true">The response splits into components
+inside and outside the selected directions. This triangle illustrates
+the combined norms for original middle attention. It does not represent
+a two-dimensional model.</figcaption>
+</figure>
+<p>The two components are perpendicular. Their squared norms add to the
+full squared norm. Their ordinary norms do not add to one.</p>
+<p>The ratio is also not the fraction of squared norm. Squaring 0.927
+gives about 0.860 for that different quantity.</p>
+<p><strong>High leakage limits how broadly we can interpret a good fit
+inside the subspace.</strong> The selected directions may fit each other
+well while substantial curvature response points into unmeasured
+directions.</p>
+<p>The selected Gram directions changed across checkpoints. Therefore,
+changes in leakage are not a clean time trend in one fixed subspace.</p>
+<h2 id="why-the-follow-up-experiments-were-necessary">7. Why the
+follow-up experiments were necessary</h2>
+<p>The original work produced real measurements, but several
+measurements were narrower than the motivating question. Seven
+additional experiments addressed these gaps: three checkpoints from the
+one-eighth trajectory, two measurements with 48 directions, and two
+controls combining fresh histories with actual optimizer steps. Section
+8 gives their results.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Gap in the original experiment</th>
+<th>Added experiment</th>
+<th>What it can establish</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The motivating result concerned the 1/8 run; measurements used the
+1/4 run.</td>
+<td>Measure saved states from the 1/8 trajectory.</td>
+<td>Whether the proposed patterns appear in the motivating
+trajectory.</td>
+</tr>
+<tr>
+<td>The smallest curvature values lacked a direct precision
+calibration.</td>
+<td>Compare every projected HVP column with nearby-weight derivative
+estimates at two step sizes.</td>
+<td>Empirical agreement at the scale needed by the projected fit.</td>
+</tr>
+<tr>
+<td>Twelve directions could miss substantial response.</td>
+<td>Expand to 48 directions, retaining the original twelve.</td>
+<td>Sensitivity to a wider measured set and changes in leakage.</td>
+</tr>
+<tr>
+<td>One stored history could not identify sampling variability.</td>
+<td>Build two disjoint fresh Gram histories with weights held
+fixed.</td>
+<td>Whether fresh statistics agree with each other and with the saved
+history.</td>
+</tr>
+<tr>
+<td>A geometric optimum was not an optimizer-performance result.</td>
+<td>Compare full optimizer updates on paired evaluation batches.</td>
+<td>Local loss effects of changing alpha under controlled state and
+data.</td>
+</tr>
+</tbody>
+</table>
+<p>The wider set adds 36 directions from the same saved left and right
+Gram matrices. As in the original selection, the added directions cover
+a range of products of Gram eigenvalues on a logarithmic scale. Leakage
+is compared using the same original twelve input directions and the same
+full-response denominator. Only the output projection expands from
+twelve to 48 directions. Forty-eight directions still cover a very small
+part of either weight matrix.</p>
+<p>The 1/8 checkpoint labels are offset from the 1/4 labels. Their
+expected restored counters differ by one update. These are nearly
+matched training times, not exactly identical counters.</p>
+<h3 id="numerical-accuracy-is-checked-at-the-relevant-scale">Numerical
+accuracy is checked at the relevant scale</h3>
+<p><strong>Automatic differentiation</strong> applies derivative rules
+to the operations in the model code. A <strong>finite
+difference</strong> instead estimates a derivative by evaluating nearby
+weights. A central difference uses changes in both the positive and
+negative direction.</p>
+<p>The original check compared automatic differentiation with central
+finite differences in three selected directions on the first data group.
+For each direction, it divided the norm of their HVP difference by the
+norm of the automatic-differentiation HVP. It required this relative
+error to be below 2% at two adjacent perturbation sizes.</p>
+<p>Large perturbations can leave the local regime. Tiny perturbations
+can lose accuracy because finite-precision arithmetic subtracts nearly
+equal values.</p>
+<p>The follow-up retains the 2% requirement. It checks every measured
+direction on every group. It projects the finite-difference responses
+onto the full chosen basis.</p>
+<p>The original MLP Hessians had smallest-to-largest eigenvalue ratios
+of roughly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>8</mn></mrow></msup></mrow><annotation encoding="application/x-tex">2\times10^{-8}</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>8</mn></mrow></msup></mrow><annotation encoding="application/x-tex">7\times10^{-8}</annotation></semantics></math>.
+A small error relative to the largest response can still be large
+relative to a weak direction. This is why a global 2% check alone does
+not settle the precision question.</p>
+<p>The screen first checks the symmetry of each
+automatic-differentiation matrix. It averages the eight groups. Each
+averaged matrix is replaced by the average of itself and its transpose
+before comparing the estimates. This makes the averaged estimates
+symmetric; it does not make negative eigenvalues positive.</p>
+<p>For a positive mean Hessian, the precision screen then has four
+stages:</p>
+<ol type="1">
+<li>Rescale the coordinates so the mean Hessian’s diagonal entries are
+comparable.</li>
+<li>Form three differences: automatic differentiation versus each
+finite-difference estimate, and the two finite-difference estimates
+versus each other.</li>
+<li>Apply the same coordinate rescaling to every difference. Measure its
+<strong>spectral norm</strong>, the largest possible output norm for a
+unit input. Keep the largest of the three discrepancies.</li>
+<li>Require the smallest rescaled Hessian eigenvalue to exceed ten times
+that discrepancy.</li>
+</ol>
+<p>This is an <strong>empirical agreement screen</strong>. It is not a
+rigorous bound on errors shared by both differentiation methods. A
+failed screen means the power fit remains unresolved at this precision.
+A passed screen does not remove the limitations from data sampling or
+subspace selection.</p>
+<h3 id="fresh-histories-separate-one-source-of-uncertainty">Fresh
+histories separate one source of uncertainty</h3>
+<p>Each fresh history used 512 batches at unchanged weights. It collects
+statistics for the same two weight matrices. Gradient clipping is
+calculated across the full model. It uses the original Gram averaging
+factor of 0.99 and global gradient clipping. The finite-history average
+is corrected for starting from zero.</p>
+<p>This weighting gives about 197 effective equally weighted samples.
+“Effective” describes the concentration of the EMA weights; it does not
+assert that text batches are statistically independent.</p>
+<p>The two histories use separately randomized, disjoint text windows.
+Sequence hashes are checked against each other and against the curvature
+data. Here, disjoint means that no complete token sequence repeats under
+this check. Shared documents or shorter text fragments are not ruled
+out. A candidate batch containing any repeated sequence is skipped. The
+accepted source positions and the rejection counts are recorded. Both
+fresh histories are expressed in the basis chosen from the saved
+history. We retain interactions between different basis directions,
+called off-diagonal entries. Fresh statistics can therefore disagree
+with the saved history in direction as well as scale.</p>
+<p>If the fresh histories agree with each other but differ from the
+saved history, that would be evidence against fresh sampling variability
+as the sole explanation. Historical drift and numerical differences
+would still need consideration. Two histories do not identify a complete
+noise model.</p>
+<h3 id="actual-optimizer-updates-test-a-different-claim">Actual
+optimizer updates test a different claim</h3>
+<p>The optimizer uses <strong>momentum</strong>, a running average of
+gradients.</p>
+<p>Any matrix can be described by paired input and output directions and
+their nonnegative scaling strengths, called <strong>singular
+values</strong>. When all singular values are positive, the exact
+<strong>polar operation</strong> keeps those paired directions and
+replaces their scaling values by ones. The implementation approximates
+this operation.</p>
+<p>The optimizer rescales momentum, applies the polar operation, and
+rescales again. Thus, alpha affects both the input to the polar
+operation and its output. Appendix A gives the formula.</p>
+<p><strong>Candidate alpha</strong> is the value tried for one
+hypothetical optimizer step. The earlier training history stays fixed.
+The follow-up compares candidate α = 0, 1/8, 1/4, 3/8, and 1/2. Each
+full update changes all parameters that the production optimizer
+normally changes. It is not restricted to the two matrices whose
+curvature was measured.</p>
+<p>Each candidate starts from the same complete saved state and the same
+fresh gradient. The learning-rate schedule and weight decay are held
+fixed across candidates within a checkpoint.</p>
+<p>These update comparisons use the saved optimizer history, updated
+with that one gradient. They do not replace it with either of the two
+fresh histories measured for the separate sampling diagnostic.</p>
+<p>The comparison uses two versions of each update. The <strong>native
+version</strong> keeps the optimizer’s original update magnitude. The
+second version rescales its total norm to match the α = 0 update. Both
+versions are tested at one-tenth, three-tenths, and their full size.
+Norm matching rescales the entire update, including parameters handled
+outside the Gram transform, such as embedding weights and biases; it is
+an explicit diagnostic modification.</p>
+<p>Sixteen separate evaluation batches are reused across all candidates.
+This makes loss differences paired: each candidate is assessed on
+exactly the same text. The evaluation text is disjoint from the new
+gradient and history measurements, but is still drawn from training
+caches.</p>
+<p>The sixteen batches measure evaluation variation conditional on one
+update-gradient batch and one saved state. They do not measure variation
+across update-gradient draws or training seeds.</p>
+<p>These are hypothetical local steps from a checkpoint. They do not
+continue the training trajectory. A better immediate loss change does
+not establish better performance after thousands of further steps.</p>
+<h2 id="follow-up-results">8. Follow-up results</h2>
+<p><strong>All three checkpoints of the motivating one-eighth trajectory
+have been measured successfully.</strong></p>
+<p>These are twelve-direction measurements at restored update counters
+3,734, 18,666, and 33,598. Their execution, saved results, and online
+tracking were verified complete. The wider measurements and both
+optimizer controls are reported below.</p>
+<p>The <strong>precision margin</strong> divides the smallest rescaled
+eigenvalue by the largest measured discrepancy. The required margin is
+ten. Early attention passes only narrowly.</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint and block</th>
+<th>Mean passes the empirical screen?</th>
+<th style="text-align: right;">Precision margin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early attention</td>
+<td>Yes</td>
+<td style="text-align: right;">10.9</td>
+</tr>
+<tr>
+<td>Early MLP</td>
+<td>No: a negative measured eigenvalue</td>
+<td style="text-align: right;">Not evaluated</td>
+</tr>
+<tr>
+<td>Middle attention</td>
+<td>Yes</td>
+<td style="text-align: right;">29.2</td>
+</tr>
+<tr>
+<td>Middle MLP</td>
+<td>Yes</td>
+<td style="text-align: right;">36.4</td>
+</tr>
+<tr>
+<td>Late attention</td>
+<td>No: a negative measured eigenvalue</td>
+<td style="text-align: right;">Not evaluated</td>
+</tr>
+<tr>
+<td>Late MLP</td>
+<td>No: insufficient precision margin</td>
+<td style="text-align: right;">4.8</td>
+</tr>
+</tbody>
+</table>
+<p>The early MLP’s smallest measured eigenvalue is approximately
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>4.79</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>8</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-4.79\times10^{-8}</annotation></semantics></math>,
+while its largest is about 1.94. This fails the positive-matrix
+requirement. The screen stops there, so it does not separately establish
+that the sign of this very small negative value is numerically resolved.
+The correct conclusion is rejection of this fit, not a certified claim
+about negative curvature at that scale.</p>
+<p>At the late checkpoint, attention also fails positivity. Its smallest
+measured eigenvalue is approximately
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>4.79</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>7</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-4.79\times10^{-7}</annotation></semantics></math>,
+against a largest value of about 2.66. The same qualification about an
+uncalibrated negative sign applies.</p>
+<p>Late MLP is positive and passes the original numerical gate. Its
+empirical precision margin is only 4.8, below the required ten. Its
+descriptive raw fit would give r = 1.141, ρ = 0.968, and alpha = 0.424.
+<strong>That estimate is unresolved under the stronger screen and is
+excluded from the accepted-fit table.</strong></p>
+<p>The accepted mean fits are:</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint and block</th>
+<th style="text-align: right;">Raw r</th>
+<th style="text-align: right;">Raw ρ</th>
+<th style="text-align: right;">Raw fit-derived α</th>
+<th style="text-align: right;">Ridged fit-derived α</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early attention</td>
+<td style="text-align: right;">1.318</td>
+<td style="text-align: right;">0.976</td>
+<td style="text-align: right;">0.370</td>
+<td style="text-align: right;">0.377</td>
+</tr>
+<tr>
+<td>Middle attention</td>
+<td style="text-align: right;">1.242</td>
+<td style="text-align: right;">0.974</td>
+<td style="text-align: right;">0.392</td>
+<td style="text-align: right;">0.410</td>
+</tr>
+<tr>
+<td>Middle MLP</td>
+<td style="text-align: right;">1.189</td>
+<td style="text-align: right;">0.966</td>
+<td style="text-align: right;">0.406</td>
+<td style="text-align: right;">0.428</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The accepted mean fits do not show either proposed one-eighth
+pattern.</strong> Their raw powers are near 1.2–1.3, rather than 2 or 4.
+This statement applies to these selected directions and saved
+states.</p>
+<h3
+id="fixed-powers-two-and-four-fit-worse-in-these-accepted-means">Fixed
+powers two and four fit worse in these accepted means</h3>
+<p>A <strong>residual</strong> is the difference left after fitting a
+relationship. Here the residual score is squared error in the centered
+log proxy, divided by the squared size of that proxy. Smaller is better.
+A score above one means the error exceeds this reference size.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint and block</th>
+<th style="text-align: right;">Residual: fitted r</th>
+<th style="text-align: right;">Residual: r = 2</th>
+<th style="text-align: right;">Residual: r = 4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early attention</td>
+<td style="text-align: right;">0.024</td>
+<td style="text-align: right;">0.285</td>
+<td style="text-align: right;">4.063</td>
+</tr>
+<tr>
+<td>Middle attention</td>
+<td style="text-align: right;">0.026</td>
+<td style="text-align: right;">0.388</td>
+<td style="text-align: right;">4.827</td>
+</tr>
+<tr>
+<td>Middle MLP</td>
+<td style="text-align: right;">0.034</td>
+<td style="text-align: right;">0.483</td>
+<td style="text-align: right;">5.429</td>
+</tr>
+</tbody>
+</table>
+<p>These are residual scores for the raw proxy, not fitted power values.
+The fourth-power relation fits particularly poorly in these measured
+subspaces.</p>
+<p>The direct geometric grid also agrees closely with the log-based
+calculation here. Its raw optima are 0.370, 0.390, and 0.405 in the
+table’s row order. The ridged optima are 0.375, 0.410, and 0.425.
+Agreement between these two geometric calculations still does not
+establish the best training alpha.</p>
+<h3
+id="acceptance-of-a-mean-does-not-make-sampling-uncertainty-disappear">Acceptance
+of a mean does not make sampling uncertainty disappear</h3>
+<p>For the follow-up, the empirical precision screen is reapplied to
+every bootstrap resample. A resample must pass both that screen and the
+original numerical requirements before contributing to an interval.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint and block</th>
+<th style="text-align: right;">Accepted</th>
+<th style="text-align: right;">Rejected: indefinite</th>
+<th style="text-align: right;">Rejected: precision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early attention</td>
+<td style="text-align: right;">511 / 1,000</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">442</td>
+</tr>
+<tr>
+<td>Middle attention</td>
+<td style="text-align: right;">619 / 1,000</td>
+<td style="text-align: right;">178</td>
+<td style="text-align: right;">203</td>
+</tr>
+<tr>
+<td>Middle MLP</td>
+<td style="text-align: right;">585 / 1,000</td>
+<td style="text-align: right;">281</td>
+<td style="text-align: right;">134</td>
+</tr>
+</tbody>
+</table>
+<p>The raw-proxy intervals are:</p>
+<table>
+<thead>
+<tr>
+<th>Checkpoint and block</th>
+<th style="text-align: right;">Fitted r interval</th>
+<th style="text-align: right;">Fit-derived α interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early attention</td>
+<td style="text-align: right;">1.295–1.422</td>
+<td style="text-align: right;">0.337–0.377</td>
+</tr>
+<tr>
+<td>Middle attention</td>
+<td style="text-align: right;">1.192–1.294</td>
+<td style="text-align: right;">0.372–0.414</td>
+</tr>
+<tr>
+<td>Middle MLP</td>
+<td style="text-align: right;">1.161–1.213</td>
+<td style="text-align: right;">0.395–0.416</td>
+</tr>
+</tbody>
+</table>
+<p>These are the middle 95% intervals <strong>conditional on passing
+both screens</strong>. The many rejected resamples are part of the
+result. They limit certainty about the mean Hessian in the selected
+directions.</p>
+<p>A separate diagnostic also fits the four even-indexed groups on their
+own. That half of the middle MLP data fails positivity even though the
+eight-group mean passes. The fit is therefore sensitive to the sampled
+text.</p>
+<h3 id="the-trajectory-comparison-needs-a-narrow-interpretation">The
+trajectory comparison needs a narrow interpretation</h3>
+<p>Attention at the middle one-eighth checkpoint is positive in its
+selected subspace. The original quarter-power attention measurement was
+indefinite. This difference shows that conclusions from the
+quarter-power measurement cannot simply be transferred to the motivating
+trajectory.</p>
+<p>It does not establish that changing alpha caused the sign difference.
+These are separately trained states with different tuned learning rates
+and different Gram-selected directions. Their counters also differ by
+one update.</p>
+<p>The one-eighth trajectory has the following leakage values:</p>
+<table>
+<thead>
+<tr>
+<th>Checkpoint</th>
+<th style="text-align: right;">Attention leakage</th>
+<th style="text-align: right;">MLP leakage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early</td>
+<td style="text-align: right;">0.517</td>
+<td style="text-align: right;">0.513</td>
+</tr>
+<tr>
+<td>Middle</td>
+<td style="text-align: right;">0.388</td>
+<td style="text-align: right;">0.514</td>
+</tr>
+<tr>
+<td>Late</td>
+<td style="text-align: right;">0.354</td>
+<td style="text-align: right;">0.514</td>
+</tr>
+</tbody>
+</table>
+<p>These values concern different Gram-selected subspaces at each
+checkpoint. The wider measurements below test how much additional
+response is captured when the original twelve input directions are
+retained.</p>
+<h3 id="full-optimizer-steps-at-the-quarter-power-checkpoint">Full
+optimizer steps at the quarter-power checkpoint</h3>
+<p><strong>Every full native step increased mean evaluation loss at this
+checkpoint.</strong> Some candidate powers caused a smaller increase
+than others. That is different from improving on the unchanged
+model.</p>
+<p>This control restored the middle quarter-power state at counter
+18,665. It completed two 512-batch fresh histories and all 30 update
+comparisons. All 8,392 complete sequences recorded across curvature
+exclusions, histories, the update batch, and evaluation were unique
+under the hash check. Twenty-five candidate batches containing duplicate
+sequences were rejected.</p>
+<p>The unchanged checkpoint’s mean evaluation loss was 3.673041. This
+uses the local training-cache evaluation defined in Section 7, rather
+than the earlier C4 evaluation.</p>
+<p><strong>Loss change means loss after the hypothetical step minus loss
+at the unchanged checkpoint.</strong> Negative is improvement. Positive
+is deterioration.</p>
+<p>The table multiplies loss changes by 1,000 for readability. Thus, a
+value of +1.000 means an increase of 0.001 loss units. It uses the full
+native update size.</p>
+<table>
+<thead>
+<tr>
+<th>Candidate α</th>
+<th style="text-align: right;">Mean change × 1,000</th>
+<th style="text-align: right;">Conditional interval × 1,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align: right;">+9.873</td>
+<td style="text-align: right;">[8.948, 10.790]</td>
+</tr>
+<tr>
+<td>1/8</td>
+<td style="text-align: right;">+1.004</td>
+<td style="text-align: right;">[0.498, 1.505]</td>
+</tr>
+<tr>
+<td>1/4</td>
+<td style="text-align: right;">+0.484</td>
+<td style="text-align: right;">[0.048, 0.890]</td>
+</tr>
+<tr>
+<td>3/8</td>
+<td style="text-align: right;">+0.548</td>
+<td style="text-align: right;">[−0.115, 1.173]</td>
+</tr>
+<tr>
+<td>1/2</td>
+<td style="text-align: right;">+3.987</td>
+<td style="text-align: right;">[2.975, 4.950]</td>
+</tr>
+</tbody>
+</table>
+<p>These are middle 95% intervals from 10,000 resamples of the sixteen
+paired evaluation batches. The checkpoint and the one update-gradient
+batch stay fixed. The intervals are descriptive and are not adjusted for
+comparing many candidates.</p>
+<p>At smaller step fractions, some mean changes were negative. Their
+loss-change intervals included zero. These data do not establish a
+reliable immediate improvement at this checkpoint.</p>
+<h3 id="update-size-changes-the-comparison">Update size changes the
+comparison</h3>
+<p>The full native update norm ranged from 0.862 at α = 0 to 24.691 at α
+= 1/2. The second arm rescaled every candidate to norm 0.862 before
+applying the chosen step fraction.</p>
+<p>At full native size, α = 1/4 caused a smaller loss increase than α =
+1/8. Their paired difference was −0.000520, with interval [−0.000820,
+−0.000231]. After matching update norms, the difference was −0.000241,
+with interval [−0.000524, +0.000033].</p>
+<p>This shows that the update-size convention matters when interpreting
+the comparison. Norm matching rescales the whole update, including
+parameters handled by AdamW. It does not isolate only the direction of
+the two measured matrices.</p>
+<h3 id="full-optimizer-steps-at-the-one-eighth-checkpoint">Full
+optimizer steps at the one-eighth checkpoint</h3>
+<p><strong>The one-eighth checkpoint did not select one-eighth as a
+unique best next-step power.</strong> At native update size, candidate α
+= 1/4 gave a larger mean loss reduction. Matching norms made the α = 1/8
+and α = 1/4 mean changes nearly equal.</p>
+<p>This control restored counter 18,666 and completed all 30
+comparisons. Its fresh histories, update batch, and evaluation batches
+used exactly the same complete sequences as the quarter-power control.
+Its unchanged-model mean evaluation loss was 3.620126.</p>
+<p>The full native-step results below use the same loss-change
+definition and ×1,000 scale as the previous table.</p>
+<table>
+<thead>
+<tr>
+<th>Candidate α</th>
+<th style="text-align: right;">Mean change × 1,000</th>
+<th style="text-align: right;">Conditional interval × 1,000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align: right;">+1.766</td>
+<td style="text-align: right;">[1.051, 2.473]</td>
+</tr>
+<tr>
+<td>1/8</td>
+<td style="text-align: right;">−0.349</td>
+<td style="text-align: right;">[−0.853, 0.093]</td>
+</tr>
+<tr>
+<td>1/4</td>
+<td style="text-align: right;">−0.625</td>
+<td style="text-align: right;">[−1.112, −0.208]</td>
+</tr>
+<tr>
+<td>3/8</td>
+<td style="text-align: right;">−0.477</td>
+<td style="text-align: right;">[−1.029, −0.013]</td>
+</tr>
+<tr>
+<td>1/2</td>
+<td style="text-align: right;">+0.451</td>
+<td style="text-align: right;">[−0.286, 1.085]</td>
+</tr>
+</tbody>
+</table>
+<p>At one-tenth and three-tenths of native size, all five candidates
+reduced mean loss, and their individual conditional intervals were below
+zero. For example, candidate α = 0 changed from +0.001766 at full size
+to −0.000392 at three-tenths size. Its full-step deterioration therefore
+does not mean that its direction is always harmful.</p>
+<p>The paired native loss difference between candidate α = 1/4 and
+candidate α = 1/8 was −0.000276. Its conditional interval was
+[−0.000361, −0.000183]. This comparison holds the starting model,
+history, gradient, and evaluation text fixed.</p>
+<p>After matching full update norms to 0.994, the mean changes were
+−0.00050436 for α = 1/8 and −0.00050458 for α = 1/4. Their paired
+difference interval was [−0.000165, +0.000169]. These data do not
+distinguish their loss changes under this normalization; they do not
+prove the methods equivalent.</p>
+<p>The native α = 1/2 update had norm 11.093. Matching its norm to 0.994
+changed the sign of its measured mean loss change: from +0.000451 to
+−0.000211. This is a concrete example of how update magnitude affects a
+local comparison.</p>
+<p><strong>These are conditional local effects, not a new training
+ranking.</strong> One gradient and one saved state were used per
+checkpoint. Different training seeds, gradients, learning-rate
+treatments, and longer trajectories could change the outcome. The
+sixteen-batch intervals also do not measure systematic error from the
+native mixed-precision computation.</p>
+<p>The accompanying <a href="optimizer-step-results.csv">optimizer-step
+table</a> lists all sixty tested branches, including the smaller step
+fractions and both norm conventions.</p>
+<h3
+id="a-wider-measurement-passes-for-quarter-power-mlp-but-not-for-every-block">A
+wider measurement passes for quarter-power MLP, but not for every
+block</h3>
+<p><strong>A good fit in twelve directions does not guarantee a valid
+fit in 48 directions.</strong> Both wider experiments used the middle
+checkpoint. They retained the original twelve directions and the same
+eight curvature groups. Their twelve-by-twelve curvature matrices
+exactly reproduce the earlier middle measurements.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Training trajectory and block</th>
+<th>Twelve-direction result</th>
+<th>48-direction result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1/4 attention</td>
+<td>Rejected; derivative check incomplete</td>
+<td>Rejected; derivative check incomplete</td>
+</tr>
+<tr>
+<td>1/4 MLP</td>
+<td>Accepted; margin 193.1</td>
+<td>Accepted; margin 42.0</td>
+</tr>
+<tr>
+<td>1/8 attention</td>
+<td>Accepted; margin 29.2</td>
+<td>Rejected: measured negative eigenvalue</td>
+</tr>
+<tr>
+<td>1/8 MLP</td>
+<td>Accepted; margin 36.4</td>
+<td>Unresolved; margin 7.1</td>
+</tr>
+</tbody>
+</table>
+<p>The required precision margin is ten. Quarter-power attention has a
+negative mean eigenvalue in both dimensions. One direction/group pair
+also lacks two adjacent finite-difference steps passing the unchanged 2%
+test. Its derivative reference is therefore incomplete. The empirical
+screen does not certify this block. The negative measured values remain
+a separate reason the positive-matrix fit fails.</p>
+<p>For one-eighth attention, the 48-direction minimum is approximately
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>5.16</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>7</mn></mrow></msup></mrow><annotation encoding="application/x-tex">-5.16\times10^{-7}</annotation></semantics></math>,
+against a maximum of 1.199. The screen rejects positivity before
+calibrating the negative sign. All per-direction derivative checks
+passed, but that alone does not certify the sign of this small
+eigenvalue.</p>
+<p>For one-eighth MLP, all per-direction checks also passed. Its mean is
+positive, but its margin of 7.1 falls short of ten. Its descriptive raw
+fit-derived alpha is 0.376. <strong>That wider fit is unresolved and is
+not an accepted estimate.</strong></p>
+<p>The quarter-power MLP measurement provides a useful positive result.
+It adds the missing empirical precision check to the original
+middle-checkpoint fit. Early and late quarter-power MLP still lack that
+added check.</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th>Directions</th>
+<th style="text-align: right;">Raw r</th>
+<th style="text-align: right;">Raw ρ</th>
+<th style="text-align: right;">Raw fit-derived α</th>
+<th style="text-align: right;">Ridged fit-derived α</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Twelve directions</td>
+<td style="text-align: right;">1.194</td>
+<td style="text-align: right;">0.916</td>
+<td style="text-align: right;">0.384</td>
+<td style="text-align: right;">0.412</td>
+</tr>
+<tr>
+<td>48 directions</td>
+<td style="text-align: right;">1.147</td>
+<td style="text-align: right;">0.883</td>
+<td style="text-align: right;">0.385</td>
+<td style="text-align: right;">0.413</td>
+</tr>
+</tbody>
+</table>
+<p>The fit-derived alpha is stable in this expansion, although the
+explained fraction decreases. The direct grid chooses raw alpha 0.385
+and ridged alpha 0.410 in both dimensions. This supports stability of
+this particular geometric answer, not a whole-model optimum.</p>
+<p>At 48 directions, 663 of 1,000 bootstrap resamples pass both screens.
+Another 247 are indefinite and 90 are unresolved. The accepted raw alpha
+interval is 0.383–0.387. At twelve directions, all 1,000 pass. Expanding
+the measured space therefore exposes sampling sensitivity even when the
+full-data mean passes.</p>
+<h3 id="adding-gram-directions-barely-reduces-leakage">Adding Gram
+directions barely reduces leakage</h3>
+<p><strong>The extra 36 directions capture very little of the response
+that escaped the original twelve.</strong> This comparison keeps the
+original twelve HVP inputs fixed. It changes only how many output
+directions are used to represent their response.</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 36%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr>
+<th>Middle checkpoint and block</th>
+<th style="text-align: right;">Leakage into unmeasured directions: 12
+outputs</th>
+<th style="text-align: right;">Leakage: 48 outputs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1/4 attention</td>
+<td style="text-align: right;">0.927401</td>
+<td style="text-align: right;">0.926993</td>
+</tr>
+<tr>
+<td>1/4 MLP</td>
+<td style="text-align: right;">0.296787</td>
+<td style="text-align: right;">0.296575</td>
+</tr>
+<tr>
+<td>1/8 attention</td>
+<td style="text-align: right;">0.387614</td>
+<td style="text-align: right;">0.387059</td>
+</tr>
+<tr>
+<td>1/8 MLP</td>
+<td style="text-align: right;">0.513949</td>
+<td style="text-align: right;">0.513878</td>
+</tr>
+</tbody>
+</table>
+<p>These are response-norm ratios, not percentages of data or squared
+response energy. The decreases are less than 0.001 in every row. The
+selected additions therefore do not solve the leakage problem.</p>
+<p>This does not show that every possible 48-direction basis would
+perform poorly. The added directions come from the same Gram
+construction. Different directions, including directions chosen from the
+escaping responses, could capture more. Quarter-power attention also
+retains the derivative-validation limitation described above; its
+leakage values are measured diagnostics rather than a calibrated
+full-curvature claim.</p>
+<h3
+id="fresh-histories-differ-more-from-the-saved-history-than-from-each-other">Fresh
+histories differ more from the saved history than from each other</h3>
+<p><strong>At both checkpoints, the two fresh Gram histories agree more
+closely with each other than with the stored history.</strong> This
+comparison concerns the proxies themselves. It remains calculable even
+when the Hessian fails the positive-matrix analysis.</p>
+<p>We compare the centered matrix logarithms of the projected proxies.
+Centering removes overall scale, so the comparison measures differences
+in relative scales and directions. The distance is the square root of
+the sum of squared entry differences, divided by the square root of the
+number of directions. Smaller means closer under this particular
+definition.</p>
+<p>The following table uses the raw proxy in 48 directions. “Fresh 1”
+and “Fresh 2” are the two separately sampled histories at the same
+frozen weights.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint and block</th>
+<th style="text-align: right;">Fresh 1 versus fresh 2</th>
+<th style="text-align: right;">Saved versus fresh 1</th>
+<th style="text-align: right;">Saved versus fresh 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1/4 attention</td>
+<td style="text-align: right;">0.178</td>
+<td style="text-align: right;">0.838</td>
+<td style="text-align: right;">0.869</td>
+</tr>
+<tr>
+<td>1/4 MLP</td>
+<td style="text-align: right;">0.264</td>
+<td style="text-align: right;">1.741</td>
+<td style="text-align: right;">1.754</td>
+</tr>
+<tr>
+<td>1/8 attention</td>
+<td style="text-align: right;">0.151</td>
+<td style="text-align: right;">0.627</td>
+<td style="text-align: right;">0.665</td>
+</tr>
+<tr>
+<td>1/8 MLP</td>
+<td style="text-align: right;">0.156</td>
+<td style="text-align: right;">1.144</td>
+<td style="text-align: right;">1.155</td>
+</tr>
+</tbody>
+</table>
+<p>The same ordering holds for the ridged proxy and for the
+twelve-direction restrictions. It suggests that fresh-sample variability
+alone is an incomplete account of the saved-versus-fresh discrepancy in
+these measurements.</p>
+<p>The saved EMA includes gradients from weights that changed during
+training. The fresh histories hold weights fixed. Historical change is
+therefore a plausible contributor. Finite sampling, data distribution,
+clipping, and differences in numerical computation also need
+consideration. Two fresh histories do not assign a variance to each
+cause or prove that drift is the sole cause.</p>
+<h3 id="fresh-statistics-change-the-geometric-answer">Fresh statistics
+change the geometric answer</h3>
+<p><strong>Replacing the saved proxy with a fresh proxy moves the
+accepted geometric estimates toward larger alpha.</strong> The Hessian,
+coordinates, and acceptance screen stay fixed in this comparison.</p>
+<p>The table includes only cases with accepted mean fits. It reports the
+raw proxy. The two fresh entries correspond to separately randomized,
+disjoint sets of complete sequences. They are not independent training
+runs.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Checkpoint, block, directions</th>
+<th style="text-align: right;">Saved fit-derived α</th>
+<th style="text-align: right;">Fresh 1 α</th>
+<th style="text-align: right;">Fresh 2 α</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1/4 MLP, 12</td>
+<td style="text-align: right;">0.384</td>
+<td style="text-align: right;">0.473</td>
+<td style="text-align: right;">0.477</td>
+</tr>
+<tr>
+<td>1/4 MLP, 48</td>
+<td style="text-align: right;">0.385</td>
+<td style="text-align: right;">0.469</td>
+<td style="text-align: right;">0.474</td>
+</tr>
+<tr>
+<td>1/8 attention, 12</td>
+<td style="text-align: right;">0.392</td>
+<td style="text-align: right;">0.431</td>
+<td style="text-align: right;">0.432</td>
+</tr>
+<tr>
+<td>1/8 MLP, 12</td>
+<td style="text-align: right;">0.406</td>
+<td style="text-align: right;">0.461</td>
+<td style="text-align: right;">0.466</td>
+</tr>
+</tbody>
+</table>
+<p>Across these fresh fits, raw r ranges from 1.042 to 1.142 and raw ρ
+from 0.983 to 0.997. They still do not match either proposed one-eighth
+pattern. The ridged fit-derived alphas range from 0.442 to 0.490.
+Detailed fits and direct-grid checks are included in the evidence.</p>
+<p>Changing the proxy does not repair an invalid Hessian. Quarter-power
+attention and one-eighth attention at 48 directions remain rejected.
+One-eighth MLP at 48 directions remains unresolved. Their fresh proxies
+are not promoted into accepted power fits.</p>
+<p>Bootstrap intervals for each fresh-proxy fit hold that proxy fixed.
+They capture resampling of curvature groups, not joint uncertainty in
+both the Hessian and fresh Gram history. The two-history comparison is a
+separate diagnostic.</p>
+<p>These fresh proxies were not substituted into the full optimizer-step
+experiments. The local loss results above use the saved optimizer state.
+A fresh geometric alpha near one-half therefore does not predict the
+observed loss effect of candidate one-half in those controls.</p>
+<h2 id="how-to-interpret-the-evidence">9. How to interpret the
+evidence</h2>
+<p><strong>The added experiments address the measured mismatches, but
+they do not establish why one-eighth power won the earlier training
+comparison.</strong></p>
+<p>The results give five specific answers.</p>
+<ol type="1">
+<li><strong>The motivating trajectory was measured.</strong> The
+accepted early and middle one-eighth fits have raw powers near 1.2–1.3.
+They do not match either proposed one-eighth pattern. Several other
+blocks fail positivity or the precision screen.</li>
+<li><strong>Some geometric estimates survive stronger checks.</strong>
+Quarter-power middle MLP passes the empirical screen at both twelve and
+48 directions. Its fit-derived alpha stays near 0.38–0.41, depending on
+the proxy. That is a geometric result in selected directions.</li>
+<li><strong>The wider measurement does not resolve leakage.</strong>
+Adding 36 Gram directions barely captures the escaping response.
+One-eighth attention also loses positivity in the wider space, and
+one-eighth MLP becomes unresolved.</li>
+<li><strong>The saved history matters.</strong> Fresh histories agree
+more with each other than with the saved EMA. Accepted fresh fits move
+toward larger geometric alpha. These observations motivate studying
+history dependence, without identifying a complete noise or drift
+model.</li>
+<li><strong>Actual next-step behavior depends on update size.</strong>
+At the one-eighth state, quarter power improves the local mean more than
+one-eighth at native size. Matching whole-update norms makes their mean
+changes nearly equal. At the quarter-power state, every full native
+candidate increases mean loss.</li>
+</ol>
+<p>“No accepted fits” and high leakage are limits on specific
+measurements. They do not mean that no experiment ran, that data were
+exposed, or that the optimizer cannot work.</p>
+<p>The completed work contains three original checkpoint measurements
+and seven added experiments. The follow-ups calculate 2,112 main HVPs
+across the two blocks, in addition to derivative checks. They also
+measure four fresh histories of 512 batches each and sixty hypothetical
+full-optimizer branches. None is a new training trajectory.</p>
+<p>The remaining gap is a <strong>causal explanation of final training
+performance</strong>. That requires controlled training comparisons,
+repeated seeds, and a clearly chosen learning-rate treatment. Repeating
+only the local geometric fit cannot answer that question.</p>
+<p>A direct next test would compare the candidate powers from common
+starting states under both a fixed learning-rate schedule and a clearly
+specified tuning budget. Repeated gradient draws would strengthen the
+local controls. Longer training would then test whether local advantages
+persist to the intended evaluation outcome. These are future
+experiments, not results claimed here.</p>
+<h2 id="appendix-a.-exact-mathematical-definitions">Appendix A. Exact
+mathematical definitions</h2>
+<h3 id="projected-curvature-and-the-proxy">Projected curvature and the
+proxy</h3>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+be one weight matrix. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\ell(W)</annotation></semantics></math>
+be the group-averaged loss with all other weights fixed. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>e</mi><mi>d</mi></msub></mrow><annotation encoding="application/x-tex">e_1,\ldots,e_d</annotation></semantics></math>
+be the selected unit weight-change directions. Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">d=12</annotation></semantics></math>
+in the original experiment. The directions are mutually orthogonal under
+the sum of entrywise products.</p>
+<p>The notation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>⋅</mi><mo>,</mo><mi>⋅</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\langle\cdot,\cdot\rangle</annotation></semantics></math>
+means the sum of entrywise products. The operator
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>∇</mi><mn>2</mn></msup><mi>ℓ</mi></mrow><annotation encoding="application/x-tex">\nabla^2\ell</annotation></semantics></math>
+is the full Hessian for this weight block. The projected Hessian entry
+is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><msub><mi>e</mi><mi>i</mi></msub><mo>,</mo><msup><mi>∇</mi><mn>2</mn></msup><mi>ℓ</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>e</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">⟩</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">H_{ij}=\langle e_i,\nabla^2\ell(W)e_j\rangle.</annotation></semantics></math></p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+be the saved left and right Gram matrices. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+be a matrix-shaped weight change. The raw proxy maps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>E</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">LER</annotation></semantics></math>.
+Its projected entry is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><msub><mi>e</mi><mi>i</mi></msub><mo>,</mo><mi>L</mi><msub><mi>e</mi><mi>j</mi></msub><mi>R</mi><mo stretchy="false" form="postfix">⟩</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">K_{ij}=\langle e_i,Le_jR\rangle.</annotation></semantics></math></p>
+<p>This definition avoids constructing the much larger matrix that would
+act on a list of every weight entry.</p>
+<p>The <strong>trace</strong>, written
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">tr</mi><annotation encoding="application/x-tex">\operatorname{tr}</annotation></semantics></math>,
+is the sum of diagonal entries. The <strong>identity matrix</strong>,
+written
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>,
+leaves a vector unchanged when multiplying it. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+denote the numbers of rows and columns of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>.
+Define the normalized, ridged factors</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mfrac><mi>L</mi><mrow><mrow><mi mathvariant="normal">tr</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>L</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>m</mi></mrow></mfrac><mo>+</mo><mn>0.01</mn><mi>I</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">A=\frac{L}{\operatorname{tr}(L)/m}+0.01I,</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mfrac><mi>R</mi><mrow><mrow><mi mathvariant="normal">tr</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>R</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>n</mi></mrow></mfrac><mo>+</mo><mn>0.01</mn><mi>I</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">B=\frac{R}{\operatorname{tr}(R)/n}+0.01I.</annotation></semantics></math></p>
+<p>For the ridged proxy, replace
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+in the proxy action.</p>
+<h3 id="the-matrix-log-fit">The matrix-log fit</h3>
+<p>For positive definite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>,
+define their centered logarithms as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mi>H</mi><mo>−</mo><mfrac><mrow><mrow><mi mathvariant="normal">tr</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mi>H</mi><mo stretchy="false" form="postfix">)</mo></mrow><mi>d</mi></mfrac><mi>I</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">X=\log H-\frac{\operatorname{tr}(\log H)}{d}I,</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>=</mo><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mi>K</mi><mo>−</mo><mfrac><mrow><mrow><mi mathvariant="normal">tr</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mi>K</mi><mo stretchy="false" form="postfix">)</mo></mrow><mi>d</mi></mfrac><mi>I</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">Z=\log K-\frac{\operatorname{tr}(\log K)}{d}I.</annotation></semantics></math></p>
+<p>Centering removes the overall logarithmic scale. The Frobenius inner
+product sums products of corresponding entries. Its squared norm is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>X</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mi>F</mi><mn>2</mn></msubsup><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>X</mi><mo>,</mo><mi>X</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\|X\|_F^2=\langle X,X\rangle</annotation></semantics></math>.</p>
+<p>The fitted power is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>X</mi><mo>,</mo><mi>Z</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><mrow><mo stretchy="false" form="postfix">∥</mo><mi>X</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mi>F</mi><mn>2</mn></msubsup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">r=\frac{\langle X,Z\rangle}{\|X\|_F^2}.</annotation></semantics></math></p>
+<p>The explained fraction is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>X</mi><mo>,</mo><mi>Z</mi><msup><mo stretchy="false" form="postfix">⟩</mo><mn>2</mn></msup></mrow><mrow><mo stretchy="false" form="postfix">∥</mo><mi>X</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mi>F</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">∥</mo><mi>Z</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mi>F</mi><mn>2</mn></msubsup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">\rho=\frac{\langle X,Z\rangle^2}{\|X\|_F^2\|Z\|_F^2}.</annotation></semantics></math></p>
+<p>The unconstrained log-based exponent minimizes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>X</mi><mo>−</mo><mn>2</mn><mi>α</mi><mi>Z</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mi>F</mi><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">\|X-2\alpha Z\|_F^2</annotation></semantics></math>.
+Its value is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi mathvariant="normal">log</mi></msub><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>X</mi><mo>,</mo><mi>Z</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><mrow><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>Z</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mi>F</mi><mn>2</mn></msubsup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">\alpha_{\log}=\frac{\langle X,Z\rangle}{2\|Z\|_F^2}.</annotation></semantics></math></p>
+<p>When
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">r&gt;0</annotation></semantics></math>,
+this equals
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>r</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\rho/(2r)</annotation></semantics></math>.
+The reported nonnegative version replaces a negative exponent by zero.
+These formulas require nonzero centered variation. Symmetry and positive
+definiteness are checked before fitting.</p>
+<p>The direct grid instead evaluates</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>K</mi><mrow><mi>−</mi><mi>α</mi></mrow></msup><mi>H</mi><msup><mi>K</mi><mrow><mi>−</mi><mi>α</mi></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">K^{-\alpha}HK^{-\alpha}.</annotation></semantics></math></p>
+<p>It minimizes the mean squared centered logarithm of this matrix’s
+eigenvalues. Multiplying a matrix on both sides this way is a
+<strong>congruence transformation</strong>.</p>
+<p>Matrix logarithms do not generally turn multiplication into addition
+when the matrices have different eigenvectors. The direct grid therefore
+checks the transformed matrix itself. It does not assume its centered
+logarithm equals
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>−</mo><mn>2</mn><mi>α</mi><mi>Z</mi></mrow><annotation encoding="application/x-tex">X-2\alpha Z</annotation></semantics></math>.</p>
+<h3 id="leakage">Leakage</h3>
+<p>Place each matrix-shaped direction into a column by listing its
+entries in a fixed order. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+collect these columns. A superscript
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+denotes a transpose. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mi>Q</mi><msup><mi>Q</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">P=QQ^T</annotation></semantics></math>
+be the orthogonal projection onto the selected span.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msub><annotation encoding="application/x-tex">H_{\mathrm{full}}</annotation></semantics></math>
+denote the averaged Hessian operator within the chosen weight block. The
+subscript
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+denotes the Frobenius norm, the square root of the sum of squared
+entries. The measured leakage is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mo stretchy="false" form="postfix">∥</mo><mo stretchy="false" form="prefix">(</mo><mi>I</mi><mo>−</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>H</mi><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msub><mi>Q</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>F</mi></msub></mrow><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>H</mi><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msub><mi>Q</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>F</mi></msub></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">\frac{\|(I-P)H_{\mathrm{full}}Q\|_F}{\|H_{\mathrm{full}}Q\|_F}.</annotation></semantics></math></p>
+<p>For the wider-output comparison,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+still contains the original twelve input directions, while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+projects onto all 48 output directions. In that comparison,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+is built from the expanded basis rather than from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+alone.</p>
+<p>This quantity concerns responses to the selected input directions. It
+does not average over every possible direction in the weight block.</p>
+<h3 id="the-optimizers-matrix-direction">The optimizer’s matrix
+direction</h3>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+be the saved or freshly updated momentum matrix. With the normalized,
+ridged factors
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+above, the matrix direction before applying the negative learning-rate
+factor is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>A</mi><mrow><mi>−</mi><mi>α</mi></mrow></msup><mrow><mi mathvariant="normal">polar</mi><mo>&#8289;</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>A</mi><mrow><mi>−</mi><mi>α</mi></mrow></msup><mi>M</mi><msup><mi>B</mi><mrow><mi>−</mi><mi>α</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>B</mi><mrow><mi>−</mi><mi>α</mi></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">A^{-\alpha}\operatorname{polar}\!\left(A^{-\alpha}MB^{-\alpha}\right)B^{-\alpha}.</annotation></semantics></math></p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+be the matrix entering the polar operation. Its singular value
+decomposition represents it using mutually perpendicular unit output
+directions in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math>,
+mutually perpendicular unit input directions in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>,
+and nonnegative scaling values on the diagonal of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>.</p>
+<p>This gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><mi>U</mi><mi mathvariant="normal">Σ</mi><msup><mi>V</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">C=U\Sigma V^T</annotation></semantics></math>.
+When all singular values are positive, the exact polar factor is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><msup><mi>V</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">UV^T</annotation></semantics></math>.
+The production optimizer uses five Newton–Schulz iterations, repeated
+matrix calculations that approximate that factor.</p>
+<p>The optimizer also applies learning-rate scaling and weight decay.
+Parameters handled outside this matrix transform use
+<strong>AdamW</strong>. AdamW rescales individual coordinates using
+running averages of gradients and their squares, with a separate
+weight-decay term.</p>
+<p>These additional operations are why the Hessian congruence criterion
+is not the full training update. Momentum-based directions need not
+improve loss on every individual step.</p>
+<h2 id="appendix-b.-evidence-and-reproducibility">Appendix B. Evidence
+and reproducibility</h2>
+<p>The scientific specification is the supplied Hessian Power Analysis
+Package: its brief, README, and analysis script. The package’s synthetic
+examples were validation cases, not real checkpoint results.</p>
+<p>The original measurement records contain per-group matrices, Gram
+projections, basis selections, sequence hashes, derivative checks,
+bootstrap results, and rejection reasons. All three original successful
+jobs were verified complete, including online experiment tracking.</p>
+<p>The report’s values are drawn from those saved records. The original
+unmodified analysis requires the smallest eigenvalue to exceed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>12</mn></mrow></msup><annotation encoding="application/x-tex">10^{-12}</annotation></semantics></math>
+times the largest. Its input symmetry tolerance is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>5</mn></mrow></msup><annotation encoding="application/x-tex">10^{-5}</annotation></semantics></math>
+under the difference-to-matrix norm ratio defined in Section 5. A
+numerical gate alone is not a measurement-error estimate.</p>
+<p>The accompanying <a href="evidence-index.md">evidence index</a>
+identifies source commits, checkpoint paths, artifact locations, and
+exact experiment configurations. It also distinguishes the original
+measurements from the follow-ups. Execution logs and failed attempts
+remain in the evidence archive rather than being treated as additional
+successful experiments.</p>
+</main></body></html>

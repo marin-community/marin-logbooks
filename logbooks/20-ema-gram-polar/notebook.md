@@ -3888,3 +3888,20 @@ The report explains the motivation, actual measurements, numerical rejection,
 leakage, fresh statistics, and full-update controls. The geometric hypotheses do
 not explain the earlier training ranking in these selected measurements.
 Repeated controlled training remains a future causal test, not a claimed result.
+
+
+## 2026-11-11 — Visual reading guide
+
+Added a 17-page visual guide alongside the unchanged 39-page technical report.
+Nine figures explain the experiment design, acceptance status, fitted powers,
+leakage, history differences, and paired optimizer loss comparisons. The browser
+version provides adjustable text and spacing, figure enlargement, one-section
+reading, and expandable technical detail.
+
+No experiments were launched and no measurements or thresholds changed.
+Independent reading, terminology, and numerical audits pass for manuscript
+SHA-256 `8b24439aa25459611f19d4c8a039b273feba758889e01f6c95657426309f51d7`.
+All seventeen PDF pages were visually inspected; browser controls passed at
+desktop and mobile widths, including 28 px text without page overflow.
+The guide and editable figure sources are in `hessian-report-visual/`.
+The portable delivery retains the complete prior scientific evidence package.

@@ -1,0 +1,787 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  14pt,
+  letterpaper,
+]{extarticle}
+\usepackage{xcolor}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{Arial}
+  \setsansfont[]{Arial}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\setstretch{1.25}
+\RaggedRight
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlength{\emergencystretch}{3em}
+\setcounter{secnumdepth}{-1}
+\titleformat{\section}{\LARGE\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\Large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\large\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.2em}{0.7em}
+\titlespacing*{\subsubsection}{0pt}{1.1em}{0.35em}
+\let\reportsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\Needspace{5\baselineskip}\reportsubsubsection}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\small Hessian experiments • Visual guide}
+\fancyfoot[R]{\small \thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\AtBeginEnvironment{longtable}{\small\setstretch{1.12}}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\widowpenalty=10000
+\clubpenalty=10000
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{Understanding the Hessian
+experiments}\label{understanding-the-hessian-experiments}
+
+A visual reading guide to the Marin results
+
+Prepared for Kaiyue • 11 November 2026
+
+\subsection{Start with the answer}\label{start-with-the-answer}
+
+\textbf{We completed the experiments. We have not explained why
+optimizer setting 1/8 gave better final training results.}
+
+The new measurements teach us three useful things:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{A fit can work in a small set of directions and fail in a
+  larger set.}
+\item
+  \textbf{Fresh gradient statistics differ from the history saved during
+  training.}
+\item
+  \textbf{Changing the size of an optimizer step can change its apparent
+  advantage.}
+\end{itemize}
+
+These are findings about particular saved models and local measurements.
+They are not a rule that one optimizer setting is always best.
+
+\subsubsection{Choose a reading path}\label{choose-a-reading-path}
+
+\textbf{For the main story:} read the bold opening sentence in each
+section, then its figure and takeaway.
+
+\textbf{For the confusing terms:} Section 2 explains the basic objects.
+Section 4 explains ``no accepted fits.'' Section 6 explains ``leakage.''
+
+\textbf{For the exact methods:} the accompanying \emph{Detailed
+technical reference} preserves the complete report, formulas, tables,
+and qualifications. The browser version includes that reference in
+expandable sections.
+
+You do not need to remember every number. Keep asking: \textbf{What was
+measured? What does it show? What remains unknown?}
+
+\Needspace{10\baselineskip}
+
+\subsection{1. Why run these
+experiments?}\label{why-run-these-experiments}
+
+\textbf{The starting observation was a small advantage for optimizer
+setting 1/8 in one earlier training comparison.}
+
+A model has adjustable numbers called \textbf{weights}. Training changes
+those weights to improve predictions. \textbf{Loss} scores prediction
+error; lower is better on the same evaluation. An \textbf{optimizer}
+chooses the weight changes.
+
+The optimizer has a setting called \textbf{alpha}, written α. It
+controls how strongly the optimizer rescales directions using its stored
+gradient statistics. A larger alpha strengthens relative rescaling. It
+does not necessarily make the whole update smaller.
+
+C4 is the text evaluation used in the earlier comparison. Its text was
+reserved for evaluation. The final losses were:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrl@{}}
+\toprule\noalign{}
+Training alpha & Final loss & Evidence \\*
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 3.792297 & Completed run \\*
+1/8 & 3.784025 & Completed run \\*
+1/4 & 3.844011 & Failed job; final evaluation recovered \\*
+1/2 & 3.958380 & Failed job; final evaluation recovered \\*
+\end{longtable}
+}
+
+The observed advantage of 1/8 over 0 was \textbf{0.008272 loss units}.
+
+The 1/8 run first reached C4 loss at or below 4.0 after 33,000 updates.
+The alpha 0 run reached it after 34,000. This is an observed advantage
+in training tokens at that target. A token is a unit of text processed
+by the model.
+
+\textbf{Limit:} these were separately tuned configurations with one
+training seed. A seed controls random choices; one seed cannot show how
+consistently an outcome repeats. Learning rates---the multipliers
+controlling the size of updates---differed. The 1/8 run also took longer
+in its actual hardware deployment.
+
+\textbf{Takeaway:} the observation motivates a question. It does not
+establish a universal best alpha.
+
+\Needspace{10\baselineskip}
+
+\subsection{2. Four ideas to keep
+separate}\label{four-ideas-to-keep-separate}
+
+\textbf{Curvature, gradient history, a fitted relationship, and an
+actual optimizer step are different objects.}
+
+\subsubsection{The gradient tells us about a small
+move}\label{the-gradient-tells-us-about-a-small-move}
+
+The \textbf{gradient} describes how loss changes when the weights move a
+very small amount. Moving against a nonzero gradient reduces that loss
+for a sufficiently small step.
+
+\subsubsection{The Hessian describes local
+bending}\label{the-hessian-describes-local-bending}
+
+The \textbf{Hessian}, written H, describes how the gradient changes as
+the weights move. This is \textbf{curvature}. Some directions bend
+sharply; others bend gently.
+
+\subsubsection{Gram statistics summarize
+gradients}\label{gram-statistics-summarize-gradients}
+
+A \textbf{Gram matrix} summarizes products of gradient entries. This
+optimizer stores a left Gram matrix and a right Gram matrix for each
+matrix of weights.
+
+The combined \textbf{Gram proxy}, written K, is a statistic used to
+represent curvature. It acts on a proposed weight change by multiplying
+on the left and right by those Gram matrices.
+
+The saved statistics are an \textbf{exponential moving average}, or EMA.
+Each new update keeps 99\% of the previous average and adds 1\% of the
+new gradient product. The saved history therefore includes gradients
+from earlier weights.
+
+\subsubsection{A fit connects two measured
+objects}\label{a-fit-connects-two-measured-objects}
+
+A \textbf{fit} approximates the Gram proxy using a power of the Hessian,
+within the selected directions. We estimate the power and how well the
+relationship holds. Section 5 gives the formula.
+
+A \textbf{raw proxy} uses its Gram factors without the additional
+stabilizing modification described in Section 5.
+
+\subsubsection{Three uses of alpha answer different
+questions}\label{three-uses-of-alpha-answer-different-questions}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning
+\end{minipage} \\*
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Training alpha & The setting used to produce a saved model. \\*
+Alpha derived from the fit & A value calculated from a curvature fit. \\*
+Candidate alpha & A setting tried for one hypothetical next step. \\*
+\end{longtable}
+}
+
+\textbf{Takeaway:} a geometric alpha derived from the fit is not
+automatically the best alpha for training.
+
+\Needspace{10\baselineskip}
+
+\subsection{3. What did we actually do?}\label{what-did-we-actually-do}
+
+\textbf{We measured real saved checkpoints. We did not run new training
+trajectories.}
+
+A \textbf{checkpoint} contains a saved model and its training state. The
+original experiment measured three checkpoints from the 1/4 run. That
+left a mismatch: the motivating advantage came from the 1/8 run.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{experiment-map.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 1. The added experiments address the motivating trajectory,
+measurement coverage, gradient history, and actual next step loss.
+Numerical checks accompany the curvature measurements.\par}
+\end{minipage}
+
+\subsubsection{How much of the model was
+measured?}\label{how-much-of-the-model-was-measured}
+
+The model has about \textbf{447 million weights}. We measured curvature
+for two individual matrices: one in attention and one in the multilayer
+perceptron, or \textbf{MLP}. Attention combines information across text
+positions. The MLP is a feedforward component that transforms features
+at each position. Each selected matrix is called a \textbf{block} here;
+the technical reference identifies the exact matrices.
+
+We chose \textbf{12 directions} in each matrix from its saved Gram
+statistics. A \textbf{subspace} is the set of changes obtained by
+combining those directions. At the middle checkpoints, two further
+experiments expanded the set to \textbf{48 directions}, retaining the
+original twelve.
+
+For each direction, a \textbf{Hessian-vector product}, or HVP, measures
+how the gradient responds. The experiment kept the interactions between
+directions, not just their individual curvature values.
+
+\subsubsection{Which data and controls were
+used?}\label{which-data-and-controls-were-used}
+
+Each curvature measurement used eight groups of eight sequences, with
+4,096 tokens per sequence. The same complete sequences were used across
+all eight curvature measurements. The other model weights stayed fixed
+while each block Hessian was calculated.
+
+A \textbf{batch} is a group of text sequences processed together. Each
+of the two optimizer controls built \textbf{two fresh Gram histories of
+512 batches each} at fixed weights. It then tried 30 hypothetical full
+model updates. Each candidate began from the same saved state and one
+shared batch used to calculate the update gradient within that
+checkpoint.
+
+Sixteen evaluation batches were reused across candidates. These batches
+came from training caches. They were not certified as unseen during the
+original training run.
+
+\textbf{Takeaway:} these are carefully controlled local measurements of
+a small part of curvature, plus full model next step loss tests. They
+are not a test of every layer or of performance over the full training
+run.
+
+\Needspace{10\baselineskip}
+
+\subsection{4. What does ``no accepted fits''
+mean?}\label{what-does-no-accepted-fits-mean}
+
+\textbf{It means that the fit did not pass the requirements for this
+analysis. It does not mean that no experiment ran.}
+
+An \textbf{eigenvalue} describes the scaling along a special direction
+of a matrix. For a symmetric Hessian, it is a curvature value. This
+analysis needs positive eigenvalues because it takes a \textbf{matrix
+logarithm}: the ordinary logarithm of each eigenvalue, retaining the
+directions.
+
+A fit can be excluded for several reasons:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Negative:} at least one measured curvature value is negative,
+  so the analysis of positive matrices cannot be used.
+\item
+  \textbf{Unresolved:} the measured matrix is positive, but the
+  numerical discrepancy is too large relative to its weakest direction.
+\item
+  \textbf{Missing or failed check:} a required derivative or symmetry
+  check is unavailable or fails.
+\end{itemize}
+
+\subsubsection{How did we check numerical
+accuracy?}\label{how-did-we-check-numerical-accuracy}
+
+Automatic differentiation applies derivative rules to the model code. A
+\textbf{finite difference} estimates the derivative using nearby
+weights. The checks required agreement below 2\% at two adjacent
+perturbation sizes.
+
+That check alone is not enough for a very weak curvature direction. We
+first average the Hessians from eight data groups and fit that
+\textbf{mean Hessian}. We do not average eight separately fitted powers.
+
+For a positive mean Hessian, an added screen puts its diagonal entries
+on a common scale. The same coordinate scaling is applied to both
+finite-difference estimates. We compare all three estimates in pairs.
+The size of a discrepancy is its largest possible response to an input
+of size one.
+
+The \textbf{precision margin} divides the weakest curvature on this
+scale by the largest of those three discrepancies. It must exceed
+\textbf{10}: the weakest curvature must be more than ten times the
+measured disagreement. The technical reference gives the exact matrix
+formula.
+
+This is an empirical agreement check, not a rigorous guarantee against
+errors shared by both methods.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{acceptance-map.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 2. Each cell describes the mean fit in the stated block and
+dimension. ``Accepted'' requires both numerical validity and the added
+precision screen. ``Negative'' describes the measured matrix; the screen
+stops before certifying the sign of a tiny negative eigenvalue. 1/4
+attention also lacks one required derivative reference.\par}
+\end{minipage}
+
+\subsubsection{Passing the mean does not remove sampling
+uncertainty}\label{passing-the-mean-does-not-remove-sampling-uncertainty}
+
+A \textbf{bootstrap} repeatedly resamples the eight data groups and
+recomputes the fit. Many resamples fail even when the mean over eight
+groups passes.
+
+For the 1/8 run, accepted counts were 511 of 1,000 for early attention,
+619 for middle attention, and 585 for middle MLP. The reported intervals
+use only accepted resamples. They are \textbf{conditional intervals},
+not uncertainty guarantees for all resamples or other training seeds.
+
+The original 1/4 attention fits were rejected at all three stages.
+Original early and late MLP fits remain descriptive because they lack
+the added precision check. The later middle MLP measurement passes that
+check at both 12 and 48 directions.
+
+\textbf{Takeaway:} report the reason for rejection. Do not turn a
+rejected or unresolved fit into an accepted scientific estimate.
+
+\Needspace{10\baselineskip}
+
+\subsection{5. Did the accepted fits explain optimizer setting
+1/8?}\label{did-the-accepted-fits-explain-optimizer-setting-18}
+
+\textbf{No.~The accepted measurements did not show either proposed 1/8
+pattern.}
+
+The proposed relation is \textbf{K approximately proportional to H
+raised to a power r}. The fitted number \textbf{r} describes how Gram
+values change relative to curvature values.
+
+A second number, \textbf{rho}, written ρ, describes how much variation
+in the log proxy is explained by the fit after removing overall scale.
+Rho is not a direct measurement of noise.
+
+The simplified geometric calculation gives \textbf{alpha derived from
+the fit = ρ / (2r)} when r is positive. Two proposed patterns would
+therefore suggest 1/8:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrr@{}}
+\toprule\noalign{}
+Proposed explanation & Power r & Fit quality ρ \\*
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Accurate relation with power four & 4 & 1 \\*
+Imperfect relation with squared curvature & 2 & 1/2 \\*
+\end{longtable}
+}
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{fitted-powers.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 3. Dots are accepted mean fits using the raw saved Gram proxy.
+Dashed lines mark the two proposed powers. These dots are not confidence
+intervals. All rows use 12 directions except the row marked 48.\par}
+\end{minipage}
+
+For the accepted early and middle 1/8 fits, rho is about
+\textbf{0.966--0.976}. Their alphas derived from the fit are about
+\textbf{0.370--0.406} with the raw proxy.
+
+The \textbf{ridged proxy} first rescales each Gram factor by its mean
+eigenvalue and adds 0.01 to each diagonal entry. This stabilizes small
+directions. Its corresponding alphas derived from the fit are about
+\textbf{0.377--0.428}.
+
+The technical reference also describes a separate geometric check and
+the optimizer's additional transformations of the proposed update. The
+fitted relationship alone does not include all of those transformations.
+
+\textbf{Takeaway:} these selected directions do not support the proposed
+1/8 explanation. They also do not justify changing the training alpha to
+0.4.
+
+\Needspace{10\baselineskip}
+
+\subsection{6. What does ``leakage''
+mean?}\label{what-does-leakage-mean}
+
+\textbf{Leakage is curvature response outside the directions we
+selected. It is not a data leak.}
+
+Imagine moving the weights in one of the twelve selected directions. The
+gradient's response can point partly inside that selected space and
+partly outside it.
+
+The \textbf{norm} measures the size of a response: the square root of
+the sum of its squared entries. For every selected input direction, we
+first average its response across the data groups. We then collect all
+those responses together and sum squared entries across both responses
+and entries. Taking the square root gives their combined norm.
+
+Leakage divides the combined norm of the outside responses by the
+combined norm of the full responses. It is not the average of twelve
+separate leakage ratios.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{leakage-illustration.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 4. This example uses original middle 1/4 attention. The triangle
+represents combined response norms, not a model with only two
+dimensions. The squared component norms add to the squared full norm.
+The ordinary norms do not add to one.\par}
+\end{minipage}
+
+A leakage value of 0.927 means the outside component has about 92.7\% of
+the full response's norm. It does \textbf{not} mean 92.7\% of examples,
+parameters, or loss escaped.
+
+\subsubsection{Did measuring more directions solve
+this?}\label{did-measuring-more-directions-solve-this}
+
+\textbf{No.~Adding 36 Gram directions captured very little of the
+escaping response.}
+
+The comparison below holds the original twelve input directions fixed.
+Only the number of output directions expands. This keeps the denominator
+the same.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{leakage-expansion.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 5. Circles use 12 output directions; blue marks use 48. Every
+decrease is below 0.001. These are norm ratios, not fractions of squared
+norms. 1/4 attention retains its limitation in derivative checks.\par}
+\end{minipage}
+
+For example, middle 1/8 MLP changes from \textbf{0.513949 to 0.513878}.
+That is a decrease of only about \textbf{0.000070}.
+
+\textbf{Takeaway:} a good fit inside the selected space can coexist with
+substantial response outside it. These particular extra directions do
+not fix the coverage problem. Other choices of directions could behave
+differently.
+
+\Needspace{10\baselineskip}
+
+\subsection{7. Does the saved gradient history
+matter?}\label{does-the-saved-gradient-history-matter}
+
+\textbf{Yes: the two fresh histories are closer to each other than
+either is to the saved history, under the measured distance.}
+
+The fresh histories hold weights fixed. The saved EMA includes gradients
+from weights that changed during training. Both use the averaging factor
+0.99 and global gradient clipping at norm 0.1. Clipping shrinks a
+gradient when its total norm exceeds that threshold.
+
+Each fresh history uses 512 batches. The batches are separately
+randomized. Hash checks on complete sequences exclude duplicate complete
+sequences across histories and the other measurement data. Shared
+documents or shorter fragments are not ruled out.
+
+We compare \textbf{centered matrix logarithms} of the proxies. Centering
+removes the mean log eigenvalue, so the comparison removes overall
+scale. The distance is the square root of the sum of squared entry
+differences, divided by the square root of the number of directions.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{history-distances.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 6. Raw proxies in 48 directions. Each mark is one observed
+distance, not an uncertainty interval. The same ordering holds for the
+ridged proxies and restrictions to twelve directions.\par}
+\end{minipage}
+
+Replacing the saved proxy with a fresh proxy also shifts accepted alphas
+derived from the fit upward. For example, 1/4 MLP in 48 directions
+changes from \textbf{0.385} to \textbf{0.469 and 0.474} in the two fresh
+histories.
+
+Changing the proxy does not repair an invalid Hessian. Rejected or
+unresolved curvature fits stay excluded.
+
+\textbf{Takeaway:} fresh sampling variability alone looks insufficient
+to explain the difference between saved and fresh histories here.
+Historical change is a plausible contributor. Two histories do not
+identify how much comes from drift, sampling, clipping, or numerical
+differences.
+
+\Needspace{10\baselineskip}
+
+\subsection{8. What happened when we tried actual optimizer
+steps?}\label{what-happened-when-we-tried-actual-optimizer-steps}
+
+\textbf{At the 1/8 checkpoint, candidate 1/4 improved local mean loss
+more at the original update size. Matching update norms made their mean
+changes nearly equal.}
+
+Each candidate started from the same middle checkpoint and the same
+fresh gradient within that control. We changed candidate alpha while
+keeping the saved history, learning rate schedule, and weight decay
+fixed. \textbf{Weight decay} is a separate shrinkage of weights.
+
+These updates changed the full model, not just the two measured
+matrices. The new fresh histories from Section 7 were \textbf{not}
+substituted into these optimizer steps.
+
+We compared two sizes:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Original update size:} use the magnitude produced by the
+  optimizer.
+\item
+  \textbf{Equal norms of complete updates:} rescale every candidate's
+  complete update to the norm of the alpha 0 update.
+\end{itemize}
+
+Each version was also tested at 0.1, 0.3, and 1.0 times its full size.
+Norm matching includes all updated parameters and the contribution of
+weight decay.
+
+\subsubsection{How to read the loss
+plots}\label{how-to-read-the-loss-plots}
+
+\textbf{Loss change = loss after the step − loss at the unchanged
+checkpoint.}
+
+\begin{itemize}
+\tightlist
+\item
+  Left of zero: lower loss, an improvement.
+\item
+  Right of zero: higher loss, a deterioration.
+\item
+  Dot: mean change on sixteen paired evaluation batches.
+\item
+  Line: conditional 95\% bootstrap interval from 10,000 resamples of
+  those batches.
+\end{itemize}
+
+The plotted changes are multiplied by \textbf{1,000}. A plotted change
+of −0.5 means a loss reduction of 0.0005.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{optimizer-eighth.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 7. Middle 1/8 checkpoint, full step fraction. The two panels
+share the same scale. Intervals hold one state and one gradient batch
+fixed. They do not include variation across training seeds or gradient
+draws, and are not adjusted for multiple comparisons.\par}
+\end{minipage}
+
+The unchanged checkpoint loss was \textbf{3.620126} on these local
+evaluation batches. This is a different evaluation from the earlier C4
+comparison.
+
+At original size, candidate 1/4 changed mean loss by \textbf{−0.000625}.
+Candidate 1/8 changed it by \textbf{−0.000349}. After norm matching,
+both changes were approximately \textbf{−0.000504}.
+
+\subsubsection{Compare the candidates
+directly}\label{compare-the-candidates-directly}
+
+The next figure uses their paired loss difference on the same evaluation
+batches. It does not infer the difference from overlap of the separate
+intervals above.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{paired-contrast.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 8. Full step fraction. Dots show paired mean differences; lines
+show conditional 95\% bootstrap intervals from the sixteen shared
+evaluation batches. A negative value favors candidate 1/4 over candidate
+1/8. The interval includes zero after norm matching at both starting
+checkpoints. That does not prove equivalence.\par}
+\end{minipage}
+
+At 0.1 and 0.3 times the original size, all five candidates improved
+mean loss at the 1/8 state, and their individual conditional intervals
+were below zero.
+
+\textbf{Takeaway:} the size of the step matters. A local next step
+advantage is not a ranking of final training performance.
+
+\Needspace{10\baselineskip}
+
+\subsection{9. Was the 1/4 checkpoint
+different?}\label{was-the-14-checkpoint-different}
+
+\textbf{Yes. Every full step at the original update size increased mean
+evaluation loss at the 1/4 checkpoint.}
+
+The unchanged local mean loss was \textbf{3.673041}. A smaller positive
+change is still a loss increase, not an improvement over the unchanged
+model.
+
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=\linewidth]{optimizer-quarter.pdf}
+\par\vspace{0.5em}
+{\small\RaggedRight Figure 9. Middle 1/4 checkpoint, full step fraction. Both panels share a
+scale. The wider horizontal range than Figure 7 is stated by the axis
+values; compare numbers rather than physical distances between figures.
+The same limitations of conditional intervals apply.\par}
+\end{minipage}
+
+Some mean changes from smaller steps were negative, but their intervals
+included zero. These measurements do not establish a reliable immediate
+improvement at this checkpoint.
+
+The two checkpoint controls used the same complete sequences.
+Nevertheless, they began from different trained models and optimizer
+histories. The different outcomes do not isolate a causal effect of
+training alpha.
+
+\textbf{Takeaway:} neither the local curvature fit nor the candidate
+alpha alone determines the observed loss change.
+
+\Needspace{10\baselineskip}
+
+\subsection{10. What can we conclude?}\label{what-can-we-conclude}
+
+\textbf{The experiments narrow the explanation. They do not settle it.}
+
+\subsubsection{What the evidence
+supports}\label{what-the-evidence-supports}
+
+\begin{itemize}
+\tightlist
+\item
+  The motivating 1/8 trajectory has now been measured.
+\item
+  Accepted fits using the saved proxy do not match the two proposed 1/8
+  patterns.
+\item
+  A wider subspace can reveal failed positivity or unresolved precision.
+\item
+  The extra Gram directions barely reduce leakage.
+\item
+  Fresh history changes the geometric estimate.
+\item
+  The magnitude of the complete update changes the local optimizer
+  comparison.
+\end{itemize}
+
+\subsubsection{What the evidence does not
+establish}\label{what-the-evidence-does-not-establish}
+
+\begin{itemize}
+\tightlist
+\item
+  A universal best training alpha.
+\item
+  A complete explanation separating noise from drift.
+\item
+  A characterization of the full model's Hessian.
+\item
+  Why 1/8 won the earlier comparison of final losses.
+\end{itemize}
+
+A causal training comparison would need repeated seeds and a clearly
+specified learning rate treatment. Repeated draws of the gradient used
+for the update would also strengthen the local controls. Those are
+future experiments, not completed results in this report.
+
+\subsubsection{Where to find the
+details}\label{where-to-find-the-details}
+
+The \href{technical-reference.pdf}{\textbf{Detailed technical
+reference}} preserves all original methods, formulas, result tables, and
+numerical caveats. The \href{evidence-index.md}{\textbf{evidence index}}
+links the source configurations, saved artifacts, and online experiment
+tracking. The \href{optimizer-step-results.csv}{\textbf{optimizer step
+table}} contains all sixty hypothetical branches.
+
+\end{document}
