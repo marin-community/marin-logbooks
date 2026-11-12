@@ -9,7 +9,7 @@
   },
   "lint": "passed",
   "saved_checkpoints_accessible": 6,
-  "real_pilot": "Both middle states submitted from d1af43d209b7b510c93e492d4e2d6bdaec3751d2; awaiting TPU scheduler",
+  "real_pilot": "As of 2026-11-12 19:04 UTC: eighth-middle running, six representative derivative checks passed; quarter-middle pending scheduler capacity. Neither complete.",
   "additional_analysis_validation": {
     "passed": 4,
     "elapsed_seconds": 13.59,
@@ -20,5 +20,13 @@
       "Whole-checkpoint exclusion in fitting and direct scalar selection"
     ],
     "figures": "Synthetic layout fixtures inspected; not Marin results"
+  },
+  "adaptive_analysis_integrity": {
+    "passed": 3,
+    "command": "PYTHONPATH=lib/marin/src .venv/bin/python -m pytest experiments/ema_gram/test_gradient_curvature_analysis.py -q",
+    "checks": [
+      "Existing quantile recovery and checkpoint-exclusion tests",
+      "Exact paired adaptive differences and rejection of mismatched plan/task parameters"
+    ]
   }
 }

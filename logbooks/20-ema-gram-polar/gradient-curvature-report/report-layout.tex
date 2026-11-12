@@ -1,0 +1,31 @@
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\setstretch{1.25}
+\raggedright
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlength{\emergencystretch}{3em}
+\setcounter{secnumdepth}{-1}
+\titleformat{\section}{\LARGE\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\large\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.2em}{0.7em}
+\titlespacing*{\subsubsection}{0pt}{1.1em}{0.35em}
+\let\reportsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\Needspace{5\baselineskip}\reportsubsubsection}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\small Gradient size and curvature • Methods}
+\fancyfoot[R]{\small \thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\AtBeginEnvironment{longtable}{\small\setstretch{1.12}}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\widowpenalty=10000
+\clubpenalty=10000

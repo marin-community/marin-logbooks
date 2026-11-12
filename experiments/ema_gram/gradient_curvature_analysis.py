@@ -232,6 +232,65 @@ def write_csv(path, rows):
         )
 
 
+def adaptive_summaries(plan, results):
+    """Analyze only complete direct evaluations of the selected held-out plan."""
+    plan_hash = hashlib.sha256(json.dumps(plan, sort_keys=True).encode()).hexdigest()
+    if plan["stage"] != "heldout" or len(results) != len(plan["states"]):
+        raise ValueError("Need one held-out result for every planned checkpoint")
+    if {r["state"] for r in results} != set(plan["states"]):
+        raise ValueError("Held-out checkpoint set differs from the plan")
+    paired, changes, versus_constant = [], [], []
+    for result in results:
+        state = result["state"]
+        if result["stage"] != "heldout" or result["plan_hash"] != plan_hash:
+            raise ValueError("Result is not from the selected held-out plan")
+        expected = {(rule, d, a) for rule in RULES for d in range(4) for a in (0.125, 0.25)}
+        rows = {(r["rule"], r["draw"], r["alpha"]): r for r in result["rows"]}
+        if len(result["rows"]) != len(expected) or set(rows) != expected:
+            raise ValueError("Missing or duplicated held-out evaluations")
+        for task in plan["tasks"][state]:
+            for d in range(4):
+                for a in (0.125, 0.25):
+                    row = rows[task["rule"], d, a]
+                    if any(row[key] != value for key, value in task.items()):
+                        raise ValueError("Evaluation parameters differ from the selected task")
+        weights = result["reference_weights"]
+        baseline = np.asarray(result["baseline"])
+        for rule in RULES:
+            differences = [np.asarray(rows[rule, d, 0.125]["losses"]) - rows[rule, d, 0.25]["losses"] for d in range(4)]
+            paired.append(dict(state=state, rule=rule, **paired_interval(differences, weights)))
+            for a in (0.125, 0.25):
+                selected = [rows[rule, d, a] for d in range(4)]
+                loss_changes = [np.asarray(row["losses"]) - baseline for row in selected]
+                changes.append(
+                    dict(
+                        state=state,
+                        rule=rule,
+                        alpha=a,
+                        **paired_interval(loss_changes, weights),
+                        length=selected[0]["length"],
+                        proposed_length=selected[0]["proposed_length"],
+                        cap_active=selected[0]["length"] != selected[0]["proposed_length"],
+                        nonpositive_alignment_count=sum(row["nonpositive_alignment"] for row in selected),
+                    )
+                )
+                if rule != "constant":
+                    differences = [
+                        np.asarray(rows[rule, d, a]["losses"]) - rows["constant", d, a]["losses"] for d in range(4)
+                    ]
+                    versus_constant.append(
+                        dict(state=state, rule=rule, alpha=a, **paired_interval(differences, weights))
+                    )
+    return dict(
+        plan_hash=plan_hash,
+        paired=paired,
+        loss_changes=changes,
+        versus_constant=versus_constant,
+        interval_scope="Pointwise 95% crossed-bootstrap intervals conditional on each checkpoint and selected plan; "
+        "no calibration-selection or training-seed uncertainty, and no multiplicity correction",
+    )
+
+
 def paired_decomposition(results):
     """Separate alignment, initial curvature, and path growth without fitting losses."""
     rows = []
@@ -273,7 +332,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", type=Path, nargs="+")
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--calibration-plan", type=Path)
+    plans = parser.add_mutually_exclusive_group()
+    plans.add_argument("--calibration-plan", type=Path)
+    plans.add_argument("--heldout-plan", type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     results = [json.loads(path.read_text()) for path in args.inputs]
@@ -288,6 +349,13 @@ def main():
         manifest_hashes.add(manifest_hash)
     if len(manifest_hashes) != 1:
         raise ValueError("Reference/update panels differ across checkpoints")
+    if args.heldout_plan:
+        analysis = adaptive_summaries(json.loads(args.heldout_plan.read_text()), results)
+        analysis["source_hashes"] = hashes
+        for key in ("paired", "loss_changes", "versus_constant"):
+            write_csv(args.output / f"adaptive-{key}.csv", analysis[key])
+        (args.output / "adaptive-analysis.json").write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
+        return
     if args.calibration_plan:
         plan = heldout_evaluation_plan(json.loads(args.calibration_plan.read_text()), results)
         (args.output / "heldout-plan.json").write_text(json.dumps(plan, indent=2, allow_nan=False) + "\n")

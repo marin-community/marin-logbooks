@@ -7,8 +7,10 @@ import hashlib
 import json
 
 import numpy as np
+import pytest
 
 from experiments.ema_gram.gradient_curvature_analysis import (
+    adaptive_summaries,
     calibration_plan,
     envelope,
     fit_envelope,
@@ -76,3 +78,34 @@ def test_heldout_checkpoint_cannot_select_its_scalar():
     for rule in ("constant", "linear", "quadratic"):
         assert refitted["0"][rule]["coefficient"] == fits["0"][rule]["coefficient"]
         assert refitted["0"][rule]["intercept"] == fits["0"][rule]["intercept"]
+
+
+def test_direct_adaptive_pairing_and_plan_integrity():
+    tasks = [
+        dict(heldout="s", rule=rule, length=1.0, proposed_length=1.0) for rule in ("constant", "linear", "quadratic")
+    ]
+    plan = dict(stage="heldout", states={"s": {}}, tasks={"s": tasks})
+    result = dict(
+        state="s",
+        stage="heldout",
+        plan_hash=hashlib.sha256(json.dumps(plan, sort_keys=True).encode()).hexdigest(),
+        reference_weights=[1, 3],
+        baseline=[10, 20],
+        rows=[
+            dict(**t, draw=d, alpha=a, nonpositive_alignment=False, losses=[10 + a - i + d, 20 + a - i + d])
+            for i, t in enumerate(tasks)
+            for d in range(4)
+            for a in (0.125, 0.25)
+        ],
+    )
+    analysis = adaptive_summaries(plan, [result])
+    assert all(r["mean"] == -0.125 for r in analysis["paired"])
+    assert all(r["lower"] == r["upper"] == -0.125 for r in analysis["paired"])
+    assert [r["mean"] for r in analysis["versus_constant"]] == [-1, -1, -2, -2]
+    result["rows"][0]["length"] = 2.0
+    with pytest.raises(ValueError, match="parameters differ"):
+        adaptive_summaries(plan, [result])
+    result["rows"][0]["length"] = 1.0
+    result["plan_hash"] = "wrong"
+    with pytest.raises(ValueError, match="selected held-out plan"):
+        adaptive_summaries(plan, [result])

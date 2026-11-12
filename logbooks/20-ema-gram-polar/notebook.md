@@ -3975,3 +3975,30 @@ unit checks recover a known quadratic relationship between ||Hd|| and G,
 and verify that changing a held-out checkpoint's losses cannot select its
 scalar. Plot layouts were inspected using synthetic fixtures; those previews
 are not Marin measurements.
+
+
+## 2026-11-12 — First pilot numerical checks, study still running
+
+At 19:04 UTC, the eighth-middle pilot had saved 66 path rows and all six
+representative derivative checks had passed the unchanged 2% gate. The first
+update draw completed both full-update and matrix-only comparisons at all
+three lengths; subsequent draws were still running. The quarter-middle pilot
+remained queued for a complete v4-32 slice. Neither pilot was complete.
+
+The rank-zero run is
+[ema-gram-gradient-curvature-d583e75f606a](https://wandb.ai/marin-community/marin/runs/ema-gram-gradient-curvature-d583e75f606a).
+Incremental artifacts are under
+`gs://marin-us-central2/ema-gram-20-gradient-curvature/20261112/eighth-middle/ema-gram-gradient-curvature-d583e75f606a`.
+Finelog read requests timed out, while Iris state, GCS artifact progression,
+and the online W&B API confirmed progress. This is not evidence of an
+application failure or a reason to restart the job.
+
+The final adaptive analyzer now checks the exact selected plan and complete
+paired evaluation set. It exports power differences, loss changes, and
+within-power differences from the constant-length rule. Intervals are
+pointwise and conditional on the selected plan; they do not include
+calibration-selection uncertainty, seed variation, or multiplicity correction.
+The three analysis tests pass. An independently reviewed, eight-page
+[methods reference](gradient-curvature-report/methods.pdf) explains the
+planned study and is explicitly marked as in progress. It contains no final
+optimizer ranking.
