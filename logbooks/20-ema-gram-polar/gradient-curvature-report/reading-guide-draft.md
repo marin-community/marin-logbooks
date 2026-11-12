@@ -1,6 +1,6 @@
 # Gradient size, curvature, and optimizer power
 
-**Working results guide.** Six checkpoint probes are complete. Direct step-length calibration and held-out evaluation are still in progress. This version does not contain the final adaptive-step comparison.
+**Working results guide.** Tests at six saved model states are complete. Choosing and testing new step lengths is still in progress. Section 7 explains that remaining comparison.
 
 Read the bold sentences first. Each section answers one question. The separate methods reference gives the formulas and implementation details.
 
@@ -16,26 +16,32 @@ The **Hessian** describes how the gradient itself changes. This is one way to me
 
 The two optimizer settings are **power 1/8** and **power 1/4**. These numbers specify inverse matrix powers applied to accumulated gradient statistics. They can change both the direction and length of the proposed parameter update.
 
-The earlier training comparison motivates this study. Here, we test saved model states directly. These local tests can explain how a proposed step behaves at a checkpoint. They do not reproduce an entire training trajectory.
+C4 is a separate text evaluation; lower loss is better. In the earlier comparison, power 1/8 recorded final C4 loss 3.784025. Power 1/4 had a recovered final evaluation of 3.844011 from a failed job. These runs used one training seed and separately tuned learning rates. This observation motivates the local tests, but does not isolate a causal effect of power.
+
+A training comparison can mix direction, step length, and accumulated training history. Here, we test saved model states directly. These local tests can explain how a proposed step behaves at a checkpoint. They do not reproduce an entire training trajectory.
 
 ## 2. What did we actually do?
 
 **We compared both powers from exactly the same starting state.**
 
-A **checkpoint** stores the model's parameters and the optimizer's accumulated state. We used six checkpoints: early, middle, and late from each of two training trajectories. One trajectory used power 1/8; the other used power 1/4.
+A **checkpoint** stores the model's parameters and the optimizer's accumulated state. A training trajectory is the sequence of model states from one training run. We used six checkpoints: early, middle, and late from each of two trajectories. One trajectory used power 1/8; the other used power 1/4.
+
+An **update batch** is the text used to calculate a proposed parameter change. An update’s **physical length** is the length of the complete change vector, measured with the Euclidean norm.
 
 For each checkpoint, the procedure was:
 
 1. **Restore the same saved state.** Every candidate starts fresh from that state.
 2. **Generate both update directions.** Both powers receive the same update batch. Each advances the optimizer's accumulated statistics once.
 3. **Compare equal physical lengths.** Rescale the directions without rotating them. The main tested lengths are 0.1, 0.3, and 1 times the paired power-1/8 update norm.
-4. **Measure the result.** Evaluate loss, gradient size, and directional curvature along each path.
+4. **Measure the result.** Evaluate loss, gradient size, and how the loss bends along each path.
 
 We repeated this with four update batches. The same four batches are reused across checkpoints. No new training run was performed.
 
-All measurements use a common **reference panel** of 64 sequences, each containing 4,096 tokens. Reference and update batches share no complete sequence. The reference text comes from the original training-data mixture; we have not established that it was absent from the original training run.
+All measurements use a common **reference panel** of 64 sequences, each containing 4,096 tokens. They are organized into eight groups of eight sequences. Reference and update batches share no complete sequence. The reference text comes from the original training-data mixture; we have not established that it was absent from the original training run.
 
-The main comparison includes the complete production update: matrix updates, AdamW updates, and decay. At the two middle checkpoints, an additional control moves only the matrix-transform parameters. Gradients and Hessian products still cover the full model in that control.
+Gradient **clipping** limits a gradient’s size before it is used to compute an update. Reference gradients are measured without clipping. The production update retains its original gradient clipping and optimizer settings.
+
+The main comparison includes the complete production update. Some parameters use the matrix transformation controlled by the power; others use the AdamW optimizer. It also includes weight decay, which shrinks parameters toward zero. At the two middle checkpoints, an additional control moves only parameters assigned to the matrix transformation. It removes decay and holds all other parameters fixed. Gradient and curvature measurements still cover the full model.
 
 The middle checkpoint trained with 1/8 also repeats the measurements with 128 reference sequences.
 
@@ -43,13 +49,15 @@ The middle checkpoint trained with 1/8 also repeats the measurements with 128 re
 
 **All six checkpoint jobs completed. All 28 representative derivative checks passed.**
 
-The checks compare Hessian-vector products with central differences of gradients. Two adjacent perturbation sizes must each give relative error below 2%. The threshold was unchanged throughout the study.
+We compare two ways to measure local gradient change along a path. A **Hessian-vector product** calculates that change directly from derivatives. A **central difference** estimates it from gradients measured after small parameter moves in opposite directions.
+
+The small move size is the **perturbation size**. Two adjacent sizes in the prescribed decreasing sequence must each give relative error below 2%. The threshold was unchanged throughout the study.
 
 Some checkpoints needed smaller perturbations before they passed. A large perturbation can measure curvature over too wide a region to agree with a local derivative.
 
-We also predicted each paired loss difference from independently measured signed curvature along the path. All 96 comparisons met the declared numerical integration tolerance.
+A second check combines measurements of loss bending along the path to predict the loss difference between the two powers. The curvature measurements are independent of the directly measured loss difference. All 96 paired comparisons on the 64-sequence reference panel met the declared tolerance for this numerical prediction.
 
-That prediction uses a different tolerance: the larger of 0.000002 and 20% of the observed paired difference. The largest absolute prediction residual was 0.0000167. Individual loss-change predictions can have a larger relative error when the actual change is close to zero. The direct loss measurements remain available separately from these curvature-based predictions.
+That prediction uses a different tolerance: the larger of 0.000002 and 20% of the magnitude of the observed paired difference. The largest absolute difference between prediction and measurement was 0.0000167. Individual loss-change predictions can have a larger relative error when the actual change is close to zero. The direct loss measurements remain available separately from these curvature-based predictions.
 
 These checks support the numerical calculations used here. They do not establish a bound on the full Hessian or prove that a step-size rule is safe everywhere.
 
@@ -59,7 +67,9 @@ These checks support the numerical calculations used here. They do not establish
 
 The example below uses the middle checkpoint trained with 1/8. Blue is the candidate power 1/8; purple is the candidate power 1/4. Both candidates start from that same checkpoint.
 
-At the two shorter main lengths, power 1/8 gives lower mean loss. At the longest length, power 1/4 gives lower mean loss. The paired uncertainty intervals exclude zero at all three lengths. The same signs appear with the doubled reference panel.
+At the two shorter main lengths, power 1/8 gives lower mean loss. At the longest length, power 1/4 gives lower mean loss.
+
+Here, the **paired difference** is loss with power 1/8 minus loss with power 1/4. Negative favors 1/8; positive favors 1/4. A 95% uncertainty interval resamples the same update batches and reference groups for both powers. The intervals exclude zero at all three lengths, supporting the reported signs under this resampling procedure. Section 8 gives its limits. The same signs appear with the doubled reference panel.
 
 ![Loss change along both candidate directions at the middle checkpoint trained with power 1/8.](figures/eighth-middle/loss-versus-common-length-full.png)
 
@@ -77,11 +87,11 @@ The curves support a local role for step length. They do not identify one optimi
 
 We separate three contributions to the power-1/8-minus-power-1/4 loss difference:
 
-- **Initial alignment:** how well each direction follows the reference gradient at the start.
-- **Initial signed curvature:** how the loss already bends along each direction at the start.
+- **Initial alignment:** the initial loss decrease predicted for each candidate move from the starting reference gradient.
+- **Initial signed curvature:** how the loss already bends along each direction at the start. Positive curvature bends upward and adds a loss penalty; negative curvature bends downward.
 - **Further curvature change:** the additional contribution from curvature changing along the path.
 
-For the longest tested step at the middle checkpoint trained with 1/8, the mean contributions are:
+For the longest tested step at the middle checkpoint trained with 1/8, the mean contributions are below. Negative favors 1/8. Positive favors 1/4.
 
 | Contribution | Loss difference, in units of 0.0001 |
 |---|---:|
@@ -90,7 +100,7 @@ For the longest tested step at the middle checkpoint trained with 1/8, the mean 
 | Further curvature change | −0.018 |
 | Observed total | +2.229 |
 
-Negative favors 1/8. Positive favors 1/4. Rounding and the small numerical prediction residual explain the tiny difference between the displayed sum and total.
+Rounding and the small numerical prediction error explain the tiny difference between the displayed sum and total.
 
 Power 1/8 starts with an alignment advantage. Its larger initial curvature penalty overtakes that advantage at the longer step. In this example, a large curvature increase along the path is not needed to explain the reversal.
 
@@ -98,9 +108,9 @@ This table illustrates one checkpoint and length. The downloadable decomposition
 
 ## 6. Does curvature grow with gradient size?
 
-**There is a useful association in these measurements, but it does not form a reliable bound at every checkpoint.**
+**Using gradient size improves average curvature prediction. At one checkpoint, all three models cover only half the measurements.**
 
-For this question, we measure the **Hessian-product norm**, written ‖Hd‖. Here d is a unit update direction. This norm describes how quickly the full gradient changes locally along that direction. It is nonnegative.
+Let H denote the Hessian, and let d be a unit vector along the candidate path. The **Hessian-product norm** measures how quickly the full gradient changes locally along that direction. It is written ‖Hd‖ and is nonnegative.
 
 It differs from **signed directional curvature**, which describes how the loss bends along the direction itself. Signed curvature, not the Hessian-product norm, enters the loss decomposition above.
 
@@ -110,7 +120,9 @@ It differs from **signed directional curvature**, which describes how the loss b
 
 [Compare local curvature with gradient change over a whole step](figures/curvature-versus-gradient.svg).
 
-We fit three alternatives: a constant, an intercept plus a multiple of G, and an intercept plus a multiple of G². Coefficients must be nonnegative. The fit targets the 90th conditional quantile: an empirical upper envelope for most measured values.
+We fit three alternatives: a **constant**, a **linear** model with an intercept plus a multiple of G, and a **quadratic** model with an intercept plus a multiple of G². Coefficients must be nonnegative.
+
+Each curve aims to place about 90% of curvature measurements below it at a given gradient size. This is called the **90th conditional quantile**. It is an empirical upper envelope; its measured coverage can fall short of that target.
 
 **Each prediction is tested on a whole checkpoint that was excluded from its fit.** Both powers, all four update batches, and all path positions from that checkpoint are held out together. The other five checkpoints have equal total fit weight.
 
@@ -118,9 +130,9 @@ We fit three alternatives: a constant, an intercept plus a multiple of G, and an
 
 *Figure 3. Colors now identify the three curvature models. Coverage is the fraction of measured values below the predicted envelope. The dashed line marks the 90% target. Each point summarizes one held-out checkpoint. High coverage alone can be obtained by predicting excessively large values, so we also assess prediction error.*
 
-The quadratic model has the lowest average prediction error: 0.0345, compared with 0.0409 for linear and 0.0533 for constant.
+We score prediction error using **90th-quantile loss**: underprediction is penalized nine times as heavily as equal-size overprediction.
 
-This error is the 90th-quantile loss: underprediction is penalized nine times as heavily as equal-size overprediction. [See prediction error and coverage together](figures/heldout-envelope-validation.svg).
+The quadratic model has the lowest average score: 0.0345, compared with 0.0409 for linear and 0.0533 for constant. [See prediction error and coverage together](figures/heldout-envelope-validation.svg).
 
 However, **all three models cover only 50% of the late checkpoint trained with 1/4**. The average score hides this failure. These observations do not establish a quadratic law, a full-Hessian bound, or a convergence guarantee.
 
@@ -128,13 +140,17 @@ However, **all three models cover only 50% of the late checkpoint trained with 1
 
 **The direct evaluations are still in progress.**
 
-The proposed rule uses the starting gradient norm and the fitted curvature envelope. In symbols, its physical length is s = cG / ell(2G). The scalar c controls the overall size.
+The proposed rule uses the starting gradient norm G and the fitted curvature envelope, called ell. A scalar c controls the overall size. The expression ell(2G) evaluates the fitted curve at twice the starting gradient norm. The proposed physical length s is:
+
+s = cG / ell(2G).
+
+The held-out gradient norm is an input to the rule; the held-out loss is reserved for testing.
 
 For each held-out checkpoint, direct loss evaluations on the other five checkpoints select c. A separate evaluation then tests that chosen value at the held-out checkpoint. The held-out loss cannot choose its own scalar.
 
-The comparison includes a constant physical length, a linear-curvature rule, and a quadratic-curvature rule. Both optimizer powers share the scalar and length cap within each rule and holdout.
+The comparison includes a constant physical length, a linear-curvature rule, and a quadratic-curvature rule. Both optimizer powers share the scalar and the same permitted length range within each rule and holdout. The methods reference specifies that range and the three scalar candidates.
 
-There is already an informative simplification: every fitted linear envelope has zero intercept. Then ell(2G) is proportional to G, so G cancels from the step rule. Its normalized candidate lengths coincide with the constant-length baseline, up to floating-point representation.
+There is already an informative simplification: every fitted linear envelope has zero intercept. Then ell(2G) is proportional to G, so G cancels from the step rule. The methods use the same three target length scales for every rule. After this scaling, the linear rule’s candidate physical lengths coincide with the constant-length baseline, up to floating-point representation.
 
 The remaining direct tests will determine the effects of the quadratic rule and the selected lengths. A better curvature prediction score alone does not answer that question.
 
@@ -144,17 +160,19 @@ The remaining direct tests will determine the effects of the quadratic rule and 
 
 Each loss-difference interval resamples the four paired update batches and the shared reference groups. Both powers use the same sampled indices. The reference-group indices are also shared across sampled update batches.
 
-The intervals are pointwise 95% bootstrap intervals. They do not include variation across training seeds, uncertainty from choosing an adaptive scalar, or a correction for looking at many comparisons.
+The intervals use 10,000 resamples with replacement. They are 95% bootstrap intervals, calculated separately for each checkpoint and length. They do not include variation across training seeds, uncertainty from choosing an adaptive scalar, or a correction for looking at many comparisons.
 
-The six checkpoints come from two trajectories using one training seed. The two trajectories used different tuned learning rates. A between-trajectory difference therefore cannot be attributed to optimizer power alone.
+The six checkpoints come from two trajectories using one training seed, which controls random choices during training. The trajectories used different tuned learning rates, the multipliers controlling update size. A between-trajectory difference therefore cannot be attributed to optimizer power alone.
 
-The study measures selected update directions. The full Hessian operator norm would require considering every unit direction. A directional fit cannot certify that full norm.
+Checkpoint holdout tests prediction at an excluded model state. The reference text and four update batches are shared across states. This is not a test on new text.
+
+The study measures selected update directions. The full Hessian operator norm is the largest Hessian-product norm over every unit direction. A directional fit cannot certify that full norm.
 
 ## 9. Where are the methods and evidence?
 
 **The detailed methods and raw measurements accompany this guide.**
 
-The path-measurement phase used approximately 4.205 v4-32 slice-hours of task-active time, or about 67.3 JAX TPU-device-hours. Queue and provisioning time are excluded. This is a compute-usage description, not a dollar bill. Adaptive-phase usage will be added after completion.
+The path measurements used about 67.3 accelerator-device hours. Each job used a v4-32 TPU slice containing 16 JAX-visible devices. Across jobs, this corresponds to approximately 4.205 slice-hours of task-active time. Queue and provisioning time are excluded. This is a compute-usage description, not a dollar bill. Adaptive-phase usage will be added after completion.
 
 - [Large-text methods reference](methods-reference.pdf)
 - [Measured paths, including per-group losses](data/path-measurements.csv)
@@ -162,4 +180,4 @@ The path-measurement phase used approximately 4.205 v4-32 slice-hours of task-ac
 - [Alignment and curvature decomposition](data/paired-loss-decomposition.csv)
 - [Held-out model fits and source hashes](data/analysis.json)
 
-The original Hessian reports remain separate. This follow-up tests the gradient-dependent-curvature proposal with new full-model directional measurements.
+The original Hessian reports remain separate. This follow-up tests the proposal that curvature depends on gradient size, using new directional measurements across the full model.

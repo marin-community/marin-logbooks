@@ -147,7 +147,7 @@ def common_length_plot(results, output, mode="full"):
         ax.set(
             title=state_label(state),
             xlabel="Common length / reference length",
-            ylabel=r"Loss change ($\times 10^{-4}$)",
+            ylabel="Loss change (×10⁻⁴)",  # noqa: RUF001 - scientific multiplication sign, not a variable
         )
         ax.set_xticks((0, 0.1, 0.3, 0.5, 1), ("0", "0.1", "0.3", "0.5", "1"))
         ax.ticklabel_format(style="plain", axis="y", useOffset=False)

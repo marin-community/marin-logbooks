@@ -4104,3 +4104,22 @@ checksum, checkpoint, and job ID are in the six
 `gradient-curvature-calibration-*-launch.json` records. No queue or task
 wall-clock limit was added, and default preemption retries remain enabled.
 These jobs measure candidate losses; they do not train or change the fit.
+
+## 2026-11-12 — Accessible guide and protocol clarification
+
+The working guide now defines physical update length, derivative validation,
+paired intervals, and conditional quantile fits before interpreting results.
+It preserves the earlier quarter-power failed-job qualification, the separate
+2% derivative and paired-integration tolerances, and the 50% coverage failure.
+Independent terminology, reader, and evidence reviewers identified targeted
+clarifications; final acceptance will use the complete guide and matching hashes
+after adaptive results arrive. Existing methods audit records refer explicitly
+to their original candidate rather than claiming approval of changed prose.
+
+The HTML has large text, adjustable spacing, one-section mode, figure zoom,
+and a printable guide. Desktop/mobile checks passed: nine chapters, 22 valid
+local links, loaded figures, working controls, no JavaScript errors, and no
+horizontal overflow at 390px width with enlarged 24px text. Scientific figures
+have focused single-panel views plus links to all-checkpoint comparisons.
+The direct calibration jobs were still pending for TPU capacity at 21:30 UTC;
+there was no application attempt or recovery action.
