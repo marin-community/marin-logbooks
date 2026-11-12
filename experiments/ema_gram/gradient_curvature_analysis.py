@@ -236,6 +236,7 @@ def paired_decomposition(results):
     """Separate alignment, initial curvature, and path growth without fitting losses."""
     rows = []
     for result in results:
+        endpoints = {(r["mode"], r["draw"], r["alpha"], r["fraction"]): r for r in result["rows"] if r["groups"] == 8}
         initial = {
             (r["mode"], r["draw"], r["alpha"]): r for r in result["rows"] if r["fraction"] == 0 and r["groups"] == 8
         }
@@ -246,6 +247,10 @@ def paired_decomposition(results):
             alignment = -length * (eighth["alignment"] - quarter["alignment"])
             initial_curvature = 0.5 * length**2 * (eighth["kappa"] - quarter["kappa"])
             predicted = comparison["predicted_eighth_minus_quarter"]
+            observed_changes = {
+                str(a): endpoints[comparison["mode"], comparison["draw"], a, comparison["fraction"]]["loss_change"]
+                for a in (0.125, 0.25)
+            }
             rows.append(
                 dict(
                     state=result["state"],
@@ -255,6 +260,10 @@ def paired_decomposition(results):
                     initial_curvature_contribution=initial_curvature,
                     path_growth_contribution=predicted - alignment - initial_curvature,
                     remaining_prediction_residual=comparison["observed_eighth_minus_quarter"] - predicted,
+                    observed_changes=observed_changes,
+                    individual_prediction_errors={
+                        a: comparison["predicted_changes"][a] - value for a, value in observed_changes.items()
+                    },
                 )
             )
     return rows

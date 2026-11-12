@@ -66,11 +66,12 @@ def curvature_plot(results, output):
                 ax.scatter(
                     [r["G"] for r in points],
                     [r[metric] for r in points],
-                    color=color,
                     marker=marker,
-                    s=23,
-                    alpha=0.65,
-                    edgecolors="none",
+                    s=42 if alpha == 0.125 else 18,
+                    alpha=0.75,
+                    facecolors="none" if alpha == 0.125 else color,
+                    edgecolors=color,
+                    linewidths=0.9,
                 )
     for ax, title, ylabel in zip(
         axes,
@@ -80,7 +81,18 @@ def curvature_plot(results, output):
     ):
         ax.set(xlabel="Reference gradient norm G at this position", ylabel=ylabel, title=title)
         ax.ticklabel_format(style="sci", axis="both", scilimits=(-3, 4))
-    handles = [Line2D([], [], color=color, marker="o", linestyle="none", label=LABELS[a]) for a, color in COLORS.items()]
+    handles = [
+        Line2D(
+            [],
+            [],
+            color=color,
+            marker="o",
+            markerfacecolor="none" if a == 0.125 else color,
+            linestyle="none",
+            label=LABELS[a],
+        )
+        for a, color in COLORS.items()
+    ]
     handles += [
         Line2D([], [], color="#555555", marker=m, linestyle="none", label=s.replace("-", " "))
         for s, m in zip(STATE_ORDER, MARKERS, strict=True)
@@ -112,7 +124,14 @@ def common_length_plot(results, output, mode="full"):
             for draw in values:
                 ax.plot(fractions, draw, color=color, linewidth=0.7, alpha=0.22)
             ax.plot(
-                fractions, values.mean(axis=0), color=color, marker="o", markersize=4, linewidth=2.2, label=LABELS[alpha]
+                fractions,
+                values.mean(axis=0),
+                color=color,
+                marker="o" if alpha == 0.125 else "s",
+                linestyle="-" if alpha == 0.125 else "--",
+                markersize=4,
+                linewidth=2.2,
+                label=LABELS[alpha],
             )
         ax.axhline(0, color="#555555", linewidth=0.8)
         ax.set(
