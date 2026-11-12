@@ -4022,3 +4022,14 @@ between listing and downloading its generation. It now refreshes that
 generation up to three times and replaces the local copy only after a
 successful download. Collection then succeeded. This was a read race, not
 a numerical or application failure, and neither TPU job was restarted.
+
+
+## 2026-11-12 — Early and late checkpoint submissions
+
+The four early/late probes were submitted at 19:56 UTC from published
+revision `091eea8934f76bd369e088d701af7ed11840e88d`. Exact commands,
+checkpoint counters, and job IDs are preserved in the corresponding
+`gradient-curvature-*-early-launch.json` and
+`gradient-curvature-*-late-launch.json` records. Each uses one v4-32 slice,
+the same region and fixed data panels, no queue/execution limit, and default
+Iris preemption retries. The middle pilots continue unchanged.
