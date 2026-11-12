@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from google.api_core.exceptions import NotFound
 from google.cloud import storage
 
 RECORD_NAMES = {
@@ -22,6 +23,23 @@ RECORD_NAMES = {
 }
 
 
+def current_record(client, bucket, name):
+    """Refresh generation on overwrite races, without replacing a good local copy."""
+    for _ in range(3):
+        blob = client.bucket(bucket).get_blob(name)
+        if blob is None:
+            continue
+        if blob.size > 20_000_000:
+            raise ValueError("Unexpected artifact size")
+        try:
+            return blob, blob.download_as_bytes()
+        except NotFound:
+            # Live probes atomically overwrite these small objects. The listed
+            # generation may disappear between listing and downloading it.
+            continue
+    raise RuntimeError(f"Artifact changed during three reads: gs://{bucket}/{name}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prefix", required=True)
@@ -30,7 +48,8 @@ def main():
     bucket, prefix = args.prefix.removeprefix("gs://").rstrip("/").split("/", 1)
     args.output.mkdir(parents=True, exist_ok=True)
     records, attempts = [], {}
-    for blob in storage.Client().list_blobs(bucket, prefix=prefix + "/"):
+    client = storage.Client()
+    for blob in client.list_blobs(bucket, prefix=prefix + "/"):
         relative = Path(blob.name.removeprefix(prefix + "/"))
         if relative.name not in RECORD_NAMES:
             continue
@@ -38,7 +57,10 @@ def main():
             raise ValueError("Unexpected artifact path or size")
         destination = args.output / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
-        blob.download_to_filename(destination)
+        blob, content = current_record(client, bucket, blob.name)
+        temporary = destination.with_suffix(destination.suffix + ".tmp")
+        temporary.write_bytes(content)
+        temporary.replace(destination)
         records.append(
             dict(
                 source=f"gs://{bucket}/{blob.name}",

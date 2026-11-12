@@ -4002,3 +4002,23 @@ The three analysis tests pass. An independently reviewed, eight-page
 [methods reference](gradient-curvature-report/methods.pdf) explains the
 planned study and is explicitly marked as in progress. It contains no final
 optimizer ranking.
+
+
+## 2026-11-12 — Both pilot derivative gates passed
+
+At approximately 19:55 UTC, both middle-state pilots had passed all six
+representative derivative checks at the unchanged 2% threshold. Their full
+reference/update manifests have the same SHA-256. The quarter trajectory
+requires smaller perturbations than the eighth trajectory: its full-update
+checks pass at 0.3 and 0.1, after larger scales exceeded the tolerance.
+[The gate record](gradient-curvature-pilot-gates.json) preserves every check.
+Both jobs remain running; passing the representative gate is not completion
+of their four update draws. The protocol permits early/late expansion after
+these numerical gates, so the four additional states may now run alongside
+the remaining pilot measurements.
+
+The local collector encountered a 404 when a live artifact was overwritten
+between listing and downloading its generation. It now refreshes that
+generation up to three times and replaces the local copy only after a
+successful download. Collection then succeeded. This was a read race, not
+a numerical or application failure, and neither TPU job was restarted.
