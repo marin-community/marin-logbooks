@@ -225,7 +225,7 @@ def paired_summaries(results):
 def write_csv(path, rows):
     fields = sorted({key for row in rows for key in row})
     with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows(
             {k: json.dumps(v) if isinstance(v, (list, dict)) else v for k, v in row.items()} for row in rows
