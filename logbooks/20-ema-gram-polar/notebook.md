@@ -4093,3 +4093,14 @@ with 45 task records per checkpoint before four draws and two powers.
 Repeated physical lengths may reuse an exact direct evaluation. No scalar
 is selected yet: only direct losses at the other five checkpoints will
 select the scalar for each held-out state.
+
+
+## 2026-11-12 — Direct calibration submissions
+
+Six direct calibration jobs were submitted at 21:03 UTC from published
+revision `aa6ad3aba2f3fdd6f4173c5a2cbe7f8f2b258420`. The committed
+calibration plan is included in the workspace bundle. Exact argv, plan
+checksum, checkpoint, and job ID are in the six
+`gradient-curvature-calibration-*-launch.json` records. No queue or task
+wall-clock limit was added, and default preemption retries remain enabled.
+These jobs measure candidate losses; they do not train or change the fit.

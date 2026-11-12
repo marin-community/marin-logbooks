@@ -19,6 +19,7 @@ COLORS = {0.125: "#1F77B4", 0.25: "#9467BD"}
 LABELS = {0.125: "Power 1/8", 0.25: "Power 1/4"}
 STATE_ORDER = ("eighth-early", "eighth-middle", "eighth-late", "quarter-early", "quarter-middle", "quarter-late")
 MARKERS = ("o", "s", "^", "D", "v", "P")
+RULE_COLORS = ("#5F6368", "#FF7F0E", "#2CA02C")
 
 
 def state_label(state):
@@ -31,7 +32,7 @@ def style():
     """Adapt Kaiyue's plot defaults to readable standalone comparison figures."""
     mpl.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
+            "font.family": ["DejaVu Sans", "Arial", "sans-serif"],
             "font.size": 12,
             "axes.labelsize": 13,
             "axes.titlesize": 13,
@@ -52,6 +53,9 @@ def style():
 def export(fig, output, name):
     for extension in ("pdf", "svg", "png"):
         fig.savefig(output / f"{name}.{extension}", dpi=220, facecolor="white", bbox_inches="tight")
+        if extension == "svg":
+            path = output / f"{name}.{extension}"
+            path.write_text("\n".join(line.rstrip() for line in path.read_text().splitlines()) + "\n")
     plt.close(fig)
 
 
@@ -126,7 +130,7 @@ def common_length_plot(results, output, mode="full"):
             (r["draw"], r["alpha"], r["fraction"]): r for r in result["rows"] if r["mode"] == mode and r["groups"] == 8
         }
         for alpha, color in COLORS.items():
-            values = np.asarray([[rows[d, alpha, f]["loss_change"] for f in fractions] for d in range(4)])
+            values = 1e4 * np.asarray([[rows[d, alpha, f]["loss_change"] for f in fractions] for d in range(4)])
             for draw in values:
                 ax.plot(fractions, draw, color=color, linewidth=0.7, alpha=0.22)
             ax.plot(
@@ -143,10 +147,10 @@ def common_length_plot(results, output, mode="full"):
         ax.set(
             title=state_label(state),
             xlabel="Common length / reference length",
-            ylabel="Loss change (lower is better)",
+            ylabel=r"Loss change ($\times 10^{-4}$)",
         )
         ax.set_xticks((0, 0.1, 0.3, 0.5, 1), ("0", "0.1", "0.3", "0.5", "1"))
-        ax.ticklabel_format(style="sci", axis="y", scilimits=(-3, 4), useMathText=True)
+        ax.ticklabel_format(style="plain", axis="y", useOffset=False)
     for ax in list(axes.flat)[len(states) :]:
         ax.set_visible(False)
     handles, labels = axes.flat[0].get_legend_handles_labels()
@@ -157,7 +161,7 @@ def common_length_plot(results, output, mode="full"):
 
 def adaptive_plot(results, output):
     rules = ("constant", "linear", "quadratic")
-    colors = ("#5F6368", "#1F77B4", "#9467BD")
+    colors = RULE_COLORS
     names = ("Constant physical length", "Linear-curvature rule", "Quadratic-curvature rule")
     summaries = []
     for result in results:
@@ -176,7 +180,9 @@ def adaptive_plot(results, output):
         y = np.arange(len(states)) + (index - 1) * 0.22
         for yy, point in zip(y, points, strict=True):
             ax.plot([point["lower"], point["upper"]], [yy, yy], color=color, linewidth=1.5)
-        ax.scatter([p["mean"] for p in points], y, color=color, s=35, label=name, zorder=3)
+        ax.scatter(
+            [p["mean"] for p in points], y, color=color, marker=("o", "s", "D")[index], s=35, label=name, zorder=3
+        )
     ax.axvline(0, color="black", linestyle="--", linewidth=1)
     ax.set_yticks(np.arange(len(states)), [state_label(s) for s in states])
     ax.invert_yaxis()
@@ -187,10 +193,105 @@ def adaptive_plot(results, output):
     write_csv(output / "paired-adaptive.csv", summaries)
 
 
+def envelope_validation_plot(analysis, output):
+    """Show each held-out checkpoint rather than concealing failures in an average."""
+    fits = analysis["fits"]
+    states = [s for s in STATE_ORDER if s in fits]
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 5.4), sharey=True)
+    for index, (rule, color, marker) in enumerate(
+        zip(("constant", "linear", "quadratic"), RULE_COLORS, ("o", "s", "D"), strict=True)
+    ):
+        y = np.arange(len(states)) + (index - 1) * 0.2
+        for ax, metric in zip(axes, ("heldout_pinball", "heldout_coverage"), strict=True):
+            ax.scatter(
+                [fits[s][rule][metric] for s in states],
+                y,
+                color=color,
+                marker=marker,
+                s=40,
+                label=f"{rule.capitalize()} envelope",
+                zorder=3,
+            )
+    axes[0].set_yticks(np.arange(len(states)), [state_label(s) for s in states])
+    axes[0].invert_yaxis()
+    axes[0].set(xlabel="90th-quantile prediction loss", title="Prediction error · lower is better", xlim=(0, None))
+    axes[1].set(xlabel="Fraction below predicted envelope", title="Coverage · target is 90%", xlim=(0, 1.05))
+    axes[1].set_xticks((0, 0.5, 1), ("0%", "50%", "100%"))
+    axes[1].axvline(0.9, color="#555555", linestyle="--", linewidth=1)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=3, frameon=False)
+    fig.tight_layout(rect=(0, 0.08, 1, 1), w_pad=2)
+    export(fig, output, "heldout-envelope-validation")
+
+
+def report_focus_plots(results, analysis, output):
+    """Larger single-panel views for the reading guide, retaining full figures too."""
+    example = output / "eighth-middle"
+    example.mkdir(exist_ok=True)
+    common_length_plot([r for r in results if r["state"] == "eighth-middle"], example)
+    fig, ax = plt.subplots(figsize=(6.8, 6.0))
+    handles = [
+        Line2D(
+            [], [], color=c, marker="o", markerfacecolor="none" if a == 0.125 else c, linestyle="none", label=LABELS[a]
+        )
+        for a, c in COLORS.items()
+    ]
+    by_state = {r["state"]: r for r in results}
+    for state, marker in zip(STATE_ORDER, MARKERS, strict=True):
+        rows = [
+            r
+            for r in by_state[state]["rows"]
+            if r["mode"] == "full" and r["groups"] == 8 and r["fraction"] in CANONICAL_FRACTIONS
+        ]
+        for alpha, color in COLORS.items():
+            points = [r for r in rows if r["alpha"] == alpha]
+            ax.scatter(
+                [r["G"] for r in points],
+                [r["Ldir"] for r in points],
+                marker=marker,
+                s=45 if alpha == 0.125 else 20,
+                facecolors="none" if alpha == 0.125 else color,
+                edgecolors=color,
+                linewidths=0.9,
+                alpha=0.75,
+            )
+        handles.append(Line2D([], [], color="#555555", marker=marker, linestyle="none", label=state_label(state)))
+    ax.set(
+        xlabel="Reference gradient norm G",
+        ylabel="Hessian-product norm ‖Hd‖",
+        title="Local curvature along each update direction",
+    )
+    fig.legend(handles=handles, loc="lower center", ncol=2, frameon=False)
+    fig.tight_layout(rect=(0, 0.23, 1, 1))
+    export(fig, output, "curvature-versus-gradient-focus")
+    fig, ax = plt.subplots(figsize=(7.4, 5.5))
+    for index, (rule, color, marker) in enumerate(
+        zip(("constant", "linear", "quadratic"), RULE_COLORS, ("o", "s", "D"), strict=True)
+    ):
+        ax.scatter(
+            [analysis["fits"][s][rule]["heldout_coverage"] for s in STATE_ORDER],
+            np.arange(6) + (index - 1) * 0.2,
+            color=color,
+            marker=marker,
+            s=42,
+            label=rule.capitalize(),
+            zorder=3,
+        )
+    ax.set_yticks(np.arange(6), [state_label(s) for s in STATE_ORDER])
+    ax.invert_yaxis()
+    ax.axvline(0.9, color="#555555", linestyle="--", linewidth=1)
+    ax.set(xlim=(0, 1.05), xlabel="Fraction below predicted envelope", title="Held-out coverage · dashed line marks 90%")
+    ax.set_xticks((0, 0.5, 1), ("0%", "50%", "100%"))
+    fig.legend(*ax.get_legend_handles_labels(), loc="lower center", ncol=3, frameon=False)
+    fig.tight_layout(rect=(0, 0.07, 1, 1))
+    export(fig, output, "heldout-coverage-focus")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", type=Path, nargs="+")
     parser.add_argument("--adaptive", type=Path, nargs="*")
+    parser.add_argument("--analysis", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -202,6 +303,11 @@ def main():
         common_length_plot(results, args.output, "matrix_only")
     if args.adaptive:
         adaptive_plot([json.loads(p.read_text()) for p in args.adaptive], args.output)
+    if args.analysis:
+        analysis = json.loads(args.analysis.read_text())
+        envelope_validation_plot(analysis, args.output)
+        if len(results) == 6:
+            report_focus_plots(results, analysis, args.output)
 
 
 if __name__ == "__main__":
