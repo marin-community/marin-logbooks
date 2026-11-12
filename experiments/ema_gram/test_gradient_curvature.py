@@ -1,6 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 from types import SimpleNamespace
 
 import equinox as eqx
@@ -20,6 +21,7 @@ from experiments.ema_gram.gradient_curvature import (
     measurement_functions,
     production_functions,
     production_updates,
+    run_adaptive,
 )
 from experiments.ema_gram.gradient_curvature_math import predicted_loss, tree_norm, weighted_gradient
 
@@ -54,7 +56,7 @@ def test_weighted_vectors_and_independent_quartic_path_integral():
     assert tree_norm(cancelled) == 0
 
 
-def test_real_model_full_hvp_and_production_matrix_control():
+def test_real_model_full_hvp_and_production_matrix_control(tmp_path):
     config = QwenConfig(
         hidden_dim=8,
         intermediate_dim=16,
@@ -67,7 +69,7 @@ def test_real_model_full_hvp_and_production_matrix_control():
     model = config.build(hax.Axis("vocab", 16), key=jax.random.PRNGKey(2))
     batch = LmExample.causal(hax.named(jnp.array([1, 4, 2, 3, 6, 2, 1, 0]), config.max_Pos))
     optimizer = EmaGramConfig(learning_rate=0.001, warmup=0.0, alpha=0.125, ridge=0.01, weight_decay=0.1)
-    state = SimpleNamespace(opt_state=optimizer.build(100).init(eqx.filter(model, eqx.is_inexact_array)))
+    state = SimpleNamespace(opt_state=optimizer.build(100).init(eqx.filter(model, eqx.is_inexact_array)), step=42)
     cfg = SimpleNamespace(
         optimizer=optimizer,
         z_loss_weight=1e-7,
@@ -101,6 +103,40 @@ def test_real_model_full_hvp_and_production_matrix_control():
         fd = jax.tree.map(lambda a, b: (a - b) / (2 * eps), gp, gm)
         err = tree_norm(jax.tree.map(lambda a, b: a - b, actual, fd)) / tree_norm(actual)
         assert err < 0.01
+        plan = dict(
+            stage="heldout",
+            states={"toy": dict(counter=42, trajectory=0.125, G=tree_norm(gradient), data_manifest_sha256="test")},
+            tasks={
+                "toy": [
+                    dict(
+                        heldout="toy",
+                        rule="linear",
+                        candidate=0,
+                        scalar=1.0,
+                        proposed_length=0.01,
+                        length=0.001,
+                        caps=[0.0001, 0.001],
+                    )
+                ]
+            },
+        )
+        plan_path = tmp_path / "plan.json"
+        plan_path.write_text(json.dumps(plan))
+        args = SimpleNamespace(
+            adaptive_plan=plan_path,
+            state="toy",
+            trajectory=0.125,
+            data_manifest_sha256="test",
+            checkpoint="unit-test",
+            update_seeds=[1, 2, 3, 4],
+        )
+        evaluated = run_adaptive(
+            state, model, model, cfg, [batch] * 8, [batch] * 4, [1] * 8, args, lambda *_: None, lambda _: None
+        )
+        for row in evaluated["rows"]:
+            assert row["proposed_length"] == 0.01 and row["length"] == 0.001
+            np.testing.assert_allclose(row["actual_norm"], 0.001, rtol=1e-4)
+            assert np.isfinite(row["loss_change"])
     after = [np.array(x) for x in jax.tree.leaves((model, state.opt_state)) if eqx.is_array(x)]
     for a, b in zip(before, after, strict=True):
         np.testing.assert_array_equal(a, b)

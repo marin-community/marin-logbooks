@@ -3937,3 +3937,41 @@ W&B run after a host logging check. Preemption restarts the frozen measurement
 from its saved model checkpoint and does not resume partial measurement progress.
 No GPU allocation is used. The canonical local project has moved from
 `Downloads/Projects/hessian-probing` to `Downloads/Project/hessian-probing`.
+
+
+## 2026-11-12 — Pilot submissions and held-out analysis
+
+The middle-training checkpoint pilots from the alpha 1/8 and 1/4 trajectories
+were submitted from published revision
+`d1af43d209b7b510c93e492d4e2d6bdaec3751d2`. Their exact commands are in the
+two `gradient-curvature-*-middle-launch.json` records. At 17:32 UTC both
+remained pending for four co-scheduled TPU workers. No checkpoint measurement
+has been used to select this analysis specification.
+
+The planned six states are early, middle, and late checkpoints from each
+trajectory. Fits predict the directional Hessian-product norm, ||Hd||, from
+the reference gradient norm G. Constant, linear, and quadratic models have
+nonnegative coefficients and target the 90th quantile. Every fit holds out
+one complete checkpoint. Its coverage, mean absolute error, and 90th-quantile
+loss are measured on that checkpoint.
+
+Each of the other five checkpoints has equal total fit weight. Fits use
+seven fixed fractions (0, 0.05, 0.1, 0.15, 0.3, 0.5, 1) of the alpha 1/8
+update norm, along each fixed update direction. They exclude extra quadrature
+points so difficult paths do not receive extra weight.
+
+Adaptive calibration and held-out evaluation are separate executions. For
+each held-out checkpoint, direct loss measurements on the other five select
+one scalar per rule. The alternatives are constant physical length and
+s = c G / ell(2G), with linear or quadratic fitted ell. Selection minimizes
+mean loss change with equal checkpoint, power, and update-draw weights.
+Alpha 1/8 and 1/4 share each rule, selected scalar, and physical range cap.
+The complete caps and three-candidate calibration grids are specified in
+[the frozen protocol](gradient-curvature-protocol.json).
+
+The adaptive phase must reproduce the reference/update sequence hashes and
+starting reference gradient norms of the earlier path measurements. Numerical
+unit checks recover a known quadratic relationship between ||Hd|| and G,
+and verify that changing a held-out checkpoint's losses cannot select its
+scalar. Plot layouts were inspected using synthetic fixtures; those previews
+are not Marin measurements.

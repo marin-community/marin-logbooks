@@ -368,6 +368,94 @@ def run_paths(state, model, native_model, cfg, reference, updates, weights, args
     return output
 
 
+def run_adaptive(state, model, native_model, cfg, reference, updates, weights, args, save, progress):
+    """Direct loss evaluations at predeclared calibration or held-out physical lengths."""
+    plan = json.loads(args.adaptive_plan.read_text())
+    plan_hash = hashlib.sha256(json.dumps(plan, sort_keys=True).encode()).hexdigest()
+    expected = plan["states"][args.state]
+    if expected["counter"] != int(state.step) or expected["trajectory"] != args.trajectory:
+        raise ValueError("Adaptive plan checkpoint mismatch")
+    if expected["data_manifest_sha256"] != args.data_manifest_sha256:
+        raise ValueError("Reference/update data changed between path and adaptive phases")
+    tasks = plan["tasks"][args.state]
+    if any((t["heldout"] == args.state) != (plan["stage"] == "heldout") for t in tasks):
+        raise ValueError("Calibration and held-out tasks must remain separate")
+    value_grad, _, loss_fn = measurement_functions(cfg.trainer.compute_axis_mapping)
+    baseline, reference_gradient = weighted_gradient(model, reference[:8], weights[:8], value_grad)
+    g = tree_norm(reference_gradient)
+    if not np.isclose(g, expected["G"], rtol=1e-4, atol=1e-6):
+        raise ValueError("Reference gradient changed between path and adaptive phases")
+    output = dict(
+        state=args.state,
+        counter=int(state.step),
+        trajectory=args.trajectory,
+        checkpoint=args.checkpoint,
+        source_commit=os.environ.get("GIT_COMMIT"),
+        plan_hash=plan_hash,
+        stage=plan["stage"],
+        reference_weights=weights[:8],
+        baseline=baseline,
+        G=g,
+        rows=[],
+    )
+    save("adaptive-plan.json", plan)
+    production_grad, update_functions = production_functions(cfg)
+    definition = jax.tree.structure(model)
+    for draw, batch in enumerate(updates):
+        update_loss, gradient = production_grad(native_model, batch)
+        gradient_norm = float(optax.global_norm(gradient))
+        for alpha in (0.125, 0.25):
+            update, native_norm = production_updates(
+                state, native_model, gradient, update_functions["full", alpha], False
+            )
+            direction = tree_scale(definition.unflatten(jax.tree.leaves(update)), -1 / native_norm)
+            alignment = float(tree_dot(reference_gradient, direction))
+            cache = {}
+            for task in tasks:
+                length = task["length"]
+                if length not in cache:
+                    candidate = tree_add(model, direction, -length)
+                    displacement = tree_add(candidate, model, -1.0)
+                    losses = [float(loss_fn(candidate, b)) for b in reference[:8]]
+                    cache[length] = dict(
+                        losses=losses,
+                        loss=float(np.average(losses, weights=weights[:8])),
+                        loss_change=float(np.average(np.asarray(losses) - baseline, weights=weights[:8])),
+                        actual_norm=tree_norm(displacement),
+                        rounding_relative_error=tree_norm(tree_add(displacement, direction, length)) / length,
+                    )
+                output["rows"].append(
+                    dict(
+                        **task,
+                        **cache[length],
+                        draw=draw,
+                        update_seed=args.update_seeds[draw],
+                        alpha=alpha,
+                        G=g,
+                        alignment=alignment,
+                        nonpositive_alignment=alignment <= 0,
+                        native_norm=native_norm,
+                        update_loss=float(update_loss),
+                        update_unclipped_gradient_norm=gradient_norm,
+                        update_clipping_factor=min(1.0, cfg.optimizer.max_grad_norm / max(gradient_norm, 1e-30)),
+                    )
+                )
+                save("adaptive-results.json", output)
+                progress(
+                    dict(
+                        event="adaptive_evaluation",
+                        stage=plan["stage"],
+                        draw=draw,
+                        alpha=alpha,
+                        rule=task["rule"],
+                        heldout=task["heldout"],
+                        length=length,
+                        loss_change=cache[length]["loss_change"],
+                    )
+                )
+    return output
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--configs", type=Path, required=True)
@@ -379,6 +467,7 @@ def main():
     parser.add_argument("--output-prefix", required=True)
     parser.add_argument("--middle", action="store_true")
     parser.add_argument("--double-reference", action="store_true")
+    parser.add_argument("--adaptive-plan", type=Path)
     parser.add_argument("--seed", type=int, default=20261112)
     parser.add_argument("--update-seeds", type=int, nargs=4, default=[20262112, 20262113, 20262114, 20262115])
     parser.add_argument("--logging-check", action="store_true")
@@ -484,7 +573,9 @@ def main():
             )
             progress(dict(event="restored", counter=int(state.step)))
             reference, updates, weights = reference_data(cfg, args.seed, args.update_seeds, save)
-            result = run_paths(state, model, native_model, cfg, reference, updates, weights, args, save, progress)
+            args.data_manifest_sha256 = hashlib.sha256((local / "data-manifest.json").read_bytes()).hexdigest()
+            runner = run_adaptive if args.adaptive_plan else run_paths
+            result = runner(state, model, native_model, cfg, reference, updates, weights, args, save, progress)
             save(
                 "completed.json",
                 dict(

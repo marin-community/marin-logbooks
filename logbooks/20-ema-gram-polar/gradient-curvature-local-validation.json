@@ -9,5 +9,16 @@
   },
   "lint": "passed",
   "saved_checkpoints_accessible": 6,
-  "real_pilot": "not yet submitted"
+  "real_pilot": "Both middle states submitted from d1af43d209b7b510c93e492d4e2d6bdaec3751d2; awaiting TPU scheduler",
+  "additional_analysis_validation": {
+    "passed": 4,
+    "elapsed_seconds": 13.59,
+    "command": "PYTHONPATH=lib/marin/src .venv/bin/python -m pytest experiments/ema_gram/test_gradient_curvature.py experiments/ema_gram/test_gradient_curvature_analysis.py -q",
+    "checks": [
+      "Direct capped adaptive lengths on a real tiny Qwen model; saved state remains unchanged",
+      "Known quadratic quantile-model recovery",
+      "Whole-checkpoint exclusion in fitting and direct scalar selection"
+    ],
+    "figures": "Synthetic layout fixtures inspected; not Marin results"
+  }
 }
