@@ -4062,3 +4062,34 @@ largely explained by the initial quadratic term growing with length, rather
 than a large curvature increase along the path. Raw records and the
 [computed decomposition](gradient-curvature-middle-analysis/paired-loss-decomposition.csv)
 retain every draw. Three early/late jobs are running and quarter-late is queued.
+
+
+## 2026-11-12 — Six checkpoints complete; direct calibration plan
+
+At 21:01 UTC all six path-probe jobs had succeeded, with completed artifacts
+and finished rank-zero W&B runs. There were no application failures or
+preemptions. All 28 representative derivative checks passed, all 96 paired
+path comparisons met the quadrature tolerance, and every state used the same
+reference/update manifest. The complete measurements contain 560 rows, of
+which 336 full-update, 64-sequence rows form the predefined fit dataset.
+The remaining rows are matrix-only controls or doubled-panel sensitivity.
+
+Whole-checkpoint-held-out mean 90th-quantile losses are 0.05333 for constant,
+0.04092 for linear, and 0.03450 for quadratic envelopes. Mean coverages are
+87.2%, 91.7%, and 89.9%, respectively. These averages conceal a failure:
+all three models cover only 50% of quarter-late measurements. The quadratic
+model has the best average prediction score among the predefined choices,
+but does not establish a bound on all measured directions.
+
+Every linear fit has zero intercept. Hence G / ell(2G) is constant within
+each holdout fold, and its normalized candidate lengths coincide with the
+constant-length baseline up to floating-point representation. This is an
+empirical result of the prespecified fit, not a reason to change the model
+family. The direct comparison retains all three rules.
+
+The six-state [analysis](gradient-curvature-analysis/analysis.json) generates
+a [direct calibration plan](gradient-curvature-analysis/calibration-plan.json)
+with 45 task records per checkpoint before four draws and two powers.
+Repeated physical lengths may reuse an exact direct evaluation. No scalar
+is selected yet: only direct losses at the other five checkpoints will
+select the scalar for each held-out state.
