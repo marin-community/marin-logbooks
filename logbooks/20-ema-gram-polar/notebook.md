@@ -4123,3 +4123,26 @@ horizontal overflow at 390px width with enlarged 24px text. Scientific figures
 have focused single-panel views plus links to all-checkpoint comparisons.
 The direct calibration jobs were still pending for TPU capacity at 21:30 UTC;
 there was no application attempt or recovery action.
+
+## 2026-11-12 — Direct calibration complete; held-out choices frozen
+
+All six calibration jobs succeeded with 4/4 tasks, zero failures/preemptions,
+matching saved counters and data manifests, and finished W&B runs. Their 2,160
+records cover 360 direct evaluations per checkpoint, with exact-length cache
+reuse inside each process. The stage used 0.80336 task-active v4-32 slice-hours
+(12.84892 JAX TPU-device-hours), excluding queue/provisioning.
+
+Every constant and linear rule selected candidate index 1 (the 0.3 reference
+scale). The quadratic rule also selected index 1 for five holdouts, but selected
+index 2 for quarter-middle. Its selected held-out physical lengths are 0.517782,
+0.464929, 0.436808, 0.352354, 0.770861, and 0.284554 in protocol state order.
+All selected lengths lie inside the common caps. Constant/linear direct losses
+agree up to at most 1.2e-7 across calibration records; their selected lengths
+coincide up to floating-point representation.
+
+These are calibration choices, not held-out outcomes. Quarter-late's quadratic
+candidate scores for indices 1 and 2 differ by only about 2.74e-7. The fixed
+selection rule is retained; final intervals condition on the selected scalar
+and do not include selection uncertainty. The [held-out plan](gradient-curvature-analysis/heldout-plan.json)
+selects each scalar using only the other five checkpoints. Separate direct
+held-out evaluations are the next step.
