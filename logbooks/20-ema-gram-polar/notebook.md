@@ -4033,3 +4033,32 @@ checkpoint counters, and job IDs are preserved in the corresponding
 `gradient-curvature-*-late-launch.json` records. Each uses one v4-32 slice,
 the same region and fixed data panels, no queue/execution limit, and default
 Iris preemption retries. The middle pilots continue unchanged.
+
+
+## 2026-11-12 — Both middle probes completed
+
+At 20:19 UTC, both middle jobs had succeeded with all four tasks complete,
+zero failures or preemptions, matching completed artifacts, and finished
+rank-zero W&B runs. Each completed four paired update draws, both movement
+types, and 24 resolved path comparisons. The eighth-middle study also
+completed its doubled reference panel. Completion and resource evidence is
+in [the verification record](gradient-curvature-middle-completion.json).
+The controller reports about 1.904 v4-32 slice-hours for eighth-middle and
+0.896 for quarter-middle, excluding queue time. These are not billing dollars.
+
+The middle-only analysis uses all four draws. For full updates at eighth-middle,
+the mean 1/8-minus-1/4 loss differences at fractions 0.1, 0.3, and 1 are
+-0.0000533, -0.0001094, and +0.0002229. Their pointwise conditional 95%
+bootstrap intervals exclude zero. The signs also persist with 128 reference
+sequences. At quarter-middle, the two shorter-length intervals include zero;
+the full-length difference is +0.0013763 with interval [0.0010158, 0.0017535].
+These are local comparisons, not an overall training winner or a held-out
+curvature model. The six-checkpoint fit and adaptive tests are still pending.
+
+The mean full-update decomposition at eighth-middle's longest tested length
+is -0.0006174 from initial alignment, +0.0008420 from initial signed curvature,
+and -0.00000175 from subsequent curvature change. Thus the local reversal is
+largely explained by the initial quadratic term growing with length, rather
+than a large curvature increase along the path. Raw records and the
+[computed decomposition](gradient-curvature-middle-analysis/paired-loss-decomposition.csv)
+retain every draw. Three early/late jobs are running and quarter-late is queued.

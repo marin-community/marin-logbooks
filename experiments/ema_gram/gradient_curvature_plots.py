@@ -21,6 +21,12 @@ STATE_ORDER = ("eighth-early", "eighth-middle", "eighth-late", "quarter-early", 
 MARKERS = ("o", "s", "^", "D", "v", "P")
 
 
+def state_label(state):
+    trajectory, phase = state.split("-")
+    power = "1/8" if trajectory == "eighth" else "1/4"
+    return f"{phase.capitalize()} · trained with {power}"
+
+
 def style():
     """Adapt Kaiyue's plot defaults to readable standalone comparison figures."""
     mpl.rcParams.update(
@@ -80,7 +86,7 @@ def curvature_plot(results, output):
         strict=True,
     ):
         ax.set(xlabel="Reference gradient norm G at this position", ylabel=ylabel, title=title)
-        ax.ticklabel_format(style="sci", axis="both", scilimits=(-3, 4))
+        ax.ticklabel_format(style="sci", axis="both", scilimits=(-3, 4), useMathText=True)
     handles = [
         Line2D(
             [],
@@ -94,7 +100,7 @@ def curvature_plot(results, output):
         for a, color in COLORS.items()
     ]
     handles += [
-        Line2D([], [], color="#555555", marker=m, linestyle="none", label=s.replace("-", " "))
+        Line2D([], [], color="#555555", marker=m, linestyle="none", label=state_label(s))
         for s, m in zip(STATE_ORDER, MARKERS, strict=True)
         if s in states
     ]
@@ -113,7 +119,7 @@ def common_length_plot(results, output, mode="full"):
         figsize=(4.1 * columns, 3.4 * np.ceil(len(states) / columns)),
         squeeze=False,
     )
-    fractions = (0, 0.1, 0.3, 1.0)
+    fractions = CANONICAL_FRACTIONS
     for ax, state in zip(axes.flat, states, strict=False):
         result = selected[state]
         rows = {
@@ -135,12 +141,12 @@ def common_length_plot(results, output, mode="full"):
             )
         ax.axhline(0, color="#555555", linewidth=0.8)
         ax.set(
-            title=state.replace("-", " "),
+            title=state_label(state),
             xlabel="Common length / reference length",
             ylabel="Loss change (lower is better)",
         )
-        ax.set_xticks((0, 0.3, 1))
-        ax.ticklabel_format(style="sci", axis="y", scilimits=(-3, 4))
+        ax.set_xticks((0, 0.1, 0.3, 0.5, 1), ("0", "0.1", "0.3", "0.5", "1"))
+        ax.ticklabel_format(style="sci", axis="y", scilimits=(-3, 4), useMathText=True)
     for ax in list(axes.flat)[len(states) :]:
         ax.set_visible(False)
     handles, labels = axes.flat[0].get_legend_handles_labels()
@@ -172,7 +178,7 @@ def adaptive_plot(results, output):
             ax.plot([point["lower"], point["upper"]], [yy, yy], color=color, linewidth=1.5)
         ax.scatter([p["mean"] for p in points], y, color=color, s=35, label=name, zorder=3)
     ax.axvline(0, color="black", linestyle="--", linewidth=1)
-    ax.set_yticks(np.arange(len(states)), [s.replace("-", " ") for s in states])
+    ax.set_yticks(np.arange(len(states)), [state_label(s) for s in states])
     ax.invert_yaxis()
     ax.set_xlabel("Paired loss difference: power 1/8 minus power 1/4\nNegative favors 1/8 · Positive favors 1/4")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=3, frameon=False)
