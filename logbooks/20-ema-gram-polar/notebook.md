@@ -4146,3 +4146,8 @@ selection rule is retained; final intervals condition on the selected scalar
 and do not include selection uncertainty. The [held-out plan](gradient-curvature-analysis/heldout-plan.json)
 selects each scalar using only the other five checkpoints. Separate direct
 held-out evaluations are the next step.
+
+Six held-out jobs were submitted at 23:27 UTC from published revision
+`5ba168a60`. The frozen plan was committed before submission. Exact commands,
+job identifiers, and checksums are in `gradient-curvature-heldout-*-launch.json`.
+No queue/task wall-clock limit or preemption retry override was introduced.
