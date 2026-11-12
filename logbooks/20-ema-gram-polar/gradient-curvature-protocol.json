@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "request_text_sha256": "8ed23ba30ef1838f68ed87f568ad822280713173c22bdd339c1ca4f7c5c756ff",
+  "states": [
+    {
+      "state": "eighth-early",
+      "config_index": 0,
+      "trajectory": 0.125,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.125-seed0-62811d347d39/2026.11.06.02/checkpoints/step-3733",
+      "expected_counter": 3734,
+      "middle": false,
+      "double_reference": false
+    },
+    {
+      "state": "eighth-middle",
+      "config_index": 0,
+      "trajectory": 0.125,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.125-seed0-62811d347d39/2026.11.06.02/checkpoints/step-18665",
+      "expected_counter": 18666,
+      "middle": true,
+      "double_reference": true
+    },
+    {
+      "state": "eighth-late",
+      "config_index": 0,
+      "trajectory": 0.125,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.125-seed0-62811d347d39/2026.11.06.02/checkpoints/step-33597",
+      "expected_counter": 33598,
+      "middle": false,
+      "double_reference": false
+    },
+    {
+      "state": "quarter-early",
+      "config_index": 1,
+      "trajectory": 0.25,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-3732",
+      "expected_counter": 3733,
+      "middle": false,
+      "double_reference": false
+    },
+    {
+      "state": "quarter-middle",
+      "config_index": 1,
+      "trajectory": 0.25,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-18664",
+      "expected_counter": 18665,
+      "middle": true,
+      "double_reference": false
+    },
+    {
+      "state": "quarter-late",
+      "config_index": 1,
+      "trajectory": 0.25,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-33596",
+      "expected_counter": 33597,
+      "middle": false,
+      "double_reference": false
+    }
+  ],
+  "reference_seed": 20261112,
+  "update_seeds": [
+    20262112,
+    20262113,
+    20262114,
+    20262115
+  ],
+  "reference_groups": 8,
+  "sequences_per_group": 8,
+  "sequence_length": 4096,
+  "additional_reference_groups": 8,
+  "reference_objective": "Token-weighted next-token cross entropy plus z loss 1e-7; no weight decay",
+  "precision": "Production code and compute policy generate directions; FP32 parameters, loss, gradients, HVPs and perturbations for all reference measurements",
+  "alphas": [
+    0.125,
+    0.25
+  ],
+  "length_fractions": [
+    0.1,
+    0.3,
+    1.0
+  ],
+  "physical_length_reference": "Full or matrix-only alpha=1/8 update norm from same checkpoint and draw",
+  "finite_difference_gate": "Relative mean-HVP error below 2% at two adjacent declared perturbation scales; both powers at draw zero origin and full endpoint; matrix-only origin",
+  "quadrature": {
+    "method": "Composite Simpson on independently measured signed directional Hessian products",
+    "interval_counts": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "paired_error_rule": "Refine until paired prediction residual <= max(2e-6,20% of observed paired loss difference); flag unresolved at maximum"
+  },
+  "heldout_fit": {
+    "unit": "Whole checkpoint, including all paths and draws",
+    "quantile": 0.9,
+    "models": [
+      "constant",
+      "intercept_plus_nonnegative_G",
+      "intercept_plus_nonnegative_G_squared"
+    ],
+    "primary_scope": "Full-update paths; fixed canonical positions; 64 reference sequences"
+  },
+  "adaptive_phase": {
+    "only_after": "All six states complete and cross-checkpoint models fit",
+    "calibration_candidates": 3,
+    "normalization": "Set each rule scalar grid to median calibration-state lengths 0.1,0.3,1 times median calibration reference norm",
+    "physical_cap": "[0.01,3] times median reference norm in the calibration checkpoints; same cap for every rule and power in a fold",
+    "calibration": "Directly evaluate each candidate on the other five checkpoints, equally weighting checkpoints, powers and update draws",
+    "evaluation": "Evaluate the selected scalar directly on the held-out checkpoint; never choose it with held-out losses"
+  },
+  "resources": {
+    "cluster": "marin",
+    "region": "us-central2",
+    "tpu": "v4-32",
+    "hosts": 4,
+    "cpu": 120,
+    "memory": "256GB",
+    "disk": "50GB",
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption": "Iris defaults"
+  },
+  "stages": [
+    "middle pilots",
+    "early and late after pilot gates",
+    "held-out adaptive-length evaluations"
+  ],
+  "new_training": false
+}

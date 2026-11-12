@@ -3905,3 +3905,35 @@ All seventeen PDF pages were visually inspected; browser controls passed at
 desktop and mobile widths, including 28 px text without page overflow.
 The guide and editable figure sources are in `hessian-report-visual/`.
 The portable delivery retains the complete prior scientific evidence package.
+
+
+## 2026-11-12 — Gradient-dependent curvature protocol
+
+The supplied follow-up asks whether full-model curvature along production update
+directions grows with the unclipped gradient norm, and whether physical step
+length contributes to the alpha 1/8 versus 1/4 comparison. The frozen protocol
+is in `gradient-curvature-protocol.json`. It specifies two middle pilots with
+four paired update draws, followed by early and late checkpoints from both
+trajectories only after derivative checks pass. No new training is requested.
+
+The reference objective uses 64 complete sequences, token-weighted across eight
+groups, with a disjoint 64-sequence extension at eighth-middle. Production
+directions retain the original optimizer, clipping, momentum, ridge and polar
+approximation. Reference measurements use FP32 and average gradient/HVP vectors
+before norms. Complete updates and the middle-state matrix-only control are
+separate. Every branch uses the same saved state and exactly one moment update.
+
+The pilot preserves negative directional curvature, checks representative HVPs
+against central gradient differences at adjacent scales below 2%, and predicts
+losses from independently measured path curvature. Simpson refinement is driven
+by the paired prediction error, with unresolved comparisons explicitly flagged.
+Whole-checkpoint holdouts, fixed nonnegative 90th-quantile alternatives and direct
+adaptive-length evaluation follow the six-state measurements. These are
+directional diagnostics, not certificates of the full Hessian operator norm.
+
+All compute stays in us-central2. Iris default preemption retries remain active;
+no queue or execution deadline is imposed. Each process starts a distinct online
+W&B run after a host logging check. Preemption restarts the frozen measurement
+from its saved model checkpoint and does not resume partial measurement progress.
+No GPU allocation is used. The canonical local project has moved from
+`Downloads/Projects/hessian-probing` to `Downloads/Project/hessian-probing`.
