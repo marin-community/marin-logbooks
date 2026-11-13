@@ -316,3 +316,23 @@ the original rank-0 baseline exactly (maximum absolute difference 0.0).
 See `rank0-recovery.json`. This supports batch-dependent numerics rather than
 persistent contamination by preceding requests in this diagnostic. All
 diagnostic processes exited; full pilot and validation remain unrun.
+
+
+## 2026-11-13: Approved paced ten-variant trial
+
+The user approved a paced trial before considering the full pilot. Run exactly
+ten existing pilot variants, one client, pinned rank 0, with a minimum one-second
+gap after each completion before the next completion. Cap all HTTP requests at
+1,000 and elapsed time at 900 seconds. No retries or deployment changes.
+The six forward-strand sentinels from the first pilot variant cover null/healthy
+reference DNA and A/B under primary zero-/two-shot classification. Score them
+before the panel, every 48 panel targets, and after the panel. Stop immediately
+on absolute drift above 1e-6, any request/protocol failure, any completion over
+five seconds, or the median of the latest five completions exceeding both 1.5
+seconds and three times the first eight completions' median. Pause time is
+excluded from measured request latency. These are client-side load limits,
+not proof of no impact on other users.
+
+`paced.py` buffers the small panel score stream until its final check succeeds;
+on failure it preserves the partial stream with an invalid marker. Raw wire
+and sentinel records flush throughout. No full pilot is launched by this trial.
