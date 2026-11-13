@@ -246,3 +246,73 @@ unverified. No serving configuration was changed, no deployment was launched,
 and the full 100-variant pilot and reserved 300-variant panel remain unscored.
 Next gate: establish a stable scoring route or quantify a justified repeat
 protocol before comparing prompt methods. Preserve compilation and CUDA graphs.
+
+
+## 2026-11-13: Isolate rank and batch dependence
+
+The follow-up request asked for the cause and a fix. Live read-only startup
+inspection identifies BF16, no quantization, TP=1, DP=16 with expert parallelism,
+chunked prefill, prefix caching disabled, and compilation plus PIECEWISE CUDA
+graphs enabled. All four task nodes report vLLM source
+`3004cd8f163299116b96d1b324cfff418c387388`. No job or serving settings changed.
+
+The deployed completion handler supports `X-data-parallel-rank`, as also used
+by Marin's existing serving-parity harness. A 24-completion diagnostic replayed
+two fixed prompts three times on each of ranks 0, 1, 4, and 8. Every within-rank
+repeat was exactly equal. Different ranks produced different results:
+for the same A continuation, rank means ranged from -2.7556984 to -2.4324777.
+See `rank-stability.json`. This directly implicates rank selection in the
+previous apparent sequential nondeterminism; it does not prove different weights.
+
+A broader check pinned rank 0 for two sequential passes and one four-client
+pass over 36 identical targets (108 completions). Targets cover two autosomal
+variants, both strands, null/healthy likelihood, zero-/two-shot primary-map
+classification and the selected explicit-pair format check. One variant was
+chosen because its earlier DNA discrepancy was largest. All 36 targets matched
+exactly across the sequential passes. Concurrent results differed by up to
+5.6548 DNA log-likelihood units and 0.6612 single-answer log-probability units.
+See `rank0-matrix.json` (columns: sequential 1, sequential 2, concurrent) and
+`rank0-matrix-summary.json`. No chromosome-X or reserved validation inputs were used.
+
+These interventions establish dependence on both selected rank and batching.
+The particular kernel/reduction responsible is not localized. BF16 numerical
+order, MoE routing/reductions and rank-local kernel choices are hypotheses;
+we have not compared parameter hashes or intermediate activations across ranks.
+The stable system fingerprint identifies the build, not a specific execution
+rank or batch. Tokenization and client-side summation are not the source.
+
+The immediately testable workaround is one fixed rank plus sequential calls,
+with repeated sentinels before/during/after scoring. This achieved exact repeat
+agreement in the bounded check but is not guaranteed on a shared service:
+other traffic and expert-parallel activity may change the effective batch.
+Do not average arbitrary unpinned repeats and call the result corrected.
+
+The durable serving experiment is to enable `serve.vllm_batch_invariant: true`
+(the existing Marin configuration maps this to `VLLM_BATCH_INVARIANT=1`) on an
+approved scoring deployment, then rerun rank, batch-size, order, and latency
+checks before the pilot. The deployed version's batch-invariance documentation
+does not list Hero/GrugMoE among validated models, so the flag is a candidate
+fix, not proof. Preserve compilation and CUDA graphs. If it fails for this
+custom model, compare replicated parameter hashes and per-layer activations
+across ranks, then localize attention, router, expert and reduction kernels.
+A reserved fixed-rank/fixed-batch scoring route is the fallback, subject to
+resource approval. No new deployment or restart is authorized by these findings.
+
+The newer release `0ac9dcb157ee` adds Snowball schema-1 BF16 RMSNorm rounding,
+FP8 padding-scale and skipped ShortConv decode-row fixes. The running service
+is unquantized Hero and this task scores prefill tokens, so none is established
+as the cause or sufficient fix. Track adoption in Marin #11241; do not equate
+upgrading with validated repeatability. Sources:
+- https://github.com/marin-community/vllm/compare/3004cd8f163299116b96d1b324cfff418c387388...0ac9dcb157ee
+- https://github.com/marin-community/vllm/blob/3004cd8f163299116b96d1b324cfff418c387388/docs/features/batch_invariance.md
+
+For the earlier ten-variant comparison, pairwise ordering flips out of 45 were
+3 (null), 1 (healthy), 13 (zero-shot), and 7 (two-shot). The single pathogenic
+variant's ranks were respectively 1→1, 3→2, 7→5, and 9→8. These describe only
+one matched group; no method-quality conclusion follows.
+
+A final 36-call sequential pass after the concurrent intervention recovered
+the original rank-0 baseline exactly (maximum absolute difference 0.0).
+See `rank0-recovery.json`. This supports batch-dependent numerics rather than
+persistent contamination by preceding requests in this diagnostic. All
+diagnostic processes exited; full pilot and validation remain unrun.
