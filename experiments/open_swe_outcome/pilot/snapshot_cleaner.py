@@ -1,3 +1,6 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
 """Delete each pilot task's Daytona snapshot once its trial has finished.
 
 Only names in the precomputed task -> snapshot map (the 200 pilot tasks) are ever deleted.
@@ -135,9 +138,7 @@ while True:
         paths = result_paths()
         live = live_snapshots()
         finished = {
-            snapshot_to_task[name]
-            for name in live
-            if finished_since_cutoff(paths.get(snapshot_to_task[name], []))
+            snapshot_to_task[name] for name in live if finished_since_cutoff(paths.get(snapshot_to_task[name], []))
         }
     except Exception as error:
         log(f"poll failed, retrying: {type(error).__name__}: {str(error)[:200]}")
@@ -145,12 +146,13 @@ while True:
         continue
     stopping = done or stop_file.exists() or time.time() - start > MAX_SECONDS
     targets = [
-        name
-        for name, state in live.items()
-        if state in DELETABLE and (stopping or snapshot_to_task[name] in finished)
+        name for name, state in live.items() if state in DELETABLE and (stopping or snapshot_to_task[name] in finished)
     ]
     total_deleted += delete(targets)
-    log(f"finished_live={len(finished)} live={len(live)} deleted_now={len(targets)} deleted_total={total_deleted} job[{summary}]")
+    log(
+        f"finished_live={len(finished)} live={len(live)} deleted_now={len(targets)} "
+        f"deleted_total={total_deleted} job[{summary}]"
+    )
     if stopping:
         time.sleep(20)
         remaining = live_snapshots()

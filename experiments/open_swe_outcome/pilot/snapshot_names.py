@@ -1,3 +1,6 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
 """Compute the Daytona snapshot name each SWE-bench Verified task would create.
 
 Uses the production naming path (Harbor's machine_spec and Shellbox's snapshot_identity),
@@ -36,7 +39,9 @@ for task_dir in sorted(p for p in root.iterdir() if (p / "task.toml").exists()):
             target = context / source.name
             target.write_bytes(source.read_bytes())
             target.chmod(0o644)
-        spec = machine_spec(config, context, {}, cpus=config.cpus, memory_mb=config.memory_mb, storage_mb=config.storage_mb)
+        spec = machine_spec(
+            config, context, {}, cpus=config.cpus, memory_mb=config.memory_mb, storage_mb=config.storage_mb
+        )
         resources = Resources(
             cpu=spec.cpus,
             memory=math.ceil(spec.memory_mb / 1024) if spec.memory_mb is not None else None,

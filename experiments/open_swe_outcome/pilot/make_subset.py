@@ -1,3 +1,6 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
 """Write the 200-task SWE-bench Verified pilot policy and the matching snapshot-name list."""
 
 import json
