@@ -38,6 +38,8 @@ from experiments.grug.moe_hero_ep.snowball_recipe import SNOWBALL_67B_MODEL_CONF
 logger = logging.getLogger(__name__)
 
 CHECKPOINT_STEP = 0
+SHARED_EXPERT_LIST_KEY = ".shared_experts.0."
+SHARED_EXPERT_KEY = ".shared_expert."
 SAVE_TIMEOUT = 1800
 # Native leaf path -> (Hugging Face tensor name, whether the linear weight is stored transposed).
 ROOT_WEIGHTS = {
@@ -117,7 +119,7 @@ def verify_weights(model: Transformer, source: Mapping[str, jax.Array]) -> list[
         )
         for export_name, actual in grugmoe_inference_state_dict(layer_model).items():
             name = export_name.replace("model.layers.0.", f"model.layers.{layer_index}.")
-            name = name.replace(".shared_experts.0.", ".shared_expert.")
+            name = name.replace(SHARED_EXPERT_LIST_KEY, SHARED_EXPERT_KEY)
             if name in checked:
                 continue
             checked.add(name)
@@ -147,6 +149,8 @@ def convert(hf_id: str, hf_revision: str, destination: str, config: GrugModelCon
     converter = SnowballConfig().hf_checkpoint_converter()
     with jax.set_mesh(mesh):
         source = converter.load_state_dict(RepoRef(hf_id, hf_revision), dtype=jnp.bfloat16)
+        # The SFT exports name the single shared expert as a list of one; the base export names it bare.
+        source = {name.replace(SHARED_EXPERT_LIST_KEY, SHARED_EXPERT_KEY): value for name, value in source.items()}
         model = import_weights(config, source)
         verify_weights(model, source)
         state = {"step": jax.sharding.reshard(jnp.array(CHECKPOINT_STEP, dtype=jnp.int32), P()), "params": model}
