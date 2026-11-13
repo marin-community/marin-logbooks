@@ -655,3 +655,9 @@ OpenRouter/Fireworks advertised logprob support but returned no usable prompt li
 [Follow-up record](provider-and-space-followup.md): token-for-token comparison proves an earlier space-ending diagnostic matches one v3 query in both shot conditions. After standalone space, end-of-text probability was 99.38% zero-shot and 99.66% two-shot; bare A/B probability was negligible. Current Mochi route remains unavailable, so this is historical one-variant evidence.
 
 Together through OpenRouter returns output logprobs, including final A, whereas Parasail and Novita return null even with visible answers. All three DNA echo probes failed. Parasail's upstream validation payload shows messages instead of prompt, indicating a request-translation incompatibility. Six requests, 300 generated tokens, reported cost $0.00101672. Source frozen at 76e359e3ea; no scoring protocol changed.
+
+## 2026-11-13: tokenization forensic audit and stopping qualification
+
+[Audit](tokenization-forensic-audit.md) confirms exact standalone-space token appending, one BOS, no injected end marker, matching prompt usage, and actual generation of `<|end_of_text|>`. A non-biological alphabet control shows the same boundary sensitivity. The serving revision's sampler defaults to full-vocabulary raw logprobs, with requested-token gathering rather than shortlist renormalization; no client probability extraction defect found.
+
+Correction to earlier termination wording: requests used ignore_eos=true and max_tokens=1, and returned finish_reason=length. Strong end-token preference is measured; normal stopping and two-token decode are not. The current route is unavailable. Training-format effects remain a hypothesis, and independent model logits are needed to distinguish them from serving implementation defects. No new inference or scoring change.
