@@ -579,3 +579,18 @@ agree at the actual token boundary. This verifies one variant, one strand
 and one mapping, not every possible prompt. See `v3-parity-result.json` and
 `v3-demonstration-token-audit.json`; endpoint details and raw wire data remain
 private. Full classification-only rerun remains pending user confirmation.
+
+
+## 2026-11-13: Authorized classification-only rerun preparation
+
+The user authorized the same 100-variant rerun. `classification_rerun.py`
+requires unchanged metadata/sequences for all 402 rows, validates the original
+manifest hash and all 800 reused DNA input hashes, and requires the previous
+serving fingerprint plus initial and repeated DNA/classification sentinels.
+The v3 manifest preserves the v2 mappings with only its version changed.
+Offline validation confirmed all 800 DNA targets reusable. Sixteen focused
+tests passed in 0.29 seconds (peak RSS 89,344 KiB). The configured caps and
+input hashes are in `v3-rerun-plan.json`. The private launcher supplies auth,
+endpoint and model identity from the prior run metadata; none is published.
+The new result will carry explicit historical-DNA versus fresh-classification
+provenance. This is an exploratory pilot, not the reserved validation run.
