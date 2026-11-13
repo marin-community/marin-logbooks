@@ -1,0 +1,53 @@
+# BFCL-Parity under Terminus-2, from configs/harbor/bfcl.yaml: the campaign's Pi variant needs task
+# images prepared in advance. Otherwise the DS-1000 settings of this directory, that is
+# the 09-25 campaign config with the thinking settings the cold-start reproduction served with
+# (marin#10799): the model's chat template forces thinking on, so the agent must parse it.
+n_concurrent_trials: 32
+release_trial_payloads_in_memory: true
+retry:
+  max_retries: 10
+  include_exceptions:
+  - InternalServerError
+  - APIConnectionError
+  - APITimeoutError
+  - ArtifactUploadTimeoutError
+  - ArtifactWriterBacklogError
+  - CancelledError
+  - ContextManagementInfrastructureError
+  - LLMRequestTimeoutError
+  - SandboxBuildFailedError
+  - ContainerRegistryThrottledError
+  - AgentSetupTimeoutError
+  - DaytonaSandboxStopError
+  - DaytonaProcessError
+  - TrialTimeoutError
+  - ArtifactWriteTimeoutError
+  - Tau3RuntimeInfrastructureError
+  - Tau3TargetInfrastructureError
+  - VerifierTimeoutError
+  - VerifierRuntimeError
+  exclude_exceptions: []
+  wait_multiplier: 2.0
+  min_wait_sec: 1.0
+  max_wait_sec: 60.0
+environment:
+  type: daytona
+agents:
+- name: terminus-2
+  override_setup_timeout_sec: 360
+  override_timeout_sec: 1800
+  kwargs:
+    thinking_format: chat-template
+    model_info:
+      max_input_tokens: 32768
+      max_output_tokens: 8192
+    llm_call_kwargs:
+      max_tokens: 8192
+    extra_body:
+      chat_template_kwargs:
+        enable_thinking: true
+datasets:
+- name: hf://DCAgent2/bfcl-parity
+  ref: main
+verifier:
+  override_timeout_sec: 300
