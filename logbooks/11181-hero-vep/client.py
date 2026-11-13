@@ -13,7 +13,7 @@ import requests
 from prompts import continuation_start
 
 
-def completion_score(response: dict, token_ids: list[int], start: int) -> float:
+def completion_score(response: dict, token_ids: list[int], start: int, target: str) -> float:
     """Score observed continuation tokens, checking the echoed token identities."""
     assert 0 < start < len(token_ids), "Scored tokens require preceding context, including BOS"
     assert len(response["choices"]) == 1
@@ -24,6 +24,10 @@ def completion_score(response: dict, token_ids: list[int], start: int) -> float:
     # Some vLLM builds account for one internal token when max_tokens=0.
     # Exact echoed-token equality above ensures no generated token is scored.
     assert response["usage"]["completion_tokens"] in {0, 1}
+    native = response["choices"][0]["prompt_logprobs"]
+    assert len(native) == len(token_ids)
+    decoded = "".join(native[i][str(token_ids[i])]["decoded_token"] for i in range(start, len(token_ids)))
+    assert decoded == target, "Scored tokens must decode to exactly the target"
     scores = probabilities["token_logprobs"][start:]
     assert all(score is not None and math.isfinite(score) for score in scores)
     return math.fsum(scores)
@@ -96,9 +100,6 @@ class ScoringClient:
         tokens = self.tokenize(prefix + target)
         start = continuation_start(prefix_ids, tokens, single_token)
         assert start > 0, "Tokenizer must provide model-required BOS for unconditioned likelihood"
-        # This also rejects tokenizers that append EOS to the complete input.
-        decoded = self.request("detokenize", {"model": self.model, "tokens": tokens[start:]})
-        assert decoded["prompt"] == target, "Scored tokens must decode to exactly the target"
         payload = {
             "model": self.model,
             "prompt": tokens,
@@ -117,7 +118,7 @@ class ScoringClient:
             self.fingerprint = fingerprint
         assert fingerprint == self.fingerprint, "Serving build changed during scoring"
         return {
-            "logprob": completion_score(response, tokens, start),
+            "logprob": completion_score(response, tokens, start, target),
             "target_ids": tokens[start:],
             "prefix_tokens": start,
             "input_tokens": len(tokens),

@@ -156,3 +156,24 @@ claim can be made. Once access is restored, confirm the execution budget, run
 the small live protocol check, then the pilot; freeze methods before using the
 reserved 300-variant panel. The archive index entry and final issue conclusion
 remain pending with the experiment.
+
+## 2026-11-13: Live SFT service and protocol correction
+
+The user authorized proceeding on the newly available final SFT step 400407.
+This replaces the earlier quick-SFT checkpoint; comparisons will identify the
+new checkpoint explicitly. A live authenticated model-discovery request passed.
+Exact service and access details remain private.
+
+The initial tokenizer probe returned BOS token 128000 followed by eight tokens
+for `ACGTACGTACGTACGT`. The service does not expose `/detokenize` (HTTP 404).
+A direct completion request with those token IDs succeeded and returned finite
+observed-token log probabilities. The response includes both OpenAI echoed
+logprobs and native prompt logprobs with decoded observed-token strings.
+The client now checks the target by joining those decoded strings, while still
+requiring exact echoed token IDs and an unchanged contextual token boundary.
+This removes the unavailable route without relaxing the scored-text boundary.
+The raw probe responses remain in the private local execution record.
+
+Initial authorized execution limits: one request at a time; a 10-variant smoke
+with at most 2,000 HTTP requests and 15 minutes. A successful smoke precedes the
+100-variant pilot; methods must be frozen before fresh validation.
