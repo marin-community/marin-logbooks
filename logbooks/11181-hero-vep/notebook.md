@@ -177,3 +177,14 @@ The raw probe responses remain in the private local execution record.
 Initial authorized execution limits: one request at a time; a 10-variant smoke
 with at most 2,000 HTTP requests and 15 minutes. A successful smoke precedes the
 100-variant pilot; methods must be frozen before fresh validation.
+
+The corrected protocol check passed at source
+`540e5c48c13f897f7e85df5c2fd234a052006627`: 12 HTTP requests in 4.27 seconds.
+The unconditioned 16-base DNA log likelihood was -25.168287590146065;
+healthy-prefix DNA likelihood was -8.622630901634693. In an actual two-shot
+query, candidate ` A` is token 362 and ` B` is token 426, with log probabilities
+-2.3077545166015625 and -3.238219738006592. These values establish protocol
+behavior, not VEP quality. Sanitized evidence is in `protocol-check.json`.
+A 10-variant smoke on the fixed pilot manifest is now running sequentially under
+the limits above. The metrics route is accessible; before the smoke, summed
+prefix-cache query and hit counters were both zero, with no running requests.
