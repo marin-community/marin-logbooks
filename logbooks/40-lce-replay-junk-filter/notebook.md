@@ -136,10 +136,49 @@ status: active
   - The two arms run at the same time on separate node sets, not one after the other.
 - Decision and next action: when each arm reaches steps 119 and 238, score its checkpoints with the probe; then the guard evals.
 
+### 2026-11-13 15:30 UTC - Results: step 0 and the two arms
+
+- Question or hypothesis and reason for trying it: where in cold-start SFT is needle recovery lost, and does filtered long replay change it?
+- Published source revision: research branch `260cf65632` (probe launcher, importer, `scripts/mrcr_summary.py`, `scripts/paired_mrcr.py`, `scripts/arm_losses.py`); training branch `00c033645b`.
+- Command or material configuration: every checkpoint scored with `python -m experiments.grug.moe_hero_ep.launch_snowball_mrcr_eval --run-id <run> --checkpoint <path> --nodes 2 --version 2026.11.13 --run` on two 8xH100 nodes of `cw-rno2a`, all 299 sources, about 30 to 36 minutes each. The marin#10799 exports were first imported with `snowball_hf_import`. Arm comparison: `scripts/paired_mrcr.py <control run> <filtered run>`, 10,000 paired resamples over sources, seed 0.
+- External inputs and artifact references: results under `eval/mrcr-snowball/<run>/2026.11.13/` in the cluster's Marin prefix, runs `snowball-{base,s222,s471,s1024,s2048}-mrcr-full` and `arm-{control,filtered}-s{119,238}-mrcr-full`. Arm checkpoints at `<tmp>/arms/lce40-arm-{control,filtered}-20261113/checkpoints/step-{119,238}`, 30-day lifetime. W&B project `marin-community/lce40-replay-filter`.
+- Environment and hardware when relevant: each arm trained on 16 nodes of 8 H100s for 10 hours 10 minutes (238 updates, about 1,300 H100-hours each). Both training jobs started within a second of each other at 04:21 UTC after the control was restarted once at launch; neither was interrupted afterwards.
+- Result, including failure or restart:
+  - Step 0, needle recovery on 299 sources (token-weighted, 95% bootstrap interval):
+
+    | Checkpoint | Recovery | Interval | Context gain, nats/token |
+    | --- | ---: | --- | ---: |
+    | Base (import of the pinned export) | 0.856 | 0.832 to 0.878 | 1.025 |
+    | marin#10799 step 222 | 0.928 | 0.916 to 0.939 | 1.133 |
+    | marin#10799 step 471 | 0.949 | 0.940 to 0.957 | 1.167 |
+    | marin#10799 step 1024 | 0.943 | 0.934 to 0.951 | 1.170 |
+    | marin#10799 step 2048 | 0.923 | 0.909 to 0.936 | 1.122 |
+
+  - Arms:
+
+    | Step | Metric | Control | Filtered | Filtered minus control (paired 95% interval) | Sources where filtered is higher |
+    | --- | --- | ---: | ---: | --- | ---: |
+    | 119 | Needle recovery | 0.880 | 0.909 | +0.028 (+0.023 to +0.034) | 241 of 299 |
+    | 119 | Context gain, nats/token | 1.070 | 1.111 | +0.041 (+0.035 to +0.048) | |
+    | 238 | Needle recovery | 0.935 | 0.948 | +0.013 (+0.008 to +0.018) | 177 of 299 |
+    | 238 | Context gain, nats/token | 1.138 | 1.166 | +0.028 (+0.023 to +0.034) | |
+
+  - Held-out losses logged during training are the same in both arms at the end (step 237, control/filtered): all validation 0.5239/0.5238, SFT sources 0.4059/0.4055, replay 0.8460/0.8464. On replay the filtered arm was about 0.003 lower at steps 49 to 149 and level from step 199.
+  - A rough reference for run-to-run variation: this control at step 238 against the marin#10799 run at step 222, two runs of nearly the same recipe 16 updates apart, differ by +0.007 in recovery (+0.003 to +0.011) and +0.005 in context gain (-0.000 to +0.010).
+  - Scoring the arm checkpoints confirmed that checkpoints written by the archived trainer restore into the current probe code.
+  - Step 0 needed two restarts: one export import failed on a tensor-name difference (fixed), and one was preempted mid-write so its retry refused the partial destination (rerun to a fresh destination).
+- Interpretation and limitations:
+  - In this reproduction cold-start SFT raises needle recovery, with a peak near step 471 and a slow decline to step 2048 that stays above the base. The loss marin#9519 measured after a different 2,000-step SFT does not appear here, so the experiment could not test whether filtering prevents a loss. It tested whether filtering changes how fast recovery rises.
+  - The filtered arm is ahead at both checkpoints by more than the source-sampling interval, and the gap halves between step 119 and step 238. That pattern fits a head start that the control closes, not a lasting difference; two checkpoints cannot say which.
+  - There is one run per arm. The intervals cover which MRCR sources were drawn, not training noise. The only reference for the latter is the cross-run comparison above, which is confounded by 16 updates, a different import and different hardware batches; against it the recovery difference at step 238 is about twice as large and the context-gain difference about five times.
+  - The filtered arm also saw slightly fewer long-document draws (9% fewer long tokens in its caches), which if anything works against it on a long-context measure.
+  - Not done: the guard evals (BFCL-Parity, DS-1000), which need exported and served checkpoints; the held-out replay loss split by filter verdict; a seed replicate. The replay validation set is unfiltered, so the logged replay loss is not the split the plan called for.
+- Decision and next action: see the final decision.
+
 ## Final decision
 
-- Selected approach and evidence:
-- Rejected alternatives and why:
-- Marin contribution PRs:
-- Reproduction instructions:
-- Remaining uncertainty:
+- Selected approach and evidence: provisional. By the rule fixed before launch, recovery improved beyond the bootstrap interval at both checkpoints, which points to adopting filtered long replay "subject to a seed replicate if the margin is small". The margin at step 238 is small (+0.013) and shrinking, and the guards have not run, so this is not yet a recommendation to change the recipe. What the evidence does support: filtering did no measurable harm to held-out SFT or replay loss, and the long-context probe moved in its favour.
+- Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
+- Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
+- Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
+- Remaining uncertainty: training noise on the primary metric (needs a second control seed); whether the difference persists past step 238; the guards; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
