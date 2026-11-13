@@ -374,3 +374,28 @@ retry. This consumes the existing endpoint only, with no deployment changes.
 Generalize the guarded runner to explicit panel and variant-count arguments;
 keep prompts, candidates, scoring formulas and sample selection unchanged.
 The reserved 300-variant panel remains unscored until protocol freeze.
+
+
+The full pilot launched from `4cbc70b7cb` with the stated pacing and limits.
+Its first eleven periodic sentinel rounds through 528 panel targets matched
+exactly. The process remains live; these partial observations are not results.
+
+The reusable contribution is now [Marin PR #11375](https://github.com/marin-community/marin/pull/11375),
+a draft at `b28487e78e2422032ace32b5f48812e610f36fc2`, based on Marin
+`246f795749166285a864e891e56facfbcf9127e7`. It contains manifest generation,
+reference verification, exact templates, a library likelihood client, a
+sequential guarded runner and aggregation. Historical probes and result files
+remain in this research branch. The contribution streams partial score records
+and writes completion only after its final sentinel check.
+
+The extracted generator reproduces manifest SHA256
+`d13451cade17f456327a135f10dceb1c2d189fbfa9605e1ab217cab9e8af69ce`.
+Ten focused offline tests passed; the pure likelihood-parser tests omitted
+unrelated heavyweight root fixtures. Replaying 706 saved real responses through
+the extracted runner reproduced all ten trial aggregates exactly and made no
+live endpoint requests (peak RSS 127,552 KiB). All six advisory review sections
+ran sequentially; findings about typed results and duplicated constants were
+resolved. Repository-wide type checking and the broader affected suite await
+CI because the shared VM cannot safely run their full environment. The PR
+body and initial feedback were read back, and an event-driven watcher is active.
+Archive index setup remains pending; no duplicate checkout operation was started.
