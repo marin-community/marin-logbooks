@@ -114,6 +114,28 @@ status: active
 - Interpretation and limitations: the port works end to end on H100s. One source says nothing about the aggregate, but the numbers are in the range marin#9519 reported for a 262K parent (isolated gain 1.39, recovery 0.91 over 299 sources), which is what a correctly loaded long-context model should show. Not tested: a checkpoint written by the archived trainer (none exists), agreement between this GPU path and the TPU path on the same checkpoint, and the per-row time, which the unavailable logs would have given. The imported checkpoint is not in the layout the archived trainer initializes from; the arms need the archived importer for that.
 - Decision and next action: step 0 proper is now runnable: score the base on all 299 sources, then import and score the four marin#10799 exports (steps 222, 471, 1024, 2048).
 
+### 2026-11-13 04:40 UTC - Filtered long replay built; both arms launched
+
+- Question or hypothesis and reason for trying it: build the treatment and start the two arms. Directed 2026-11-13 to execute the experiment.
+- Published source revision: research branch `bbb61d8c02` (`experiments/sft_cold_start/filtered_replay.py`, `logbooks/40-lce-replay-junk-filter/scripts/make_arm_configs.py`, `make_filtered_catalog.py`, `treatment_dose.py`). Training tree: branch `codex/40-lce-replay-junk-filter-training` at `00c033645b`, which is Marin `8577d258` plus the archived training patch and sources, plus three configs under `experiments/grug/snowball_sft/configs/`: `lce40-hf-import-20261113`, `lce40-arm-control-20261113`, `lce40-arm-filtered-20261113`.
+- Command or material configuration:
+  - Filtered caches: `python -m experiments.sft_cold_start.filtered_replay --cells logbooks/40-lce-replay-junk-filter/replay-cells-20261024a.yaml.gz --output <tmp>/replay-filtered-20261113 --tokenizer <grug_sft tokenizer 2026.09.18> --workers 12`, one 16-CPU job, 39 minutes. For each of the 189 training cells with a long budget it walks the cell's source shards in the control's order, judges each long document from eight 2,048-token windows, and keeps unflagged documents until the cell's long-token budget is crossed.
+  - Arm configs: the production config `snowball-sft-production-128h100-20261024b` with run names, output paths, W&B project, retry budget, `initialize_from` (a fresh run of the archived importer), `stop_after_steps: 238` and `keep: every 119`. The filtered arm additionally points 1,336 long cache entries (167 cells, 8 copies each) and the cache catalog at the filtered caches. A diff of the two arm configs shows only those lines and the run names.
+  - Launch: `python -m experiments.grug.snowball_sft.launch --config_path experiments/grug/snowball_sft/configs/<run>/config.yaml` from a CPU coordinator on `cw-rno2a`, interactive priority; each arm trains on 16 nodes of 8 H100s.
+- External inputs and artifact references: Iris jobs `/dml/lce40-legacy-import` (10 minutes), `/dml/lce40-filtered-replay-full`, `/dml/lce40-arm-control-20261113`, `/dml/lce40-arm-filtered-20261113`. Caches, catalog, per-cell `verdicts.jsonl` and `summary.jsonl` are under `<tmp>/replay-filtered-20261113`; arm outputs under `<tmp>/arms/<run>`. All in temporary object storage with a 30-day lifetime.
+- Result, including failure or restart:
+  - The archived importer and the archived coordinator both ran from the archived tree on the current cluster.
+  - Builder check: for a cell with nothing flagged (`c39q4-train`) the filtered cache holds the same 53 documents and 8,330,748 tokens as the control cache, in the same format.
+  - All 189 cells met their budgets; no cell ran out of unflagged long documents. The builder judged 35,102 long documents and flagged 30.0% of them. The selection changed in 101 cells.
+  - Dose. The control's long selection is 22,758 documents and 5.675B tokens. The filter flags 7.2% of those documents holding 30.1% of the tokens: structured data 23.7%, encoded blobs 2.3%, minified code 2.3%, repetition 1.0%, everything else under 1%. By quality tier the flagged token share is 58% (q0), 41% (q1), 32% (q2), 33% (q3) and 15% (q4).
+  - Step 0: the base score was restarted once when its coordinator was preempted. The first import of the step-222 export failed because the SFT exports name the shared expert `shared_experts.0` where the base export says `shared_expert`; the importer now accepts both (`bbb61d8c02`) and the chain was restarted.
+- Interpretation and limitations:
+  - The dose is smaller than planned. The reproduction's replay store is cleaner than the 10.05 mix sampled earlier (30% of long tokens flagged against 52%), because it draws more from the higher quality tiers. The treatment changes roughly 5% of training positions, not 8%.
+  - The filtered long caches hold 9% fewer tokens in total than the control's (5.158B against 5.672B over the swapped cells), because the control overshoots its budgets with very large flagged documents. Cell weights are fixed, so within a cell the long share of draws falls slightly; the arms are not exactly matched on long positions.
+  - 22 of the 189 cells' long caches are not referenced by the production mixture and so are unchanged in both arms.
+  - The two arms run at the same time on separate node sets, not one after the other.
+- Decision and next action: when each arm reaches steps 119 and 238, score its checkpoints with the probe; then the guard evals.
+
 ## Final decision
 
 - Selected approach and evidence:
