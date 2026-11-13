@@ -556,3 +556,26 @@ No full rerun or validation was launched. The classification-only rerun would
 require 400 scoring responses plus monitoring and tokenization requests, but
 is still pending user confirmation. This change stays experimental; no PR or
 main merge. See `protocol-v3.md`; v2 records remain historical.
+
+
+## 2026-11-13: Canonical-answer parity and demonstration-token check
+
+The bounded diagnostic at `567327d2376afa0d330ef96a99d2b9ba72817fd7`
+compared joint scoring, separate teacher forcing, and a fresh joint repeat
+for the forward-strand zero-shot and two-shot prompts of existing pilot
+variant `13:107866379:T:C`. All candidate log probabilities and A-minus-B
+margins matched exactly; repeats had zero drift. Eight completion requests
+and six tokenization requests finished in 12.05 seconds, with maximum
+completion latency 0.772 seconds. Serving fingerprint matched the old pilot.
+One client used the fixed rank and one-second pacing, capped at 30 HTTP
+requests and 120 seconds. No benchmark rerun was launched.
+
+The user's additional check was performed offline using the same complete
+two-shot response's native prompt logprobs. Both demonstration answers encode
+as `Answer` (16533), `:` (25), then one leading-space answer token (` A`=362
+or ` B`=426), followed by the double-newline token (271). The query answer
+uses the same candidate token. Thus the inspected demonstrations and query
+agree at the actual token boundary. This verifies one variant, one strand
+and one mapping, not every possible prompt. See `v3-parity-result.json` and
+`v3-demonstration-token-audit.json`; endpoint details and raw wire data remain
+private. Full classification-only rerun remains pending user confirmation.
