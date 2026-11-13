@@ -188,3 +188,20 @@ behavior, not VEP quality. Sanitized evidence is in `protocol-check.json`.
 A 10-variant smoke on the fixed pilot manifest is now running sequentially under
 the limits above. The metrics route is accessible; before the smoke, summed
 prefix-cache query and hit counters were both zero, with no running requests.
+
+The 10-variant sequential smoke completed: 272 scored continuations, 647 HTTP
+requests, all HTTP 200, in 224.20 seconds. Full-matrix aggregation passed. One
+serving fingerprint was observed. Completion-call latency was 0.400 seconds
+median and 0.689 seconds p95. The service processed 91,512 prompt tokens; its
+prompt-token counter rose by exactly that amount. Prefix-cache queries and hits
+both remained zero. No cache savings are established for this prompt-logprob
+path. See `smoke-10-accounting.json` and `smoke-cache-counters.json`.
+
+The full pilot will use four independent clients, each with its own HTTP session,
+tokenizer cache, and private wire log, under a combined cap of 12,000 HTTP
+requests and 45 minutes. Scores are flushed under a write lock; failure stops
+new targets and leaves the run without a completion marker. A fixture verifies
+that one and four clients preserve the same complete matrix without duplicates.
+All eight offline tests and lint passed. The 10-variant inputs will first be
+repeated with four clients to measure live repeat variation before the full
+100-variant pilot. Prompts and scoring formulas remain unchanged.
