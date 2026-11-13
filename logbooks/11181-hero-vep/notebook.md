@@ -661,3 +661,9 @@ Together through OpenRouter returns output logprobs, including final A, whereas 
 [Audit](tokenization-forensic-audit.md) confirms exact standalone-space token appending, one BOS, no injected end marker, matching prompt usage, and actual generation of `<|end_of_text|>`. A non-biological alphabet control shows the same boundary sensitivity. The serving revision's sampler defaults to full-vocabulary raw logprobs, with requested-token gathering rather than shortlist renormalization; no client probability extraction defect found.
 
 Correction to earlier termination wording: requests used ignore_eos=true and max_tokens=1, and returned finish_reason=length. Strong end-token preference is measured; normal stopping and two-token decode are not. The current route is unavailable. Training-format effects remain a hypothesis, and independent model logits are needed to distinguish them from serving implementation defects. No new inference or scoring change.
+
+## 2026-11-13: pinned tokenizer reproduction and explicit SFT serving contract
+
+[Findings](pinned-tokenizer-findings.md): the checkpoint-recommended tokenizer exactly reproduces all nine saved boundary tokenizations. Roundtrip checks establish that standalone space followed by bare A is noncanonical, although it decodes to the same text as the single leading-space A token. Offline audit source fea245f07d; 0.66 s, peak RSS 217,284 KiB, no model weights or inference.
+
+The SFT export requires an explicit Marin chat template and EOS 128009, whereas tokenizer metadata alone names EOS 128001 and contains no chat template. This is not evidence of a misconfigured deployment, whose effective settings remain unavailable. The recommended assistant-header/newline format also differs from our raw Answer: benchmark; compare it as a separate condition when the endpoint returns. Root cause of the high end-of-text probability remains unproved. Existing benchmark scores are unchanged.
