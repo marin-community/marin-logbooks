@@ -60,7 +60,8 @@ def arm_spec(arm: str, seed: int, *, smoke: bool) -> SFTSpec:
     return SFTSpec(
         name=user_owned_name(f"checkpoints/open-swe-outcome/qwen3-8b-{arm}-seed{seed}{suffix}"),
         version=VERSION,
-        model=HFModel(BASE_MODEL, eos_token_ids=QWEN3_EOS_TOKEN_IDS),
+        # Qwen3-8B declares a 40,960-token window; its rotary positions extend past it.
+        model=HFModel(BASE_MODEL, eos_token_ids=QWEN3_EOS_TOKEN_IDS, max_seq_len=CONTEXT_LENGTH),
         chat_template=OPENCODE_TOOLS_CHAT_TEMPLATE,
         datasets=[
             ArtifactDatasetSpec(slug=arm, artifact=data, train_glob=SMOKE_SHARD if smoke else ARM_GLOB, weight=1.0)
