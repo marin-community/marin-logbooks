@@ -53,21 +53,21 @@ OPTIMIZER = AdamConfig(
 )
 
 
-def arm_spec(arm: str, seed: int, *, smoke: bool) -> SFTSpec:
+def arm_spec(arm: str, seed: int, *, smoke: bool, context_length: int = CONTEXT_LENGTH) -> SFTSpec:
     """The SFT run for one arm and seed."""
     data = ArtifactStep.adopt(f"{STEP_PREFIX}/arms/{arm}", ARM_DATA_VERSION, ARM_SOURCES[arm])
-    suffix = "-smoke" if smoke else ""
+    suffix = f"-ctx{context_length}" + ("-smoke" if smoke else "")
     return SFTSpec(
         name=user_owned_name(f"checkpoints/open-swe-outcome/qwen3-8b-{arm}-seed{seed}{suffix}"),
         version=VERSION,
         # Qwen3-8B declares a 40,960-token window; its rotary positions extend past it.
-        model=HFModel(BASE_MODEL, eos_token_ids=QWEN3_EOS_TOKEN_IDS, max_seq_len=CONTEXT_LENGTH),
+        model=HFModel(BASE_MODEL, eos_token_ids=QWEN3_EOS_TOKEN_IDS, max_seq_len=context_length),
         chat_template=OPENCODE_TOOLS_CHAT_TEMPLATE,
         datasets=[
             ArtifactDatasetSpec(slug=arm, artifact=data, train_glob=SMOKE_SHARD if smoke else ARM_GLOB, weight=1.0)
         ],
         optimizer=OPTIMIZER,
-        seq_len=CONTEXT_LENGTH,
+        seq_len=context_length,
         batch_size=BATCH_SIZE,
         num_train_steps=SMOKE_STEPS if smoke else None,
         num_train_epochs=None if smoke else 1,
@@ -82,8 +82,9 @@ def arm_spec(arm: str, seed: int, *, smoke: bool) -> SFTSpec:
 @click.option("--seed", type=int, required=True)
 @click.option("--accelerator", required=True, help="Accelerator such as '8xH100'.")
 @click.option("--smoke", is_flag=True, help=f"Train {SMOKE_STEPS} steps on one shard.")
-def main(arm: str, seed: int, accelerator: str, smoke: bool) -> None:
-    spec = arm_spec(arm, seed, smoke=smoke)
+@click.option("--context-length", type=int, default=CONTEXT_LENGTH, show_default=True)
+def main(arm: str, seed: int, accelerator: str, smoke: bool, context_length: int) -> None:
+    spec = arm_spec(arm, seed, smoke=smoke, context_length=context_length)
     StepRunner().run([lower(sft_step(spec, resources_from_accelerator(accelerator)))])
 
 
