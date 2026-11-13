@@ -10,7 +10,7 @@ import json
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from enum import StrEnum
 from typing import Any, cast
 
@@ -417,9 +417,21 @@ def _promote(
         size=int((info := filesystem.info(destination_path)).get("size") or 0),
         identity=_destination_identity(info),
     )
-    if promoted.size != verified.size or not _destination_matches_marker(filesystem, destination_path, promoted, marker):
+    if promoted.size != verified.size:
         filesystem.rm(destination_path)
         raise VerifiedCopyError(f"promoted object does not match verified staging object: {verified.path}")
+    if not _destination_matches_marker(filesystem, destination_path, promoted, marker):
+        # CoreWeave may change a multipart ETag during server-side copy even with
+        # preserve_etag=True. Verify the published bytes against the original stream
+        # hash, then retain its new identity so retry never rereads the GCS source.
+        identity = _verify_destination(
+            filesystem,
+            destination_path,
+            expected_size=verified.size,
+            expected_sha256=verified.sha256,
+            expected_etag=None,
+        )
+        _write_json_atomic(status_fs, marker_path, asdict(replace(marker, staging_identity=identity)))
     filesystem.rm(staging_path)
 
 

@@ -346,6 +346,52 @@ def test_verified_copy_interrupted_promotion_resumes_from_staging(tmp_path, monk
     assert not staging.exists()
 
 
+@pytest.mark.parametrize("corrupt_copy", [False, True])
+def test_verified_copy_changed_promotion_etag_verifies_content(tmp_path, monkeypatch, corrupt_copy):
+    source = tmp_path / "source"
+    destination = tmp_path / "destination"
+    source.mkdir()
+    (source / "weights.bin").write_bytes(b"correct bytes")
+    original_route = verified_copy_module.filesystem_for
+    local_fs, _ = original_route(str(destination))
+
+    class ChangedCopyIdentity:
+        def __getattr__(self, name):
+            return getattr(local_fs, name)
+
+        def info(self, path, **kwargs):
+            return {**local_fs.info(path, **kwargs), "ETag": str(path)}
+
+        def find(self, path, *, detail):
+            assert detail
+            return {name: {**info, "ETag": name} for name, info in local_fs.find(path, detail=True).items()}
+
+        def cp_file(self, path1, path2, **kwargs):
+            local_fs.cp_file(path1, path2, **kwargs)
+            if corrupt_copy:
+                Path(path2).write_bytes(b"corrupt bytes")
+
+    changed_fs = ChangedCopyIdentity()
+
+    def route(url, *, s3_upload_policy=S3UploadPolicy.STANDARD):
+        fs, path = original_route(url, s3_upload_policy=s3_upload_policy)
+        return (changed_fs if str(url).startswith(str(destination)) else fs), path
+
+    monkeypatch.setattr(verified_copy_module, "filesystem_for", route)
+    if corrupt_copy:
+        with pytest.raises(VerifiedCopyError, match="destination hash mismatch"):
+            verified_copy_prefix(str(source), str(destination), workers=1)
+        assert not (destination / COMPLETION_MANIFEST).exists()
+        assert (Path(str(destination) + STAGING_SUFFIX) / "weights.bin").read_bytes() == b"correct bytes"
+    else:
+        verified_copy_prefix(str(source), str(destination), workers=1)
+        assert (destination / "weights.bin").read_bytes() == b"correct bytes"
+        (destination / COMPLETION_MANIFEST).unlink()
+        result = verified_copy_prefix(str(source), str(destination), workers=1)
+        assert result.copied_files == 0
+        assert result.resumed_files == 1
+
+
 def test_verified_copy_does_not_reuse_status_from_another_source(tmp_path):
     first_source = tmp_path / "first-source"
     second_source = tmp_path / "second-source"

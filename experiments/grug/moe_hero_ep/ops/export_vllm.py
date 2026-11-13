@@ -1,11 +1,12 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Export one pinned native Hero checkpoint as BF16 split-expert HF weights."""
+"""Export one pinned native Hero checkpoint as BF16 stacked-expert HF weights."""
 
 import gc
 import logging
 import re
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 
@@ -21,15 +22,14 @@ from rigging.filesystem.s3_compat import configure_coreweave_s3
 from rigging.filesystem.storage_path import StoragePath
 from rigging.log_setup import configure_logging
 
-from experiments.grug.moe_hero_ep.model import GrugModelConfig, grugmoe_inference_state_dict
+from experiments.grug.moe_hero_ep.model import GrugModelConfig, Transformer, grugmoe_inference_state_dict
 from experiments.grug.moe_hero_ep.ops.vibe_check.completions import digest
 from experiments.grug.moe_hero_ep.weights import restore_weights
 
 MANIFEST_FILENAME = "export-manifest.json"
 REQUEST_FILENAME = "export-request.json"
 INDEX_FILENAME = "model.safetensors.index.json"
-EXPORT_VERSION = 2
-EXPERT_BANK = re.compile(r"^(.*\.mlp\.experts)\.(gate_proj|up_proj|down_proj)\.weight$")
+EXPORT_VERSION = 4
 
 
 @dataclass(frozen=True)
@@ -43,14 +43,17 @@ class ExportConfig:
     replica_axis_size: int = 1
 
 
-def _split_names(name: str, num_experts: int) -> list[str]:
-    match = EXPERT_BANK.fullmatch(name)
-    if match is None:
-        return [name]
-    return [f"{match[1]}.{i}.{match[2]}.weight" for i in range(num_experts)]
-
-
 def export(config: ExportConfig) -> None:
+    """Export authoritative Hero weights after applying their pending QB update."""
+    export_weights(config, restore_weights, weights_kind="hero_pending_qb")
+
+
+def export_weights(
+    config: ExportConfig,
+    restore: Callable[[str, str, GrugModelConfig, jax.sharding.Mesh], Transformer],
+    *,
+    weights_kind: str,
+) -> None:
     """Write or resume an export; refuse any destination with a completion manifest.
 
     All JAX processes call this with the same config after distributed initialization.
@@ -60,7 +63,12 @@ def export(config: ExportConfig) -> None:
         raise ValueError("source_revision must be a 40-character lowercase hexadecimal Marin commit")
     root = StoragePath(config.destination)
     hf_config = config.model.to_hf_config(config.model.vocab_size).to_dict()
-    request = {"export_version": EXPORT_VERSION, "config": draccus.encode(config), "hf_config": hf_config}
+    request = {
+        "export_version": EXPORT_VERSION,
+        "weights_kind": weights_kind,
+        "config": draccus.encode(config),
+        "hf_config": hf_config,
+    }
     export_id = digest(request)
 
     def prepare():
@@ -73,14 +81,12 @@ def export(config: ExportConfig) -> None:
     run_on_export_writer(prepare)
     mesh = compact_grug_mesh(expert_axis_size=config.expert_axis_size, replica_axis_size=config.replica_axis_size)
     with jax.set_mesh(mesh):
-        model = restore_weights(config.checkpoint, config.metadata_digest, config.model, mesh)
-        # restore_weights already applied the pending QB update to authoritative weights.
+        model = restore(config.checkpoint, config.metadata_digest, config.model, mesh)
         model = jax.tree.map(lambda x: x.astype(jnp.bfloat16) if eqx.is_inexact_array(x) else x, model)
         jax.block_until_ready(model)
         gc.collect()
         state_dict = grugmoe_inference_state_dict(model)
         shards, _ = _shard_hf_checkpoint(state_dict, max_shard_size=DEFAULT_MAX_SHARD_SIZE)
-        tensor_names = {name: tuple(_split_names(name, config.model.num_experts)) for name in state_dict}
         records = save_hf_shards(
             shards,
             lambda keys: {name: state_dict[name] for name in keys},
@@ -89,7 +95,6 @@ def export(config: ExportConfig) -> None:
             export_host_budget_bytes=1,
             max_concurrent_shards=1,
             resume=HFShardResume(root, export_id),
-            tensor_names=tensor_names,
         )
         payload_size = sum(x.size * x.dtype.itemsize for x in state_dict.values())
         weight_map = {name: record.filename for record in records for name in record.tensor_names}

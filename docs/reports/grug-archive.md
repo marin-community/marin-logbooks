@@ -28,6 +28,13 @@ goes stale on the next commit.
 
 ## Experiments
 
+### snowball-sft
+- Path: `experiments/grug/snowball_sft/`
+- Origin: `moe_hero_ep` at `2cae063c877172844fe6ff90e94354cc08a273fa`
+- Status: active
+- Purpose: reproduce the October 5 Snowball SFT update rules on GPUs with weights-only initialization.
+- Diff: campaign artifact `sft-pipe-repro/artifacts/reports/snowball-sft-diff/index.html`
+
 ### grug-base-template
 - Path: `experiments/grug/base/`
 - Origin: base

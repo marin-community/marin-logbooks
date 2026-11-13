@@ -97,9 +97,7 @@ def test_native_export_preserves_all_weights_and_config(tmp_path, monkeypatch):
         bank = model.stacked_blocks.stacked.mlp.expert_mlp
         for projection, values in [("gate_proj", bank.w_gate), ("up_proj", bank.w_up), ("down_proj", bank.w_down)]:
             for layer in range(2):
-                expected.pop(f"model.layers.{layer}.mlp.experts.{projection}.weight")
-                for expert in range(4):
-                    expected[f"model.layers.{layer}.mlp.experts.{expert}.{projection}.weight"] = values[layer, expert].T
+                expected[f"model.layers.{layer}.mlp.experts.{projection}.weight"] = values[layer].swapaxes(-1, -2)
         assert tensors.keys() == expected.keys()
         for name, value in expected.items():
             wanted = np.asarray(jax.sharding.reshard(value.astype(jnp.bfloat16), P()))
