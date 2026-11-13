@@ -88,6 +88,32 @@ status: active
 - Interpretation and limitations: the larger finding is about training, not the probe. The cold-start SFT pipeline used in marin#10799 (`experiments/grug/snowball_sft/`: launch, mixture, model, HF import, export) is not on Marin main. It survives only as `.source` snapshots on `codex/sft-cold-start-reference-20261030`, taken from a training worktree at base `8577d258` plus a patch, and that branch's README says it is not a tested port to current main. The archive PR was closed. Main's supported SFT paths are the hero SFT launcher (hero model on GB200) and the standard chat trainer for Snowball at 32K context without packing, neither of which is the 262K replay-mixing recipe.
 - Decision and next action: the two arms need a training vehicle. Options are to restore the archived training worktree at its pinned base and apply the replay change there, to port `snowball_sft` to main first, or to run the comparison on the hero SFT launcher. This needs a decision before more probe work, because the probe launcher must match whichever model code writes the checkpoints.
 
+### 2026-11-13 03:25 UTC - Smoke run: the probe scores the Snowball base at 262K on one H100 node
+
+- Question or hypothesis and reason for trying it: decided 2026-11-13 to train the arms from the archived cold-start worktree (option A) and to start with a smoke run. Can the current probe code restore a Snowball checkpoint and score 262,144-token MRCR rows on H100s?
+- Published source revision: `34fe7eb260970283624273974acfac07dc2606e1` (`experiments/grug/moe_hero_ep/snowball_recipe.py`, `snowball_hf_import.py`, `launch_snowball_mrcr_eval.py`, `test_snowball_hf_import.py`).
+- Command or material configuration:
+  - A read-through of the archived `snowball_sft/model.py` against the current `moe_hero_ep/model.py` found no added, removed or renamed parameter fields, so the probe runs from current code with a Snowball config. Two hero defaults do not fit H100s and are overridden: the dropless MoE backend (`sonic` instead of the Blackwell-only default) and the mixed-precision policy (bfloat16 parameters, as the reproduction stored them).
+  - Import: `python -m experiments.grug.moe_hero_ep.snowball_hf_import --hf-id open-athena/snowball-67b-a2b-base-262k-qk175-skew8 --hf-revision 058ecaf27b9e4f37219df221a51e7d490d58ec3d --destination <tmp>/snowball-base-native-20261113`, one process on one 8xH100 node of `cw-rno2a` (64 CPU, 1500 GB RAM), interactive priority.
+  - Probe: `python -m experiments.grug.moe_hero_ep.launch_snowball_mrcr_eval --run-id snowball-base-mrcr-smoke2 --checkpoint <tmp>/snowball-base-native-20261113/step-0 --mrcr-max-batches 4 --version 2026.11.13 --run`, a CPU coordinator on `cw-rno2a` dispatching one 8xH100 node with eight processes and eight context shards.
+- External inputs and artifact references: MRCR dataset revision `f4c69fae7cf81f7ca26b9fee34b392a50f6b8a1d`, two-shot prompt, cap 262,144, tokenized with the Marin tokenizer. The imported checkpoint is in temporary object storage with a 30-day lifetime. Results: `eval/mrcr-snowball/snowball-base-mrcr-smoke2/2026.11.13/` under the cluster's Marin prefix (`mrcr_metrics.json`, `mrcr_example_losses.jsonl`).
+- Environment and hardware when relevant: Iris jobs `/dml/lce40-snowball-base-import` (21.6 minutes) and `/dml/lce40-snowball-base-mrcr-smoke2` (8.4 minutes end to end).
+- Result, including failure or restart:
+  - Import: all 502 tensors equal the export exactly after a restore through `load_checkpoint_params`.
+  - A first probe run with `--mrcr-max-batches 1` failed after four attempts. One node holds one row per batch, so one batch scored one of a source's four condition rows, and `pair_condition_losses` rejects an incomplete set. The log store timed out on every query, so this cause is inferred from the code, from seven of eight processes exiting cleanly, and from the four-batch rerun succeeding.
+  - The four-batch run scored one complete source (8 needles, evidence 210,531 tokens back, 241 scored tokens):
+
+    | Condition | Loss sum | Loss per token |
+    | --- | ---: | ---: |
+    | Query only | 400.88 | 1.663 |
+    | Distractors only | 426.52 | 1.770 |
+    | Needles only | 22.39 | 0.093 |
+    | Full context | 66.99 | 0.278 |
+
+    Isolated needle gain 1.571 nats per token, distracted gain 1.492, needle recovery 0.950.
+- Interpretation and limitations: the port works end to end on H100s. One source says nothing about the aggregate, but the numbers are in the range marin#9519 reported for a 262K parent (isolated gain 1.39, recovery 0.91 over 299 sources), which is what a correctly loaded long-context model should show. Not tested: a checkpoint written by the archived trainer (none exists), agreement between this GPU path and the TPU path on the same checkpoint, and the per-row time, which the unavailable logs would have given. The imported checkpoint is not in the layout the archived trainer initializes from; the arms need the archived importer for that.
+- Decision and next action: step 0 proper is now runnable: score the base on all 299 sources, then import and score the four marin#10799 exports (steps 222, 471, 1024, 2048).
+
 ## Final decision
 
 - Selected approach and evidence:
