@@ -10,24 +10,25 @@ from collections import Counter
 from pathlib import Path
 
 
-def summarize(path: Path) -> dict:
+def summarize(paths: list[Path]) -> dict:
     routes = Counter()
     statuses = Counter()
     completion_times = []
     usage = Counter()
     fingerprints = set()
-    with path.open() as wire:
-        for line in wire:
-            record = json.loads(line)
-            routes[record["route"]] += 1
-            statuses[str(record.get("status", "transport failure"))] += 1
-            if record["route"] != "v1/completions" or record.get("status") != 200:
-                continue
-            response = json.loads(record["response_text"])
-            fingerprints.add(response["system_fingerprint"])
-            completion_times.append(record["elapsed"])
-            for field in ("prompt_tokens", "completion_tokens", "total_tokens"):
-                usage[field] += response["usage"][field]
+    for path in paths:
+        with path.open() as wire:
+            for line in wire:
+                record = json.loads(line)
+                routes[record["route"]] += 1
+                statuses[str(record.get("status", "transport failure"))] += 1
+                if record["route"] != "v1/completions" or record.get("status") != 200:
+                    continue
+                response = json.loads(record["response_text"])
+                fingerprints.add(response["system_fingerprint"])
+                completion_times.append(record["elapsed"])
+                for field in ("prompt_tokens", "completion_tokens", "total_tokens"):
+                    usage[field] += response["usage"][field]
     assert completion_times
     ordered = sorted(completion_times)
     return {
@@ -49,7 +50,7 @@ def summarize(path: Path) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--wire", type=Path, required=True)
+    parser.add_argument("--wire", type=Path, nargs="+", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = summarize(args.wire)

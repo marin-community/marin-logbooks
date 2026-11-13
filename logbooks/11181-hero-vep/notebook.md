@@ -205,3 +205,44 @@ that one and four clients preserve the same complete matrix without duplicates.
 All eight offline tests and lint passed. The 10-variant inputs will first be
 repeated with four clients to measure live repeat variation before the full
 100-variant pilot. Prompts and scoring formulas remain unchanged.
+
+
+## 2026-11-13: Repeatability gate fails before full pilot
+
+Source `0c32deba687ce5149360effca7b9471db7ab16d6` produced a complete
+four-client repeat of the same ten variants: 272 scores, 652 HTTP requests,
+75.63 seconds. An earlier four-client attempt ended with SIGTERM after 223
+scores and 538 successful HTTP responses; its cause is unknown and its partial
+records are preserved privately. The retry was bounded to 800 requests and
+300 seconds. Neither partial results nor the retry replace the sequential run.
+
+Complete-matrix aggregation passed for both completed runs. Input hashes,
+target token IDs, prefix boundaries, and input lengths match exactly. Across
+544 completion responses, one serving fingerprint was observed and native
+observed-token logprobs agreed exactly with echoed logprobs. Nevertheless,
+target likelihoods differed by up to 3.8038 natural-log units (mean absolute
+difference 0.2374). Maximum strand-averaged variant-score differences were
+2.8781 (null), 0.5401 (healthy), 0.8898 (zero-shot), and 0.2611 (two-shot).
+Each method's ordering of the ten variants changed. See
+`smoke-repeat-comparison.json`. These are repeatability diagnostics, not
+estimates of VEP quality.
+
+A bounded follow-up replayed the first eight completion payloads from the
+sequential smoke, each three times sequentially (24 requests, 120-second cap),
+using the same published ScoringClient and private authentication. The eight
+cases are forward-strand null/healthy reference/alternate plus zero-shot A/B
+under both mappings for one autosomal variant. Target-only likelihood ranges
+were 0.0445–0.6876; primary A ranged by 0.5450 and primary B by 0.4433.
+`sequential-stability.json` records every target score. This replay used an
+ad-hoc diagnostic command rather than a separately published experiment
+configuration; original wire requests and responses remain private and replayable.
+Do not confuse whole-input likelihood variation with target-only variation.
+
+The endpoint is available and accepts the required protocol, but the current
+blocker is unexplained score variation under identical requests. Sequential
+requests alone do not remove it. This does not establish a specific serving
+bug or its cause: global batching, numerical behavior, and routing remain
+unverified. No serving configuration was changed, no deployment was launched,
+and the full 100-variant pilot and reserved 300-variant panel remain unscored.
+Next gate: establish a stable scoring route or quantify a justified repeat
+protocol before comparing prompt methods. Preserve compilation and CUDA graphs.
