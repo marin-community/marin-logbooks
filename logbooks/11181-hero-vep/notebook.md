@@ -399,3 +399,20 @@ resolved. Repository-wide type checking and the broader affected suite await
 CI because the shared VM cannot safely run their full environment. The PR
 body and initial feedback were read back, and an event-driven watcher is active.
 Archive index setup remains pending; no duplicate checkout operation was started.
+
+
+## 2026-11-13: Analysis preparation and contribution CI
+
+Marin PR #11375 completed CI with no failed or pending checks at contribution
+commit `b28487e78e2422032ace32b5f48812e610f36fc2`. The PR remains a draft
+and has no review feedback yet. The archive index entry is now proposed in
+[logbooks PR #41](https://github.com/marin-community/marin-logbooks/pull/41).
+Neither PR has been merged.
+
+Add `report_sensitivity.py` for offline summaries of forward/reverse score
+differences, label-mapping score shifts and matched-pair order flips, the six
+format checks, and each positive variant's rank among its nine matched controls.
+Ties receive average ranks; strict order flips exclude ties and report their
+count separately. These diagnostics complement native grouped-bootstrap AP
+metrics and identify representative failures without additional model calls.
+The full pilot is still running; no quality conclusions follow from preparation.
