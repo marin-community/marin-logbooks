@@ -336,3 +336,28 @@ not proof of no impact on other users.
 `paced.py` buffers the small panel score stream until its final check succeeds;
 on failure it preserves the partial stream with an invalid marker. Raw wire
 and sentinel records flush throughout. No full pilot is launched by this trial.
+
+
+The approved paced trial completed successfully at source
+`e452dc2bb72a63479124e9bb108f01e91ece9a6f`: 458.00 seconds (7m38s),
+706 HTTP requests, all HTTP 200. There were 272 panel targets and 42 sentinel
+calls (six baselines plus 36 repeats), for 314 completion calls in total.
+All sentinel repeats matched exactly; all 36 overlapping targets from the
+earlier fixed-rank sequential diagnostic also matched exactly. Full-matrix
+aggregation passed for all ten variants. See `paced-trial-summary.json`,
+`paced-trial-sentinels.json`, and `paced-trial-variants.json`.
+
+Completion latency excluding pacing was 0.408 seconds median, 0.649 seconds
+p95 and 0.941 seconds maximum; no stop threshold triggered. Mean completion
+rate including pauses and setup was 0.686 requests/second, with one request
+in flight and 105,911 prompt tokens processed. This is comparable to the
+previous sequential smoke's 0.400-second median and 0.689-second p95; it is
+not a measurement of latency or GPU utilization for other endpoint users.
+Expert-parallel work is shared, so rank pinning is not resource isolation.
+
+This passes the agreed ten-variant stability/load gate. The same paced policy
+is supported for a bounded continuation, retaining all stop conditions and
+sentinel checks. The full 100-variant pilot and reserved validation panel have
+not been launched in this trial. No serving settings or deployment changed.
+Ten offline tests and required lint passed for the guarded runner; raw HTTP
+responses and the private launcher remain in the local private execution record.
