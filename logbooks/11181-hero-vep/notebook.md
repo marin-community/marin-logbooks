@@ -486,3 +486,34 @@ not run. Both-mapping diagnostics are separate from the main benchmark.
 Fifteen focused offline tests passed in 0.23 seconds, including wire-level
 space-token conditioning and both mapping score signs. Required lint passes.
 This entry precedes v2 manifest materialization and any live v2 calls.
+
+
+## 2026-11-13: V2 manifest and live answer-token verification
+
+The revised generator at `b4d938e57bcea0c278ccc9e724bc013b2f46aa26`
+reproduced the original 402 variants, labels, sequences and demonstrations.
+All 402 reference windows were rechecked offline against the saved independent
+Ensembl responses. The new panel hash and balanced assignments are recorded in
+`preparation-v2.json` and `answer-mappings-v2.json`: 50/50 pilot mappings and
+150/150 validation mappings, seed 11181. `prompt-examples-v2.json` contains
+rendered zero-/two-shot prompts, with the literal trailing space preserved.
+
+A two-variant smoke exercised one variant from each assigned mapping, both
+strands and both classification methods: 16 target scores plus 12 sentinel
+calls. It completed in 40.96 seconds with 43 HTTP requests and 28 completions,
+under caps of 120 requests and 120 seconds. It used one fixed rank and the
+unchanged one-second pacing and stop guards. Maximum completion latency was
+0.740 seconds. Final sentinel drift was zero; the old DNA sentinels and serving
+fingerprint matched the v1 pilot. No deployment changed.
+
+Native response inspection verified 24 classification calls including sentinel
+repeats: the conditioning prefix ends in space token 220, and the scored bare
+answer is A=32 or B=33, never merged tokens 362/426. All eight distinct
+classification contexts had identical preceding-token probabilities across A/B
+requests. See `smoke-v2-summary.json`. This verifies execution and token
+alignment, not VEP quality; no v2 full pilot or validation has run.
+
+The current specification is `protocol-v2.json` and `protocol-v2.md`. The v1
+freeze is superseded, and its results remain historical. No PR or main merge
+was created. Next scientific work is a bounded revised-pilot comparison before
+any fresh validation; the old private validation launcher must not be reused.

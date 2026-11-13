@@ -57,3 +57,11 @@ materialization are recorded in subsequent notebook entries.
 
 All work remains on the research branch. No PR, main-branch merge or deployment
 change is part of this protocol revision.
+
+## Recorded verification
+
+The mapping manifest, rendered prompt examples and preparation checks are
+recorded beside this file. The two-variant live smoke passed 28 completions in
+40.96 seconds, with zero sentinel drift and verified space=220/A=32/B=33 token
+IDs. See `smoke-v2-summary.json`. The full revised pilot and fresh validation
+remain unrun; the v1 results must not be presented as v2 results.
