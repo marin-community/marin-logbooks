@@ -437,3 +437,36 @@ Issue #11181 now explicitly states this experimental scope. The ongoing
 100-variant pilot and planned frozen-method development validation remain the
 scientific work. Neither a successful software check nor a stable subset
 establishes model quality.
+
+
+## 2026-11-13: Completed pilot and frozen validation protocol
+
+The full pilot at source `4cbc70b7cbcda68b17d362cf1d468b74664e6262`
+completed all 2,448 targets and final sentinel checks in 66m17s. All 6,285 HTTP
+requests succeeded. All 306 sentinel repeats and all 248 targets shared with
+the preceding paced trial matched exactly. Complete-matrix aggregation passed.
+Median/p95/maximum completion latency was 0.395/0.635/0.974 seconds. This
+supports the fixed-rank sequential workaround under the observed conditions;
+it does not establish deployment-wide determinism or impact on other users.
+
+See [pilot-report.md](pilot-report.md) for methods, uncertainty, sensitivity,
+representative failures and reproduction. Exploratory AUPRC on ten matched
+groups is 0.213 (null), 0.302 (healthy), 0.068 (zero-shot) and 0.263 (two-shot).
+The healthy-minus-null paired interval includes zero. Swapping A/B mappings
+changes signs in 94/100 zero-shot and 76/100 two-shot cases after semantic
+alignment. Mapping-averaged two-shot AUPRC is 0.114. The independent saved-score
+sign audit passes all 60 checks on the preceding ten-variant trial.
+
+Retain all four original primary methods, exact templates, demonstrations,
+selection, both-strand means and score signs for the reserved 300-variant
+development panel. Mapping averages remain secondary diagnostics. No prompt
+tuning, mapping selection, new demonstrations, or test-split evaluation.
+The freeze hashes are in `validation-protocol-frozen.json`. Validation's
+initial sentinels and serving fingerprint must match the pilot.
+
+The planned validation continuation has 7,200 panel targets plus 906 sentinel
+calls, one client, the same fixed rank and one-second completion gap. Cap at
+30,000 total HTTP requests and 14,400 seconds; stop without retry on the same
+latency/drift/protocol failures. Estimated duration from the pilot is 3h15m.
+Validation has not started. Publication of the prepared results and protocol
+on this research branch was explicitly approved; no PR or merge is planned.

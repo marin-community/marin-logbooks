@@ -1,0 +1,55 @@
+{
+  "state": "frozen",
+  "prerequisites": [
+    "Complete and analyze guarded 100-variant pilot",
+    "Commit protocol freeze before any validation requests",
+    "Initial validation sentinels and serving fingerprint must match pilot"
+  ],
+  "panel": "validation",
+  "variants": 300,
+  "match_groups": 30,
+  "panel_targets": 7200,
+  "sentinel_completions": 906,
+  "total_completions": 8106,
+  "max_http_requests": 30000,
+  "max_elapsed_seconds": 14400,
+  "workers": 1,
+  "data_parallel_rank": 0,
+  "minimum_completion_gap_seconds": 1,
+  "sentinel_tolerance": 1e-06,
+  "max_completion_latency_seconds": 5,
+  "sustained_latency_stop": "median(last 5) > max(1.5 seconds, 3 * median(first 8)); evaluated after 13 completions",
+  "retry": false,
+  "primary_methods": [
+    "null",
+    "healthy",
+    "zero-shot",
+    "two-shot"
+  ],
+  "secondary_methods": [
+    "zero-shot/mapping-average",
+    "two-shot/mapping-average"
+  ],
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 11181,
+  "additional_format_checks": false,
+  "panels_sha256": "d13451cade17f456327a135f10dceb1c2d189fbfa9605e1ab217cab9e8af69ce",
+  "protocol_file_sha256": {
+    "prompts.py": "58017e18ef004e35a9c2ebd2ff253888cd74e4e4fa9770bf0938ea520e7cc0c2",
+    "targets.py": "b09a30b00e802d3b9dfe643d1d7e8df774885c62a45f7abdb881e6760881aa3f",
+    "templates/zero-shot.txt": "4f6e9393cd36451c8d50d6728547a970ef59776513e0712d8eabc3ca508d6269",
+    "templates/two-shot.txt": "4173ee8d0bacfd214005709d7e6de1e39005a31ce0bfe7d6db29a0609ea9a08c",
+    "aggregate.py": "f770dfc9eaf0678ab4c2169f07453e5d007e4aa0d8511a5c8965cd90c518dc02",
+    "report_metrics.py": "d4ebd5957c8ac5e3a00224edebdd55d24238791b659223ca4463833577773d96",
+    "report_sensitivity.py": "0a36159abbca837f8c6959a8bf02c52ce68cc7ad8d33e2f71561cef98ee53f48",
+    "client.py": "db867f11e390e704f901f902e106b9ffb5203f93cd9e48e37b779efe90ed8a1d",
+    "paced.py": "49e6cb859caeacc472c13d4f4e9ddb8ee162c042ac6ae8cf99a6066f428c6ccf",
+    "run.py": "4ad70e51099743157fd6afb40413aab015a896872b1ec1fdcf2231bd2ad1637d",
+    "prepare.py": "c9a6e3cf712e81df1f64ab6571219940cc59da30918873f674d6a2106912c69d"
+  },
+  "frozen_at_utc": "2026-11-13T17:40:13.580107+00:00",
+  "pilot_source_commit": "4cbc70b7cbcda68b17d362cf1d468b74664e6262",
+  "pilot_report": "pilot-report.md",
+  "pilot_metrics": "pilot-100-metrics.json",
+  "decision": "Keep all four original primary methods and score signs; mapping averages remain secondary. No prompt or demonstration tuning after pilot."
+}
