@@ -11,6 +11,11 @@ Coordinating issue: https://github.com/marin-community/marin/issues/11181
 Marin base: `6f62a629e157b91cb170d6733e959f48b5d88906`.
 Research branch: `codex/11181-hero-vep`.
 
+Scope: experiment only. Keep code, prompts, analysis and evidence on branches.
+Production integration, opening or reopening PRs, and merging into `main` are
+outside this experiment. Completion requires results, limitations and a
+reproducible experimental conclusion; it does not require a contribution merge.
+
 ## 2026-11-10: Development inputs and serving availability
 
 Compare unconditioned DNA likelihood, healthy-individual-conditioned likelihood,
@@ -416,3 +421,19 @@ Ties receive average ranks; strict order flips exclude ties and report their
 count separately. These diagnostics complement native grouped-bootstrap AP
 metrics and identify representative failures without additional model calls.
 The full pilot is still running; no quality conclusions follow from preparation.
+
+
+## 2026-11-13: Experiment-only scope clarification
+
+The user explicitly requested that all work remain on branches, with no plans
+to merge into `main`. Marin PR #11375 and logbooks PR #41 were closed without
+merging. The harness (`codex/11181-vep-harness`), research
+(`codex/11181-hero-vep`) and index (`codex/11181-vep-index`) branches and their
+commits remain available. Earlier entries describing contribution review are
+historical; PR review, index merging and production promotion are no longer
+completion criteria. Any future promotion requires separate authorization.
+
+Issue #11181 now explicitly states this experimental scope. The ongoing
+100-variant pilot and planned frozen-method development validation remain the
+scientific work. Neither a successful software check nor a stable subset
+establishes model quality.
