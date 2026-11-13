@@ -1,6 +1,12 @@
 # Gradient size, curvature, and optimizer power
 
-**Working results guide.** Tests at six saved model states are complete. Choosing and testing new step lengths is still in progress. Section 7 explains that remaining comparison.
+**The study is complete.** We measured six saved model states and completed the separate tests of selected step lengths.
+
+The main findings are:
+
+- **Step length can reverse the local ranking of the two powers.**
+- **The quadratic curvature model predicts better on average, but fails its coverage target at some checkpoints.**
+- **Its step rule helps some comparisons and hurts others. It does not explain the earlier training ranking by itself.**
 
 Read the bold sentences first. Each section answers one question. The separate methods reference gives the formulas and implementation details.
 
@@ -50,6 +56,8 @@ The middle checkpoint trained with 1/8 also repeats the measurements with 128 re
 **All six checkpoint jobs completed. All 28 representative derivative checks passed.**
 
 We compare two ways to measure local gradient change along a path. A **Hessian-vector product** calculates that change directly from derivatives. A **central difference** estimates it from gradients measured after small parameter moves in opposite directions.
+
+Relative error is the length of the difference between these two estimates, divided by the Hessian-vector product’s length. A tiny denominator floor of 10⁻³⁰ prevents division by zero.
 
 The small move size is the **perturbation size**. Two adjacent sizes in the prescribed decreasing sequence must each give relative error below 2%. The threshold was unchanged throughout the study.
 
@@ -130,7 +138,7 @@ Each curve aims to place about 90% of curvature measurements below it at a given
 
 *Figure 3. Colors now identify the three curvature models. Coverage is the fraction of measured values below the predicted envelope. The dashed line marks the 90% target. Each point summarizes one held-out checkpoint. High coverage alone can be obtained by predicting excessively large values, so we also assess prediction error.*
 
-We score prediction error using **90th-quantile loss**: underprediction is penalized nine times as heavily as equal-size overprediction.
+We score prediction error using **90th-quantile loss**. For each measurement, the penalty is 0.9 times the underprediction magnitude or 0.1 times the overprediction magnitude. We average within each excluded checkpoint, then give the six checkpoint averages equal weight.
 
 The quadratic model has the lowest average score: 0.0345, compared with 0.0409 for linear and 0.0533 for constant. [See prediction error and coverage together](figures/heldout-envelope-validation.svg).
 
@@ -138,21 +146,57 @@ However, **all three models cover only 50% of the late checkpoint trained with 1
 
 ## 7. Do curvature-based step lengths improve the comparison?
 
-**The direct evaluations are still in progress.**
+**The quadratic rule helps in some cases and hurts in others. The linear rule gives the same results as constant length.**
+
+### How were the lengths chosen?
 
 The proposed rule uses the starting gradient norm G and the fitted curvature envelope, called ell. A scalar c controls the overall size. The expression ell(2G) evaluates the fitted curve at twice the starting gradient norm. The proposed physical length s is:
 
 s = cG / ell(2G).
 
-The held-out gradient norm is an input to the rule; the held-out loss is reserved for testing.
+The held-out gradient norm is an input to the rule. The held-out loss is reserved for testing.
 
-For each held-out checkpoint, direct loss evaluations on the other five checkpoints select c. A separate evaluation then tests that chosen value at the held-out checkpoint. The held-out loss cannot choose its own scalar.
+For each held-out checkpoint, direct loss evaluations on the other five checkpoints selected c. A separate job then evaluated the chosen value at the excluded checkpoint. Its own loss could not choose its scalar.
 
-The comparison includes a constant physical length, a linear-curvature rule, and a quadratic-curvature rule. Both optimizer powers share the scalar and the same permitted length range within each rule and holdout. The methods reference specifies that range and the three scalar candidates.
+The comparison includes constant physical length, a linear-curvature rule, and a quadratic-curvature rule. Both optimizer powers share the scalar and permitted length range within each rule and holdout. The methods specify that range and the three scalar candidates.
 
-There is already an informative simplification: every fitted linear envelope has zero intercept. Then ell(2G) is proportional to G, so G cancels from the step rule. The methods use the same three target length scales for every rule. After this scaling, the linear rule’s candidate physical lengths coincide with the constant-length baseline, up to floating-point representation.
+Calibration produced 2,160 candidate records across six checkpoints. Identical physical lengths could reuse a direct evaluation within a process. The separate held-out phase produced 144 records. Every reported loss was measured directly; no adaptive loss was interpolated from the earlier path curves.
 
-The remaining direct tests will determine the effects of the quadratic rule and the selected lengths. A better curvature prediction score alone does not answer that question.
+Every fitted linear envelope has zero intercept. Then ell(2G) is proportional to G, so G cancels from the rule. After scaling each rule to the same three target length scales, its candidate lengths coincide with the constant baseline. Their measured held-out losses are identical.
+
+The constant and linear rules selected the middle candidate for every holdout. The quadratic rule selected the largest candidate for the middle checkpoint trained with 1/4, and the middle candidate elsewhere. None of the selected lengths reached a cap.
+
+### Did the quadratic rule reduce loss?
+
+**Improvement depends on both the checkpoint and the candidate power.**
+
+The next plot compares the quadratic rule with constant length **within the same power**. Its difference is loss with the quadratic rule minus loss with constant length. Negative means the quadratic rule did better.
+
+![Loss differences between the quadratic rule and constant length, separately for each optimizer power at all six held-out checkpoints.](figures/quadratic-versus-constant.png)
+
+*Figure 4. Colors identify candidate powers. Points show paired mean differences; horizontal lines show pointwise 95% intervals conditional on the chosen scalars. One horizontal-axis unit is 0.0001 loss. Both methods use the same reference groups and update batches. A line crossing zero leaves the sign uncertain under this resampling procedure.*
+
+The quadratic rule improves both powers at the early and middle checkpoints trained with 1/8. It worsens both at the early checkpoint trained with 1/4. These paired intervals exclude zero.
+
+At the middle checkpoint trained with 1/4, it chooses length 0.771 instead of 0.376. This larger step improves power 1/4 but worsens power 1/8. The paired differences from constant length are −0.0000733 and +0.0002607, respectively; both intervals exclude zero.
+
+These opposite effects are direct measurements. A better average curvature-fit score did not produce a uniformly better step rule.
+
+### Did the preferred power change?
+
+**The quadratic rule does not consistently remove the difference between the powers.**
+
+The following plot returns to the power comparison: loss with power 1/8 minus loss with power 1/4. Negative favors 1/8. Its colors identify the three step rules.
+
+![Paired loss differences between powers 1/8 and 1/4 under each selected step rule at the six excluded checkpoints.](figures/power-comparison-adaptive.png)
+
+*Figure 5. Points show mean power differences and lines show pointwise 95% intervals. One horizontal-axis unit is 0.0001 loss. Constant and linear have identical measured results; their vertical offsets separate the markers. Each rule's scalar was selected on the other five checkpoints. These intervals do not include uncertainty from that selection.*
+
+Power 1/8 gives lower loss under all three rules at both early checkpoints and at the middle checkpoint trained with 1/8. Those intervals exclude zero. Both late checkpoints have power-difference intervals that include zero under every rule.
+
+At the middle checkpoint trained with 1/4, the constant-length interval includes zero. The quadratic rule instead favors power 1/4: its mean power difference is +0.0003626, with interval [+0.0001688, +0.0005665].
+
+Thus, selecting a curvature-based length changes some local comparisons. It does not make one power uniformly preferable. These single-step tests also do not establish why the earlier full training runs ended differently.
 
 ## 8. How should the uncertainty be read?
 
@@ -172,12 +216,15 @@ The study measures selected update directions. The full Hessian operator norm is
 
 **The detailed methods and raw measurements accompany this guide.**
 
-The path measurements used about 67.3 accelerator-device hours. Each job used a v4-32 TPU slice containing 16 JAX-visible devices. Across jobs, this corresponds to approximately 4.205 slice-hours of task-active time. Queue and provisioning time are excluded. This is a compute-usage description, not a dollar bill. Adaptive-phase usage will be added after completion.
+All 18 experiment jobs completed successfully. Their total task-active usage was about 84.85 accelerator-device hours, or 5.305 v4-32 slice-hours. Each slice contained 16 JAX-visible TPU devices. Queue and provisioning time are excluded. This is measured compute usage, not a dollar bill.
 
 - [Large-text methods reference](methods-reference.pdf)
 - [Measured paths, including per-group losses](data/path-measurements.csv)
 - [Paired loss differences and intervals](data/paired-common-length.csv)
 - [Alignment and curvature decomposition](data/paired-loss-decomposition.csv)
 - [Held-out model fits and source hashes](data/analysis.json)
+- [Direct step-rule comparisons and intervals](data/adaptive-analysis.json)
+- [Quadratic and linear rules versus constant length](data/adaptive-versus_constant.csv)
+- [Experiment completion records, compute usage, and W&B links](data/experiment-index.json)
 
 The original Hessian reports remain separate. This follow-up tests the proposal that curvature depends on gradient size, using new directional measurements across the full model.

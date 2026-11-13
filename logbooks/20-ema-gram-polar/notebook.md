@@ -4151,3 +4151,47 @@ Six held-out jobs were submitted at 23:27 UTC from published revision
 `5ba168a60`. The frozen plan was committed before submission. Exact commands,
 job identifiers, and checksums are in `gradient-curvature-heldout-*-launch.json`.
 No queue/task wall-clock limit or preemption retry override was introduced.
+
+## 2026-11-12 — All held-out evaluations complete; final results
+
+All six separate held-out jobs succeeded with 4/4 tasks, zero failures or
+preemptions, matching frozen plans, saved counters, and data manifests, and
+finished W&B runs. The 144 direct records were collected and validated. This
+stage used 0.29712 task-active v4-32 slice-hours and 4.74432 JAX-device-hours.
+All 18 study jobs are complete. Total task-active usage is 5.30536 slice-hours
+and 84.84753 device-hours; these figures exclude queue/provisioning and are not
+billing estimates. No new training trajectory was run.
+
+The linear rule's selected held-out losses exactly equal constant length.
+Its fitted intercept is zero in every fold, so gradient norm cancels in the
+step rule after matched candidate scaling. The quadratic rule improves both
+powers at early/middle eighth-trained checkpoints, but worsens both at the
+early quarter-trained checkpoint. At quarter-middle its larger selected
+length (0.770861 versus 0.375656) improves candidate power 1/4 by 0.0000732765
+and worsens candidate power 1/8 by 0.000260718 relative to constant length.
+These paired pointwise intervals exclude zero. Selection uncertainty and
+multiple-comparison adjustments are not included.
+
+Power 1/8 has lower held-out loss under all three rules at both early states
+and eighth-middle. Both late-state power-difference intervals include zero
+under every rule. Quarter-middle's quadratic power gap is +0.000362590,
+95% interval [+0.000168811, +0.000566545], favoring 1/4; its constant/linear
+intervals include zero. Better average curvature prediction therefore does
+not imply a uniformly better step rule or explain the original training
+ranking. The shared text, one seed, separately tuned learning rates, and
+directional-only curvature measurements remain material limits.
+
+Final guide and methods passed fresh independent comprehension, terminology,
+and evidence reviews. Exact candidate hashes are in
+`gradient-curvature-report/final-report-audit.json`. The evidence reviewer
+reproduced adaptive means/intervals, scalar selections and curvature fits.
+Preserve recorded input order for refitting: nonunique quantile-regression
+optima can yield different equally optimal coefficients under reordered
+inputs. The frozen plans remain the source for reported adaptive outcomes.
+
+The final guide has nine sections, five main figures, adjustable text/spacing,
+one-section mode, and figure zoom. Desktop/mobile checks passed with 25 valid
+local links and no overflow at 390px width with enlarged 24px text. All 17 guide
+PDF pages and 9 methods PDF pages were visually inspected. The curated delivery
+bundle lives under `Downloads/Project/hessian-probing/reports/` alongside the
+unchanged earlier Hessian reports.

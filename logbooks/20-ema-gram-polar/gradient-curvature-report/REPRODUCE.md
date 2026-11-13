@@ -22,7 +22,7 @@ Scheduler success, a matching completion artifact, and a finished W&B run are ve
 
 ## Analysis sequence
 
-Run these commands from the Marin checkout, replacing the uppercase arguments with the six corresponding result files, one per checkpoint. Do not mix incomplete attempts or repeat a state.
+Run these commands from the Marin checkout, replacing the uppercase arguments with the six corresponding result files, one per checkpoint. Do not mix incomplete attempts or repeat a state. Preserve the result-file order recorded in the `source_hashes` object of `data/analysis.json`: eighth-early, eighth-middle, eighth-late, quarter-early, quarter-middle, quarter-late. Quantile regression can have nonunique optima; a different input order can select a different equally optimal coefficient. Use the frozen plans for the reported adaptive outcomes, rather than replacing them with a reordered refit.
 
 ```sh
 .venv/bin/python -m experiments.ema_gram.gradient_curvature_analysis \

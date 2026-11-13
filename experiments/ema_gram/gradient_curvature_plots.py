@@ -120,7 +120,7 @@ def common_length_plot(results, output, mode="full"):
     fig, axes = plt.subplots(
         int(np.ceil(len(states) / columns)),
         columns,
-        figsize=(4.1 * columns, 3.4 * np.ceil(len(states) / columns)),
+        figsize=(6.8 if len(states) == 1 else 4.1 * columns, 3.4 * np.ceil(len(states) / columns)),
         squeeze=False,
     )
     fractions = CANONICAL_FRACTIONS
@@ -162,7 +162,7 @@ def common_length_plot(results, output, mode="full"):
 def adaptive_plot(results, output):
     rules = ("constant", "linear", "quadratic")
     colors = RULE_COLORS
-    names = ("Constant physical length", "Linear-curvature rule", "Quadratic-curvature rule")
+    names = ("Constant length", "Linear rule", "Quadratic rule")
     summaries = []
     for result in results:
         if result["stage"] != "heldout":
@@ -174,23 +174,67 @@ def adaptive_plot(results, output):
                 dict(state=result["state"], rule=rule, **paired_interval(differences, result["reference_weights"]))
             )
     states = [s for s in STATE_ORDER if any(r["state"] == s for r in summaries)]
-    fig, ax = plt.subplots(figsize=(9.8, 5.4))
+    fig, ax = plt.subplots(figsize=(7.8, 4.8))
     for index, (rule, color, name) in enumerate(zip(rules, colors, names, strict=True)):
         points = [next(r for r in summaries if r["state"] == s and r["rule"] == rule) for s in states]
         y = np.arange(len(states)) + (index - 1) * 0.22
         for yy, point in zip(y, points, strict=True):
-            ax.plot([point["lower"], point["upper"]], [yy, yy], color=color, linewidth=1.5)
+            ax.plot(1e4 * np.array([point["lower"], point["upper"]]), [yy, yy], color=color, linewidth=1.5)
         ax.scatter(
-            [p["mean"] for p in points], y, color=color, marker=("o", "s", "D")[index], s=35, label=name, zorder=3
+            [1e4 * p["mean"] for p in points], y, color=color, marker=("o", "s", "D")[index], s=35, label=name, zorder=3
         )
     ax.axvline(0, color="black", linestyle="--", linewidth=1)
     ax.set_yticks(np.arange(len(states)), [state_label(s) for s in states])
     ax.invert_yaxis()
-    ax.set_xlabel("Paired loss difference: power 1/8 minus power 1/4\nNegative favors 1/8 · Positive favors 1/4")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=3, frameon=False)
+    ax.set_xlabel("Loss: power 1/8 minus power 1/4 (units of 0.0001)\nNegative favors 1/8 · Positive favors 1/4")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=3, frameon=False, fontsize=11)
     fig.tight_layout()
     export(fig, output, "power-comparison-adaptive")
     write_csv(output / "paired-adaptive.csv", summaries)
+
+
+def adaptive_baseline_plot(results, output):
+    """Compare actual quadratic-rule losses with constant lengths within each power."""
+    summaries = []
+    for result in results:
+        if result["stage"] != "heldout":
+            raise ValueError("Only held-out direct evaluations may enter this figure")
+        rows = {(r["rule"], r["draw"], r["alpha"]): r for r in result["rows"]}
+        for alpha in COLORS:
+            differences = [
+                np.asarray(rows["quadratic", d, alpha]["losses"]) - rows["constant", d, alpha]["losses"]
+                for d in range(4)
+            ]
+            summaries.append(
+                dict(state=result["state"], alpha=alpha, **paired_interval(differences, result["reference_weights"]))
+            )
+    states = [s for s in STATE_ORDER if any(r["state"] == s for r in summaries)]
+    fig, ax = plt.subplots(figsize=(7.8, 4.6))
+    for index, (alpha, color) in enumerate(COLORS.items()):
+        points = [next(r for r in summaries if r["state"] == s and r["alpha"] == alpha) for s in states]
+        y = np.arange(len(states)) + (index - 0.5) * 0.25
+        for yy, point in zip(y, points, strict=True):
+            ax.plot(1e4 * np.array([point["lower"], point["upper"]]), [yy, yy], color=color, linewidth=1.5)
+        ax.scatter(
+            [1e4 * p["mean"] for p in points],
+            y,
+            color=color,
+            marker=("o", "s")[index],
+            s=38,
+            label=LABELS[alpha],
+            zorder=3,
+        )
+    ax.axvline(0, color="black", linestyle="--", linewidth=1)
+    ax.set_yticks(np.arange(len(states)), [state_label(s) for s in states])
+    ax.invert_yaxis()
+    ax.set_xlabel(
+        "Loss: quadratic rule minus constant length (units of 0.0001)\n"
+        "Negative favors quadratic · Positive favors constant"
+    )
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=2, frameon=False, fontsize=11)
+    fig.tight_layout()
+    export(fig, output, "quadratic-versus-constant")
+    write_csv(output / "quadratic-versus-constant.csv", summaries)
 
 
 def envelope_validation_plot(analysis, output):
@@ -229,7 +273,7 @@ def report_focus_plots(results, analysis, output):
     example = output / "eighth-middle"
     example.mkdir(exist_ok=True)
     common_length_plot([r for r in results if r["state"] == "eighth-middle"], example)
-    fig, ax = plt.subplots(figsize=(6.8, 6.0))
+    fig, ax = plt.subplots(figsize=(6.8, 4.6))
     handles = [
         Line2D(
             [], [], color=c, marker="o", markerfacecolor="none" if a == 0.125 else c, linestyle="none", label=LABELS[a]
@@ -261,10 +305,10 @@ def report_focus_plots(results, analysis, output):
         ylabel="Hessian-product norm ‖Hd‖",
         title="Local curvature along each update direction",
     )
-    fig.legend(handles=handles, loc="lower center", ncol=2, frameon=False)
-    fig.tight_layout(rect=(0, 0.23, 1, 1))
+    fig.legend(handles=handles, loc="lower center", ncol=2, frameon=False, fontsize=11)
+    fig.tight_layout(rect=(0, 0.28, 1, 1))
     export(fig, output, "curvature-versus-gradient-focus")
-    fig, ax = plt.subplots(figsize=(7.4, 5.5))
+    fig, ax = plt.subplots(figsize=(6.8, 4.3))
     for index, (rule, color, marker) in enumerate(
         zip(("constant", "linear", "quadratic"), RULE_COLORS, ("o", "s", "D"), strict=True)
     ):
@@ -280,7 +324,7 @@ def report_focus_plots(results, analysis, output):
     ax.set_yticks(np.arange(6), [state_label(s) for s in STATE_ORDER])
     ax.invert_yaxis()
     ax.axvline(0.9, color="#555555", linestyle="--", linewidth=1)
-    ax.set(xlim=(0, 1.05), xlabel="Fraction below predicted envelope", title="Held-out coverage · dashed line marks 90%")
+    ax.set(xlim=(0, 1.05), xlabel="Fraction below predicted envelope", title="Held-out coverage")
     ax.set_xticks((0, 0.5, 1), ("0%", "50%", "100%"))
     fig.legend(*ax.get_legend_handles_labels(), loc="lower center", ncol=3, frameon=False)
     fig.tight_layout(rect=(0, 0.07, 1, 1))
@@ -302,7 +346,9 @@ def main():
     if any(row["mode"] == "matrix_only" for r in results for row in r["rows"]):
         common_length_plot(results, args.output, "matrix_only")
     if args.adaptive:
-        adaptive_plot([json.loads(p.read_text()) for p in args.adaptive], args.output)
+        adaptive_results = [json.loads(p.read_text()) for p in args.adaptive]
+        adaptive_plot(adaptive_results, args.output)
+        adaptive_baseline_plot(adaptive_results, args.output)
     if args.analysis:
         analysis = json.loads(args.analysis.read_text())
         envelope_validation_plot(analysis, args.output)

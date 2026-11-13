@@ -97,7 +97,7 @@ All rules clip the proposed length to the same interval [0.01m, 3m] within a che
 
 The reported difference is the power-1/8 loss minus the power-1/4 loss. A negative difference favors power 1/8. A positive difference favors power 1/4.
 
-Each interval is reported separately for one checkpoint and comparison. It resamples paired update batches and shared reference groups with replacement. We use 10,000 bootstrap replicates and their 2.5th and 97.5th percentiles for a pointwise 95% interval. Within one bootstrap replicate, the same sampled reference-group indices are used for every sampled update batch and both powers. They describe uncertainty conditional on these checkpoints and the evaluated directions and lengths. They do not include variation across training seeds. Individual path points and TPU hosts are not treated as independent experimental replicates.
+Each interval is reported separately for one checkpoint and comparison. It resamples paired update batches and shared reference groups with replacement. We use 10,000 bootstrap replicates and their 2.5th and 97.5th percentiles for a pointwise 95% interval. Within one bootstrap replicate, the same sampled reference-group indices are used for every sampled update batch and both powers. They describe uncertainty conditional on these checkpoints and the evaluated directions and lengths. They do not include variation across training seeds or uncertainty from selecting the scalar. The intervals are not adjusted for multiple comparisons. Individual path points and TPU hosts are not treated as independent experimental replicates.
 
 ## What would the results establish?
 
