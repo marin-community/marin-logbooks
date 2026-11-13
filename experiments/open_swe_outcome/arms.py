@@ -10,9 +10,11 @@ Three steps run over the raw Open-SWE-Traces downloads that Marin's adapter alre
 2. ``membership`` selects the trajectory IDs of every arm from that index.
 3. ``arm`` writes one arm as OpenAI-style chat rows that the SFT launcher tokenizes.
 
-Arms hold only trajectories the adapter keeps. ``solved-*`` arms hold solved trajectories.
-``random-*`` arms draw from every outcome, with the same partition mix and the same text
-volume per partition as the solved arm of that size, so the pair differs in outcome alone.
+Arms hold only trajectories the adapter keeps and that fit the training window when rendered
+with the training chat template, so no arm is truncated. ``solved-*`` arms hold solved
+trajectories. ``random-*`` arms draw from every outcome, with the same partition mix and the
+same token count per partition as the solved arm of that size, so the pair differs in outcome
+alone.
 
 Tracked in marin-community/marin-logbooks#39.
 """
@@ -24,11 +26,14 @@ import logging
 from collections import Counter, defaultdict
 from collections.abc import Iterator
 from dataclasses import dataclass
+from functools import cache
 
 import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 from fray.types import ResourceConfig
+from levanter.data.text.formats import ChatProcessor
+from levanter.tokenizers import load_tokenizer
 from marin.datakit.download.open_swe_traces import (
     OPEN_SWE_TRACES_PARTITIONS,
     QWEN38_SOURCES,
@@ -47,14 +52,19 @@ from rigging.log_setup import configure_logging
 from zephyr.context import ZephyrContext
 from zephyr.dataset import Dataset
 
+from experiments.sft.opencode_chat_template import OPENCODE_TOOLS_CHAT_TEMPLATE
+
 logger = logging.getLogger(__name__)
 
 STEP_PREFIX = "open-swe-outcome"
-INDEX_VERSION = "2026.11.13.1"
-MEMBERSHIP_VERSION = "2026.11.13.1"
-ARM_VERSION = "2026.11.13.1"
+INDEX_VERSION = "2026.11.13.2"
+MEMBERSHIP_VERSION = "2026.11.13.2"
+ARM_VERSION = "2026.11.13.2"
 SOLVED = 1
-FIRST_RUNG_ROWS = 31_600
+TOKENIZER = "Qwen/Qwen3-8B"
+# The training window. Levanter's GPU attention fallback runs out of memory at 131,072 tokens.
+MAX_TOKENS = 65_536
+RUNG_ROWS = (10_000, 31_600)
 SOLVED_SALT = "open-swe-outcome/solved"
 RANDOM_SALT = "open-swe-outcome/random"
 STATUS_KEPT = "kept"
@@ -62,12 +72,25 @@ STATUS_EXCLUDED = "excluded"
 STATUS_DROPPED = "dropped"
 WORKER_RESOURCES = ResourceConfig(cpu=1, ram="32g")
 
-ARM_SOLVED_FIRST = f"solved-{FIRST_RUNG_ROWS}"
-ARM_RANDOM_FIRST = f"random-{FIRST_RUNG_ROWS}"
 ARM_SOLVED_ALL = "solved-all"
 ARM_RANDOM_ALL = "random-all"
 ARM_ALL = "all"
-ARMS = (ARM_SOLVED_FIRST, ARM_RANDOM_FIRST, ARM_SOLVED_ALL, ARM_RANDOM_ALL, ARM_ALL)
+
+
+def solved_arm(rows: int) -> str:
+    return f"solved-{rows}"
+
+
+def random_arm(rows: int) -> str:
+    return f"random-{rows}"
+
+
+ARMS = (
+    *(name(rows) for rows in RUNG_ROWS for name in (solved_arm, random_arm)),
+    ARM_SOLVED_ALL,
+    ARM_RANDOM_ALL,
+    ARM_ALL,
+)
 
 INDEX_SCHEMA = pa.schema(
     [
@@ -76,6 +99,7 @@ INDEX_SCHEMA = pa.schema(
         pa.field("resolved", pa.int32()),
         pa.field("num_messages", pa.int32()),
         pa.field("num_chars", pa.int64()),
+        pa.field("num_tokens", pa.int64()),
         pa.field("status", pa.string()),
     ]
 )
@@ -86,7 +110,7 @@ class IndexRow:
     trajectory_id: str
     partition: str
     resolved: int
-    num_chars: int
+    num_tokens: int
 
 
 @dataclass(frozen=True)
@@ -118,14 +142,22 @@ def repaired_row(row: dict, partition: str) -> dict:
     return restore_solution_originality(row) if partition in QWEN38_SOURCES else row
 
 
+@cache
+def training_chat_processor() -> ChatProcessor:
+    """The processor the SFT launcher tokenizes with, so index token counts match training."""
+    return ChatProcessor(load_tokenizer(TOKENIZER), chat_template=OPENCODE_TOOLS_CHAT_TEMPLATE)
+
+
 def index_rows(path: str, partition: str, excluded_ids: frozenset[str]) -> Iterator[dict]:
     """One index row per trajectory of a raw file, with the adapter's keep/drop verdict."""
     for row in load_parquet_batched(path):
         messages = row.get("messages") or []
+        num_tokens = 0
         if row["trajectory_id"] in excluded_ids:
             status = STATUS_EXCLUDED
         elif row_to_chat_doc(repaired_row(row, partition)):
             status = STATUS_KEPT
+            num_tokens = len(training_chat_processor()([chat_row(row, partition)])[0]["input_ids"])
         else:
             status = STATUS_DROPPED
         yield {
@@ -134,6 +166,7 @@ def index_rows(path: str, partition: str, excluded_ids: frozenset[str]) -> Itera
             "resolved": row["resolved"],
             "num_messages": len(messages),
             "num_chars": sum(message_chars(message) for message in messages),
+            "num_tokens": num_tokens,
             "status": status,
         }
 
@@ -156,25 +189,25 @@ def hash_order(rows: list[IndexRow], salt: str) -> list[IndexRow]:
     return sorted(rows, key=lambda row: hashlib.sha256(f"{salt}:{row.trajectory_id}".encode()).hexdigest())
 
 
-def volume_matched(pool: list[IndexRow], target_chars: int, salt: str) -> list[IndexRow]:
-    """The shortest hash-ordered prefix of ``pool`` holding at least ``target_chars``."""
+def volume_matched(pool: list[IndexRow], target_tokens: int, salt: str) -> list[IndexRow]:
+    """The shortest hash-ordered prefix of ``pool`` holding at least ``target_tokens``."""
     selected: list[IndexRow] = []
-    chars = 0
+    tokens = 0
     for row in hash_order(pool, salt):
-        if chars >= target_chars:
+        if tokens >= target_tokens:
             break
         selected.append(row)
-        chars += row.num_chars
+        tokens += row.num_tokens
     return selected
 
 
-def partition_matched_random(solved: list[IndexRow], kept: list[IndexRow]) -> list[IndexRow]:
-    """Rows of any outcome matching ``solved`` in partition mix and per-partition text volume."""
+def partition_matched_random(solved: list[IndexRow], eligible: list[IndexRow]) -> list[IndexRow]:
+    """Rows of any outcome matching ``solved`` in partition mix and per-partition token count."""
     target: Counter[str] = Counter()
     for row in solved:
-        target[row.partition] += row.num_chars
+        target[row.partition] += row.num_tokens
     pools: defaultdict[str, list[IndexRow]] = defaultdict(list)
-    for row in kept:
+    for row in eligible:
         pools[row.partition].append(row)
     selected: list[IndexRow] = []
     for partition in sorted(target):
@@ -182,33 +215,34 @@ def partition_matched_random(solved: list[IndexRow], kept: list[IndexRow]) -> li
     return selected
 
 
-def arm_members(kept: list[IndexRow], first_rung_rows: int) -> dict[str, list[IndexRow]]:
-    """Select every arm's trajectories from the rows the adapter keeps."""
-    solved_all = hash_order([row for row in kept if row.resolved == SOLVED], SOLVED_SALT)
-    if len(solved_all) < first_rung_rows:
-        raise ValueError(f"only {len(solved_all)} solved trajectories; the first rung needs {first_rung_rows}")
-    solved_first = solved_all[:first_rung_rows]
-    return {
-        ARM_SOLVED_FIRST: solved_first,
-        ARM_RANDOM_FIRST: partition_matched_random(solved_first, kept),
-        ARM_SOLVED_ALL: solved_all,
-        ARM_RANDOM_ALL: partition_matched_random(solved_all, kept),
-        ARM_ALL: kept,
-    }
+def arm_members(kept: list[IndexRow], rung_rows: tuple[int, ...], max_tokens: int) -> dict[str, list[IndexRow]]:
+    """Select every arm's trajectories from the kept rows that fit ``max_tokens``."""
+    eligible = [row for row in kept if row.num_tokens <= max_tokens]
+    solved_all = hash_order([row for row in eligible if row.resolved == SOLVED], SOLVED_SALT)
+    if len(solved_all) < max(rung_rows):
+        raise ValueError(f"only {len(solved_all)} solved trajectories fit; the largest rung needs {max(rung_rows)}")
+    members: dict[str, list[IndexRow]] = {}
+    for rows in rung_rows:
+        members[solved_arm(rows)] = solved_all[:rows]
+        members[random_arm(rows)] = partition_matched_random(solved_all[:rows], eligible)
+    members[ARM_SOLVED_ALL] = solved_all
+    members[ARM_RANDOM_ALL] = partition_matched_random(solved_all, eligible)
+    members[ARM_ALL] = eligible
+    return members
 
 
 def arm_summary(rows: list[IndexRow]) -> dict:
     by_outcome: Counter[str] = Counter(str(row.resolved) for row in rows)
     by_partition: Counter[str] = Counter(row.partition for row in rows)
-    chars_by_partition: Counter[str] = Counter()
+    tokens_by_partition: Counter[str] = Counter()
     for row in rows:
-        chars_by_partition[row.partition] += row.num_chars
+        tokens_by_partition[row.partition] += row.num_tokens
     return {
         "rows": len(rows),
-        "chars": sum(row.num_chars for row in rows),
+        "tokens": sum(row.num_tokens for row in rows),
         "rows_by_resolved": dict(sorted(by_outcome.items())),
         "rows_by_partition": dict(sorted(by_partition.items())),
-        "chars_by_partition": dict(sorted(chars_by_partition.items())),
+        "tokens_by_partition": dict(sorted(tokens_by_partition.items())),
     }
 
 
@@ -257,14 +291,18 @@ def membership_step(index: StepSpec) -> StepSpec:
         table = read_index(index.output_path)
         statuses = Counter(zip(table.column("status").to_pylist(), table.column("resolved").to_pylist(), strict=True))
         kept = [
-            IndexRow(row["trajectory_id"], row["partition"], row["resolved"], row["num_chars"])
+            IndexRow(row["trajectory_id"], row["partition"], row["resolved"], row["num_tokens"])
             for row in table.filter(pc.equal(table.column("status"), STATUS_KEPT)).to_pylist()
         ]
         if len({row.trajectory_id for row in kept}) != len(kept):
             raise ValueError("trajectory IDs are not unique among kept rows")
-        members = arm_members(kept, FIRST_RUNG_ROWS)
+        members = arm_members(kept, RUNG_ROWS, MAX_TOKENS)
         summary = {
             "index_rows": table.num_rows,
+            "max_tokens": MAX_TOKENS,
+            "kept_rows_within_max_tokens_by_resolved": dict(
+                sorted(Counter(str(row.resolved) for row in kept if row.num_tokens <= MAX_TOKENS).items())
+            ),
             "rows_by_status_and_resolved": {
                 f"{status}/{resolved}": count for (status, resolved), count in statuses.items()
             },
@@ -281,7 +319,7 @@ def membership_step(index: StepSpec) -> StepSpec:
         name=f"{STEP_PREFIX}/membership",
         deps=[index],
         fn=build,
-        hash_attrs={"version": MEMBERSHIP_VERSION, "first_rung_rows": FIRST_RUNG_ROWS},
+        hash_attrs={"version": MEMBERSHIP_VERSION, "rung_rows": list(RUNG_ROWS), "max_tokens": MAX_TOKENS},
     )
 
 
@@ -306,7 +344,7 @@ def arm_step(arm: str, membership: StepSpec, partitions: list[RawPartition]) -> 
         name=f"{STEP_PREFIX}/arms/{arm}",
         deps=[membership, *(partition.raw for partition in partitions)],
         fn=build,
-        hash_attrs={"version": ARM_VERSION, "arm": arm},
+        hash_attrs={"version": ARM_VERSION, "arm": arm, "max_tokens": MAX_TOKENS},
     )
 
 
