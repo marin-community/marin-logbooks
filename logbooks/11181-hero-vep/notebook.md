@@ -649,3 +649,9 @@ audit. Private raw archives and access details stay outside public artifacts.
 [Diagnostic record](next-token-diagnostic.md): the live Mochi replay was blocked by a disappeared route. Historical responses show a standalone space with 55–75% probability in 155/200 two-shot prompts, and a sampled end-of-turn token with 13–23% probability in 17 others. These conditional observations explain substantial competing mass but do not establish a causal mechanism or full top-token distribution. Probe continuation after standalone space when the same model is available; preserve current scores.
 
 OpenRouter/Fireworks advertised logprob support but returned no usable prompt likelihoods: completion echo requests failed provider validation; chat requests returned reasoning and null logprobs. The final 128-token control never reached visible output, so answer-token support remains inconclusive. Seven bounded requests, 129 generated tokens, reported cost $0.00042868. No new panel run, GPU deployment, PR, or main merge.
+
+## 2026-11-13: historical space continuation and alternative GLM providers
+
+[Follow-up record](provider-and-space-followup.md): token-for-token comparison proves an earlier space-ending diagnostic matches one v3 query in both shot conditions. After standalone space, end-of-text probability was 99.38% zero-shot and 99.66% two-shot; bare A/B probability was negligible. Current Mochi route remains unavailable, so this is historical one-variant evidence.
+
+Together through OpenRouter returns output logprobs, including final A, whereas Parasail and Novita return null even with visible answers. All three DNA echo probes failed. Parasail's upstream validation payload shows messages instead of prompt, indicating a request-translation incompatibility. Six requests, 300 generated tokens, reported cost $0.00101672. Source frozen at 76e359e3ea; no scoring protocol changed.
