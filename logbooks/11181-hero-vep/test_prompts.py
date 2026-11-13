@@ -24,7 +24,7 @@ def test_reverse_map_changes_examples_and_orientation_without_query_label_leak()
     assert "sequence\t128\tV01\tT\tG" in prompt
     assert "Answer: B\n\nExample 2:" in prompt
     assert "Answer: A\n\nQuery:" in prompt
-    assert prompt.endswith("Answer: ")
+    assert prompt.endswith("Answer:")
     assert prompt == classification_prompt(example(False), demonstrations, "-", "reversed")
 
 
@@ -48,8 +48,8 @@ def test_complete_target_matrix_keeps_sequence_scores_and_answers_separate():
     assert all(len(item.text) == 255 for item in likelihoods)
     classifications = [item for item in items if item.single_token]
     assert len(classifications) == 8
-    assert {item.text for item in classifications} == {"A", "B"}
-    assert all(item.prefix.endswith("Answer: ") for item in classifications)
+    assert {item.text for item in classifications} == {" A", " B"}
+    assert all(item.prefix.endswith("Answer:") for item in classifications)
     assert {item.strand for item in items} == {"+", "-"}
 
 

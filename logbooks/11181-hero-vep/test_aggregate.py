@@ -26,12 +26,12 @@ def test_assigned_mapping_score_sign_and_incomplete_run_rejection(tmp_path, mapp
     }
     panels_path = tmp_path / "panels.json"
     panels_path.write_text(
-        json.dumps({"protocol_version": 2, "panels": {"pilot": [row], "demonstrations": [row, dict(row, label=False)]}})
+        json.dumps({"protocol_version": 3, "panels": {"pilot": [row], "demonstrations": [row, dict(row, label=False)]}})
     )
     records = [
         {
             "type": "start",
-            "protocol_version": 2,
+            "protocol_version": 3,
             "panels_sha256": hashlib.sha256(panels_path.read_bytes()).hexdigest(),
             "panel": "pilot",
             "variant_count": 1,

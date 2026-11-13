@@ -161,7 +161,7 @@ def main() -> None:
         assign_answer_mappings(panels[panel], args.seed)
     attach_sequences(panels, args.inputs / "sequences-train.parquet")
     payload = {
-        "protocol_version": 2,
+        "protocol_version": 3,
         "answer_mapping_seed": args.seed,
         "answer_mapping_rule": "SHA256 rank of variant identity; half primary per panel; labels unused",
         "seed": args.seed,

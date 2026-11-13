@@ -517,3 +517,42 @@ The current specification is `protocol-v2.json` and `protocol-v2.md`. The v1
 freeze is superseded, and its results remain historical. No PR or main merge
 was created. Next scientific work is a bounded revised-pilot comparison before
 any fresh validation; the old private validation launcher must not be reused.
+
+
+## 2026-11-13: Correct the answer boundary and request both candidates together
+
+The v2 token-alignment smoke did not establish a suitable answer format.
+Follow-up probes found EOS probabilities of 99.38% (zero-shot) and 99.66%
+(two-shot) after the forced standalone-space token. Ending at `Answer:` instead
+and scoring canonical ` A` / ` B` tokens reduced these to 0.059% and 0.077%.
+A simple alphabet control reproduced the boundary problem. This corrects the
+earlier proposed whitespace remedy; it does not establish improved VEP accuracy.
+Nine sequential one-token diagnostic completions were used, with fixed serving
+rank and one-second pacing. Private wire evidence remains outside the repository.
+These exploratory probes ran before their scripts were committed, a deviation
+from the archive's pre-run source-recording rule; they are diagnostics, not a
+frozen benchmark result.
+
+A separate eight-context capability probe returned both requested candidates
+in each response. A-minus-B matched separate teacher-forced scoring exactly;
+one context had a common absolute logprob offset of 0.40654, reproduced with
+fresh calls. Its cause is unresolved; it cancels in the score difference.
+Those parity probes used the old bare-letter boundary, so parity of the new
+leading-space path still needs a small live check before a benchmark rerun.
+
+Protocol v3 now ends the shared template exactly at `Answer:` and validates
+full-string tokenization for each leading-space candidate before requesting
+both token IDs in one unmasked next-token response. The adjacent companion
+score is consumed once; repeated sentinels request fresh results. The mapping
+seed, one mapping per variant, demonstration selection, and DNA scoring are
+unchanged. Candidate records share response usage; do not sum that duplicated
+usage to estimate endpoint work. Count wire requests or paired request IDs
+within each client instead.
+
+Fifteen focused offline tests passed (0.24 seconds; peak RSS 86,352 KiB),
+including canonical boundary checks, one-response pairing in both candidate
+orders, missing-probability rejection, fresh repeats, and mapping score signs.
+No full rerun or validation was launched. The classification-only rerun would
+require 400 scoring responses plus monitoring and tokenization requests, but
+is still pending user confirmation. This change stays experimental; no PR or
+main merge. See `protocol-v3.md`; v2 records remain historical.

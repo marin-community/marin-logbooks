@@ -37,50 +37,46 @@ def test_echo_scoring_excludes_prefix_and_requires_exact_token_alignment(interna
         completion_score(response, [1, 8, 9, 10], 2, "prefixACGT")
 
 
-@pytest.mark.parametrize("answer,answer_id", [("A", 32), ("B", 33)])
-def test_answer_scoring_conditions_on_space_without_merging_it(answer, answer_id):
+@pytest.mark.parametrize("first,second", [(" A", " B"), (" B", " A")])
+def test_joint_answers_use_canonical_tokens_and_consume_companion_once(first, second):
     class Session:
+        completions = 0
+        omit_candidate = False
+
         def request(self, method, url, **kwargs):
             payload = kwargs["json"]
             if url.endswith("tokenize"):
-                # Whole-string tokenization would merge the space and answer.
-                encodings = {
-                    "": [1],
-                    "A": [1, 32],
-                    "B": [1, 33],
-                    "Answer: ": [1, 8, 220],
-                    "Answer: A": [1, 8, 362],
-                    "Answer: B": [1, 8, 426],
-                }
-                tokens = encodings[payload["prompt"]]
+                tokens = {"Answer:": [1, 8], "Answer: A": [1, 8, 362], "Answer: B": [1, 8, 426]}[payload["prompt"]]
                 body = {"tokens": tokens, "count": len(tokens)}
             else:
-                assert payload["prompt"] == [1, 8, 220, answer_id]
+                self.completions += 1
+                assert payload["prompt"] == [1, 8]
+                assert payload["logprob_token_ids"] == [362, 426]
+                assert payload["max_tokens"] == 1 and not payload["echo"]
+                assert "allowed_token_ids" not in payload and "logit_bias" not in payload
+                probs = {"token_id:362": -1.2, "token_id:426": -2.3}
+                if self.omit_candidate:
+                    del probs["token_id:426"]
                 body = {
                     "model": "fixture",
                     "system_fingerprint": "fixture",
-                    "usage": {"prompt_tokens": 4, "completion_tokens": 0},
-                    "choices": [
-                        {
-                            "prompt_logprobs": [
-                                None,
-                                {"8": {"decoded_token": "Answer:"}},
-                                {"220": {"decoded_token": " "}},
-                                {str(answer_id): {"decoded_token": answer}},
-                            ],
-                            "logprobs": {
-                                "tokens": ["token_id:1", "token_id:8", "token_id:220", f"token_id:{answer_id}"],
-                                "token_logprobs": [None, -100, -2, -0.3],
-                            },
-                        }
-                    ],
+                    "usage": {"prompt_tokens": 2, "completion_tokens": 1},
+                    "choices": [{"logprobs": {"top_logprobs": [probs]}}],
                 }
             response = requests.Response()
             response.status_code = 200
             response._content = json.dumps(body).encode()
             return response
 
-    client = ScoringClient(Session(), "https://fixture.invalid", "fixture", io.StringIO(), 20, 60)
-    score = client.score("Answer: ", answer, True)
-    assert score["logprob"] == -0.3
-    assert score["prefix_tokens"] == 3 and score["target_ids"] == [answer_id]
+    session = Session()
+    client = ScoringClient(session, "https://fixture.invalid", "fixture", io.StringIO(), 20, 60)
+    results = {a: client.score("Answer:", a, True) for a in (first, second)}
+    assert session.completions == 1
+    assert results[" A"]["logprob"] == -1.2 and results[" B"]["logprob"] == -2.3
+    assert results[" A"]["target_ids"] == [362] and results[" B"]["target_ids"] == [426]
+    assert results[first]["paired_request"] == results[second]["paired_request"]
+    client.score("Answer:", first, True)
+    assert session.completions == 2  # Repeated sentinel is not a stale cached result.
+    session.omit_candidate = True
+    with pytest.raises(KeyError):
+        client.score("Answer:", first, True)

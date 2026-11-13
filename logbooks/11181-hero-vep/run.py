@@ -29,7 +29,7 @@ def run_panel(
     panels_bytes = panels_path.read_bytes()
     panels_hash = hashlib.sha256(panels_bytes).hexdigest()
     panels = json.loads(panels_bytes)
-    assert panels["protocol_version"] == 2
+    assert panels["protocol_version"] == 3
     verified = json.loads(reference_summary_path.read_text())
     assert verified["panels_sha256"] == panels_hash
     assert verified["matching_windows"] == verified["unique_windows"]
@@ -46,7 +46,7 @@ def run_panel(
         client.verify_model()
     header = {
         "type": "start",
-        "protocol_version": 2,
+        "protocol_version": 3,
         "panels_sha256": panels_hash,
         "panel": panel,
         "variant_count": len(rows),

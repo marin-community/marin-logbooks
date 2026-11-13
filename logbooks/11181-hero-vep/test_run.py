@@ -44,7 +44,7 @@ def test_independent_clients_preserve_the_same_complete_matrix(tmp_path):
     panels.write_text(
         json.dumps(
             {
-                "protocol_version": 2,
+                "protocol_version": 3,
                 "answer_mapping_seed": 11181,
                 "seed": 11181,
                 "panels": {"pilot": rows, "demonstrations": demos},

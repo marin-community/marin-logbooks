@@ -33,7 +33,6 @@ def classification_prompt(query: dict, demonstrations: list[dict], strand: str, 
         options=options,
         examples=examples,
         query=block.format(title="Query", **fields(query, strand)).removesuffix("\n"),
-        answer_space=" ",
     )
 
 

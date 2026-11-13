@@ -26,7 +26,7 @@ def aggregate(panels_path: Path, scores_path: Path) -> list[dict]:
     records = [json.loads(line) for line in scores_path.read_text().splitlines()]
     assert records[0]["type"] == "start" and records[-1]["type"] == "complete", "Run is incomplete"
     header = records[0]
-    assert header["protocol_version"] == panels["protocol_version"] == 2
+    assert header["protocol_version"] == panels["protocol_version"] == 3
     assert header["panels_sha256"] == hashlib.sha256(panels_bytes).hexdigest()
     rows = panels["panels"][header["panel"]][: header["variant_count"]]
     expected = {expected_key(target): target for target in targets(rows, panels["panels"]["demonstrations"])}

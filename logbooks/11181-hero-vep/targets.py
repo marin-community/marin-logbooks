@@ -27,7 +27,7 @@ def classification_targets(row: dict, demonstrations: list[dict], mappings: tupl
             for mapping in mappings:
                 prompt = classification_prompt(row, examples, strand, mapping)
                 for candidate in ("A", "B"):
-                    yield Target(row["id"], method, strand, mapping, candidate, prompt, candidate, True)
+                    yield Target(row["id"], method, strand, mapping, candidate, prompt, " " + candidate, True)
 
 
 def targets(rows: list[dict], demonstrations: list[dict]) -> Iterator[Target]:

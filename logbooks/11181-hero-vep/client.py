@@ -48,6 +48,8 @@ class ScoringClient:
     fingerprint: str | None = None
     tokenizations: dict[str, list[int]] = field(default_factory=dict)
 
+    pending_answer: tuple[str, str, dict] | None = None
+
     def request(self, route: str, payload: dict | None) -> dict:
         remaining = self.max_seconds - (time.monotonic() - self.started)
         if self.requests_sent >= self.max_requests or remaining <= 0:
@@ -95,19 +97,74 @@ class ScoringClient:
             self.tokenizations[text] = tokens
         return self.tokenizations[text]
 
-    def score(self, prefix: str, target: str, single_token: bool) -> dict:
+    def score_answers(self, prefix: str) -> dict[str, dict]:
+        """Score canonical leading-space A/B tokens in one unmasked response."""
+        assert prefix.endswith("Answer:")
         prefix_ids = self.tokenize(prefix)
+        candidate_ids = {}
+        for answer in (" A", " B"):
+            full_ids = self.tokenize(prefix + answer)
+            start = continuation_start(prefix_ids, full_ids, single_token=True)
+            candidate_ids[answer] = full_ids[start]
+        assert len(set(candidate_ids.values())) == 2
+        response = self.request(
+            "v1/completions",
+            {
+                "model": self.model,
+                "prompt": prefix_ids,
+                "add_special_tokens": False,
+                "max_tokens": 1,
+                "echo": False,
+                "logprobs": 1,
+                "logprob_token_ids": list(candidate_ids.values()),
+                "temperature": 1.0,
+                "seed": 11181,
+                "return_tokens_as_token_ids": True,
+                "ignore_eos": True,
+                "skip_special_tokens": False,
+            },
+        )
+        assert response["model"] == self.model
+        fingerprint = response["system_fingerprint"]
+        assert isinstance(fingerprint, str) and fingerprint
+        if self.fingerprint is None:
+            self.fingerprint = fingerprint
+        assert fingerprint == self.fingerprint, "Serving build changed during scoring"
+        assert len(response["choices"]) == 1
+        probabilities = response["choices"][0]["logprobs"]["top_logprobs"]
+        assert len(probabilities) == 1
+        assert response["usage"]["prompt_tokens"] == len(prefix_ids)
+        assert response["usage"]["completion_tokens"] == 1
+        results = {}
+        for answer, token_id in candidate_ids.items():
+            score = probabilities[0][f"token_id:{token_id}"]
+            assert math.isfinite(score)
+            results[answer] = {
+                "logprob": score,
+                "target_ids": [token_id],
+                "prefix_tokens": len(prefix_ids),
+                "input_tokens": len(prefix_ids),
+                "usage": response["usage"],
+                "scoring_mode": "joint_next_token",
+                "paired_request": self.requests_sent,
+            }
+        return results
+
+    def score(self, prefix: str, target: str, single_token: bool) -> dict:
         if single_token:
-            assert prefix.endswith(" ") and target in {"A", "B"}
-            empty_ids = self.tokenize("")
-            answer_ids = self.tokenize(target)
-            answer_start = continuation_start(empty_ids, answer_ids, single_token=True)
-            # Keep the conditioned space token; full-text encoding can merge it with the answer.
-            tokens = prefix_ids + answer_ids[answer_start:]
-            start = len(prefix_ids)
-        else:
-            tokens = self.tokenize(prefix + target)
-            start = continuation_start(prefix_ids, tokens, single_token=False)
+            assert target in {" A", " B"}
+            pending, self.pending_answer = self.pending_answer, None
+            if pending is not None and pending[:2] == (prefix, target):
+                return pending[2]
+            answers = self.score_answers(prefix)
+            other = " B" if target == " A" else " A"
+            # Consume the companion once; repeated sentinels must make fresh requests.
+            self.pending_answer = (prefix, other, answers[other])
+            return answers[target]
+        self.pending_answer = None
+        prefix_ids = self.tokenize(prefix)
+        tokens = self.tokenize(prefix + target)
+        start = continuation_start(prefix_ids, tokens, single_token=False)
         assert start > 0, "Tokenizer must provide model-required BOS for unconditioned likelihood"
         payload = {
             "model": self.model,
