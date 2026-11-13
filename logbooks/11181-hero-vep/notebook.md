@@ -643,3 +643,9 @@ No GLM score or full panel is accepted. One earlier missing-dependency job made
 no service requests; all four task-owned CPU jobs are terminal. No GPU service
 was deployed or modified. See `glm-likelihood-compatibility.md` and its JSON
 audit. Private raw archives and access details stay outside public artifacts.
+
+## 2026-11-13: next-token competitors and OpenRouter capability probe
+
+[Diagnostic record](next-token-diagnostic.md): the live Mochi replay was blocked by a disappeared route. Historical responses show a standalone space with 55–75% probability in 155/200 two-shot prompts, and a sampled end-of-turn token with 13–23% probability in 17 others. These conditional observations explain substantial competing mass but do not establish a causal mechanism or full top-token distribution. Probe continuation after standalone space when the same model is available; preserve current scores.
+
+OpenRouter/Fireworks advertised logprob support but returned no usable prompt likelihoods: completion echo requests failed provider validation; chat requests returned reasoning and null logprobs. The final 128-token control never reached visible output, so answer-token support remains inconclusive. Seven bounded requests, 129 generated tokens, reported cost $0.00042868. No new panel run, GPU deployment, PR, or main merge.
