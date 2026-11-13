@@ -361,3 +361,16 @@ sentinel checks. The full 100-variant pilot and reserved validation panel have
 not been launched in this trial. No serving settings or deployment changed.
 Ten offline tests and required lint passed for the guarded runner; raw HTTP
 responses and the private launcher remain in the local private execution record.
+
+
+## 2026-11-13: Full pilot continuation after passed gate
+
+The active goal resumes completion of #11181. The ten-variant paced gate
+passed, permitting the planned full pilot under the accepted load policy.
+Run all 100 fixed pilot variants with rank 0, one client, one-second completion
+gaps and the unchanged six-sentinel/latency guards. Cap at 10,000 total HTTP
+requests and 5,400 seconds (90 minutes); stop on any guard failure without
+retry. This consumes the existing endpoint only, with no deployment changes.
+Generalize the guarded runner to explicit panel and variant-count arguments;
+keep prompts, candidates, scoring formulas and sample selection unchanged.
+The reserved 300-variant panel remains unscored until protocol freeze.

@@ -6,7 +6,7 @@ import json
 
 import pytest
 from client import ScoringClient
-from paced import PacedClient, run_paced_trial
+from paced import PacedClient, run_paced_panel
 from targets import Target
 
 
@@ -44,6 +44,6 @@ def test_final_guard_failure_invalidates_completed_panel(monkeypatch, tmp_path):
     monkeypatch.setattr("paced.run_panel", lambda *args: args[-1].write('{"type":"complete"}\n'))
     output = io.StringIO()
     with pytest.raises(RuntimeError, match="drifted"):
-        run_paced_trial(client, tmp_path, output)
+        run_paced_panel(client, tmp_path, "pilot", 10, output)
     assert json.loads(output.getvalue().splitlines()[-1])["type"] == "invalid"
     assert client.session.headers["X-data-parallel-rank"] == "0"

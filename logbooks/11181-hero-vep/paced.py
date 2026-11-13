@@ -67,8 +67,8 @@ class PacedClient(ScoringClient):
         return result
 
 
-def run_paced_trial(client: PacedClient, inputs: Path, output: TextIO) -> None:
-    """Run ten variants; release the completion marker only after final checks."""
+def run_paced_panel(client: PacedClient, inputs: Path, panel: str, variant_count: int, output: TextIO) -> None:
+    """Run the selected panel; release completion only after final checks."""
     panels = json.loads((inputs / "panels.json").read_text())["panels"]
     client.session.headers["X-data-parallel-rank"] = "0"
     client.sentinels = [
@@ -81,7 +81,9 @@ def run_paced_trial(client: PacedClient, inputs: Path, output: TextIO) -> None:
     buffer = io.StringIO()
     try:
         client.check_sentinels()
-        run_panel([client], inputs / "panels.json", inputs / "ensembl-reference.summary.json", "pilot", 10, buffer)
+        run_panel(
+            [client], inputs / "panels.json", inputs / "ensembl-reference.summary.json", panel, variant_count, buffer
+        )
         client.check_sentinels()
     except BaseException:
         output.write(buffer.getvalue())
