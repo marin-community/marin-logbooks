@@ -1,0 +1,40 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "phylo/da-1-3"
+description = ""
+keywords = []
+[[task.authors]]
+name = "Phylo Team"
+email = "research@phylo.bio"
+
+[metadata]
+author_name = "Phylo"
+difficulty = "easy"
+category = "oncology"
+task_type = "cell-composition"
+
+[verifier]
+timeout_sec = 900.0
+
+[verifier.env]
+GEMINI_API_KEY = "${GEMINI_API_KEY}"
+MODEL_NAME = "gemini-3.5-flash"
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 2
+memory_mb = 16384
+storage_mb = 20480
+gpus = 0
+allow_internet = true
+mcp_servers = []
+
+[environment.env]
+
+[solution.env]

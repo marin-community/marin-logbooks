@@ -1,0 +1,50 @@
+{
+  "protocol": "biomnibench-da-marin-signed-pilot-v1",
+  "judge": {
+    "model": "MiniMaxAI/MiniMax-M3-MXFP8",
+    "base_url": "http://127.0.0.1:8787/v1",
+    "max_tokens": 8192,
+    "temperature": 0.0,
+    "timeout_sec": 120.0
+  },
+  "sdk": "openai==2.24.0",
+  "max_retries": 0,
+  "total_score": 28,
+  "unclamped_score": 28,
+  "unsigned_score": 38,
+  "criteria": {
+    "criterion_1": {
+      "level": "B",
+      "reason": "The agent loads mmc5.csv and uses RFS_months_new/RFS_status_new correctly with censoring interpretation, but does not explicitly report filtering patients with missing time/event (none were missing) and the exclusion summary is minimal.",
+      "score": 9
+    },
+    "criterion_2": {
+      "level": "A",
+      "reason": "The agent correctly extracts Texp.in.Tex.relevant*10, divides by 10 implicitly (uses the scaled metric directly), computes the median within the non-MPR cohort only (8.053), and reports the cutoff and n=32 in each subgroup.",
+      "score": 16
+    },
+    "criterion_3": {
+      "level": "C",
+      "reason": "The agent does not produce Kaplan-Meier curves, does not run log-rank tests (overall or pairwise), and instead uses Fisher exact tests and Wilcoxon tests on RFS months, which do not constitute proper survival analysis.",
+      "score": 0
+    },
+    "criterion_4": {
+      "level": "C",
+      "reason": "No Cox proportional hazards model is fitted; no hazard ratios with 95% CI are reported for any comparison.",
+      "score": 0
+    },
+    "criterion_5": {
+      "level": "B",
+      "reason": "The agent quantifies the proportion (28/70 = 40%) with clear denominators and provides biological interpretation, but lacks an explicit 'comparable to MPR' criterion (e.g., log-rank p > 0.05 vs MPR AND HR 95% CI includes 1) and limitations are stated generically without specific assumptions like immortal-time bias or median-split information loss.",
+      "score": 13
+    },
+    "criterion_6": {
+      "level": "C",
+      "reason": "Several references appear fabricated or misattributed (e.g., Simpson et al. 2017 is about extracellular vesicles, not T cell clonality; Pallier et al. 2020 details are questionable; Yu et al. 2022 details are fabricated), and the analysis lacks proper survival methods (KM, log-rank, Cox) that would be traceable to standard implementations.",
+      "score": -10
+    }
+  },
+  "reasoning": "The agent performed a reasonable exploratory analysis of Texp and RFS in non-MPR patients but fundamentally failed to execute the required survival analysis methodology: no Kaplan-Meier curves, no log-rank tests, and no Cox proportional hazards models with HR/CI. The Texp stratification and proportion quantification were done correctly, but the core survival statistical framework required by the rubric is absent.",
+  "status": "graded",
+  "missing_files": []
+}

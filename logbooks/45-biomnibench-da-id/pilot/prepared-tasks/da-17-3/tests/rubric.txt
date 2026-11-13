@@ -1,0 +1,77 @@
+RUBRIC: Pseudobulk Differential Expression Analysis in SLE Classical Monocytes
+
+Total Points: 100/100
+
+Notes: A full-score answer requires performing proper pseudobulk differential expression analysis on classical monocytes, using count-based methods, and testing for ISG enrichment among upregulated genes with formal statistical tests.
+
+CRITERIA (7):
+
+Criterion 1: Data Preparation and Pseudobulk Aggregation
+
+    Description: Evaluates correct cell type filtering and donor-level aggregation using raw counts.
+    Levels: A=18 B=9 C=0
+      [A]: Correctly filters for classical monocytes (author_cell_type == 'cM'), aggregates raw counts at donor level (261 donors total), and uses raw counts (adata.raw.X) for count-based DE methods. Properly handles the aggregation by summing counts across all cells of a given cell type per donor to create pseudobulk samples.
+
+      [B]: Correct cell type but cell-level analysis (treats individual cells as replicates instead of aggregating by donor, which violates independence assumptions), or uses normalized data for count-based methods (which expect raw counts).
+
+      [C]: Wrong cell type or no aggregation attempted.
+
+Criterion 2: Statistical Analysis Method
+
+    Description: Evaluates appropriate DE method, multiple testing correction, and threshold selection.
+    Levels: A=17 B=8 C=0
+      [A]: Uses count-based DE method (DESeq2/PyDESeq2/edgeR with negative binomial model appropriate for count data) with BH/FDR correction for multiple testing and appropriate thresholds: |log2FC| > 0.5 AND FDR < 0.05 (fold-change threshold ensures biological significance, not just statistical significance).
+
+      [B]: Appropriate test but wrong threshold (e.g., log2FC > 0 instead of |log2FC| > 0.5, which would include very small fold changes with minimal biological relevance), or non-count method (Wilcoxon rank-sum test) with correction (less optimal for pseudobulk count data but acceptable).
+
+      [C]: No statistical testing or fundamentally flawed approach (e.g., no multiple testing correction, inappropriate test for count data).
+
+Criterion 3: Differential Expression Results
+
+    Description: Evaluates accurate reporting of DE genes with effect sizes and significance values.
+    Levels: A=20 B=10 C=0
+      [A]: Reports both up- and downregulated genes with log2FC and adjusted p-values. Top upregulated: EPSTI1, IFI27, IFI6, IFI44L, SIGLEC1 (all interferon-stimulated genes). Top downregulated: CHD1-DT, CAMK4, BLK, TC2N, SH3D19. Reports approximately 335 upregulated and 612 downregulated genes meeting |log2FC| > 0.5 and FDR < 0.05 thresholds. Gene names and statistics are not hallucinated and match the actual analysis results.
+
+      [B]: Reports DE genes but missing effect sizes or p-values, or only reports one direction (upregulated or downregulated but not both). Gene counts may be approximate or unclear.
+
+      [C]: No DE results reported or completely wrong genes (hallucinated gene names not present in the data or inconsistent with the analysis).
+
+Criterion 4: ISG Gene Set Definition
+
+    Description: Evaluates use of appropriate ISG gene list from input file or cited source.
+    Levels: A=15 B=7 C=0
+      [A]: Uses provided 25-gene type-1 ISG signature from input file (type1_isg_signature.txt): ISG15, IFI6, IFI44L, IFI44, RSAD2, CXCL10, IFIT2, IFIT3, IFIT1, IFITM3, OAS1, OAS3, OAS2, OASL, EPSTI1, RNASE1, RNASE2, IFI27, XAF1, LGALS3BP, SIGLEC1, USP18, APOBEC3A, APOBEC3B, MX1. Or uses reasonable alternative ISG list (e.g., from published ISG databases like Interferome) with proper citation.
+
+      [B]: Uses partial ISG list (subset of canonical ISGs) or uncited generic ISG list without clear source.
+
+      [C]: No ISG gene set defined, or uses inappropriate gene set unrelated to interferon response.
+
+Criterion 5: ISG Enrichment Testing
+
+    Description: Evaluates formal statistical testing for ISG enrichment among upregulated genes.
+    Levels: A=15 B=7 C=0
+      [A]: Performs formal enrichment test (Fisher's exact test, hypergeometric test, or similar over-representation analysis) with p-value reported. Tests whether ISGs are over-represented among upregulated genes compared to background. Expected result: 25/25 ISGs upregulated (100% of ISG signature), enrichment p-value approximately 4.28e-39 demonstrating highly significant enrichment. Clearly reports the contingency table or enrichment statistics.
+
+      [B]: Descriptive analysis only showing ISGs are upregulated (e.g., counts how many ISGs are in the upregulated set) but no formal statistical test of enrichment significance.
+
+      [C]: No ISG enrichment analysis attempted, or enrichment test performed incorrectly (wrong background, wrong statistical model).
+
+Criterion 6: Scientific Accuracy and Biological Interpretation
+
+    Description: Evaluates whether all claims are supported by the data and provides appropriate biological interpretation.
+    Levels: A=15 B=7 C=0
+      [A]: All conclusions directly supported by presented analysis with no fabricated statistics. Provides biological interpretation connecting findings to SLE pathology (e.g., classical monocytes show strong type-1 interferon signature consistent with interferon-driven SLE pathogenesis, suggesting interferons or downstream pathways as therapeutic targets). Acknowledges that ISG upregulation reflects systemic interferon exposure rather than intrinsic monocyte changes. Notes limitations such as need for validation in independent cohorts or functional studies to confirm therapeutic target potential.
+
+      [B]: Minor unsupported claims or slight misinterpretations of results. Basic statement that ISGs are upregulated but lacks biological context or therapeutic relevance. Limited or no discussion of limitations.
+
+      [C]: Major fabricated claims (gene names, fold changes, or p-values not from the analysis), statistics not from the analysis, conclusions contradicting data (e.g., claiming ISGs are not enriched when they clearly are), or no biological interpretation of ISG enrichment in context of SLE.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

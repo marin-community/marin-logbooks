@@ -1,0 +1,40 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "phylo/da-4-6"
+description = ""
+keywords = []
+[[task.authors]]
+name = "Phylo Team"
+email = "research@phylo.bio"
+
+[metadata]
+author_name = "Phylo"
+difficulty = "medium"
+category = "oncology"
+task_type = "survival-analysis"
+
+[verifier]
+timeout_sec = 900.0
+
+[verifier.env]
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+docker_image = "registry.example.invalid/biomnibench-da-pi-pilot@sha256:95ea1687a3756278d0543f0fe8acfbc4a9d104f12a657ba771cd2788a4b56bfb"
+workdir = "/app"
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 2
+memory_mb = 8192
+storage_mb = 10240
+gpus = 0
+allow_internet = true
+mcp_servers = []
+
+[environment.env]
+
+[solution.env]

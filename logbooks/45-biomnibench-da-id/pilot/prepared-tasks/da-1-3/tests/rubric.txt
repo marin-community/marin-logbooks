@@ -1,0 +1,97 @@
+RUBRIC: Identification of Tumor-Specific Enriched Cell Subpopulations via Tissue Distribution Analysis in Colorectal Cancer
+
+Total Points: 100/100
+
+Notes: Full-score answers demonstrate a rigorous, biologically grounded tissue-specificity analysis that systematically quantifies the distributional preference of each cell subtype across three anatomically distinct compartments, tumor tissue, normal adjacent tissue (NAT), and peripheral blood (PBMC). The gold-standard approach uses the Ratio of Observed to Expected (Ro/e) framework based on chi-square expected frequencies, but proportion-based fold-change methods that correctly normalize for unequal tissue sampling are also valid. The analysis is rooted in the immunological principle that the tumor microenvironment (TME) harbors unique cell subpopulations shaped by chronic antigen exposure, hypoxia, metabolic stress, and tissue-specific cytokine milieus, populations that are absent or rare in normal tissues and the peripheral circulation. A full-score answer: (1) restricts analysis to baseline (Treatment='I') to avoid treatment-induced redistribution confounding and filters for the three tissue compartments; (2) constructs a count or proportion table of cell subtypes across tissues; (3) computes a tissue-enrichment metric that accounts for unequal sampling depth (e.g., Ro/e via chi2_contingency, or proportion-based fold-change normalized by tissue size); (4) applies a tumor-specificity filter requiring enrichment in tumor AND depletion/lower representation in both normal tissue and blood; (5) correctly identifies the top tumor-specific cell types including c64_Mph_SPP1, c79_Fibro_FAP, c70_Endo_COL4A1, c23_CD8_Tex_LAYN; and (6) interprets these findings in the context of tumor-associated macrophage immunosuppression (SPP1+), cancer-associated fibroblast remodeling (FAP+), T cell exhaustion (LAYN+), and the translational potential for tumor-specific therapeutic targeting with minimal off-target toxicity.
+
+CRITERIA (9):
+
+Criterion 1: Tissue-Compartment and Baseline Filtering
+
+    Description: Evaluates whether the analysis correctly restricts data to the three tissue compartments (Tumor, Normal adjacent tissue, Blood) and the baseline (pre-treatment) timepoint.
+    Levels: A=13 B=8 C=0
+      [A]: Filters for the three tissue types of interest (Tumor, Normal, Blood) and restricts to baseline treatment stage (Treatment == 'I'), so the observed enrichment patterns reflect the pre-treatment tumor microenvironment rather than treatment-induced redistribution.
+
+      [B]: Filters for tissue compartments but omits the baseline-only restriction (introducing treatment-stage confounding), or includes only two of the three tissue types.
+
+      [C]: Does not filter by tissue or treatment, or uses incorrect tissue/treatment categories, fundamentally undermining the tissue-specificity analysis.
+
+Criterion 2: Cell Subtype Distribution Table Construction
+
+    Description: Evaluates the correct construction of a count or proportion matrix of cell subtype frequencies across tissue compartments, which forms the empirical foundation of the enrichment analysis.
+    Levels: A=13 B=8 C=0
+      [A]: Generates a properly structured table of cell subtype frequencies across tissues, either as raw counts (e.g., via pd.crosstab(df['SubCellType'], df['Tissue'])) or as within-tissue proportions, where rows represent the full set of annotated cell subtypes (SubCellType) and columns represent tissue compartments. The table uses SubCellType-level granularity (not collapsed MajorCellType) and has consistent column ordering.
+
+      [B]: Constructs a frequency table but with incorrect axis assignment (e.g., tissues as rows, subtypes as columns) or without enforcing consistent column ordering, leading to potential misalignment in downstream calculations.
+
+      [C]: Does not construct a frequency table, or uses an incorrect grouping variable (e.g., MajorCellType instead of SubCellType), collapsing the fine-grained subtype resolution required for identifying specific tumor-enriched populations.
+
+Criterion 3: Tissue-Enrichment Metric Computation
+
+    Description: Evaluates whether the analysis computes a valid tissue-enrichment metric that accounts for unequal sampling depth across tissues, enabling fair comparison of cell subtype distributions. The Ro/e framework (observed/expected via chi2_contingency) is the gold standard, but proportion-based fold-change methods that normalize for tissue sampling differences are also valid.
+    Levels: A=16 B=10 C=0
+      [A]: Computes a valid enrichment metric that correctly normalizes for unequal tissue sampling. This can be achieved by either: (a) the Ro/e method, applying scipy.stats.chi2_contingency to derive expected frequencies under the null hypothesis of tissue-independent distribution, then computing observed/expected; or (b) proportion-based fold-change, computing within-tissue proportions for each subtype and comparing across tissues (e.g., Tumor_proportion / Blood_proportion). Use of pseudocounts to handle zero-proportion cases is acceptable and does not constitute a methodological weakness. Demonstrates understanding that raw count comparisons are invalid due to different numbers of cells profiled per tissue.
+
+      [B]: Computes an enrichment metric but with a clear methodological flaw, e.g., uses raw count ratios without normalizing for tissue size, or computes enrichment at the MajorCellType level rather than SubCellType level.
+
+      [C]: Does not compute any enrichment metric, uses only raw counts without normalization, or the computation is fundamentally incorrect.
+
+Criterion 4: Enrichment Metric Interpretation and Biological Meaning
+
+    Description: Evaluates demonstration of understanding the biological interpretation of the enrichment metric, what enrichment vs. depletion means in terms of cell recruitment, retention, and tissue preference.
+    Levels: A=14 B=9 C=0
+      [A]: Demonstrates correct interpretation of the enrichment metric: values above the neutral point (Ro/e > 1, or fold-change > 1) indicate the cell subtype is enriched in that tissue beyond expectation, suggesting active recruitment, in situ differentiation, tissue retention, or selective survival; values below the neutral point indicate depletion, suggesting exclusion, egress, lack of recruitment signals, or incompatible niche conditions. Correctly applies this interpretation to identify tissue-biased cell populations.
+
+      [B]: Computes enrichment values and uses them for ranking but does not explicitly articulate the biological meaning of enrichment vs. depletion, or provides only a superficial interpretation.
+
+      [C]: Does not interpret the enrichment metric, or provides an incorrect interpretation (e.g., confuses enrichment with depletion).
+
+Criterion 5: Tumor Enrichment Ranking and Identification of Top Enriched Subpopulations
+
+    Description: Evaluates the systematic ranking of cell subtypes by their degree of tumor enrichment and the correct identification of the most highly enriched populations within the tumor microenvironment.
+    Levels: A=13 B=8 C=0
+      [A]: Ranks all cell subtypes by tumor enrichment in descending order and correctly identifies the top tumor-enriched cell subpopulations. Key expected populations include: c64_Mph_SPP1 (SPP1+ tumor-associated macrophages, pro-tumorigenic subset associated with immunosuppression and ECM remodeling), c79_Fibro_FAP (FAP+ cancer-associated fibroblasts), c70_Endo_COL4A1 (tumor-associated vasculature), c23_CD8_Tex_LAYN (LAYN+ exhausted CD8+ T cells). Provides enrichment values for the top populations.
+
+      [B]: Ranks by tumor enrichment and identifies some but not all of the top cell types (e.g., identifies c23_CD8_Tex_LAYN and c79_Fibro_FAP but misses c64_Mph_SPP1), or ranks correctly but does not provide enrichment values.
+
+      [C]: Does not rank cell subtypes by tumor enrichment, or reports incorrect top enriched populations.
+
+Criterion 6: Strict Tumor-Specificity Filtering Logic
+
+    Description: Evaluates the implementation of the critical logical filter that defines "tumor-specific enrichment", requiring simultaneous enrichment in tumor AND lower representation in both normal tissue and blood. This condition distinguishes truly tumor-exclusive populations from cell types that are generally enriched in solid tissues (shared between tumor and NAT) or from activated cells present in both tumor and blood.
+    Levels: A=16 B=10 C=0
+      [A]: Implements a strict tumor-specificity filter requiring enrichment in tumor AND depletion/lower representation in BOTH normal tissue and blood. For Ro/e: (Tumor > 1) & (Normal < 1) & (Blood < 1). For fold-change: tumor proportion substantially higher than both normal and blood proportions. Correctly reports the number of cell types meeting the criteria (expected ~20 with Ro/e method; may vary with alternative methods depending on thresholds). Demonstrates understanding of why this triple condition is biologically meaningful, the Normal filter eliminates tissue-resident populations common to both tumor and healthy mucosa, while the Blood filter eliminates circulating immune cells that have not undergone tumor-specific differentiation.
+
+      [B]: Implements a tumor enrichment filter but uses a less stringent specificity condition, e.g., only requires depletion in one of the two control tissues, or uses very stringent thresholds that identify too few populations. Alternatively, implements the correct logic but reports an incorrect count of tumor-specific cell types without justification.
+
+      [C]: Does not implement any specificity filtering (only ranks without filtering), or uses an incorrect logical formulation that fundamentally misdefines tumor specificity.
+
+Criterion 7: Biological Annotation of Key Tumor-Specific Subpopulations
+
+    Description: Evaluates the depth of biological knowledge applied to interpreting the identities and functional roles of the top tumor-specific enriched cell subpopulations, connecting cell subtype annotations to known immunological and stromal biology of the tumor microenvironment.
+    Levels: A=9 B=5 C=0
+      [A]: Provides biologically informed annotation across the three major tumor-specific categories: (1) immunosuppressive myeloid compartment (e.g., c64_Mph_SPP1 as SPP1+ tumor-associated macrophages with an immunosuppressive / pro-angiogenic phenotype); (2) tumor-sculpted stroma (e.g., c79_Fibro_FAP as FAP+ cancer-associated fibroblasts that remodel ECM and form an immune-excluding barrier; c70_Endo_COL4A1 as tumor-associated vasculature); (3) T cell exhaustion biology (e.g., c23_CD8_Tex_LAYN as LAYN+ terminally exhausted CD8+ T cells generated by chronic antigen exposure in the TME and characterized by sustained inhibitory-receptor expression and effector-cytokine loss).
+
+      [B]: Annotates some tumor-specific populations but with limited functional detail, e.g., identifies SPP1+ macrophages as "tumor-associated macrophages" without explaining the immunosuppressive mechanism, or mentions exhausted T cells without connecting to chronic antigen stimulation.
+
+      [C]: Does not annotate the biological identities of tumor-specific populations, or provides annotations that are incorrect or irrelevant to tumor immunology.
+
+Criterion 8: Immunological Interpretation and Translational Implications for Tumor-Specific Therapeutic Targeting
+
+    Description: Evaluates the higher-order biological interpretation of the tissue-specificity findings, addressing the mechanistic origins of tumor-specific cell enrichment (in situ differentiation, tissue residency, niche-dependent survival) and the translational implications for precision immunotherapy design.
+    Levels: A=6 B=3 C=0
+      [A]: Explains the mechanistic origins of tumor-specific enrichment by discussing at least two of: (a) in situ adaptation / exhaustion (immune cells differentiate into tumor-specific phenotypes after infiltrating the TME, producing exhausted T cells absent from blood and normal tissue); (b) tissue residency (tumor-resident T cells retained by TME-specific signals like TGF-β and integrin-mediated adhesion); (c) niche-dependent stromal remodeling (CAFs and tumor endothelium differentiate and persist only within the oncogenic niche). Discusses the translational value of tumor-specificity for targeted immunotherapy (e.g., anti-FAP antibodies, anti-SPP1 blockade, Tex-reprogramming via anti-PD-1/anti-LAG3) and the implication that targeting tumor-restricted populations minimizes off-target toxicity. Acknowledges at least one limitation (e.g., distributional preference vs functional state, sampling bias across tissues, baseline-only analysis, need for spatial validation).
+
+      [B]: Discusses therapeutic implications in general terms but does not explain mechanistic origins of tumor specificity, or mentions mechanisms but does not connect to translational applications or limitations.
+
+      [C]: Does not discuss why certain cell types are tumor-specific, does not address therapeutic relevance, or makes unsupported claims without scientific reasoning.
+
+Criterion 9: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, annotations, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Cell-type labels and tissue annotations come from the provided metadata (SubCellType, Tissue) rather than re-invented; numerical enrichment values are traceable to data + a documented metric (Ro/e or fold-change). Method choice (chi-square independence test, fold-change normalization) names a concrete tool / paper. Biological annotations of tumor-specific subpopulations (TAMs, CAFs, exhausted T cells) and translational claims are supported by real, identifiable references (author + year, DOI, PubMed ID, or named review article) rather than free-floating assertions.
+
+      [B]: Most numerical results and labels are traceable, but some biological annotations or translational claims are asserted without source attribution or cite only vague phrases like "the literature".
+
+      [C]: Reports values, cell-type labels, or biological claims with no clear source. Hallucinated content (made-up cluster labels, invented enrichment values, or fabricated citations) mixed with computed results.
