@@ -622,3 +622,24 @@ The user asked to compare general language models only, specifically GLM-5.3,
 starting with DNA likelihood rather than classification. Only a small GLM
 compatibility probe was launched separately; no GLM panel or reserved
 300-variant validation was launched as part of this rerun.
+
+
+## 2026-11-13: GLM general-model baseline compatibility blocker
+
+The user excluded DNA specialists, requested GLM-5.3, authorized a small Iris
+probe, and prioritized null/healthy DNA likelihood over classification. The
+service is live: 12 small inference requests plus ten tokenizer/metadata calls
+returned HTTP 200. All input token boundaries and native echoed probabilities
+aligned, but GLM uses different token IDs and has no automatic BOS for the raw
+empty prefix. These are explicit adapter differences, not interchangeable
+Mochi settings.
+
+The likelihood validity gate failed. Shared ref/alt prefix differences reached
+10.728 log-probability units per token in the first probe; identical-input
+repeats differed by up to 9.955. A zero/one-output comparison matched exactly,
+but a final documented-affinity check still had 5.470 repeat drift and 10.799
+shared-prefix discrepancy. Worker identity and the exact cause remain unknown.
+No GLM score or full panel is accepted. One earlier missing-dependency job made
+no service requests; all four task-owned CPU jobs are terminal. No GPU service
+was deployed or modified. See `glm-likelihood-compatibility.md` and its JSON
+audit. Private raw archives and access details stay outside public artifacts.

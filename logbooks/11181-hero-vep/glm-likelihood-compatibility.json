@@ -1,0 +1,73 @@
+{
+  "same_tokenizer_as_mochi": false,
+  "leading_space_answer_ids": {
+    "A": [
+      362
+    ],
+    "B": [
+      425
+    ]
+  },
+  "empty_input_token_ids": [],
+  "healthy_prefix_tokens": 9,
+  "healthy_boundary_preserved": true,
+  "scores_valid_for_vep": false,
+  "diagnostics": {
+    "null": {
+      "shared_prefix_tokens": 71,
+      "max_shared_prefix_logprob_difference": 9.80169153213501,
+      "mean_shared_prefix_logprob_difference": 6.46859699796353,
+      "first_unscored_token_is_shared": true,
+      "native_and_echo_alignment_passed": true
+    },
+    "healthy": {
+      "shared_prefix_tokens": 80,
+      "max_shared_prefix_logprob_difference": 10.728107690811157,
+      "mean_shared_prefix_logprob_difference": 8.992666928639895,
+      "first_unscored_token_is_shared": true,
+      "native_and_echo_alignment_passed": true
+    }
+  },
+  "interpretation": "Tokenization and echo alignment pass, but shared-prefix and repeated-prompt log probabilities are unstable. No valid GLM VEP score or panel run.",
+  "repeat_probe": {
+    "comparisons": {
+      "reference_max1 versus reference_max1_repeat": {
+        "shared_tokens": 139,
+        "max_logprob_difference": 9.955366611480713
+      },
+      "reference_max0 versus reference_max1": {
+        "shared_tokens": 139,
+        "max_logprob_difference": 0.0
+      },
+      "reference_max1 versus alternate_max1": {
+        "shared_tokens": 71,
+        "max_logprob_difference": 9.80169153213501
+      }
+    },
+    "generation_requests": 4,
+    "all_http_200": true,
+    "routing_worker_identity_unavailable": true
+  },
+  "completion_affinity_probe": {
+    "reference vs reference_repeat": {
+      "shared_tokens": 139,
+      "max_logprob_difference": 5.470482349395752,
+      "mean_logprob_difference": 2.733861778093421
+    },
+    "alternate vs alternate_repeat": {
+      "shared_tokens": 138,
+      "max_logprob_difference": 0.0,
+      "mean_logprob_difference": 0.0
+    },
+    "reference vs alternate": {
+      "shared_tokens": 71,
+      "max_logprob_difference": 10.799355268478394,
+      "mean_logprob_difference": 8.964975242636033
+    }
+  },
+  "inference_requests": 12,
+  "remote_http_requests": 22,
+  "all_remote_http_200": true,
+  "all_owned_jobs_terminal": true,
+  "root_cause": "Unresolved; neither output-token-count change nor documented completion session affinity restored stability."
+}
