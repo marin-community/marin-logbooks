@@ -38,7 +38,7 @@ def openrouter_probe(session):
     """Three requests: output-logprob control and two input-logprob interfaces."""
     base = {"model": "z-ai/glm-5.3", "provider": {"only": ["fireworks"],
             "allow_fallbacks": False, "require_parameters": True},
-            "max_tokens": 1, "temperature": 1, "reasoning": {"enabled": False}}
+            "max_tokens": 1, "temperature": 1}
     dna = "ACGTACGTGACTGACTACGT"
     cases = [
         ("output_control", "chat/completions", {"messages": [{"role": "user", "content": "Reply with A."}],
