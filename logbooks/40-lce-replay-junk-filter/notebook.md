@@ -79,6 +79,15 @@ status: active
 - Interpretation and limitations: step 0 needs a Snowball variant of the GPU launcher, a re-import of the exports, and H100 time. Unknown: whether the exports restore into the current model code, how many H100 nodes a 262K probe needs, and the wall time.
 - Decision and next action: port the probe to Snowball on H100s (decided 2026-11-12). Start with two arms; defer the seed replicate.
 
+### 2026-11-13 01:10 UTC - Probe branch merged; the cold-start training code is not on main
+
+- Question or hypothesis and reason for trying it: start the Snowball port of the GPU needle-recovery probe, and find the training entry point the two arms would use.
+- Published source revision: this commit (merge of `hero-mrcr-eval` at `1b113f404c` into the research branch).
+- Command or material configuration: `git merge origin/hero-mrcr-eval`. Conflicts in `moe_hero_ep/model.py`, its README and `levanter/data/text/datasets.py` were resolved in favour of main, which has since made the log-scaling slope and exponent required together with the floor and moved `TokenSeqDict` to `formats.py`. `valid_tokens` was added to that type. Two probe tests were adapted: one passes the slope and exponent explicitly, one carries a local copy of a reshard helper that main removed. `test_qk_mult.py` keeps main's version.
+- Result, including failure or restart: the probe's tests, the MRCR dataset tests and the filter tests pass on the merged tree (47 tests, CPU). The probe core (`evaluate_checkpoint`, `CheckpointEvalConfig`, `evaluate_mrcr`) takes a model config and resources as inputs; only `build_checkpoint_eval` is tied to the hero model, GB200 nodes and rack-based batch sizing. A Snowball launcher is therefore a new builder, not a change to the core.
+- Interpretation and limitations: the larger finding is about training, not the probe. The cold-start SFT pipeline used in marin#10799 (`experiments/grug/snowball_sft/`: launch, mixture, model, HF import, export) is not on Marin main. It survives only as `.source` snapshots on `codex/sft-cold-start-reference-20261030`, taken from a training worktree at base `8577d258` plus a patch, and that branch's README says it is not a tested port to current main. The archive PR was closed. Main's supported SFT paths are the hero SFT launcher (hero model on GB200) and the standard chat trainer for Snowball at 32K context without packing, neither of which is the 262K replay-mixing recipe.
+- Decision and next action: the two arms need a training vehicle. Options are to restore the archived training worktree at its pinned base and apply the replay change there, to port `snowball_sft` to main first, or to run the comparison on the hero SFT launcher. This needs a decision before more probe work, because the probe launcher must match whichever model code writes the checkpoints.
+
 ## Final decision
 
 - Selected approach and evidence:
