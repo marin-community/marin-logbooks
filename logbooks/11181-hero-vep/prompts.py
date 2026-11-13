@@ -21,16 +21,20 @@ def fields(row: dict, strand: str) -> dict[str, str]:
 def classification_prompt(query: dict, demonstrations: list[dict], strand: str, mapping: str) -> str:
     assert mapping in {"primary", "reversed"}
     assert len(demonstrations) in {0, 2}
-    template = (TEMPLATES / ("two-shot.txt" if demonstrations else "zero-shot.txt")).read_text().removesuffix("\n")
-    if mapping == "reversed":
-        template = template.replace("A: pathogenic\nB: benign", "A: benign\nB: pathogenic")
-    values = fields(query, strand)
+    template = (TEMPLATES / "classification.txt").read_text().removesuffix("\n")
+    block = (TEMPLATES / "variant.txt").read_text()
+    pathogenic, benign = ("A", "B") if mapping == "primary" else ("B", "A")
+    examples = ""
     for index, row in enumerate(demonstrations, 1):
-        values.update({f"example_{index}_{key}": value for key, value in fields(row, strand).items()})
-        pathogenic_letter = "A" if mapping == "primary" else "B"
-        benign_letter = "B" if mapping == "primary" else "A"
-        values[f"example_{index}_letter"] = pathogenic_letter if row["label"] else benign_letter
-    return template.format(**values)
+        examples += block.format(title=f"Example {index}", **fields(row, strand))
+        examples += f"Answer: {pathogenic if row['label'] else benign}\n\n"
+    options = "A: pathogenic\nB: benign" if mapping == "primary" else "A: benign\nB: pathogenic"
+    return template.format(
+        options=options,
+        examples=examples,
+        query=block.format(title="Query", **fields(query, strand)).removesuffix("\n"),
+        answer_space=" ",
+    )
 
 
 def continuation_start(prefix_ids: list[int], full_ids: list[int], single_token: bool) -> int:

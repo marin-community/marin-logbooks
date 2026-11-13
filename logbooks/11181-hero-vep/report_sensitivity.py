@@ -45,25 +45,13 @@ def summarize(rows: list[dict]) -> dict:
                 }
             )
         result["positive_ranks"][method] = sorted(ranks, key=lambda row: (-row["rank"], row["match_group"]))
-    for method in ("zero-shot", "two-shot"):
-        summary = difference_summary([row[method] - row[f"{method}/reversed"] for row in rows])
-        summary["strict_sign_flips"] = sum(row[method] * row[f"{method}/reversed"] < 0 for row in rows)
-        flips = ties = pairs = 0
-        for group in groups.values():
-            positive = next(row for row in group if row["label"])
-            for control in (row for row in group if not row["label"]):
-                primary = positive[method] - control[method]
-                reversed_delta = positive[f"{method}/reversed"] - control[f"{method}/reversed"]
-                flips += primary * reversed_delta < 0
-                ties += primary == 0 or reversed_delta == 0
-                pairs += 1
-        summary.update(matched_pairs=pairs, strict_pair_order_flips=flips, pairs_with_tie=ties)
-        result["mapping"][method] = summary
-    format_rows = [row for row in rows if "explicit-pair" in row]
-    if format_rows:
-        result["format"] = difference_summary([row["explicit-pair"] - row["zero-shot"] for row in format_rows])
-        result["format"]["strict_sign_flips"] = sum(row["explicit-pair"] * row["zero-shot"] < 0 for row in format_rows)
-        result["format"]["variant_ids"] = [row["id"] for row in format_rows]
+    result["mapping_assignment_counts"] = {
+        mapping: {
+            "variants": sum(row["answer_mapping"] == mapping for row in rows),
+            "positives": sum(row["answer_mapping"] == mapping and row["label"] for row in rows),
+        }
+        for mapping in ("primary", "reversed")
+    }
     return result
 
 

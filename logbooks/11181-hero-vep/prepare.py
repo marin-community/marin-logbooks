@@ -87,6 +87,13 @@ def select_panels(groups: dict[str, list[dict]], seed: int, validation_groups: i
     return {"demonstrations": chosen, "pilot": pilot, "validation": validation}
 
 
+def assign_answer_mappings(rows: list[dict], seed: int) -> None:
+    """Assign an exact balanced split using identity alone, independent of labels."""
+    ordered = sorted(rows, key=lambda row: rank(seed, "answer-mapping-v2", variant_id(row)))
+    for index, row in enumerate(ordered):
+        row["answer_mapping"] = "primary" if index < len(ordered) // 2 else "reversed"
+
+
 def attach_sequences(panels: dict[str, list[dict]], path: Path) -> None:
     wanted = {variant_id(row): row for panel in panels.values() for row in panel}
     assert len(wanted) == sum(len(panel) for panel in panels.values())
@@ -150,8 +157,13 @@ def main() -> None:
     columns = ["chrom", "pos", "ref", "alt", "label", "subset", "match_group"]
     groups = eligible_groups(list(read_rows(args.inputs / "variants-train.parquet", columns)))
     panels = select_panels(groups, args.seed, args.validation_groups)
+    for panel in ("pilot", "validation"):
+        assign_answer_mappings(panels[panel], args.seed)
     attach_sequences(panels, args.inputs / "sequences-train.parquet")
     payload = {
+        "protocol_version": 2,
+        "answer_mapping_seed": args.seed,
+        "answer_mapping_rule": "SHA256 rank of variant identity; half primary per panel; labels unused",
         "seed": args.seed,
         "genome": "GRCh38",
         "split": "train",

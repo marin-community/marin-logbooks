@@ -24,7 +24,12 @@ def test_changed_sentinel_stops_before_more_scores(monkeypatch):
 
 
 def test_final_guard_failure_invalidates_completed_panel(monkeypatch, tmp_path):
-    row = {"id": "fixture", "label": True, "sequences": {"+": {"reference": "A" * 255, "alternate": "A" * 255}}}
+    row = {
+        "id": "fixture",
+        "answer_mapping": "reversed",
+        "label": True,
+        "sequences": {"+": {"reference": "A" * 255, "alternate": "A" * 255}},
+    }
     row["sequences"]["-"] = {"reference": "T" * 255, "alternate": "T" * 255}
     (tmp_path / "panels.json").write_text(json.dumps({"panels": {"pilot": [row], "demonstrations": [row, row]}}))
 

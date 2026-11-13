@@ -14,7 +14,6 @@ from threading import Event, Lock
 from typing import TextIO
 
 from client import ScoringClient
-from prepare import rank
 from targets import targets
 
 
@@ -30,6 +29,7 @@ def run_panel(
     panels_bytes = panels_path.read_bytes()
     panels_hash = hashlib.sha256(panels_bytes).hexdigest()
     panels = json.loads(panels_bytes)
+    assert panels["protocol_version"] == 2
     verified = json.loads(reference_summary_path.read_text())
     assert verified["panels_sha256"] == panels_hash
     assert verified["matching_windows"] == verified["unique_windows"]
@@ -41,28 +41,19 @@ def run_panel(
     demonstrations = panels["panels"]["demonstrations"]
     assert len(demonstrations) == 2 and sum(row["label"] for row in demonstrations) == 1
     assert all(row["chrom"] == "1" for row in demonstrations)
-    # The pilot's representation check uses three positives and three controls,
-    # chosen before scoring. Validation only runs the frozen primary methods.
-    format_ids = set()
-    if panel == "pilot":
-        for label in (True, False):
-            candidates = sorted(
-                (row for row in rows if row["label"] == label),
-                key=lambda row: rank(panels["seed"], "format-check", row["id"]),
-            )
-            format_ids.update(row["id"] for row in candidates[:3])
     assert 1 <= len(clients) <= 4
     for client in clients:
         client.verify_model()
     header = {
         "type": "start",
+        "protocol_version": 2,
         "panels_sha256": panels_hash,
         "panel": panel,
         "variant_count": len(rows),
         "max_requests": sum(client.max_requests for client in clients),
         "max_seconds": max(client.max_seconds for client in clients),
         "concurrency": len(clients),
-        "format_check_ids": sorted(format_ids),
+        "answer_mapping_seed": panels["answer_mapping_seed"],
     }
     output.write(json.dumps(header) + "\n")
     output.flush()
@@ -76,7 +67,7 @@ def run_panel(
     def score_row(row: dict) -> None:
         client = available.get()
         try:
-            for target in targets([row], demonstrations, format_ids):
+            for target in targets([row], demonstrations):
                 if stopped.is_set():
                     return
                 result = client.score(target.prefix, target.text, target.single_token)

@@ -10,9 +10,11 @@ from aggregate import aggregate
 from targets import targets
 
 
-def test_score_signs_mapping_average_and_incomplete_run_rejection(tmp_path):
+@pytest.mark.parametrize("mapping,expected_score", [("primary", 2), ("reversed", 3)])
+def test_assigned_mapping_score_sign_and_incomplete_run_rejection(tmp_path, mapping, expected_score):
     row = {
         "id": "3:1000:A:C",
+        "answer_mapping": mapping,
         "label": True,
         "subset": "missense_variant",
         "match_group": 1,
@@ -23,23 +25,25 @@ def test_score_signs_mapping_average_and_incomplete_run_rejection(tmp_path):
         },
     }
     panels_path = tmp_path / "panels.json"
-    panels_path.write_text(json.dumps({"panels": {"pilot": [row], "demonstrations": [row, dict(row, label=False)]}}))
+    panels_path.write_text(
+        json.dumps({"protocol_version": 2, "panels": {"pilot": [row], "demonstrations": [row, dict(row, label=False)]}})
+    )
     records = [
         {
             "type": "start",
+            "protocol_version": 2,
             "panels_sha256": hashlib.sha256(panels_path.read_bytes()).hexdigest(),
             "panel": "pilot",
             "variant_count": 1,
-            "format_check_ids": [],
         }
     ]
-    for target in targets([row], [row, dict(row, label=False)], set()):
+    for target in targets([row], [row, dict(row, label=False)]):
         if not target.single_token:
             score = -10 if target.candidate == "reference" else (-14 if target.strand == "+" else -12)
         elif target.mapping == "primary":
-            score = -1 if target.candidate == " A" else -3
+            score = -1 if target.candidate == "A" else -3
         else:
-            score = -5 if target.candidate == " A" else -2
+            score = -5 if target.candidate == "A" else -2
         records.append(
             {
                 "type": "score",
@@ -54,9 +58,9 @@ def test_score_signs_mapping_average_and_incomplete_run_rejection(tmp_path):
     result = aggregate(panels_path, scores_path)[0]
     assert result["null"] == 3
     assert result["null/strand-difference"] == 2
-    assert result["zero-shot"] == 2
-    assert result["zero-shot/reversed"] == 3
-    assert result["zero-shot/mapping-average"] == 2.5
+    assert result["zero-shot"] == expected_score
+    assert result["answer_mapping"] == mapping
+    assert "zero-shot/mapping-average" not in result
     scores_path.write_text("\n".join(json.dumps(row) for row in records[:-1]))
     with pytest.raises(AssertionError, match="incomplete"):
         aggregate(panels_path, scores_path)

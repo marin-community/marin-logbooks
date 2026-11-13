@@ -470,3 +470,19 @@ calls, one client, the same fixed rank and one-second completion gap. Cap at
 latency/drift/protocol failures. Estimated duration from the pilot is 3h15m.
 Validation has not started. Publication of the prepared results and protocol
 on this research branch was explicitly approved; no PR or merge is planned.
+
+
+## 2026-11-13: Agreed protocol v2 corrections
+
+The user approved three changes after the zero-shot audit: condition on a
+trailing space and score bare letters; assign one seeded balanced mapping per
+variant; and make zero-/two-shot prompts differ only in demonstrations. These
+are implemented in [protocol-v2.md](protocol-v2.md), the shared template,
+manifest generator, scorer, target generator, aggregation and metric reporting.
+The original v1 pilot remains unchanged at its published commit and is not a
+measurement of v2. The earlier validation freeze is superseded; validation has
+not run. Both-mapping diagnostics are separate from the main benchmark.
+
+Fifteen focused offline tests passed in 0.23 seconds, including wire-level
+space-token conditioning and both mapping score signs. Required lint passes.
+This entry precedes v2 manifest materialization and any live v2 calls.

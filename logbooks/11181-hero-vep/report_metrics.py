@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 
 METRICS_SHA256 = "bee720324d61ea8b88a4644b6bd036569e9bab6f8e931d6335d165fb2e2b2395"
-METHODS = ["null", "healthy", "zero-shot", "two-shot", "zero-shot/mapping-average", "two-shot/mapping-average"]
+METHODS = ["null", "healthy", "zero-shot", "two-shot"]
 
 
 def report(frame: pd.DataFrame, n_bootstrap: int, seed: int) -> dict:
@@ -60,7 +60,6 @@ def report(frame: pd.DataFrame, n_bootstrap: int, seed: int) -> dict:
         ("healthy", "null"),
         ("zero-shot", "null"),
         ("two-shot", "zero-shot"),
-        ("two-shot/mapping-average", "zero-shot/mapping-average"),
     ):
         result["paired_deltas"][f"{treatment} minus {control}"] = native_metrics.paired_metric_delta_bootstrap(
             frame["label"],

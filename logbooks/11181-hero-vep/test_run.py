@@ -29,10 +29,28 @@ def test_independent_clients_preserve_the_same_complete_matrix(tmp_path):
         "+": {"reference": "A" * 255, "alternate": "A" * 127 + "C" + "A" * 127},
         "-": {"reference": "T" * 255, "alternate": "T" * 127 + "G" + "T" * 127},
     }
-    rows = [{"id": str(i), "chrom": "3", "label": i == 0, "sequences": sequences} for i in range(10)]
+    rows = [
+        {
+            "id": str(i),
+            "answer_mapping": "primary" if i % 2 else "reversed",
+            "chrom": "3",
+            "label": i == 0,
+            "sequences": sequences,
+        }
+        for i in range(10)
+    ]
     demos = [dict(rows[i], chrom="1") for i in (0, 1)]
     panels = tmp_path / "panels.json"
-    panels.write_text(json.dumps({"seed": 11181, "panels": {"pilot": rows, "demonstrations": demos}}))
+    panels.write_text(
+        json.dumps(
+            {
+                "protocol_version": 2,
+                "answer_mapping_seed": 11181,
+                "seed": 11181,
+                "panels": {"pilot": rows, "demonstrations": demos},
+            }
+        )
+    )
     reference = tmp_path / "reference.json"
     reference.write_text(
         json.dumps(
@@ -49,8 +67,8 @@ def test_independent_clients_preserve_the_same_complete_matrix(tmp_path):
         run_panel([RecordingClient() for _ in range(workers)], panels, reference, "pilot", 10, output)
         records = [json.loads(line) for line in output.getvalue().splitlines()]
         assert records[-1]["type"] == "complete"
-        assert records[-1]["requests_sent"] == 272
+        assert records[-1]["requests_sent"] == 160
         scores = sorted(json.dumps(record, sort_keys=True) for record in records if record["type"] == "score")
-        assert len(scores) == len(set(scores)) == 272
+        assert len(scores) == len(set(scores)) == 160
         outputs.append(scores)
     assert outputs[0] == outputs[1]

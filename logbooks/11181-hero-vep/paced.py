@@ -73,9 +73,9 @@ def run_paced_panel(client: PacedClient, inputs: Path, panel: str, variant_count
     client.session.headers["X-data-parallel-rank"] = "0"
     client.sentinels = [
         target
-        for target in targets(panels["pilot"][:1], panels["demonstrations"], set())
+        for target in targets(panels["pilot"][:1], panels["demonstrations"])
         if target.strand == "+"
-        and ((target.mapping == "none" and target.candidate == "reference") or target.mapping == "primary")
+        and ((target.mapping == "none" and target.candidate == "reference") or target.single_token)
     ]
     assert len(client.sentinels) == 6
     buffer = io.StringIO()

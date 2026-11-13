@@ -97,8 +97,17 @@ class ScoringClient:
 
     def score(self, prefix: str, target: str, single_token: bool) -> dict:
         prefix_ids = self.tokenize(prefix)
-        tokens = self.tokenize(prefix + target)
-        start = continuation_start(prefix_ids, tokens, single_token)
+        if single_token:
+            assert prefix.endswith(" ") and target in {"A", "B"}
+            empty_ids = self.tokenize("")
+            answer_ids = self.tokenize(target)
+            answer_start = continuation_start(empty_ids, answer_ids, single_token=True)
+            # Keep the conditioned space token; full-text encoding can merge it with the answer.
+            tokens = prefix_ids + answer_ids[answer_start:]
+            start = len(prefix_ids)
+        else:
+            tokens = self.tokenize(prefix + target)
+            start = continuation_start(prefix_ids, tokens, single_token=False)
         assert start > 0, "Tokenizer must provide model-required BOS for unconditioned likelihood"
         payload = {
             "model": self.model,
