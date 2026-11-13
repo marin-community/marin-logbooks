@@ -19,7 +19,6 @@ alone.
 Tracked in marin-community/marin-logbooks#39.
 """
 
-import argparse
 import hashlib
 import json
 import logging
@@ -44,11 +43,8 @@ from marin.datakit.download.open_swe_traces import (
     row_to_chat_doc,
 )
 from marin.datakit.download.rollout_transforms import load_parquet_batched
-from marin.execution.step_runner import StepRunner
 from marin.execution.step_spec import StepSpec
-from rigging.filesystem.s3_compat import configure_coreweave_s3
 from rigging.filesystem.storage_path import StoragePath, prefix_join
-from rigging.log_setup import configure_logging
 from zephyr.context import ZephyrContext
 from zephyr.dataset import Dataset
 
@@ -346,23 +342,3 @@ def arm_step(arm: str, membership: StepSpec, partitions: list[RawPartition]) -> 
         fn=build,
         hash_attrs={"version": ARM_VERSION, "arm": arm, "max_tokens": MAX_TOKENS},
     )
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--arms", nargs="*", choices=ARMS, default=[], help="Arms to materialize after the membership.")
-    parser.add_argument("--max-concurrent", type=int, default=4)
-    args = parser.parse_args()
-
-    configure_logging(logging.INFO)
-    configure_coreweave_s3()
-    partitions = raw_partitions()
-    membership = membership_step(index_step(partitions))
-    steps = [membership, *(arm_step(arm, membership, partitions) for arm in args.arms)]
-    StepRunner().run(steps, max_concurrent=args.max_concurrent)
-    for step in steps:
-        logger.info("%s -> %s", step.name, step.output_path)
-
-
-if __name__ == "__main__":
-    main()
