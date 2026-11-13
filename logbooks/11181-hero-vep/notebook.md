@@ -594,3 +594,31 @@ input hashes are in `v3-rerun-plan.json`. The private launcher supplies auth,
 endpoint and model identity from the prior run metadata; none is published.
 The new result will carry explicit historical-DNA versus fresh-classification
 provenance. This is an exploratory pilot, not the reserved validation run.
+
+
+## 2026-11-13: Completed protocol v3 classification rerun
+
+The authorized run at `1774527a7557b7a8f7fa665c9b006b557ef10735` completed
+all 800 classification candidate scores in 400 scoring responses, plus 72
+monitoring responses (1,757 HTTP requests including tokenization and metadata).
+Elapsed time was 688.99 seconds, below the 1,800-second cap. All requests
+succeeded, all 108 sentinel observations had zero drift, and serving identity
+matched the historical pilot. All 800 reused DNA scores passed provenance and
+live checks; their aggregate values are exactly unchanged. Offline inspection
+of all 200 two-shot contexts verified canonical single-token demonstration
+answers matching the query candidates.
+
+AUPRC: null 0.212520, healthy 0.301885, zero-shot 0.109660, two-shot 0.101492.
+No signs were changed after observing results. The corrected classification
+protocol still performs poorly. Two-shot minus zero-shot is -0.00817, with
+95% match-group bootstrap interval [-0.06530, 0.03596]. These ten groups are
+exploratory. Historical classification selected using the same fixed v3
+assignments has AUPRC 0.185462 and 0.097865; this is the mapping-controlled
+comparison, though templates differ. Full evidence is in `pilot-v3-report.md`,
+`pilot-v3-metrics.json`, `pilot-v3-variants.json`, `pilot-v3-scores.jsonl`, and
+`pilot-v3-summary.json`. Endpoint/access and raw wire details remain private.
+
+The user asked to compare general language models only, specifically GLM-5.3,
+starting with DNA likelihood rather than classification. Only a small GLM
+compatibility probe was launched separately; no GLM panel or reserved
+300-variant validation was launched as part of this rerun.

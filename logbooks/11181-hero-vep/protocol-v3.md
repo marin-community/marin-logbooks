@@ -1,7 +1,7 @@
 # Protocol v3: canonical single-token answers
 
-Status: implementation, offline checks, and a two-context live parity check
-complete; full rerun unapproved and unrun. Supersedes v2 answer-boundary and request semantics. Historical v1/v2
+Status: implementation, offline checks, live parity checks, and the authorized
+100-variant classification-only rerun complete. Reserved validation unrun. Supersedes v2 answer-boundary and request semantics. Historical v1/v2
 artifacts must not be relabeled or pooled with v3 classifications.
 
 - Query prompt ends exactly at `Answer:` (no trailing whitespace).
@@ -27,9 +27,12 @@ artifacts must not be relabeled or pooled with v3 classifications.
 
 For 100 variants: 2 methods × 2 strands = 400 classification responses,
 producing 800 candidate-score records. Tokenization and sentinel calls are
-additional. Current generic runner also scores DNA; a classification-only
-launcher remains to be prepared before the approved scope can be executed.
+additional. The generic runner also scores DNA; `classification_rerun.py` performs the
+classification-only execution with validated reuse of historical DNA scores.
 
 Live parity and demonstration tokenization evidence: `v3-parity-result.json`
 and `v3-demonstration-token-audit.json`. Both contexts matched teacher forcing
 and fresh repeats exactly; this is a small execution check, not VEP accuracy.
+
+Completed exploratory results: `pilot-v3-report.md`. Classification remains
+weak despite verified tokenization and stable execution.
