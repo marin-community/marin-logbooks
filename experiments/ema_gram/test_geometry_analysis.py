@@ -9,13 +9,28 @@ import numpy as np
 import pytest
 
 from experiments.ema_gram.analyze_envelope_paths import analyze_paths
-from experiments.ema_gram.analyze_geometry import paired_interval
+from experiments.ema_gram.analyze_geometry import paired_interval, prediction_error_comparison
 from experiments.ema_gram.envelope_path import measure_path
 
 
 def test_paired_interval_preserves_constant_difference_with_unequal_weights():
     interval = paired_interval(np.full((8, 16), 0.25), np.arange(1, 17), draws=1000)
     np.testing.assert_allclose([interval[k] for k in ("mean", "lower", "upper")], 0.25, atol=1e-12)
+
+
+def test_prediction_error_uses_weighted_panel_means_and_shared_text_resamples():
+    # The weighted panel change is 0.5, although neither individual group has that value.
+    changes = np.broadcast_to([-1.0, 1.0], (8, 3, 2))
+    linear = np.zeros((8, 3))
+    quadratic = np.full((8, 3), 0.5)
+    result = prediction_error_comparison(changes, linear, quadratic, [1, 3])
+    assert result["linear_mean_absolute_error"] == 0.5
+    assert result["quadratic_mean_absolute_error"] == 0.0
+    # One shared group resample can select the negative group twice for every candidate.
+    # Independent text resampling across powers or draws would shrink this interval.
+    np.testing.assert_allclose(
+        [result["quadratic_minus_linear"][k] for k in ("mean", "lower", "upper")], [-0.5, -0.5, 0.5]
+    )
 
 
 def test_path_quadratic_remainders_and_fixed_anchors_match_exact_calculation(tmp_path):

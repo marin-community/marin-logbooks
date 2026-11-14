@@ -140,6 +140,35 @@ Earlier pilot attempts ran out of accelerator memory. The corrected implementati
 
 [Validated six-checkpoint analysis](../geometry-power-analysis.json) · [Numerical checks for all six checkpoints](../geometry-power-all-numerical-validation.json)
 
+## Prediction accuracy at the same calibrated steps
+
+**Adding curvature lowered the measured average prediction error at five checkpoints. Two conditional intervals supported a reduction; the other four were uncertain.**
+
+This supplementary analysis was performed after the checkpoint measurements finished. It uses the already locked directions and grid-calibrated lengths. It does not change power choices or step lengths.
+
+Both g and H are measured on the calibration text panel. The linear model predicts loss change using only the initial slope: −s⟨g,d⟩. The quadratic model adds ½s²⟨d,Hd⟩. Both predict the same move on the separate evaluation panel.
+
+For each candidate, take the absolute difference between its prediction and the measured mean loss change on the 128 evaluation sequences. Average these errors over the 24 candidates at that checkpoint. Smaller values mean more accurate predictions. Values below are **millionths of loss**.
+
+| Training power · checkpoint | Linear model error | Quadratic model error |
+| --- | ---: | ---: |
+| 1/8 · early | 511.28 | 186.36 |
+| 1/8 · middle | 202.44 | 72.63 |
+| 1/8 · late | 204.60 | 47.23 |
+| 1/4 · early | 523.09 | 58.65 |
+| 1/4 · middle | 33.85 | 98.63 |
+| 1/4 · late | 74.26 | 32.94 |
+
+The quadratic mean error was higher at the quarter-trained middle checkpoint. This is the same checkpoint where curvature-based power selection improved on alignment-based selection. Predicting the size of an improvement and selecting a lower-loss action are distinct tests.
+
+![Paired differences in mean absolute prediction error, quadratic minus linear. Two conditional intervals exclude zero in favor of curvature; four include zero.](power-figures/power-predictions-error.png)
+
+Negative values favor the quadratic model. The conditional 95% intervals resample update draws and evaluation-text groups, keeping all three powers together within each draw. Each resampled text panel is averaged before taking absolute errors. Predictions and calibration remain fixed.
+
+Only the eighth-trained late and quarter-trained early intervals were wholly below zero. These intervals are conditional and unadjusted for multiple comparisons. Differences between calibration and evaluation text contribute to prediction error, alongside the approximation error of the local model.
+
+[Prediction-error values and conditional intervals](../geometry-power-analysis.json)
+
 ## 5. Experiment 2: does matrix orientation improve a curvature bound?
 
 **The test asks whether the directions inside a gradient matrix contain useful information beyond its overall size.**

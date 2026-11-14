@@ -39,6 +39,44 @@ def paired_interval(values, weights, seed=202611135, draws=10000):
     )
 
 
+def prediction_error_comparison(group_changes, linear, quadratic, weights, seed=202611135, draws=10000):
+    """Compare panel-mean prediction errors while retaining all powers within each draw."""
+    values = np.asarray(group_changes, np.float64)
+    linear, quadratic, weights = [np.asarray(x, np.float64) for x in (linear, quadratic, weights)]
+    n, powers, groups = values.shape
+    observed = np.average(values, axis=2, weights=weights)
+    linear_error = float(np.mean(np.abs(observed - linear)))
+    quadratic_error = float(np.mean(np.abs(observed - quadratic)))
+    rng = np.random.default_rng(seed)
+    update_indices = rng.integers(n, size=(draws, n))
+    text_indices = rng.integers(groups, size=(draws, groups))
+    sampled = values[
+        update_indices[:, :, None, None], np.arange(powers)[None, None, :, None], text_indices[:, None, None, :]
+    ]
+    sampled_weights = weights[text_indices]
+    sampled_means = np.sum(sampled * sampled_weights[:, None, None, :], axis=3)
+    sampled_means /= np.sum(sampled_weights, axis=1)[:, None, None]
+    differences = np.mean(
+        np.abs(sampled_means - quadratic[update_indices]) - np.abs(sampled_means - linear[update_indices]), axis=(1, 2)
+    )
+    return dict(
+        linear_mean_absolute_error=linear_error,
+        quadratic_mean_absolute_error=quadratic_error,
+        quadratic_minus_linear=dict(
+            mean=quadratic_error - linear_error,
+            lower=float(np.quantile(differences, 0.025)),
+            upper=float(np.quantile(differences, 0.975)),
+        ),
+        bootstrap_samples=draws,
+        seed=seed,
+        scope=(
+            "Supplementary panel-mean prediction check at locked grid-calibrated lengths; "
+            "resample update draws and evaluation groups, retaining all three powers. "
+            "Conditional on checkpoint and calibration; combines approximation and text-panel differences."
+        ),
+    )
+
+
 def analyze_power(directory):
     complete = json.loads((directory / "completed.json").read_text())
     result = json.loads((directory / "power-results.json").read_text())
@@ -64,6 +102,14 @@ def analyze_power(directory):
             raise ValueError("Evaluation panel incomplete")
     baseline = np.asarray(result["evaluation_baseline"])
     weights = result["evaluation_weights"]
+    powers = (0.125, 0.1875, 0.25)
+    group_changes = [
+        [np.asarray(rows[d, a]["evaluation"]["direct"]["losses"]) - baseline for a in powers] for d in range(8)
+    ]
+    linear = [
+        [-rows[d, a]["evaluation"]["direct"]["length"] * rows[d, a]["alignment"] for a in powers] for d in range(8)
+    ]
+    quadratic = [[rows[d, a]["evaluation"]["direct"]["predicted_change"] for a in powers] for d in range(8)]
     policies = ("fixed_eighth", "fixed_quarter", "alignment", "quadratic", "calibration_best")
     selected, comparisons = {}, {}
     for length_rule in ("direct", "quadratic", "equal", "native"):
@@ -88,6 +134,7 @@ def analyze_power(directory):
             )
     return dict(
         state=result["state"],
+        prediction_error=prediction_error_comparison(group_changes, linear, quadratic, weights),
         complete=complete,
         selected_loss_changes=selected,
         paired_loss_differences=comparisons,
@@ -175,7 +222,8 @@ def analyze_history(directory):
             raise ValueError("History calibration changed after locking")
         if len(row["evaluation"]["direct"]["losses"]) != 16:
             raise ValueError("History evaluation incomplete")
-    power_differences, history_effects, reversals = {}, {}, []
+    power_differences, history_effects, replica_comparisons, reversals = {}, {}, {}, []
+    condition_names = {(c["replica"], c["momentum"], c["grams"]): c["name"] for c in result["conditions"]}
     weights = result["evaluation_weights"]
     for rule in ("equal", "direct"):
         paired = {
@@ -192,6 +240,20 @@ def analyze_history(directory):
         history_effects[rule] = {
             c: paired_interval(v - paired["saved"], weights) for c, v in paired.items() if c != "saved"
         }
+        replica_comparisons[rule] = []
+        for momentum, grams in (("fresh", "saved"), ("saved", "fresh"), ("fresh", "fresh")):
+            for first, second in (("replica0", "replica1"), ("pooled", "replica0"), ("pooled", "replica1")):
+                first_name = condition_names[first, momentum, grams]
+                second_name = condition_names[second, momentum, grams]
+                replica_comparisons[rule].append(
+                    dict(
+                        first=first_name,
+                        second=second_name,
+                        quarter_minus_eighth_difference=paired_interval(
+                            paired[first_name] - paired[second_name], weights
+                        ),
+                    )
+                )
         saved_mean = power_differences[rule]["saved"]["mean"]
         for condition in names:
             interval = power_differences[rule][condition]
@@ -211,6 +273,7 @@ def analyze_history(directory):
         conditions=result["conditions"],
         quarter_minus_eighth=power_differences,
         change_from_saved=history_effects,
+        replica_comparisons=replica_comparisons,
         nominal_ranking_reversals=reversals,
         matched_replay_needed=bool(reversals),
         replay_scope="A reversal triggers matched moving-versus-frozen replay; it does not establish temporal lag",

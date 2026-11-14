@@ -5028,3 +5028,23 @@ history collection and probe measurements; original attempt 4c3e4116d8eb
 remains archived. At 13:24 UTC both history jobs were calibrating candidates
 without application failures. The report now contains the complete six-state
 power comparison; history outcomes remain pending.
+
+
+A supplementary prediction-error analysis uses the locked grid-calibrated
+lengths for all 144 candidates. It compares the calibration-based linear
+prediction with the quadratic prediction against the mean held-out loss
+change. The point estimate averages absolute panel-mean errors across all
+24 candidates at each checkpoint. The bootstrap retains all three powers
+within an update draw, jointly resamples evaluation groups and averages each
+resampled text panel before taking absolute errors. Its weighted-panel and
+shared-resampling behavior is covered by an analytical two-group case; all
+three geometry-analysis tests passed in 4.54 seconds.
+
+Quadratic mean absolute error is lower at five checkpoints and higher at the
+quarter-trained middle checkpoint. Conditional unadjusted 95% intervals for
+quadratic-minus-linear error exclude zero only at eighth-late and quarter-early,
+both favoring curvature. This diagnostic is separate from selecting a power,
+and mixes local-approximation error with reference/evaluation text differences.
+It was computed after measurement completion and did not alter any selection
+or step length. The report includes a separate error figure and explicit
+point-error table.

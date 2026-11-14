@@ -103,6 +103,20 @@ def power_figure(summary, results, path):
     fig, ax = plt.subplots(figsize=(7, max(2.6, 1.6 + 0.6 * len(summary))), layout="constrained")
     power_selection_panel(summary, ax)
     finish(fig, [ax], path.with_name(path.name + "-selection"))
+    fig, ax = plt.subplots(figsize=(7, max(2.6, 1.6 + 0.6 * len(summary))), layout="constrained")
+    for i, result in enumerate(summary):
+        interval = result["prediction_error"]["quadratic_minus_linear"]
+        ax.hlines(i, 1e6 * interval["lower"], 1e6 * interval["upper"], color="#1F77B4", lw=1.8)
+        ax.scatter(1e6 * interval["mean"], i, color="#1F77B4", s=32)
+    ax.axvline(0, color="black", lw=1.2)
+    ax.set(
+        yticks=range(len(summary)),
+        yticklabels=[r["state"].replace("-", " · ") for r in summary],
+        xlabel="Change in mean absolute error (millionths)\n← Smaller error        Larger error →",
+        title="C  Prediction error from adding curvature",
+        ylim=(len(summary) - 0.5, -0.5),
+    )
+    finish(fig, [ax], path.with_name(path.name + "-error"))
 
 
 def envelope_coverage_panel(summary, ax):
@@ -278,47 +292,59 @@ def muon_figure(summaries, path, rules=("equal", "direct")):
     finish(fig, axes, path)
 
 
-def history_figure(summaries, path):
+def history_panel(summaries, ax, rule, title):
     conditions = summaries[0]["conditions"]
     labels = []
     for condition in conditions:
         if condition["name"] == "saved":
-            labels.append("Saved M + saved Grams")
+            labels.append("Saved both")
         else:
             source = {"replica0": "A", "replica1": "B", "pooled": "A+B pool"}[condition["replica"]]
             changed = (
-                "M + Grams"
+                "both"
                 if condition["momentum"] == condition["grams"] == "fresh"
-                else ("M only" if condition["momentum"] == "fresh" else "Grams only")
+                else ("momentum" if condition["momentum"] == "fresh" else "Grams")
             )
             labels.append(f"Fresh {changed} ({source})")
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5.5), layout="constrained")
+    for state_index, summary in enumerate(summaries):
+        color = ["#1F77B4", "#8C62AA"][state_index % 2]
+        offset = (state_index - (len(summaries) - 1) / 2) * 0.2
+        for i, condition in enumerate(conditions):
+            interval = summary["quarter_minus_eighth"][rule][condition["name"]]
+            ax.hlines(i + offset, 1e6 * interval["lower"], 1e6 * interval["upper"], color=color, lw=1.6)
+            ax.scatter(
+                1e6 * interval["mean"],
+                i + offset,
+                s=28,
+                color=color,
+                label=(
+                    {"eighth-middle": "1/8-trained", "quarter-middle": "1/4-trained"}[summary["state"]]
+                    if i == 0
+                    else None
+                ),
+            )
+    ax.axvline(0, color="black", lw=1.2)
+    ax.set(
+        yticks=range(len(labels)),
+        yticklabels=labels,
+        title=title,
+        xlabel="Loss difference: quarter - eighth (millionths)\n← Quarter better          Eighth better →",
+    )
+    ax.invert_yaxis()
+    ax.legend(title="Middle checkpoint", loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, fontsize=10)
+
+
+def history_figure(summaries, path):
+    fig, axes = plt.subplots(1, 2, figsize=(13, 6.5), layout="constrained")
     for ax, rule, title in zip(
         axes, ("equal", "direct"), ("A  Equal physical length", "B  Separately calibrated length"), strict=True
     ):
-        for state_index, summary in enumerate(summaries):
-            color = ["#1F77B4", "#8C62AA"][state_index % 2]
-            offset = (state_index - (len(summaries) - 1) / 2) * 0.2
-            for i, condition in enumerate(conditions):
-                interval = summary["quarter_minus_eighth"][rule][condition["name"]]
-                ax.hlines(i + offset, interval["lower"], interval["upper"], color=color, lw=1.6)
-                ax.scatter(
-                    interval["mean"],
-                    i + offset,
-                    s=28,
-                    color=color,
-                    label=summary["state"].replace("-", " ") if i == 0 else None,
-                )
-        ax.axvline(0, color="black", lw=1.2)
-        ax.set(
-            yticks=range(len(labels)),
-            yticklabels=labels,
-            title=title,
-            xlabel="Evaluation loss: quarter - eighth\n← Quarter better          Eighth better →",
-        )
-        ax.invert_yaxis()
-    axes[1].legend(title="Saved checkpoint", loc="best", fontsize=10)
+        history_panel(summaries, ax, rule, title)
     finish(fig, axes, path)
+    for rule, title in (("equal", "A  Equal physical length"), ("direct", "B  Separately calibrated length")):
+        fig, ax = plt.subplots(figsize=(8, 6.5), layout="constrained")
+        history_panel(summaries, ax, rule, title)
+        finish(fig, [ax], path.with_name(path.name + "-" + rule))
 
 
 def muon_validation_figure(before, after, path):
