@@ -5,6 +5,7 @@
 
 import argparse
 import base64
+import csv
 import hashlib
 import html
 import json
@@ -15,6 +16,59 @@ from pathlib import Path
 import pypandoc
 
 
+def export_candidates(root, output):
+    """Flatten completed candidate measurements; retain raw records for paired uncertainty."""
+    records = []
+    for archive in ("geometry-results", "geometry-muon-results"):
+        for path in sorted((root / archive).rglob("completed.json")):
+            complete = json.loads(path.read_text())
+            experiment = complete["experiment"]
+            if not complete["success"] or experiment not in ("power", "muon", "history"):
+                continue
+            source = path.parent / f"{experiment}-results.json"
+            result = json.loads(source.read_text())
+            identity = json.loads((path.parent / "checkpoint-identity.json").read_text())
+            protocol = json.loads((path.parent / "protocol.json").read_text())
+            for row in result["rows"]:
+                for rule, evaluation in row["evaluation"].items():
+                    records.append(
+                        dict(
+                            experiment=experiment,
+                            state=result["state"],
+                            run_id=path.parent.name,
+                            source_commit=complete["source_commit"],
+                            checkpoint_uri=identity["uri"],
+                            checkpoint_manifest_sha256=identity["object_manifest_sha256"],
+                            data_manifest_sha256=result["data_manifest_sha256"],
+                            protocol_sha256=hashlib.sha256((path.parent / "protocol.json").read_bytes()).hexdigest(),
+                            length_grid=json.dumps(protocol["length_grid"]),
+                            draw=row["draw"],
+                            variant=row.get("variant", ""),
+                            alpha=row.get("alpha", ""),
+                            history_condition=row.get("condition", ""),
+                            rule=rule,
+                            length=evaluation["length"],
+                            actual_norm=evaluation["actual_norm"],
+                            alignment=row["alignment"],
+                            signed_curvature=row["curvature"],
+                            predicted_loss_change=evaluation["predicted_change"],
+                            observed_loss_change=evaluation["loss_change"],
+                            native_update_norm=row.get("native_norm", row.get("reference_update_norm")),
+                            native_update_seconds=row.get("native_seconds", ""),
+                            gradient_seconds=row.get("gradient_seconds", ""),
+                            run_completed_successfully=True,
+                            raw_result="data/raw/" + source.relative_to(root).as_posix(),
+                            raw_result_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+                        )
+                    )
+    if records:
+        with (output / "candidate-results.csv").open("w", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(records[0]))
+            writer.writeheader()
+            writer.writerows(records)
+    return len(records)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -22,6 +76,7 @@ def main():
     root = Path(__file__).resolve().parent
     previous = root.parent / "gradient-curvature-report"
     args.output.mkdir(parents=True, exist_ok=True)
+    candidate_count = export_candidates(root.parent, args.output)
     evidence = {}
     raw_sources = list(root.parent.glob("geometry-*.json"))
     raw_sources.append(root.parent / "hessian-aligned-configs.json")
@@ -110,6 +165,10 @@ def main():
         '<button id="previous">← Previous section</button><span id="progress" role="status"></span>'
         '<button id="next">Next section →</button></nav>'
         '<p class="reading-note"><a href="evidence-index.json">Evidence index with SHA-256 hashes</a>. '
+        '<a href="candidate-results.csv">Candidate measurements as CSV</a>. '
+        "Each CSV row is one completed candidate at one length rule. Negative loss change is better. "
+        "Blank timing cells mean unavailable; recorded wall times can include compilation and telemetry. "
+        "Raw JSON retains paired group losses and numerical checks. "
         "The raw archive includes completed, failed and partial attempts, each with its original status. "
         "Large response arrays remain at the recorded cloud locations.</p></main>"
         '<dialog id="figure-dialog"><button id="close-figure">Close figure</button>'
@@ -119,7 +178,16 @@ def main():
     (args.output / "reading-guide.html").write_text(page)
     (args.output / "evidence-index.json").write_text(json.dumps(evidence, indent=2) + "\n")
     shutil.copy2(source, args.output / "reading-guide-source.md")
-    print(json.dumps(dict(sections=len(sections), linked_records=len(evidence), output=str(args.output))))
+    print(
+        json.dumps(
+            dict(
+                sections=len(sections),
+                linked_records=len(evidence),
+                candidate_rows=candidate_count,
+                output=str(args.output),
+            )
+        )
+    )
 
 
 if __name__ == "__main__":

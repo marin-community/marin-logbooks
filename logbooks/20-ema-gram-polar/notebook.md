@@ -4907,3 +4907,43 @@ submissions separately time synchronized gradients and native updates; these
 wall times can include first-call compilation. The change adds timing fields
 without altering update arithmetic; three geometry tests and required lint
 passed. Both frozen-coefficient path jobs remain pending capacity.
+
+
+At 12:03 UTC, power pilot 04 was verified successful on all four tasks.
+The completed retry restored saved model parameters and optimizer state,
+verified training counter 18666, and measured all 24 candidates. All eight
+FP32 derivatives of the normalized complete update with respect to power at
+3/16 passed two-scale finite differences. On the first draw, direct endpoint
+loss differentiation agreed with the endpoint-gradient chain rule to 0.0713%
+at a fixed nonzero calibrated step. Reference HVP/symmetry gates also passed. Its online tracker finished and synced
+five files. The first process had been preempted once; the retry restarted
+probe measurements from the saved training state.
+
+The [pilot analysis](geometry-power-analysis.json) compares power selectors
+conditional on the eighth-trained middle checkpoint. The curvature selector
+maximizes each power's bounded quadratic prediction, then chooses the largest
+predicted improvement. It selected quarter power on all eight draws; alignment
+selected eighth seven times and three-sixteenths once. When each selected
+power then grid-calibrates its own length on the shared calibration panel,
+curvature-minus-alignment mean held-out loss was -21.77 millionths, with
+paired 95% bootstrap interval [-59.85, +16.07]. The bootstrap resamples update
+draws and evaluation groups while holding the checkpoint and calibration fixed.
+Curvature exactly matched fixed quarter. The same locked choices at equal
+reference length gave -223.62 millionths [-337.69, -115.83], illustrating why
+length calibration matters to the scientific claim.
+
+Five remaining power checkpoints and both fixed-weight history comparisons
+were submitted from published source 6b0517a4b. The history jobs use the
+eighth-middle and quarter-middle checkpoints and compare saved versus fresh
+momentum and Gram matrices independently. All seven were pending with
+zero failures or preemptions at 12:07 UTC. Neither queue nor worker time caps
+were introduced, and default scheduler retries remain enabled. These are frozen
+checkpoint measurements; no training continuation has been launched.
+
+The accessible report now includes the pilot comparison and separates its
+uncertain calibrated-length benefit from the larger equal-length difference.
+The [report builder](geometry-report/build_reading_guide.py) emits
+`candidate-results.csv`, with one row per completed candidate/length rule, with
+checkpoint and data identities and raw-result hashes. All 1,800 Muon CSV loss
+means and predictions reproduced from the raw group losses and quadratic
+coefficients. Missing isolated native timing remains blank.

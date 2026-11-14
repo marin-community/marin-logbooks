@@ -1,0 +1,313 @@
+{
+  "scope": "Calibration only; freeze and publish before test responses",
+  "inputs": {
+    "eighth-middle": {
+      "attention": {
+        "gradient_sha256": "7e354821dd36c86bca67a2308445c3cad1bd15a07363383fb5f0243aa15c11ba",
+        "calibration_basis_sha256": "df2dee2bf2cadcd87135e908280b2e38f8060c7e08df030c50d1ed46a9073f26",
+        "test_basis_sha256": "a1237623e9897db3fd0886af40001b66dcc1b7dd78131386105355f22a96e806",
+        "data_manifest_sha256": "8947480bd2927038ca1247526e72082c6ab1ba154726f9d3f24c9484fe23b96c"
+      },
+      "mlp": {
+        "gradient_sha256": "b6dfd10f3a771021909515c9eb767d20d73a023bc00341eaab42f413a33ad6a8",
+        "calibration_basis_sha256": "8491312a78452d3143b2ad49d4c285eedbda7590a0e14f78f055510acb8a0924",
+        "test_basis_sha256": "d1e9c52bcb5beadbce0a10f4dccb67d3670f755e06910b9a0905fab3fd48eb27",
+        "data_manifest_sha256": "8947480bd2927038ca1247526e72082c6ab1ba154726f9d3f24c9484fe23b96c"
+      }
+    },
+    "quarter-middle": {
+      "attention": {
+        "gradient_sha256": "c16b06d373fd5e791257d6ba44ce8dbebf9b8334579124793c198017e04adfa3",
+        "calibration_basis_sha256": "fa247e316f56c1474600396d0a64ed5fb9ac3dd5ba9361f14c6ac8b78f07c0d4",
+        "test_basis_sha256": "60f7b2b3aa8efaef0d301a5a15f67095bb1be0e56ebf242dd2b858297211b11e",
+        "data_manifest_sha256": "8947480bd2927038ca1247526e72082c6ab1ba154726f9d3f24c9484fe23b96c"
+      },
+      "mlp": {
+        "gradient_sha256": "719c3910601175f31083906be8d9d944969906daebaf383a545d764342e1f918",
+        "calibration_basis_sha256": "a54209621cf4d258d91fd7f26b873a9777321f8097aeb7ac2e226b4634448837",
+        "test_basis_sha256": "f34ffad4d32ba8fb6fdeed1c69331757b54a2dc1acf0d68616b71213f45c1ba9",
+        "data_manifest_sha256": "8947480bd2927038ca1247526e72082c6ab1ba154726f9d3f24c9484fe23b96c"
+      }
+    }
+  },
+  "fits": {
+    "attention": {
+      "scalar": {
+        "control": "scalar",
+        "coefficients": [
+          1.7399793131376766e-06,
+          744.6484303203364
+        ],
+        "coefficient_names": [
+          "L0",
+          "c"
+        ],
+        "intercept_floor": 1.7382354518852188e-06,
+        "feasibility_intercept_padding": 1.7393878633637197e-09,
+        "solver": "CLARABEL",
+        "solver_status": "optimal",
+        "solver_options": {
+          "tol_gap_abs": 1e-09,
+          "tol_feas": 1e-09,
+          "tol_gap_rel": 1e-09,
+          "equilibrate_enable": false
+        },
+        "solver_version": "0.11.1",
+        "solver_iterations": 9,
+        "cvxpy_version": "1.9.3",
+        "calibration_checks": [
+          {
+            "mean_trace": 0.9720883679343671,
+            "normalized_hessian_norm": 0.8943499598455079
+          },
+          {
+            "mean_trace": 1.7382354541723495,
+            "normalized_hessian_norm": 0.9999999990000008
+          }
+        ],
+        "calibration_mean_trace": 1.3551619110533584
+      },
+      "oriented": {
+        "control": "oriented",
+        "coefficients": [
+          0.07913238065278248,
+          4.2612828955599636e-05,
+          1032.929458385616
+        ],
+        "coefficient_names": [
+          "L0",
+          "cL",
+          "cR"
+        ],
+        "intercept_floor": 1.7382354518852188e-06,
+        "feasibility_intercept_padding": 1.7406822773290436e-09,
+        "solver": "CLARABEL",
+        "solver_status": "optimal",
+        "solver_options": {
+          "tol_gap_abs": 1e-09,
+          "tol_feas": 1e-09,
+          "tol_gap_rel": 1e-09,
+          "equilibrate_enable": false
+        },
+        "solver_version": "0.11.1",
+        "solver_iterations": 13,
+        "cvxpy_version": "1.9.3",
+        "calibration_checks": [
+          {
+            "mean_trace": 0.21702680769069801,
+            "normalized_hessian_norm": 0.9245627249557243
+          },
+          {
+            "mean_trace": 0.3624880392232908,
+            "normalized_hessian_norm": 0.9999999940010699
+          }
+        ],
+        "calibration_mean_trace": 0.2897574234569944
+      },
+      "rotated": {
+        "control": "rotated",
+        "coefficients": [
+          1.7382354537826983,
+          2.9901266367801843e-06,
+          7.200575809033031e-05
+        ],
+        "coefficient_names": [
+          "L0",
+          "cL",
+          "cR"
+        ],
+        "intercept_floor": 1.7382354518852188e-06,
+        "feasibility_intercept_padding": 1.7453129516846298e-09,
+        "solver": "CLARABEL",
+        "solver_status": "optimal",
+        "solver_options": {
+          "tol_gap_abs": 1e-09,
+          "tol_feas": 1e-09,
+          "tol_gap_rel": 1e-09,
+          "equilibrate_enable": false
+        },
+        "solver_version": "0.11.1",
+        "solver_iterations": 8,
+        "cvxpy_version": "1.9.3",
+        "calibration_checks": [
+          {
+            "mean_trace": 1.7382354537411095,
+            "normalized_hessian_norm": 0.5001550227187919
+          },
+          {
+            "mean_trace": 1.7382354542454646,
+            "normalized_hessian_norm": 0.9999999989999988
+          }
+        ],
+        "calibration_mean_trace": 1.738235453993287
+      }
+    },
+    "mlp": {
+      "scalar": {
+        "control": "scalar",
+        "coefficients": [
+          7.626298712509194e-06,
+          308.1633720396364
+        ],
+        "coefficient_names": [
+          "L0",
+          "c"
+        ],
+        "intercept_floor": 7.618666796098229e-06,
+        "feasibility_intercept_padding": 7.624183380768888e-09,
+        "solver": "CLARABEL",
+        "solver_status": "optimal",
+        "solver_options": {
+          "tol_gap_abs": 1e-09,
+          "tol_feas": 1e-09,
+          "tol_gap_rel": 1e-09,
+          "equilibrate_enable": false
+        },
+        "solver_version": "0.11.1",
+        "solver_iterations": 10,
+        "cvxpy_version": "1.9.3",
+        "calibration_checks": [
+          {
+            "mean_trace": 0.9564667009683917,
+            "normalized_hessian_norm": 0.31431354664881606
+          },
+          {
+            "mean_trace": 7.618666807129353,
+            "normalized_hessian_norm": 0.9999999989999994
+          }
+        ],
+        "calibration_mean_trace": 4.287566754048872
+      },
+      "oriented": {
+        "control": "oriented",
+        "coefficients": [
+          0.03142006381836388,
+          330.3486607655288,
+          1.3668373077610035e-06
+        ],
+        "coefficient_names": [
+          "L0",
+          "cL",
+          "cR"
+        ],
+        "intercept_floor": 7.618666796098229e-06,
+        "feasibility_intercept_padding": 7.71940697257918e-09,
+        "solver": "CLARABEL",
+        "solver_status": "optimal",
+        "solver_options": {
+          "tol_gap_abs": 1e-09,
+          "tol_feas": 1e-09,
+          "tol_gap_rel": 1e-09,
+          "equilibrate_enable": false
+        },
+        "solver_version": "0.11.1",
+        "solver_iterations": 14,
+        "cvxpy_version": "1.9.3",
+        "calibration_checks": [
+          {
+            "mean_trace": 0.14529526703073092,
+            "normalized_hessian_norm": 0.4277821390559643
+          },
+          {
+            "mean_trace": 1.0510962411624014,
+            "normalized_hessian_norm": 0.9999999872641154
+          }
+        ],
+        "calibration_mean_trace": 0.5981957540965661
+      },
+      "rotated": {
+        "control": "rotated",
+        "coefficients": [
+          7.626394067788982e-06,
+          2626959.2196088065,
+          0.0
+        ],
+        "coefficient_names": [
+          "L0",
+          "cL",
+          "cR"
+        ],
+        "intercept_floor": 7.618666796098229e-06,
+        "feasibility_intercept_padding": 7.634736266033657e-09,
+        "solver": "CLARABEL",
+        "solver_status": "optimal",
+        "solver_options": {
+          "tol_gap_abs": 1e-09,
+          "tol_feas": 1e-09,
+          "tol_gap_rel": 1e-09,
+          "equilibrate_enable": false
+        },
+        "solver_version": "0.11.1",
+        "solver_iterations": 10,
+        "cvxpy_version": "1.9.3",
+        "calibration_checks": [
+          {
+            "mean_trace": 2.283144303899478,
+            "normalized_hessian_norm": 0.1723258761072097
+          },
+          {
+            "mean_trace": 9.682258163724944,
+            "normalized_hessian_norm": 0.9999999989972208
+          }
+        ],
+        "calibration_mean_trace": 5.982701233812211
+      }
+    }
+  },
+  "sources": [
+    {
+      "completed": {
+        "success": true,
+        "state": "eighth-middle",
+        "experiment": "envelope",
+        "stage": "screen",
+        "counter": 18666,
+        "rows": 2,
+        "elapsed_seconds": 538.980001167045,
+        "output": "gs://marin-us-central2/ema-gram-20-geometry/20261113/envelope/screen/eighth-middle/ema-gram-geometry-a619d7a40d2a",
+        "wandb": null,
+        "source_commit": "e1a760495e3958ddaab8c60a6598a3b43ba3be8f",
+        "host_count": 4,
+        "device_count": 16,
+        "data_manifest_sha256": "8947480bd2927038ca1247526e72082c6ab1ba154726f9d3f24c9484fe23b96c"
+      },
+      "result_sha256": "62ef1e0d920cf42c58d9e6d2141091d4e42c29863cfef99057e1829d107fb512"
+    },
+    {
+      "completed": {
+        "success": true,
+        "state": "quarter-middle",
+        "experiment": "envelope",
+        "stage": "screen",
+        "counter": 18665,
+        "rows": 2,
+        "elapsed_seconds": 477.49366917507723,
+        "output": "gs://marin-us-central2/ema-gram-20-geometry/20261113/envelope/screen/quarter-middle/ema-gram-geometry-34708f148043",
+        "wandb": null,
+        "source_commit": "e1a760495e3958ddaab8c60a6598a3b43ba3be8f",
+        "host_count": 4,
+        "device_count": 16,
+        "data_manifest_sha256": "8947480bd2927038ca1247526e72082c6ab1ba154726f9d3f24c9484fe23b96c"
+      },
+      "result_sha256": "ce2b9e5b921e9b72a4853d092e0737e3b1f26d0832a3d5acfcb8828255572d47"
+    }
+  ],
+  "path_gate": {
+    "attention": {
+      "oriented_to_scalar_trace": 0.21381756754937709,
+      "eligible": true,
+      "rule": "At least 5% calibration trace reduction; no test outcomes used"
+    },
+    "mlp": {
+      "oriented_to_scalar_trace": 0.13951870336051858,
+      "eligible": true,
+      "rule": "At least 5% calibration trace reduction; no test outcomes used"
+    }
+  },
+  "path_policy": {
+    "update_draw": 0,
+    "anchors": "First four frozen test basis vectors",
+    "length": "Native eighth-power block norm at draw0, shared across powers",
+    "points": "Start reused from test; midpoint and endpoint for each power"
+  }
+}

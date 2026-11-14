@@ -47,14 +47,14 @@ def finish(fig, axes, path):
     plt.close(fig)
 
 
-def power_figure(summary, results, path):
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4.6), layout="constrained")
+def power_prediction_panel(results, ax):
     values = []
     for alpha, color in POWER_COLORS.items():
         rows = [r["evaluation"]["direct"] for result in results for r in result["rows"] if r["alpha"] == alpha]
-        predicted, observed = [-r["predicted_change"] for r in rows], [-r["loss_change"] for r in rows]
+        predicted = [-1e6 * r["predicted_change"] for r in rows]
+        observed = [-1e6 * r["loss_change"] for r in rows]
         values.extend(predicted + observed)
-        axes[0].scatter(
+        ax.scatter(
             predicted,
             observed,
             c=color,
@@ -66,28 +66,43 @@ def power_figure(summary, results, path):
         )
     low, high = min([*values, 0]), max([*values, 0])
     pad = 0.05 * max(high - low, 1e-8)
-    axes[0].plot([low - pad, high + pad], [low - pad, high + pad], color="#5F6368", ls="--", lw=1.2)
-    axes[0].set(
+    ax.plot([low - pad, high + pad], [low - pad, high + pad], color="#5F6368", ls="--", lw=1.2)
+    ax.set(
         xlim=(low - pad, high + pad),
         ylim=(low - pad, high + pad),
-        xlabel="Predicted loss decrease",
-        ylabel="Observed evaluation loss decrease",
-        title="A  Does the quadratic prediction transfer?",
+        xlabel="Predicted loss decrease (millionths)",
+        ylabel="Observed loss decrease (millionths)",
+        title="A  Predicted versus observed improvement",
     )
-    axes[0].legend(title="Inverse power", loc="best")
+    ax.legend(title="Inverse power", loc="best")
+
+
+def power_selection_panel(summary, ax):
     for i, result in enumerate(summary):
         interval = result["paired_loss_differences"]["direct"]["quadratic_minus_alignment"]
-        axes[1].hlines(i, interval["lower"], interval["upper"], color="#1F77B4", lw=1.8)
-        axes[1].scatter(interval["mean"], i, color="#1F77B4", s=32)
-    axes[1].axvline(0, color="black", lw=1.2)
-    axes[1].set(
+        ax.hlines(i, 1e6 * interval["lower"], 1e6 * interval["upper"], color="#1F77B4", lw=1.8)
+        ax.scatter(1e6 * interval["mean"], i, color="#1F77B4", s=32)
+    ax.axvline(0, color="black", lw=1.2)
+    ax.set(
         yticks=range(len(summary)),
         yticklabels=[r["state"].replace("-", " · ") for r in summary],
-        xlabel="Evaluation loss: curvature choice - alignment choice\n← Curvature helps        Curvature hurts →",
-        title="B  Does adding curvature improve the choice?",
+        xlabel="Loss difference (millionths)\n← Curvature helps        Curvature hurts →",
+        title="B  Curvature choice versus alignment choice",
+        ylim=(len(summary) - 0.5, -0.5),
     )
-    axes[1].invert_yaxis()
+
+
+def power_figure(summary, results, path):
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.6), layout="constrained")
+    power_prediction_panel(results, axes[0])
+    power_selection_panel(summary, axes[1])
     finish(fig, axes, path)
+    fig, ax = plt.subplots(figsize=(7, 4.8), layout="constrained")
+    power_prediction_panel(results, ax)
+    finish(fig, [ax], path.with_name(path.name + "-prediction"))
+    fig, ax = plt.subplots(figsize=(7, max(2.6, 1.6 + 0.6 * len(summary))), layout="constrained")
+    power_selection_panel(summary, ax)
+    finish(fig, [ax], path.with_name(path.name + "-selection"))
 
 
 def envelope_coverage_panel(summary, ax):

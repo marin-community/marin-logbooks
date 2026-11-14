@@ -6,13 +6,13 @@ This report follows the experiment request dated 13 November 2026. It extends th
 
 ## What can we conclude so far?
 
-**All three original-grid Muon comparisons and the matrix-envelope test screens are complete. Power prediction and path testing remain unfinished.**
+**The first power checkpoint, all Muon comparisons and the matrix-envelope test screens are complete. The remaining power checkpoints, history comparisons and path tests are unfinished.**
 
-The first power pilot stopped because the TPU ran out of accelerator memory. A later implementation reduces the peak memory needed by Hessian-vector measurements. Its current attempt has passed the initial derivative and Hessian checks and is collecting calibration measurements. It has not yet evaluated selected actions on held-out text.
+The corrected power pilot completed all numerical checks and held-out evaluations. At this checkpoint, curvature-based power selection improved mean loss slightly beyond alignment-based selection after both calibrated their step lengths. Its uncertainty interval includes zero. Five more checkpoints have been submitted.
 
 All three Muon comparisons passed their numerical checks and evaluated 72 candidates in total. Every original-grid calibration chose zero length. At separately calibrated quadratic-model steps, feedback variants had less favorable measured mean changes than plain Muon at each checkpoint. These local differences are small. The smaller-grid supplement was registered before inspecting held-out outcomes. It is now complete at all three checkpoints: all 72 choices were nonzero, but the feedback methods still had less favorable means than plain Muon.
 
-Both matrix-envelope calibration screens and both separate test-direction screens completed with passing numerical checks. All three controls covered the tested subspaces. After a post-hoc comparison that equalizes the worst observed coverage ratio, the true gradient axes gave a modest attention improvement and a larger MLP improvement. Fixed-coefficient path checks are pending. Fresh-history comparisons have not started.
+Both matrix-envelope calibration screens and both separate test-direction screens completed with passing numerical checks. All three controls covered the tested subspaces. After a post-hoc comparison that equalizes the worst observed coverage ratio, the true gradient axes gave a modest attention improvement and a larger MLP improvement. Fixed-coefficient path checks and fresh-history comparisons have been submitted.
 
 ## 1. Why do these experiments matter?
 
@@ -64,7 +64,7 @@ Cross entropy penalizes poor next-token predictions. Z-loss penalizes very large
 
 **The test compares choices made using alignment alone with choices made using alignment plus curvature.**
 
-The planned experiment uses six 447M checkpoints: early, middle and late states from a trajectory trained with power 1/8 and a trajectory trained with power 1/4. Each checkpoint receives eight fresh update batches. Each batch produces three candidate powers: 1/8, 3/16 and 1/4. That gives 144 planned candidate directions.
+The planned experiment uses six 447M checkpoints: early, middle and late states from a trajectory trained with power 1/8 and a trajectory trained with power 1/4. Each checkpoint receives eight fresh update batches. Each batch produces three candidate powers: 1/8, 3/16 and 1/4. Each update batch contains eight sequences, matching these 447M training configurations. That gives 144 planned candidate directions.
 
 These powers control inverse matrix powers applied to accumulated gradient statistics. They can alter both direction and size. The production five-step matrix transformation is retained.
 
@@ -80,7 +80,39 @@ The model chooses its best action within a common bounded range, including the o
 
 A useful result would be a lower paired evaluation loss for the curvature-based choice than for the alignment-based choice. Good agreement between predicted and measured loss changes is a separate question; a predictor can be accurate without changing the preferred action.
 
-**Current limitation:** the power pilot is still collecting calibration measurements. Initial numerical checks passed, but the full set of locked choices and held-out outcomes is not yet available.
+## First power result: the gain after step calibration remains uncertain
+
+**At the first checkpoint, curvature changes the chosen power, but its extra benefit after each power calibrates its own length is uncertain.**
+
+This pilot uses the middle checkpoint from the trajectory trained with power 1/8. All 24 candidate directions completed calibration and held-out evaluation. For each update draw, the normalized complete direction was differentiated with respect to the power at 3/16. All eight derivatives passed the two-scale finite-difference check. The reference Hessian-vector and symmetry checks also passed. On the first draw, a nonzero-step identity compared direct differentiation of the endpoint loss with the chain rule: minus step length times endpoint gradient dotted with the direction derivative. The two values differed by about 0.071%, with the calibrated length held fixed.
+
+For each power, the curvature rule maximizes its quadratic prediction over the bounded length interval, then selects the power with the largest predicted improvement. The selected power then receives a separately grid-calibrated length. All powers use the same calibration text; “separately” refers to their length choices.
+
+The curvature rule chose power 1/4 for all eight update draws. The alignment rule chose 1/8 seven times and 3/16 once. The rule that directly minimizes measured calibration loss also chose 1/4 eight times.
+
+With each chosen power receiving its own grid-calibrated step, the curvature rule's mean loss change was −371.49 millionths. The alignment rule's mean was −349.72 millionths. Their paired difference was **−21.77 millionths**, with conditional 95% interval **[−59.85, +16.07]**. Negative favors the curvature rule. The interval includes zero. This interval resamples eight update draws and 16 evaluation-text groups while retaining pairing; the checkpoint, calibration panel and locked selection rules remain fixed.
+
+![The first checkpoint's curvature-minus-alignment mean is negative, but its conditional interval crosses zero.](power-figures/power-predictions-selection.png)
+
+The curvature rule exactly matched fixed power 1/4 at this checkpoint. This pilot therefore does not demonstrate an advantage over always choosing 1/4. The remaining checkpoints test whether the useful choice changes across saved states.
+
+The same locked power choices can be evaluated under several length rules:
+
+| Length rule | Curvature minus alignment, millionths | Conditional 95% interval |
+| --- | ---: | ---: |
+| Each power calibrates its own length | -21.77 | [-59.85, +16.07] |
+| Every direction uses the same reference length r | -223.62 | [-337.69, -115.83] |
+| Each direction uses its native update length | -131.34 | [-201.76, -65.97] |
+
+Here r is the median of eight native eighth-power update norms. The much larger equal-length difference becomes smaller when each power can choose its own useful length. A claim that curvature improves selection must specify this length rule.
+
+![Predicted and observed improvements for the 24 pilot candidates at their grid-calibrated lengths, with the diagonal denoting equal values.](power-figures/power-predictions-prediction.png)
+
+Each dot represents one update draw and one candidate power. A dot above the diagonal means the measured held-out improvement exceeded the calibration-based quadratic prediction. This comparison combines quadratic-model error and differences between the calibration and evaluation text. It does not isolate either source of mismatch.
+
+Earlier attempts ran out of accelerator memory. The successful implementation reduces the lifetime of temporary Hessian-vector buffers. Its first process was preempted; the successful retry restored the saved training checkpoint and restarted probe measurements. Partial attempts remain in the evidence archive. Isolated native-update timing was unavailable in this pilot; later power jobs record it separately.
+
+[Validated pilot analysis](../geometry-power-analysis.json) · [Numerical checks](../geometry-power-numerical-validation.json)
 
 ## 5. Experiment 2: does matrix orientation improve a curvature bound?
 
@@ -145,7 +177,7 @@ At each middle checkpoint, the planned experiment compares four combinations:
 
 All other optimizer state stays fixed. The same new update batch is incorporated once in every condition.
 
-Two independent histories, each containing 512 batches at fixed model weights, test how much the result depends on the sampled history. We also average the two histories before rescaling their statistics or adding the small diagonal stabilizer called a ridge. This checks sensitivity to the sampled history without changing the gradient batch size.
+Two independent histories, each containing 512 batches of eight sequences at fixed model weights, test how much the result depends on the sampled history. The batch size matches the saved-state training configuration; this test does not change it. We also average the two histories before rescaling their statistics or adding the small diagonal stabilizer called a ridge. This checks sensitivity to the sampled history without changing the gradient batch size.
 
 If replacing history reverses the power ranking, a later matched replay would compare histories built at moving versus fixed parameters using the same text and temporal weights. That replay has not run. A training continuation would require complete durable checkpoint restoration and online tracking.
 
@@ -298,6 +330,6 @@ A failed numerical check means that the corresponding measurement is not accepte
 
 **The first priority is valid checkpoint evidence for power prediction and matrix orientation.**
 
-The new power pilot must pass its numerical checks and held-out evaluation. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. Path measurements will now assess them after parameter movement.
+The power pilot passed its numerical checks and held-out evaluation. The remaining five checkpoints and the two history comparisons must complete before a cross-checkpoint conclusion. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. Path measurements will now assess them after parameter movement.
 
 Only after these comparisons can the report support selecting a mechanism for matched training continuations. Full training claims and independent-seed replication are outside the completed evidence at this stage.
