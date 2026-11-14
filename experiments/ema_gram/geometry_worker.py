@@ -209,6 +209,8 @@ def main():
                     data_cfg, trainer=replace(cfg.trainer, train_batch_size=protocol["measurement_microbatch_sequences"])
                 )
             panels, weights, manifest_hash = geometry_data(data_cfg, protocol, args.exclusions, save)
+            if args.experiment == "muon" and manifest_hash != protocol["data_recovery"]["expected_data_manifest_sha256"]:
+                raise ValueError("TPU measurement panels differ from the verified data preflight")
             context = dict(
                 state=state,
                 model=model,

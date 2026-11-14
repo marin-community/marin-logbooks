@@ -4590,3 +4590,23 @@ The Muon protocol now explicitly references this manifest and replacement cache.
 Original training configuration files remain intact. Actual-loader validation
 of all 704 measurement sequences is the remaining data gate before the Muon
 submission.
+
+
+The real-loader CPU data check passed on source 1bfced3f7. It rehashed every
+local file, then read 64 calibration, 128 evaluation and 512 update sequences
+with the production measurement loader. All 704 complete-sequence hashes are
+unique across the panels and exclude the frozen list of 160 earlier-study
+sequence hashes. This establishes no identical complete sequences; it does not
+establish document/token non-overlap, statistical independence or absence from
+pretraining. The resulting data
+manifest hashes to 08b0186588da638314f2c9118e6d941d01d44daba9558b2a1c9d927ae0fc8932.
+See [preflight results](geometry-muon-data-preflight.json) and its [log](geometry-muon-data-preflight.txt).
+The legacy public cache has no preprocessor metadata; the loader emitted this
+warning for each panel. File identity is established by the frozen public
+revision and checksums. The absent original training subcache remains an
+explicit data-replacement limitation.
+
+The worker-side cloud identity check also matched all 79 objects against the
+frozen recovery manifest, including their generations and MD5 values. The next Muon submission must reproduce the
+CPU preflight's exact panel manifest before calculating gradients. This check
+executed no model or optimizer step; it does not validate a numerical result.
