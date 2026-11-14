@@ -654,6 +654,35 @@ status: active
   the first close to hold it in place; or a weight warm-up that starts after
   the model has learned to close (around step 15).
 
+### 2026-11-13 - Trough-to-peak learning steps for closing and closing twice
+
+- Question: at which step does each replay learn to close, and to close again,
+  once each curve is measured over its own rise?
+- Method: [`analysis/learning_steps/trough_peak.py`](analysis/learning_steps/trough_peak.py)
+  rescales each per-group series from its trough (0) to its peak (1), over the
+  pair of steps with the largest rise, and reports the steps where it first
+  reaches 10%, 50% and 90%. Inputs: the old per-step probe CSVs
+  (`p_first_close`, `p_reclose`), the segment-mean any-position estimate, and
+  the exact 100-step curves, bundled in
+  [`page_data.json`](analysis/learning_steps/page_data.json). Output:
+  [`trough_peak.out`](analysis/learning_steps/trough_peak.out).
+- Result, 50% step for close / close again:
+
+  | start, metric | SWE | tool-using | plain |
+  |---|---|---|---|
+  | `" answer"`, at 10.05's close and re-close points | 18 / 14 | 13 / 12 | 14 / 11 |
+  | mean row, same | 53 / 52 | 53 / 53 | 55 / 54 |
+  | mean row, P(>=1) / P(>=2) | 52 / 53 | 51 / 75 | 55 / 61 |
+  | `" answer"`, exact P(>=1) / hazard | 16 / 13 | 10 / 11 | not usable |
+
+  The tool-using P(>=2) curve under the mean row keeps climbing slowly to step
+  100; its 10% step (49) matches closing (45). Curves that start near their
+  peak (`" answer"` plain P(>=1), the `</` start's hazard) have no usable rise.
+- Interpretation: under every start, the re-close is half learned within about
+  four steps of the close, often slightly before it. The start moves both
+  together. That fits the base model already marking where a close belongs.
+  Single run per start.
+
 ## Final decision
 
 - Selected approach and evidence: pending the SFT-side counterexample
