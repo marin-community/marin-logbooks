@@ -164,7 +164,12 @@ task, edit its record in place.
 Open a PR against `main` with the task's record. Include the coordinating issue,
 research branch, a notebook link pinned to a published commit, the current
 status, and any Marin contribution PRs. Update the record when the task reaches
-a decision and retain completed records. [INDEX.md](INDEX.md) links to the
-directory of records.
+a decision and retain completed records. Keep the template heading and each
+field on its own line. Use lowercase letters, digits, and hyphens in the topic.
+
+[INDEX.md](INDEX.md) is generated from the records. The Research index workflow
+validates record format on PRs and publishes the table after records land on
+`main`. To preview it locally, run `python3 scripts/render_index.py` from the
+repository root. Put task updates in the record alone.
 
 Do not merge unrelated histories or replace `main` with a Marin source tree.
