@@ -31,7 +31,7 @@ Research branches share ancestry with Marin. This repository is not maintained
 with `git push --mirror`: archived branches remain available as Marin advances.
 Keep published research history; merge upstream changes when needed. Never
 merge a research branch into logbooks `main` or replace `main` with Marin's
-history. Add or update its index row through an ordinary PR against `main`.
+history. Add or update its task record through an ordinary PR against `main`.
 
 Large datasets, checkpoints, and raw telemetry stay in their existing stores.
 Record exact artifact references and access limitations in the notebook. All
