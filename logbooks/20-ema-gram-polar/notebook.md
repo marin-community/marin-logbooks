@@ -4701,3 +4701,38 @@ prove full TPU memory adequacy. Compiled F5 tangent and finite-difference
 kernels contain 44 and 30 matrix multiplications respectively, all specifying
 highest operand precision. This checks the requested arithmetic, not its
 accuracy on the restored checkpoint.
+
+## 2026-11-14 — Muon numerical recovery and a prespecified smaller-step grid
+
+At 10:39 UTC, Muon submission 04 (source 5a03733f8; measurement identity
+ema-gram-geometry-e3efbd6bd036) had restored counter 11444, reproduced the
+baseline loss 2.8327212334 and frozen all 24 candidate directions. All four
+update batches passed the F5 derivative gate at relative input displacements
+0.03 and 0.01: errors ranged from 0.0036138 to 0.0038984 at the first scale and
+0.0004044 to 0.0004361 at the second. The full-model HVP check passed at
+parameter perturbations 1 and 0.3, with errors 0.0110912 and 0.0008844. Its
+symmetry discrepancy was 1.24349e-9. The native-versus-FP32 base-map discrepancy
+reached 1.46% across the matrices; the derivative control is explicitly the
+higher-precision polynomial, with native update arithmetic preserved.
+
+The first 12 calibrated candidates all chose zero on the original length grid.
+Their quadratic-model optima were about 0.43–0.51, below the grid's first
+positive length of 1.3168. This suggests an unresolved grid-resolution issue;
+it does not show that the directions cannot improve loss. At 10:41:23 UTC,
+registered the [smaller-step protocol](geometry-muon-small-step-protocol.json)
+using only the [frozen calibration snapshot](geometry-muon-small-step-calibration-snapshot.json),
+before inspecting any held-out losses. Commit 400a66d10 published this plan.
+It adds fractions 0.01, 0.03 and 0.06 of the same reference norm equally to all
+variants and checkpoints. The reference learning rates remain 0.012 for Muon
+and 0.0036 for Adam. Original-grid results remain primary; supplemental results
+will be labeled separately. No optimizer, dataset or numerical threshold is
+changed by this grid extension.
+
+The [derivative diagnostic figure](geometry-report/figures/muon-derivative-validation.svg)
+compares the failed first update batch with all four corrected batches. Blue
+curves stop once the unchanged two-scale gate passes. The [figure sources](geometry-report/figure-sources.json)
+identify the exact records. This is evidence about numerical measurement
+quality, not optimizer effectiveness. The separate eighth-middle envelope
+screen had begun block-Hessian measurements; quarter-middle and power 04 were
+still pending at the same scheduler check. No held-out comparison was complete
+at this evidence cutoff.

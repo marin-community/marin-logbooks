@@ -217,16 +217,65 @@ def history_figure(summaries, path):
     finish(fig, axes, path)
 
 
+def muon_validation_figure(before, after, path):
+    """Show measured rounding sensitivity without implying optimizer effectiveness."""
+    for field in ("state", "counter", "data_manifest_sha256", "calibration_baseline"):
+        if before[field] != after[field]:
+            raise ValueError(f"Derivative comparison changed {field}")
+    fig, ax = plt.subplots(figsize=(8.8, 4.7), layout="constrained")
+    checks = before["derivative_checks"][0]["F5_finite_difference"]
+    ax.plot(
+        [c["epsilon"] for c in checks],
+        [100 * c["relative_error"] for c in checks],
+        "o--",
+        color="#5F6368",
+        lw=1.8,
+        label="Original precision · update batch 1",
+    )
+    for index, record in enumerate(after["derivative_checks"]):
+        checks = record["F5_finite_difference"]
+        if not record["passed"]:
+            raise ValueError("FP32 derivative validation remains incomplete")
+        ax.plot(
+            [c["epsilon"] for c in checks],
+            [100 * c["relative_error"] for c in checks],
+            "o-",
+            color="#1F77B4",
+            lw=2,
+            alpha=0.7,
+            label="FP32 multiplication · four update batches" if index == 0 else None,
+        )
+    ax.axhline(2, color="#FF7F0E", lw=1.6, ls=":", label="Acceptance threshold · 2%")
+    ax.set(
+        xscale="log",
+        yscale="log",
+        xlim=(0.045, 0.00007),
+        xlabel="Relative input perturbation (smaller →)",
+        ylabel="Derivative relative error (%) · lower is better",
+    )
+    ax.set_xticks([0.03, 0.01, 0.003, 0.001, 0.0003, 0.0001], ["0.03", "0.01", "0.003", "0.001", "0.0003", "0.0001"])
+    ax.set_yticks([0.01, 0.1, 1, 10, 100, 1000, 10000], ["0.01", "0.1", "1", "10", "100", "1,000", "10,000"])
+    ax.legend(loc="lower right", fontsize=10)
+    finish(fig, ax, path)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--summary", type=Path, required=True)
+    parser.add_argument("--summary", type=Path)
+    parser.add_argument("--muon-validation", type=Path, nargs=2, metavar=("BEFORE", "AFTER"))
     parser.add_argument("--power", type=Path, nargs="*", default=[])
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    summary = json.loads(args.summary.read_text())
+    if args.summary is None and args.muon_validation is None:
+        parser.error("Provide a validated summary or Muon derivative records")
+    summary = json.loads(args.summary.read_text()) if args.summary else {}
     args.output.mkdir(parents=True, exist_ok=True)
     style()
-    if summary["power"]:
+    if args.muon_validation:
+        muon_validation_figure(
+            *(json.loads(p.read_text()) for p in args.muon_validation), args.output / "muon-derivative-validation"
+        )
+    if summary.get("power"):
         power_figure(
             summary["power"],
             [json.loads((p / "power-results.json").read_text()) for p in args.power],

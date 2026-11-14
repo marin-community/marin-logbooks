@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--attempt", type=int, required=True)
     parser.add_argument("--tpu", choices=("v4-32", "v5p-8"), default="v4-32")
     parser.add_argument("--region", default="us-central2")
+    parser.add_argument("--protocol", type=Path, help="Explicit published supplemental protocol")
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--path-inputs", type=Path)
     parser.add_argument("--check-only", action="store_true")
@@ -46,6 +47,8 @@ def main():
         required[:2] = [archive / "geometry-muon-configs.json", archive / "geometry-muon-protocol.json"]
         if args.region != "us-central1" or args.tpu != "v5p-8":
             raise ValueError("Use local us-central1 v5p-8 for the pinned Muon checkpoints")
+    if args.protocol is not None:
+        required[1] = args.protocol.resolve().relative_to(root) if args.protocol.is_absolute() else args.protocol
     if args.experiment == "envelope" and args.stage in ("test", "path") and args.plan is None:
         raise ValueError("Freeze and publish coefficients before test/path submission")
     if args.stage == "path" and args.path_inputs is None:
