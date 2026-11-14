@@ -175,10 +175,34 @@ status: active
   - Not done: the guard evals (BFCL-Parity, DS-1000), which need exported and served checkpoints; the held-out replay loss split by filter verdict; a seed replicate. The replay validation set is unfiltered, so the logged replay loss is not the split the plan called for.
 - Decision and next action: see the final decision.
 
+### 2026-11-14 00:45 UTC - Guard evals on the step-238 checkpoints
+
+- Hypothesis or decision under test: filtering long replay does not lower tool-calling (BFCL-Parity) or code (DS-1000) scores at step 238.
+- Published code revision: research branch `9a6c1ac027` for the eval configs; training branch `bd8fe6ed49` for `export_lce40_step238.py`. Pairing script: `logbooks/40-lce-replay-junk-filter/scripts/paired_guards.py`; export finalization: `scripts/finalize_export.py`.
+- Run identities: exports `/dml/lce40-export4-{control,filtered}-step238`; smoke `/dml/eval-lce40-guards-control-step238-smoke2-246a1397`; full runs `/dml/eval-lce40-guards-control-step238-full1-0a14d372`, `/dml/eval-lce40-guards-filtered-step238-full1-c00d57f3`, and the filtered DS-1000 resume `/dml/eval-lce40-guards-filtered-step238-full1-44f98db4`.
+- Inputs and outputs: each arm's step-238 checkpoint exported to `s3://marin-us-east-02a/tmp/ttl=30d/lce-junk-filter/exports/lce40-arm-<arm>-20261113-step238/hf` (39 shards, plus the 2026.09.18 tokenizer files and a generation config) and served from there without a Hugging Face repository. Records under `s3://marin-us-east-02a/tmp/ttl=30d/lce-junk-filter/evals/`.
+- Environment and hardware when relevant: one 8xH100 node per run on `cw-us-east-02a`; BFCL-Parity under Terminus-2, DS-1000 with the main-branch local config, Daytona sandboxes.
+- Result, including failure or restart:
+
+    | Benchmark | Control | Filtered | Paired tasks | Solved by control only | Solved by filtered only | Exact McNemar p |
+    | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+    | BFCL-Parity | 94/122 (0.770) | 85/123 (0.691) | 122 | 17 | 7 | 0.064 |
+    | DS-1000 | 47/200 (0.235) | 41/199 (0.206) | 199 | 20 | 14 | 0.39 |
+
+  - One trial per benchmark was lost to a `DaytonaConnectionError` (control BFCL-Parity, filtered DS-1000); the launcher marks those two records `infra_failed` with no metrics although the other trials are stored. The counts above come from the stored per-task results.
+  - The first filtered DS-1000 run died at 195 of 200 trials with `ValueError: Incomplete archived attempt ... for trial 167` from Harbor's result store; relaunching under the same run id resumed and finished.
+  - The first smoke run sat at the Kueue scheduling gate on `cw-rno2a` for 24 minutes and was cancelled; all guard runs used `cw-us-east-02a`.
+  - Every trial logs a non-fatal `TypeError` (`S3Path` passed to `Path`) when Harbor uploads agent logs back to the sandbox.
+- Interpretation and limitations:
+  - Both guards are lower in the filtered arm. Neither difference clears a 5% paired test, but BFCL-Parity is close (17 tasks lost against 7 gained) and both point the same way, so the guards do not support "no harm".
+  - One training run per arm and one eval run per checkpoint: agent sampling noise and training noise are both unmeasured. The seed replicate, which would bound training noise, is still queued for H100s at step 23.
+  - Step 238 is 5% of the schedule; these are early-training scores.
+- Decision and next action: see the final decision.
+
 ## Final decision
 
-- Selected approach and evidence: provisional. By the rule fixed before launch, recovery improved beyond the bootstrap interval at both checkpoints, which points to adopting filtered long replay "subject to a seed replicate if the margin is small". The margin at step 238 is small (+0.013) and shrinking, and the guards have not run, so this is not yet a recommendation to change the recipe. What the evidence does support: filtering did no measurable harm to held-out SFT or replay loss, and the long-context probe moved in its favour.
+- Selected approach and evidence: do not change the recipe on this evidence. The primary metric favours filtering (needle recovery +0.028 at step 119 and +0.013 at step 238, beyond the source-sampling interval, gap shrinking) and held-out SFT and replay loss are unchanged, but both guards are lower in the filtered arm (BFCL-Parity 0.770 to 0.691, paired p = 0.064; DS-1000 0.235 to 0.206, p = 0.39). The guards were set before launch to catch a loss of structured-data skill; a small, shrinking probe gain against a near-significant tool-calling drop is not enough to adopt. With one run per arm, neither effect is separated from training noise.
 - Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
 - Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
 - Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
-- Remaining uncertainty: training noise on the primary metric (needs a second control seed); whether the difference persists past step 238; the guards; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
+- Remaining uncertainty: training noise on the primary metric and on the guards (the second control seed is queued, not finished); whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
