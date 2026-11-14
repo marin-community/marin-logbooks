@@ -4773,3 +4773,26 @@ Evaluation endpoints are released after each scalar record. Five affected CPU
 tests passed, including the complete tiny-model history comparison. Required
 lint passed. No history job has launched; full-model TPU memory validation is
 still pending in power submission 04.
+
+
+The quarter-middle envelope screen completed successfully at the 10:59 UTC
+check, with all four tasks succeeded and no failed attempts or preemptions.
+The eighth-middle and quarter-middle calibration screens now both pass their
+derivative and symmetry checks.
+
+The first shared attention/oriented fit returned `optimal_inaccurate` and was
+rejected. The [solver diagnostic](geometry-envelope-solver-diagnostics.json)
+records six numerical configurations. Disabling automatic equilibration on the
+already normalized problem reduced the dual residual from 1.85e-8 to 1.92e-11
+and returned `optimal`, with all other settings unchanged, including the three 1e-9 tolerances. The
+scalar, oriented and rotated fits for each of two blocks then passed the unchanged signed-PSD and normalized-Hessian checks. The
+existing synthetic fitter test and required lint also passed.
+
+The [frozen calibration plan](geometry-envelope-plan.json) records shared
+coefficients across the two middle checkpoints, input hashes, solver version
+and settings. Oriented-to-scalar
+mean-trace ratios were 0.21382 for attention and 0.13952 for MLP, so both blocks
+meet the prespecified requirement of at least 5% trace reduction for the path
+probe. These ratios measure tightness on
+calibration subspaces. Whether the frozen envelopes cover new directions is
+still unknown; publish this plan before launching those test measurements.

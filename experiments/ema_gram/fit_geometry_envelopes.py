@@ -5,6 +5,7 @@
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 from pathlib import Path
 
@@ -12,6 +13,8 @@ import cvxpy as cp
 import numpy as np
 
 from experiments.ema_gram.geometry_math import normalized_hessian_norm
+
+SOLVER_OPTIONS = dict(tol_gap_abs=1e-9, tol_feas=1e-9, tol_gap_rel=1e-9, equilibrate_enable=False)
 
 
 def components(row, control):
@@ -42,7 +45,9 @@ def fit_envelope(rows, control):
         constraints.extend([envelope - h / hscale >> 0, envelope + h / hscale >> 0])
         objectives.append(cp.trace(envelope) / len(h))
     problem = cp.Problem(cp.Minimize(sum(objectives) / len(objectives)), constraints)
-    problem.solve(solver="CLARABEL", tol_gap_abs=1e-9, tol_feas=1e-9, tol_gap_rel=1e-9)
+    # Features and Hessians are already scaled above. Additional equilibration
+    # stalled on nearly collinear attention components in the calibration panel.
+    problem.solve(solver="CLARABEL", **SOLVER_OPTIONS)
     if problem.status != cp.OPTIMAL or variable.value is None:
         raise ValueError(f"Envelope solver did not converge: {problem.status}")
     coefficients = np.maximum(variable.value, 0) * hscale / scales
@@ -74,6 +79,9 @@ def fit_envelope(rows, control):
         feasibility_intercept_padding=padding,
         solver="CLARABEL",
         solver_status=problem.status,
+        solver_options=SOLVER_OPTIONS,
+        solver_version=importlib.metadata.version("clarabel"),
+        solver_iterations=problem.solver_stats.num_iters,
         cvxpy_version=cp.__version__,
         calibration_checks=checks,
         calibration_mean_trace=float(np.mean([c["mean_trace"] for c in checks])),
