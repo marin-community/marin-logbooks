@@ -4458,3 +4458,44 @@ update exactly against the original state. It also rejects inconsistent saved
 counters. The test passed in 5.13 seconds. This validates the migration logic,
 not restoration of the 300M checkpoint. A fresh attempt must record the schema
 conversion and pass the full original numerical gates before producing results.
+
+## 2026-11-14 — Full Muon restore succeeds; recover missing measurement data
+
+The frozen-checkpoint study compares optimizer update directions and their
+local loss curvature. Plain-Muon attempt 02 used source 852ec5b50 and restored
+the complete 300M model and original optimizer arrays. Its trainer, optimizer,
+Adam and schedule counters all equal 11444. The July checkpoint lacks the
+later-added correction counter; conversion copies its verified optimizer count
+into that field. See [restore evidence](geometry-muon-results/muon/muon-plain-final/ema-gram-geometry-63da75216b5d/restore-schema.json)
+and [launch identity](geometry-muon-muon-plain-final-02-launch.json).
+Measurement tracking is
+https://wandb.ai/marin-community/marin/runs/ema-gram-geometry-63da75216b5d.
+
+The worker then failed because the archived configuration's FineWeb training
+cache is absent. No optimizer direction, Hessian measurement or held-out loss
+was measured. The scheduler reports an application failure with zero
+preemptions; this attempt is terminal. The power eighth-middle pilot and the
+eighth/quarter-middle envelope screens remain pending without allocated
+attempts or failures at 09:17 UTC.
+
+Measurements need fresh update, calibration and evaluation text drawn from the
+training corpus. The original dependency names fineweb-edu-10B version
+2026.06.28. Its surviving us-central1 prefix is a separate, incomplete copy:
+9.93 GB of the public cache is missing, including its shard ledger and array
+metadata. Recovery uses marin-community/fineweb-edu-pretokenized-10B at revision
+d8faae3179a793c5bb3417a073a80cb92d789e77. The [inventory](geometry-muon-data-inventory.json)
+preserves source paths, public SHA256 values and surviving object checksums.
+The absent training subcache cannot be compared byte-for-byte, so this corpus
+must be labeled an explicit measurement data replacement.
+
+The [recovery command](../../experiments/ema_gram/prepare_muon_data.py) uses the
+fsutil transfer API. It checks local files against public SHA256, surviving
+original objects against MD5, and uploaded objects against local MD5 before
+publishing recovery-manifest.json. Its destination is
+`gs://marin-us-central1/ema-gram-20-geometry/20261113/data/fineweb-edu-10B-d8faae3179a793c5bb3417a073a80cb92d789e77`.
+The original shared prefix and archived training configuration remain unchanged.
+Initial sequential download was interrupted to switch to this resumable
+parallel command; complete local files will be checksum-verified before reuse.
+Recovery and uploads are not complete at this entry. Cache loading and complete
+sequence-hash disjointness between update, calibration, evaluation and prior
+study panels must pass before another Muon measurement attempt.
