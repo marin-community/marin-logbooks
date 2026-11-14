@@ -643,6 +643,10 @@ status: active
     three times on cw-rno2a at interactive priority. Its restart from step 0
     reproduced steps 0 to 3 to within 0.0002, and it resumed the last attempt
     from the step-22 checkpoint.
+- Figure ([`analysis/learning_steps/make_plots.py`](analysis/learning_steps/make_plots.py)):
+
+  ![Re-close rate, closing, and re-close at equal closing for no penalty, weight 10 and weight 100](analysis/learning_steps/unlikelihood.png)
+
 - Interpretation: the unlikelihood term works in the right direction, but a
   single weight trades re-close suppression against learning the first close.
   The `-log(1 - p)` form is weakest where the model rarely re-closes and
@@ -678,6 +682,13 @@ status: active
   The tool-using P(>=2) curve under the mean row keeps climbing slowly to step
   100; its 10% step (49) matches closing (45). Curves that start near their
   peak (`" answer"` plain P(>=1), the `</` start's hazard) have no usable rise.
+- Figure ([`make_plots.py`](analysis/learning_steps/make_plots.py)):
+
+  ![Normalized close and close-again curves per start and turn group](analysis/learning_steps/learning_steps.png)
+
+- Interactive page with these curves, the seed and unlikelihood runs, and
+  decoded training examples: [gist](https://gist.github.com/davidlundgren/4ee276aedcbfcc4e43cf17c6044241ff) (rendered:
+  [gist.githack](https://gist.githack.com/davidlundgren/4ee276aedcbfcc4e43cf17c6044241ff/raw/reclose_replays.html)).
 - Interpretation: under every start, the re-close is half learned within about
   four steps of the close, often slightly before it. The start moves both
   together. That fits the base model already marking where a close belongs.
