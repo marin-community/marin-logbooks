@@ -4368,3 +4368,28 @@ quarter-middle envelope screen will stay in us-central2: its checkpoint occupies
 7.351 GB, and moving execution to us-central1 would add cross-region reads.
 The earlier proposed v5p move for this state was not executed. Muon checkpoints
 are already in us-central1 and can use local v5p resources there.
+
+## 2026-11-14 — Complete Muon measurement pipeline
+
+The quarter-middle envelope screen was accepted at 08:31 UTC using published
+source 6d06ef0ca. Its launch and submission records preserve the exact command.
+It remains pending at the first 120-second check with no failed attempt.
+
+The Muon worker now restores the original complete optimizer state, verifies the
+pinned source hashes and correction warmup, then accumulates each 128-sequence
+update gradient from sixteen 8-sequence microbatches. The original native
+objective and matrix/Adam preprocessing are preserved. All six complete
+directions are computed once and stored in host RAM. Their hashes survive
+calibration and evaluation; no optimizer update is recomputed for a new length.
+
+Calibration uses the common reference radius, bounded quadratic prediction and
+one midpoint refinement. All choices are saved before evaluation. The reference
+HVP and F5 tangent each require two consecutive finite-difference scales below
+2%; HVP symmetry must pass 1e-4. Matrix diagnostics retain clipping and
+nonfinite-zero fallback flags, solver residuals and correction/tangent angles.
+The collector accepts incremental Muon records.
+
+Five Muon tests passed in 25.46 seconds. The new end-to-end test executes all six
+controls on a tiny Qwen model, verifies calibration locking before held-out
+measurement, and checks direction identity and chosen lengths. This is a unit
+validation without training; full 300M checkpoint restoration is still untested.

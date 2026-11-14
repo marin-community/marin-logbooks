@@ -16,7 +16,7 @@ from iris.cluster.client.bundle import collect_workspace_files
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--state", required=True)
-    parser.add_argument("--experiment", choices=("power", "envelope"), required=True)
+    parser.add_argument("--experiment", choices=("power", "envelope", "muon"), required=True)
     parser.add_argument("--stage", choices=("screen", "test", "path"), default="screen")
     parser.add_argument("--attempt", type=int, required=True)
     parser.add_argument("--tpu", choices=("v4-32", "v5p-8"), default="v4-32")
@@ -40,6 +40,10 @@ def main():
         archive / "geometry-protocol.json",
         archive / "geometry-excluded-sequences.json",
     ]
+    if args.experiment == "muon":
+        required[:2] = [archive / "geometry-muon-configs.json", archive / "geometry-muon-protocol.json"]
+        if args.region != "us-central1" or args.tpu != "v5p-8":
+            raise ValueError("Use local us-central1 v5p-8 for the pinned Muon checkpoints")
     if args.experiment == "envelope" and args.stage in ("test", "path") and args.plan is None:
         raise ValueError("Freeze and publish coefficients before test/path submission")
     if args.stage == "path" and args.path_inputs is None:
@@ -67,7 +71,7 @@ def main():
     stage = args.experiment + ("-" + args.stage if args.experiment == "envelope" else "")
     stem = f"geometry-{stage}-{args.state}-{args.attempt:02d}"
     job_name = f"ema-gram-geometry-{stage}-{args.state}-20261113-{args.attempt:02d}"
-    prefix = "gs://marin-us-central2/ema-gram-20-geometry/20261113/" + args.experiment
+    prefix = f"gs://marin-{args.region}/ema-gram-20-geometry/20261113/" + args.experiment
     if args.experiment == "envelope":
         prefix += "/" + args.stage
     prefix += "/" + args.state

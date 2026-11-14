@@ -28,8 +28,14 @@ from rigging.secrets import require_secret
 
 from experiments.ema_gram.geometry_data import checkpoint_identity, geometry_data
 from experiments.ema_gram.matrix_envelope import run_matrix_envelope
+from experiments.ema_gram.muon_geometry import run_muon_geometry
+from experiments.ema_gram.muon_geometry_updates import momentum_state
 from experiments.ema_gram.power_prediction import run_power_prediction
 from experiments.ema_gram.probe import resolve_config
+from experiments.speedrun.prism_berkeley_qwen3_scaling.muon_error_feedback_optimizer import (
+    ErrorAwareMuonConfig,
+    momentum_timescale_steps,
+)
 
 
 def main():
@@ -38,7 +44,7 @@ def main():
     parser.add_argument("--protocol", type=Path, required=True)
     parser.add_argument("--exclusions", type=Path, required=True)
     parser.add_argument("--state", required=True)
-    parser.add_argument("--experiment", choices=("power", "envelope"), required=True)
+    parser.add_argument("--experiment", choices=("power", "envelope", "muon"), required=True)
     parser.add_argument("--stage", choices=("screen", "test", "path"), default="screen")
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--path-inputs", type=Path)
@@ -49,7 +55,13 @@ def main():
     spec = next(s for s in protocol["states"] if s["state"] == args.state)
     encoded = json.loads(args.configs.read_text())[spec["config_index"]]["config"]["train_config"]
     cfg = resolve_config(encoded)
-    if cfg.optimizer.alpha != spec["trajectory"] or cfg.z_loss_weight != 1e-7 or cfg.trainer.train_batch_size != 8:
+    if args.experiment == "muon":
+        if not isinstance(cfg.optimizer, ErrorAwareMuonConfig) or cfg.trainer.train_batch_size != 128:
+            raise ValueError("Muon configuration must retain its native 128-sequence update batch")
+        for source in protocol["optimizer_source_files"]:
+            if hashlib.sha256(Path(source["path"]).read_bytes()).hexdigest() != source["sha256"]:
+                raise ValueError("Pinned Muon optimizer changed")
+    elif cfg.optimizer.alpha != spec["trajectory"] or cfg.z_loss_weight != 1e-7 or cfg.trainer.train_batch_size != 8:
         raise ValueError("Configuration does not match protocol")
     identity = "ema-gram-geometry-" + uuid.uuid4().hex[:12]
     local = Path(os.environ.get("IRIS_OUTPUT_DIR", "scratch/geometry")) / identity
@@ -143,6 +155,12 @@ def main():
             )
             if int(state.step) != spec["expected_counter"]:
                 raise ValueError("Complete checkpoint restore counter mismatch")
+            if args.experiment == "muon":
+                warmup = cfg.optimizer.correction_warmup_steps
+                if warmup is None:
+                    warmup = momentum_timescale_steps(cfg.optimizer.momentum)
+                if int(momentum_state(state.opt_state).count) < warmup:
+                    raise ValueError("Restored Muon momentum is still in correction warmup")
             native_model = inference_mode(state.model, True)
             measurement_config = replace(cfg.model, attn_backend=AttentionBackend.VANILLA)
             shape = inference_mode(
@@ -165,7 +183,12 @@ def main():
             save("configuration.json", configuration)
             save("protocol.json", protocol)
             progress(dict(event="restored", counter=int(state.step)))
-            panels, weights, manifest_hash = geometry_data(cfg, protocol, args.exclusions, save)
+            data_cfg = cfg
+            if args.experiment == "muon":
+                data_cfg = replace(
+                    cfg, trainer=replace(cfg.trainer, train_batch_size=protocol["measurement_microbatch_sequences"])
+                )
+            panels, weights, manifest_hash = geometry_data(data_cfg, protocol, args.exclusions, save)
             context = dict(
                 state=state,
                 model=model,
@@ -183,8 +206,9 @@ def main():
             if args.experiment == "power":
 
                 result = run_power_prediction(**context)
+            elif args.experiment == "muon":
+                result = run_muon_geometry(**context)
             else:
-
                 result = run_matrix_envelope(**context)
             save(
                 "completed.json",

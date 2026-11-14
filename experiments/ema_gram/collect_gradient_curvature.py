@@ -25,6 +25,8 @@ RECORD_NAMES = {
     "locked-predictions.json",
     "power-partial.json",
     "power-results.json",
+    "muon-partial.json",
+    "muon-results.json",
     "envelope-results.json",
     "envelope-path-results.json",
     "frozen-envelope-plan.json",

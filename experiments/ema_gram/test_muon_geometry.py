@@ -1,6 +1,8 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
+import hashlib
+import json
 from types import SimpleNamespace
 
 import equinox as eqx
@@ -11,9 +13,12 @@ import jmp
 import numpy as np
 import optax
 import pytest
+from levanter.layers.attention import AttentionBackend
+from levanter.models.lm_model import LmExample
 from levanter.models.qwen import QwenConfig
 
 from experiments.ema_gram.gradient_curvature_math import tree_add, tree_norm
+from experiments.ema_gram.muon_geometry import run_muon_geometry
 from experiments.ema_gram.muon_geometry_kernels import (
     correction_telemetry,
     f5_finite_difference,
@@ -117,3 +122,75 @@ def test_complete_muon_updates_share_moments_and_keep_adam_in_tangent_control():
 
     jax.tree.map(assert_same, masked, plain, tangent_update, is_leaf=lambda x: isinstance(x, optax.MaskedNode))
     assert len(checked) >= 2
+
+
+def test_muon_measurements_lock_choices_before_evaluation_and_reuse_directions():
+    config = QwenConfig(
+        hidden_dim=8,
+        intermediate_dim=16,
+        num_layers=1,
+        num_heads=2,
+        num_kv_heads=2,
+        max_seq_len=8,
+        attn_backend=AttentionBackend.VANILLA,
+    )
+    model = config.build(hax.Axis("vocab", 16), key=jax.random.PRNGKey(2))
+    optimizer = ErrorAwareMuonConfig(
+        learning_rate=0.012, adam_lr=0.0036, momentum=0.98, policy="muon", correction_warmup_steps=0
+    )
+    cfg = SimpleNamespace(
+        optimizer=optimizer,
+        z_loss_weight=None,
+        trainer=SimpleNamespace(
+            num_train_steps=100,
+            compute_axis_mapping={},
+            mp=jmp.get_policy("params=float32,compute=float32,output=float32"),
+        ),
+    )
+    batch = LmExample.causal(hax.named(jnp.array([1, 4, 2, 3, 6, 2, 1, 0]), config.max_Pos))
+    other = LmExample.causal(hax.named(jnp.array([3, 1, 5, 4, 2, 6, 1, 0]), config.max_Pos))
+    opt_state = optimizer.build(100).init(eqx.filter(model, eqx.is_inexact_array))
+    protocol = dict(
+        reference_learning_rate=0.012,
+        reference_step_scope="Test reference scale",
+        native_update_sequences=2,
+        measurement_microbatch_sequences=1,
+        panels=dict(update_draws=2),
+        length_grid=[0, 0.1, 0.3, 0.6, 1, 2, 4],
+        f5_fd_relative_steps=[0.03, 0.01, 0.003, 0.001, 0.0003, 0.0001],
+    )
+    saved, events = {}, []
+
+    def save(name, value):
+        saved[name] = json.loads(json.dumps(value, allow_nan=False))
+
+    mesh = jax.sharding.Mesh(np.array(jax.devices()).reshape(-1, 1), ("data", "model"))
+    with jax.sharding.set_mesh(mesh):
+        grad_fn, functions, _ = native_muon_functions(cfg, 0.012)
+        _, initial = grad_fn(model, other)
+        _, opt_state = functions["muon"](initial, opt_state, model)
+        result = run_muon_geometry(
+            state=SimpleNamespace(step=51, opt_state=opt_state),
+            model=model,
+            native_model=model,
+            cfg=cfg,
+            panels=dict(calibration=[batch] * 8, evaluation=[other] * 2, update=[batch, other, other, batch]),
+            weights=dict(calibration=[7] * 8, evaluation=[7] * 2, update=[7] * 4),
+            args=SimpleNamespace(state="tiny"),
+            protocol=protocol,
+            save=save,
+            progress=events.append,
+            manifest_hash="test",
+            save_arrays=None,
+        )
+    lock = saved["locked-predictions.json"]
+    assert len(result["rows"]) == 12
+    assert all("evaluation" not in r for r in lock["rows"])
+    assert hashlib.sha256(json.dumps(lock, sort_keys=True).encode()).hexdigest() == result["locked_predictions_sha256"]
+    assert next(i for i, e in enumerate(events) if e["event"] == "predictions_locked") < next(
+        i for i, e in enumerate(events) if e["event"] == "muon_heldout"
+    )
+    for before, after in zip(lock["rows"], result["rows"], strict=True):
+        assert before["direction_sha256"] == after["direction_sha256"]
+        assert before["direct_step"] == after["evaluation"]["direct"]["length"]
+        assert len(after["evaluation"]["direct"]["losses"]) == 2
