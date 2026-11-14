@@ -156,7 +156,15 @@ reproduction instructions, contribution PRs, and remaining uncertainty.
 
 ## Maintain the index
 
-Use a separate checkout of logbooks `main` to add or update a row in
-[INDEX.md](INDEX.md) through a PR. Link the coordinating issue, research branch,
-notebook at a published commit, and Marin contributions. Retain completed rows.
+In a separate checkout of logbooks `main`, copy
+[the index entry template](templates/index-entry.md) to `index/<issue-number>-<topic>.md`.
+Use the notebook's parent directory name for the filename. For an existing
+task, edit its record in place.
+
+Open a PR against `main` with the task's record. Include the coordinating issue,
+research branch, a notebook link pinned to a published commit, the current
+status, and any Marin contribution PRs. Update the record when the task reaches
+a decision and retain completed records. [INDEX.md](INDEX.md) links to the
+directory of records.
+
 Do not merge unrelated histories or replace `main` with a Marin source tree.
