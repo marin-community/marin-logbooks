@@ -4422,3 +4422,10 @@ new scientific figures have been generated without actual checkpoint results.
 Future Muon submissions also log per-update wall time including compilation.
 The first pilot records overall progress timing but lacks separate native-update
 timings; retain that limitation rather than treating its runtime as a benchmark.
+
+The Muon end-to-end validation was extended to all 24 candidates and the full
+16-group evaluation shape. Its analyzer accepts the completed artifacts and
+rejects an altered calibrated step after the prediction lock. Five tests passed
+in 28.81 seconds; formatting and lint passed. A metadata-only lookup found no
+existing us-central1 mirror of either middle 447M checkpoint. No large files
+were transferred and the queued us-central2 jobs remain intact.

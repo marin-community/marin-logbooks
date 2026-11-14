@@ -17,9 +17,11 @@ from levanter.layers.attention import AttentionBackend
 from levanter.models.lm_model import LmExample
 from levanter.models.qwen import QwenConfig
 
+from experiments.ema_gram.analyze_geometry import analyze_muon
 from experiments.ema_gram.gradient_curvature_math import tree_add, tree_norm
 from experiments.ema_gram.muon_geometry import run_muon_geometry
 from experiments.ema_gram.muon_geometry_kernels import (
+    VARIANTS,
     correction_telemetry,
     f5_finite_difference,
     matrix_candidates,
@@ -124,7 +126,7 @@ def test_complete_muon_updates_share_moments_and_keep_adam_in_tangent_control():
     assert len(checked) >= 2
 
 
-def test_muon_measurements_lock_choices_before_evaluation_and_reuse_directions():
+def test_muon_measurements_lock_choices_before_evaluation_and_reuse_directions(tmp_path):
     config = QwenConfig(
         hidden_dim=8,
         intermediate_dim=16,
@@ -155,7 +157,8 @@ def test_muon_measurements_lock_choices_before_evaluation_and_reuse_directions()
         reference_step_scope="Test reference scale",
         native_update_sequences=2,
         measurement_microbatch_sequences=1,
-        panels=dict(update_draws=2),
+        panels=dict(update_draws=4),
+        variants=list(VARIANTS),
         length_grid=[0, 0.1, 0.3, 0.6, 1, 2, 4],
         f5_fd_relative_steps=[0.03, 0.01, 0.003, 0.001, 0.0003, 0.0001],
     )
@@ -174,8 +177,8 @@ def test_muon_measurements_lock_choices_before_evaluation_and_reuse_directions()
             model=model,
             native_model=model,
             cfg=cfg,
-            panels=dict(calibration=[batch] * 8, evaluation=[other] * 2, update=[batch, other, other, batch]),
-            weights=dict(calibration=[7] * 8, evaluation=[7] * 2, update=[7] * 4),
+            panels=dict(calibration=[batch] * 8, evaluation=[other] * 16, update=[batch, other, other, batch] * 2),
+            weights=dict(calibration=[7] * 8, evaluation=[7] * 16, update=[7] * 8),
             args=SimpleNamespace(state="tiny"),
             protocol=protocol,
             save=save,
@@ -184,7 +187,7 @@ def test_muon_measurements_lock_choices_before_evaluation_and_reuse_directions()
             save_arrays=None,
         )
     lock = saved["locked-predictions.json"]
-    assert len(result["rows"]) == 12
+    assert len(result["rows"]) == 24
     assert all("evaluation" not in r for r in lock["rows"])
     assert hashlib.sha256(json.dumps(lock, sort_keys=True).encode()).hexdigest() == result["locked_predictions_sha256"]
     assert next(i for i, e in enumerate(events) if e["event"] == "predictions_locked") < next(
@@ -193,4 +196,17 @@ def test_muon_measurements_lock_choices_before_evaluation_and_reuse_directions()
     for before, after in zip(lock["rows"], result["rows"], strict=True):
         assert before["direction_sha256"] == after["direction_sha256"]
         assert before["direct_step"] == after["evaluation"]["direct"]["length"]
-        assert len(after["evaluation"]["direct"]["losses"]) == 2
+        assert len(after["evaluation"]["direct"]["losses"]) == 16
+
+    saved["completed.json"] = dict(success=True, experiment="muon", rows=24, data_manifest_sha256="test")
+    saved["protocol.json"] = protocol
+    for name, value in saved.items():
+        (tmp_path / name).write_text(json.dumps(value))
+    summary = analyze_muon(tmp_path)
+    assert summary["state"] == "tiny"
+    assert set(summary["paired_vs_plain_muon"]["direct"]) == set(VARIANTS) - {"muon"}
+    tampered = saved["muon-results.json"]
+    tampered["rows"][0]["direct_step"] += 0.01
+    (tmp_path / "muon-results.json").write_text(json.dumps(tampered))
+    with pytest.raises(ValueError, match="calibration evidence changed"):
+        analyze_muon(tmp_path)
