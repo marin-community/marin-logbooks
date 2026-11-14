@@ -1,0 +1,26 @@
+{
+  "source_commit": "5a03733f8f71770bfdc3dcee0cb08f80a2cc8a7b",
+  "tests": {
+    "command": "PYTHONPATH=lib/marin/src JAX_PLATFORMS=cpu .venv/bin/pytest experiments/ema_gram/test_geometry.py experiments/ema_gram/test_muon_geometry.py -q -n 0",
+    "exit_code": 0,
+    "output": "........                                                                 [100%]\n8 passed in 35.88s\n"
+  },
+  "lint": {
+    "entrypoint": "./infra/pre-commit.py",
+    "exit_code": 0,
+    "output": "  Ruff linter............................. ok\n  Black formatter......................... ok\n  License headers (etc/license_header.txt) ok\n  Large files............................. ok\n  Python AST.............................. ok\n  Merge conflicts......................... ok\n  Trailing whitespace..................... ok\n  End-of-file newline..................... ok\n============================================================\nOK\n============================================================\n"
+  },
+  "logging_preflight": {
+    "mode": "online",
+    "exit_code": 0,
+    "metric": {
+      "logging_check/success": 1
+    },
+    "synced_files": 5,
+    "url": "https://wandb.ai/marin-community/ema-gram-geometry/runs/ema-gram-geometry-83c12ea4aa36"
+  },
+  "limitations": [
+    "CPU tests do not verify TPU numerical accuracy or full-model HBM adequacy.",
+    "Fresh frozen-checkpoint measurements do not restore previous probe progress."
+  ]
+}

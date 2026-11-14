@@ -4683,3 +4683,21 @@ HBM peak. At 10:21 UTC the two independent block-envelope screens remained
 pending with zero failures and zero preemptions. Their block-only Hessian
 calculation does not retain the full-model symmetry vectors used by the power
 pilot. No training or further sweep was launched during this diagnosis.
+
+
+At 10:28 UTC, published source 5a03733f8 was submitted as power 04 and Muon
+plain 04 under the existing numerical-debugging authorization. Both retain
+their original accelerator resources, no wall-clock caps and default preemption
+policy. They are fresh frozen-checkpoint attempts; previous probe progress is
+not restored. The [validation record](geometry-recovery-validation.json) records
+eight passing CPU tests, passing lint and a successful online W&B preflight.
+
+A [shape-only CPU compilation check](geometry-recovery-compile-check.json)
+confirmed that the revised accumulator can alias 525,336,576 output bytes with
+an input buffer for the 128256-by-1024 FP32 shape. The old accumulator had no
+such alias. Only one of the two sum inputs can alias its one output; JAX warns
+that the other offered donation is unused. This does not invalidate the sum or
+prove full TPU memory adequacy. Compiled F5 tangent and finite-difference
+kernels contain 44 and 30 matrix multiplications respectively, all specifying
+highest operand precision. This checks the requested arithmetic, not its
+accuracy on the restored checkpoint.
