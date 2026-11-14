@@ -4736,3 +4736,32 @@ quality, not optimizer effectiveness. The separate eighth-middle envelope
 screen had begun block-Hessian measurements; quarter-middle and power 04 were
 still pending at the same scheduler check. No held-out comparison was complete
 at this evidence cutoff.
+
+
+At the 10:50 UTC check, Iris reported successful completion of Muon plain 04
+and envelope eighth-middle screen 02, with zero failed attempts or preemptions.
+Both online trackers finished and synced five files. The [completion records](geometry-completion-records.json)
+link scheduler jobs, artifacts and W&B identities, including the envelope
+worker's previously diagnosed Iris/JAX ownership mismatch.
+
+The [validated Muon analysis](geometry-muon-primary-analysis.json) accepts all
+24 rows and verifies that calibration choices were locked before evaluation.
+The evaluation baseline was 2.9259988517. All original-grid direct choices were
+zero-length actions, so all their loss changes were exactly zero. At the
+separately calibrated quadratic-model steps, plain Muon's mean loss change was
+−0.0000649802, with conditional paired-bootstrap interval
+[−0.0000955855, −0.0000305296]. Feedback-minus-plain point estimates ranged from
++0.0000008978 to +0.0000165664. At the common reference length 13.1679988, plain
+Muon instead increased loss by 0.0497518. These are one-checkpoint local results;
+the intervals resample update draws and text groups, and do not account for
+training-seed variation or numerical error. The smaller-grid supplement was
+registered before inspecting these outcomes.
+
+The completed eighth-middle block screen passed all four anchor derivative
+checks. Projected-Hessian symmetry discrepancies were 4.33791e-8 for attention
+and 2.38547e-8 for MLP. It saved both full response arrays in regional GCS.
+The quarter-middle screen was still running. No coefficients were fitted from
+only one checkpoint. Published source 15f3313ef was submitted for the two
+remaining original-grid Muon checkpoints and the registered plain-checkpoint
+small-step supplement. Their launch records retain exact protocols and
+commands; all are frozen-checkpoint probes without training.
