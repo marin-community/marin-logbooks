@@ -4195,3 +4195,53 @@ local links and no overflow at 390px width with enlarged 24px text. All 17 guide
 PDF pages and 9 methods PDF pages were visually inspected. The curated delivery
 bundle lives under `Downloads/Project/hessian-probing/reports/` alongside the
 unchanged earlier Hessian reports.
+
+## 2026-11-13 — Fresh-data geometry follow-up protocol
+
+The new two-page request is archived in the project inputs directory, with
+SHA256 `e8ea0a67f7746a7a41a49f96d8a83e3bf9190d824da59a21284cd5a776e27ef8`.
+The first stage prioritizes whether signed curvature improves power selection
+beyond alignment, and whether gradient orientation improves a fitted block
+curvature envelope beyond scalar and independently rotated controls. Earlier
+results and reports are unchanged. History replacement, the pinned 300M Muon
+controls, conditional path extensions and subsequent training remain later
+stages; no new training is launched by this checkpoint protocol.
+
+`geometry-protocol.json` freezes six saved 447M states, eight update draws,
+three powers (1/8, 3/16, 1/4), and mutually disjoint new calibration/evaluation
+panels of 64/128 sequences. The 160 earlier study sequences are excluded by
+hash. Complete-sequence disjointness does not establish exclusion from original
+training. Each state's radius is four times the median native eighth-power
+norm across its eight draws. Direct length calibration uses the requested
+seven-point grid and one midpoint-refinement round for interior winners.
+All action choices are uploaded before any evaluation-panel loss. Both direct
+and quadratic length rules use the same radius across powers; evaluation also
+retains native updates and the common-length grid.
+
+Moments are advanced from the same saved state independently in pure function
+calls and checked for exact equality across powers. No candidate consumes
+another candidate's advanced state. Production directions and the differentiable
+FP32 map are measured separately. The derivative identity is explicitly at a
+fixed length calibrated on the same objective; it does not assert a derivative
+through discrete length reselection. Native AdamW updates and decay remain in
+the normalized complete vector. The reference objective excludes decay.
+
+Local tests cover bounded quadratic maximization including negative curvature,
+full projected-envelope entries and off-diagonal violations, exact production
+update parity, unchanged saved state, alpha finite differences, and an end-to-end
+tiny-model calibration/lock/evaluation path. The existing reference-HVP tests
+also pass: five tests total in 18.87 seconds. A coarse alpha perturbation of
+0.001 had 2.62% truncation error in the tiny model; 0.0003 passed but 0.0001
+exhibited FP32 cancellation. Adding 0.0005 supplies two adjacent passing scales
+without changing the 2% threshold. The complete frozen scale sequence is in the
+protocol. This was local numerical development, not a failed cluster run.
+
+Checkpoint identity records hash object names, generations, sizes, GCS content
+checksums, and completion metadata. Workers reject changed storage identities
+or mismatched complete restore counters. Online W&B logging is checked on the
+execution host before measurements. Iris submissions retain default preemption
+policy/retries and have no queue, task, or wrapper wall-clock limit. Every
+attempt writes a separate evidence identity; frozen-probe restarts are not
+claimed as resumed training. Any later training continuation must first pass
+full durable-checkpoint interruption/resume validation under the latest user
+instructions.

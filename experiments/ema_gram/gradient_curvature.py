@@ -111,15 +111,15 @@ def reference_data(cfg, seed, update_seeds, save):
     return reference, updates, [r["valid_weight"] for r in manifest[:16]]
 
 
-def production_functions(cfg):
+def production_functions(cfg, alphas=(0.125, 0.25), modes=("full", "matrix_only")):
     def loss(m, b):
         m = cfg.trainer.mp.cast_to_compute(m)
         return m.compute_next_token_loss(b, key=None, logsumexp_weight=cfg.z_loss_weight).scalar()
 
     value_grad = hax.named_jit(eqx.filter_value_and_grad(loss), axis_resources=cfg.trainer.compute_axis_mapping)
     update_functions = {}
-    for mode in ("full", "matrix_only"):
-        for alpha in (0.125, 0.25):
+    for mode in modes:
+        for alpha in alphas:
             optimizer_cfg = replace(
                 cfg.optimizer, alpha=alpha, weight_decay=0.0 if mode == "matrix_only" else cfg.optimizer.weight_decay
             )
