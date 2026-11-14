@@ -1,9 +1,14 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
+import hashlib
+import json
+
 import jax.numpy as jnp
 import numpy as np
+import pytest
 
+from experiments.ema_gram.analyze_envelope_paths import analyze_paths
 from experiments.ema_gram.analyze_geometry import paired_interval
 from experiments.ema_gram.envelope_path import measure_path
 
@@ -13,7 +18,7 @@ def test_paired_interval_preserves_constant_difference_with_unequal_weights():
     np.testing.assert_allclose([interval[k] for k in ("mean", "lower", "upper")], 0.25, atol=1e-12)
 
 
-def test_path_quadratic_remainders_and_fixed_anchors_match_exact_calculation():
+def test_path_quadratic_remainders_and_fixed_anchors_match_exact_calculation(tmp_path):
     matrix = jnp.array([[0.2, 0.3], [0.4, 0.5]])
     hessian = np.diag([1.0, 2.0, 3.0, 4.0])
     hessian[0, 1] = hessian[1, 0] = 0.2
@@ -56,3 +61,33 @@ def test_path_quadratic_remainders_and_fixed_anchors_match_exact_calculation():
             direction = directions[row["alpha"]].ravel()
             expected = 0.5 * row["length"] ** 2 * (direction @ hessian @ direction)
             np.testing.assert_allclose(row["first_order_remainder"], expected, atol=1e-7)
+
+    # Validate the evidence consumer on a known coupled quadratic, then corrupt
+    # a finite-difference measurement while retaining its saved success flag.
+    plan = {"path_gate": {"fixture": {"eligible": True}}}
+    inputs = {
+        "plan_sha256": hashlib.sha256(json.dumps(plan, sort_keys=True).encode()).hexdigest(),
+        "blocks": {},
+    }
+    directories = []
+    for state in ("eighth-middle", "quarter-middle"):
+        directory = tmp_path / state
+        directory.mkdir()
+        directories.append(directory)
+        inputs["blocks"][state] = {"fixture": {"identities": "fixture-baseline"}}
+        result["baseline_source"] = inputs["blocks"][state]["fixture"]
+        complete = dict(
+            success=True, experiment="envelope", stage="path", state=state, rows=1, data_manifest_sha256="data"
+        )
+        output = dict(state=state, stage="path", data_manifest_sha256="data", rows=[result])
+        for name, data in (("completed", complete), ("envelope-path-results", output), ("frozen-envelope-plan", plan)):
+            (directory / f"{name}.json").write_text(json.dumps(data))
+    summary = analyze_paths(directories, plan, inputs)
+    assert summary["nominal_violations"] == 0
+    assert len(summary["rows"]) == 60
+    expected_rho = np.linalg.eigvalsh(hessian).max() / 5
+    np.testing.assert_allclose([r["normalized_hessian_norm"] for r in summary["rows"]], expected_rho)
+    output["rows"][0]["rows"][1]["derivative_checks"][0]["trials"][-1]["relative_error"] = 0.2
+    (directories[-1] / "envelope-path-results.json").write_text(json.dumps(output))
+    with pytest.raises(ValueError, match="finite differences failed"):
+        analyze_paths(directories, plan, inputs)

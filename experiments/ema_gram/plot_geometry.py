@@ -90,8 +90,7 @@ def power_figure(summary, results, path):
     finish(fig, axes, path)
 
 
-def envelope_figure(summary, path):
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4.7), layout="constrained")
+def envelope_coverage_panel(summary, ax):
     groups = [(state, block) for block in ("attention", "mlp") for state in ("eighth-middle", "quarter-middle")]
     offsets = {"scalar": -0.19, "oriented": 0, "rotated": 0.19}
     names = {"scalar": "Scalar", "oriented": "True gradient axes", "rotated": "Rotated gradient axes"}
@@ -104,35 +103,88 @@ def envelope_figure(summary, path):
             )
             for group in groups
         ]
-        axes[0].scatter(np.arange(4) + offsets[control], values, c=color, s=48, label=names[control], zorder=3)
-    axes[0].axhline(1, color="black", linestyle="--", linewidth=1.3)
+        ax.scatter(np.arange(4) + offsets[control], values, c=color, s=48, label=names[control], zorder=3)
+    ax.axhline(1, color="black", linestyle="--", linewidth=1.3)
     rhos = [r["normalized_hessian_norm"] for r in summary["rows"]]
     if max(rhos) / max(min(rhos), 1e-30) > 20:
-        axes[0].set_yscale("log")
-    axes[0].set(
+        ax.set_yscale("log")
+    ax.set(
         xticks=range(4),
         xticklabels=["Query\n1/8 state", "Query\n1/4 state", "Gate\n1/8 state", "Gate\n1/4 state"],
-        ylabel="Normalized Hessian operator norm\nAbove 1: nominal bound violation",
-        title="A  Do frozen bounds cover new directions?",
+        ylabel="Normalized Hessian norm\nAbove 1: nominal bound violation",
+        title="A  Frozen bounds on new directions",
     )
-    axes[0].legend(loc="best", fontsize=10)
-    for control in ("oriented", "rotated"):
+    ax.legend(loc="best", fontsize=10)
+
+
+def envelope_tightness_panel(summary, ax):
+    names = {"oriented": "True gradient axes", "rotated": "Rotated gradient axes"}
+    for control, offset in (("oriented", -0.14), ("rotated", 0.14)):
         values = []
         for block in ("attention", "mlp"):
-            rows = {r["control"]: r for r in summary["matched_coverage"] if r["block"] == block}
+            rows = {r["control"]: r for r in summary["boundary_matched_coverage"] if r["block"] == block}
             values.append(rows[control]["mean_trace"] / rows["scalar"]["mean_trace"])
-        offset = -0.17 if control == "oriented" else 0.17
-        axes[1].bar(np.arange(2) + offset, values, width=0.3, color=COLORS[control], label=names[control])
-    axes[1].axhline(1, color="#5F6368", ls="--", lw=1.3, label="Scalar reference")
-    axes[1].set(
-        xticks=[0, 1],
-        xticklabels=["Attention query", "MLP gate"],
-        ylim=(0, None),
-        ylabel="Envelope size / scalar envelope size\nLower: tighter at matched nominal coverage",
-        title="B  Is the matrix envelope more economical?",
+        ax.scatter(values, np.arange(2) + offset, color=COLORS[control], s=55, label=names[control], zorder=3)
+        for index, value in enumerate(values):
+            ax.annotate(f"{value:.2f}", (value, index + offset), xytext=(7, 0), textcoords="offset points", va="center")
+    ax.axvline(1, color="#5F6368", ls="--", lw=1.3)
+    ax.set_xscale("log")
+    ax.set(
+        yticks=[0, 1],
+        yticklabels=["Attention query", "MLP gate"],
+        ylim=(1.55, -0.55),
+        xlim=(0.12, 17),
+        xlabel="Envelope size / scalar size (log scale)\nLeft of 1: smaller at the same maximum test ratio",
+        title="B  Post-hoc matching to maximum ratio 1",
     )
-    axes[1].legend(loc="best", fontsize=10)
+    ax.legend(loc="upper left", bbox_to_anchor=(0, -0.2), fontsize=10)
+
+
+def envelope_figure(summary, path):
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.9), layout="constrained")
+    envelope_coverage_panel(summary, axes[0])
+    envelope_tightness_panel(summary, axes[1])
     finish(fig, axes, path)
+    for name, renderer in (("coverage", envelope_coverage_panel), ("tightness", envelope_tightness_panel)):
+        fig, ax = plt.subplots(figsize=(7, 4.9), layout="constrained")
+        renderer(summary, ax)
+        finish(fig, [ax], path.with_name(path.name + "-" + name))
+
+
+def envelope_path_figure(summary, path):
+    """Show worst sampled path coverage without implying coverage between points."""
+    fig, ax = plt.subplots(figsize=(8, 5), layout="constrained")
+    groups = [(state, block) for block in ("attention", "mlp") for state in ("eighth-middle", "quarter-middle")]
+    names = {"scalar": "Scalar", "oriented": "True gradient axes", "rotated": "Rotated gradient axes"}
+    for control, offset in (("scalar", -0.24), ("oriented", 0.0), ("rotated", 0.24)):
+        for reference, shift, marker in (("starting", -0.04, "o"), ("current", 0.04, "s")):
+            values = [
+                max(
+                    r["normalized_hessian_norm"]
+                    for r in summary["rows"]
+                    if (r["state"], r["block"], r["control"], r["gradient_reference"]) == (*group, control, reference)
+                )
+                for group in groups
+            ]
+            ax.scatter(
+                np.arange(4) + offset + shift,
+                values,
+                color=COLORS[control],
+                marker=marker,
+                facecolors="none" if reference == "starting" else COLORS[control],
+                s=48,
+                label=f"{names[control]} · {reference} gradient",
+                zorder=3,
+            )
+    ax.axhline(1, color="black", linestyle="--", linewidth=1.3)
+    ax.set(
+        yscale="log",
+        xticks=range(4),
+        xticklabels=["Query\n1/8 state", "Query\n1/4 state", "Gate\n1/8 state", "Gate\n1/4 state"],
+        ylabel="Maximum normalized Hessian norm\nAcross five sampled path points; above 1 violates",
+    )
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=9)
+    finish(fig, [ax], path)
 
 
 def muon_figure(summaries, path, rules=("equal", "direct")):
@@ -290,15 +342,18 @@ def muon_validation_figure(before, after, path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--summary", type=Path)
+    parser.add_argument("--path-summary", type=Path)
     parser.add_argument("--muon-validation", type=Path, nargs=2, metavar=("BEFORE", "AFTER"))
     parser.add_argument("--power", type=Path, nargs="*", default=[])
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if args.summary is None and args.muon_validation is None:
+    if args.summary is None and args.muon_validation is None and args.path_summary is None:
         parser.error("Provide a validated summary or Muon derivative records")
     summary = json.loads(args.summary.read_text()) if args.summary else {}
     args.output.mkdir(parents=True, exist_ok=True)
     style()
+    if args.path_summary:
+        envelope_path_figure(json.loads(args.path_summary.read_text()), args.output / "envelope-path-coverage")
     if args.muon_validation:
         muon_validation_figure(
             *(json.loads(p.read_text()) for p in args.muon_validation), args.output / "muon-derivative-validation"

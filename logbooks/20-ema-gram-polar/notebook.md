@@ -4869,3 +4869,41 @@ millionths; three of the five paired intervals crossed zero. All direction
 hashes, norms, alignment and curvature exactly reproduced the original-grid
 process. The remaining two smaller-grid checkpoint jobs were submitted from
 d8f6f9c0f and remain separate from the primary experiment.
+
+
+At the 11:49 UTC check, both remaining prespecified small-grid Muon supplements
+succeeded, with no application failures or preemptions. Their online trackers
+finished and synced five files. All 72 supplemental candidate directions across
+the three checkpoints exactly reproduced the original direction hashes, norms,
+alignment, signed curvature and quadratic lengths. The immutable selection
+locks and all numerical gates passed. All calibration-loss-selected grid
+choices were nonzero; reported outcomes use separate held-out evaluation text.
+
+The [three-checkpoint supplement](geometry-muon-small-step-analysis.json) gives
+plain-Muon mean loss changes of -62.51, -55.99 and -28.61 millionths at the plain,
+blend-0.05-trained and Hesscorr-0.3-trained checkpoints, respectively. Their
+conditional 95% intervals were [-93.43, -27.68], [-96.93, -12.08] and
+[-67.18, +11.10]. All 15 feedback-minus-plain means were positive, ranging
+from +0.58 to +14.50 millionths. Eight paired intervals were strictly positive;
+seven included or touched zero. The finer grid resolves the all-zero original
+choices without revealing an average local feedback advantage. These intervals
+exclude numerical error, multiple-comparison adjustment and training-seed
+variation. This supplement remains separate from the original-grid experiment.
+
+The path-analysis reader now verifies frozen-plan and baseline provenance,
+point counts, shared lengths, loss remainders after subtracting the initial
+linear prediction, finite differences on two of the four fixed directions,
+symmetry and recomputed normalized Hessian norms. An analytical coupled
+quadratic test verifies coverage and remainders and rejects a corrupted
+finite-difference result despite its saved success flag. Both analysis tests
+passed. The report embeds figures, exposes reading controls and bundles small
+raw evidence, including failed and partial attempts with their original status.
+
+Power pilot 04 remains on its first scheduler retry. The retry verified training
+checkpoint restoration but restarted probe work from the beginning. By 11:44
+UTC it had measured 18 of 24 calibration directions and passed the initial
+numerical gates. Its schema lacks isolated native-update timing. Future power
+submissions separately time synchronized gradients and native updates; these
+wall times can include first-call compilation. The change adds timing fields
+without altering update arithmetic; three geometry tests and required lint
+passed. Both frozen-coefficient path jobs remain pending capacity.

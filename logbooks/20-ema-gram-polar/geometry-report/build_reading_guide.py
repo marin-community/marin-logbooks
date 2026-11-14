@@ -1,0 +1,126 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Render the checkpoint report with embedded figures and portable evidence links."""
+
+import argparse
+import base64
+import hashlib
+import html
+import json
+import re
+import shutil
+from pathlib import Path
+
+import pypandoc
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parent
+    previous = root.parent / "gradient-curvature-report"
+    args.output.mkdir(parents=True, exist_ok=True)
+    evidence = {}
+    raw_sources = list(root.parent.glob("geometry-*.json"))
+    raw_sources.append(root.parent / "hessian-aligned-configs.json")
+    for directory in ("geometry-results", "geometry-muon-results"):
+        raw_sources.extend(p for p in (root.parent / directory).rglob("*") if p.suffix in (".json", ".jsonl"))
+    for path in raw_sources:
+        relative = "data/raw/" + path.relative_to(root.parent).as_posix()
+        destination = args.output / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(path, destination)
+        evidence[relative] = dict(
+            source=str(path.relative_to(root.parent)), sha256=hashlib.sha256(path.read_bytes()).hexdigest()
+        )
+
+    def to_html(markdown):
+        body = pypandoc.convert_text(markdown, "html5", format="markdown-implicit_figures")
+        for source in re.findall(r'src="([^"]+)"', body):
+            path = root / source
+            vector = path.with_suffix(".svg")
+            if vector.exists():
+                path = vector
+            mime = "image/svg+xml" if path.suffix == ".svg" else "image/png"
+            encoded = base64.b64encode(path.read_bytes()).decode()
+            body = body.replace(f'src="{source}"', f'src="data:{mime};base64,{encoded}"')
+        body = re.sub(
+            r"<p>(<img [\s\S]*?/>)</p>",
+            '<figure><button class="zoom" type="button" aria-label="Enlarge this figure">'
+            r"\1<span>Enlarge figure</span></button></figure>",
+            body,
+        )
+        for target in re.findall(r'href="([^"]+)"', body):
+            if target.startswith(("https://", "http://", "#")):
+                continue
+            path = (root / target).resolve()
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            relative = "data/" + digest[:12] + "-" + path.name
+            destination = args.output / relative
+            destination.parent.mkdir(exist_ok=True)
+            shutil.copy2(path, destination)
+            evidence[relative] = dict(source=str(path.relative_to(root.parent)), sha256=digest)
+            body = body.replace(f'href="{target}"', f'href="{relative}"')
+        return re.sub(
+            r"(<table[\s\S]*?</table>)",
+            r'<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable data table">\1</div>',
+            body,
+        )
+
+    source = root / "reading-guide-draft.md"
+    chunks = re.split(r"(?m)^## ", source.read_text())
+    intro = to_html(chunks[0])
+    sections, links = [], []
+    for index, chunk in enumerate(chunks[1:]):
+        title = chunk.split("\n", 1)[0]
+        links.append(f'<a href="#chapter-{index}">{html.escape(title)}</a>')
+        body = to_html("## " + chunk)
+        body = re.sub(r'<h2 id="[^"]+">', f'<h2 id="heading-{index}" tabindex="-1">', body, count=1)
+        sections.append(
+            f'<section class="chapter" id="chapter-{index}" aria-labelledby="heading-{index}">{body}</section>'
+        )
+    css = (previous / "reading-style.css").read_text()
+    css += (
+        "@media print{.chapter{break-before:auto;margin-top:1.7em;padding-top:1em;border-top:1px solid #cad7df}"
+        "h1,h2,h3{break-inside:avoid}}"
+    )
+    js = (previous / "reading-controls.js").read_text()
+    page = (
+        '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        "<title>Optimizer geometry: checkpoint experiment report</title><style>" + css + "</style></head><body>"
+        '<a class="skip" href="#main">Skip to report</a>'
+        '<div class="controls" role="region" aria-label="Reading controls"><span>Reading controls</span>'
+        '<button id="smaller" aria-label="Smaller text">A&#8722;</button>'
+        '<button id="larger" aria-label="Larger text">A+</button>'
+        '<button id="spacing" aria-pressed="false">Extra spacing</button>'
+        '<button id="focus" aria-pressed="false">One section at a time</button>'
+        '<span id="settings" role="status" aria-live="polite"></span></div><main id="main">'
+        + intro
+        + '<p class="reading-note">Read at your own pace. Enlarge any figure. '
+        "Evidence links open the measured records included with this report.</p>"
+        '<details class="contents"><summary>Choose a section</summary><nav aria-label="Report sections">'
+        + "".join(links)
+        + '</nav></details><div id="guide">'
+        + "".join(sections)
+        + "</div>"
+        '<nav id="step-nav" aria-label="Section navigation" hidden>'
+        '<button id="previous">← Previous section</button><span id="progress" role="status"></span>'
+        '<button id="next">Next section →</button></nav>'
+        '<p class="reading-note"><a href="evidence-index.json">Evidence index with SHA-256 hashes</a>. '
+        "The raw archive includes completed, failed and partial attempts, each with its original status. "
+        "Large response arrays remain at the recorded cloud locations.</p></main>"
+        '<dialog id="figure-dialog"><button id="close-figure">Close figure</button>'
+        "<p>On a small screen, scroll sideways to inspect the enlarged figure.</p>"
+        '<div class="large-figure"><img id="large-image" alt=""></div></dialog><script>' + js + "</script></body></html>"
+    )
+    (args.output / "reading-guide.html").write_text(page)
+    (args.output / "evidence-index.json").write_text(json.dumps(evidence, indent=2) + "\n")
+    shutil.copy2(source, args.output / "reading-guide-source.md")
+    print(json.dumps(dict(sections=len(sections), linked_records=len(evidence), output=str(args.output))))
+
+
+if __name__ == "__main__":
+    main()

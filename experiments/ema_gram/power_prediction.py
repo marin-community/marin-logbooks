@@ -135,12 +135,16 @@ def run_power_prediction(
     )
 
     for draw, batch in enumerate(panels["update"]):
+        gradient_started = time.perf_counter()
         update_loss, grad = production_grad(native_model, batch)
+        jax.block_until_ready(grad)
+        gradient_seconds = time.perf_counter() - gradient_started
         first_direction, first_product, numerical_check = None, None, None
         shared_moments = None
         for alpha in POWERS:
             started = time.perf_counter()
             update, after, norm = native(grad, alpha)
+            native_seconds = time.perf_counter() - started
             # Compare every local shard exactly without retaining a second
             # full Gram state on the accelerator across candidate powers.
             advanced = describe_arrays(matrix_state(native_model, after).optimizer)
@@ -185,6 +189,9 @@ def run_power_prediction(
                 draw=draw,
                 alpha=alpha,
                 native_norm=norm,
+                native_seconds=native_seconds,
+                gradient_seconds=gradient_seconds,
+                timing_scope="Synchronized native update and norm wall time, including first-call compilation",
                 alignment=alignment,
                 curvature=curvature,
                 H_product_norm=tree_norm(product),
