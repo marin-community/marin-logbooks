@@ -45,6 +45,10 @@ def host_inner_product(left, right):
     )
 
 
+def host_vector_norm(leaves):
+    return np.sqrt(sum(np.einsum("i,i->", x.ravel(), x.ravel(), dtype=np.float64) for x in leaves))
+
+
 def fp32_direction_function(cfg):
     """Differentiate alpha with moments frozen; retain the complete native nonmatrix update and decay."""
 
@@ -289,9 +293,7 @@ def run_power_prediction(
                 symmetry = abs(
                     float(host_inner_product(first_direction, product) - host_inner_product(first_product, direction))
                 )
-                first_norm = np.sqrt(
-                    sum(np.einsum("i,i->", x.ravel(), x.ravel(), dtype=np.float64) for x in first_product)
-                )
+                first_norm = host_vector_norm(first_product)
                 symmetry /= max(first_norm, tree_norm(product), 1e-30)
                 output["derivative_checks"].append(dict(**numerical_check, symmetry_relative_error=symmetry))
                 if symmetry > 1e-4:
@@ -371,6 +373,7 @@ def run_power_prediction(
                     actual_norm=actual_norm,
                     native_seconds=time.perf_counter() - start,
                 )
+                del candidate
             save("power-results.json", output)
             progress(
                 dict(

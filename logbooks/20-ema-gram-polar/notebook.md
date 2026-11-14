@@ -4765,3 +4765,11 @@ only one checkpoint. Published source 15f3313ef was submitted for the two
 remaining original-grid Muon checkpoints and the registered plain-checkpoint
 small-step supplement. Their launch records retain exact protocols and
 commands; all are frozen-checkpoint probes without training.
+
+Before launching history comparisons, applied the power probe's memory-lifetime
+changes to that worker as well: moment parity uses local-shard hashes, symmetry
+vectors remain in host RAM, and post-update states are released before HVPs.
+Evaluation endpoints are released after each scalar record. Five affected CPU
+tests passed, including the complete tiny-model history comparison. Required
+lint passed. No history job has launched; full-model TPU memory validation is
+still pending in power submission 04.

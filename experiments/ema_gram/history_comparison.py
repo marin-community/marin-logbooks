@@ -22,8 +22,9 @@ from experiments.ema_gram.history_geometry import (
     pool_raw_histories,
     replace_matrix_history,
 )
-from experiments.ema_gram.power_prediction import mean_product
+from experiments.ema_gram.power_prediction import host_inner_product, host_vector_norm, mean_product
 from experiments.ema_gram.probe import matrix_state
+from experiments.ema_gram.state_fingerprint import describe_arrays
 
 
 def run_history_comparison(
@@ -113,11 +114,12 @@ def run_history_comparison(
                 started = time.perf_counter()
                 direction, norm, post = update(grad, condition, alpha)
                 native_seconds = time.perf_counter() - started
-                advanced = matrix_state(native_model, post).optimizer
+                advanced = describe_arrays(matrix_state(native_model, post).optimizer)
                 if first_history is None:
                     first_history = advanced
-                elif tree_norm(tree_add(first_history, advanced, -1)) != 0:
+                elif first_history != advanced:
                     raise ValueError("History advanced differently across inverse powers")
+                del post
                 product = mean_product(model, direction, calibration, cal_weights, hvp)
                 alignment, curvature = float(tree_dot(gradient, direction)), float(tree_dot(direction, product))
                 if draw == 0 and condition["name"] == "saved":
@@ -127,10 +129,18 @@ def run_history_comparison(
                         save("history-partial.json", output)
                         if not check["passed"]:
                             raise ValueError("History-control HVP validation failed")
-                        first_direction, first_product = direction, product
+                        first_direction, first_product = [
+                            tuple(np.array(host_array(x), copy=True) for x in jax.tree.leaves(vector))
+                            for vector in (direction, product)
+                        ]
                     else:
-                        symmetry = abs(float(tree_dot(first_direction, product) - tree_dot(direction, first_product)))
-                        symmetry /= max(tree_norm(product), tree_norm(first_product), 1e-30)
+                        symmetry = abs(
+                            float(
+                                host_inner_product(first_direction, product)
+                                - host_inner_product(first_product, direction)
+                            )
+                        )
+                        symmetry /= max(tree_norm(product), host_vector_norm(first_product), 1e-30)
                         output["HVP_symmetry_relative_error"] = symmetry
                         if symmetry >= 1e-4:
                             save("history-partial.json", output)
@@ -169,7 +179,7 @@ def run_history_comparison(
                 )
                 save("history-partial.json", output)
                 progress(dict(event="history_calibration", draw=draw, condition=condition["name"], alpha=alpha))
-                del direction, product, post
+                del direction, product
             del first_history
         del grad
     locked = json.loads(json.dumps(output))
@@ -212,6 +222,7 @@ def run_history_comparison(
                         predicted_change=-length * row["alignment"] + 0.5 * length**2 * row["curvature"],
                         actual_norm=tree_norm(tree_add(candidate, model, -1)),
                     )
+                    del candidate
                 save("history-results.json", output)
                 progress(dict(event="history_heldout", draw=draw, condition=condition["name"], alpha=alpha))
                 del direction, post
