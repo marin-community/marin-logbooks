@@ -252,9 +252,9 @@ def analyze_envelope(directories, plan):
                         block=row["block"],
                         control=control,
                         normalized_hessian_norm=rho,
-                        nominal_violation=rho > 1,
+                        nominal_violation=bool(rho > 1),
                         diagnostic_margin=float(margin),
-                        exceeds_diagnostic_margin=rho > 1 + margin,
+                        exceeds_diagnostic_margin=bool(rho > 1 + margin),
                         mean_trace=float(np.trace(envelope) / len(h)),
                         numerical_scope=(
                             "2% Frobenius-Hessian sensitivity allowance plus measured asymmetry; "
@@ -264,7 +264,7 @@ def analyze_envelope(directories, plan):
                 )
     if {r["state"] for r in measured} != {"eighth-middle", "quarter-middle"} or len(measured) != 12:
         raise ValueError("Require the two complete prespecified test screens")
-    matched = []
+    matched, boundary_matched = [], []
     for block in ("attention", "mlp"):
         for control in ("scalar", "oriented", "rotated"):
             group = [r for r in measured if (r["block"], r["control"]) == (block, control)]
@@ -281,10 +281,26 @@ def analyze_envelope(directories, plan):
                     ),
                 )
             )
+            scale = max(r["normalized_hessian_norm"] for r in group)
+            boundary_matched.append(
+                dict(
+                    block=block,
+                    control=control,
+                    scale=scale,
+                    mean_trace=float(scale * np.mean([r["mean_trace"] for r in group])),
+                    maximum_normalized_hessian_norm=max(r["normalized_hessian_norm"] / scale for r in group),
+                    scope=(
+                        "Post-hoc common scaling across both test states to maximum nominal rho=1; "
+                        "may deflate conservative envelopes. Uses test responses; no independent coverage guarantee. "
+                        "Original frozen coefficients remain unchanged for path probes."
+                    ),
+                )
+            )
     return dict(
         rows=measured,
         path_inputs=path_inputs,
         matched_coverage=matched,
+        boundary_matched_coverage=boundary_matched,
         scope="Sampled block subspaces at two fixed checkpoints; not a uniform theorem or full-network bound",
     )
 

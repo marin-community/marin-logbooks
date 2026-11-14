@@ -4827,3 +4827,45 @@ failure; its default retry was building at the 11:17 UTC check. This starts a
 fresh measurement from the saved training checkpoint; checkpoint restoration
 in the new process has not yet been verified. It will not restore interrupted
 probe progress. Partial evidence from the first process is retained.
+
+
+Both held-out envelope tests completed successfully, with four tasks each and
+zero failures or preemptions at the 11:28 UTC check. Both online trackers
+finished and synced five files. All derivative and symmetry checks passed, and
+both regenerated test bases matched the frozen calibration plan. The
+[analysis](geometry-envelope-test-analysis.json) found no nominal violations
+among the 12 combinations: eighth-middle and quarter-middle states, attention
+and MLP blocks, and scalar, oriented and rotated controls. The normalized score
+is the largest absolute curvature divided by the envelope within the full
+eight-direction test span. Oriented-envelope normalized
+Hessian norms ranged from 0.1043 to 0.2179, below the violation threshold of one.
+
+At the frozen coefficients, average envelope trace per test direction, averaged
+equally over the two states, gave the following ratios of averages. The oriented
+envelope was
+6.37% of the scalar envelope for attention and 0.783% for MLP. All controls were
+conservative on these test subspaces. An additional post-hoc comparison scales
+each block/control separately by its maximum test normalized-Hessian norm
+across the two states. Multiplying the envelope by that score divides every
+normalized score by the same factor, making its worst test ratio one. Under
+this diagnostic,
+oriented-to-scalar trace ratios were 0.94183 for attention and 0.19873 for MLP;
+rotated-to-scalar ratios were 1.08610 and 9.75385. This rescaling uses test
+responses and provides no independent coverage guarantee. The original frozen
+coefficients remain unchanged for the path probes. The analysis also corrected
+a NumPy-boolean JSON serialization error without changing numerical checks.
+
+The [path inputs](geometry-envelope-path-inputs.json) freeze the validated test
+response references and hashes. Both blocks passed the previously published
+calibration-only path gate; each path run will reuse these starting responses
+and measure four fixed directions at the midpoint and endpoint of both power
+steps. The directions are the first four vectors of the frozen test basis.
+
+The registered plain-checkpoint smaller-grid Muon supplement also completed,
+with all 24 direct choices nonzero. Its [analysis](geometry-muon-small-step-analysis.json)
+reports plain Muon's mean loss change as -62.51 millionths, with conditional
+95% interval [-93.43, -27.68]. Feedback-minus-plain means were +1.04 to +13.58
+millionths; three of the five paired intervals crossed zero. All direction
+hashes, norms, alignment and curvature exactly reproduced the original-grid
+process. The remaining two smaller-grid checkpoint jobs were submitted from
+d8f6f9c0f and remain separate from the primary experiment.

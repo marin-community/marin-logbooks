@@ -313,6 +313,8 @@ def main():
         history_figure(summary["history"], args.output / "history-effects")
     if summary.get("muon"):
         muon_figure(summary["muon"], args.output / "muon-controls")
+        muon_figure(summary["muon"], args.output / "muon-equal-controls", rules=("equal",))
+        muon_figure(summary["muon"], args.output / "muon-direct-controls", rules=("direct",))
         muon_figure(summary["muon"], args.output / "muon-quadratic-controls", rules=("quadratic",))
     if "envelope" in summary:
         envelope_figure(summary["envelope"], args.output / "envelope-orientation")
