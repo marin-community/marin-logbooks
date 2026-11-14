@@ -41,6 +41,7 @@ def main():
     parser.add_argument("--experiment", choices=("power", "envelope"), required=True)
     parser.add_argument("--stage", choices=("screen", "test", "path"), default="screen")
     parser.add_argument("--plan", type=Path)
+    parser.add_argument("--path-inputs", type=Path)
     parser.add_argument("--output-prefix", required=True)
     parser.add_argument("--logging-check", action="store_true")
     args = parser.parse_args()

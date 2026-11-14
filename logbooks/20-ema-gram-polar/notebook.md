@@ -4283,3 +4283,33 @@ Frozen plans cannot be overwritten. An analytic two-state anisotropic problem
 recovers the known coefficients, covers both full subspaces, and improves over
 the scalar baseline; an off-diagonal violation test also passes. No actual
 checkpoint fit has been computed yet.
+
+## 2026-11-13 — Conditional path and held-out analysis implementation
+
+The first envelope screen for eighth-middle was accepted on source`05d0c0655`;
+its exact command is in`geometry-envelope-screen-eighth-middle-01-launch.json`.
+Both initial geometry jobs are capacity-pending at their first status checks.
+
+Path policy is prespecified before any screen result: draw0, a common block
+length equal to its native eighth-power block norm, and the first four frozen
+test basis vectors as anchors. Reuse test responses at the shared start; compute
+four responses at each midpoint/endpoint for both powers, adding16HVPs per
+eligible block (64if all four qualify). Coefficients stay fixed. Compare starting
+and current gradients, retain full responses and first-order loss remainders,
+and gate finite differences and symmetry. The eligibility rule remains at least
+5% smaller calibration trace than the scalar envelope, independent of test data.
+
+Analysis checks the immutable prediction hash and rejects changed choices or
+calibration records. Selector comparisons use paired update-draw and held-out
+text-group bootstrap intervals, conditional on the checkpoint and calibration
+panel. They do not estimate training-seed uncertainty. Matrix diagnostics report
+full projected operator norms. A2% Frobenius-Hessian sensitivity allowance plus
+observed asymmetry is explicitly not a uniform numerical-error certificate;
+finite-difference checks sample two anchors. Matched-coverage inflation uses
+test outcomes and is labeled post-hoc, not independent validation.
+
+Validation:8scientific tests passed in18.69seconds, including exact quadratic
+path remainders and a constant paired-difference bootstrap check; formatting and
+lint checks passed. Later Muon preparation found final checkpoint metadata for
+plain Muon, blend0.05 and Hesscorr0.3 at the pinned300M setting (LR0.012). This
+inventory is not yet a verified full restoration or a new Muon measurement.

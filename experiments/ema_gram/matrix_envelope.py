@@ -13,6 +13,7 @@ import jax.numpy as jnp
 import numpy as np
 from levanter.optim.util import flatten_linear_layers
 
+from experiments.ema_gram.envelope_path import load_path_baseline, measure_path
 from experiments.ema_gram.geometry_math import envelope_components, orthonormal_matrices, rotated_gradient
 from experiments.ema_gram.gradient_curvature import production_functions, production_updates
 from experiments.ema_gram.hessian import FD_STEPS, block_functions, host_array
@@ -40,11 +41,11 @@ def run_matrix_envelope(
 ):
     if "middle" not in args.state:
         raise ValueError("Initial matrix-envelope study uses only the two middle states")
-    if args.stage == "path":
-        raise ValueError("Path extension requires the frozen screen/test analysis before implementation")
     plan = json.loads(args.plan.read_text()) if args.plan else None
-    if args.stage == "test" and plan is None:
+    if args.stage in ("test", "path") and plan is None:
         raise ValueError("Test responses require published frozen envelope coefficients")
+    if args.stage == "path" and args.path_inputs is None:
+        raise ValueError("Path extension requires validated baseline test response artifacts")
     if plan is not None:
         save("frozen-envelope-plan.json", plan)
     reference, reference_weights = panels["calibration"], weights["calibration"]
@@ -79,6 +80,9 @@ def run_matrix_envelope(
     for block_index, (path, bank) in enumerate(blocks):
         started = time.perf_counter()
         label = "attention" if "q_proj" in path else "mlp"
+        if args.stage == "path" and not plan["path_gate"][label]["eligible"]:
+            progress(dict(event="path_ineligible", block=label, gate=plan["path_gate"][label]))
+            continue
         matrix = bank.reshape((-1, *bank.shape[-2:]))[0]
         loss, grad, hvp = block_functions(model, path, 1e-7)
 
@@ -115,6 +119,31 @@ def run_matrix_envelope(
         )
         if plan is not None and identities != plan["inputs"][args.state][label]:
             raise ValueError("Frozen coefficient plan and regenerated block/data differ")
+        if args.stage == "path":
+            source, arrays = load_path_baseline(args, plan, label, identities)
+            if not np.array_equal(arrays["basis"], test) or not np.array_equal(arrays["gradient"], gradient):
+                raise ValueError("Path baseline arrays differ from regenerated starting state")
+            result = measure_path(
+                matrix=matrix,
+                gradient=gradient,
+                basis=test,
+                baseline_responses=arrays["responses"],
+                directions=optimizer_directions,
+                length=float(np.linalg.norm(native_blocks[0.125][path])),
+                mean_gradient=mean_gradient,
+                mean_hvp=mean_hvp,
+                losses=lambda point, loss=loss: [float(loss(point, model, batch)) for batch in reference],
+                weights=reference_weights,
+                fits=plan["fits"][label],
+                rotation_seed=protocol["seeds"]["rotation"] + 1000 * state_index + block_index,
+                save_arrays=save_arrays,
+                progress=progress,
+                label=label,
+            )
+            result["baseline_source"] = source
+            output["rows"].append(result)
+            save("envelope-path-results.json", output)
+            continue
         basis = cal if args.stage == "screen" else test
         responses = []
         for index, direction in enumerate(basis):

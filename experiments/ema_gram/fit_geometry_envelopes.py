@@ -110,7 +110,17 @@ def main():
     if len({c["data_manifest_sha256"] for c, _ in screens}) != 1:
         raise ValueError("Shared fresh reference panel changed across states")
     plan = dict(
-        scope="Calibration only; freeze and publish before test responses", inputs={}, fits={}, sources=[], path_gate={}
+        scope="Calibration only; freeze and publish before test responses",
+        inputs={},
+        fits={},
+        sources=[],
+        path_gate={},
+        path_policy=dict(
+            update_draw=0,
+            anchors="First four frozen test basis vectors",
+            length="Native eighth-power block norm at draw0, shared across powers",
+            points="Start reused from test; midpoint and endpoint for each power",
+        ),
     )
     for directory, (complete, result) in zip(args.screens, screens, strict=True):
         plan["inputs"][complete["state"]] = {r["block"]: r["identities"] for r in result["rows"]}
