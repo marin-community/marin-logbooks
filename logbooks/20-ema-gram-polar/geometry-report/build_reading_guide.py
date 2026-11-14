@@ -78,6 +78,29 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     candidate_count = export_candidates(root.parent, args.output)
     evidence = {}
+    if candidate_count:
+        evidence["candidate-results.csv"] = dict(
+            source="Derived from completed raw candidate results by geometry-report/build_reading_guide.py",
+            sha256=hashlib.sha256((args.output / "candidate-results.csv").read_bytes()).hexdigest(),
+            rows=candidate_count,
+        )
+    figure_links = []
+    for folder in sorted(root.glob("*figures")):
+        if not folder.is_dir():
+            continue
+        group = "diagnostics" if folder.name == "figures" else folder.name.removesuffix("-figures")
+        for path in sorted(folder.iterdir()):
+            if path.suffix not in (".svg", ".png", ".pdf", ".json"):
+                continue
+            relative = f"figures/{group}/{path.name}"
+            destination = args.output / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(path, destination)
+            evidence[relative] = dict(
+                source=str(path.relative_to(root.parent)), sha256=hashlib.sha256(path.read_bytes()).hexdigest()
+            )
+            if path.suffix == ".pdf":
+                figure_links.append(f'<li><a href="{relative}">{html.escape(group + ": " + path.stem)}</a></li>')
     raw_sources = list(root.parent.glob("geometry-*.json"))
     raw_sources.append(root.parent / "hessian-aligned-configs.json")
     for directory in ("geometry-results", "geometry-muon-results"):
@@ -170,7 +193,10 @@ def main():
         "Blank timing cells mean unavailable; recorded wall times can include compilation and telemetry. "
         "Raw JSON retains paired group losses and numerical checks. "
         "The raw archive includes completed, failed and partial attempts, each with its original status. "
-        "Large response arrays remain at the recorded cloud locations.</p></main>"
+        "Large response arrays remain at the recorded cloud locations.</p>"
+        '<details class="contents"><summary>Separate figure exports</summary><ul>'
+        + "".join(figure_links)
+        + "</ul><p>Editable SVG and PNG versions are included beside each figure PDF.</p></details></main>"
         '<dialog id="figure-dialog"><button id="close-figure">Close figure</button>'
         "<p>On a small screen, scroll sideways to inspect the enlarged figure.</p>"
         '<div class="large-figure"><img id="large-image" alt=""></div></dialog><script>' + js + "</script></body></html>"

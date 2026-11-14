@@ -4947,3 +4947,22 @@ The [report builder](geometry-report/build_reading_guide.py) emits
 checkpoint and data identities and raw-result hashes. All 1,800 Muon CSV loss
 means and predictions reproduced from the raw group losses and quadratic
 coefficients. Missing isolated native timing remains blank.
+
+
+At 12:29 UTC, both fixed-coefficient envelope path jobs were verified complete
+on all four tasks, with zero failures or preemptions and five W&B files synced
+per run. The [path analysis](geometry-envelope-path-analysis.json) validates
+the frozen fit and starting responses, finite differences, symmetry, path
+lengths, remainders and recomputed coverage ratios. Across 20 block/parameter
+points and 120 control/reference comparisons, there were no sampled bound
+violations. The maximum normalized ratio was 0.2197. The coefficients stayed
+fixed; current-gradient envelopes recomputed their matrices at each point.
+
+The four anchors per block are fixed orthonormalized test directions. All path
+losses and derivatives use the 64-sequence calibration text. Remainders ranged
+from -0.11 to +0.63 millionths, comparable in some cases to FP32 loss rounding.
+These measurements establish only sampled subspace coverage. They do not
+certify the full Hessian or a bound between sampled points. The report now
+includes a path figure, standalone editable figure exports and a hashed CSV
+index. Browser checks passed text resizing, spacing, section focus, figure
+zoom and mobile layout without horizontal page overflow.

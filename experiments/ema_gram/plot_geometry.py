@@ -196,9 +196,18 @@ def envelope_path_figure(summary, path):
         yscale="log",
         xticks=range(4),
         xticklabels=["Query\n1/8 state", "Query\n1/4 state", "Gate\n1/8 state", "Gate\n1/4 state"],
-        ylabel="Maximum normalized Hessian norm\nAcross five sampled path points; above 1 violates",
+        ylabel="Maximum sampled coverage ratio\nAbove 1: nominal bound violation",
     )
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=9)
+    handles, labels = ax.get_legend_handles_labels()
+    order = [0, 2, 4, 1, 3, 5]
+    ax.legend(
+        [handles[i] for i in order],
+        [labels[i] for i in order],
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.16),
+        ncol=2,
+        fontsize=10,
+    )
     finish(fig, [ax], path)
 
 

@@ -6,13 +6,13 @@ This report follows the experiment request dated 13 November 2026. It extends th
 
 ## What can we conclude so far?
 
-**The first power checkpoint, all Muon comparisons and the matrix-envelope test screens are complete. The remaining power checkpoints, history comparisons and path tests are unfinished.**
+**The first power checkpoint, all Muon comparisons and the matrix-envelope test screens are complete. The remaining power checkpoints and history comparisons are unfinished. Both fixed-coefficient path tests are complete.**
 
 The corrected power pilot completed all numerical checks and held-out evaluations. At this checkpoint, curvature-based power selection improved mean loss slightly beyond alignment-based selection after both calibrated their step lengths. Its uncertainty interval includes zero. Five more checkpoints have been submitted.
 
 All three Muon comparisons passed their numerical checks and evaluated 72 candidates in total. Every original-grid calibration chose zero length. At separately calibrated quadratic-model steps, feedback variants had less favorable measured mean changes than plain Muon at each checkpoint. These local differences are small. The smaller-grid supplement was registered before inspecting held-out outcomes. It is now complete at all three checkpoints: all 72 choices were nonzero, but the feedback methods still had less favorable means than plain Muon.
 
-Both matrix-envelope calibration screens and both separate test-direction screens completed with passing numerical checks. All three controls covered the tested subspaces. After a post-hoc comparison that equalizes the worst observed coverage ratio, the true gradient axes gave a modest attention improvement and a larger MLP improvement. Fixed-coefficient path checks and fresh-history comparisons have been submitted.
+Both matrix-envelope calibration screens and both separate test-direction screens completed with passing numerical checks. All three controls covered the tested subspaces. After a post-hoc comparison that equalizes the worst observed coverage ratio, the true gradient axes gave a modest attention improvement and a larger MLP improvement. The fixed-coefficient path checks also completed without a sampled violation. Fresh-history comparisons have been submitted.
 
 ## 1. Why do these experiments matter?
 
@@ -162,6 +162,30 @@ A ratio below one means a smaller envelope than the scalar control after this ma
 
 [Complete test analysis](../geometry-envelope-test-analysis.json) · [Frozen coefficient plan](../geometry-envelope-plan.json)
 
+## Path result: the original bounds cover the sampled moves
+
+**Both checkpoint path tests completed. No fitted control violated its bound at the sampled points.**
+
+Each of the two checkpoints contributes an attention-query block and an MLP-gate block. For each block, the experiment tests the starting parameters, then the midpoint and endpoint of both power-1/8 and power-1/4 block moves. Both moves have the same physical length: the native eighth-power block norm from the prespecified first update draw. Only that block moves; other parameters stay fixed.
+
+This gives five points per block, or 20 block/parameter points overall. The four fixed anchors are an orthonormal basis built from the two optimizer directions and the fifth and sixth singular-vector matrix directions of the starting gradient. They were fixed before measuring path responses. Starting responses are reused from the test screen; 64 additional Hessian-vector products measure the nonzero points. Finite differences check two of the four anchors at each new point. Every check passed two consecutive perturbation scales below 2%, and the largest symmetry discrepancy was about 0.00000046.
+
+All path gradients, Hessians and loss remainders use the same 64-sequence calibration text panel. The separate test screen holds out directions, not text.
+
+The coefficients remain exactly those fitted before the test screens. One version of each envelope uses the gradient at the starting checkpoint throughout the path. The other recomputes the gradient at each sampled point, using the same coefficients.
+
+![For all four checkpoint/block pairs, the largest sampled coverage ratio remains below one with either the starting or current gradient.](path-figures/envelope-path-coverage.png)
+
+Each marker is the largest coverage ratio among the five sampled points in that checkpoint/block pair. Open circles use the starting gradient; filled squares use the current gradient. Colors distinguish the scalar, true-axis and rotated-axis controls. The dashed line marks the violation threshold of one. Both versions retain the original fitted coefficients, without the post-hoc rescaling used in the earlier tightness diagnostic. The current-gradient version recomputes the envelope matrix; its coefficients remain fixed.
+
+The largest ratio was about **0.220**, from the true-axis attention envelope at the quarter-trained middle checkpoint. Updating the gradient reference did not change the coverage conclusion in these tests. Smaller ratios can reflect excess envelope size; they do not by themselves make a control more informative.
+
+The saved loss remainder subtracts the initial linear prediction from the measured reference-panel loss change. Remainders ranged from about −0.11 to +0.63 millionths. Some are on the scale of FP32 loss rounding, so their signs should not be treated as reliable optimizer rankings. These are block moves on reference text, not the full-model held-out comparison used in Experiments 1 and 4.
+
+Coverage was checked only at these points and within the four-anchor subspaces. The experiment does not establish coverage between points or across the full model.
+
+[Validated path analysis](../geometry-envelope-path-analysis.json)
+
 ## 6. Experiment 3: which part of optimizer history matters?
 
 **The test separates remembered gradient directions from remembered Gram matrices.**
@@ -185,7 +209,7 @@ If replacing history reverses the power ranking, a later matched replay would co
 
 **The test separates a different direction from a larger update and from numerical approximation effects.**
 
-Muon transforms its momentum matrix using a five-step map called F5. A blend control mixes momentum with the new gradient before applying that map. The Hesscorr control uses a numerical approximation to a curvature correction.
+Muon transforms its momentum matrix using a five-step map called F5. A blend control mixes momentum with the new gradient before applying that map. The Hesscorr control uses a numerical approximation to a curvature correction for the momentum-matrix transformation. The loss Hessian measured by this experiment is a separate quantity.
 
 The planned candidates are plain Muon, blends 0.02 and 0.05, a five-step derivative control with weight 0.05, and production Hesscorr with weights 0.05 and 0.3. They start from identical post-gradient momentum and reuse each computed direction across all tested lengths.
 
@@ -330,6 +354,6 @@ A failed numerical check means that the corresponding measurement is not accepte
 
 **The first priority is valid checkpoint evidence for power prediction and matrix orientation.**
 
-The power pilot passed its numerical checks and held-out evaluation. The remaining five checkpoints and the two history comparisons must complete before a cross-checkpoint conclusion. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. Path measurements will now assess them after parameter movement.
+The power pilot passed its numerical checks and held-out evaluation. The remaining five checkpoints and the two history comparisons must complete before a cross-checkpoint conclusion. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. The fixed-coefficient path measurements also passed at the sampled points after parameter movement.
 
 Only after these comparisons can the report support selecting a mechanism for matched training continuations. Full training claims and independent-seed replication are outside the completed evidence at this stage.
