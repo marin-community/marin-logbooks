@@ -20,6 +20,18 @@ RECORD_NAMES = {
     "measurements.jsonl",
     "completed.json",
     "failure.json",
+    "protocol.json",
+    "checkpoint-identity.json",
+    "locked-predictions.json",
+    "power-partial.json",
+    "power-results.json",
+    "envelope-results.json",
+    "envelope-path-results.json",
+    "frozen-envelope-plan.json",
+    "history-0-manifest.json",
+    "history-1-manifest.json",
+    "history-0-completed.json",
+    "history-1-completed.json",
 }
 
 

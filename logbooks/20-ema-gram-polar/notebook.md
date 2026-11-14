@@ -4313,3 +4313,35 @@ path remainders and a constant paired-difference bootstrap check; formatting and
 lint checks passed. Later Muon preparation found final checkpoint metadata for
 plain Muon, blend0.05 and Hesscorr0.3 at the pinned300M setting (LR0.012). This
 inventory is not yet a verified full restoration or a new Muon measurement.
+
+## 2026-11-14 — History preparation and submission safeguards
+
+Both accepted initial tasks remain pending with no allocated attempt or
+application logs as of00:01PST. No TPU measurement has run yet. A broader raw
+scheduler SQL read was refused because it requires an admin role; no bypass or
+cluster change was attempted. Own-job/task status remains accessible.
+
+Added full-matrix history accumulation and independent momentum/Gram replacement
+helpers. A two-layer tiny model matches production EMA buffers after a clipped
+gradient, preserves every nonmatrix state leaf, and verifies raw-history pooling.
+The history test passed in8.30seconds. Collection uses512 zero-initialized batches
+per replica, stores raw buffers before normalization/ridge, logs the residual
+initialization mass, and excludes hashes from other text roles. This is preparation:
+no full history comparison or training has been launched.
+
+Added a reproducible single-job launcher that checks the current source is
+published, required configurations are present in the bundle, and no unpublished
+bundle files remain. New attempts get distinct immutable record names. It retains
+Iris default preemption/retries and introduces no queue/task/wrapper time cap.
+The collector now recognizes new geometry records while leaving large arrays in
+GCS. Figure code consumes validated summaries and exports editable vectors; no
+new data figure has been rendered yet.
+
+Muon inventory found complete-marker files and3.185GB of stored objects per final
+checkpoint, but full restoration is still unverified. Local TensorStore cannot
+parse the existing external-account ADC format; the ordinary Google Storage
+client can list/read these objects. No credential files were changed. These are
+final checkpoints atstep11443 of11444; the archived linear LR schedule decays to
+zero at its end. A meaningful Muon probe radius therefore needs an explicit
+reference-step convention or an earlier complete state. Do not silently call a
+chosen reference learning rate the native next training update.
