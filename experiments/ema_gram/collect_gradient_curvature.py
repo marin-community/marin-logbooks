@@ -23,6 +23,7 @@ RECORD_NAMES = {
     "protocol.json",
     "checkpoint-identity.json",
     "restore-schema.json",
+    "data-recovery.json",
     "locked-predictions.json",
     "power-partial.json",
     "power-results.json",

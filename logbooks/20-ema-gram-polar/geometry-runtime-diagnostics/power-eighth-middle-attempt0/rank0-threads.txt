@@ -1,0 +1,68 @@
+Process 1: python -m experiments.ema_gram.run_geometry --configs logbooks/20-ema-gram-polar/hessian-aligned-configs.json --protocol logbooks/20-ema-gram-polar/geometry-protocol.json --exclusions logbooks/20-ema-gram-polar/geometry-excluded-sequences.json --state eighth-middle --experiment power --output-prefix gs://marin-us-central2/ema-gram-20-geometry/20261113/power/eighth-middle
+Python v3.12.16 (/usr/local/bin/python3.12)
+
+Thread 1 (idle): "MainThread"
+    Popen._try_wait (subprocess.py:2011)
+    Popen._wait (subprocess.py:2053)
+    Popen.wait (subprocess.py:1264)
+    Popen.communicate (subprocess.py:1201)
+    run (subprocess.py:550)
+    main (experiments/ema_gram/run_geometry.py:14)
+    <module> (experiments/ema_gram/run_geometry.py:18)
+    _run_code (<frozen runpy>:88)
+    _run_module_as_main (<frozen runpy>:198)
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Process 497: /app/.venv/bin/python -m experiments.ema_gram.geometry_worker --configs logbooks/20-ema-gram-polar/hessian-aligned-configs.json --protocol logbooks/20-ema-gram-polar/geometry-protocol.json --exclusions logbooks/20-ema-gram-polar/geometry-excluded-sequences.json --state eighth-middle --experiment power --output-prefix gs://marin-us-central2/ema-gram-20-geometry/20261113/power/eighth-middle
+Python v3.12.16 (/usr/local/bin/python3.12)
+Parent Process 1: python -m experiments.ema_gram.run_geometry --configs logbooks/20-ema-gram-polar/hessian-aligned-configs.json --protocol logbooks/20-ema-gram-polar/geometry-protocol.json --exclusions logbooks/20-ema-gram-polar/geometry-excluded-sequences.json --state eighth-middle --experiment power --output-prefix gs://marin-us-central2/ema-gram-20-geometry/20261113/power/eighth-middle
+
+Thread 497 (idle): "MainThread"
+    State.initialize (jax/_src/distributed.py:173)
+    initialize (jax/_src/distributed.py:332)
+    initialize_jax (iris/jax/init.py:340)
+    main (experiments/ema_gram/geometry_worker.py:79)
+    <module> (experiments/ema_gram/geometry_worker.py:212)
+    _run_code (<frozen runpy>:88)
+    _run_module_as_main (<frozen runpy>:198)
+Thread 749 (idle): "wandb-AsyncioManager-main"
+    EpollSelector.select (selectors.py:468)
+    BaseEventLoop._run_once (asyncio/base_events.py:1961)
+    BaseEventLoop.run_forever (asyncio/base_events.py:645)
+    BaseEventLoop.run_until_complete (asyncio/base_events.py:678)
+    Runner.run (asyncio/runners.py:118)
+    run (asyncio/runners.py:195)
+    CancellableRunner.run (wandb/sdk/lib/asyncio_compat.py:76)
+    AsyncioManager._main (wandb/sdk/lib/asyncio_manager.py:237)
+    Thread.run (threading.py:1012)
+    Thread._bootstrap_inner (threading.py:1075)
+    Thread._bootstrap (threading.py:1032)
+Thread 940 (idle): "ChkStopThr"
+    Condition.wait (threading.py:359)
+    Event.wait (threading.py:655)
+    RunStatusChecker._loop_check_status (wandb/sdk/wandb_run.py:265)
+    RunStatusChecker.check_stop_status (wandb/sdk/wandb_run.py:308)
+    Thread.run (threading.py:1012)
+    Thread._bootstrap_inner (threading.py:1075)
+    Thread._bootstrap (threading.py:1032)
+Thread 942 (idle): "IntMsgThr"
+    Condition.wait (threading.py:359)
+    Event.wait (threading.py:655)
+    RunStatusChecker._loop_check_status (wandb/sdk/wandb_run.py:265)
+    RunStatusChecker.check_internal_messages (wandb/sdk/wandb_run.py:335)
+    Thread.run (threading.py:1012)
+    Thread._bootstrap_inner (threading.py:1075)
+    Thread._bootstrap (threading.py:1032)
+Thread 1063 (idle): "endpoint-lease-renewer"
+    Condition.wait (threading.py:359)
+    Event.wait (threading.py:655)
+    EndpointLeaseRenewer._run (iris/cluster/client/endpoint_client.py:284)
+    Thread.run (threading.py:1012)
+    Thread._bootstrap_inner (threading.py:1075)
+    Thread._bootstrap (threading.py:1032)
+
+--------------------------------------------------------------------------------

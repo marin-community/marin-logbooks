@@ -19,6 +19,7 @@ import jax.numpy as jnp
 import numpy as np
 import wandb
 from google.cloud import storage
+from iris.cluster.client.job_info import get_job_info
 from iris.jax.init import initialize_jax
 from levanter.checkpoint import load_checkpoint
 from levanter.layers.attention import AttentionBackend
@@ -30,6 +31,7 @@ from experiments.ema_gram.geometry_data import checkpoint_identity, geometry_dat
 from experiments.ema_gram.history_comparison import run_history_comparison
 from experiments.ema_gram.matrix_envelope import run_matrix_envelope
 from experiments.ema_gram.muon_checkpoint import restore_muon_checkpoint
+from experiments.ema_gram.muon_data import recovered_muon_data
 from experiments.ema_gram.muon_geometry import run_muon_geometry
 from experiments.ema_gram.muon_geometry_updates import momentum_state
 from experiments.ema_gram.power_prediction import run_power_prediction
@@ -68,29 +70,38 @@ def main():
     identity = "ema-gram-geometry-" + uuid.uuid4().hex[:12]
     local = Path(os.environ.get("IRIS_OUTPUT_DIR", "scratch/geometry")) / identity
     local.mkdir(parents=True)
-    run = wandb.init(
-        entity="marin-community",
-        project="marin",
-        id=identity,
-        name=identity,
-        group="ema-gram-20-geometry-20261113",
-        mode="online",
-        resume="never",
-        settings={"api_key": require_secret("WANDB_API_KEY")},
-        config=dict(
-            training=encoded,
-            protocol=protocol,
-            source_commit=os.environ.get("GIT_COMMIT"),
-            arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
-        ),
-    )
-    if run.settings.mode != "online":
-        raise RuntimeError("Online W&B required")
-    run.log({"logging_check/success": 1}, step=0)
-    print(json.dumps(dict(event="tracking_started", url=run.url)), flush=True)
-    if args.logging_check:
-        run.finish()
+    job_info = get_job_info()
+    primary = job_info is None or job_info.task_index == 0
+    api_key = require_secret("WANDB_API_KEY")
+    if args.logging_check and not primary:
+        print(json.dumps(dict(event="logging_check_delegated", tracking_owner="task0")), flush=True)
         return
+    run = None
+    if primary:
+        run = wandb.init(
+            entity="marin-community",
+            project="marin",
+            id=identity,
+            name=identity,
+            group="ema-gram-20-geometry-20261113",
+            mode="online",
+            resume="never",
+            settings={"api_key": api_key},
+            config=dict(
+                training=encoded,
+                protocol=protocol,
+                source_commit=os.environ.get("GIT_COMMIT"),
+                arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+            ),
+        )
+        if run.settings.mode != "online":
+            raise RuntimeError("Online W&B required")
+        run.log({"logging_check/success": 1}, step=0)
+        print(json.dumps(dict(event="tracking_started", url=run.url)), flush=True)
+        if args.logging_check:
+            run.finish()
+            return
+    run_url = run.url if run is not None else None
     initialize_jax()
     for key, value in cfg.trainer.jax_config.items():
         jax.config.update(key, value)
@@ -129,7 +140,8 @@ def main():
         data = dict(step=step, elapsed_seconds=time.perf_counter() - started, **data)
         with (local / "measurements.jsonl").open("a") as stream:
             stream.write(json.dumps(data, allow_nan=False) + "\n")
-        run.log(data, step=step)
+        if run is not None:
+            run.log(data, step=step)
         print(json.dumps(data), flush=True)
         if jax.process_index() == 0:
             bucket.blob(prefix + "/measurements.jsonl").upload_from_filename(str(local / "measurements.jsonl"))
@@ -184,15 +196,17 @@ def main():
                 host_count=jax.process_count(),
                 device_count=jax.device_count(),
                 device_kinds=sorted({d.device_kind for d in jax.devices()}),
-                wandb=run.url,
+                wandb=run_url,
             )
             save("configuration.json", configuration)
             save("protocol.json", protocol)
             progress(dict(event="restored", counter=int(state.step)))
             data_cfg = cfg
             if args.experiment == "muon":
+                data_cfg, recovery_manifest = recovered_muon_data(cfg, protocol["data_recovery"])
+                save("data-recovery.json", recovery_manifest)
                 data_cfg = replace(
-                    cfg, trainer=replace(cfg.trainer, train_batch_size=protocol["measurement_microbatch_sequences"])
+                    data_cfg, trainer=replace(cfg.trainer, train_batch_size=protocol["measurement_microbatch_sequences"])
                 )
             panels, weights, manifest_hash = geometry_data(data_cfg, protocol, args.exclusions, save)
             context = dict(
@@ -229,7 +243,7 @@ def main():
                     rows=len(result["rows"]),
                     elapsed_seconds=time.perf_counter() - started,
                     output="gs://" + bucket_name + "/" + prefix,
-                    wandb=run.url,
+                    wandb=run_url,
                     source_commit=os.environ.get("GIT_COMMIT"),
                     host_count=jax.process_count(),
                     device_count=jax.device_count(),
@@ -237,11 +251,13 @@ def main():
                 ),
             )
     except BaseException as error:
-        save("failure.json", dict(error=repr(error), wandb=run.url, elapsed_seconds=time.perf_counter() - started))
-        run.finish(exit_code=1)
+        save("failure.json", dict(error=repr(error), wandb=run_url, elapsed_seconds=time.perf_counter() - started))
+        if run is not None:
+            run.finish(exit_code=1)
         raise
     else:
-        run.finish()
+        if run is not None:
+            run.finish()
 
 
 if __name__ == "__main__":

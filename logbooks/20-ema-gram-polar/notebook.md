@@ -4499,3 +4499,32 @@ parallel command; complete local files will be checksum-verified before reuse.
 Recovery and uploads are not complete at this entry. Cache loading and complete
 sequence-hash disjointness between update, calibration, evaluation and prior
 study panels must pass before another Muon measurement attempt.
+
+## 2026-11-14 — Power pilot encounters rate limiting and preemption
+
+The power pilot compares three inverse Gram powers at the middle checkpoint
+of the eighth-power training trajectory. It allocated four Iris tasks, each
+on one v4 TPU host, at about 09:24 UTC.
+At 09:32, ranks 0 and 1 waited in JAX distributed initialization. Ranks 2 and 3
+were still completing their online logging checks. Rank 2's W&B response was
+HTTP 429: the shared marin project's file-stream request limit was exceeded.
+[Thread captures and the observation record](geometry-runtime-diagnostics/power-eighth-middle-attempt0/observation.json)
+preserve this distinction. No checkpoint restoration or scientific measurement
+was verified in this scheduler attempt.
+
+Iris preempted the job and restarted all four workers by 09:37 UTC. The
+scheduler reports one preemption and zero application failures. This is a
+fresh process attempt; no restored measurement progress is claimed. Default
+scheduler retries remain enabled. The two envelope screens, which fit matrix curvature bounds at the middle
+checkpoints of the eighth- and quarter-power trajectories, still await capacity.
+
+Implemented tracking changes for future submissions; the queued and running
+jobs retain their original source. New workers assign online W&B tracking to
+task 0 (rank 0), which records the complete
+distributed experiment. Other tasks retain local incremental logs and validate
+that the shared credential is present. The online preflight runs once per job
+attempt. Every restart gets a fresh run identity. This reduces redundant upload
+requests; it does not establish that the shared project limit has cleared.
+Task 0 still creates an online run, logs the preflight metric and waits for its
+upload before measurement. Formatting passed. A fresh online-only preflight
+remains to be checked.

@@ -1,0 +1,50 @@
+Process 1: python -m experiments.ema_gram.run_geometry --configs logbooks/20-ema-gram-polar/hessian-aligned-configs.json --protocol logbooks/20-ema-gram-polar/geometry-protocol.json --exclusions logbooks/20-ema-gram-polar/geometry-excluded-sequences.json --state eighth-middle --experiment power --output-prefix gs://marin-us-central2/ema-gram-20-geometry/20261113/power/eighth-middle
+Python v3.12.16 (/usr/local/bin/python3.12)
+
+Thread 1 (idle): "MainThread"
+    Popen._try_wait (subprocess.py:2011)
+    Popen._wait (subprocess.py:2053)
+    Popen.wait (subprocess.py:1264)
+    Popen.communicate (subprocess.py:1201)
+    run (subprocess.py:550)
+    main (experiments/ema_gram/run_geometry.py:13)
+    <module> (experiments/ema_gram/run_geometry.py:18)
+    _run_code (<frozen runpy>:88)
+    _run_module_as_main (<frozen runpy>:198)
+
+--------------------------------------------------------------------------------
+Process 8: /app/.venv/bin/python -m experiments.ema_gram.geometry_worker --configs logbooks/20-ema-gram-polar/hessian-aligned-configs.json --protocol logbooks/20-ema-gram-polar/geometry-protocol.json --exclusions logbooks/20-ema-gram-polar/geometry-excluded-sequences.json --state eighth-middle --experiment power --output-prefix gs://marin-us-central2/ema-gram-20-geometry/20261113/power/eighth-middle --logging-check
+Python v3.12.16 (/usr/local/bin/python3.12)
+Parent Process 1: python -m experiments.ema_gram.run_geometry --configs logbooks/20-ema-gram-polar/hessian-aligned-configs.json --protocol logbooks/20-ema-gram-polar/geometry-protocol.json --exclusions logbooks/20-ema-gram-polar/geometry-excluded-sequences.json --state eighth-middle --experiment power --output-prefix gs://marin-us-central2/ema-gram-20-geometry/20261113/power/eighth-middle
+
+Thread 8 (idle): "MainThread"
+    Condition.wait (threading.py:355)
+    Future.result (concurrent/futures/_base.py:451)
+    AsyncioManager.run (wandb/sdk/lib/asyncio_manager.py:137)
+    wait_all_with_progress (wandb/sdk/mailbox/wait_with_progress.py:78)
+    wait_with_progress (wandb/sdk/mailbox/wait_with_progress.py:24)
+    Run._on_finish (wandb/sdk/wandb_run.py:2743)
+    Run._atexit_cleanup (wandb/sdk/wandb_run.py:2519)
+    Run._finish (wandb/sdk/wandb_run.py:2325)
+    _log_to_run.<locals>.wrapper (wandb/sdk/wandb_run.py:399)
+    Run.finish (wandb/sdk/wandb_run.py:2297)
+    _attach.<locals>.wrapper (wandb/sdk/wandb_run.py:444)
+    _log_to_run.<locals>.wrapper (wandb/sdk/wandb_run.py:399)
+    main (experiments/ema_gram/geometry_worker.py:77)
+    <module> (experiments/ema_gram/geometry_worker.py:212)
+    _run_code (<frozen runpy>:88)
+    _run_module_as_main (<frozen runpy>:198)
+Thread 260 (idle): "wandb-AsyncioManager-main"
+    EpollSelector.select (selectors.py:468)
+    BaseEventLoop._run_once (asyncio/base_events.py:1961)
+    BaseEventLoop.run_forever (asyncio/base_events.py:645)
+    BaseEventLoop.run_until_complete (asyncio/base_events.py:678)
+    Runner.run (asyncio/runners.py:118)
+    run (asyncio/runners.py:195)
+    CancellableRunner.run (wandb/sdk/lib/asyncio_compat.py:76)
+    AsyncioManager._main (wandb/sdk/lib/asyncio_manager.py:237)
+    Thread.run (threading.py:1012)
+    Thread._bootstrap_inner (threading.py:1075)
+    Thread._bootstrap (threading.py:1032)
+
+--------------------------------------------------------------------------------
