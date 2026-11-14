@@ -688,7 +688,7 @@ status: active
 
 - Interactive page with these curves, the seed and unlikelihood runs, and
   decoded training examples: [gist](https://gist.github.com/davidlundgren/4ee276aedcbfcc4e43cf17c6044241ff) (rendered:
-  [gist.githack](https://gist.githack.com/davidlundgren/4ee276aedcbfcc4e43cf17c6044241ff/raw/reclose_replays.html)).
+  [htmlpreview](https://htmlpreview.github.io/?https://gist.githubusercontent.com/davidlundgren/4ee276aedcbfcc4e43cf17c6044241ff/raw/reclose_replays.html)).
 - Interpretation: under every start, the re-close is half learned within about
   four steps of the close, often slightly before it. The start moves both
   together. That fits the base model already marking where a close belongs.
