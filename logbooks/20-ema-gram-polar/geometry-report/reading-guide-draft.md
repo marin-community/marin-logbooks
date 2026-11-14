@@ -1,18 +1,17 @@
 # Can curvature help choose an optimizer update?
 
-**Research in progress — this is not a completed comparison.**
+**Checkpoint report complete · 14 November 2026. Matched training replay and independent-seed replication remain untested.**
 
 This report follows the experiment request dated 13 November 2026. It extends the earlier gradient-and-curvature study with new text panels and new tests. Results from the earlier study are not counted as results of these new tests.
 
-## What can we conclude so far?
+## What did the checkpoint experiments show?
 
-**The power, matrix-envelope and Muon experiments are complete. The two optimizer-history comparisons are still running.**
+**All four checkpoint experiments are complete. Their conclusions are local to the measured checkpoints and text panels.**
 
-All six power checkpoints passed numerical checks and held-out evaluation. After length calibration, curvature selection improved on alignment selection with intervals below zero at three checkpoints. It did not establish an advantage over fixed power 1/4.
-
-All three Muon comparisons passed their numerical checks and evaluated 72 candidates in total. Every original-grid calibration chose zero length. At separately calibrated quadratic-model steps, feedback variants had less favorable measured mean changes than plain Muon at each checkpoint. These local differences are small. The smaller-grid supplement was registered before inspecting held-out outcomes. It is now complete at all three checkpoints: all 72 choices were nonzero, but the feedback methods still had less favorable means than plain Muon.
-
-Both matrix-envelope calibration screens and both separate test-direction screens completed with passing numerical checks. All three controls covered the tested subspaces. After a post-hoc comparison that equalizes the worst observed coverage ratio, the true gradient axes gave a modest attention improvement and a larger MLP improvement. The fixed-coefficient path checks also completed without a sampled violation. Fresh-history comparisons are running.
+- **Choosing the power:** curvature-based selection beat alignment-based selection in three of six comparisons after step-length calibration. It did not establish an advantage over fixed power 1/4.
+- **Bounding curvature:** the true gradient axes gave a modestly tighter attention envelope and a substantially tighter feed-forward-layer envelope after a post-hoc comparison equalized their remaining slack. All sampled path checks passed. These are local curvature bounds, not improvements in model loss.
+- **Replacing optimizer history:** fresh momentum reversed the power ranking at equal length in both checkpoints. Separately calibrated lengths favored 1/4 in those conditions, but every quarter-power choice reached the maximum tested length.
+- **Muon feedback:** all three checkpoints passed numerical checks. Every original-grid choice was zero. A separately registered smaller grid selected nonzero steps, but feedback methods still had less favorable mean loss changes than plain Muon.
 
 ## 1. Why do these experiments matter?
 
@@ -32,7 +31,7 @@ Good initial alignment means that a direction looks promising at the starting po
 
 **We propose changes from a saved model state and measure their immediate effects. We are not yet comparing complete new training runs.**
 
-A **checkpoint** stores model parameters and optimizer state, including accumulated gradient statistics and counters. Each candidate starts from the same saved state and receives the same new update text.
+A **checkpoint** stores model parameters and optimizer state, including accumulated gradient statistics and counters. A **native update** is the optimizer’s complete proposed displacement before this experiment normalizes or rescales it. Each candidate starts from the same saved state and receives the same new update text.
 
 For a fair comparison, candidate powers incorporate the new gradient once into their accumulated statistics. Those resulting statistics must match across the powers.
 
@@ -54,7 +53,7 @@ All choices are saved before any evaluation-panel loss is read. This prevents ch
 
 ![Update text constructs directions; calibration text chooses actions; choices are locked before evaluation text measures outcomes.](figures/selection-flow.svg)
 
-This is the loss-comparison workflow for Experiments 1 and 4. For Experiment 2, the locked objects are envelope coefficients, and new directions test them.
+This is the loss-comparison workflow for Experiments 1, 3 and 4. For Experiment 2, the locked objects are envelope coefficients, and new directions test them.
 
 Whole-sequence hashes reject identical sequences across the panels and exclude the earlier study's recorded sequences. This does not prove that no documents or token spans overlap. It also does not establish that the text was absent from pretraining.
 
@@ -64,9 +63,9 @@ Cross entropy penalizes poor next-token predictions. Z-loss penalizes very large
 
 **The test compares choices made using alignment alone with choices made using alignment plus curvature.**
 
-The planned experiment uses six 447M checkpoints: early, middle and late states from a trajectory trained with power 1/8 and a trajectory trained with power 1/4. Each checkpoint receives eight fresh update batches. Each batch produces three candidate powers: 1/8, 3/16 and 1/4. Each update batch contains eight sequences, matching these 447M training configurations. That gives 144 planned candidate directions.
+The experiment used six 447-million-parameter checkpoints: early, middle and late states from a trajectory trained with power 1/8 and a trajectory trained with power 1/4. Each checkpoint receives eight fresh update batches, also called update draws. Each batch produces three candidate powers: 1/8, 3/16 and 1/4. Each update batch contains eight sequences, matching these 447M training configurations. That gives 144 candidate directions.
 
-These powers control inverse matrix powers applied to accumulated gradient statistics. They can alter both direction and size. The production five-step matrix transformation is retained.
+The left and right Gram matrices accumulate products of earlier gradients. The power exponent controls their inverse powers. Each update applies these inverse powers on both sides of momentum, applies the production five-step Muon transformation, then applies the same inverse powers again. Changing the exponent can alter both direction and size.
 
 Each complete candidate update is normalized by one scalar. This keeps its orientation while making its length one. A physical step length then specifies the Euclidean norm of the full parameter displacement.
 
@@ -74,7 +73,7 @@ We write a move as “new parameters = old parameters − s × d.” Thus positi
 
 **predicted decrease = s × alignment − ½ × s² × directional curvature.**
 
-Here, alignment is the inner product of the reference gradient and d. Directional curvature is the inner product of d and the Hessian-vector product Hd. This product describes how the gradient initially changes when parameters move along d. Curvature can be negative.
+Here, alignment is the inner product of the reference gradient and d. Directional curvature is the inner product of d and the Hessian-vector product Hd. Hd describes how the gradient initially changes when parameters move along d. Curvature can be negative.
 
 The model chooses its best action within a common bounded range, including the option to take no step. Every comparator receives the same opportunity to calibrate its length. The tested choices include fixed 1/8, fixed 1/4, the best initial alignment and the best quadratic prediction.
 
@@ -113,7 +112,7 @@ At the quarter-trained late checkpoint, curvature chose 1/8 on five draws and 1/
 
 Curvature also beat fixed 1/8 with intervals below zero at the same three checkpoints. The other three fixed-eighth comparisons were uncertain. All fixed-power and native-length comparisons are included in the linked analysis.
 
-At equal physical length r, the same locked choices gave larger curvature-minus-alignment mean differences. Values remain in millionths of loss.
+At equal physical length r, the same locked choices gave more negative curvature-minus-alignment mean differences. Values remain in millionths of loss.
 
 | Training power · checkpoint | Curvature minus alignment | Conditional 95% interval |
 | --- | ---: | ---: |
@@ -129,6 +128,8 @@ Five intervals were below zero; the quarter-trained late interval included zero.
 ![Predicted and observed improvements for all 144 candidates at their grid-calibrated lengths.](power-figures/power-predictions-prediction.png)
 
 Each dot represents one checkpoint, one update draw and one candidate power. The diagonal marks equal predicted and observed improvement. A dot above it means the measured held-out improvement exceeded the calibration-based quadratic prediction. This comparison combines quadratic-model error and differences between calibration and evaluation text. It does not isolate either source.
+
+As an additional numerical check, differentiating with respect to the exponent tests how the update responds to a small change in power. The discrete candidate comparisons above use their measured directions directly.
 
 All 48 derivatives of the normalized complete update with respect to the power exponent, evaluated at 3/16, passed two-scale finite differences in the differentiable FP32 map. FP32 means 32-bit floating-point arithmetic; this derivative check uses the highest matrix-multiplication precision. It does not establish a derivative of the native low-precision computation. The loss comparisons above evaluate the native candidate directions. Reference Hessian-vector and symmetry checks also passed.
 
@@ -175,13 +176,15 @@ Only the eighth-trained late and quarter-trained early intervals were wholly bel
 
 A proposed **envelope** limits the magnitude of curvature. A scalar envelope treats every direction equally. A matrix envelope can allow different amounts of curvature along different directions.
 
-The experiment uses both middle checkpoints and two parameter blocks: the first attention-query matrix and the first MLP-gate matrix. Other model parameters remain fixed when measuring each block Hessian.
+The experiment uses both middle checkpoints and two parameter blocks: the first attention-query matrix and the first multilayer-perceptron (MLP) gate matrix. Other model parameters remain fixed when measuring each block Hessian.
 
 Each block has eight calibration directions and eight test directions. They include random directions and directions derived from the gradient's singular vectors. Optimizer directions are reserved for testing.
 
 Three fitted controls are compared: a scalar envelope, an envelope using the gradient's actual matrix axes, and one using randomly rotated axes with the same singular values. Coefficients are shared across the two checkpoints for each block type.
 
 Here G is the unclipped gradient of the reference loss with respect to the chosen matrix block. For a matrix direction E, the oriented envelope applies **L₀E + cᴸGGᵀE + cᴿEGᵀG**. The products GGᵀ and GᵀG describe the gradient's row and column axes. The fitted weights satisfy L₀ > 0 and cᴸ, cᴿ ≥ 0. The rotated control rotates G's axes while preserving G's singular values; it then fits its own nonnegative coefficients.
+
+Writing the envelope operator as B, its allowed curvature along E is ⟨E,B(E)⟩. The tested bound is |⟨E,H(E)⟩| ≤ ⟨E,B(E)⟩. The inner product here sums products of corresponding matrix entries.
 
 Calibration responses choose the coefficients. Those coefficients are then frozen. Test responses assess coverage and tightness.
 
@@ -251,7 +254,7 @@ Coverage was checked only at these points and within the four-anchor subspaces. 
 
 Momentum averages earlier gradients. Gram matrices average matrix products of those gradients. They are different forms of memory.
 
-At each middle checkpoint, the planned experiment compares four combinations:
+At each middle checkpoint, the experiment compared four combinations:
 
 - Saved momentum + saved Gram matrices.
 - Fresh momentum + saved Gram matrices.
@@ -262,19 +265,83 @@ All other optimizer state stays fixed. The same new update batch is incorporated
 
 Two independent histories, each containing 512 batches of eight sequences at fixed model weights, test how much the result depends on the sampled history. The batch size matches the saved-state training configuration; this test does not change it. The fresh raw momentum and Gram buffers start at zero. Their original averaging factors are 0.95 and 0.99. After 512 batches, the remaining weight on initialization is negligible for momentum and about 0.58% for the Grams.
 
-We also average the two histories before rescaling their statistics or adding the small diagonal stabilizer called a ridge. This checks sensitivity to the sampled history without changing the gradient batch size.
+We also average the two raw histories before normalizing the Gram matrices by their traces (sums of diagonal entries), or adding the small diagonal stabilizer called a ridge. This checks sensitivity to the sampled history without changing the gradient batch size.
 
-If replacing history reverses the power ranking, a later matched replay would compare histories built at moving versus fixed parameters using the same text and temporal weights. That replay has not run. A training continuation would require complete durable checkpoint restoration and online tracking.
+Both middle checkpoints completed all 160 candidates: ten history conditions × eight update draws × two powers. The all-saved condition is shared. Each of the three history sources (A, B and their raw pool) supplies the other three combinations. The two checkpoints therefore contribute 320 candidates.
+
+The comparison uses the same update, calibration and evaluation panels as Experiment 1. Every history sequence is distinct from those panels by complete-sequence hash. All 32 all-saved candidates exactly reproduce Experiment 1's calibration and held-out measurements. This checks the common baseline; it does not make these repetitions independent evidence.
+
+Reference Hessian-vector checks passed the unchanged 2% threshold at two final perturbation scales. Symmetry discrepancies were below 7 × 10⁻¹⁰. One eighth-trained attempt was preempted. Its replacement restored the training checkpoint and rebuilt both histories with identical record and raw-array hashes, then restarted the probe measurements.
+
+[History data and restart audit](../geometry-history-data-validation.json) · [Baseline and numerical checks](../geometry-history-baseline-validation.json)
+
+## History result: fresh momentum reverses the equal-length ranking
+
+**At the same physical length, replacing momentum makes 1/8 outperform 1/4 at both checkpoints. Replacing only Gram statistics preserves the original ranking.**
+
+Equal length means the same scalar r for every condition and power at a checkpoint. It is the median native eighth-power norm with saved history: about 1.309 at the eighth-trained checkpoint and 1.317 at the quarter-trained checkpoint.
+
+The table shows quarter-power loss minus eighth-power loss, in **millionths of loss**. Negative favors 1/4; positive favors 1/8. Fresh entries use the raw pool of histories A and B. The figure also shows each separate history.
+
+| History used | 1/8-trained checkpoint | 1/4-trained checkpoint |
+| --- | ---: | ---: |
+| Saved momentum and Grams | -282.57 | -1,291.92 |
+| Fresh momentum, saved Grams | +5,103.52 | +4,388.04 |
+| Saved momentum, fresh Grams | -373.16 | -1,501.26 |
+| Fresh momentum and Grams | +5,406.77 | +5,268.34 |
+
+![Equal-length history comparisons: replacing momentum changes the sign of the quarter-minus-eighth loss gap in both checkpoints and both separate histories.](history-figures/history-effects-equal.png)
+
+Each point is an average over eight update draws. Lines are paired conditional 95% intervals. The large momentum-related reversals appear in A, B and their pool, with all corresponding intervals wholly above zero. For example, the pooled fresh-momentum, saved-Gram intervals are [+4,742.21, +5,522.16] and [+3,724.62, +5,188.66] millionths at the eighth-trained and quarter-trained checkpoints.
+
+These are rankings between the two powers within a history condition. A change in that gap alone does not say whether either power improved relative to its own saved-history update.
+
+## History result: length calibration changes that conclusion
+
+**When each power calibrates its own length, fresh-momentum conditions favor 1/4 at both checkpoints. Every fresh-momentum quarter-power choice reaches the maximum allowed length.**
+
+The grid and refinement rule match Experiment 1. Every condition uses the same maximum length 4r. These are the resulting mean quarter-minus-eighth differences, again in **millionths of loss**.
+
+| History used | 1/8-trained checkpoint | 1/4-trained checkpoint |
+| --- | ---: | ---: |
+| Saved momentum and Grams | -23.84 | -122.21 |
+| Fresh momentum, saved Grams | -6,365.99 | -7,401.66 |
+| Saved momentum, fresh Grams | +0.94 | -111.06 |
+| Fresh momentum and Grams | -5,324.90 | -5,535.53 |
+
+![Separately calibrated history comparisons: all fresh-momentum conditions favor quarter power, while saved-momentum comparisons remain much smaller.](history-figures/history-effects-direct.png)
+
+All fresh-momentum intervals lie below zero, including both separate histories and their pool. For pooled fresh momentum with saved Grams, the intervals are [−6,665.96, −6,104.23] and [−8,085.82, −6,856.40] millionths. At the eighth-trained checkpoint, replacing only Grams produces small positive mean gaps whose intervals include zero. That small sign change does not establish a reversal.
+
+**The search boundary matters.** There are 96 maximum-radius choices across the two checkpoints: all eight draws, for quarter power, in each of the six fresh-momentum conditions per checkpoint. Their length is 4r. The eighth-power choices in those comparisons are shorter. Eight other candidates choose zero, all at the quarter-trained checkpoint with saved momentum. The remaining 216 choices are interior.
+
+The measured comparisons are valid within the prespecified search range. They do not locate the best possible step beyond 4r. Extending that range after inspecting these outcomes would be a new experiment.
+
+## What the two fresh histories can tell us
+
+**Both independent histories reproduce the main momentum-related reversal. They do not identify its cause as training-history lag.**
+
+A and B use independent batches to estimate moments at the same fixed parameters. Their exact loss gaps differ. Pooling their raw buffers before the nonlinear optimizer map also changes the gap; the pooled result need not lie halfway between the two separate results.
+
+For fresh-momentum conditions, pooling increases quarter power's calibrated advantage over eighth power compared with either separate history. Across the two checkpoints and the fresh-momentum/saved-Gram and fresh-both conditions, those changes range from about 862 to 1,250 millionths, with conditional intervals below zero. This describes sensitivity to the sampled history. Two histories do not establish convergence to an exact population moment.
+
+The bootstrap resamples update draws and evaluation groups. It holds A, B, their pool and calibration choices fixed. Its intervals therefore omit uncertainty from collecting entirely new histories, as well as independent training-seed variation.
+
+The observed ranking changes trigger the request's matched-replay follow-up. It would construct moments from moving training parameters and from the final frozen parameters using identical minibatches, temporal weights and initial-history contributions. Without that comparison, saved-versus-fresh differences cannot isolate the effect of parameter movement during training. The matched replay has not run; this report returns the checkpoint evidence first.
+
+[Complete history analysis, replica contrasts and boundary counts](../geometry-history-analysis.json)
 
 ## 7. Experiment 4: why might inexpensive Muon feedback help?
 
 **The test separates a different direction from a larger update and from numerical approximation effects.**
 
-Muon transforms its momentum matrix using a five-step map called F5. A blend control mixes momentum with the new gradient before applying that map. The Hesscorr control uses a numerical approximation to a curvature correction for the momentum-matrix transformation. The loss Hessian measured by this experiment is a separate quantity.
+Muon transforms its momentum matrix using a five-step map called F5. This approximately orthogonalizes the matrix by moving its singular values toward a common scale; it is a finite approximation to the polar-factor transformation. A blend control mixes momentum with the new gradient before applying that map. The Hesscorr control uses a numerical approximation to a curvature correction for the momentum-matrix transformation. The loss Hessian measured by this experiment is a separate quantity.
 
-The planned candidates are plain Muon, blends 0.02 and 0.05, a five-step derivative control with weight 0.05, and production Hesscorr with weights 0.05 and 0.3. They start from identical post-gradient momentum and reuse each computed direction across all tested lengths.
+The tested candidates are plain Muon, blends 0.02 and 0.05, a five-step derivative control with weight 0.05, and production Hesscorr with weights 0.05 and 0.3. They start from identical post-gradient momentum and reuse each computed direction across all tested lengths.
 
-The three available 300M checkpoints are at the end of their schedules. Their native next scheduled learning rate is zero. The approved comparison therefore uses a common **reference probe learning rate of 0.012**, with **Adam learning rate 0.0036**. These scales do not represent a resumed native training step.
+Adam updates parameter groups outside Muon’s selected matrices, including embeddings and the output head. The complete update contains both groups, so their learning-rate ratio affects its direction.
+
+The three available 300-million-parameter checkpoints are at the end of their schedules. Their native next scheduled learning rate is zero. The approved comparison therefore uses a common **reference probe learning rate of 0.012**, with **Adam learning rate 0.0036**. These scales do not represent a resumed native training step.
 
 FP32 means 32-bit floating-point numbers. On a TPU, matrix-multiplication precision also needs an explicit setting. The derivative control uses the same five-step polynomial with the highest FP32 multiplication precision.
 
@@ -290,7 +357,7 @@ At each checkpoint, six methods × four update draws give **24 candidate directi
 
 The original grid tests lengths **0, 0.1r, 0.3r, 0.6r, r, 2r and 4r**. It selects the lowest measured calibration loss and refines around an interior winner. A separate quadratic rule maximizes predicted improvement continuously over **0 ≤ s ≤ 4r**. Both rules may select zero.
 
-The original FineWeb training subcache was missing. Measurement uses an explicitly identified replacement from a pinned public revision. All 79 files passed checksum verification, and the cloud worker reproduced the exact 704-sequence panel manifest checked locally: 64 calibration sequences, 128 evaluation sequences and four native update batches of 128 sequences each. These 512 update *sequences* are separate from Experiment 3’s proposed 512-*batch* histories. This does not prove byte identity with the missing subcache.
+The original FineWeb training subcache was missing. Measurement uses an explicitly identified replacement from a pinned public revision. All 79 files passed checksum verification, and the cloud worker reproduced the exact 704-sequence panel manifest checked locally: 64 calibration sequences, 128 evaluation sequences and four native update batches of 128 sequences each. These 512 update *sequences* are separate from Experiment 3’s completed 512-*batch* histories. This does not prove byte identity with the missing subcache.
 
 ## Numerical check: higher precision restored derivative agreement
 
@@ -316,7 +383,7 @@ In the first 12 calibrated Muon candidates, the original grid selected zero. The
 
 A supplementary grid was registered before inspecting any held-out loss. It adds physical lengths 0.01, 0.03 and 0.06 times the same reference norm, equally for every candidate and checkpoint. The reference learning rates remain 0.012 and 0.0036.
 
-The original-grid comparison remains the primary result. This supplement tests grid resolution; its results will be identified separately. The grid choices and the calibration evidence that motivated them are preserved in the [registered protocol](../geometry-muon-small-step-protocol.json).
+The original-grid comparison remains the primary result. This supplement tests grid resolution; its results are reported separately below. The grid choices and the calibration evidence that motivated them are preserved in the [registered protocol](../geometry-muon-small-step-protocol.json).
 
 ## Completed original-grid comparisons
 
@@ -413,10 +480,12 @@ Recorded update times are diagnostic wall times. They can include compilation, n
 
 A failed numerical check means that the corresponding measurement is not accepted for scientific comparison. It does not show that the optimizer is ineffective. A job that runs out of memory likewise says nothing about which optimizer has lower loss.
 
-## 9. What remains before a mechanism can be selected?
+## 9. Which mechanism should the next experiment test?
 
-**The first priority is valid checkpoint evidence for power prediction and matrix orientation.**
+**The clearest follow-up is the interaction between momentum history and step length. Its equal-length ranking change reproduces in both histories at both checkpoints.**
 
-All six power checkpoints passed numerical checks and held-out evaluation. The two history comparisons must complete before the full planned comparison. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. The fixed-coefficient path measurements also passed at the sampled points after parameter movement.
+The four checkpoint experiments are complete. Curvature improves on alignment-based power selection in three of six calibrated comparisons, but does not outperform fixed 1/4. The matrix-envelope results support a local orientation effect, especially for the MLP block; their matched-coverage rescaling is post-hoc. The tested Muon feedback variants show no mean local advantage over plain Muon on the smaller grid.
 
-Only after these comparisons can the report support selecting a mechanism for matched training continuations. Full training claims and independent-seed replication are outside the completed evidence at this stage.
+History replacement produces larger ranking changes, and step calibration reverses the equal-length conclusion. The next discriminating test is the matched moving-versus-frozen replay described above. It must match text, temporal weights and initial history, and retain the separate equal-length and calibrated-length comparisons. The maximum-radius choices also motivate a separately registered wider-range check.
+
+Neither follow-up has run. Any training continuation must first pass interrupted-versus-uninterrupted restoration checks, save complete durable training state and track online. Independent training seeds would then be needed before making a training-performance claim.

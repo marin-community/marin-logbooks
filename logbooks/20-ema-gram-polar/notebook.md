@@ -5064,3 +5064,59 @@ recomputed from weighted raw group losses and quadratic coefficients to
 absolute tolerance 1e-12. All 366 report evidence hashes matched. The rebuilt
 HTML passed text-size, spacing, section-navigation, figure-zoom, local-link
 and mobile-overflow checks; the tagged PDF was regenerated.
+
+## 2026-11-14 — history comparisons complete; checkpoint report finalized
+
+Both 160-candidate history comparisons completed. Quarter-middle finished at
+17:10:28 UTC and eighth-middle at 17:30:59 UTC. At 17:32:45 UTC Iris reported
+four successful tasks for each job, zero application failures, and respectively
+zero and one scheduler preemption. Each measurement W&B run finished with five
+files synced. The eighth retry restored the training checkpoint and restarted
+measurements; it did not restore probe progress. Final records are
+[archived](geometry-completion-records.json).
+
+The [history analysis](geometry-history-analysis.json) validates all 320
+candidates and immutable calibration locks. Two-scale reference HVP checks
+pass the unchanged 2% threshold; symmetry discrepancies are below 7e-10.
+All 32 saved-history baseline candidates reproduce the earlier power study's
+norms, alignment, curvature, calibration curves, chosen lengths, evaluation
+losses and realized displacement norms exactly. Timings are excluded from
+that [reproduction check](geometry-history-baseline-validation.json).
+
+At equal physical length, replacing momentum reverses the quarter-minus-eighth
+loss gap at both checkpoints in both independent histories and their raw pool.
+For pooled fresh momentum with saved Grams, the gaps are +5,103.52
+[+4,742.21, +5,522.16] and +4,388.04 [+3,724.62, +5,188.66] millionths at
+eighth-middle and quarter-middle. Saved-history gaps were -282.57 and
+-1,291.92. Replacing only Grams retains a negative equal-length gap.
+
+Separately calibrating lengths changes the fresh-momentum conclusion. The
+same pooled conditions give -6,365.99 [-6,665.96, -6,104.23] and -7,401.66
+[-8,085.82, -6,856.40] millionths. All fresh-momentum conditions favor quarter
+under this rule, but all 96 quarter-power choices in those conditions reach
+4r. Eight other choices are zero; 216 are interior. These results compare the
+prespecified bounded search, not unconstrained optimal lengths.
+
+Two independent histories reproduce the main sign reversal. Pooling changes
+the gap further because the optimizer map is nonlinear. Conditional intervals
+resample update draws and evaluation groups, keeping the histories and
+calibration fixed. The three Gram-only nominal reversals after calibration at
+eighth-middle have intervals including zero. All twelve momentum-related
+equal-length reversals have intervals excluding zero. These observations
+trigger the proposed matched moving-versus-frozen replay; they do not identify
+parameter-history lag without that replay. This checkpoint-first report does
+not include a new training continuation or independent-seed replication.
+
+Three geometry-analysis tests passed in 4.38 seconds. The report adds the
+history equal-length and calibrated-length figures, boundary counts, paired
+replica/pool contrasts and a next-experiment rationale. A context-free cold
+reader checked the full draft. Local edits clarified native updates, the
+Gram/momentum transformation, the envelope quadratic form, Muon's Adam
+parameter groups and completed-study tense.
+
+Final delivery validation: 36 PDF pages, 13 embedded figures and 22 navigable
+sections. All 4,664 CSV rows reproduce their raw weighted held-out differences
+and quadratic predictions within 1e-12; all 387 evidence hashes match. Browser
+checks passed text resizing, spacing, section navigation, figure enlargement,
+17 local data links and mobile layout without page overflow or script errors.
+Rendered title, history tables/figures and closing limitations were inspected.

@@ -275,6 +275,18 @@ def analyze_history(directory):
         change_from_saved=history_effects,
         replica_comparisons=replica_comparisons,
         nominal_ranking_reversals=reversals,
+        calibrated_length_diagnostics=[
+            dict(
+                condition=condition,
+                alpha=alpha,
+                zero_steps=sum(rows[d, condition, alpha]["direct_step"] == 0 for d in range(8)),
+                maximum_radius_steps=sum(rows[d, condition, alpha]["direct_step"] == result["radius"] for d in range(8)),
+                minimum_length=min(rows[d, condition, alpha]["direct_step"] for d in range(8)),
+                maximum_length=max(rows[d, condition, alpha]["direct_step"] for d in range(8)),
+            )
+            for condition in names
+            for alpha in (0.125, 0.25)
+        ],
         matched_replay_needed=bool(reversals),
         replay_scope="A reversal triggers matched moving-versus-frozen replay; it does not establish temporal lag",
         independence="Conditional checkpoint uncertainty; fresh histories and update draws are not training seeds",
