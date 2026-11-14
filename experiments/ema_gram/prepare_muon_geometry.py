@@ -71,7 +71,10 @@ def main():
     ):
         prefix = f"checkpoints/speedrun/qwen3_300m_error_aware_muon_{policy}_lr0p012/{version}"
         artifact_bytes = client.bucket("marin-us-central1").blob(prefix + "/.artifact.json").download_as_bytes()
-        original = json.loads(artifact_bytes)["config"]["train_config"]
+        artifact = json.loads(artifact_bytes)
+        original = artifact["config"]["train_config"]
+        if index < 2 and (artifact["provenance"]["base_commit"] != "7cd118640" or artifact["provenance"]["dirty"]):
+            raise ValueError("Unexpected legacy Muon checkpoint provenance")
         encoded = decode_legacy_config(original)
         checkpoint = "gs://marin-us-central1/" + prefix + "/checkpoints/step-11443"
         identity = checkpoint_identity(checkpoint)
@@ -86,12 +89,17 @@ def main():
         states.append(
             dict(
                 state=label,
+                checkpoint_schema="momentum_only_7cd118640" if index < 2 else "counter_fffd6a64",
                 config_index=index,
                 checkpoint=checkpoint,
                 expected_counter=11444,
                 checkpoint_manifest_sha256=identity["object_manifest_sha256"],
             )
         )
+        if index < 2:
+            states[-1]["archived_training_provenance"] = {
+                key: artifact["provenance"][key] for key in ("base_commit", "tree_hash", "dirty")
+            }
     protocol = dict(
         request_sha256="e8ea0a67f7746a7a41a49f96d8a83e3bf9190d824da59a21284cd5a776e27ef8",
         experiment="Muon frozen-checkpoint comparisons",
@@ -126,6 +134,11 @@ def main():
         ),
         interpretation="Four update batches per checkpoint are not independent training seeds",
         training="No training; restore full saved state and advance moments once per fresh update batch",
+        schema_migration=(
+            "July plain/blend states contain all original arrays but no later-added correction counter. "
+            "Strictly restore original schema; require saved step, optimizer, Adam and schedule counts to agree; "
+            "copy that count into the new field. No partial load or zero reset."
+        ),
     )
     for name, data in (
         ("geometry-muon-configs.json", configs),

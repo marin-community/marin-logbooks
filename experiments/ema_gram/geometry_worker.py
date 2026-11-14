@@ -29,6 +29,7 @@ from rigging.secrets import require_secret
 from experiments.ema_gram.geometry_data import checkpoint_identity, geometry_data
 from experiments.ema_gram.history_comparison import run_history_comparison
 from experiments.ema_gram.matrix_envelope import run_matrix_envelope
+from experiments.ema_gram.muon_checkpoint import restore_muon_checkpoint
 from experiments.ema_gram.muon_geometry import run_muon_geometry
 from experiments.ema_gram.muon_geometry_updates import momentum_state
 from experiments.ema_gram.power_prediction import run_power_prediction
@@ -151,9 +152,13 @@ def main():
             if checkpoint_record["object_manifest_sha256"] != spec["checkpoint_manifest_sha256"]:
                 raise ValueError("Checkpoint storage identity changed after protocol freeze")
             save("checkpoint-identity.json", checkpoint_record)
-            state = load_checkpoint(
-                template, spec["checkpoint"], axis_mapping=cfg.trainer.parameter_axis_mapping, allow_partial=False
-            )
+            if args.experiment == "muon":
+                state, schema_record = restore_muon_checkpoint(template, spec, cfg.trainer.parameter_axis_mapping)
+                save("restore-schema.json", schema_record)
+            else:
+                state = load_checkpoint(
+                    template, spec["checkpoint"], axis_mapping=cfg.trainer.parameter_axis_mapping, allow_partial=False
+                )
             if int(state.step) != spec["expected_counter"]:
                 raise ValueError("Complete checkpoint restore counter mismatch")
             if args.experiment == "muon":

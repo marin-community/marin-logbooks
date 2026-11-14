@@ -4429,3 +4429,32 @@ rejects an altered calibrated step after the prediction lock. Five tests passed
 in 28.81 seconds; formatting and lint passed. A metadata-only lookup found no
 existing us-central1 mirror of either middle 447M checkpoint. No large files
 were transferred and the queued us-central2 jobs remain intact.
+
+## 2026-11-14 — Muon restore failure and explicit July schema migration
+
+The first Muon worker failed before measuring a direction. Its durable failure
+record reports one missing array: the correction-warmup counter in the matrix
+optimizer state. The scheduler separately recorded a worker reconciliation
+failure and counted a preemption, leaving the task queued for automatic retry.
+The durable application error takes precedence for research recovery. Cancelled
+this exact job at 08:48:49 UTC under the standing instruction to stop when an
+expected checkpoint cannot be restored. Default preemption settings were not
+changed. No training or measurement progress was restored, and no model/moment
+buffer was reset. The measurement W&B URL is
+https://wandb.ai/marin-community/marin/runs/ema-gram-geometry-259a8ecf2ccb.
+
+Archived provenance identifies both July plain and blend runs as clean source
+7cd118640, tree 59c8087ab. That source's Muon state has only momentum_buffer.
+The pinned later source adds a counter used solely to gate correction warmup.
+All saved arrays are present for the original schema. Added an explicit schema
+choice for these two archived inputs, with no broad missing-key fallback.
+Restore the old schema strictly, require saved trainer, optimizer, Adam and
+learning-rate/decay schedule counters to agree, then copy that saved optimizer
+count into the later-added field. The pinned optimizer source remains unchanged.
+
+A local tiny-model OCDBT test reproduces the missing-counter failure with the
+new template, restores the old schema, and checks every array and the next
+update exactly against the original state. It also rejects inconsistent saved
+counters. The test passed in 5.13 seconds. This validates the migration logic,
+not restoration of the 300M checkpoint. A fresh attempt must record the schema
+conversion and pass the full original numerical gates before producing results.

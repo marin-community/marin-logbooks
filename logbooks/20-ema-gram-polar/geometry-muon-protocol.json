@@ -7,21 +7,34 @@
       "config_index": 0,
       "checkpoint": "gs://marin-us-central1/checkpoints/speedrun/qwen3_300m_error_aware_muon_muon_lr0p012/2026.07.23.4/checkpoints/step-11443",
       "expected_counter": 11444,
-      "checkpoint_manifest_sha256": "1da4b5f509c36fc61e5c110e3808bda2d7ae451ab7bbac1a5a11499d2c1e6cdb"
+      "checkpoint_manifest_sha256": "1da4b5f509c36fc61e5c110e3808bda2d7ae451ab7bbac1a5a11499d2c1e6cdb",
+      "checkpoint_schema": "momentum_only_7cd118640",
+      "archived_training_provenance": {
+        "base_commit": "7cd118640",
+        "tree_hash": "59c8087ab",
+        "dirty": false
+      }
     },
     {
       "state": "muon-blend-final",
       "config_index": 1,
       "checkpoint": "gs://marin-us-central1/checkpoints/speedrun/qwen3_300m_error_aware_muon_blend-g0p05_lr0p012/2026.07.23.4/checkpoints/step-11443",
       "expected_counter": 11444,
-      "checkpoint_manifest_sha256": "2d428ba540fe63ea15afa788ffd093d68f76faeea32caf1d59c364fb9a2de63f"
+      "checkpoint_manifest_sha256": "2d428ba540fe63ea15afa788ffd093d68f76faeea32caf1d59c364fb9a2de63f",
+      "checkpoint_schema": "momentum_only_7cd118640",
+      "archived_training_provenance": {
+        "base_commit": "7cd118640",
+        "tree_hash": "59c8087ab",
+        "dirty": false
+      }
     },
     {
       "state": "muon-hesscorr-final",
       "config_index": 2,
       "checkpoint": "gs://marin-us-central1/checkpoints/speedrun/qwen3_300m_error_aware_muon_hesscorr-g0p3_lr0p012/2026.08.28.3/checkpoints/step-11443",
       "expected_counter": 11444,
-      "checkpoint_manifest_sha256": "2f1582f9df8c97da8aa1027b8060a157615d3b80d9f30e93de117dcdf54a41ec"
+      "checkpoint_manifest_sha256": "2f1582f9df8c97da8aa1027b8060a157615d3b80d9f30e93de117dcdf54a41ec",
+      "checkpoint_schema": "counter_fffd6a64"
     }
   ],
   "optimizer_source": "fffd6a64ce81722f44d02d754db7c4778e0a5be5",
@@ -92,5 +105,6 @@
   ],
   "reference_objective": "FP32 vanilla CE plus1e-7z-loss, excluding decay; native gradient retains archived objective",
   "interpretation": "Four update batches per checkpoint are not independent training seeds",
-  "training": "No training; restore full saved state and advance moments once per fresh update batch"
+  "training": "No training; restore full saved state and advance moments once per fresh update batch",
+  "schema_migration": "July plain/blend states contain all original arrays but no later-added correction counter. Strictly restore original schema; require saved step, optimizer, Adam and schedule counts to agree; copy that count into the new field. No partial load or zero reset."
 }
