@@ -1,0 +1,137 @@
+{
+  "request_sha256": "e8ea0a67f7746a7a41a49f96d8a83e3bf9190d824da59a21284cd5a776e27ef8",
+  "states": [
+    {
+      "state": "eighth-early",
+      "config_index": 0,
+      "trajectory": 0.125,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.125-seed0-62811d347d39/2026.11.06.02/checkpoints/step-3733",
+      "expected_counter": 3734,
+      "middle": false,
+      "double_reference": false,
+      "checkpoint_manifest_sha256": "4ce0dfb03c94d3fe1ac23e9fc43438f0b82d692f4d5d4447f54fdd3d573f87f5"
+    },
+    {
+      "state": "eighth-middle",
+      "config_index": 0,
+      "trajectory": 0.125,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.125-seed0-62811d347d39/2026.11.06.02/checkpoints/step-18665",
+      "expected_counter": 18666,
+      "middle": true,
+      "double_reference": true,
+      "checkpoint_manifest_sha256": "069efa5f546f5479d8deedcf166c5a46ac9b92aba38b64af0d06783d7d3745d9"
+    },
+    {
+      "state": "eighth-late",
+      "config_index": 0,
+      "trajectory": 0.125,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.125-seed0-62811d347d39/2026.11.06.02/checkpoints/step-33597",
+      "expected_counter": 33598,
+      "middle": false,
+      "double_reference": false,
+      "checkpoint_manifest_sha256": "6f28635ee756fd512b6acd2122c44250271c75103cd8119647b13d2fc970ecc0"
+    },
+    {
+      "state": "quarter-early",
+      "config_index": 1,
+      "trajectory": 0.25,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-3732",
+      "expected_counter": 3733,
+      "middle": false,
+      "double_reference": false,
+      "checkpoint_manifest_sha256": "4553434629033b71fe3e4e2c44ffc7a5853df982824a14f209a6210940a0d107"
+    },
+    {
+      "state": "quarter-middle",
+      "config_index": 1,
+      "trajectory": 0.25,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-18664",
+      "expected_counter": 18665,
+      "middle": true,
+      "double_reference": false,
+      "checkpoint_manifest_sha256": "e4193f6f867dcfaec315a0dd3f52083abda4ac7a7462db2c8086d09c617f8501"
+    },
+    {
+      "state": "quarter-late",
+      "config_index": 1,
+      "trajectory": 0.25,
+      "checkpoint": "gs://marin-us-central2/ema-gram-confirmation-3e18-a0.25-seed0-7bd283cb8684/2026.11.06.02/checkpoints/step-33596",
+      "expected_counter": 33597,
+      "middle": false,
+      "double_reference": false,
+      "checkpoint_manifest_sha256": "98fd20b0f207e5250a891db557b3e11a02cb132dfaf03faf0ba7d4da773935ba"
+    }
+  ],
+  "priority": "Checkpoint experiments1 and2 before history/Muon controls and training",
+  "seeds": {
+    "calibration": 202611130,
+    "evaluation": 202611131,
+    "update": 202611132,
+    "probe": 202611133,
+    "rotation": 202611134
+  },
+  "panels": {
+    "calibration_sequences": 64,
+    "evaluation_sequences": 128,
+    "update_draws": 8,
+    "sequences_per_update": 8,
+    "sequence_length": 4096,
+    "paired_across_states": true,
+    "exclusions": "Prior160 study sequences and all overlaps among new roles; original training exposure not excluded"
+  },
+  "powers": [
+    0.125,
+    0.1875,
+    0.25
+  ],
+  "length_grid": [
+    0,
+    0.1,
+    0.3,
+    0.6,
+    1,
+    2,
+    4
+  ],
+  "refinement": "One round: midpoints to both adjacent grid points around an interior winner; deterministic smaller-length ties",
+  "radius": "4 times median native eighth-power norm across eight draws at each checkpoint",
+  "comparators": "Fixed eighth, fixed quarter, maximum initial alignment, maximum bounded quadratic predicted decrease. Compare all selectors both at directly calibrated lengths and quadratic-optimal lengths; also report native and equal-r curves. Lock all actions before any evaluation-panel loss.",
+  "matrix_screen": {
+    "blocks": [
+      "layer0 attention query",
+      "layer0 MLP gate"
+    ],
+    "calibration_probes": 8,
+    "test_probes": 8,
+    "fit": "Nonnegative coefficients shared across both middle checkpoints for each block type; minimize mean projected trace subject to both signed semidefinite calibration constraints",
+    "controls": [
+      "L0+c||G||F\u00b2 scalar",
+      "L0+cL GG^T left +cR G^TG right",
+      "independently rotated G preserving singular values"
+    ],
+    "path_gate": "At least5percent smaller calibration mean trace than scalar; fixed coefficients and anchors; do not select by test outcomes"
+  },
+  "numerical_gates": {
+    "hvp_relative_error": 0.02,
+    "consecutive_fd_scales": 2,
+    "symmetry_relative_error": 0.0001,
+    "alpha_fd_steps": [
+      0.01,
+      0.003,
+      0.001,
+      0.0005,
+      0.0003,
+      0.0001,
+      3e-05
+    ]
+  },
+  "training": "No training in first stage. Any later continuation requires complete durable state and verified interruption/resume test, online W&B and default preemption retries.",
+  "derivative_identity": "FP32 normalized complete update; fixed physical length selected on same calibration objective; forward JVP versus reverse-gradient chain rule. Does not claim derivative of reoptimized length.",
+  "tracking": {
+    "entity": "marin-community",
+    "project": "ema-gram-geometry",
+    "mode": "online",
+    "owner": "JAX process 0 for measurements; Iris task 0 for CPU logging preflight",
+    "restart_policy": "fresh run per process attempt; no training resume claimed"
+  }
+}

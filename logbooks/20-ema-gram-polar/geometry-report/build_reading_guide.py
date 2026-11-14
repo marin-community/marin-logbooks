@@ -55,6 +55,15 @@ def export_candidates(root, output):
                             observed_loss_change=evaluation["loss_change"],
                             native_update_norm=row.get("native_norm", row.get("reference_update_norm")),
                             native_update_seconds=row.get("native_seconds", ""),
+                            native_timing_scope=(
+                                "Unavailable in this run"
+                                if "native_seconds" not in row
+                                else {
+                                    "power": "Synchronized update and norm; may include compilation",
+                                    "history": "Update/state/norm; may include pending gradient and compilation",
+                                    "muon": "Update, norm and variant diagnostics; may include compilation",
+                                }[experiment]
+                            ),
                             gradient_seconds=row.get("gradient_seconds", ""),
                             run_completed_successfully=True,
                             raw_result="data/raw/" + source.relative_to(root).as_posix(),

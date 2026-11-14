@@ -8,11 +8,11 @@ This report follows the experiment request dated 13 November 2026. It extends th
 
 **The first power checkpoint, all Muon comparisons and the matrix-envelope test screens are complete. The remaining power checkpoints and history comparisons are unfinished. Both fixed-coefficient path tests are complete.**
 
-The corrected power pilot completed all numerical checks and held-out evaluations. At this checkpoint, curvature-based power selection improved mean loss slightly beyond alignment-based selection after both calibrated their step lengths. Its uncertainty interval includes zero. Five more checkpoints have been submitted.
+All three eighth-trained checkpoints passed numerical checks and held-out evaluation. After length calibration, curvature selection improved on alignment selection at the early checkpoint; middle and late intervals included zero. It exactly matched fixed power 1/4 at all three. Three quarter-trained checkpoints remain in progress.
 
 All three Muon comparisons passed their numerical checks and evaluated 72 candidates in total. Every original-grid calibration chose zero length. At separately calibrated quadratic-model steps, feedback variants had less favorable measured mean changes than plain Muon at each checkpoint. These local differences are small. The smaller-grid supplement was registered before inspecting held-out outcomes. It is now complete at all three checkpoints: all 72 choices were nonzero, but the feedback methods still had less favorable means than plain Muon.
 
-Both matrix-envelope calibration screens and both separate test-direction screens completed with passing numerical checks. All three controls covered the tested subspaces. After a post-hoc comparison that equalizes the worst observed coverage ratio, the true gradient axes gave a modest attention improvement and a larger MLP improvement. The fixed-coefficient path checks also completed without a sampled violation. Fresh-history comparisons have been submitted.
+Both matrix-envelope calibration screens and both separate test-direction screens completed with passing numerical checks. All three controls covered the tested subspaces. After a post-hoc comparison that equalizes the worst observed coverage ratio, the true gradient axes gave a modest attention improvement and a larger MLP improvement. The fixed-coefficient path checks also completed without a sampled violation. Fresh-history comparisons are running.
 
 ## 1. Why do these experiments matter?
 
@@ -80,39 +80,53 @@ The model chooses its best action within a common bounded range, including the o
 
 A useful result would be a lower paired evaluation loss for the curvature-based choice than for the alignment-based choice. Good agreement between predicted and measured loss changes is a separate question; a predictor can be accurate without changing the preferred action.
 
-## First power result: the gain after step calibration remains uncertain
+## Power result: a clear early benefit, uncertain later benefits
 
-**At the first checkpoint, curvature changes the chosen power, but its extra benefit after each power calibrates its own length is uncertain.**
+**On the eighth-trained trajectory, curvature selection beats alignment selection at the early checkpoint. Its middle and late differences remain uncertain.**
 
-This pilot uses the middle checkpoint from the trajectory trained with power 1/8. All 24 candidate directions completed calibration and held-out evaluation. For each update draw, the normalized complete direction was differentiated with respect to the power at 3/16. All eight derivatives passed the two-scale finite-difference check. The reference Hessian-vector and symmetry checks also passed. On the first draw, a nonzero-step identity compared direct differentiation of the endpoint loss with the chain rule: minus step length times endpoint gradient dotted with the direction derivative. The two values differed by about 0.071%, with the calibrated length held fixed.
+All three checkpoints from this trajectory completed: 72 candidate directions in total. The quarter-trained trajectory is still running. These are stages of one training run, not three independent training seeds.
 
-For each power, the curvature rule maximizes its quadratic prediction over the bounded length interval, then selects the power with the largest predicted improvement. The selected power then receives a separately grid-calibrated length. All powers use the same calibration text; “separately” refers to their length choices.
+For each power, the curvature rule maximizes its quadratic prediction over the bounded length interval, then selects the power with the largest predicted improvement. The selected power receives a separately grid-calibrated length. All powers use the same calibration text; “separately” refers to their length choices.
 
-The curvature rule chose power 1/4 for all eight update draws. The alignment rule chose 1/8 seven times and 3/16 once. The rule that directly minimizes measured calibration loss also chose 1/4 eight times.
+The alignment rule chooses the power with the largest inner product ⟨g,d⟩, using the calibration gradient g and unit-normalized complete update d.
 
-With each chosen power receiving its own grid-calibrated step, the curvature rule's mean loss change was −371.49 millionths. The alignment rule's mean was −349.72 millionths. Their paired difference was **−21.77 millionths**, with conditional 95% interval **[−59.85, +16.07]**. Negative favors the curvature rule. The interval includes zero. This interval resamples eight update draws and 16 evaluation-text groups while retaining pairing; the checkpoint, calibration panel and locked selection rules remain fixed.
+The curvature rule chose power 1/4 on all 24 update draws across the three checkpoints. Direct minimization of calibration loss made the same choices. Alignment chose 1/8 on 22 draws, 3/16 once and 1/4 once.
 
-![The first checkpoint's curvature-minus-alignment mean is negative, but its conditional interval crosses zero.](power-figures/power-predictions-selection.png)
+The table compares held-out losses after each selected power calibrates its own length. Negative differences favor curvature selection. Values are **millionths of loss**.
 
-The curvature rule exactly matched fixed power 1/4 at this checkpoint. This pilot therefore does not demonstrate an advantage over always choosing 1/4. The remaining checkpoints test whether the useful choice changes across saved states.
-
-The same locked power choices can be evaluated under several length rules:
-
-| Length rule | Curvature minus alignment, millionths | Conditional 95% interval |
+| Eighth-trained checkpoint | Curvature minus alignment | Conditional 95% interval |
 | --- | ---: | ---: |
-| Each power calibrates its own length | -21.77 | [-59.85, +16.07] |
-| Every direction uses the same reference length r | -223.62 | [-337.69, -115.83] |
-| Each direction uses its native update length | -131.34 | [-201.76, -65.97] |
+| Early | -80.59 | [-137.97, -34.66] |
+| Middle | -21.77 | [-59.85, +16.07] |
+| Late | -20.59 | [-55.48, +14.52] |
 
-Here r is the median of eight native eighth-power update norms. The much larger equal-length difference becomes smaller when each power can choose its own useful length. A claim that curvature improves selection must specify this length rule.
+Only the early interval lies entirely below zero. Each interval resamples eight update draws and 16 evaluation-text groups while retaining pairing. The checkpoint, calibration panel and locked selection rules remain fixed. The intervals do not adjust for multiple comparisons.
 
-![Predicted and observed improvements for the 24 pilot candidates at their grid-calibrated lengths, with the diagonal denoting equal values.](power-figures/power-predictions-prediction.png)
+![Curvature-minus-alignment differences at three checkpoints. The early interval lies below zero; middle and late intervals cross zero.](power-figures/power-predictions-selection.png)
 
-Each dot represents one update draw and one candidate power. A dot above the diagonal means the measured held-out improvement exceeded the calibration-based quadratic prediction. This comparison combines quadratic-model error and differences between the calibration and evaluation text. It does not isolate either source of mismatch.
+**Curvature exactly matched fixed power 1/4 at all three checkpoints.** These results do not establish a benefit from adaptive selection over always choosing 1/4. The remaining trajectory tests whether the useful choice changes across other saved states.
 
-Earlier attempts ran out of accelerator memory. The successful implementation reduces the lifetime of temporary Hessian-vector buffers. Its first process was preempted; the successful retry restored the saved training checkpoint and restarted probe measurements. Partial attempts remain in the evidence archive. Isolated native-update timing was unavailable in this pilot; later power jobs record it separately.
+At equal physical length r, the same locked choices gave larger curvature-minus-alignment differences. Values remain in millionths of loss.
 
-[Validated pilot analysis](../geometry-power-analysis.json) · [Numerical checks](../geometry-power-numerical-validation.json)
+| Eighth-trained checkpoint | Difference at equal length | Conditional 95% interval |
+| --- | ---: | ---: |
+| Early | -387.94 | [-623.79, -176.09] |
+| Middle | -223.62 | [-337.69, -115.83] |
+| Late | -96.85 | [-164.24, -27.72] |
+
+All three intervals were below zero. Here r is the median native eighth-power norm at that checkpoint. The difference is smaller when every power can choose its own useful length; the length rule changes the scientific conclusion.
+
+![Predicted and observed improvements for 72 candidates across the three eighth-trained checkpoints at their grid-calibrated lengths.](power-figures/power-predictions-prediction.png)
+
+Each dot represents one checkpoint, one update draw and one candidate power. The diagonal marks equal predicted and observed improvement. A dot above it means the measured held-out improvement exceeded the calibration-based quadratic prediction. This comparison combines quadratic-model error and differences between calibration and evaluation text. It does not isolate either source.
+
+Every derivative of the normalized complete update with respect to the power exponent, evaluated at 3/16, passed two-scale finite differences: eight per checkpoint, 24 total. Reference Hessian-vector and symmetry checks also passed. On the first draw of each checkpoint, direct differentiation of endpoint loss with respect to the power exponent agreed with the endpoint-gradient chain rule at a fixed nonzero calibrated length. Relative discrepancies were 0.0125%, 0.0713% and 0.0067% for early, middle and late.
+
+The early checkpoint chose zero calibrated length for two of its 24 candidates; the other 70 candidates across all three checkpoints chose interior lengths. None chose the maximum radius. Zero is an allowed decision when every tested nonzero move raises calibration loss.
+
+Earlier pilot attempts ran out of accelerator memory. The corrected implementation reduces temporary Hessian-vector buffer lifetimes. The middle pilot was preempted once; its successful retry restored the training checkpoint and restarted probe measurements. Early and late completed without preemption. Partial attempts remain in the archive. Isolated native-update timing was unavailable in the middle pilot; early and late record it separately.
+
+[Validated power analysis](../geometry-power-analysis.json) · [Numerical checks for all completed checkpoints](../geometry-power-all-numerical-validation.json)
 
 ## 5. Experiment 2: does matrix orientation improve a curvature bound?
 
@@ -156,7 +170,7 @@ Those large differences partly reflect different amounts of unused slack. To com
 
 ![After post-hoc rescaling to a maximum test score of one, the true-gradient envelope is 0.94 times the scalar size for attention and 0.20 times for MLP. Rotated controls are larger.](envelope-figures/envelope-orientation-tightness.png)
 
-A ratio below one means a smaller envelope than the scalar control after this matching. The true-gradient ratios were 0.942 for attention and 0.199 for MLP: about 6% and 80% smaller. The rotated-axis ratios were 1.086 and 9.754.
+A ratio below one means a smaller envelope than the scalar control after this matching. The true-gradient ratios were 0.942 for attention and 0.199 for MLP: about 6% and 80% smaller. The rotated-axis ratios were 1.086 and 9.754. Each checkpoint/block uses one prespecified random rotation. These results do not measure variation across many rotations.
 
 **This rescaling uses test results.** It is a description of relative shape and slack, not another independently tested bound. The path experiments retain the original frozen coefficients. No claim of uniform full-network coverage follows from these sampled block tests.
 
@@ -168,7 +182,11 @@ A ratio below one means a smaller envelope than the scalar control after this ma
 
 Each of the two checkpoints contributes an attention-query block and an MLP-gate block. For each block, the experiment tests the starting parameters, then the midpoint and endpoint of both power-1/8 and power-1/4 block moves. Both moves have the same physical length: the native eighth-power block norm from the prespecified first update draw. Only that block moves; other parameters stay fixed.
 
-This gives five points per block, or 20 block/parameter points overall. The four fixed anchors are an orthonormal basis built from the two optimizer directions and the fifth and sixth singular-vector matrix directions of the starting gradient. They were fixed before measuring path responses. Starting responses are reused from the test screen; 64 additional Hessian-vector products measure the nonzero points. Finite differences check two of the four anchors at each new point. Every check passed two consecutive perturbation scales below 2%, and the largest symmetry discrepancy was about 0.00000046.
+This gives five points per block, or 20 block/parameter points overall.
+
+The four fixed anchors are an orthonormal basis built from the two optimizer directions and the fifth and sixth singular-vector matrix directions of the starting gradient. They were fixed before measuring path responses.
+
+Starting responses are reused from the test screen; 64 additional Hessian-vector products measure the nonzero points. Finite differences check two of the four anchors at each new point. Every check passed two consecutive perturbation scales below 2%, and the largest symmetry discrepancy was about 0.00000046.
 
 All path gradients, Hessians and loss remainders use the same 64-sequence calibration text panel. The separate test screen holds out directions, not text.
 
@@ -201,7 +219,9 @@ At each middle checkpoint, the planned experiment compares four combinations:
 
 All other optimizer state stays fixed. The same new update batch is incorporated once in every condition.
 
-Two independent histories, each containing 512 batches of eight sequences at fixed model weights, test how much the result depends on the sampled history. The batch size matches the saved-state training configuration; this test does not change it. We also average the two histories before rescaling their statistics or adding the small diagonal stabilizer called a ridge. This checks sensitivity to the sampled history without changing the gradient batch size.
+Two independent histories, each containing 512 batches of eight sequences at fixed model weights, test how much the result depends on the sampled history. The batch size matches the saved-state training configuration; this test does not change it. The fresh raw momentum and Gram buffers start at zero. Their original averaging factors are 0.95 and 0.99. After 512 batches, the remaining weight on initialization is negligible for momentum and about 0.58% for the Grams.
+
+We also average the two histories before rescaling their statistics or adding the small diagonal stabilizer called a ridge. This checks sensitivity to the sampled history without changing the gradient batch size.
 
 If replacing history reverses the power ranking, a later matched replay would compare histories built at moving versus fixed parameters using the same text and temporal weights. That replay has not run. A training continuation would require complete durable checkpoint restoration and online tracking.
 
@@ -348,12 +368,14 @@ Candidates share evaluation text. Their differences should therefore be analyzed
 
 The intervals are conditional on the chosen checkpoints, calibration panel and selection rules. They do not include uncertainty from a new training seed or a different calibration procedure.
 
+Recorded update times are diagnostic wall times. They can include compilation, norm calculations and variant checks. History timings can also include a pending gradient calculation. The CSV labels each timing scope; missing pilot timings stay blank. These measurements are not a controlled throughput benchmark.
+
 A failed numerical check means that the corresponding measurement is not accepted for scientific comparison. It does not show that the optimizer is ineffective. A job that runs out of memory likewise says nothing about which optimizer has lower loss.
 
 ## 9. What remains before a mechanism can be selected?
 
 **The first priority is valid checkpoint evidence for power prediction and matrix orientation.**
 
-The power pilot passed its numerical checks and held-out evaluation. The remaining five checkpoints and the two history comparisons must complete before a cross-checkpoint conclusion. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. The fixed-coefficient path measurements also passed at the sampled points after parameter movement.
+The three eighth-trained checkpoints passed numerical checks and held-out evaluation. The three quarter-trained checkpoints and two history comparisons must complete before the full planned comparison. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. The fixed-coefficient path measurements also passed at the sampled points after parameter movement.
 
 Only after these comparisons can the report support selecting a mechanism for matched training continuations. Full training claims and independent-seed replication are outside the completed evidence at this stage.

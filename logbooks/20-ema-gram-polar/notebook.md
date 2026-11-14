@@ -4966,3 +4966,33 @@ certify the full Hessian or a bound between sampled points. The report now
 includes a path figure, standalone editable figure exports and a hashed CSV
 index. Browser checks passed text resizing, spacing, section focus, figure
 zoom and mobile layout without horizontal page overflow.
+
+
+At 12:55 UTC, the eighth-trained early and late power jobs were verified
+successful on all four tasks, with zero failures or preemptions and five W&B
+files synced each. They complete the three-checkpoint eighth-trained trajectory.
+All 72 candidates passed calibration-lock checks; all 24 power tangents passed
+two-scale finite differences. First-draw fixed-step identity errors were
+0.0125%, 0.0713% and 0.0067% at early, middle and late checkpoints.
+
+The extended [power analysis](geometry-power-analysis.json) gives paired
+curvature-minus-alignment differences after length calibration of -80.59,
+-21.77 and -20.59 millionths. Their conditional 95% intervals are
+[-137.97, -34.66], [-59.85, +16.07] and [-55.48, +14.52]. Only the early
+interval excludes zero; these are unadjusted checkpoint-conditional intervals.
+Curvature selected quarter power on all 24 update draws, exactly matching
+fixed quarter. The completed evidence therefore does not show a benefit from
+adaptive selection over that fixed comparator.
+
+Quarter-early was preempted once without an application failure. Its first
+measurement e42b5b6a8536 remains archived with 14 calibrated candidates. Retry
+cdfaba05e954 restored training counter 3733 and restarted probe work. The
+other two quarter power jobs and both history comparisons are running.
+Both history jobs had reached their second independent 512-batch replica
+by 12:56 UTC. No training continuation has been launched.
+
+The report now states history initialization and the one-rotation scope of the
+envelope control. CSV timing-scope labels distinguish synchronized power
+updates from history timings that may include pending gradients. All 2,064
+previously exported candidate loss changes and predictions reproduced from
+raw weighted group losses and quadratic coefficients.
