@@ -4265,3 +4265,21 @@ unavailable), including CLI submission, remote routing, job metadata, RPC
 errors, termination grace and all five geometry/reference tests. A fresh
 attempt will reference the published upgraded source and retain attempt01's
 rejection evidence. No job runtime or queue limits are added.
+
+## 2026-11-13 — First accepted geometry submission and envelope fitter
+
+Attempt02 was accepted at2026-11-14T07:42:40UTC on source`dfdd3e4bc`.
+Canonical job:`/kaiyuew@stanford.edu/ema-gram-geometry-power-eighth-middle-20261113-02`.
+It requests a v4-32 slice (four coscheduled workers). Initial readback is
+pending with no application failures. This is submission success, not an
+experiment result. Exact command and submission response are archived separately.
+
+The local matrix-envelope fitter uses CVXPY1.9.3/CLARABEL and solves both signed
+semidefinite constraints with shared coefficients across the two middle states.
+It minimizes equal-state mean projected trace, scales the SDP numerically,
+requires a positive intercept, and records any tiny conservative feasibility
+padding. Only completed numerically validated calibration screens are accepted.
+Frozen plans cannot be overwritten. An analytic two-state anisotropic problem
+recovers the known coefficients, covers both full subspaces, and improves over
+the scalar baseline; an off-diagonal violation test also passes. No actual
+checkpoint fit has been computed yet.
