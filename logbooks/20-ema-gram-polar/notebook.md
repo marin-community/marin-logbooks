@@ -4245,3 +4245,23 @@ attempt writes a separate evidence identity; frozen-probe restarts are not
 claimed as resumed training. Any later training continuation must first pass
 full durable-checkpoint interruption/resume validation under the latest user
 instructions.
+
+## 2026-11-13 — Iris compatibility rejection and scoped dependency upgrade
+
+The first submission (`geometry-power-eighth-middle-launch.json`, attempt01,
+source84756857e) was rejected by the controller before launching any TPU task.
+Its Iris build was2026-10-29, older than the accepted2026-10-30 minimum for the
+2026-11-13 controller. No scientific measurement or training occurred.
+
+Upgrade Iris Python source and its matching tests to the coherent upstream
+`c0d96396f` tree (2026-11-05), including generated RPC bindings and preemption
+handling. This is a client/bundled-runtime dependency update, not a controller
+or cluster deployment. Runtime dependencies are unchanged upstream; retain the
+existing dependency lock and omit the unrelated optional notebook-exporter
+minimum-version change. Regenerated protobuf bindings match that upstream tree.
+No compatibility check or date override is bypassed. Scientific source and
+protocol are unchanged. Validation:80passed,3skipped (native Finelog fixtures
+unavailable), including CLI submission, remote routing, job metadata, RPC
+errors, termination grace and all five geometry/reference tests. A fresh
+attempt will reference the published upgraded source and retain attempt01's
+rejection evidence. No job runtime or queue limits are added.

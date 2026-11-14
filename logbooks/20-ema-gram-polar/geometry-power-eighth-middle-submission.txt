@@ -1,0 +1,77 @@
+I20261113 23:34:54 8480104832 iris.cli.main Resolved cluster 'marin' to config: /Users/kaiyuew/Downloads/Project/hessian-probing/code/marin/lib/iris/config/marin.yaml
+I20261113 23:34:54 8480104832 iris.cluster.config Loading config from /Users/kaiyuew/Downloads/Project/hessian-probing/code/marin/lib/iris/config/marin.yaml
+I20261113 23:34:54 8480104832 iris.cli.job Multinode TPU 'v4-32' detected (vm_count=4). Auto-setting replicas=4 and coscheduling by tpu-name.
+I20261113 23:34:54 8480104832 iris.cli.job Submitting job: ema-gram-geometry-power-eighth-middle-20261113-01
+I20261113 23:34:54 8480104832 iris.cli.job Command: python -m experiments.ema_gram.run_geometry --configs logbooks/20-ema-gram-polar/hessian-aligned-configs.json --protocol logbooks/20-ema-gram-polar/geometry-protocol.json --exclusions logbooks/20-ema-gram-polar/geometry-excluded-sequences.json --state eighth-middle --experiment power --output-prefix gs://marin-us-central2/ema-gram-20-geometry/20261113/power/eighth-middle
+I20261113 23:34:54 8480104832 iris.cli.job Resources: cpu=120, memory=256GB, disk=50GB
+I20261113 23:34:54 8480104832 iris.cli.job TPU: v4-32
+I20261113 23:34:54 8480104832 iris.cli.job Replicas: 4
+I20261113 23:34:54 8480104832 iris.cli.job Coscheduling: group_by=tpu-name
+I20261113 23:34:54 8480104832 iris.cli.job Region constraint: us-central2
+I20261113 23:34:54 8480104832 iris.cli.job Using controller: https://iris.oa.dev
+I20261113 23:34:54 8480104832 iris.cli.job Priority band: batch
+I20261113 23:34:56 8480104832 iris.cluster.client.remote_client Workspace bundle size: 16.1 MB
+Not all requested scopes were granted by the authorization server, missing scopes email.
+Traceback (most recent call last):
+  File "/Users/kaiyuew/Downloads/Project/hessian-probing/code/marin/.venv/bin/iris", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/cli/main.py", line 289, in main
+    iris()
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/click/core.py", line 1485, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/click/core.py", line 1406, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/click/core.py", line 1873, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/click/core.py", line 1873, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/click/core.py", line 1269, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/click/core.py", line 824, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/click/decorators.py", line 34, in new_func
+    return f(get_current_context(), *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/cli/job.py", line 1144, in run
+    exit_code = run_iris_job(
+                ^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/cli/job.py", line 706, in run_iris_job
+    return _submit_and_wait_job(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/cli/job.py", line 782, in _submit_and_wait_job
+    job = client.submit(
+          ^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/client/client.py", line 1085, in submit
+    canonical_id = self._cluster_client.submit_job(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/cluster/client/remote_client.py", line 229, in submit_job
+    response = call_with_retry(f"launch_job({job_id})", _call)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/rpc/errors.py", line 201, in call_with_retry
+    return retry_with_backoff(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/rigging/src/rigging/timing.py", line 620, in retry_with_backoff
+    return call_fn()
+           ^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/cluster/client/remote_client.py", line 227, in _call
+    return self._client.launch_job(request, timeout_ms=launch_timeout_ms)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/lib/iris/src/iris/rpc/controller_connect.py", line 1540, in launch_job
+    return self.execute_unary(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/connectrpc/_client_sync.py", line 210, in execute_unary
+    return self._execute_unary(request, ctx)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/connectrpc/_interceptor_sync.py", line 171, in intercept_unary_sync
+    return call_next(request, ctx)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiyuew/Downloads/Project/marin/ema-gram-hessian-20261110/.venv/lib/python3.12/site-packages/connectrpc/_client_sync.py", line 334, in _send_request_unary
+    raise ConnectWireError.from_response(resp).to_exception()
+connectrpc.errors.ConnectError: marin-iris client is too old: your build is 2026-10-29, this controller runs 2026-11-13, and the oldest client accepted is 2026-10-30 (14 days). A build date is the last commit touching lib/iris. From a checkout, merge or rebase onto a newer main; from an installed marin-iris, upgrade it and re-run `uv sync`.
