@@ -5,6 +5,7 @@
 
 import hashlib
 import json
+import time
 
 import equinox as eqx
 import jax
@@ -71,9 +72,17 @@ def run_muon_geometry(
         start = draw * microbatches
         batches = panels["update"][start : start + microbatches]
         draw_weights = weights["update"][start : start + microbatches]
+        gradient_started = time.perf_counter()
         losses, grad = weighted_gradient(native_model, batches, draw_weights, native_grad)
+        gradient_seconds = time.perf_counter() - gradient_started
+        plain_started = time.perf_counter()
         plain, post = updates["muon"](grad, state.opt_state, eqx.filter(native_model, eqx.is_inexact_array))
+        jax.block_until_ready(plain)
+        plain_seconds = time.perf_counter() - plain_started
+        tangent_started = time.perf_counter()
         tangent, metrics = tangent_fn(post, grad)
+        jax.block_until_ready(tangent)
+        tangent_seconds = time.perf_counter() - tangent_started
         checks = []
         for epsilon in protocol["f5_fd_relative_steps"]:
             fd = finite_difference(post, grad, epsilon)
@@ -92,6 +101,7 @@ def run_muon_geometry(
         if not passed:
             raise ValueError("Pinned F5 tangent failed two-scale finite differences")
         for variant in VARIANTS:
+            update_started = time.perf_counter()
             if variant == "muon":
                 update = plain
             elif variant == "F5_tangent_0.05":
@@ -103,6 +113,11 @@ def run_muon_geometry(
                 if tree_norm(tree_add(momentum_state(post), momentum_state(advanced), -1)) != 0:
                     raise ValueError("Muon variants advanced different momentum")
             norm = float(optax.global_norm(update))
+            update_seconds = time.perf_counter() - update_started
+            if variant == "muon":
+                update_seconds += plain_seconds
+            elif variant == "F5_tangent_0.05":
+                update_seconds += plain_seconds + tangent_seconds
             if not np.isfinite(norm) or norm <= 0:
                 raise ValueError("Invalid complete Muon update")
             direction = tree_scale(definition.unflatten(jax.tree.leaves(update)), -1 / norm)
@@ -121,6 +136,9 @@ def run_muon_geometry(
                     direction_sha256=digest.hexdigest(),
                     update_loss=float(np.average(losses, weights=draw_weights)),
                     update_gradient_norm=tree_norm(grad),
+                    gradient_seconds=gradient_seconds,
+                    native_seconds=update_seconds,
+                    timing_scope="Wall time including first-call compilation; tangent includes correction telemetry",
                     matrix_gradient_clipping="None in pinned native optimizer; Adam branch retains its own clipping",
                 )
             )

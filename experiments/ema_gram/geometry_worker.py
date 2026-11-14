@@ -27,6 +27,7 @@ from levanter.utils.tree_utils import inference_mode
 from rigging.secrets import require_secret
 
 from experiments.ema_gram.geometry_data import checkpoint_identity, geometry_data
+from experiments.ema_gram.history_comparison import run_history_comparison
 from experiments.ema_gram.matrix_envelope import run_matrix_envelope
 from experiments.ema_gram.muon_geometry import run_muon_geometry
 from experiments.ema_gram.muon_geometry_updates import momentum_state
@@ -44,7 +45,7 @@ def main():
     parser.add_argument("--protocol", type=Path, required=True)
     parser.add_argument("--exclusions", type=Path, required=True)
     parser.add_argument("--state", required=True)
-    parser.add_argument("--experiment", choices=("power", "envelope", "muon"), required=True)
+    parser.add_argument("--experiment", choices=("power", "envelope", "muon", "history"), required=True)
     parser.add_argument("--stage", choices=("screen", "test", "path"), default="screen")
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--path-inputs", type=Path)
@@ -208,6 +209,8 @@ def main():
                 result = run_power_prediction(**context)
             elif args.experiment == "muon":
                 result = run_muon_geometry(**context)
+            elif args.experiment == "history":
+                result = run_history_comparison(**context)
             else:
                 result = run_matrix_envelope(**context)
             save(

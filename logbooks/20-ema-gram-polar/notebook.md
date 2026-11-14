@@ -4393,3 +4393,32 @@ Five Muon tests passed in 25.46 seconds. The new end-to-end test executes all si
 controls on a tiny Qwen model, verifies calibration locking before held-out
 measurement, and checks direction identity and chosen lengths. This is a unit
 validation without training; full 300M checkpoint restoration is still untested.
+
+## 2026-11-14 — Muon pilot starts; full history controls prepared
+
+The first Muon pilot was accepted on source 88184acd8 at 08:35:51 UTC and
+allocated a v5p-8 worker by 08:37:01 UTC. Online logging preflight created
+https://wandb.ai/marin-community/marin/runs/ema-gram-geometry-4be1a38fee6f.
+This URL belongs to the logging check, not the measurement process. Full restore
+and numerical validation are still unverified at this observation.
+
+Added the complete fixed-weight history comparison worker. Two independent
+512-batch histories and their raw pool each supply fresh momentum, fresh Grams,
+or both; the saved/saved baseline is measured once. Ten unique conditions times
+eight shared update draws times two powers give 160 candidates per checkpoint.
+All conditions share the saved eighth-power reference radius. History text
+excludes both fresh panels and earlier study hashes; the second replica also
+excludes the first. Only matrix history is replaced. Calibration is locked
+before evaluation. A held-out ranking reversal is a trigger for matched replay,
+not evidence that temporal lag is its cause. No history job or training was
+launched while the priority checkpoint studies await resources.
+
+Seven history/Muon tests passed in 35.58 seconds. The history pipeline test
+substitutes small in-memory histories for remote collection, then exercises real
+Qwen gradients, all ten history conditions, both powers, the common radius and
+calibration lock. The separate production-history parity test remains in place.
+Added paired conditional summaries and plotting code for history and Muon; no
+new scientific figures have been generated without actual checkpoint results.
+Future Muon submissions also log per-update wall time including compilation.
+The first pilot records overall progress timing but lacks separate native-update
+timings; retain that limitation rather than treating its runtime as a benchmark.

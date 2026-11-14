@@ -77,15 +77,8 @@ def power_figure(summary, results, path):
     axes[0].legend(title="Inverse power", loc="best")
     for i, result in enumerate(summary):
         interval = result["paired_loss_differences"]["direct"]["quadratic_minus_alignment"]
-        axes[1].errorbar(
-            interval["mean"],
-            i,
-            xerr=[[interval["mean"] - interval["lower"]], [interval["upper"] - interval["mean"]]],
-            fmt="o",
-            color="#1F77B4",
-            capsize=3,
-            lw=1.8,
-        )
+        axes[1].hlines(i, interval["lower"], interval["upper"], color="#1F77B4", lw=1.8)
+        axes[1].scatter(interval["mean"], i, color="#1F77B4", s=32)
     axes[1].axvline(0, color="black", lw=1.2)
     axes[1].set(
         yticks=range(len(summary)),
@@ -142,6 +135,88 @@ def envelope_figure(summary, path):
     finish(fig, axes, path)
 
 
+def muon_figure(summaries, path):
+    names = {
+        "blend_0.02": "Blend 0.02",
+        "blend_0.05": "Blend 0.05",
+        "F5_tangent_0.05": "F5 tangent 0.05",
+        "hesscorr_0.05": "Hesscorr 0.05",
+        "hesscorr_0.3": "Hesscorr 0.3",
+    }
+    colors = ["#1F77B4", "#8C62AA", "#4C956C"]
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.7), layout="constrained")
+    for ax, rule, title in zip(
+        axes, ("equal", "direct"), ("A  Equal physical length", "B  Separately calibrated length"), strict=True
+    ):
+        for state_index, summary in enumerate(summaries):
+            offset = (state_index - (len(summaries) - 1) / 2) * 0.18
+            color = colors[state_index % len(colors)]
+            for index, name in enumerate(names):
+                interval = summary["paired_vs_plain_muon"][rule][name]
+                y = index + offset
+                ax.hlines(y, interval["lower"], interval["upper"], color=color, lw=1.6)
+                ax.scatter(
+                    interval["mean"],
+                    y,
+                    color=color,
+                    s=30,
+                    label=summary["state"].replace("muon-", "").replace("-", " ") if index == 0 else None,
+                )
+        ax.axvline(0, color="black", lw=1.2)
+        ax.set(
+            yticks=range(len(names)),
+            yticklabels=list(names.values()),
+            title=title,
+            xlabel="Evaluation loss difference from plain Muon\n← Feedback helps        Feedback hurts →",
+        )
+        ax.invert_yaxis()
+    axes[1].legend(title="Saved checkpoint", loc="best", fontsize=10)
+    finish(fig, axes, path)
+
+
+def history_figure(summaries, path):
+    conditions = summaries[0]["conditions"]
+    labels = []
+    for condition in conditions:
+        if condition["name"] == "saved":
+            labels.append("Saved M + saved Grams")
+        else:
+            source = {"replica0": "A", "replica1": "B", "pooled": "A+B pool"}[condition["replica"]]
+            changed = (
+                "M + Grams"
+                if condition["momentum"] == condition["grams"] == "fresh"
+                else ("M only" if condition["momentum"] == "fresh" else "Grams only")
+            )
+            labels.append(f"Fresh {changed} ({source})")
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5.5), layout="constrained")
+    for ax, rule, title in zip(
+        axes, ("equal", "direct"), ("A  Equal physical length", "B  Separately calibrated length"), strict=True
+    ):
+        for state_index, summary in enumerate(summaries):
+            color = ["#1F77B4", "#8C62AA"][state_index % 2]
+            offset = (state_index - (len(summaries) - 1) / 2) * 0.2
+            for i, condition in enumerate(conditions):
+                interval = summary["quarter_minus_eighth"][rule][condition["name"]]
+                ax.hlines(i + offset, interval["lower"], interval["upper"], color=color, lw=1.6)
+                ax.scatter(
+                    interval["mean"],
+                    i + offset,
+                    s=28,
+                    color=color,
+                    label=summary["state"].replace("-", " ") if i == 0 else None,
+                )
+        ax.axvline(0, color="black", lw=1.2)
+        ax.set(
+            yticks=range(len(labels)),
+            yticklabels=labels,
+            title=title,
+            xlabel="Evaluation loss: quarter - eighth\n← Quarter better          Eighth better →",
+        )
+        ax.invert_yaxis()
+    axes[1].legend(title="Saved checkpoint", loc="best", fontsize=10)
+    finish(fig, axes, path)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--summary", type=Path, required=True)
@@ -157,6 +232,10 @@ def main():
             [json.loads((p / "power-results.json").read_text()) for p in args.power],
             args.output / "power-predictions",
         )
+    if summary.get("history"):
+        history_figure(summary["history"], args.output / "history-effects")
+    if summary.get("muon"):
+        muon_figure(summary["muon"], args.output / "muon-controls")
     if "envelope" in summary:
         envelope_figure(summary["envelope"], args.output / "envelope-orientation")
 

@@ -30,6 +30,8 @@ RECORD_NAMES = {
     "envelope-results.json",
     "envelope-path-results.json",
     "frozen-envelope-plan.json",
+    "history-partial.json",
+    "history-results.json",
     "history-0-manifest.json",
     "history-1-manifest.json",
     "history-0-completed.json",

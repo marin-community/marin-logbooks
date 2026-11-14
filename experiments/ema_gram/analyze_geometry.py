@@ -98,6 +98,123 @@ def analyze_power(directory):
     )
 
 
+def analyze_muon(directory):
+    complete = json.loads((directory / "completed.json").read_text())
+    result = json.loads((directory / "muon-results.json").read_text())
+    locked = json.loads((directory / "locked-predictions.json").read_text())
+    protocol = json.loads((directory / "protocol.json").read_text())
+    variants = protocol["variants"]
+    expected = {(d, v) for d in range(4) for v in variants}
+    rows = {(r["draw"], r["variant"]): r for r in result["rows"]}
+    if not complete["success"] or complete["experiment"] != "muon" or complete["rows"] != 24:
+        raise ValueError("Muon study incomplete")
+    if set(rows) != expected or len(result["rows"]) != len(expected):
+        raise ValueError("Muon candidates missing or duplicated")
+    digest = hashlib.sha256(json.dumps(locked, sort_keys=True).encode()).hexdigest()
+    if digest != result["locked_predictions_sha256"] or result["choices"] != locked["choices"]:
+        raise ValueError("Muon choices changed after locking")
+    if complete["data_manifest_sha256"] != result["data_manifest_sha256"]:
+        raise ValueError("Muon data identity mismatch")
+    if not result["HVP_validation"]["passed"] or result["HVP_symmetry_relative_error"] >= 1e-4:
+        raise ValueError("Unvalidated Muon reference Hessian")
+    if len(result["derivative_checks"]) != 4 or not all(c["passed"] for c in result["derivative_checks"]):
+        raise ValueError("Unvalidated Muon F5 derivative")
+    for row, frozen in zip(result["rows"], locked["rows"], strict=True):
+        if {k: v for k, v in row.items() if k != "evaluation"} != frozen:
+            raise ValueError("Muon calibration evidence changed after locking")
+        if len(row["evaluation"]["direct"]["losses"]) != 16:
+            raise ValueError("Muon evaluation panel incomplete")
+    baseline, weights = np.asarray(result["evaluation_baseline"]), result["evaluation_weights"]
+    selected, comparisons = {}, {}
+    for rule in ("direct", "equal", "quadratic", "reference_native"):
+        changes = {
+            v: np.stack([np.asarray(rows[d, v]["evaluation"][rule]["losses"]) - baseline for d in range(4)])
+            for v in variants
+        }
+        selected[rule] = {v: paired_interval(values, weights) for v, values in changes.items()}
+        comparisons[rule] = {
+            v: paired_interval(values - changes["muon"], weights) for v, values in changes.items() if v != "muon"
+        }
+    return dict(
+        state=result["state"],
+        complete=complete,
+        selected_loss_changes=selected,
+        paired_vs_plain_muon=comparisons,
+        reference_learning_rate=result["reference_learning_rate"],
+        reference_adam_learning_rate=result["reference_adam_learning_rate"],
+        boundary_winners=sum(r["grid_boundary_winner"] for r in rows.values()),
+        numerical_diagnostics=result["derivative_checks"],
+        independence="Four update draws per checkpoint; no independent training-seed replication",
+        sign_convention="Negative loss difference means improvement over plain Muon",
+    )
+
+
+def analyze_history(directory):
+    complete = json.loads((directory / "completed.json").read_text())
+    result = json.loads((directory / "history-results.json").read_text())
+    locked = json.loads((directory / "locked-predictions.json").read_text())
+    if not complete["success"] or complete["experiment"] != "history" or complete["rows"] != 160:
+        raise ValueError("History comparison incomplete")
+    digest = hashlib.sha256(json.dumps(locked, sort_keys=True).encode()).hexdigest()
+    if digest != result["locked_predictions_sha256"]:
+        raise ValueError("History prediction lock changed")
+    if complete["data_manifest_sha256"] != result["data_manifest_sha256"]:
+        raise ValueError("History panel identity mismatch")
+    if not result["HVP_validation"]["passed"] or result["HVP_symmetry_relative_error"] >= 1e-4:
+        raise ValueError("History reference Hessian is unvalidated")
+    names = [c["name"] for c in result["conditions"]]
+    rows = {(r["draw"], r["condition"], r["alpha"]): r for r in result["rows"]}
+    expected = {(d, c, a) for d in range(8) for c in names for a in (0.125, 0.25)}
+    if len(names) != 10 or len(result["rows"]) != 160 or set(rows) != expected:
+        raise ValueError("Missing history candidate")
+    for row, frozen in zip(result["rows"], locked["rows"], strict=True):
+        if {k: v for k, v in row.items() if k != "evaluation"} != frozen:
+            raise ValueError("History calibration changed after locking")
+        if len(row["evaluation"]["direct"]["losses"]) != 16:
+            raise ValueError("History evaluation incomplete")
+    power_differences, history_effects, reversals = {}, {}, []
+    weights = result["evaluation_weights"]
+    for rule in ("equal", "direct"):
+        paired = {
+            c: np.stack(
+                [
+                    np.asarray(rows[d, c, 0.25]["evaluation"][rule]["losses"])
+                    - np.asarray(rows[d, c, 0.125]["evaluation"][rule]["losses"])
+                    for d in range(8)
+                ]
+            )
+            for c in names
+        }
+        power_differences[rule] = {c: paired_interval(v, weights) for c, v in paired.items()}
+        history_effects[rule] = {
+            c: paired_interval(v - paired["saved"], weights) for c, v in paired.items() if c != "saved"
+        }
+        saved_mean = power_differences[rule]["saved"]["mean"]
+        for condition in names:
+            interval = power_differences[rule][condition]
+            if interval["mean"] * saved_mean < 0:
+                reversals.append(
+                    dict(
+                        rule=rule,
+                        condition=condition,
+                        saved_difference=saved_mean,
+                        changed_difference=interval["mean"],
+                        changed_interval_excludes_zero=interval["lower"] > 0 or interval["upper"] < 0,
+                    )
+                )
+    return dict(
+        state=result["state"],
+        complete=complete,
+        conditions=result["conditions"],
+        quarter_minus_eighth=power_differences,
+        change_from_saved=history_effects,
+        nominal_ranking_reversals=reversals,
+        matched_replay_needed=bool(reversals),
+        replay_scope="A reversal triggers matched moving-versus-frozen replay; it does not establish temporal lag",
+        independence="Conditional checkpoint uncertainty; fresh histories and update draws are not training seeds",
+    )
+
+
 def analyze_envelope(directories, plan):
     measured = []
     path_inputs = dict(plan_sha256=hashlib.sha256(json.dumps(plan, sort_keys=True).encode()).hexdigest(), blocks={})
@@ -172,11 +289,14 @@ def analyze_envelope(directories, plan):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--power", type=Path, nargs="*", default=[])
+    parser.add_argument("--history", type=Path, nargs="*", default=[])
+    parser.add_argument("--muon", type=Path, nargs="*", default=[])
     parser.add_argument("--envelope-test", type=Path, nargs="*", default=[])
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    output = dict(power=[analyze_power(p) for p in args.power])
+    output = dict(power=[analyze_power(p) for p in args.power], muon=[analyze_muon(p) for p in args.muon])
+    output["history"] = [analyze_history(p) for p in args.history]
     if args.envelope_test:
         output["envelope"] = analyze_envelope(args.envelope_test, json.loads(args.plan.read_text()))
     args.output.write_text(json.dumps(output, indent=2, allow_nan=False) + "\n")
