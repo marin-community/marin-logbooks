@@ -67,7 +67,11 @@ def correction_telemetry(momentum, tangent, settings):
 def matrix_candidates(momentum, gradient, settings: NuclearHessianSettings):
     """Preserve pinned base/blend/Hesscorr arithmetic; differentiate the five-step map itself."""
     tangent = gradient - momentum
-    base, f5_tangent = jax.jvp(quintic_newton_schulz, (momentum,), (tangent,))
+    base = quintic_newton_schulz(momentum)
+    # The native update retains its original arithmetic. This derivative
+    # control uses the same five-step polynomial with FP32 matmul precision.
+    with jax.default_matmul_precision("highest"):
+        smooth_base, f5_tangent = jax.jvp(quintic_newton_schulz, (momentum,), (tangent,))
     correction, telemetry = correction_telemetry(momentum, tangent, settings)
     candidates = {
         "muon": base,
@@ -83,6 +87,7 @@ def matrix_candidates(momentum, gradient, settings: NuclearHessianSettings):
     }
     denominator = jnp.maximum(safe_norm(correction) * safe_norm(f5_tangent), 1e-30)
     telemetry.update(
+        f5_native_to_fp32_difference=safe_norm(base - smooth_base) / jnp.maximum(safe_norm(smooth_base), 1e-30),
         f5_tangent_norm=safe_norm(f5_tangent),
         correction_tangent_cosine=jnp.sum(correction * f5_tangent) / denominator,
         correction_to_tangent_difference=safe_norm(correction - f5_tangent) / jnp.maximum(safe_norm(f5_tangent), 1e-30),
@@ -96,6 +101,7 @@ def f5_finite_difference(momentum, gradient, epsilon):
     # Epsilon is relative input displacement, so scaling the whole momentum does not change the test.
     step = epsilon * safe_norm(momentum) / jnp.maximum(safe_norm(tangent), 1e-30)
     step = jnp.maximum(step, 1e-12)
-    plus = quintic_newton_schulz(momentum + step * tangent)
-    minus = quintic_newton_schulz(momentum - step * tangent)
+    with jax.default_matmul_precision("highest"):
+        plus = quintic_newton_schulz(momentum + step * tangent)
+        minus = quintic_newton_schulz(momentum - step * tangent)
     return (plus - minus) / (2 * step), step

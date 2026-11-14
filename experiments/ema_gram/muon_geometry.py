@@ -58,6 +58,9 @@ def run_muon_geometry(
         reference_learning_rate=reference_config.learning_rate,
         reference_adam_learning_rate=reference_config.adam_lr,
         scale_scope=protocol["reference_step_scope"],
+        f5_derivative_scope=(
+            "FP32 highest-precision five-step map; native base and other updates retain pinned arithmetic"
+        ),
         calibration_baseline=baseline,
         calibration_weights=cal_weights,
         evaluation_weights=weights["evaluation"],

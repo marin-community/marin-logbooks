@@ -107,7 +107,7 @@ def main():
             entity="marin-community",
             project="ema-gram-geometry",
             mode="online",
-            owner="task0",
+            owner="JAX process 0 for measurements; Iris task 0 for CPU logging preflight",
             restart_policy="fresh run per process attempt; no training resume claimed",
         ),
         states=states,
@@ -116,6 +116,10 @@ def main():
         reference_learning_rate=0.012,
         reference_step_authorization=(
             "User explicitly selected common0.012 reference LR " "and original Adam ratio on2026-11-14"
+        ),
+        f5_derivative_scope=(
+            "Five-step polynomial with highest FP32 matmul precision; native base update retains pinned arithmetic. "
+            "Record native/FP32 map discrepancy."
         ),
         reference_step_scope=(
             "Reference probe scale, not the native next training update; " "original terminal schedule gives zero"

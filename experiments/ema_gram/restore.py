@@ -36,23 +36,8 @@ from marin.training.training import run_levanter_train_lm
 from rigging.filesystem.storage_path import StoragePath
 
 from experiments.ema_gram.plan import Cell
+from experiments.ema_gram.state_fingerprint import describe_arrays, digest
 from experiments.ema_gram.train import build_training_step
-
-
-def digest(array):
-    return hashlib.sha256(np.ascontiguousarray(array).tobytes()).hexdigest()
-
-
-def describe_arrays(tree):
-    """Keep local shard indices explicit; hashes are not cross-sharding comparisons."""
-    paths, arrays = _flatten_serializable_leaves(tree)
-    result = []
-    for path, array in zip(paths, arrays, strict=True):
-        for shard in array.addressable_shards:
-            host = np.asarray(shard.data)
-            assert np.isfinite(host).all(), path
-            result.append(dict(path=path, index=str(shard.index), shape=list(host.shape), sha256=digest(host)))
-    return result
 
 
 def audit_state(state, checkpoint, expected_step=None):

@@ -4610,3 +4610,76 @@ The worker-side cloud identity check also matched all 79 objects against the
 frozen recovery manifest, including their generations and MD5 values. The next Muon submission must reproduce the
 CPU preflight's exact panel manifest before calculating gradients. This check
 executed no model or optimizer step; it does not validate a numerical result.
+
+## 2026-11-14 — Power memory failure and Muon derivative failure
+
+The power pilot tests whether calibration alignment or curvature can select
+the EMA-Gram exponent (1/8, 3/16 or 1/4) that reduces loss on disjoint held-out
+text. The exponent controls inverse powers of the optimizer’s left and right
+Gram matrices. Directions have unit Euclidean norm across all parameters;
+reported step lengths are physical parameter-displacement norms. The Muon
+pilot tests whether momentum-feedback corrections improve held-out loss over
+plain Muon, using calibrated or matched physical lengths.
+
+Neither pilot completed a held-out comparison. Power submission 03 (source
+e1a760495) failed on v4-32 at 10:15 UTC with zero scheduler preemptions. It
+reproduced all eight reference update norms from the earlier attempt and saved
+one calibration row for draw 0, alpha 1/8. The quadratic predicted decrease was
+0.000229965 at length 0.56555; the calibration grid selected length 0.58890.
+The HVP validation had not yet run, so this row is provisional and cannot
+establish predictive accuracy or rank the powers. See the
+[partial measurements](geometry-results/power/eighth-middle/ema-gram-geometry-98d7423ba56d/power-partial.json).
+
+On the next power, accumulation of the first Hessian-vector product requested
+501 MiB with 120.12 MiB free. The retained first-direction symmetry vectors,
+post-gradient moment state, and separate accumulation outputs increased live
+memory. Their individual contributions were not profiled before failure. The
+[failed attempt](geometry-results/power/eighth-middle/ema-gram-geometry-98d7423ba56d/failure.json)
+is retained. The recovery implementation compares local moment-shard hashes,
+keeps symmetry vectors in host memory, reuses accumulation buffers and releases
+temporary vectors before the next calculation. It also records accelerator
+memory before each candidate HVP. Checkpoint, update batch, reference panels,
+length grid, objective and validation thresholds are unchanged. CPU end-to-end
+checks pass; real TPU memory adequacy remains unverified.
+
+The power artifact's W&B field is null because Iris task 0 and JAX process 0
+were different workers. Tracking ran online at
+[run 2aed4846fba8](https://wandb.ai/marin-community/ema-gram-geometry/runs/ema-gram-geometry-2aed4846fba8),
+while JAX process 0 wrote artifacts under identity 98d7423ba56d. Future
+measurement workers initialize JAX before assigning both tracking and artifact
+ownership to JAX process 0. CPU logging preflight still uses Iris task 0.
+
+Muon submission 03 (source 85f63d817) strictly restored the original 300M model weights, optimizer arrays and counters
+at counter 11444. Its cloud panel manifest exactly matched the CPU preflight.
+The 64-sequence calibration loss was 2.8327212334. It then stopped at the F5
+derivative check, before freezing any candidate directions or opening the
+held-out panel. F5 denotes the pinned five-step Newton–Schulz matrix map. The check compares the automatic directional derivative DF5(M)[g−M] with
+central differences at post-gradient momentum M, where g is the fresh native
+gradient. Relative error divides the norm of their difference by the automatic
+derivative norm. Input displacements are measured relative to the norm of M.
+The
+relative finite-difference errors increased from 0.20066 at relative input
+displacement 0.03 to 37.17349 at displacement 0.0001; no two consecutive scales passed 0.02.
+See the [diagnostics](geometry-muon-results/muon/muon-plain-final/ema-gram-geometry-8f8a693ed3ab/muon-partial.json)
+and [online run](https://wandb.ai/marin-community/ema-gram-geometry/runs/ema-gram-geometry-8f8a693ed3ab).
+
+The F5 probe used default matrix-multiplication precision. TPU default
+matrix multiplication can round FP32 operands to BF16; array dtype alone does
+not request full precision ([Google documentation](https://docs.cloud.google.com/tpu/docs/run-calculation-jax)).
+The worsening error at smaller displacement is consistent with rounding, but
+does not establish the cause by itself. The revised derivative control and its
+finite differences explicitly use highest FP32 matrix-multiplication precision
+for the same five-step polynomial. Native Muon, blend and Hesscorr updates retain
+the pinned arithmetic. The F5 control adds 0.05 × DF5(M)[g−M] to the native base direction before
+its original shape scaling and reference learning-rate scaling, and records the native-versus-FP32 base-map discrepancy. It must still pass
+two consecutive scales below 2%. The common reference learning rates remain
+0.012 for Muon and 0.0036 for Adam; these are probe scales, not the terminal
+checkpoint's zero scheduled next learning rate.
+
+Eight affected CPU tests passed, including complete tiny-model calibration,
+locked selection before held-out evaluation, native-update parity and
+derivative checks. CPU tests do not reproduce TPU rounding or the full-model
+HBM peak. At 10:21 UTC the two independent block-envelope screens remained
+pending with zero failures and zero preemptions. Their block-only Hessian
+calculation does not retain the full-model symmetry vectors used by the power
+pilot. No training or further sweep was launched during this diagnosis.

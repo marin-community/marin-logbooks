@@ -20,10 +20,29 @@ from levanter.optim.util import unflatten_linear_layers
 from experiments.ema_gram.geometry_math import quadratic_step, refinement_lengths
 from experiments.ema_gram.gradient_curvature import PathMeasurement, measurement_functions, production_functions
 from experiments.ema_gram.gradient_curvature_math import tree_add, tree_dot, tree_norm, tree_scale, weighted_gradient
+from experiments.ema_gram.hessian import host_array
 from experiments.ema_gram.probe import matrix_state
+from experiments.ema_gram.state_fingerprint import describe_arrays
 
 POWERS = (0.125, 0.1875, 0.25)
 ALPHA_FD_STEPS = (0.01, 0.003, 0.001, 0.0005, 0.0003, 0.0001, 0.00003)
+
+
+@partial(eqx.filter_jit, donate="all")
+def scale_product(value, weight):
+    return jax.tree.map(lambda x: x * weight, value)
+
+
+@partial(eqx.filter_jit, donate="all")
+def accumulate_product(total, value, weight):
+    return jax.tree.map(lambda a, b: a + weight * b, total, value)
+
+
+def host_inner_product(left, right):
+    return sum(
+        np.einsum("i,i->", a.ravel(), host_array(b).ravel(), dtype=np.float64)
+        for a, b in zip(left, jax.tree.leaves(right), strict=True)
+    )
 
 
 def fp32_direction_function(cfg):
@@ -59,7 +78,9 @@ def mean_product(model, direction, batches, weights, hvp):
     total = None
     for batch, weight in zip(batches, np.asarray(weights) / np.sum(weights), strict=True):
         value = hvp(model, direction, batch)
-        total = tree_scale(value, weight) if total is None else tree_add(total, value, weight)
+        total = scale_product(value, weight) if total is None else accumulate_product(total, value, weight)
+        jax.block_until_ready(total)
+        del value
     return total
 
 
@@ -116,16 +137,32 @@ def run_power_prediction(
         for alpha in POWERS:
             started = time.perf_counter()
             update, after, norm = native(grad, alpha)
-            advanced = matrix_state(native_model, after).optimizer
+            # Compare every local shard exactly without retaining a second
+            # full Gram state on the accelerator across candidate powers.
+            advanced = describe_arrays(matrix_state(native_model, after).optimizer)
             if shared_moments is None:
                 shared_moments = advanced
-            elif tree_norm(tree_add(advanced, shared_moments, -1)) != 0:
+            elif advanced != shared_moments:
                 raise ValueError("Moments changed across powers")
             direction = tree_scale(definition.unflatten(jax.tree.leaves(update)), -1 / norm)
+            jax.block_until_ready(direction)
+            if alpha != 0.1875:
+                del update, after
+            progress(
+                dict(
+                    event="before_hvp",
+                    draw=draw,
+                    alpha=alpha,
+                    device_memory_stats=[d.memory_stats() for d in jax.local_devices()],
+                )
+            )
             product = mean_product(model, direction, calibration, cal_weights, hvp)
             alignment, curvature = float(tree_dot(gradient, direction)), float(tree_dot(direction, product))
             if draw == 0 and alpha == 0.125:
-                first_direction, first_product = direction, product
+                first_direction, first_product = [
+                    tuple(np.array(host_array(x), copy=True) for x in jax.tree.leaves(vector))
+                    for vector in (direction, product)
+                ]
             model_step, predicted = quadratic_step(alignment, curvature, radius)
             cache = {0.0: baseline}
 
@@ -162,6 +199,8 @@ def run_power_prediction(
                 ],
                 calibration_seconds=time.perf_counter() - started,
             )
+            if alpha != 0.25:
+                del product
             if alpha == 0.1875:
                 scalar = jnp.asarray(alpha, jnp.float32)
                 # Differentiating only alpha keeps moment construction outside the tangent.
@@ -179,8 +218,10 @@ def run_power_prediction(
                             relative_error=tree_norm(tree_add(fd, tangent, -1)) / max(tree_norm(tangent), 1e-30),
                         )
                     )
+                    del dp, dm, fd
                     if len(tangent_errors) > 1 and all(v["relative_error"] < 0.02 for v in tangent_errors[-2:]):
                         break
+                del update, after
                 row["alpha_derivative"] = dict(
                     alpha=alpha,
                     direction_native_difference=tree_norm(tree_add(ds, direction, -1)),
@@ -245,8 +286,13 @@ def run_power_prediction(
                     save("failed-hvp-check.json", numerical_check)
                     raise ValueError("Reference HVP validation failed")
             if draw == 0 and alpha == 0.25:
-                symmetry = abs(float(tree_dot(first_direction, product) - tree_dot(direction, first_product)))
-                symmetry /= max(tree_norm(first_product), tree_norm(product), 1e-30)
+                symmetry = abs(
+                    float(host_inner_product(first_direction, product) - host_inner_product(first_product, direction))
+                )
+                first_norm = np.sqrt(
+                    sum(np.einsum("i,i->", x.ravel(), x.ravel(), dtype=np.float64) for x in first_product)
+                )
+                symmetry /= max(first_norm, tree_norm(product), 1e-30)
                 output["derivative_checks"].append(dict(**numerical_check, symmetry_relative_error=symmetry))
                 if symmetry > 1e-4:
                     save("power-partial.json", output)
@@ -265,7 +311,9 @@ def run_power_prediction(
                     quadratic_step=model_step,
                 )
             )
-            del update, after, direction, product, losses
+            del direction, losses
+            if alpha == 0.25:
+                del product
         rows = [r for r in output["rows"] if r["draw"] == draw]
         output["choices"].append(
             dict(

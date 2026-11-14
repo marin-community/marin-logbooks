@@ -71,7 +71,13 @@ def main():
     local = Path(os.environ.get("IRIS_OUTPUT_DIR", "scratch/geometry")) / identity
     local.mkdir(parents=True)
     job_info = get_job_info()
-    primary = job_info is None or job_info.task_index == 0
+    if args.logging_check:
+        primary = job_info is None or job_info.task_index == 0
+    else:
+        initialize_jax()
+        # TPU runtime ranks need not follow Iris task indices. Artifacts and
+        # tracking must have the same owner and measurement identity.
+        primary = jax.process_index() == 0
     api_key = require_secret("WANDB_API_KEY")
     if args.logging_check and not primary:
         print(json.dumps(dict(event="logging_check_delegated", tracking_owner="task0")), flush=True)
@@ -102,7 +108,6 @@ def main():
             run.finish()
             return
     run_url = run.url if run is not None else None
-    initialize_jax()
     for key, value in cfg.trainer.jax_config.items():
         jax.config.update(key, value)
     bucket_name, prefix = args.output_prefix.removeprefix("gs://").rstrip("/").split("/", 1)
@@ -194,6 +199,8 @@ def main():
                 protocol_sha256=hashlib.sha256(args.protocol.read_bytes()).hexdigest(),
                 checkpoint_restore="Full model and optimizer; fresh frozen-probe attempt, not training resume",
                 host_count=jax.process_count(),
+                jax_process_index=jax.process_index(),
+                iris_task_index=job_info.task_index if job_info is not None else None,
                 device_count=jax.device_count(),
                 device_kinds=sorted({d.device_kind for d in jax.devices()}),
                 wandb=run_url,

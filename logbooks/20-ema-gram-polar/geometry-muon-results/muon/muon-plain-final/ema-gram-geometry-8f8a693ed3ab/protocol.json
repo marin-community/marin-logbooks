@@ -1,0 +1,126 @@
+{
+  "request_sha256": "e8ea0a67f7746a7a41a49f96d8a83e3bf9190d824da59a21284cd5a776e27ef8",
+  "experiment": "Muon frozen-checkpoint comparisons",
+  "states": [
+    {
+      "state": "muon-plain-final",
+      "config_index": 0,
+      "checkpoint": "gs://marin-us-central1/checkpoints/speedrun/qwen3_300m_error_aware_muon_muon_lr0p012/2026.07.23.4/checkpoints/step-11443",
+      "expected_counter": 11444,
+      "checkpoint_manifest_sha256": "1da4b5f509c36fc61e5c110e3808bda2d7ae451ab7bbac1a5a11499d2c1e6cdb",
+      "checkpoint_schema": "momentum_only_7cd118640",
+      "archived_training_provenance": {
+        "base_commit": "7cd118640",
+        "tree_hash": "59c8087ab",
+        "dirty": false
+      }
+    },
+    {
+      "state": "muon-blend-final",
+      "config_index": 1,
+      "checkpoint": "gs://marin-us-central1/checkpoints/speedrun/qwen3_300m_error_aware_muon_blend-g0p05_lr0p012/2026.07.23.4/checkpoints/step-11443",
+      "expected_counter": 11444,
+      "checkpoint_manifest_sha256": "2d428ba540fe63ea15afa788ffd093d68f76faeea32caf1d59c364fb9a2de63f",
+      "checkpoint_schema": "momentum_only_7cd118640",
+      "archived_training_provenance": {
+        "base_commit": "7cd118640",
+        "tree_hash": "59c8087ab",
+        "dirty": false
+      }
+    },
+    {
+      "state": "muon-hesscorr-final",
+      "config_index": 2,
+      "checkpoint": "gs://marin-us-central1/checkpoints/speedrun/qwen3_300m_error_aware_muon_hesscorr-g0p3_lr0p012/2026.08.28.3/checkpoints/step-11443",
+      "expected_counter": 11444,
+      "checkpoint_manifest_sha256": "2f1582f9df8c97da8aa1027b8060a157615d3b80d9f30e93de117dcdf54a41ec",
+      "checkpoint_schema": "counter_fffd6a64"
+    }
+  ],
+  "optimizer_source": "fffd6a64ce81722f44d02d754db7c4778e0a5be5",
+  "optimizer_source_files": [
+    {
+      "path": "experiments/speedrun/prism_berkeley_qwen3_scaling/optimizer_helpers.py",
+      "sha256": "dc9346b2b3dccd2dda11c3565a836c2620d580ec3b3d19df9424443e7e076e5c"
+    },
+    {
+      "path": "experiments/speedrun/prism_berkeley_qwen3_scaling/prism_berkeley_optimizer.py",
+      "sha256": "e3cb0a1412761bc422afa6dd8cfce7de4741c8e2ff4603d9c0be608541480ec9"
+    },
+    {
+      "path": "experiments/speedrun/prism_berkeley_qwen3_scaling/muon_error_feedback_optimizer.py",
+      "sha256": "7cb8b822ef32253b9af8e390f4e48df90d53799e21730b1b956753c64c951d23"
+    }
+  ],
+  "reference_learning_rate": 0.012,
+  "reference_step_authorization": "User explicitly selected common0.012 reference LR and original Adam ratio on2026-11-14",
+  "reference_step_scope": "Reference probe scale, not the native next training update; original terminal schedule gives zero",
+  "native_update_sequences": 128,
+  "measurement_microbatch_sequences": 8,
+  "seeds": {
+    "calibration": 202611140,
+    "evaluation": 202611141,
+    "update": 202611142
+  },
+  "panels": {
+    "calibration_sequences": 64,
+    "evaluation_sequences": 128,
+    "update_draws": 4,
+    "sequences_per_update": 128,
+    "sequence_length": 4096,
+    "paired_across_states": true
+  },
+  "length_grid": [
+    0,
+    0.1,
+    0.3,
+    0.6,
+    1,
+    2,
+    4
+  ],
+  "radius": "4times median reference-LR plain-Muon complete-update norm across four draws at each checkpoint",
+  "variants": [
+    "muon",
+    "blend_0.02",
+    "blend_0.05",
+    "F5_tangent_0.05",
+    "hesscorr_0.05",
+    "hesscorr_0.3"
+  ],
+  "numerical_gates": {
+    "relative_error": 0.02,
+    "consecutive_scales": 2,
+    "symmetry_relative": 0.0001
+  },
+  "f5_fd_relative_steps": [
+    0.03,
+    0.01,
+    0.003,
+    0.002,
+    0.001,
+    0.0005,
+    0.0003,
+    0.0001
+  ],
+  "reference_objective": "FP32 vanilla CE plus1e-7z-loss, excluding decay; native gradient retains archived objective",
+  "interpretation": "Four update batches per checkpoint are not independent training seeds",
+  "training": "No training; restore full saved state and advance moments once per fresh update batch",
+  "schema_migration": "July plain/blend states contain all original arrays but no later-added correction counter. Strictly restore original schema; require saved step, optimizer, Adam and schedule counts to agree; copy that count into the new field. No partial load or zero reset.",
+  "tracking": {
+    "entity": "marin-community",
+    "project": "ema-gram-geometry",
+    "mode": "online",
+    "owner": "task0",
+    "restart_policy": "fresh run per process attempt; no training resume claimed"
+  },
+  "data_recovery": {
+    "cache_root": "gs://marin-us-central1/ema-gram-20-geometry/20261113/data/fineweb-edu-10B-d8faae3179a793c5bb3417a073a80cb92d789e77",
+    "manifest_uri": "gs://marin-us-central1/ema-gram-20-geometry/20261113/data/fineweb-edu-10B-d8faae3179a793c5bb3417a073a80cb92d789e77/recovery-manifest.json",
+    "manifest_sha256": "03d4705ea41971701fb7db8f6be30db051e9fc39e6319206e06d666ca2fd4d45",
+    "scope": "Every recovered file matches pinned public-source SHA256 and uploaded GCS MD5. Surviving original dependency objects also match MD5. The deleted training subcache cannot be compared byte-for-byte; this is an explicit measurement data replacement.",
+    "expected_data_manifest_sha256": "08b0186588da638314f2c9118e6d941d01d44daba9558b2a1c9d927ae0fc8932",
+    "preflight_artifact_sha256": "2fb0b90fdf37f9dc5377dbcde97c71c9182dbf36355ab2631458d1374a1ec162",
+    "preflight_source_commit": "1bfced3f7cdf882b10188d2a3941c14c5216d4bd"
+  }
+}
