@@ -1,97 +1,100 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Trough-to-peak normalized learning steps for closing vs re-closing, per run and group."""
+"""Trough-to-peak learning steps for closing and closing twice, per replay and turn group.
+
+Each series is rescaled from its trough (0) to its peak (1) over the pair of steps with the largest rise, and
+the steps where it first reaches 10%, 50% and 90% are reported for the close metric and the re-close metric.
+"""
+
 import csv
 import json
 from pathlib import Path
 
-A = Path(__file__).resolve().parents[1]
+HERE = Path(__file__).resolve().parent
+ANALYSIS = HERE.parent
 GROUPS = {"swe": "swe", "other+tool": "tool", "other-plain": "plain"}
 LEVELS = (0.1, 0.5, 0.9)
+OLD_PROBE = {
+    "answer (old probe)": "probe_replay-10400-base300e.csv",
+    "mean (old probe)": "probe_replay-10400-meanseed.csv",
+}
+ESTIMATE = {"answer": "answer (est)", "mean": "mean (est)", "ltslash": "</ (est, 20 steps)"}
+EXACT = {"answer": "answer (exact)", "ltslash": "</ (exact)"}
+
+Series = dict[str, dict[int, float]]
 
 
-def crossings(series):
-    """Steps where (v - trough) / (peak - trough) first reaches each level, over the largest rise."""
+def crossings(series: dict[int, float]) -> tuple[list[int], int, int, float, float]:
+    """Steps reaching each level over the largest rise, plus the trough step, peak step and their values."""
     steps = sorted(series)
     vals = [series[s] for s in steps]
-    # The largest rise: the trough/peak pair (trough first) with the biggest gain.
-    best, trough_i, peak_i, low_i = -1.0, 0, 0, 0
+    best, trough, peak, low = -1.0, 0, 0, 0
     for j in range(len(vals)):
-        if vals[j] < vals[low_i]:
-            low_i = j
-        if vals[j] - vals[low_i] > best:
-            best, trough_i, peak_i = vals[j] - vals[low_i], low_i, j
-    lo, hi = vals[trough_i], vals[peak_i]
-    out = []
-    for level in LEVELS:
-        target = lo + level * (hi - lo)
-        out.append(next(steps[i] for i in range(trough_i, peak_i + 1) if vals[i] >= target))
-    return out, steps[trough_i], steps[peak_i], lo, hi
+        if vals[j] < vals[low]:
+            low = j
+        if vals[j] - vals[low] > best:
+            best, trough, peak = vals[j] - vals[low], low, j
+    lo, hi = vals[trough], vals[peak]
+    hits = [next(steps[i] for i in range(trough, peak + 1) if vals[i] >= lo + level * (hi - lo)) for level in LEVELS]
+    return hits, steps[trough], steps[peak], lo, hi
 
 
-def table(name, close, reclose):
-    rows = []
-    for g in ("swe", "tool", "plain"):
-        if g not in close:
-            continue
-        c, ct, cp, clo, chi = crossings(close[g])
-        r, rt, rp, rlo, rhi = crossings(reclose[g])
-        rows.append((name, g, c, r, (ct, cp, clo, chi), (rt, rp, rlo, rhi)))
-    return rows
-
-
-series = {}
-# Old probe: p_first_close (close at 10.05's close point) and p_reclose (close again at 10.05's re-close point).
-for run, f in (
-    ("answer (old probe)", "probe_replay-10400-base300e.csv"),
-    ("mean (old probe)", "probe_replay-10400-meanseed.csv"),
-):
-    pf, pr = {}, {}
-    for r in csv.DictReader(open(A / f)):
-        g = GROUPS[r["group"]]
-        s = int(r["step"])
-        pf.setdefault(g, {})[s] = float(r["p_first_close"])
-        pr.setdefault(g, {})[s] = float(r["p_reclose"])
-    series[run] = (pf, pr, "p_first_close", "p_reclose")
-D = json.load(open(Path(__file__).parent / "page_data.json"))
-for key, name in (("answer", "answer (est)"), ("mean", "mean (est)"), ("ltslash", "</ (est, 20 steps)")):
-    est = D["est"][key]
-    series[name] = (
-        {g: {p[0]: p[1] for p in v} for g, v in est.items()},
-        {g: {p[0]: p[2] for p in v} for g, v in est.items()},
-        "P(>=1)",
-        "P(>=2)",
-    )
-for key, name in (("answer", "answer (exact)"), ("ltslash", "</ (exact)")):
-    ex = D["exact"][key]
-    series[name] = (
-        {g: {p[0]: p[1] for p in v} for g, v in ex.items()},
-        {g: {p[0]: p[2] for p in v} for g, v in ex.items()},
-        "P(>=1)",
-        "hazard",
-    )
-
-print(
-    f"{'run':22} {'grp':5} {'close metric':13} {'10/50/90%':14} {'re-close metric':15} {'10/50/90%':14} {'lag at 50%':>10}"
-)
-results = []
-for name, (cl, rc, cm, rm) in series.items():
-    for row in table(name, cl, rc):
-        _, g, c, r, ci, ri = row
-        print(
-            f"{name:22} {g:5} {cm:13} {c!s:14} {rm:15} {r!s:14} {r[1] - c[1]:>+10}   close trough->peak s{ci[0]}->s{ci[1]} ({ci[2]:.3g}->{ci[3]:.3g}); re-close s{ri[0]}->s{ri[1]} ({ri[2]:.3g}->{ri[3]:.3g})"
+def load_series() -> dict[str, tuple[Series, Series, str, str]]:
+    series = {}
+    for name, filename in OLD_PROBE.items():
+        first, again = {}, {}
+        with (ANALYSIS / filename).open() as f:
+            for row in csv.DictReader(f):
+                group, step = GROUPS[row["group"]], int(row["step"])
+                first.setdefault(group, {})[step] = float(row["p_first_close"])
+                again.setdefault(group, {})[step] = float(row["p_reclose"])
+        series[name] = (first, again, "p_first_close", "p_reclose")
+    data = json.loads((HERE / "page_data.json").read_text())
+    for key, name in ESTIMATE.items():
+        rows = data["est"][key]
+        series[name] = (
+            {g: {p[0]: p[1] for p in v} for g, v in rows.items()},
+            {g: {p[0]: p[2] for p in v} for g, v in rows.items()},
+            "P(>=1)",
+            "P(>=2)",
         )
-        results.append(
-            {
-                "run": name,
-                "group": g,
-                "close_metric": cm,
-                "close": c,
-                "reclose_metric": rm,
-                "reclose": r,
-                "close_range": ci,
-                "reclose_range": ri,
-            }
+    for key, name in EXACT.items():
+        rows = data["exact"][key]
+        series[name] = (
+            {g: {p[0]: p[1] for p in v} for g, v in rows.items()},
+            {g: {p[0]: p[2] for p in v} for g, v in rows.items()},
+            "P(>=1)",
+            "hazard",
         )
-json.dump(results, open(Path(__file__).parent / "trough_peak.json", "w"))
+    return series
+
+
+def main() -> None:
+    print(f"{'run':22} {'grp':5} {'close':13} {'10/50/90%':14} {'re-close':15} {'10/50/90%':14} {'lag at 50%':>10}")
+    results = []
+    for name, (close, reclose, close_metric, reclose_metric) in load_series().items():
+        for group in ("swe", "tool", "plain"):
+            c, *c_range = crossings(close[group])
+            r, *r_range = crossings(reclose[group])
+            print(
+                f"{name:22} {group:5} {close_metric:13} {c!s:14} {reclose_metric:15} {r!s:14} {r[1] - c[1]:>+10}"
+                f"   close s{c_range[0]}->s{c_range[1]}, re-close s{r_range[0]}->s{r_range[1]}"
+            )
+            results.append(
+                {
+                    "run": name,
+                    "group": group,
+                    "close_metric": close_metric,
+                    "close": c,
+                    "close_range": c_range,
+                    "reclose_metric": reclose_metric,
+                    "reclose": r,
+                    "reclose_range": r_range,
+                }
+            )
+    (HERE / "trough_peak.json").write_text(json.dumps(results))
+
+
+if __name__ == "__main__":
+    main()
