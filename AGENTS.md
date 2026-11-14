@@ -11,9 +11,9 @@ private results, or links that disclose restricted resources.
 ## Default branch
 
 Keep `main` as an index, templates, and repository guidance. Research source
-trees live on Marin-derived branches. Add index entries through PRs against
-`main`; do not merge research branches into it or rewrite its existing history.
-Existing `marin/*.md` records remain at their current paths.
+trees live on Marin-derived branches. Add or update a task's file in `index/`
+through a PR against `main`. Do not merge research branches into `main` or
+rewrite its history. Existing `marin/*.md` records remain at their current paths.
 
 ## Research branches
 
