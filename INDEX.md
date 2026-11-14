@@ -1,9 +1,7 @@
 # Research tasks
 
-Add one row per task through a PR against `main`. Link the task issue, research
-branch, and a notebook at a published commit. Update the status and contribution
-links when the task reaches a decision. Keep completed tasks in this index.
+Browse the [research task records](index/). Each record links to its coordinating
+issue, research branch, commit-pinned notebook, and Marin contributions.
 
-| Task issue | Question | Status | Research branch | Notebook at commit | Marin contributions |
-| --- | --- | --- | --- | --- | --- |
-| [#20](https://github.com/marin-community/marin-logbooks/issues/20) | Does quarter-power EMA-Gram preconditioning improve Delphi after LR and ridge tuning? | Active; v4-32 diagnosis queued | [codex/20-ema-gram-polar](https://github.com/marin-community/marin-logbooks/tree/codex/20-ema-gram-polar) | [Notebook](https://github.com/marin-community/marin-logbooks/blob/91d18dd15886088e0d2cfc3cf04b2aaf2c392675/logbooks/20-ema-gram-polar/notebook.md) | [marin#10790](https://github.com/marin-community/marin/pull/10790) |
+Follow [the index procedure](WORKFLOW.md#maintain-the-index) to add or update a
+task record.
