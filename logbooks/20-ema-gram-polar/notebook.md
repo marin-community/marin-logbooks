@@ -4562,3 +4562,31 @@ no scheduler job was cancelled or replaced. Future submissions use the verified
 dedicated tracking project. On retry, workers will restore the original frozen checkpoint and repeat the
 baseline work in a fresh measurement process. Previously measured progress is
 not restored.
+
+## 2026-11-14 — Verified data recovery and replacement submissions
+
+At 09:59 UTC the third scheduler attempt of power submission 02 again reported
+HTTP 429 in the shared W&B project. After the dedicated-project online check
+passed, cancelled power submission 02 and the two queued envelope submissions
+01 at 10:00 UTC. Published source e1a760495 was submitted as power 03 and
+eighth/quarter-middle envelope 02. Their immutable launch records contain the
+commands and identities. They retain batch priority, original v4-32 resources,
+no wall-clock caps and default scheduler preemption retries. These are fresh
+measurement attempts; saved baseline evidence from the retired job remains.
+
+The retired power task-0 timeline records scheduler preemptions at 09:36:33 and
+09:45:25, followed by explicit cancellation at 10:00:18. The post-cancellation
+job summary's aggregate preemption counter is six; do not interpret that as
+six independently observed process restarts. The task timeline distinguishes
+the two observed scheduler retries from the manual cancellation.
+
+FineWeb recovery completed at 10:03 UTC: all 79 files, totaling 21,417,271,392
+bytes, match the pinned public-source SHA256 values and uploaded GCS MD5 values.
+The recovered versions of all 40 surviving dependency files match the original
+objects' stored MD5 values.
+The [recovery manifest](geometry-muon-data-recovery.json) hashes to
+03d4705ea41971701fb7db8f6be30db051e9fc39e6319206e06d666ca2fd4d45.
+The Muon protocol now explicitly references this manifest and replacement cache.
+Original training configuration files remain intact. Actual-loader validation
+of all 704 measurement sequences is the remaining data gate before the Muon
+submission.
