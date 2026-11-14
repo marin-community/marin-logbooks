@@ -106,5 +106,12 @@
   "reference_objective": "FP32 vanilla CE plus1e-7z-loss, excluding decay; native gradient retains archived objective",
   "interpretation": "Four update batches per checkpoint are not independent training seeds",
   "training": "No training; restore full saved state and advance moments once per fresh update batch",
-  "schema_migration": "July plain/blend states contain all original arrays but no later-added correction counter. Strictly restore original schema; require saved step, optimizer, Adam and schedule counts to agree; copy that count into the new field. No partial load or zero reset."
+  "schema_migration": "July plain/blend states contain all original arrays but no later-added correction counter. Strictly restore original schema; require saved step, optimizer, Adam and schedule counts to agree; copy that count into the new field. No partial load or zero reset.",
+  "tracking": {
+    "entity": "marin-community",
+    "project": "ema-gram-geometry",
+    "mode": "online",
+    "owner": "task0",
+    "restart_policy": "fresh run per process attempt; no training resume claimed"
+  }
 }

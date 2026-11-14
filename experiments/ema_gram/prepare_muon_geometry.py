@@ -103,6 +103,13 @@ def main():
     protocol = dict(
         request_sha256="e8ea0a67f7746a7a41a49f96d8a83e3bf9190d824da59a21284cd5a776e27ef8",
         experiment="Muon frozen-checkpoint comparisons",
+        tracking=dict(
+            entity="marin-community",
+            project="ema-gram-geometry",
+            mode="online",
+            owner="task0",
+            restart_policy="fresh run per process attempt; no training resume claimed",
+        ),
         states=states,
         optimizer_source=PIN,
         optimizer_source_files=snapshots,

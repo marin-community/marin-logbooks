@@ -4528,3 +4528,14 @@ requests; it does not establish that the shared project limit has cleared.
 Task 0 still creates an online run, logs the preflight metric and waits for its
 upload before measurement. Formatting passed. A fresh online-only preflight
 remains to be checked.
+
+The local online-only check on source 108ef6d3e also stalled uploading its first
+metric to the shared marin project. Its run is
+https://wandb.ai/marin-community/marin/runs/ema-gram-geometry-377411a659c9.
+Stopped that local check without executing a model. The frozen protocols now
+select a dedicated online project, marin-community/ema-gram-geometry, for this
+research. W&B's [official support response](https://community.wandb.ai/t/after-429-encountered-filestream-rate-limit-exceeded-workaround-solution/7403)
+identifies separate experiment projects as a supported response to project-level
+file-stream limits. Existing records remain in their original project. No
+scheduler job has been replaced yet; verify an online upload to the selected
+project first.

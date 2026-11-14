@@ -79,8 +79,8 @@ def main():
     run = None
     if primary:
         run = wandb.init(
-            entity="marin-community",
-            project="marin",
+            entity=protocol["tracking"]["entity"],
+            project=protocol["tracking"]["project"],
             id=identity,
             name=identity,
             group="ema-gram-20-geometry-20261113",
