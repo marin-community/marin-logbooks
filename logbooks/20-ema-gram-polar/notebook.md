@@ -4529,13 +4529,36 @@ Task 0 still creates an online run, logs the preflight metric and waits for its
 upload before measurement. Formatting passed. A fresh online-only preflight
 remains to be checked.
 
-The local online-only check on source 108ef6d3e also stalled uploading its first
-metric to the shared marin project. Its run is
+The local online-only check on source 108ef6d3e stalled uploading its first
+metric to the shared marin project; its internal log confirms HTTP 429. Its run is
 https://wandb.ai/marin-community/marin/runs/ema-gram-geometry-377411a659c9.
-Stopped that local check without executing a model. The frozen protocols now
-select a dedicated online project, marin-community/ema-gram-geometry, for this
-research. W&B's [official support response](https://community.wandb.ai/t/after-429-encountered-filestream-rate-limit-exceeded-workaround-solution/7403)
+Stopped that local check without executing a model. The power/envelope, Muon and history protocol files now
+select the dedicated online project marin-community/ema-gram-geometry.
+These configuration changes were published separately in source 26c377d57. W&B's [official support response](https://community.wandb.ai/t/after-429-encountered-filestream-rate-limit-exceeded-workaround-solution/7403)
 identifies separate experiment projects as a supported response to project-level
 file-stream limits. Existing records remain in their original project. No
 scheduler job has been replaced yet; verify an online upload to the selected
 project first.
+
+
+The online-only check on source 26c377d57 completed successfully in the dedicated
+project: metric logging_check/success=1 and all five files uploaded, exit 0.
+[Preflight evidence](geometry-tracking-preflight.json) links both tracking
+attempts. This check executed no model and no optimizer step.
+
+Before replacing any scheduler job, collection found that power attempt 1 had
+already cleared logging, restored the complete model and optimizer state at
+counter 18666 on four hosts/16 devices, and
+loaded 256 mutually disjoint sequences. Its 64-sequence FP32 calibration loss
+was 3.6433394253; eight native eighth-power reference update norms ranged from
+1.30225 to 1.31909. These are baseline measurements, with no completed candidate
+comparison or validated curvature prediction yet. See the [saved configuration](geometry-results/power/eighth-middle/ema-gram-geometry-13aa4125f857/configuration.json)
+and [incremental measurements](geometry-results/power/eighth-middle/ema-gram-geometry-13aa4125f857/measurements.jsonl).
+
+A second scheduler preemption then returned the four tasks to pending. At
+09:47 UTC the job had two preemptions and zero application failures. Retained
+its existing automatic retry, along with the two queued envelope screens;
+no scheduler job was cancelled or replaced. Future submissions use the verified
+dedicated tracking project. On retry, workers will restore the original frozen checkpoint and repeat the
+baseline work in a fresh measurement process. Previously measured progress is
+not restored.
