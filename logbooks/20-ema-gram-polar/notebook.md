@@ -4796,3 +4796,34 @@ meet the prespecified requirement of at least 5% trace reduction for the path
 probe. These ratios measure tightness on
 calibration subspaces. Whether the frozen envelopes cover new directions is
 still unknown; publish this plan before launching those test measurements.
+
+
+At the 11:15 UTC check, probes of checkpoints trained with blend and Hesscorr had both
+completed with zero failures or preemptions. Their online trackers finished and
+synced five files each. The [completion records](geometry-completion-records.json)
+identify both runs. The primary [analysis](geometry-muon-primary-analysis.json)
+now verifies numerical gates, locked calibration records and complete held-out
+losses for six methods × four update draws × three checkpoints (72 directions).
+The original grid minimizes measured calibration loss; every choice selected
+zero. The quadratic rule maximizes predicted calibration improvement over the
+bounded continuous interval. At those model-selected lengths, feedback-minus-plain mean
+loss differences were positive at all three checkpoints, ranging from 0.54 to
+19.38 millionths. Hesscorr 0.05 at the Hesscorr checkpoint had an interval crossing
+zero; the remaining feedback-versus-plain paired 95% bootstrap intervals across
+the three checkpoints were positive. These conditional intervals omit
+numerical error, multiple-comparison adjustment and training-seed variation.
+The small-step supplement remains separate from these primary results.
+
+The [Muon figures](geometry-report/primary-figures/sources.json) explain zero
+choices explicitly and display the quadratic comparisons in millionths of loss.
+Two affected analysis tests and required lint passed. The accessible report
+renderer reuses adjustable text, spacing, section focus and figure zoom; browser
+checks passed on desktop and a 390-pixel mobile viewport. The report remains a
+draft while power, envelope test/path and history measurements are incomplete.
+
+Published plan/source 33f250eb5 was submitted for both held-out envelope tests.
+Power pilot 04 was preempted once by the scheduler without an application
+failure; its default retry was building at the 11:17 UTC check. This starts a
+fresh measurement from the saved training checkpoint; checkpoint restoration
+in the new process has not yet been verified. It will not restore interrupted
+probe progress. Partial evidence from the first process is retained.

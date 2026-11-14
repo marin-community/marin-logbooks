@@ -135,7 +135,7 @@ def envelope_figure(summary, path):
     finish(fig, axes, path)
 
 
-def muon_figure(summaries, path):
+def muon_figure(summaries, path, rules=("equal", "direct")):
     names = {
         "blend_0.02": "Blend 0.02",
         "blend_0.05": "Blend 0.05",
@@ -144,19 +144,47 @@ def muon_figure(summaries, path):
         "hesscorr_0.3": "Hesscorr 0.3",
     }
     colors = ["#1F77B4", "#8C62AA", "#4C956C"]
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4.7), layout="constrained")
-    for ax, rule, title in zip(
-        axes, ("equal", "direct"), ("A  Equal physical length", "B  Separately calibrated length"), strict=True
-    ):
+    titles = {
+        "equal": "Equal physical length",
+        "direct": "Grid-calibrated length",
+        "quadratic": "Quadratic-model length",
+    }
+    fig, axes = plt.subplots(1, len(rules), figsize=(6 * len(rules), 4.7), layout="constrained", squeeze=False)
+    axes = axes.ravel()
+    for panel, (ax, rule) in enumerate(zip(axes, rules, strict=True)):
+        title = f"{chr(65 + panel)}  {titles[rule]}"
+        maximum = max(
+            abs(interval[bound])
+            for summary in summaries
+            for interval in summary["paired_vs_plain_muon"][rule].values()
+            for bound in ("lower", "upper")
+        )
+        scale = 1e6 if 0 < maximum < 0.001 else 1
+        units = " (millionths)" if scale == 1e6 else ""
+        if rule == "direct" and all(s["direct_zero_steps"] == s["candidate_count"] for s in summaries):
+            ax.set_title(title)
+            ax.text(
+                0.5,
+                0.5,
+                "Every calibrated step was zero.\n\nEvaluation loss change = 0\n"
+                "for every candidate.\n\nThis grid does not rank\nsmall-step directions.",
+                ha="center",
+                va="center",
+                transform=ax.transAxes,
+                fontsize=14,
+                linespacing=1.6,
+            )
+            ax.set_axis_off()
+            continue
         for state_index, summary in enumerate(summaries):
             offset = (state_index - (len(summaries) - 1) / 2) * 0.18
             color = colors[state_index % len(colors)]
             for index, name in enumerate(names):
                 interval = summary["paired_vs_plain_muon"][rule][name]
                 y = index + offset
-                ax.hlines(y, interval["lower"], interval["upper"], color=color, lw=1.6)
+                ax.hlines(y, scale * interval["lower"], scale * interval["upper"], color=color, lw=1.6)
                 ax.scatter(
-                    interval["mean"],
+                    scale * interval["mean"],
                     y,
                     color=color,
                     s=30,
@@ -167,10 +195,10 @@ def muon_figure(summaries, path):
             yticks=range(len(names)),
             yticklabels=list(names.values()),
             title=title,
-            xlabel="Evaluation loss difference from plain Muon\n← Feedback helps        Feedback hurts →",
+            xlabel=f"Loss difference from plain Muon{units}\n← Feedback helps        Feedback hurts →",
         )
         ax.invert_yaxis()
-    axes[1].legend(title="Saved checkpoint", loc="best", fontsize=10)
+    axes[0].legend(title="Saved checkpoint", loc="lower right", fontsize=10)
     finish(fig, axes, path)
 
 
@@ -285,6 +313,7 @@ def main():
         history_figure(summary["history"], args.output / "history-effects")
     if summary.get("muon"):
         muon_figure(summary["muon"], args.output / "muon-controls")
+        muon_figure(summary["muon"], args.output / "muon-quadratic-controls", rules=("quadratic",))
     if "envelope" in summary:
         envelope_figure(summary["envelope"], args.output / "envelope-orientation")
 
