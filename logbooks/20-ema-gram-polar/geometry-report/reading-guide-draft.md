@@ -130,7 +130,7 @@ Five intervals were below zero; the quarter-trained late interval included zero.
 
 Each dot represents one checkpoint, one update draw and one candidate power. The diagonal marks equal predicted and observed improvement. A dot above it means the measured held-out improvement exceeded the calibration-based quadratic prediction. This comparison combines quadratic-model error and differences between calibration and evaluation text. It does not isolate either source.
 
-All 48 derivatives of the normalized complete update with respect to the power exponent, evaluated at 3/16, passed two-scale finite differences. Reference Hessian-vector and symmetry checks also passed.
+All 48 derivatives of the normalized complete update with respect to the power exponent, evaluated at 3/16, passed two-scale finite differences in the differentiable FP32 map. FP32 means 32-bit floating-point arithmetic; this derivative check uses the highest matrix-multiplication precision. It does not establish a derivative of the native low-precision computation. The loss comparisons above evaluate the native candidate directions. Reference Hessian-vector and symmetry checks also passed.
 
 On the first draw of each checkpoint, direct differentiation of endpoint loss with respect to the power exponent agreed with the endpoint-gradient chain rule. The calibrated nonzero step length was held fixed. The largest relative discrepancy was 0.0713%.
 

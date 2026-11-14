@@ -5048,3 +5048,19 @@ and mixes local-approximation error with reference/evaluation text differences.
 It was computed after measurement completion and did not alter any selection
 or step length. The report includes a separate error figure and explicit
 point-error table.
+
+At 13:56 UTC, the restarted eighth-middle history construction was checked
+against the preserved first attempt. Both replicas have identical record
+hashes and identical compressed raw-array file hashes. The expanded
+[data audit](geometry-history-data-validation.json) validates all three
+available constructions, including the restarted attempt. This is reproducible
+reconstruction after restoring the training checkpoint, not restoration of
+probe progress. Both candidate studies remain in calibration.
+
+The report now explicitly distinguishes the differentiable FP32 power map
+used for derivative checks from the native candidate directions used for
+loss comparisons. All 3,384 exported candidate rows were independently
+recomputed from weighted raw group losses and quadratic coefficients to
+absolute tolerance 1e-12. All 366 report evidence hashes matched. The rebuilt
+HTML passed text-size, spacing, section-navigation, figure-zoom, local-link
+and mobile-overflow checks; the tagged PDF was regenerated.
