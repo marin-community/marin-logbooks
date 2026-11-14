@@ -104,6 +104,8 @@ def main():
                 uri="gs://" + bucket_name + "/" + prefix + "/" + name,
             )
             print(json.dumps(dict(event="array_artifact", **record)), flush=True)
+            # Durable arrays already live in GCS; keep Iris's temporary output archive bounded.
+            path.unlink()
             return record
         return None
 
@@ -157,6 +159,7 @@ def main():
                 checkpoint_restore="Full model and optimizer; fresh frozen-probe attempt, not training resume",
                 host_count=jax.process_count(),
                 device_count=jax.device_count(),
+                device_kinds=sorted({d.device_kind for d in jax.devices()}),
                 wandb=run.url,
             )
             save("configuration.json", configuration)

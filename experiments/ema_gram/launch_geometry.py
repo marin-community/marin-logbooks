@@ -19,6 +19,8 @@ def main():
     parser.add_argument("--experiment", choices=("power", "envelope"), required=True)
     parser.add_argument("--stage", choices=("screen", "test", "path"), default="screen")
     parser.add_argument("--attempt", type=int, required=True)
+    parser.add_argument("--tpu", choices=("v4-32", "v5p-8"), default="v4-32")
+    parser.add_argument("--region", default="us-central2")
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--path-inputs", type=Path)
     parser.add_argument("--check-only", action="store_true")
@@ -80,7 +82,7 @@ def main():
         "batch",
         "--enable-extra-resources",
         "--tpu",
-        "v4-32",
+        args.tpu,
         "--cpu",
         "120",
         "--memory",
@@ -88,7 +90,7 @@ def main():
         "--disk",
         "50GB",
         "--region",
-        "us-central2",
+        args.region,
         "--extra",
         "tpu",
         "--sync-package",

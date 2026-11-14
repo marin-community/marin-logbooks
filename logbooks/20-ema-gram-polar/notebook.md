@@ -4345,3 +4345,26 @@ final checkpoints atstep11443 of11444; the archived linear LR schedule decays to
 zero at its end. A meaningful Muon probe radius therefore needs an explicit
 reference-step convention or an earlier complete state. Do not silently call a
 chosen reference learning rate the native next training update.
+
+## 2026-11-14 — Approved Muon reference scale and implementation checks
+
+The user chose a common reference learning rate of 0.012 for the three terminal
+Muon checkpoints. Preserve their Adam ratio of 0.3, giving 0.0036 for Adam
+parameters. This defines a reference probe scale; the archived next-step linear
+schedule is zero. Frozen configurations record the original objectives and
+128-sequence native update batches. Measurement microbatches contain 8 sequences.
+
+Restored three optimizer source files byte-for-byte from the pinned revision
+fffd6a64ce81722f44d02d754db7c4778e0a5be5. Added complete reference updates,
+F5 derivative controls, clipping/fallback and Sylvester diagnostics. Five local
+tests passed in 13.51 seconds, covering tall/wide matrix derivatives, radial-zero
+behavior, complete update momentum equality, unchanged Adam leaves, and disjoint
+text sampling with update batches larger than measurement microbatches. Lint and
+format checks passed. These tests do not establish checkpoint restoration or
+scientific results. The full Muon measurement worker remains to be integrated.
+
+Both initial v4 jobs remained pending without failures at 08:30 UTC. The planned
+quarter-middle envelope screen will stay in us-central2: its checkpoint occupies
+7.351 GB, and moving execution to us-central1 would add cross-region reads.
+The earlier proposed v5p move for this state was not executed. Muon checkpoints
+are already in us-central1 and can use local v5p resources there.

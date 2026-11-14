@@ -38,7 +38,17 @@ def checkpoint_identity(uri):
 def geometry_data(cfg, protocol, exclusions, save):
     seen = set(json.loads(exclusions.read_text()))
     records, rejected, panels, weights = [], [], {}, {}
-    for role, count in (("calibration", 8), ("evaluation", 16), ("update", 8)):
+    sizes = protocol["panels"]
+    sequences = {
+        "calibration": sizes["calibration_sequences"],
+        "evaluation": sizes["evaluation_sequences"],
+        "update": sizes["update_draws"] * sizes["sequences_per_update"],
+    }
+    batch_size = cfg.trainer.train_batch_size
+    if any(count % batch_size for count in sequences.values()):
+        raise ValueError("Panel sizes must contain complete measurement microbatches")
+    for role, sequence_count in sequences.items():
+        count = sequence_count // batch_size
         seed = protocol["seeds"][role]
         data = cfg.data.train_set(cfg.model.max_Pos, cfg.trainer.batch_schedule, key=jax.random.PRNGKey(seed))
         loader = DataLoader(
