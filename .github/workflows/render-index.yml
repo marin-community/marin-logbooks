@@ -1,0 +1,74 @@
+name: Research index
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - index/**
+      - INDEX.md
+      - scripts/render_index.py
+      - .github/workflows/render-index.yml
+  push:
+    branches: [main]
+    paths:
+      - index/**
+      - scripts/render_index.py
+      - .github/workflows/render-index.yml
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Check task records and generated edits
+        shell: bash
+        run: |
+          rendered=$(mktemp)
+          python3 scripts/render_index.py > "$rendered"
+          if ! git diff --quiet HEAD^1 HEAD -- INDEX.md; then
+            diff -u INDEX.md "$rendered"
+          fi
+
+  publish:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: publish-research-index
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+      - name: Refresh the table
+        shell: bash
+        run: |
+          rendered=$(mktemp)
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            # Another PR can land while this job is running. Regenerate from
+            # the latest main on each attempt and push a fast-forward only.
+            git fetch --no-tags origin refs/heads/main
+            git reset --hard FETCH_HEAD
+            python3 scripts/render_index.py > "$rendered"
+            cat "$rendered" > INDEX.md
+            if git diff --quiet -- INDEX.md; then
+              exit 0
+            fi
+            git add -- INDEX.md
+            git commit -m 'Refresh the research index'
+            if git push origin HEAD:refs/heads/main; then
+              exit 0
+            fi
+          done
+          exit 1
