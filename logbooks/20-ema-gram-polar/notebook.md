@@ -4996,3 +4996,35 @@ envelope control. CSV timing-scope labels distinguish synchronized power
 updates from history timings that may include pending gradients. All 2,064
 previously exported candidate loss changes and predictions reproduced from
 raw weighted group losses and quadratic coefficients.
+
+
+At 13:24 UTC, all six power checkpoints were verified complete: 144 candidate
+directions, 48 validated power tangents and six first-draw fixed-step derivative
+identities. The largest identity discrepancy was 0.0713%. All reference HVP and
+symmetry checks passed, and all calibration locks matched evaluation records.
+The quarter-early retry finished with five W&B files synced; its original
+14-candidate partial attempt remains archived.
+
+After individual grid calibration, curvature-minus-alignment differences for
+quarter early, middle and late were -82.99 [-127.06, -40.14],
+-106.87 [-188.93, -44.43] and -11.42 [-28.75, +0.34] millionths. Across
+all six states, three conditional, unadjusted 95% intervals exclude zero.
+Curvature exactly matches fixed quarter at five states. At quarter-late it
+chooses eighth on five draws and quarter on three, with mean loss 13.38
+millionths above fixed quarter [-9.14, +37.85]. These measurements do not
+establish an adaptive-selection advantage over fixed quarter.
+
+Both fixed-weight history collections built two disjoint 512-batch replicas.
+The [data audit](geometry-history-data-validation.json) verified 4,096 unique
+packed sequences per replica and no exact-sequence overlap with each other,
+update/calibration/evaluation panels or earlier excluded sequences. This does
+not prove document-level or pretraining disjointness. Their first saved-history
+calibration candidates exactly reproduce the prior power study's update norm,
+alignment, curvature and selected lengths for both powers at both checkpoints.
+
+The eighth history job was preempted after collecting both histories and three
+candidates. Retry f5c26d80ec75 restored training counter 18666 and restarted
+history collection and probe measurements; original attempt 4c3e4116d8eb
+remains archived. At 13:24 UTC both history jobs were calibrating candidates
+without application failures. The report now contains the complete six-state
+power comparison; history outcomes remain pending.

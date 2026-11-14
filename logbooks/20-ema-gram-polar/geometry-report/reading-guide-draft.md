@@ -6,9 +6,9 @@ This report follows the experiment request dated 13 November 2026. It extends th
 
 ## What can we conclude so far?
 
-**The first power checkpoint, all Muon comparisons and the matrix-envelope test screens are complete. The remaining power checkpoints and history comparisons are unfinished. Both fixed-coefficient path tests are complete.**
+**The power, matrix-envelope and Muon experiments are complete. The two optimizer-history comparisons are still running.**
 
-All three eighth-trained checkpoints passed numerical checks and held-out evaluation. After length calibration, curvature selection improved on alignment selection at the early checkpoint; middle and late intervals included zero. It exactly matched fixed power 1/4 at all three. Three quarter-trained checkpoints remain in progress.
+All six power checkpoints passed numerical checks and held-out evaluation. After length calibration, curvature selection improved on alignment selection with intervals below zero at three checkpoints. It did not establish an advantage over fixed power 1/4.
 
 All three Muon comparisons passed their numerical checks and evaluated 72 candidates in total. Every original-grid calibration chose zero length. At separately calibrated quadratic-model steps, feedback variants had less favorable measured mean changes than plain Muon at each checkpoint. These local differences are small. The smaller-grid supplement was registered before inspecting held-out outcomes. It is now complete at all three checkpoints: all 72 choices were nonzero, but the feedback methods still had less favorable means than plain Muon.
 
@@ -80,53 +80,65 @@ The model chooses its best action within a common bounded range, including the o
 
 A useful result would be a lower paired evaluation loss for the curvature-based choice than for the alignment-based choice. Good agreement between predicted and measured loss changes is a separate question; a predictor can be accurate without changing the preferred action.
 
-## Power result: a clear early benefit, uncertain later benefits
+## Power result: gains over alignment, no demonstrated gain over fixed 1/4
 
-**On the eighth-trained trajectory, curvature selection beats alignment selection at the early checkpoint. Its middle and late differences remain uncertain.**
+**Curvature selection improves on alignment selection in three of six checkpoint comparisons. It does not establish an advantage over always choosing power 1/4.**
 
-All three checkpoints from this trajectory completed: 72 candidate directions in total. The quarter-trained trajectory is still running. These are stages of one training run, not three independent training seeds.
+All six checkpoints completed: 144 candidate directions in total. They come from two training trajectories, using powers 1/8 and 1/4. The early, middle and late stages of one trajectory are correlated. This is not a six-seed replication.
 
-For each power, the curvature rule maximizes its quadratic prediction over the bounded length interval, then selects the power with the largest predicted improvement. The selected power receives a separately grid-calibrated length. All powers use the same calibration text; “separately” refers to their length choices.
+For each candidate power, the curvature rule maximizes its quadratic prediction over the bounded length interval. It then selects the power with the largest predicted improvement. The selected power receives a separately grid-calibrated length. All powers use the same calibration text; “separately” refers to their length choices.
+
+Every fixed-power comparator receives the same per-draw grid calibration as the selected powers. The common grid is {0, 0.1, 0.3, 0.6, 1, 2, 4} × r, followed by midpoint refinement around the best interior grid point. The quadratic model optimizes over [0, 4r]. Here r is the checkpoint’s median native eighth-power norm.
 
 The alignment rule chooses the power with the largest inner product ⟨g,d⟩, using the calibration gradient g and unit-normalized complete update d.
 
-The curvature rule chose power 1/4 on all 24 update draws across the three checkpoints. Direct minimization of calibration loss made the same choices. Alignment chose 1/8 on 22 draws, 3/16 once and 1/4 once.
-
 The table compares held-out losses after each selected power calibrates its own length. Negative differences favor curvature selection. Values are **millionths of loss**.
 
-| Eighth-trained checkpoint | Curvature minus alignment | Conditional 95% interval |
+| Training power · checkpoint | Curvature minus alignment | Conditional 95% interval |
 | --- | ---: | ---: |
-| Early | -80.59 | [-137.97, -34.66] |
-| Middle | -21.77 | [-59.85, +16.07] |
-| Late | -20.59 | [-55.48, +14.52] |
+| 1/8 · early | -80.59 | [-137.97, -34.66] |
+| 1/8 · middle | -21.77 | [-59.85, +16.07] |
+| 1/8 · late | -20.59 | [-55.48, +14.52] |
+| 1/4 · early | -82.99 | [-127.06, -40.14] |
+| 1/4 · middle | -106.87 | [-188.93, -44.43] |
+| 1/4 · late | -11.42 | [-28.75, +0.34] |
 
-Only the early interval lies entirely below zero. Each interval resamples eight update draws and 16 evaluation-text groups while retaining pairing. The checkpoint, calibration panel and locked selection rules remain fixed. The intervals do not adjust for multiple comparisons.
+The intervals lie entirely below zero at the two early checkpoints and the quarter-trained middle checkpoint. The other three intervals include zero. Each interval resamples eight update draws and 16 evaluation-text groups while retaining pairing. Checkpoint, calibration panel and locked selection rules stay fixed. The intervals do not adjust for multiple comparisons.
 
-![Curvature-minus-alignment differences at three checkpoints. The early interval lies below zero; middle and late intervals cross zero.](power-figures/power-predictions-selection.png)
+![Curvature-minus-alignment differences at six checkpoints. Three conditional intervals lie below zero and three include zero.](power-figures/power-predictions-selection.png)
 
-**Curvature exactly matched fixed power 1/4 at all three checkpoints.** These results do not establish a benefit from adaptive selection over always choosing 1/4. The remaining trajectory tests whether the useful choice changes across other saved states.
+**The fixed-quarter comparison limits the adaptive-selection claim.** Curvature chose 1/4 for every draw at five checkpoints, so it exactly matched the fixed-quarter comparator there.
 
-At equal physical length r, the same locked choices gave larger curvature-minus-alignment differences. Values remain in millionths of loss.
+At the quarter-trained late checkpoint, curvature chose 1/8 on five draws and 1/4 on three. Its mean held-out loss was 13.38 millionths higher than fixed quarter, with interval [−9.14, +37.85]. This comparison is uncertain and provides no evidence of a benefit from adapting the power. Across all six checkpoints, direct minimization of calibration loss chose the same powers as the curvature rule.
 
-| Eighth-trained checkpoint | Difference at equal length | Conditional 95% interval |
+Curvature also beat fixed 1/8 with intervals below zero at the same three checkpoints. The other three fixed-eighth comparisons were uncertain. All fixed-power and native-length comparisons are included in the linked analysis.
+
+At equal physical length r, the same locked choices gave larger curvature-minus-alignment mean differences. Values remain in millionths of loss.
+
+| Training power · checkpoint | Curvature minus alignment | Conditional 95% interval |
 | --- | ---: | ---: |
-| Early | -387.94 | [-623.79, -176.09] |
-| Middle | -223.62 | [-337.69, -115.83] |
-| Late | -96.85 | [-164.24, -27.72] |
+| 1/8 · early | -387.94 | [-623.79, -176.09] |
+| 1/8 · middle | -223.62 | [-337.69, -115.83] |
+| 1/8 · late | -96.85 | [-164.24, -27.72] |
+| 1/4 · early | -602.31 | [-826.68, -404.04] |
+| 1/4 · middle | -880.54 | [-1312.40, -443.65] |
+| 1/4 · late | -97.46 | [-247.40, +4.74] |
 
-All three intervals were below zero. Here r is the median native eighth-power norm at that checkpoint. The difference is smaller when every power can choose its own useful length; the length rule changes the scientific conclusion.
+Five intervals were below zero; the quarter-trained late interval included zero. Here r is the median native eighth-power norm at each checkpoint. The difference becomes smaller when every power chooses its own useful length. The length rule therefore matters when interpreting the selection benefit.
 
-![Predicted and observed improvements for 72 candidates across the three eighth-trained checkpoints at their grid-calibrated lengths.](power-figures/power-predictions-prediction.png)
+![Predicted and observed improvements for all 144 candidates at their grid-calibrated lengths.](power-figures/power-predictions-prediction.png)
 
 Each dot represents one checkpoint, one update draw and one candidate power. The diagonal marks equal predicted and observed improvement. A dot above it means the measured held-out improvement exceeded the calibration-based quadratic prediction. This comparison combines quadratic-model error and differences between calibration and evaluation text. It does not isolate either source.
 
-Every derivative of the normalized complete update with respect to the power exponent, evaluated at 3/16, passed two-scale finite differences: eight per checkpoint, 24 total. Reference Hessian-vector and symmetry checks also passed. On the first draw of each checkpoint, direct differentiation of endpoint loss with respect to the power exponent agreed with the endpoint-gradient chain rule at a fixed nonzero calibrated length. Relative discrepancies were 0.0125%, 0.0713% and 0.0067% for early, middle and late.
+All 48 derivatives of the normalized complete update with respect to the power exponent, evaluated at 3/16, passed two-scale finite differences. Reference Hessian-vector and symmetry checks also passed.
 
-The early checkpoint chose zero calibrated length for two of its 24 candidates; the other 70 candidates across all three checkpoints chose interior lengths. None chose the maximum radius. Zero is an allowed decision when every tested nonzero move raises calibration loss.
+On the first draw of each checkpoint, direct differentiation of endpoint loss with respect to the power exponent agreed with the endpoint-gradient chain rule. The calibrated nonzero step length was held fixed. The largest relative discrepancy was 0.0713%.
 
-Earlier pilot attempts ran out of accelerator memory. The corrected implementation reduces temporary Hessian-vector buffer lifetimes. The middle pilot was preempted once; its successful retry restored the training checkpoint and restarted probe measurements. Early and late completed without preemption. Partial attempts remain in the archive. Isolated native-update timing was unavailable in the middle pilot; early and late record it separately.
+Five candidates chose zero calibrated length: two at the eighth-trained early checkpoint and three at the quarter-trained middle checkpoint. The remaining 139 chose interior lengths; none chose the maximum radius. Zero won these candidates' measured calibration comparisons.
 
-[Validated power analysis](../geometry-power-analysis.json) · [Numerical checks for all completed checkpoints](../geometry-power-all-numerical-validation.json)
+Earlier pilot attempts ran out of accelerator memory. The corrected implementation reduces temporary Hessian-vector buffer lifetimes. The eighth-trained middle and quarter-trained early jobs each needed one scheduler retry. Each retry restored the training checkpoint and restarted probe measurements. Partial attempts remain in the archive. Isolated native-update timing is unavailable in the eighth-trained middle pilot; the other five runs record it separately.
+
+[Validated six-checkpoint analysis](../geometry-power-analysis.json) · [Numerical checks for all six checkpoints](../geometry-power-all-numerical-validation.json)
 
 ## 5. Experiment 2: does matrix orientation improve a curvature bound?
 
@@ -376,6 +388,6 @@ A failed numerical check means that the corresponding measurement is not accepte
 
 **The first priority is valid checkpoint evidence for power prediction and matrix orientation.**
 
-The three eighth-trained checkpoints passed numerical checks and held-out evaluation. The three quarter-trained checkpoints and two history comparisons must complete before the full planned comparison. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. The fixed-coefficient path measurements also passed at the sampled points after parameter movement.
+All six power checkpoints passed numerical checks and held-out evaluation. The two history comparisons must complete before the full planned comparison. All three original-grid Muon checkpoints and their smaller-step supplements are complete. The frozen matrix envelopes have passed their separate test-direction screens. The fixed-coefficient path measurements also passed at the sampled points after parameter movement.
 
 Only after these comparisons can the report support selecting a mechanism for matched training continuations. Full training claims and independent-seed replication are outside the completed evidence at this stage.
