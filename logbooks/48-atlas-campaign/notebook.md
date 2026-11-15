@@ -572,3 +572,15 @@ status: active
 - Evidence: permalink above; ledger update markers.
 - Interpretation and limitations: reviewer calibration unmeasured; fidelity census and per-release inspectable receipts remain the main open evidence items.
 - Decision and next action: fresh cold read round 14 next.
+
+### 2026-11-15 20:10 UTC - Revision 13 after cold-read round 14: sample-panels semantics note fully corrected
+
+- Question or hypothesis and reason for trying it: cold-read round 14 found the round-11 correction had not reached sample-panels.md's own Finding-count-semantics header note (which still asserted issue-event semantics). Corrected in place.
+- Published source revision: unchanged cut; branch head `549a05d951…` per the 19:40 hourly entry.
+- Command or material configuration: as revision 11.
+- External inputs and artifact references: `full_qc_review.py#L78–L103` permalink at the recorded cut.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: sample-panels.md's Finding-count-semantics note (and the §-level rows flagged by round 14) now state uniformly: every count in that file is a distinct-affected-reviewed-task count (SAMPLE and FULL alike); per-row flag tallies are separate diagnostics, not issue_count. All "issue-event" assertions are withdrawn with the note marked "round-14 correction".
+- Evidence: sample-panels.md (Updated 2026-11-15 ~20:10 UTC).
+- Interpretation and limitations: unchanged.
+- Decision and next action: fresh cold read round 15 next.

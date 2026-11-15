@@ -6,7 +6,7 @@
   digests only.
 - **Compiled at**: 2026-11-15 (UTC); corrected by cold-read round 7.
   Updated 2026-11-15 17:05 UTC (cold-read round 8: §3 Math-Oracle and §7 code-oracle numerators
-  labeled with explicit fields; Puzzles "22 affected tasks" relabeled as finding events;
+  labeled with explicit fields; Puzzles "22 affected tasks" initially relabeled as finding events, then round-14-corrected back to affected-task semantics;
   §5 full pin/receipt IDs and the 3.281682-GPU-h ÷ 8-GPU duration reconciliation; §6 nine-panel
   lineage wording harmonized with admission-ledger.md §1; the branch moved past this cut after
   compilation — post-cut landings are NOT incorporated here).
@@ -14,7 +14,7 @@
   replaced — the "26-minute" figure and the 3.281682-GPU-h ÷ 8 = 24.61-minute figure are different
   clock bases, not roundings of one interval; attempt-4 timeline now anchored to the local
   gpu-attempt-times CSV; §5 FULL-lane semantics note added distinguishing row-level (FULL) from
-  event-level (SAMPLE) finding counts).
+  SAMPLE finding counts (affected-task semantics per round-14 correction)).
   Updated 2026-11-15 18:45 UTC (cold-read round 10: §7 code-oracle example reconciled with the
   later finalized FULL binding — both dated snapshots and the repair-transition delta are given;
   the public `full_content_results.json` transport is cited as the public source of the finalized
@@ -37,23 +37,9 @@
   4bdbc7eeed5a861e0bb22d25a434dd5a98744484 (public commit-message reports),
   [P] private registry `open-athena/marin-rl-data-atlas-registry` (panels and observations are
   private; only counts and hashes are reproduced).
-- **Access class**: aggregate panel metadata only; no per-task findings text. "Findings" are
-  reviewer issue-events, not necessarily distinct affected tasks, except where a source says
-  otherwise.
-- **Finding-count semantics (round-9 note; where the local files give row-level counts)**: two
-  count types exist and must not be mixed. (i) **SAMPLE-panel counts in this file are issue-EVENT
-  counts** (reviewer findings per panel; a task with several flags can contribute several events)
-  — e.g. Puzzles "22 affected reviewed tasks (22.68% = affected/conclusive; issue_count increments once per reviewed task with issues per the public runtime code)",
-  the Code14 anchors (Unitsyn 54, TACO 25, PyMethods 37), and the 245-panel aggregate's finding
-  totals; distinct-affected-task counts are **not established** for these panels in the read set.
-  (ii) **FULL-lane aggregates in atlas-full-qc/REPORT.md are row-level (task-row) counts** — the
-  numerators and denominators are distinct population rows, e.g. Math Oracle "5,020 issues across
-  57,253 conclusive reviews (8.7681%)" [R: REPORT.md:1920, :118] and code-oracle "1,026 / 15,087
-  conclusive (6.80%)" [R: REPORT.md:2214; frozen-assembly stage — later finalized to 1,033/15,151, see §7] — each retained row is one task of the retained
-  population, so these ARE distinct-affected-row (task) counts; their per-row flag tallies (e.g.
-  1,188 overlapping top flags on code-oracle) are NOT distinct-row counts and overlap across rows.
-  Result thresholds (issue rate over affected conclusive rows) are computable only for type (ii);
-  SAMPLE event counts must not be divided by conclusive rows as if they were affected-task counts.
+- **Access class**: aggregate panel metadata only; no per-task findings text.
+- **Finding-count semantics (round-14 correction; supersedes the round-9 note)**: per the public runtime code at the recorded cut (`full_qc_review.py#L78–L103` — `issue_count` increments **once per reviewed task whose verdict has issues**, `issues` entries are keyed by task_id; exactly-once panel membership is enforced downstream), **every count in this file is a distinct-affected-reviewed-task count** — SAMPLE panels and FULL-lane row counts alike. A task with several flags still contributes ONE issue_count. Examples: Puzzles 22 affected tasks (22.68% = affected/conclusive), Code14 anchors (Unitsyn 54, TACO 25, PyMethods 37), the 245-panel aggregate, Math Oracle 5,020/57,253, code-oracle 1,026/15,087 (frozen-assembly stage; later finalized to 1,033/15,151, see §7). Result thresholds (affected/conclusive) are computable for all of them. Per-row flag tallies (e.g. 1,188 overlapping top flags on code-oracle) are separate diagnostics and are NOT issue_count. The earlier "issue-event counts; distinct-task counts not established" note is withdrawn.
+  - Remaining limitation (unchanged): the underlying per-task receipts are registry-private [M]; the counts above are commit-message reports or local-ledger transcriptions pending published receipts.
 
 ## 1. Reviewer spec and panel construction (checkpoint245-pr-body-v3.md [R])
 
@@ -113,7 +99,7 @@ in the private registry receipts and are not locally enumerable):
 | Safety FULL precedence | ≤2026-11-14 | — | replaces its SAMPLE | FULL-superseded |
 | Math Oracle FULL (binding `a90ec881…`) | 2026-11-14 07:16 | pinned V2 | **GOOD Result; 5,020 issue rows among 57,253 conclusive reviews (8.7681% issue rate); 44 uncertain; 122 waived unreviewed — 57,253 + 44 + 122 = 57,419 = the retained population; accepted-incomplete final while strict-coverage-false/execution-pending stays explicit.** Round-11 correction: per the public runtime code (`full_qc_review.py#L78–L103` at the recorded cut — `issue_count` increments **once per reviewed task whose verdict has issues**, and `issues` entries are keyed by task_id; exactly-once panel membership is enforced downstream), all issue_count figures here are **distinct affected reviewed task rows** — the 5,020/57,253 FULL numerator/denominator and every SAMPLE count alike. Earlier "issue events / distinct-task counting not established" wording is withdrawn; the public `full_content_results.json` transport at the recorded cut carries the same aggregate [P: `TaskTrove:tasktrove-math_oracle-qa`: reviewed 57,253 / issue_count 5,020 / issue_rate 0.08768099488236425 / verdict good / accepted_incomplete, input pin `43d45617…`]) | FULL-superseded its SAMPLE |
 | CrossCode Python FULL (#11459, merged 06:57:27) | 2026-11-14 | — | GOOD, 8/500 issues, complete coverage, zero unavailable/uncertain, no waiver | 6th current FULL Result |
-| QA-lane nine exact-pin panels | 2026-11-15 (FINAL_STATUS 05:33) | reviewer SHA `a3e17ee0…`, runtime `87f63bd2…` | 900 reviewed / 0 unavailable / 0 uncertain / 134 finding events (123 preserved + 11 new in repaired rows) | new-era panels, registry revision `b8920640e68a…` |
+| QA-lane nine exact-pin panels | 2026-11-15 (FINAL_STATUS 05:33) | reviewer SHA `a3e17ee0…`, runtime `87f63bd2…` | 900 reviewed / 0 unavailable / 0 uncertain / 134 affected reviewed tasks (123 preserved + 11 new in repaired rows) | new-era panels, registry revision `b8920640e68a…` |
 | Code14 fourteen panels | 2026-11-15 (completed 13:15 entry) | pinned V3 (524,288 context) | per-release in admission-ledger.md §2 | new-era panels |
 | Puzzles SAMPLE panel | 2026-11-15 (registered 4bdbc7eeed) | pinned V3 | 97 reviewed / 3 unavailable / 22 affected reviewed tasks (22.68% = affected/conclusive) SOME_ISSUES | new-era panel |
 
@@ -125,7 +111,7 @@ in the private registry receipts and are not locally enumerable):
   review completed. Store its 13 content findings in the current quality result and derive
   SAMPLE oversight from that review's receipt." The Stack name in the Code14/QA ledgers is
   `tasktrove-math_stack-qa` (processed twin, same 110,600 population, admitted at `8ea14c762f`,
-  also 13 finding events) — the raw Stack release is
+  also 13 affected tasks) — the raw Stack release is
   `laion__nemotron-gym-math-stack-overflow-v3` (see admission-ledger.md §1 for the mapping).
 - **Puzzles, 97/100 — public report [P]**: marin commit
   `4bdbc7eeed5a861e0bb22d25a434dd5a98744484` (author 2026-11-15 11:05:16 UTC), "Bind the
@@ -143,7 +129,7 @@ in the private registry receipts and are not locally enumerable):
 
 ### Code14 wave (code-fourteen-final-registration-ledger-v1.json [R]; 14 panels × ~100)
 
-All panels 100-size (reviewed 95–100 due to unavailable); findings are issue-events from the
+All panels 100-size (reviewed 95–100 due to unavailable); findings are distinct affected reviewed tasks per the runtime code (round-14 correction; originally transcribed from the
 reviewer, not necessarily distinct affected tasks. Full table with full revision IDs:
 admission-ledger.md §2. Anchor panels: Unitsyn-rebuilt 54 finding events (BAD [P fd670c41d1]),
 TACO-laion 25, PyMethods-small 37, CrossCode 1 (crosscodeeval-python-v2, EVAL), plus nl2bash
@@ -257,7 +243,7 @@ admission commit `c9f0235d8e`, Nov 15): different pin, different converter, diff
 
 - Result thresholds (inclusive boundary ruling): exactly 10% issues = GOOD, exactly 50% = BAD
   [R] atlas-env-audit REPORT.md (17:11 UTC entry).
-- Findings may be issue-events: one task can generate multiple flags. Full-code-oracle
+- Per-row flag tallies may exceed the affected-task count (a task can carry several flags; those tallies are diagnostics, not issue_count). Full-code-oracle
   example with explicit fields [R] atlas-full-qc REPORT.md:182, 2214
   (`SankalpKJ__nemotron-code-oracle-filtered`); **round-10 reconciliation — the ledger's example is the earlier
   frozen-assembly stage; the later finalized FULL binding is public.** Two dated snapshots of the same retained
