@@ -105,7 +105,7 @@ in the private registry receipts and are not locally enumerable):
 
 ## 4. Anchor panels with PUBLIC reports (corrected — the earlier "not found" TODOs are removed)
 
-- **Pin discipline within each source (round-14 note 18)**: every row above distinguishes the **old (historical FULL-era) pin** from the **new (current admission) pin** *within that source* — e.g. Math Oracle: historical FULL binding `a90ec881…` vs the source's current binding `43d45617…` in the public transport; processed Stack: historical FULL pin `41a27ac6…` vs the admitted release pin `5c6818d7…` (commit `8ea14c762f`); code-oracle: frozen-assembly state vs the finalized binding `f2b8131f…` (§7). Rows whose old/new pins are the same say so.
+- **Pin discipline within each source (round-14 note 18)**: every row above distinguishes the **old (historical FULL-era) pin** from the **new (current admission) pin** *within that source* — e.g. Math Oracle: historical FULL input revision `43d45617973824331f2ea485927c12eeb0461c43` vs the admitted release revision `6656fc7bfaa524198f8a52ae7db3165c69ab5301` (the `a90ec881…` identifier is the historical FULL binding, not a pin pair member); processed Stack: historical FULL pin `41a27ac6…` vs the admitted release pin `5c6818d7…` (commit `8ea14c762f`); CrossCode Python: historical FULL input `a953f93bc830704525ff2cce0b296dd262009662` vs admitted release `5c1270d7d2ec851e65d360e8efe752c556fe14ea`; code-oracle: frozen-assembly state vs the finalized binding `f2b8131f…` (§7). Rows whose old/new pins are the same say so.
 
 - **Raw Stack, 13 findings — public report [P]**: marin commit
   `c707bfbd5e872db9439f5f39dc8af1405a86e85b` (author 2026-11-15 04:35:37 UTC), "Admit the raw
