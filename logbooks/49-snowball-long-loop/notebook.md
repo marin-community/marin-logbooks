@@ -460,3 +460,17 @@ status: active
 - Evidence: links above.
 - Interpretation and limitations: unchanged.
 - Decision and next action: fresh cold read round 13 next.
+
+### 2026-11-15 19:58 UTC - Revision 12 after cold-read round 13: the mixture schedule itself is public; step-4 route-mean scoping
+
+- Question or hypothesis and reason for trying it: cold-read round 13 established that the actual mixture schedule (the 19 entries with their weights) and the full component declaration are publicly reproducible from the #54 recipe — not just their hashes. Also, the selection ledger's "raw route reward means unavailable" statement conflicts with step 4's use of route reward means; both corrected here.
+- Published source revision: unchanged training identities; the #54 archive record (branch codex/54-snowball-isoflop-ablations) publishes the recipe that reproduces them.
+- Command or material configuration: verification: the IsoFLOP archive recipe (logbooks #54) declares the 377 components and the 19-entry weight schedule; recomputing its declaration/schedule hashes matches the long-loop recipe hashes `d372def…`/`e954bba…` [P].
+- External inputs and artifact references: https://github.com/marin-community/marin-logbooks/tree/codex/54-snowball-isoflop-ablations; marin#11337 round-2 entry.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart:
+  1. **Mixture schedule is public**: both long-loop rounds' component declaration AND 19-entry weight schedule are publicly reproducible [P]; the private residue is only the per-source materialized data (positions/loss tokens per source — published for round 2 in evidence/per-source-accounting.md) and the round-1 realized exposure table (unmeasured publicly). All earlier "schedule hash [M]" labels are withdrawn (revision 11 had relabeled only the hashes).
+  2. **Route-mean scoping**: the "raw route reward means unavailable" statement applies to the exp2 per-eval receipts (which publish route pass@1 fractions, not route means); exp1's step-4 receipt DOES use route reward means (its aggregate is built from them) — the ledger's route-score definitions are scoped accordingly: route reward means exist for exp1 step 4 [R: STATUS.md L834 context], are not published for the exp2 evals.
+- Evidence: #54 record; receipts cited in evidence/selection-ledger.md.
+- Interpretation and limitations: unchanged.
+- Decision and next action: fresh cold read round 14 next.
