@@ -1,0 +1,7 @@
+# What did the Snowball IsoFLOP ablation campaign establish before the user stopped it as misconfigured, and what must NOT be concluded from its data?
+
+- Task issue — [#54](https://github.com/marin-community/marin-logbooks/issues/54)
+- Status — Archived (as of 2026-11-15 16:16 UTC). Campaign stopped early by user decision ("misconfigured at the start and aren't telling us much") after 866.32 H100-h (A 544.89 + B 107.47 + C 63.32 + D 150.64 + Q5 0). Completed: 18/18 grid cells with permanent endpoints; B/C layout selections (sonic d512/d768, ring d1024); D sweep 17/18 trials — adam beats MuonH at d512 (gap 0.113317) and d768 (gap 0.05012369); no d1024 winner (5/6; stop order); Q5 never launched. Audit-corrected history: D-run "preemption waves" refuted (watchdog exit-124 self-cancels; D-r4 phase-budget guard); preemption narrative belonged to another user's jobs. Explicit not-valid-to-conclude list in the notebook. Sources: FINAL.md [R], RECOMMENDATIONS-next-long-loop.md rev 3 [R], claim-audits, marin#11440 [P].
+- Research branch — [codex/54-snowball-isoflop-ablations](https://github.com/marin-community/marin-logbooks/tree/codex/54-snowball-isoflop-ablations)
+- Notebook at commit — [Notebook](https://github.com/marin-community/marin-logbooks/blob/9e4c2a9808c7bae80584429569f30857786778fc/logbooks/54-snowball-isoflop-ablations/notebook.md)
+- Marin contributions — None merged into marin main by this record; experiment files live on the marin branch \`snowball-isoflop-ablations\`
