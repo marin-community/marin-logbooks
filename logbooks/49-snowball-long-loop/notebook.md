@@ -486,3 +486,12 @@ status: active
 - Evidence: ledger updated (Updated 2026-11-15 ~20:10 UTC).
 - Interpretation and limitations: unchanged.
 - Decision and next action: fresh cold read round 15 next.
+
+## Known limits
+
+This section lists what cannot be fixed in this public record by policy or by absence of measurement. Cold readers should not re-raise these as notes.
+
+1. **Private data and per-source contents**: task text, prompts, model outputs, eval traces, and attempt-level reward rows (task/repetition IDs tied to rewards) are never published (user data sign-off required); the sealed exp1/exp2 archives, EvalDash rows, and per-route declared score bounds are [M].
+2. **Unpublishable artifacts**: the round-1 recipe tar and round-2 frozen consumed-config/input directories, corrected SFT→RL handoff, untracked runtime-input bundles of the dirty builds, W&B full histories (authenticated; anonymous access not verified), and the sealed archive internals. Published: public base/source commits, YAMLs, stage tables, hashes, job IDs.
+3. **Reproduction impossible by policy**: a new long-loop round is not authorized (user decision); no regrading or resampling beyond the recorded per-round recovery policies (exp1 startup restarts, exp2 verifier-only); mar#11120 merge and card updates are owner/user actions, not record actions.
+4. **Measurements never taken**: exp1 full per-step selection series (only steps 14/16 receipts exist; best16 selection reported, not independently recomputable); matched SFT-only/pre-RL Micro210 baseline and repeated-seed uncertainty (quality effect unanswered by design of the two rounds); exp2 total allocation-hours and peak concurrent-GPU timeline; native SFT-phase timing for exp2; the three-way (train/selection-holdout/final-eval) overlap report; checkpoint retention-expiry verification (14-day lifecycle unverified); seven upstream HF revision identities.
