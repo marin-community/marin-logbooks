@@ -178,7 +178,12 @@
   checks `…-v2-health-20261114T045716.log`/`T052106.log`, Linux CI diagnostic
   `atlas-difficulty-ci-linux-diagnostic-20261113-v1-submit.log` [R] `.../active/atlas-difficulty/`.
 - Qualified difficulty cut: 1,240 records — 116 measured / 1 pending / 1,123 N0 [R]
-  atlas-env-audit REPORT.md (v9.2 entry).
+  atlas-env-audit REPORT.md (v9.2 entry). Field definitions (round-14 note 36): a "record" is
+  one (source, solver) cell in the difficulty campaign's measurement plan; **N0** marks cells
+  with no solver run recorded (not yet measured at that v9.2 cut — "N-zero", not a numeric
+  value); "measured" marks cells with a recorded solver measurement; "pending" marks cells
+  whose run was submitted but not recorded at the cut. No solve rates are implied — the 116
+  figure counts measured cells, not scores.
 
 ## 8. Curriculum experiment — public cost anchor (corrected; previously a TODO)
 

@@ -120,17 +120,13 @@ in the private registry receipts and are not locally enumerable):
   issue rate, SOME_ISSUES), bound to the exact current pin population."
 - **What remains unavailable for both anchors**: the panels' independently inspectable metadata
   and measurement receipts (panel object contents, per-observation rows) live in the private
-  registry [M]; and the per-task receipt publication (the 13 / 22 affected-task counts are already the distinct-task semantics per the runtime code;
-  22 distinct tasks) is not established by the public commit text — the commit-message figures
-  are reported aggregates. Per the round-5 evidence-label rule: the commits prove public
-  *reporting*, not independent inspectability.
+  registry [M]; and the per-task receipt publication (the 13 / 22 counts are already distinct-affected-task semantics per the runtime code) is not established by the public commit text — the commit-message figures are reported aggregates. Per the round-5 evidence-label rule: the commits prove public *reporting*, not independent inspectability.
 
 ## 5. Current-era panels (post-archive, per lane)
 
 ### Code14 wave (code-fourteen-final-registration-ledger-v1.json [R]; 14 panels × ~100)
 
-All panels 100-size (reviewed 95–100 due to unavailable); findings are distinct affected reviewed tasks per the runtime code (round-14 correction; originally transcribed from the
-reviewer, not necessarily distinct affected tasks. Full table with full revision IDs:
+All panels 100-size (reviewed 95–100 due to unavailable); findings are distinct affected reviewed tasks per the runtime code (round-14 correction; the original ledger transcription's "not necessarily distinct affected tasks" caveat is withdrawn). Full table with full revision IDs:
 admission-ledger.md §2. Anchor panels: Unitsyn-rebuilt 54 affected reviewed tasks (BAD [P fd670c41d1]),
 TACO-laion 25, PyMethods-small 37, CrossCode 1 (crosscodeeval-python-v2, EVAL), plus nl2bash
 22/15, pym-large 44/39, unitsyn-large 43/46, unitsyn-v4 38, calendar-agent 2. The two panels
@@ -246,8 +242,11 @@ admission commit `c9f0235d8e`, Nov 15): different pin, different converter, diff
 - Per-row flag tallies may exceed the affected-task count (a task can carry several flags; those tallies are diagnostics, not issue_count). Full-code-oracle
   example with explicit fields [R] atlas-full-qc REPORT.md:182, 2214
   (`SankalpKJ__nemotron-code-oracle-filtered`); **round-10 reconciliation — the ledger's example is the earlier
-  frozen-assembly stage; the later finalized FULL binding is public.** Two dated snapshots of the same retained
-  15,156-row population:
+  frozen-assembly stage; the later finalized FULL binding is public.** Two snapshots of the same retained
+  15,156-row population, each with its own date where the source records one: the frozen-assembly
+  snapshot's date is not stated by REPORT.md:182/:2214 (it is the pre-repair state recorded during
+  the assembly pass; the round-14 wording "both snapshots are dated" is withdrawn for that one), while the
+  finalized public binding carries its own receipt date (pin f2b8131f…, 2026-11-15):
   1. **Frozen assembly (provisional; recorded in the full-qc REPORT, pre-repair)** [R: REPORT.md:182, :2214]:
      population 15,156 retained = **15,087 valid (conclusive-review denominator) + 69 INVALID**; 0
      unavailable; 0 uncertain; **1,026 affected conclusive rows** = 6.80% issue rate → **provisional GOOD
