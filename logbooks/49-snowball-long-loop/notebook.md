@@ -289,3 +289,24 @@ status: active
 - Evidence: [P] links inline; [M]/[R] labeled.
 - Interpretation and limitations: as previously recorded.
 - Decision and next action: fresh cold read round 5 next.
+
+### 2026-11-15 14:58 UTC - Revision 5 after cold-read round 5: broken-link fix, shaping semantics, loss-row split, timing-bound wording
+
+- Question or hypothesis and reason for trying it: fresh cold-read round 5 returned NOTES (21 items); concrete fixes below.
+- Published source revision: corrected selection-callback link https://github.com/marin-community/marin/blob/0c1e81ca93635ac157db90ff786a8f8fba65b13c/vendor/skyrl/skyrl-train/skyrl_train/callbacks/builtin.py#L260 (the revision-4 link's directory path was wrong — no `marinskyrl/callbacks` directory exists at that revision; the correct package root is `skyrl-train/skyrl_train`). Shaping implementation: https://github.com/marin-community/marin/blob/0c1e81ca93635ac157db90ff786a8f8fba65b13c/vendor/skyrl/skyrl-train/skyrl_train/trajectory_runners/trajectory_reward_shaping.py#L507.
+- Command or material configuration: n/a.
+- External inputs and artifact references: as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart:
+
+**Corrections**
+
+1. **Selection-callback link fixed** (revision 4 cited a 404 path). The revision-4 description of the selection rule (finite trailing window of five scheduled two-update validations; all scheduled observations must be scored; ties keep the earliest checkpoint) is supported by the corrected base code at the link above.
+2. **Reasoning-span shaping semantics** (base implementation [P]; round-2 dirty-build equivalence unverified): the pinned function subtracts **0.1 from each located malformed-span marker's token advantage** when detected marker locations match the violation count; otherwise it applies a **trajectory-level reward penalty of −0.1**. A "malformed span" is a reasoning span whose marker pattern fails the violation detector's check. So the penalty is per-marker-token (advantage-level) in the matched case and once per trajectory in the fallback case.
+3. **SFT loss rows split** (revision 4's single row conflated them): SFT chat masking = assistant-only supervision in both rounds; SFT causal replay = replay text also carries loss — round 2 consumed **2,821,707,252 causal-replay loss tokens** (round-1 realized replay-loss total not published [M]). They are separate rows in any later table.
+4. **Elapsed-time wording** (revision 2 correction 5 over-attributed): the ≥38 h 49 min bound requires only the submission and completion timestamps — both are public reports; the **exact initial submission timestamp is missing from the public record**, and native SFT-phase timing is separately unavailable. What is established: under the public-reporting endpoints, the target was missed; exact elapsed and phase attribution remain unmeasured.
+5. **Overlap scope**: the 120-task selection holdout's disjointness from **training** is the established claim; its overlap with final Micro210 membership is **not established** and is not claimed. A sanitized three-way membership/overlap report remains unpublished.
+6. **Issue #49 navigation**: a milestone comment with the revision-4+ notebook link and current verdicts accompanies this entry; earlier comments remain as dated history.
+- Evidence: [P] links inline.
+- Interpretation and limitations: unchanged.
+- Decision and next action: fresh cold read round 6 next.
