@@ -30,6 +30,9 @@ status: active
 
 ## Entries
 
+> [!NOTE]
+> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries (14:25/14:35 UTC) at the end of this file, which append glossary, policy, corrections, and evidence classes. Corrections are appended, never rewritten.
+
 ### 2026-11-15 13:55 UTC - Campaign catch-up record (2026-11-12 through 2026-11-15)
 
 - Question or hypothesis and reason for trying it: build the chronological catch-up record of the Atlas campaign so far, per the research-secretary brief.
