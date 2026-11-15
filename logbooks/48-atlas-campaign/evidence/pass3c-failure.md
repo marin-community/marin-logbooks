@@ -4,6 +4,10 @@
   provenance, the unpacking defect with a minimal reproducible example, attempt identities,
   telemetry that exists locally, population transitions, and what survived the crash.
 - **Compiled at**: 2026-11-15 (UTC); corrected by cold-read round 7.
+  Updated 2026-11-15 17:05 UTC (cold-read round 8: §1 cut-state sentence sharpened; §2 labeled
+  an excerpt with the Python-version note; §5 serving-allocation row added with the
+  device-type caveat; the branch moved past this cut after compilation — post-cut landings
+  are NOT incorporated here).
 - **Source cut**: the recorded 13:51 UTC Nov 15 source cut is branch `atlas-env-audit` head
   `96fc0736fc95d8f21d11e1c03dfca108d568b220` (pushed via atlas-push). **Evidence cutoff**: facts
   recorded under the 15:30 UTC entries (probe-A results, `accepted_incomplete` waiver
@@ -43,13 +47,21 @@ unfixed; 75 INVALID openreasoning rows need a repaired pass"; no final artifact)
 REPORT carries the fix + finalization under a **13:15 UTC** heading, which by its label predates
 the cut by 36 minutes — but the REPORT's heading times are editorial labels, the entry's write
 time is not independently pinned, and the cut-bound notebook did not reflect the entry. The
-honest reading: at the recorded cut the repair was pending per the notebook; the fix,
-finalization and root release are attested only by the REPORT entry, whose timing relative to
-the cut is ambiguous; **no commit pins the runner fix** (the runner is an unpublished local
-script). The waiver acceptance (event 9) and probe-A result (event 10) are unambiguously
-post-cut.
+honest reading: **the last independently time-bound observation is: repair pending at
+12:31:09** (43 REVIEWED / 75 INVALID, no final artifact); the fix, finalization and root
+release are attested only by the REPORT entry, whose **timing relative to the 13:51 cut is
+unknown** (the notebook's "at the recorded cut the repair was pending" and revision 7's
+"LATER" are both editorial characterizations, not pinned event times); **no commit pins the
+runner fix** (the runner is an unpublished local script). The waiver acceptance (event 9)
+and probe-A result (event 10) are unambiguously post-cut.
 
 ## 2. The defect (tuple-unpack bug) — mechanism and minimal example
+
+**Scope note (round 8)**: this section is an **explanatory excerpt**, not the published
+runner source — the full 246-line pre-fix runner is not published anywhere in this record,
+so full-run reproduction remains unavailable (the earlier run-manifests claim that "the
+runner source itself is published in pass3c-failure.md §2" is corrected there). The
+standalone example below **requires Python ≥ 3.12** (`itertools.batched`).
 
 The coordinator's audit found the v3c runner "had the same tuple-unpack bug and crashed twice"
 [R] REPORT.md:2221. The mechanism is established by the **pre-fix** runner file (the local
@@ -160,6 +172,7 @@ for result in repaired.values():
 | 710 vs 778 reconciliation | requests vs cache entries are different counters at different cutoffs: the 710 counts distinct response IDs deduplicated across attempt receipts as of 12:31:09; the 778 counts keyed request envelopes in the cache manifest as of the 13:15 entry (attempt 2 kept generating between the two cutoffs, and cache writes/receipt flushes are not the same unit). The exact delta is **not reconciled by a local artifact** — unexplained remainder ~68 | partial | [R] both, above |
 | Token totals | 8,967,189 completion tokens of which 8,849,442 (98.7%) reasoning; 4,317,586 prompt tokens; 654/710 finish_reason=length (92.1%); 56 stop | found | [R] claim audit |
 | Serving telemetry (job-scoped) | 723 completed requests 08:44:05–12:29:09 UTC; generation_tokens_total delta 9,149,245 (~677.5 tok/s); mean e2e latency 239.0 s; queue mean 0.563 s; **zero vLLM preemptions** (no counter resets); at 12:29:35 "Avg generation throughput: 656.3 tokens/s" | found | [R] claim audit |
+| Serving allocation (added round 8) | 8 GPUs, one model engine, tensor_parallel_size=4 × pipeline_parallel_size=2, four GPUs each on nodes s41sxs64/shbrxs64; server startup 08:34:46.852 UTC; max_num_seqs=32, max_num_batched_tokens=8192, max_model_len=524288; mean power 444–495 W/GPU (12:00–12:30 window). **The GPU device type is NOT named in the claim audit or full-qc artifacts read** — the notebook's earlier "8×H100" label is not verifiable from the read set; do not infer the device from fleet defaults | found (allocation) / **unknown (device type)** | [R] claim audit:75–88 |
 | SM/tensor gauges | job-scoped: 100% utilization gauges with ~33% SM / ~1.5% tensor active, KV occupancy mean 5.08% | found | [R] claim audit |
 | Fleet-level gauge semantics | Finelog `telemetry_v1.vllm` gauges integrated over adjacent observed intervals without extrapolation, cumulative token counters differenced within complete process+label identity (see run-manifests.md §1) | partial | [R] REPORT.md:1298 |
 | Attribution | the 710 requests / 8.97M tokens / 92.1% length-finish / 656 tok/s / 239 s / zero-preemption figures originate from the **local claim-audit report** [R] — they are job-scoped audit measurements, distinct from the fleet-level Finelog windows in run-manifests.md §1 | — | — |

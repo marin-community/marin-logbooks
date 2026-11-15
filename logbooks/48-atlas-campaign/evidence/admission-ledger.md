@@ -5,10 +5,19 @@
   releases and the nine pending measurement categories, with the Unitsyn lineage. Counts, pins,
   digests and commits only.
 - **Compiled at**: 2026-11-15 (UTC); corrected by cold-read round 7.
+  Updated 2026-11-15 17:05 UTC (cold-read round 8: §1 QA table completed with all nine private
+  repo names and full release revisions transcribed from FINAL_STATUS-v2.json; §5 corrected
+  accordingly; commit-mapping note records the local REPORT.md:2094 discrepancy; the branch
+  moved past this cut after compilation — post-cut landings are NOT incorporated here).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
   **Evidence cutoff**: no fact in this file postdates that cut. The latest cited observations
   are the 13:15 UTC full-qc REPORT entry (Code14 completion, priority repairs, pass-3c
-  finalization) and the 05:33 UTC QA FINAL_STATUS — both predate the cut.
+  finalization) and the 05:33 UTC QA FINAL_STATUS. **Cutoff qualification**: REPORT heading
+  times are editorial labels and entry write times are not independently pinned — the Code14
+  facts above are treated as pre-cut, while the pass-3c finalization fact carried by the same
+  heading has timing **relative to the cut unknown** (last independently time-bound
+  observation: repair pending at 12:31:09; see pass3c-failure.md §1). Post-cut branch
+  landings (head `9fecbbf0b4…` 16:03:50 UTC and later) are NOT reflected in this file.
 - **Sources**: [R] `/Users/benfeuer/Documents/experiments/active/atlas-oracle-filter-qa/FINAL_STATUS-v2.json`
   (completed 2026-11-15T05:33:13Z), [R] `.../atlas-oracle-filter-code/code-fourteen-final-registration-ledger-v1.json`,
   [R] `.../atlas-oracle-filter-code/code-mechanical-empty-bindings-v2/manifest.json` + `measurement.json`,
@@ -35,25 +44,32 @@ checks passed (430,489 primary + 900 maintained exact-parent retries; 0 rejected
 0 provider holds). Coverage SHA `62a49f0ae99ba4cb4bf14f1f73f7a4067f17cede7c5f0b3d2dc880e1ce991f84`.
 Private publication version `2026.11.14.2-final-private`; fresh duplicate drops 0; lexical drops 0.
 
-**Commit mapping (corrected)**: raw Stack (`laion__nemotron-gym-math-stack-overflow-v3`,
-110,600) is admitted by **c707bfbd5e** (author 2026-11-15 04:35:37 UTC), NOT by 635e7b907f;
-`635e7b907f` (author 2026-11-15, early) carries five pins; `8ea14c762f` (current head at QA
-completion) carries the final three. The processed Stack twin `tasktrove-math_stack-qa` (same
-110,600 population) is admitted at `8ea14c762f`, distinct from raw Stack. Both carry 13-findings
-panels in the per-source table below. Any statement assigning raw Stack to 635e7b907f is
-superseded (see sample-panels.md §4 for the corresponding fix).
+**Commit mapping (corrected, and now corroborated by the lane's own final artifact)**: raw
+Stack (`laion__nemotron-gym-math-stack-overflow-v3`, 110,600) is admitted by **c707bfbd5e**
+(author 2026-11-15 04:35:37 UTC), NOT by 635e7b907f; `635e7b907f` (author 2026-11-15 04:54:03
+UTC) carries five pins; `8ea14c762f` (author 05:22:16 UTC) carries the final three. The
+per-source `admission_commit` fields in FINAL_STATUS-v2.json bind exactly this mapping. The
+processed Stack twin `tasktrove-math_stack-qa` (same 110,600 population) is admitted at
+`8ea14c762f`, distinct from raw Stack. Both carry 13-findings panels in the per-source table
+below. Any statement assigning raw Stack to 635e7b907f is superseded: the local full-qc
+REPORT entry at REPORT.md:2094 names "rawStack/procOracle/procOpen" as landed at
+`635e7b907f…`, but raw Stack cannot be among the five pins (110,600 ≠ the five-pin total
+110,152) and both the public commit message of c707bfbd5e ("Admit the raw Stack
+oracle-filtered pin") and the FINAL_STATUS `admission_commit` field bind raw Stack to
+c707bfbd5e — the REPORT parenthetical is a local shorthand error (see sample-panels.md §4
+for the corresponding fix).
 
 | Release (source_id) | Retained | Private repo (public name; contents [P]/[M]) | Private release revision | Admission commit | Per-panel reviewed / findings / Result |
 | --- | ---: | --- | --- | --- | --- |
 | TaskTrove:tasktrove-math_prism-qa | 2,221 | open-athena/campaign-release-tasktrove-math-prism-qa-9433b411-oracle-filtered-20261114-v2 | `12332f2b420313ff5cd635d0bd2ecf688b7db6ae` | `635e7b907f` | 100 / 15 / some_issues |
 | TaskTrove:laion__nemo-prism-math-v3 | 2,221 | open-athena/task-trove-laion-nemo-prism-math-v3-a3d51da3-oracle-filtered-20261114-v2 | `5d593e5ca5584f81377a3654abc9a22f87494f96` | `635e7b907f` | 100 / 15 / some_issues |
 | TaskTrove:laion__nemotron-gym-instruction-following-calendar-v3 | 5,673 | open-athena/task-trove-laion-nemotron-gym-instruction-follow-aafde1e3-oracle-filtered-20261114-v2 | `5c2d64e5881bbe9c3fc94c6fdfb4a9c8db175e17` | `635e7b907f` | 100 / 1 / good |
-| TaskTrove:tasktrove-math_oracle-qa | 57,419 | (final-pin release; repo name in FINAL_STATUS per-source table) | `6656fc7bfa…` | `635e7b907f` | 100 / 11 / some_issues |
-| TaskTrove:SankalpKJ__nemotron-math-oracle-filtered-v2 | 57,419 | (per FINAL_STATUS) | `ca4f2be988…` | `8ea14c762f` | 100 / 5 / good |
-| TaskTrove:laion__nemotron-gym-math-openmathreasoning-v2 | 42,618 | (per FINAL_STATUS) | `48079c7591…` | `8ea14c762f` | 100 / 30 / some_issues |
-| TaskTrove:tasktrove-math_stack-qa | 110,600 | (per FINAL_STATUS) | `5c6818d706…` | `8ea14c762f` | 100 / 13 / some_issues |
-| TaskTrove:tasktrove-math_openreasoning-qa | 42,618 | (per FINAL_STATUS) | `5528a398ba…` | `635e7b907f` | 100 / 31 / some_issues |
-| TaskTrove:laion__nemotron-gym-math-stack-overflow-v3 (**raw Stack**) | 110,600 | (per FINAL_STATUS) | `dbec3ca6aa…` | **`c707bfbd5e`** | 100 / 13 / some_issues |
+| TaskTrove:tasktrove-math_oracle-qa | 57,419 | open-athena/campaign-release-tasktrove-math-oracle-qa-7f7f7b29-oracle-filtered-20261114-v2 | `6656fc7bfaa524198f8a52ae7db3165c69ab5301` | `635e7b907f` | 100 / 11 / some_issues |
+| TaskTrove:SankalpKJ__nemotron-math-oracle-filtered-v2 | 57,419 | open-athena/task-trove-sankalpkj-nemotron-math-oracle-filter-eaf403d5-oracle-filtered-20261114-v2 | `ca4f2be9881621bff9f29c2acfc02df02ac60a85` | `8ea14c762f` | 100 / 5 / good |
+| TaskTrove:laion__nemotron-gym-math-openmathreasoning-v2 | 42,618 | open-athena/task-trove-laion-nemotron-gym-math-openmathreaso-c006510f-oracle-filtered-20261114-v2 | `48079c75912680dd3d1381e5289e4a47556eb4dc` | `8ea14c762f` | 100 / 30 / some_issues |
+| TaskTrove:tasktrove-math_stack-qa | 110,600 | open-athena/campaign-release-tasktrove-math-stack-qa-dd13c545-oracle-filtered-20261114-v2 | `5c6818d70670ff2da80ff73fe062bba8c0937be2` | `8ea14c762f` | 100 / 13 / some_issues |
+| TaskTrove:tasktrove-math_openreasoning-qa | 42,618 | open-athena/campaign-release-tasktrove-math-openreasoning-qa-45247a4a-oracle-filtered-20261114-v2 | `5528a398ba2372d53f803ce3e93c6cca2f4b4aae` | `635e7b907f` | 100 / 31 / some_issues |
+| TaskTrove:laion__nemotron-gym-math-stack-overflow-v3 (**raw Stack**) | 110,600 | open-athena/task-trove-laion-nemotron-gym-math-stack-overflo-410a4406-oracle-filtered-20261114-v2 | `dbec3ca6aacfb8fc0574633646b22cd5706d8971` | **`c707bfbd5e`** | 100 / 13 / some_issues |
 
 SAMPLE aggregate for the nine: 900 reviewed / 0 unavailable / 0 uncertain; **134 finding
 events** (123 original preserved + 11 new in repaired rows); 0 mechanical content drops.
@@ -76,7 +92,9 @@ carry the artifacts under `2026.11.14.2-final-repair-v2` (the full-qc REPORT.md:
 preserved-findings field, and the repair provenance support reading these as **successive
 versions of the same nine QA panels** (pre-repair readback → post-repair final status), with
 the Result split legitimately recomputed after repair (6/3 → 2/7). A byte-level cohort-identity
-proof is not in the read set — reported until proven.
+proof is not in the read set — reported until proven; until that proof exists, neither
+same-cohort succession nor a different-cohort reading is established as fact (the wording in
+sample-panels.md §6 is harmonized to this state).
 
 ## 2. Fourteen Code releases — final registration ledger (code-fourteen-final-registration-ledger-v1.json)
 
@@ -186,9 +204,14 @@ Daytona unsafe `host_image_required`); arc-transductive 10,000 (same).
   contains no pymethods entry; the projection records 496→496 with excluded_count 0, so the 4
   rows were dropped before the oracle filter, at conversion/assembly). TODO.
 - **Full private release revision IDs**: the 40-hex revisions are published in the §2 table.
-  The full private **repo names** for the fourteen Code releases are not carried in the local
-  registration ledger (prefix-level identifiers only) — [M]; the nine QA releases' repo names
-  are in FINAL_STATUS-v2.json and reproduced in §1.
+  The full private **repo names and release revisions for all nine QA releases** were
+  transcribed from FINAL_STATUS-v2.json into §1 in the round-8 update (previously six rows
+  read "(per FINAL_STATUS)"). The full private **repo names for the fourteen Code releases**
+  are not carried in the local registration ledger (the code14 JSON carries source IDs,
+  revisions and per-panel SHA-256 only; prefix-level identifiers otherwise) — **not present
+  in the local read set** [M]; the same applies to the fourteen Code releases' converter
+  identities (not itemized locally — §6). No QA or Code row should be read as having a
+  published repo identity that §1/§2 does not actually contain.
 
 ## 6. Unitsyn lineage (with fidelity-census.md §4)
 

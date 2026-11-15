@@ -6,10 +6,19 @@
   cost table (§12). Nothing redacted except secrets (none are present in these sources). Storage
   URIs and job IDs are metadata.
 - **Compiled at**: 2026-11-15 (UTC); corrected by cold-read round 7.
+  Updated 2026-11-15 17:05 UTC (cold-read round 8: header cutoff made per-fact — the Probe A
+  cost row flagged post-cut; §5 NoP expansion/semantics corrected; §6/§12 Qwen quantity
+  relabeled controller-attempt hours; §11 runner-source wording corrected; the branch moved
+  past this cut after compilation — post-cut landings are NOT incorporated here).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
-  **Evidence cutoff**: no fact in this file postdates that cut; the latest cited REPORT entry is
-  the 13:15 UTC "Code14 complete" entry. (The file's REPORT read includes later entries, e.g.
-  15:30/15:45 UTC; none of their facts are used here.)
+  **Evidence cutoff (per fact, superseding the earlier blanket claim)**: most facts in this
+  file predate the cut, the latest pre-cut REPORT entry cited being the 13:15 UTC "Code14
+  complete" entry (heading time editorial; write time unpinned). **One exception**: the Probe
+  A row in §12 (16.849362 GPU-h) is sourced from the **15:30 UTC REPORT entry
+  (REPORT.md:2252) and POSTDATES the recorded cut** — it is flagged as post-cut in that row
+  and in pass3c-failure.md §1. (The earlier header claim that no fact postdates 13:51 and
+  that no 15:30/15:45 facts are used was **wrong** for that row.) Post-cut branch landings
+  (head `9fecbbf0b4…` 16:03:50 UTC and later) are otherwise NOT reflected in this file.
 - **Sources**: [R] `/Users/benfeuer/Documents/experiments/active/atlas-full-qc/REPORT.md`,
   [R] `.../atlas-full-qc/*.csv|*.json` (gpu-attempt-times, repair-cache-progress, submissions),
   [R] `.../atlas-full-qc/*-submit.log`, [R] `.../atlas-oracle-filter-qa/FINAL_STATUS-v2.json`,
@@ -51,6 +60,12 @@
   16:52:01–17:09:34 UTC, 4,240 metric rows): mean 3.63 running requests/model; median generation
   rate 196.87 tok/s; summed model rates 9,637.89 tok/s; waiting mean 0.559; queue zero 95.50%
   of time. Gauges are interval-integrated without extrapolation [R] REPORT.md:1298-1300.
+- **Job-specific hardware caveat (added round 8)**: the v2 fleet's GB200 binding above is
+  fleet-level, not job-level. The pass-3c serving gang is **eight GPUs, TP4×PP2 across nodes
+  s41sxs64/shbrxs64** (server startup 08:34:46.852 UTC, max_model_len 524288) per the claim
+  audit, which records mean power 444–495 W/GPU but **does not name the GPU device type** —
+  see pass3c-failure.md §5. Earlier notebook text calling pass-3c "8×H100" is **not
+  verifiable from the read set**; do not infer this job's hardware from fleet defaults.
 - **Reviewer identity per result, where locally bound**: QA nine panels — reviewer SHA
   `a3e17ee0…`, runtime `87f63bd2…` [R] FINAL_STATUS-v2.json; Code14 — per-release `SAMPLE_sha256`
   in the registration ledger, pinned V3 (524,288 context) [R]; Puzzles — pinned V3 (seed 0)
@@ -111,11 +126,26 @@
   28,833.046968 core-hours (allocation basis = requested × retained attempt wall time),
   SAMPLE_QC GPU 40.54752 GPU-h, SAMPLE_QC CPU parent+prepare 20.844402 core-h, judge tokens 0,
   Daytona 0 [R] FINAL_STATUS-v2.json.
-- NoP (no-oracle positive/negative control) drives: NoP `28ffc24` reviewed with 24 root archive
-  cases plus six production Trial cases PASS; manifest `06bbc4` SHA independently verified [R]
-  atlas-env-audit REPORT.md:25. NoP controls commit `c8833deb68` (mandatory oracle log
-  retrieval) [R] REPORT.md 15:10 entry. Positive Smartie NoP: new canonical `7569/8045` with
-  400 NoP-positive drops, not independently adopted [R] REPORT.md:65.
+- **NoP (workspace no-op negative control) — terminology fixed (round 8)**: the earlier
+  expansion "no-oracle positive/negative control" here was **wrong**; NoP is the workspace
+  no-op negative control per the glossary and the normative reference (a no-op that receives
+  reward = "NoP-positive" = broken oracle → drop; admission = oracle passes AND nop fails).
+- NoP **controls-feature landing review** (not control drives): NoP feature commit
+  `28ffc24…` was independently reviewed with **24 root archive cases plus six production
+  Trial cases PASS**; manifest `06bbc4` SHA independently verified [R] atlas-env-audit
+  REPORT.md:27, 37. The "PASS" is the **code-review verdict on those review/verification
+  cases** (the harness/verification cases for the NoP feature), not a statement that any
+  no-op control received reward in a control drive. Related: NoP controls commit
+  `c8833deb68` (mandatory oracle log retrieval) [R] REPORT.md:1863 (2026-11-12 15:10 UTC
+  entry).
+- **Positive Smartie NoP (author-reported, not adopted)**: the Smartie lane author reported a
+  new canonical count **7,569 retained of 8,045 with 400 NoP-positive drops** — i.e. 400
+  tasks whose workspace no-op control received reward (oracle flagged broken) and were
+  dropped [R] REPORT.md:65, 117. The residual 76-task difference (8,045 − 400 − 7,569) is
+  **not itemized in the read artifacts** (unknown; other drop types not stated). The final
+  manifest population/counts were **not independently verified**, the Smartie positive packet
+  stays held (`shared_integrity_contract_missing`), and this is not an adopted admission
+  outcome [R] REPORT.md:117, 2203.
 - Code-lane v13 SWE reproduction shard `84284780`: 89,245 original tasks across 8 sources, 0
   admitted, full rechecks true; mechanical exclusions only [R] atlas-env-audit REPORT.md:65
   (the eight source IDs are itemized in snapshot-reconciliation.md §3).
@@ -127,8 +157,11 @@
   REPORT.md:1049,1057.
 - v3: accepted 04:36:48 UTC (2026-11-14) after 3 transient DNS retries; pinned Qwen revision,
   temperature 0.7, 65,536-token serving context, BATCH priority; final total
-  **1.6893322222 H100-hours** (v3 0.7589955556 + v4 0.1651580556 + v5 0.7651786111
-  controller-attempt hours) [R] REPORT.md:973,1017,1041.
+  **1.6893322222 controller-attempt hours** (v3 0.7589955556 + v4 0.1651580556 + v5
+  0.7651786111) — the source labels the components "controller-attempt hours"; whether each
+  maps 1:1 to GPU-device-hours or requires a serving-width multiplier is not stated in the
+  read artifacts, so the earlier "H100-hours" label is withdrawn (see §12) [R]
+  REPORT.md:973,1017,1041.
 - Outer-client deadline mismatch during batch preemption: v3 job hit an API read timeout after
   47 min 40.62 s root execution (fixed 180 s client timeout vs broker 1,920 s lease / 1,980 s
   proxy deadline / 2,400 s readiness window) [R] REPORT.md:1015.
@@ -183,8 +216,10 @@ immutable receipt objects — live at the storage URIs below and require private
   SHA-256 digests, no secrets): primary/pass-2a/pass-2b artifact SHAs, output root
   `…/repair-overlay/2026.11.14.1/96fc19f9b4b2e033c9b3-pass3v3c`, request cache
   `…/repair-request-cache/2026.11.14.1-v3c`, BATCH_WORKERS=16, serving root
-  `/benfeuer/atlas-full-qc-recovery-serving-v3-01`. The runner source itself is published in
-  pass3c-failure.md §2 (pre-fix; code only).
+  `/benfeuer/atlas-full-qc-recovery-serving-v3-01`. **The runner source is NOT published in
+  full here or in pass3c-failure.md §2** — that section carries the failing loop verbatim
+  plus a composed minimal example (an explanatory excerpt); the full 246-line pre-fix runner
+  is not published, and full-run reproduction remains unavailable (§11).
 - **Code14 worker (complete submission config, 2026-11-15 05:15:59 UTC)** [R]
   `sample-v3-code14-submission-v1.json`: job `/benfeuer/atlas-full-qc-sample-v3-code14-v1`;
   queue `s3://marin-us-east-02a/marin/rl-data/atlas/sample-qc/2026.11.15.1-code-final/queue-v14-code.json`
@@ -216,12 +251,12 @@ immutable receipt objects — live at the storage URIs below and require private
 | FULL-QC v1 root | 8.656291 GPU-h (cancelled) | single root | [R] REPORT.md:54, 782 |
 | FULL-QC v2 example roots | q00-v3 1,084.710922 GPU-h; shards 022/027/030/034/036 3.6–176.2 GPU-h each | per-root | [R] REPORT.md:66-103, 834 |
 | OR pass-3c attempts (inference) | **unknown** — the pass-3c serving root's GPU-hours are not attributed to the job in the read set (job-scoped telemetry exists in the claim audit; no GPU-h figure) | two failed attempts + attempt 2 cancelled | [R] claim audit |
-| Probe A (OR truncation probe) | 16.849362 GPU-h | inference-only, created→finished | [R] REPORT.md:2252 |
+| Probe A (OR truncation probe) | 16.849362 GPU-h | inference-only, created→finished. **Postdates the recorded 13:51 cut** — sourced from the 15:30 UTC REPORT entry (REPORT.md:2252); flagged post-cut in the header (round-8 fix) | [R] REPORT.md:2252 |
 | Code14 SAMPLE worker | 61.138878 GPU-h total = initial 38.123440 + cancelled general repair 16.688584 + priority 6.326853 (components sum to the total) | created→finished | [R] REPORT.md:2220 |
 | QA-lane original-oracle filter | 28,833.046968 **CPU** core-hours | requested × retained attempt wall time | [R] FINAL_STATUS-v2.json |
 | QA-lane SAMPLE QC | 40.54752 GPU-h; CPU parent+prepare 20.844402 core-h; judge tokens 0; Daytona 0 | — | [R] FINAL_STATUS-v2.json |
 | Puzzles SAMPLE attempt 4 | 3.281682 GPU-h | 8×GB200, 26-min serving run | [R] REPORT.md:2220 |
-| Duplicate review (Qwen pair survey) | 1.6893322222 **H100-hours** total = v3 0.7589955556 + v4 0.1651580556 + v5 0.7651786111 | the components are labeled "controller-attempt hours" in the source; whether each attempt hour maps 1:1 to GPU-device-hours or requires a serving-width multiplier (e.g. ×N GPUs) is **not stated in the read artifacts** — the sum is presented in the source's own unit with no multiplier applied | [R] REPORT.md:973, 1017, 1041 |
+| Duplicate review (Qwen pair survey) | 1.6893322222 **controller-attempt hours** total = v3 0.7589955556 + v4 0.1651580556 + v5 0.7651786111 | relabeled round 8: the source labels the components "controller-attempt hours"; the GPU-device type and any serving-width multiplier are **not stated in the read artifacts**, so the earlier "H100-hours" unit is withdrawn — device GPU-hours unknown, no multiplier applied | [R] REPORT.md:973, 1017, 1041 |
 | Curriculum export | 46.892 requested CPU-hours + 1.591 measured producer-process CPU-hours; four successful regional CPU jobs; zero GPUs | requested = CPU request × task runtime, excluding queue time [P #11490] | [P] marin issue #11490 |
 | Difficulty runs | per-run costs not recorded in the difficulty artifacts read; the 46.892/1.591 figures are NOT difficulty costs (see curriculum row) | — | [R] |
 

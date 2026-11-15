@@ -6,9 +6,15 @@
   the hidden-partition counts the local ledgers record. Only what is locally attested is
   published; the rest is marked unmeasured.
 - **Compiled at**: 2026-11-15 (UTC); major correction by cold-read round 7.
+  Updated 2026-11-15 17:05 UTC (cold-read round 8: §1 baseline-vs-deployment statement added;
+  the branch moved past this cut after compilation — post-cut landings are NOT incorporated
+  here).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
   **Evidence cutoff**: no fact in this file postdates that cut. Latest cited artifacts: the
   v9.3-era count projection (created 2026-11-14T13:20:31Z) and the 2026-11-14 preview readbacks.
+  **Post-cut note**: branch `atlas-env-audit` advanced past this cut (head `9fecbbf0b4…`
+  landed 16:03:50 UTC; PR head `4e8752fd8e…` ~16:44 UTC); those landings are not reflected
+  here.
 - **Sources**: [R] `/Users/benfeuer/Documents/experiments/complete/atlas-env-audit/REPORT.md`
   (entries cited inline), [R] `.../atlas-env-audit/strict-310-independent-proof-20261113-1718.json`,
   [R] `.../atlas-env-audit/backend-v93-v7-independent-input-proof-20261114-1444.json`,
@@ -28,6 +34,16 @@
 | Production / live-310 (strict census) | **4,206,876** | 310 live | [R] strict-310-independent-proof-20261113-1718.json ("310 live populations … 4,206,876 tasks"); **already the totals of preview revisions 11/12** — the v9.2/revision-12 readback records "live310/4,206,876 tasks" [R] preview-v92-integration-readback-20261114-0858.json (REPORT.md:173) |
 | Private preview v9.3 / **revision-13** | **4,117,631** | 310 (302 measured + 8 explicit zero/unassessed) | [R] REPORT.md:45 (backend-v93-v7-independent-input-proof-20261114-1444.json; published from exact `072140fa95…`) |
 | **Delta** | **89,245** | 8 zero-Excluded TRAIN sources | [R] REPORT.md:51, 65 — see §3 |
+
+**Census baseline, not a deployed selection (added round 8)**: the 4,206,876 live-310 total is
+the **strict-census baseline** recorded in the revisions-11/12-era readbacks; it is **not**
+evidence of a deployed production catalog selection — the public production catalog (v76)
+remains on HOLD throughout, and "revision 18" as a hosted deployment is itself not
+established by these local files (see §4). Count equality across snapshots does not prove
+the same per-source population: only the eight-source 89,245 delta and the
+4,206,876 + 185,906 = 4,392,782 sums reconcile exactly here; the per-snapshot source/pin/
+count/status selections and the 955,646 hidden-partition breakdown remain registry-bound
+[M] (§5–6).
 
 **Major correction (supersedes the "new conversions" growth explanation)**: the 4,206,876 total
 **already existed in earlier preview revisions (11/12) as the production/live-310 population** —

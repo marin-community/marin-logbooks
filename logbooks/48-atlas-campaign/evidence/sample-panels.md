@@ -5,10 +5,19 @@
   aggregate, plus the panel-rollup snapshot map and the Puzzles four-attempt table. Counts and
   digests only.
 - **Compiled at**: 2026-11-15 (UTC); corrected by cold-read round 7.
+  Updated 2026-11-15 17:05 UTC (cold-read round 8: §3 Math-Oracle and §7 code-oracle numerators
+  labeled with explicit fields; Puzzles "22 affected tasks" relabeled as finding events;
+  §5 full pin/receipt IDs and the 3.281682-GPU-h ÷ 8-GPU duration reconciliation; §6 nine-panel
+  lineage wording harmonized with admission-ledger.md §1; the branch moved past this cut after
+  compilation — post-cut landings are NOT incorporated here).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
   **Evidence cutoff**: no fact in this file postdates that cut. The latest cited events are the
   Puzzles SAMPLE registration (public commit 4bdbc7eeed, author 2026-11-15 11:05:16 UTC) and
-  the 13:15 UTC full-qc REPORT entry (Code14 panels, repairs) — both predate the cut.
+  the 13:15 UTC full-qc REPORT entry (Code14 panels, repairs). **Cutoff qualification**: REPORT
+  heading times are editorial labels; the Code14 panel facts are treated as pre-cut, and any
+  pass-3c state carried by the same heading has timing relative to the cut unknown
+  (pass3c-failure.md §1). Post-cut branch landings (head `9fecbbf0b4…` 16:03:50 UTC and later)
+  are NOT reflected in this file.
 - **Sources**: [R] `/Users/benfeuer/Documents/experiments/active/atlas-sample-results/`
   (checkpoint*-pr-body-v*.md, remaining132-pr-body-v1.md, priority-104-pr-body-v2.md,
   pr-pins-body-v7.md), [R] `.../atlas-oracle-filter-qa/FINAL_STATUS-v2.json`,
@@ -78,11 +87,11 @@ in the private registry receipts and are not locally enumerable):
 | 245 archived aggregate (#11451) | 2026-11-14→15, merged 05:23:32 | mixed (v2/v3 boundary not itemized) | 168 GOOD / 72 SOME / 5 BAD | archived |
 | Knowledge FULL precedence | ≤2026-11-14 | — | replaces its SAMPLE | FULL-superseded |
 | Safety FULL precedence | ≤2026-11-14 | — | replaces its SAMPLE | FULL-superseded |
-| Math Oracle FULL (binding `a90ec881…`) | 2026-11-14 07:16 | pinned V2 | GOOD 5,020/57,253 conclusive (8.7681%), 44 uncertain, 122 waived unreviewed; accepted-incomplete final | FULL-superseded its SAMPLE |
+| Math Oracle FULL (binding `a90ec881…`) | 2026-11-14 07:16 | pinned V2 | **GOOD Result; 5,020 issue rows among 57,253 conclusive reviews (8.7681% issue rate); 44 uncertain; 122 waived unreviewed — 57,253 + 44 + 122 = 57,419 = the retained population; accepted-incomplete final while strict-coverage-false/execution-pending stays explicit.** Whether the 5,020 are distinct affected tasks or issue events is not stated by the source — reported [R REPORT.md:225] | FULL-superseded its SAMPLE |
 | CrossCode Python FULL (#11459, merged 06:57:27) | 2026-11-14 | — | GOOD, 8/500 issues, complete coverage, zero unavailable/uncertain, no waiver | 6th current FULL Result |
 | QA-lane nine exact-pin panels | 2026-11-15 (FINAL_STATUS 05:33) | reviewer SHA `a3e17ee0…`, runtime `87f63bd2…` | 900 reviewed / 0 unavailable / 0 uncertain / 134 finding events (123 preserved + 11 new in repaired rows) | new-era panels, registry revision `b8920640e68a…` |
 | Code14 fourteen panels | 2026-11-15 (completed 13:15 entry) | pinned V3 (524,288 context) | per-release in admission-ledger.md §2 | new-era panels |
-| Puzzles SAMPLE panel | 2026-11-15 (registered 4bdbc7eeed) | pinned V3 | 97 reviewed / 3 unavailable / 22 affected tasks (22.68%) SOME_ISSUES | new-era panel |
+| Puzzles SAMPLE panel | 2026-11-15 (registered 4bdbc7eeed) | pinned V3 | 97 reviewed / 3 unavailable / 22 issue events (22.68% reported rate; distinct affected tasks not established — §4) SOME_ISSUES | new-era panel |
 
 ## 4. Anchor panels with PUBLIC reports (corrected — the earlier "not found" TODOs are removed)
 
@@ -136,15 +145,24 @@ evidence and the STATUS.md clock entries are reported [R].
 | 1 | `/benfeuer/puzzles-qa-sample-qc-v1` | SchedulingGated from ~2026-11-14 21:05; failed ~2026-11-15 02:10 (14,400 s startup timeout) | 4×GB200 serving gang; never placed, ~0 GPU-h | no verdicts |
 | 2 | `/benfeuer/puzzles-qa-sample-qc-v2` | launched ~02:10; failed ~06:15 identically (4 h gate timeout) | 4×GB200; ~0 GPU-h | no verdicts |
 | 3 | `/benfeuer/puzzles-qa-sample-qc-v3` | launched ~06:15; CANCELLED by coordinator before placement | — (~0 GPU-h) | no placement |
-| 4 (FULL-QC worker) | `/benfeuer/atlas-full-qc-sample-v3-puzzles-v1` | handoff accepted ~06:50; serving run **26 min**, ending before the 11:05:16 UTC registration | 8×GB200 (cw-us-east-08a), serving job `…/inference-fa576089876f4c23bcdf8333b783cc86`; **3.281682 GPU-h** (created→finished) | **100 sampled / 97 reviewed / 3 unavailable / 22 affected tasks (22.68%) / SOME_ISSUES** |
+| 4 (FULL-QC worker) | `/benfeuer/atlas-full-qc-sample-v3-puzzles-v1` | handoff accepted ~06:50; serving run **26 min (rounded)**, ending before the 11:05:16 UTC registration | 8×GB200 (cw-us-east-08a), serving job `…/inference-fa576089876f4c23bcdf8333b783cc86`; **3.281682 GPU-h** (created→finished) | **100 sampled / 97 reviewed / 3 unavailable / 22 issue events (22.68% reported rate; distinct affected tasks not established) / SOME_ISSUES** |
 
 Shared attempt metadata: source pin `open-athena/tasktrove-puzzles-taskcompendium-20261114` @
-`adfcbd4a8d…` (6,921 rows, digest `8542395b…`); frozen queue sha `02ceafdb…` (attempts 1–3,
-handed to attempt 4 unchanged); reviewer pinned V3 (glm-5.3 @ `aca966e4`, temp 0.7), seed 0;
-receipts: records SHA `e9139b6d…`, artifact SHA `4e7295632a…`, campaign record
-`s3://…/sample-qc/2026.11.14.1/campaigns/4a84cf4d…/ac2a4f24….json`; registration commit
-`4bdbc7eeed` under the shared registry.lock, registry revision `69eb7669aeb1…` (247 sample
-receipts). Reviewer identity is bound by the public commit [P] ("seed-0 … pinned V3 reviewer").
+`adfcbd4a8ddefc9e69febc91931c08ba03372bad` (6,921 rows, task-spec digest
+`8542395bb886f09d1d075edeecc6e8f6963c9da5dc04fb8336f991bb4957c6a3`); frozen queue sha
+`02ceafdb…` (attempts 1–3, handed to attempt 4 unchanged; the local STATUS.md records this
+hash only as a prefix — the full queue SHA is not in the local read set); reviewer pinned V3
+(glm-5.3 @ `aca966e4`, temp 0.7, `PINNED_REVIEWER_SHA256 a3e17ee0…` — the same reviewer-spec
+SHA as the QA lane's), seed 0; receipts: records SHA
+`e9139b6d186db5f6174216ef14f34a706d9668ffed1b0b77f8a2f8e3d0ecd199`, artifact SHA
+`4e7295632a8cbb74c2b9f32105bb52eb531f57561aab40015eefd88d3116a161`, campaign record
+`s3://…/sample-qc/2026.11.14.1/campaigns/4a84cf4dcca4419aaa101fbb3be9f648/ac2a4f24b9a765b71fbc.json`; registration commit
+`4bdbc7eeed` under the shared registry.lock, registry revision
+`69eb7669aeb1aef3b10efd755cf8f8a9dd700042` (247 sample receipts). Reviewer identity is bound
+by the public commit [P] ("seed-0 … pinned V3 reviewer").
+**Attempt-4 duration reconciliation**: 3.281682 GPU-h ÷ 8 GPUs = 0.410210 h ≈ **24.6 min**
+created→finished — consistent with the rounded "26-minute" serving description; the two
+figures describe the same interval at different rounding, not different events.
 
 **Dedup census ↔ release connection**: the release's population is the deduplicated census —
 raw **6,926 → unique 6,921** (5 within-source duplicates), recorded at the conversion census
@@ -189,16 +207,28 @@ admission commit `c9f0235d8e`, Nov 15): different pin, different converter, diff
 - Checkpoint-245: #11451 merged 05:23:32 UTC as `8cab748694` (raw 245 = 168/72/5) [R] REPORT.md:288.
 - Nine-panel archive readback (Nov-13 wave): registry tree `9a4ca93bc4a2…`, 888 conclusive
   reviews, nine unavailable, three uncertain; five Results carry a provisional flag [R]
-  pr-pins-body-v7.md (dated 2026-11-13) — a different nine-panel cohort/era than the QA lane's
-  Nov-15 exact-pin panels (see §5 and admission-ledger.md §1 for the succession reading).
+  pr-pins-body-v7.md (dated 2026-11-13). **Relationship to the QA lane's Nov-15 exact-pin
+  panels (900/134): reported as a succession, not established** — the two sets share the same
+  shape (nine 100-task seed-0 pinned-GLM-5.3-v3 panels), 888+9+3 = 900, and the FINAL_STATUS
+  records its originals preserved with repaired rows, which supports reading the Nov-15 set
+  as the post-repair state of the Nov-13 wave; but a byte-level cohort-identity proof (same
+  source pins and selected task hashes) is not in the read set. Until then neither
+  same-cohort succession nor "a different nine-panel cohort/era" is asserted as fact here —
+  see admission-ledger.md §1 for the harmonized reading.
 
 ## 7. Result semantics and caveats
 
 - Result thresholds (inclusive boundary ruling): exactly 10% issues = GOOD, exactly 50% = BAD
   [R] atlas-env-audit REPORT.md (17:11 UTC entry).
-- Findings may be issue-events: one task can generate multiple flags (e.g. FULL-QC code-oracle
-  reports top overlapping flags 706 rubric-mismatch + 217 missing-context + 193 wrong-reference
-  + 72 ambiguity against 1,026 GOOD of 15,087 conclusive) [R] atlas-full-qc REPORT.md:2214.
+- Findings may be issue-events: one task can generate multiple flags. Full-code-oracle
+  example with explicit fields [R] atlas-full-qc REPORT.md:182, 2214
+  (`SankalpKJ__nemotron-code-oracle-filtered`): population 15,156 retained = **15,087 valid**
+  (conclusive-review denominator) + **69 INVALID**; 0 unavailable; 0 uncertain; **1,026
+  affected conclusive rows** = 6.80% issue rate → **provisional GOOD Result** (≤10% boundary);
+  top **overlapping** issue flags 706 rubric-mismatch + 217 missing-context + 193
+  wrong-reference + 72 ambiguity (sum 1,188 > 1,026 — flags overlap across rows, so flag
+  counts are not affected-row counts). The 1,026 is an affected-row count, not a clean count
+  and not a findings-vs-tasks claim; distinct-task counting is not established.
 - GOOD/SOME/BAD rollups cited at multiple counts (245, 209, 181, 149, 132, 104, 100) are
   snapshots of the same growing archive, not independent panels.
 

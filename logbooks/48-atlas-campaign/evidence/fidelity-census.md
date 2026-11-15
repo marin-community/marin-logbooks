@@ -10,9 +10,16 @@
   Atlas logbook campaign. Definitions come from the user's BRIEF addendum; the per-source
   measured inventory and disposition are compiled from the audit report and its JSON artifacts.
 - **Compiled at**: 2026-11-15 (UTC); corrected and re-tallied by cold-read round 7.
+  Updated 2026-11-15 17:05 UTC (cold-read round 8: §2 heading fixed to the 24-row count; the
+  branch moved past this cut after compilation — post-cut landings are NOT incorporated here).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
   **Evidence cutoff**: no fact in this file postdates that cut; every cited artifact was
   created before it (latest: the Code-lane admission ledger, 2026-11-15 05:33–13:15 UTC).
+  **Post-cut note**: the source branch `atlas-env-audit` advanced past this cut after this
+  file was compiled (observed `9fecbbf0b4…` landed 16:03:50 UTC; PR head `4e8752fd8e…`
+  ~16:44 UTC — see the notebook's 16:25 catch-up entry and revision 8). Those landings
+  (preview-revision-19 docs sync, query-cache pin, difficulty-root resume) are **not**
+  reflected in this file; this census remains bound to the 13:51 cut.
 - **Sources**: [R] `/Users/benfeuer/Documents/experiments/complete/atlas-env-audit/BRIEF.md`,
   [R] `.../atlas-env-audit/REPORT.md` (497 KB, 2,203 lines), [R] `.../atlas-env-audit/inventory.json`
   + `measurements/`, [R] `.../atlas-env-audit/pending-nine-measurements.json`,
@@ -56,7 +63,7 @@ not itemized in the read set — unknown; note the *separate* 66 pipeline-less e
 from code declarations in `0f385622b8`, tracked in `retired-inventory-only.json` with 232,965
 counted tasks, are a different retirement).
 
-**15 grandfathered missing rows vs 28 excluded blends**: the fidelity census counts
+**24 `missing:`-label rows vs 28 excluded blends**: the fidelity census counts
 (a)/(b)/(c) over **non-grandfathered** sources only. The raw inventory table (§3) DOES include
 grandfathered blend rows — 24 rows carry `missing:` environment-result labels in the published
 table (the `nemotron_ultra_*` mopd/rlvr blends). The 28-blend grandfathered set is larger than
@@ -142,6 +149,14 @@ stated counting basis.
 ## 6. Explicit gaps
 
 - No single total of "(a) sources: N, (b): M, (c): K" exists in the audited artifacts found.
+- **The denominator of any future (a)/(b)/(c) total is not yet fixed**: candidate populations
+  differ (81 runnable agentic at audit start; 133 with completed runtime measurements;
+  310 live / 326 archived; 328 union-inventory rows; 28 grandfathered blends excluded from
+  all of them) and no published source-keyed manifest maps row membership across them. Until
+  that manifest exists (scope inclusion, alias resolution, class/unknown, evidence tier and
+  date per source), a fidelity tally has **no defined denominator** — measured-but-private
+  components (registry declarations, inventory.json) versus genuinely unmeasured aggregates
+  are distinguished above, but neither composes into a final tally today.
 - Snapshot/oversight columns in the inventory are per-source; a campaign-wide snapshot-count
   aggregate was not compiled in the sources read.
 - The (b)-class QA completion status after the SAMPLE waves is tracked per source in the SAMPLE
