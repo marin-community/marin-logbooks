@@ -31,7 +31,7 @@ status: active
 ## Entries
 
 > [!NOTE]
-> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file — the current synopsis is in **revision 10 (18:45 UTC, after cold-read round 10)**, which builds on revision 8's consolidated gate matrix (revisions 5), current facts/evidence index (revision 4), and evidence-ledger state (revisions 6–9 and the `evidence/` files as updated through 18:45 UTC). Historical synopses: revision 3 (14:44 UTC), revision 4 (14:54 UTC), revisions 6–7 (15:12/15:45 UTC). Corrections are appended, never rewritten.
+> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file — the latest corrections are in **revision 11 (19:00 UTC: issue_count = distinct affected reviewed tasks, per public code)**, building on revision 10's synopsis (18:45 UTC), revision 8's consolidated gate matrix, revision 4's current facts/evidence index, and the `evidence/` ledgers as updated through ~19:00 UTC. Historical synopses: revisions 3, 4, 6–7. Corrections are appended, never rewritten.
 
 ### 2026-11-15 13:55 UTC - Campaign catch-up record (2026-11-12 through 2026-11-15)
 
