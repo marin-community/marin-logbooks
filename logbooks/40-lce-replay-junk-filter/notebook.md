@@ -199,10 +199,30 @@ status: active
   - Step 238 is 5% of the schedule; these are early-training scores.
 - Decision and next action: see the final decision.
 
+### 2026-11-15 01:30 UTC - Seed replicate of the control arm
+
+- Hypothesis or decision under test: how much of the probe difference between arms is training noise. A second control run, identical except `seed: 1`, gives one seed-to-seed comparison.
+- Published code revision: training branch commit `fd5f70cc9e` (config `lce40-arm-control-seed1-20261113`); comparison with `scripts/paired_mrcr.py`.
+- Run identities: `/dml/lce40-arm-control-seed1-20261113` (interactive priority; preempted at step 23 and again right after restoring, then cancelled) and `/dml/lce40-arm-control-seed1-20261113-prod` (production priority on `cw-rno2a`, resumed from the step-23 temporary checkpoint and ran to step 238 in 8h22m). Scores `/dml/lce40-arm-control-seed1-s119-mrcr-full-prod` and `/dml/lce40-arm-control-seed1-s238-mrcr-full` (run ids `arm-control-seed1-s{119,238}-mrcr-full`); the first step-119 scoring job waited 90 minutes at interactive priority without nodes and was resubmitted at production.
+- Result:
+
+    | Step | Needle recovery: control seed 0 | control seed 1 | filtered | seed 1 minus seed 0 (paired 95% interval) | filtered minus seed 1 |
+    | --- | ---: | ---: | ---: | --- | --- |
+    | 119 | 0.880 | 0.879 | 0.909 | -0.002 (-0.008 to +0.004) | +0.030 (+0.024 to +0.036), higher on 241 of 299 sources |
+    | 238 | 0.935 | 0.920 | 0.948 | -0.016 (-0.022 to -0.010) | +0.028 (+0.021 to +0.037), higher on 204 of 299 sources |
+
+  - Context gain, step 238: seed 0 1.138, seed 1 1.131, filtered 1.166 nats/token; filtered minus seed 1 +0.035 (+0.026 to +0.045).
+- Interpretation and limitations:
+  - The filtered arm is above both controls at both checkpoints. Against the mean of the two controls it leads by about +0.029 at step 119 and +0.021 at step 238.
+  - Seed-to-seed spread is small at step 119 (0.002) and as large as the smaller arm gap at step 238 (0.016 against +0.013 over seed 0). One extra seed is a single draw of that spread, so the step-238 gap over seed 0 alone would not be convincing; the gap over both controls is.
+  - The earlier reading that the control "closes" the gap by step 238 came from seed 0 alone; with seed 1 the gap stays near +0.03.
+  - This replicate measures training noise on the probe only. The guards were not run on seed 1, so noise on BFCL-Parity and DS-1000 is still unmeasured.
+- Decision and next action: see the final decision.
+
 ## Final decision
 
-- Selected approach and evidence: do not change the recipe on this evidence. The primary metric favours filtering (needle recovery +0.028 at step 119 and +0.013 at step 238, beyond the source-sampling interval, gap shrinking) and held-out SFT and replay loss are unchanged, but both guards are lower in the filtered arm (BFCL-Parity 0.770 to 0.691, paired p = 0.064; DS-1000 0.235 to 0.206, p = 0.39). The guards were set before launch to catch a loss of structured-data skill; a small, shrinking probe gain against a near-significant tool-calling drop is not enough to adopt. With one run per arm, neither effect is separated from training noise.
+- Selected approach and evidence: do not change the recipe yet. The long-context probe now favours filtering with some confidence: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. But both guards are lower in the filtered arm (BFCL-Parity 0.770 to 0.691, paired p = 0.064; DS-1000 0.235 to 0.206, p = 0.39), and the guard spread across seeds has not been measured, so the guard drop cannot yet be called noise. The guards were set before launch to catch a loss of structured-data skill. The cheapest decisive next step is to export the seed-1 control at step 238 and run the same two guards: if its BFCL-Parity lands near 0.69, the drop is noise and filtering should be adopted.
 - Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
 - Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
 - Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
-- Remaining uncertainty: training noise on the primary metric and on the guards (the second control seed is queued, not finished); whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
+- Remaining uncertainty: guard noise across seeds (no seed-1 guard run); probe noise beyond one extra seed; whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
