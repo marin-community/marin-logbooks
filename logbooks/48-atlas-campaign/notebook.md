@@ -494,3 +494,18 @@ status: active
 - Secretary GitHub updates (owned surfaces this branch cannot edit — for the index/issue lane): (1) index PR #50's `index/48-atlas-campaign.md` calls its revision-7 pin "containing all corrections" although revision 8 corrected material facts — relabel to the newest pin (this revision) and refresh after it lands; its "revision-18 deployment" assertion should carry the evidence qualification (hosted deployment/verification receipts remain preview-lane [M]); it also needs its own one-line [P]/[R]/[M] legend; (2) issue #48's body and latest navigation comment still point to revision 5 and carry pre-revision-2 facts (PyMethods-small described as EVAL; "Puzzles 22 affected tasks" as task count) — post a current navigation comment pointing at this revision, with the corrected facts (PyMethods-small is one of the fourteen TRAIN releases; Puzzles 22 is an issue-event count); (3) #50 is index-only — no research-branch PR exists for `codex/48-atlas-campaign`; state that explicitly; (4) commit-metadata remediation for the public commit exposing a personal workstation email/hostname (f02de6077-era objects, including referenced old pins) remains a repository-owner decision; no address is reproduced in this record; (5) the unnecessary internal session fragment / personal-path identifiers retained in earlier published entries are flagged for owner-side cleanup — they are not repeated in this entry and cannot be removed from published entries here.
 - Interpretation and limitations: the fidelity census remains uncompiled (no aggregate (a)/(b)/(c) tally; no fixed denominator); the missed evidence/publication gaps recorded in revision 8 stand; nothing above changes admission or hold states.
 - Decision and next action: fresh cold-read round 10 next; the issue #48 navigation update, index refresh, and revision-19 hosted-verification check remain the owned follow-ups.
+
+### 2026-11-15 18:30 UTC - Hourly catch-up (17:30–18:30 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `b35a72d333…` (17:11:26 UTC) to head `b5b4267ba2dd4e2f94fa1d831d773c10084c55a3`, landed 17:49:45 UTC (atlas-push landings log [R]); no new inbox items beyond the round-10 cold-read batch.
+- Command or material configuration: evidence: landings.jsonl tail; `git log b35a72d3..b5b4267b` (fetched).
+- External inputs and artifact references: landing records 17:40:46 UTC `87e0f8c49f…`, 17:49:45 UTC `b5b4267ba2…`.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **License-lift wave continues** (`b5b4267ba2…` "Record dataset-level license lifts and confirmed ASDiv restriction"; `188cdd52db…` "Enforce recorded license bans across Atlas admission"): dataset-level license decisions are now recorded and enforced at admission — ASDiv carries a confirmed restriction (ban recorded).
+  - `87e0f8c49f…` (17:40:46 UTC): synthetic catalog fixtures bound to their license evidence.
+  - `3a30d5c641…` "Bound representative controls and preserve full audit cases" and `8224ac66d0…` "Check curriculum invariants before a representative browser pass" — control-bounding and curriculum-invariant checks precede representative browser passes.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only; measured effects not yet attested in this record.
+- Decision and next action: next hourly check watches for the license-lift ledger content in the registry and any ASDiv exclusion surfacing in counts.
