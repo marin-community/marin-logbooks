@@ -31,7 +31,7 @@ status: active
 ## Entries
 
 > [!NOTE]
-> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file — the latest corrections are in **revision 11 (19:00 UTC: issue_count = distinct affected reviewed tasks, per public code)**, building on revision 10's synopsis (18:45 UTC), revision 8's consolidated gate matrix, revision 4's current facts/evidence index, and the `evidence/` ledgers as updated through ~19:00 UTC. Historical synopses: revisions 3, 4, 6–7. Corrections are appended, never rewritten.
+> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file — the **Known limits** section (bottom) lists what cannot be fixed by policy or was never measured; the latest corrections are revisions 11–13 (issue_count = distinct affected reviewed tasks per public code, propagated to all ledgers) and the current synopsis is revision 10 with revision 4's consolidated facts/gate matrix/evidence index. Historical synopses: revisions 3, 4, 6–7. Corrections are appended, never rewritten.
 
 ### 2026-11-15 13:55 UTC - Campaign catch-up record (2026-11-12 through 2026-11-15)
 

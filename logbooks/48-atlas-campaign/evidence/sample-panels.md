@@ -21,7 +21,7 @@
   figures; §3 Math Oracle row and §7's closing caveat aligned with the round-9 finding-count
   semantics; the later Stack FULL result reconciled against the admitted release pin).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
-  **Evidence cutoff**: no fact in this file postdates that cut. The latest cited events are the
+  **Evidence cutoff**: all facts in this file are as of the cut above unless a line explicitly marks a later observation; any post-cut fact is flagged at its line (round-13 wording fix: no blanket claim). The latest cited events are the
   Puzzles SAMPLE registration (public commit 4bdbc7eeed, author 2026-11-15 11:05:16 UTC) and
   the 13:15 UTC full-qc REPORT entry (Code14 panels, repairs). **Cutoff qualification**: REPORT
   heading times are editorial labels; the Code14 panel facts are treated as pre-cut, and any
@@ -120,7 +120,7 @@ in the private registry receipts and are not locally enumerable):
   issue rate, SOME_ISSUES), bound to the exact current pin population."
 - **What remains unavailable for both anchors**: the panels' independently inspectable metadata
   and measurement receipts (panel object contents, per-observation rows) live in the private
-  registry [M]; and a distinct-task counting proof (that the 13 / 22 finding events map to 13 /
+  registry [M]; and the per-task receipt publication (the 13 / 22 affected-task counts are already the distinct-task semantics per the runtime code;
   22 distinct tasks) is not established by the public commit text — the commit-message figures
   are reported aggregates. Per the round-5 evidence-label rule: the commits prove public
   *reporting*, not independent inspectability.
@@ -131,7 +131,7 @@ in the private registry receipts and are not locally enumerable):
 
 All panels 100-size (reviewed 95–100 due to unavailable); findings are distinct affected reviewed tasks per the runtime code (round-14 correction; originally transcribed from the
 reviewer, not necessarily distinct affected tasks. Full table with full revision IDs:
-admission-ledger.md §2. Anchor panels: Unitsyn-rebuilt 54 finding events (BAD [P fd670c41d1]),
+admission-ledger.md §2. Anchor panels: Unitsyn-rebuilt 54 affected reviewed tasks (BAD [P fd670c41d1]),
 TACO-laion 25, PyMethods-small 37, CrossCode 1 (crosscodeeval-python-v2, EVAL), plus nl2bash
 22/15, pym-large 44/39, unitsyn-large 43/46, unitsyn-v4 38, calendar-agent 2. The two panels
 that had exceeded the 5%-missing-reviews tolerance were re-driven to 100/100 by the priority
@@ -195,7 +195,7 @@ the SAMPLE panel is drawn from the 6,921-row pinned population.
 
 ### QA-lane nine panels (FINAL_STATUS-v2.json [R])
 
-900 reviewed / 0 unavailable / 0 uncertain across nine 100-task panels; **134 finding events**
+900 reviewed / 0 unavailable / 0 uncertain across nine 100-task panels; **134 affected reviewed tasks**
 (123 original preserved + 11 new in repaired rows). Final-three admission commits:
 `635e7b907f` / `8ea14c762f` / `c707bfbd5e` — **raw Stack is on `c707bfbd5e`** (corrected; the
 earlier claim that raw Stack was admitted at `635e7b907f` is wrong — see admission-ledger.md

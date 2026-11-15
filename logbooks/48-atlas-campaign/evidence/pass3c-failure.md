@@ -9,7 +9,7 @@
   device-type caveat; the branch moved past this cut after compilation — post-cut landings
   are NOT incorporated here).
 - **Source cut**: the recorded 13:51 UTC Nov 15 source cut is branch `atlas-env-audit` head
-  `96fc0736fc95d8f21d11e1c03dfca108d568b220` (pushed via atlas-push). **Evidence cutoff**: facts
+  `96fc0736fc95d8f21d11e1c03dfca108d568b220` (pushed via atlas-push). **Evidence cutoff (per fact)**: facts
   recorded under the 15:30 UTC entries (probe-A results, `accepted_incomplete` waiver
   acceptance) POSTDATE this cut; the fix/finalization facts are recorded under a "13:15 UTC"
   REPORT heading but were still absent from the 13:55 notebook catch-up bound to the cut (see

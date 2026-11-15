@@ -10,7 +10,7 @@
   accordingly; commit-mapping note records the local REPORT.md:2094 discrepancy; the branch
   moved past this cut after compilation — post-cut landings are NOT incorporated here).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
-  **Evidence cutoff**: no fact in this file postdates that cut. The latest cited observations
+  **Evidence cutoff**: all facts in this file are as of the cut above unless a line explicitly marks a later observation; any post-cut fact is flagged at its line (round-13 wording fix: no blanket claim). The latest cited observations
   are the 13:15 UTC full-qc REPORT entry (Code14 completion, priority repairs, pass-3c
   finalization) and the 05:33 UTC QA FINAL_STATUS. **Cutoff qualification**: REPORT heading
   times are editorial labels and entry write times are not independently pinned — the Code14
@@ -68,7 +68,7 @@ for the corresponding fix).
 | TaskTrove:laion__nemotron-gym-math-stack-overflow-v3 (**raw Stack**) | 110,600 | open-athena/task-trove-laion-nemotron-gym-math-stack-overflo-410a4406-oracle-filtered-20261114-v2 | `dbec3ca6aacfb8fc0574633646b22cd5706d8971` | **`c707bfbd5e`** | 100 / 13 / some_issues |
 
 SAMPLE aggregate for the nine: 900 reviewed / 0 unavailable / 0 uncertain; **134 finding
-events** (123 original preserved + 11 new in repaired rows); 0 mechanical content drops.
+affected reviewed tasks** (123 original preserved + 11 new in repaired rows; one count per affected task per the runtime code); 0 mechanical content drops.
 Reviewer: SHA `a3e17ee0607a1bf59bdbb8e0b9bffda2e8788390aaf41c7ab73c20b68325c9ea`, review
 runtime revision `87f63bd298ce9b312f0d5571495f683f8f5f2a91`. Admission registry entry:
 `part-000.json` @ registry revision `b8920640e68a6a3d0046da9fa1a853a5d83fea00`, entry SHA-256
@@ -81,7 +81,7 @@ earlier readback [R] `atlas-sample-results/pr-pins-body-v7.md` (file dated 2026-
 nine-panel wave with **888 conclusive / 9 unavailable / 3 uncertain** observations (6 GOOD /
 3 SOME_ISSUES; five Results provisional; archive tree `9a4ca93bc4a2…`). The 2026-11-15
 FINAL_STATUS records the same-shape nine-panel set after repair: **900 reviewed / 0 unavailable
-/ 0 uncertain / 134 finding events**, with its own fields recording that the original
+/ 0 uncertain / 134 affected reviewed tasks**, with its own fields recording that the original
 observations/findings are preserved (`all_original_findings_preserved = 123`) and repaired rows
 carry the artifacts under `2026.11.14.2-final-repair-v2` (the full-qc REPORT.md:2094 records
 "all 9 panels 100/100 REVIEWED (33 rows repaired round 1)"). The arithmetic 888+9+3 = 900, the
@@ -98,7 +98,7 @@ Per-source: pinned private revision (full 40-hex IDs below), retained count, see
 SAMPLE panel, findings, TRAIN/EVAL role, Daytona machine slots. All `selection_status:
 Available`, blockers []. All counts post-repair where a repair occurred (see below).
 
-| Release (source_id) | Retained | Revision | Reviewed | Unavail | Findings (events) | Use | Slots |
+| Release (source_id) | Retained | Revision | Reviewed | Unavail | Findings (affected tasks) | Use | Slots |
 | --- | ---: | --- | ---: | ---: | ---: | --- | ---: |
 | TaskTrove:DCAgent__exp_rpt_pymethods2test-v3 | 496 | `abf6368f9988a3a97745684fb6c3aa488f2ffa40` | 100 | 0 | 37 | train | 496 |
 | TaskTrove:laion__exp_rpt_crosscodeeval-python-v2 | 500 | `5c1270d7d2ec851e65d360e8efe752c556fe14ea` | 100 | 0 | 1 | eval | 500 |
@@ -130,8 +130,8 @@ unavailable rows' failed/truncated requests were uncached, of which the final le
 21 across the 14 panels). Ordering: the priority repair preceded final registration — the Code
 lane registered 12/14 directly (commit `ab0f5e19aa`), with the final TACO transaction staged
 under registry.lock. **Final quality labels unchanged by the repair**: Unitsyn-rebuilt still
-carries its 54 finding events and is a **BAD** Result, and TACO-laion still carries 25 finding
-events — both per the public commits [P] `fd670c41d16bd52e259e11c1562f6d4f55f408a3`
+carries its 54 affected reviewed tasks and is a **BAD** Result, and TACO-laion still carries 25 affected
+tasks — both per the public commits [P] `fd670c41d16bd52e259e11c1562f6d4f55f408a3`
 ("54 findings in 100 reviewed tasks, a BAD content Result") and `0eaf9b7fb447a4eaf1f528ac47c82ae7b2695407`
 ("25 findings and no unavailable or uncertain rows"). The BAD/SOME_ISSUES labels are reported
 (commit) until per-task counting inputs are available.
@@ -215,11 +215,11 @@ Daytona unsafe `host_image_required`); arc-transductive 10,000 (same).
 | --- | --- | ---: | --- | --- |
 | Legacy small source (retained) | `TaskTrove:tasktrove-unitsyn` | 491 | faithful; deliberately NOT deprecated (its purported replacement had the wrong population) | [R] REPORT.md:1500, 1443-1501 |
 | Purported small rebuilt release (**quarantined**) | Campaign Release `tasktrove-unitsyn-python-rebuilt-v1` (name `unitsyn-python-v1-rebuilt`); dataset `open-athena/tasktrove-unitsyn-python-v1-taskcompendium-20261112` @ `3ed40d26a51c8ca0cf26c15cc84316409534a937`; pinned upstream declared `DCAgent__exp_rpt_unitsyn-python-v4 @ 02923004846e…` | 4,991 | **Excluded/quarantined**: payloads identify `DCAgent__exp_rpt_unitsyn-python-large-v2@1` — the LARGE population, not the 491-row small cohort; publishes only README+tasks, no qualification/liveness receipts | [R] REPORT.md:1781; baseline-declarations.json |
-| Corrected successor (admitted) | `TaskTrove:tasktrove-unitsyn-python-rebuilt-v1`, private revision `be15b2fd3ad2cbc60dfb55cbe95c5b4fe5cb983b` | 4,950 | SAMPLE 100/100, 54 finding events, **BAD** [P fd670c41d1]; its population is the unitsyn-python LARGE lineage — exact content match (rank_score 1.0) with `DCAgent__exp_rpt_unitsyn-python-large-v2` and `tasktrove-unitsyn-python-large-rebuilt-v1` in the overlap ledger | [R] code14 ledger; [R] identities-v19-v2.json |
-| Renamed large population | `TaskTrove:tasktrove-unitsyn-python-large-rebuilt-v1`, revision `e1cc81dfc0d125107caf2f9cde1d495028883696` | 4,951 | SAMPLE 99/1, 46 finding events | [R] code14 ledger |
-| Original large release | `TaskTrove:DCAgent__exp_rpt_unitsyn-python-large-v2`, revision `2e229e8c80f561969c1cab87e4ccbc7fb049ce87` | 4,949 | SAMPLE 98/2, 43 finding events | [R] code14 ledger |
+| Corrected successor (admitted) | `TaskTrove:tasktrove-unitsyn-python-rebuilt-v1`, private revision `be15b2fd3ad2cbc60dfb55cbe95c5b4fe5cb983b` | 4,950 | SAMPLE 100/100, 54 affected reviewed tasks, **BAD** [P fd670c41d1]; its population is the unitsyn-python LARGE lineage — exact content match (rank_score 1.0) with `DCAgent__exp_rpt_unitsyn-python-large-v2` and `tasktrove-unitsyn-python-large-rebuilt-v1` in the overlap ledger | [R] code14 ledger; [R] identities-v19-v2.json |
+| Renamed large population | `TaskTrove:tasktrove-unitsyn-python-large-rebuilt-v1`, revision `e1cc81dfc0d125107caf2f9cde1d495028883696` | 4,951 | SAMPLE 99/1, 46 affected reviewed tasks | [R] code14 ledger |
+| Original large release | `TaskTrove:DCAgent__exp_rpt_unitsyn-python-large-v2`, revision `2e229e8c80f561969c1cab87e4ccbc7fb049ce87` | 4,949 | SAMPLE 98/2, 43 affected reviewed tasks | [R] code14 ledger |
 | Legacy large source | `TaskTrove:tasktrove-unitsyn_large` | 4,991 | faithful; deprecated | [R] REPORT.md:1501 |
-| Small exp_rpt source | `TaskTrove:DCAgent__exp_rpt_unitsyn-python-v4`, revision `8ecfda4d934131068163ba45e7a59f15d2f722bc` | 487 | SAMPLE 98/2, 38 finding events | [R] code14 ledger |
+| Small exp_rpt source | `TaskTrove:DCAgent__exp_rpt_unitsyn-python-v4`, revision `8ecfda4d934131068163ba45e7a59f15d2f722bc` | 487 | SAMPLE 98/2, 38 affected reviewed tasks | [R] code14 ledger |
 
 **Converter identities**: converter versions for these releases are not itemized in the local
 read set (the code14 ledger carries release revisions only) — unknown; the quarantined

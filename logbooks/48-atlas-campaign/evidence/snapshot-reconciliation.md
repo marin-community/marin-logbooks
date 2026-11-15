@@ -10,7 +10,7 @@
   the branch moved past this cut after compilation — post-cut landings are NOT incorporated
   here).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
-  **Evidence cutoff**: no fact in this file postdates that cut. Latest cited artifacts: the
+  **Evidence cutoff**: all facts in this file are as of the cut above unless a line explicitly marks a later observation; any post-cut fact is flagged at its line (round-13 wording fix: no blanket claim). Latest cited artifacts: the
   v9.3-era count projection (created 2026-11-14T13:20:31Z) and the 2026-11-14 preview readbacks.
   **Post-cut note**: branch `atlas-env-audit` advanced past this cut (head `9fecbbf0b4…`
   landed 16:03:50 UTC; PR head `4e8752fd8e…` ~16:44 UTC); those landings are not reflected
