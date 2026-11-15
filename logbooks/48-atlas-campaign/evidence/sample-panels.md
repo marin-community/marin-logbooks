@@ -10,6 +10,11 @@
   §5 full pin/receipt IDs and the 3.281682-GPU-h ÷ 8-GPU duration reconciliation; §6 nine-panel
   lineage wording harmonized with admission-ledger.md §1; the branch moved past this cut after
   compilation — post-cut landings are NOT incorporated here).
+  Updated 2026-11-15 17:42 UTC (cold-read round 9: §5 Puzzles attempt-4 duration reconciliation
+  replaced — the "26-minute" figure and the 3.281682-GPU-h ÷ 8 = 24.61-minute figure are different
+  clock bases, not roundings of one interval; attempt-4 timeline now anchored to the local
+  gpu-attempt-times CSV; §5 FULL-lane semantics note added distinguishing row-level (FULL) from
+  event-level (SAMPLE) finding counts).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
   **Evidence cutoff**: no fact in this file postdates that cut. The latest cited events are the
   Puzzles SAMPLE registration (public commit 4bdbc7eeed, author 2026-11-15 11:05:16 UTC) and
@@ -30,6 +35,20 @@
 - **Access class**: aggregate panel metadata only; no per-task findings text. "Findings" are
   reviewer issue-events, not necessarily distinct affected tasks, except where a source says
   otherwise.
+- **Finding-count semantics (round-9 note; where the local files give row-level counts)**: two
+  count types exist and must not be mixed. (i) **SAMPLE-panel counts in this file are issue-EVENT
+  counts** (reviewer findings per panel; a task with several flags can contribute several events)
+  — e.g. Puzzles "22 issue events (22.68% reported rate; distinct affected tasks not established)",
+  the Code14 anchors (Unitsyn 54, TACO 25, PyMethods 37), and the 245-panel aggregate's finding
+  totals; distinct-affected-task counts are **not established** for these panels in the read set.
+  (ii) **FULL-lane aggregates in atlas-full-qc/REPORT.md are row-level (task-row) counts** — the
+  numerators and denominators are distinct population rows, e.g. Math Oracle "5,020 issues across
+  57,253 conclusive reviews (8.7681%)" [R: REPORT.md:1920, :118] and code-oracle "1,026 / 15,087
+  conclusive (6.80%)" [R: REPORT.md:2214] — each retained row is one task of the retained
+  population, so these ARE distinct-affected-row (task) counts; their per-row flag tallies (e.g.
+  1,188 overlapping top flags on code-oracle) are NOT distinct-row counts and overlap across rows.
+  Result thresholds (issue rate over affected conclusive rows) are computable only for type (ii);
+  SAMPLE event counts must not be divided by conclusive rows as if they were affected-task counts.
 
 ## 1. Reviewer spec and panel construction (checkpoint245-pr-body-v3.md [R])
 
@@ -133,19 +152,20 @@ registry.lock) [R] atlas-full-qc/REPORT.md:2220.
 ### Puzzles SAMPLE — four-attempt table (attempt timing reconciled)
 
 The notebook's "~02:10–07:45" window is the **wall window of the attempt sequence + receipt
-binding** per the puzzles lane's STATUS.md clock; the ledger's **26-minute 3.281682 GPU-h run**
-is attempt 4's **serving run** (created→finished). These are different durations of different
+binding** per the puzzles lane's STATUS.md clock; the ledger's **3.281682-GPU-h attempt-4 serving
+run** is the **inference child's created→finished span**. These are different durations of different
 things; neither is the other. Note: the STATUS.md entries "~07:20 SUCCEEDED / ~07:45 LANDED"
 use the lane's own clock and are **not consistent with the public commit timestamp**
-(`4bdbc7eeed` author 2026-11-15 11:05:16 UTC); the public commit timestamp is the publication
-evidence and the STATUS.md clock entries are reported [R].
+(`4bdbc7eeed` author 2026-11-15 11:05:16 UTC) nor with the attempt-time receipt below; the public
+commit timestamp and the CSV are the timing evidence and the STATUS.md clock entries are reported
+[R].
 
 | Attempt | Job ID | Window (UTC) | Hardware / allocation | Outcome |
 | --- | --- | --- | --- | --- |
 | 1 | `/benfeuer/puzzles-qa-sample-qc-v1` | SchedulingGated from ~2026-11-14 21:05; failed ~2026-11-15 02:10 (14,400 s startup timeout) | 4×GB200 serving gang; never placed, ~0 GPU-h | no verdicts |
 | 2 | `/benfeuer/puzzles-qa-sample-qc-v2` | launched ~02:10; failed ~06:15 identically (4 h gate timeout) | 4×GB200; ~0 GPU-h | no verdicts |
 | 3 | `/benfeuer/puzzles-qa-sample-qc-v3` | launched ~06:15; CANCELLED by coordinator before placement | — (~0 GPU-h) | no placement |
-| 4 (FULL-QC worker) | `/benfeuer/atlas-full-qc-sample-v3-puzzles-v1` | handoff accepted ~06:50; serving run **26 min (rounded)**, ending before the 11:05:16 UTC registration | 8×GB200 (cw-us-east-08a), serving job `…/inference-fa576089876f4c23bcdf8333b783cc86`; **3.281682 GPU-h** (created→finished) | **100 sampled / 97 reviewed / 3 unavailable / 22 issue events (22.68% reported rate; distinct affected tasks not established) / SOME_ISSUES** |
+| 4 (FULL-QC worker) | `/benfeuer/atlas-full-qc-sample-v3-puzzles-v1` | handoff accepted ~06:50 (STATUS clock, reported); **job created 10:15:23 UTC per the attempt-time CSV**, serving run ending 10:41 UTC, before the 11:05:16 UTC registration | 8×GB200 (cw-us-east-08a), serving job `…/inference-fa576089876f4c23bcdf8333b783cc86`; **3.281682 GPU-h** (inference created→finished) | **100 sampled / 97 reviewed / 3 unavailable / 22 issue events (22.68% reported rate; distinct affected tasks not established) / SOME_ISSUES** |
 
 Shared attempt metadata: source pin `open-athena/tasktrove-puzzles-taskcompendium-20261114` @
 `adfcbd4a8ddefc9e69febc91931c08ba03372bad` (6,921 rows, task-spec digest
@@ -160,9 +180,21 @@ SHA as the QA lane's), seed 0; receipts: records SHA
 `4bdbc7eeed` under the shared registry.lock, registry revision
 `69eb7669aeb1aef3b10efd755cf8f8a9dd700042` (247 sample receipts). Reviewer identity is bound
 by the public commit [P] ("seed-0 … pinned V3 reviewer").
-**Attempt-4 duration reconciliation**: 3.281682 GPU-h ÷ 8 GPUs = 0.410210 h ≈ **24.6 min**
-created→finished — consistent with the rounded "26-minute" serving description; the two
-figures describe the same interval at different rounding, not different events.
+**Attempt-4 duration reconciliation (round-9 corrected — two clock bases, not one rounded interval)**:
+3.281682 GPU-h ÷ 8 GPUs = 0.410210 h ≈ **24.61 min**, which equals the **inference serving child's
+created→finished span** (created 2026-11-15 10:16:38.693 UTC → finished 10:41:15.450 UTC =
+24.6126 min, per the local attempt-time receipt
+`/experiments/active/atlas-full-qc/gpu-attempt-times-sample-qc-20261115T1310.csv` [R]). The
+REPORT's "26-min run" figure [R: atlas-full-qc/REPORT.md:2220] instead matches the **parent
+job/task root span** of the same attempt (created 10:15:23.258 → finished 10:41:38.728 =
+26.2578 min created→finished; 26.0756 min started→finished) — a wider interval that additionally
+covers the prepare-model stage (10:15:54–10:16:36 UTC) and pre-inference scheduling overhead.
+**The two figures therefore measure different spans (~1.6 min apart) and do not round to one
+another** — the earlier "consistent with the rounded 26-minute description" wording is withdrawn.
+The CSV does not cover the earlier `puzzles-qa-sample-qc-v1/v2/v3` attempts, whose ~21:05
+(Nov 14) → ~07:45 (Nov 15) windows remain STATUS-clock reports [R]; the "~07:20 SUCCEEDED /
+~07:45 LANDED" entries are inconsistent with both the CSV (10:41:38 finish) and the 11:05:16 UTC
+registration commit and stay flagged unresolved.
 
 **Dedup census ↔ release connection**: the release's population is the deduplicated census —
 raw **6,926 → unique 6,921** (5 within-source duplicates), recorded at the conversion census

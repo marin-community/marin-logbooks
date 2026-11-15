@@ -10,6 +10,10 @@
   cost row flagged post-cut; §5 NoP expansion/semantics corrected; §6/§12 Qwen quantity
   relabeled controller-attempt hours; §11 runner-source wording corrected; the branch moved
   past this cut after compilation — post-cut landings are NOT incorporated here).
+  Updated 2026-11-15 17:42 UTC (cold-read round 9: §4/§12 Puzzles attempt-4 duration wording
+  corrected — the 3.281682-GPU-h receipt is the inference child's created→finished span
+  (24.6126 min) and the REPORT's "26-min" figure is the parent job/task span; the two are
+  different clock bases, not one rounded interval).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
   **Evidence cutoff (per fact, superseding the earlier blanket claim)**: most facts in this
   file predate the cut, the latest pre-cut REPORT entry cited being the 13:15 UTC "Code14
@@ -108,9 +112,11 @@
   cancelled general repair 16.688584 + priority 6.326853); completed per the 13:15 UTC entry
   [R] REPORT.md:2096, 2220.
 - Puzzles SAMPLE attempt 4: FULL-QC worker `/benfeuer/atlas-full-qc-sample-v3-puzzles-v1`,
-  **26-minute serving run**, 3.281682 GPU-h (8×GB200, created→finished); registered by public
-  commit `4bdbc7eeed` [P]; the four-attempt table (wall window vs serving run) is in
-  sample-panels.md §5.
+  3.281682 GPU-h (8×GB200, inference child created→finished 2026-11-15 10:16:38.693–10:41:15.450
+  UTC = 24.6126 min per the attempt-time CSV; the REPORT's separate "26-min" figure is the parent
+  job's task span, 26.26 min created→finished — see sample-panels.md §5 for the two-clock
+  reconciliation); registered by public commit `4bdbc7eeed` [P]; the four-attempt table (wall
+  window vs serving run) is in sample-panels.md §5.
 - Five-source SAMPLE V3 worker: one five-source worker covering five 100-row seed-0 panels
   (500 tasks), queue `sample-qc/2026.11.14.2-final/queue-v1.json` SHA `1961d523…` [R]
   REPORT.md:2117.
@@ -255,7 +261,7 @@ immutable receipt objects — live at the storage URIs below and require private
 | Code14 SAMPLE worker | 61.138878 GPU-h total = initial 38.123440 + cancelled general repair 16.688584 + priority 6.326853 (components sum to the total) | created→finished | [R] REPORT.md:2220 |
 | QA-lane original-oracle filter | 28,833.046968 **CPU** core-hours | requested × retained attempt wall time | [R] FINAL_STATUS-v2.json |
 | QA-lane SAMPLE QC | 40.54752 GPU-h; CPU parent+prepare 20.844402 core-h; judge tokens 0; Daytona 0 | — | [R] FINAL_STATUS-v2.json |
-| Puzzles SAMPLE attempt 4 | 3.281682 GPU-h | 8×GB200, 26-min serving run | [R] REPORT.md:2220 |
+| Puzzles SAMPLE attempt 4 | 3.281682 GPU-h | 8×GB200, inference child created→finished 24.6126 min (10:16:38.693–10:41:15.450 UTC); the REPORT's "26-min" figure is the parent job/task span (26.26 min created→finished) — different clock basis, not a rounding (sample-panels.md §5) | [R] REPORT.md:2220; [R] gpu-attempt-times-sample-qc-20261115T1310.csv |
 | Duplicate review (Qwen pair survey) | 1.6893322222 **controller-attempt hours** total = v3 0.7589955556 + v4 0.1651580556 + v5 0.7651786111 | relabeled round 8: the source labels the components "controller-attempt hours"; the GPU-device type and any serving-width multiplier are **not stated in the read artifacts**, so the earlier "H100-hours" unit is withdrawn — device GPU-hours unknown, no multiplier applied | [R] REPORT.md:973, 1017, 1041 |
 | Curriculum export | 46.892 requested CPU-hours + 1.591 measured producer-process CPU-hours; four successful regional CPU jobs; zero GPUs | requested = CPU request × task runtime, excluding queue time [P #11490] | [P] marin issue #11490 |
 | Difficulty runs | per-run costs not recorded in the difficulty artifacts read; the 46.892/1.591 figures are NOT difficulty costs (see curriculum row) | — | [R] |
