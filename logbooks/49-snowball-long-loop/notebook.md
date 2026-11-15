@@ -31,7 +31,7 @@ status: active
 ## Entries
 
 > [!NOTE]
-> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file. The **current synopsis and current limitations are in revision 10 (18:45 UTC)**, which builds on revision 8's synopsis (16:55 UTC) with revision 9's and 10's corrections; revisions 3 (14:42 UTC, "CURRENT SYNOPSIS") and 4 (14:52 UTC, glossary/stage table) are now **historical** — superseded by revisions 5–10 and retained for the correction trail. The sanitized evidence ledgers live in `evidence/` (updated through round 10; see each file's "Updated" markers). Corrections are appended, never rewritten.
+> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries. The **Known limits** section (bottom) lists what cannot be fixed by policy or was never measured. The **current synopsis and stage table**: revision 10's synopsis (18:45 UTC) with revision 4's consolidated stage table, corrected in place by the evidence/ ledgers (see each file's "Updated" markers). Historical synopses: revisions 3 and 4's prose are retained as the correction trail; revisions 11–13 (19:20–20:10 UTC) carry the latest corrections. Corrections are appended, never rewritten.
 
 ### 2026-11-15 13:55 UTC - Campaign catch-up record (2026-11-08 through 2026-11-15)
 
