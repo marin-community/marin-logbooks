@@ -339,3 +339,25 @@ status: active
 - Evidence: table above; [P]/[M]/[R] as labeled.
 - Interpretation and limitations: as previously recorded.
 - Decision and next action: fresh cold read round 5 next.
+
+### 2026-11-15 14:59 UTC - Revision 5 after cold-read round 5: gate-matrix scoping, SAMPLE minimum wording, evidence-label split, index-pin note
+
+- Question or hypothesis and reason for trying it: fresh cold-read round 5 returned NOTES (34 items); concrete fixes below.
+- Published source revision: recorded cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`; normative reference sections: task-curation.md lines 38–56/76–80 (no-oracle static-retention path), 102–106 (hold scope), 2507–2525 (SAMPLE tolerance).
+- Command or material configuration: n/a.
+- External inputs and artifact references: https://github.com/marin-community/marin/blob/96fc0736fc95d8f21d11e1c03dfca108d568b220/docs/references/task-curation.md.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart:
+
+**Corrections**
+
+1. **Gate matrix scoping fixed** (revision 4 overgeneralized): original-oracle full-population filtering is required **wherever an original oracle exists**; no-oracle sources take the **static-retention path** (retained without oracle filtering; per-task executability proof suspended per the 2026-11-14 ruling; other applicable gates remain). Workspace NoP controls apply to agentic **workspace-graded** sources; answer-graded sources use graded controls where applicable (Puzzles' empty-input diagnostic is such a graded control, distinct from workspace NoP).
+2. **SAMPLE minimum is an inequality, not an equality**: conclusive reviews must be **at least n − floor(0.05n)**; the rule sets a maximum on missing rows.
+3. **Evidence labels split** (revision 4's evidence index): a link to a marin commit establishes a **public report** (the commit message asserts the aggregate); it is not a **publicly inspectable measurement receipt** — the underlying receipt rows live in the private registry. In the index table, the "Public evidence" column proves public reporting only; no column currently available proves independent inspectability. Publishing sanitized aggregate receipts (inputs, counting rules, results, digests) remains open work requiring owner authorization.
+4. **Fidelity-class QA definition**: in the user's 2026-11-12 (a)/(b)/(c) addendum [R], the evidence distinguishing (a) from (b) is the **content-review/qualification evidence tier** (the checks defined by the QC lanes for that source class) — not the question-answering dataset category. The lettered classes originate from the user ruling, not from the normative reference, which does not enumerate them.
+5. **Hold wording**: **public** TaskCompendium dataset release is held; **private** remediation release preparation/upload is authorized (and occurred). Production catalog publication (v76), controller rollout, and the merge decision are held as recorded.
+6. **Timestamp note**: revision-4's "14:54 UTC" heading was an editorial label; its git commit time is 14:52:38Z. Heading times in this record are editorial labels; git commit metadata is the publication evidence.
+7. **Documentation-status**: the curation-README v3 sentence and app-README SAMPLE-completeness sentence are obsolete relative to the recorded cut (noted in revision 4); both require an authorized source revision to fix — linked here so newcomers see the conflict explicitly rather than discovering it.
+- Evidence: [P] links inline; [M]/[R] labeled.
+- Interpretation and limitations: unchanged; the fidelity census remains the central unanswered item.
+- Decision and next action: fresh cold read round 6 next.
