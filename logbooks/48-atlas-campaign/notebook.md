@@ -120,3 +120,97 @@ status: active
 - Evidence: per-item references above; compiled by the research secretary from primary files, 2026-11-15 13:55 UTC (08:55 EST).
 - Interpretation and limitations: counts and SHAs are as recorded in the cited primary artifacts; the catch-up spans only 2026-11-12 onward (campaign origin).
 - Decision and next action: continue hourly catch-up entries on this branch.
+
+### 2026-11-15 14:25 UTC - Revision 1 after cold-read round 1: corrections, glossary, policy, evidence classes
+
+- Question or hypothesis and reason for trying it: an independent cold-read review of the 13:55 entry returned NOTES (38 items). Reason: the record must be understandable and assessable by a public newcomer without private context. This entry appends corrections and context; the 13:55 entry is preserved unedited (workflow rule: corrections are new entries).
+- Published source revision: unchanged since the 13:55 entry — `atlas-env-audit` head `96fc0736fc95d8f21d11e1c03dfca108d568b220`; https://github.com/marin-community/marin/pull/11277 (open draft).
+- Command or material configuration: review process: a context-free reviewer read only public GitHub material (this notebook at `f02de6077a46d8f8e9d21afd40de1df70195d3b2`, PR #50, issues #48/#49, public marin PRs) and returned a local-only notes report [R]. No private material was read by that reviewer; no secrets were found in the reviewed public text.
+- External inputs and artifact references: https://github.com/marin-community/marin/pull/11277, https://github.com/marin-community/marin/pull/11421, https://github.com/marin-community/marin/issues/11490, https://github.com/marin-community/marin/pull/11120, https://github.com/marin-community/marin/blob/96fc0736fc95d8f21d11e1c03dfca108d568b220/docs/references/rl-data-atlas.md (public Atlas reference; read it first — it defines most terms below).
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the following supplements/corrects the 13:55 entry.
+
+**Evidence classes used in this record**
+
+- [P] = publicly verifiable (link to marin/marin-logbooks/HF/public PR or commit).
+- [M] = requires authenticated access (open-athena registry/HF private releases, Marin login); a hash authenticates available bytes but the bytes are not publicly readable.
+- [R] = reported from local/private records (experiment dirs, audit reports, landing logs); not publicly inspectable; treat as reported, not independently verified.
+- The 13:55 entry's statement "every claim carries primary evidence" is qualified accordingly: claims carry evidence as recorded in the cited primary artifacts, but most artifacts are [M] or [R]; where possible the underlying commits are [P] via marin PRs/commits.
+
+**Corrections superseding the 13:55 entry**
+
+1. PR #11277 was created 2026-11-12 **21:09:15Z** (GitHub `createdAt`), not 21:11 UTC. The base was later consolidated to target `main` (the original plan targeted `swe-repair-atlas`); the consolidation happened during the 2026-11-14 handoff period [R]; the current base is `main` [P].
+2. Preview revision 14 (2026-11-14): the package was **built** (15:51 UTC) and **deployed/verified on the private preview app**, but its **publication approval was held** pending the corrected count projection. These are distinct states (build/deploy/verify/approve); "publication held" referred to the approval step. Preview13 remained the last user-approved revision until revision 17+.
+3. Admission-related timestamps in the 13:55 entry are **commit times**; landings via `atlas-push` may occur later (landing receipts live in the local atlas-push log [R]).
+4. Alias map: **CrossPy = CrossCode-Python** (same source); **PyM = PyMethods**; Unitsyn, TACO, Tau, raw Stack, Openreview are canonical source families. The 2026-11-14 CrossPy note ("500 tasks stay EVAL/Excluded") described that source's oracle-filter disposition at that time; the 2026-11-15 "CrossCode-Python EVAL admitted" (`c9f0235d8e…`) is the same source after the filter change. Both states are bound in registry revisions [M].
+5. Difficulty sampling (2026-11-13 decision, per https://github.com/marin-community/marin/pull/11421): **up to 100 tasks per source** (not exactly 100); 42 oracle-pending sources carry pre-filter/resampling flags, so difficulty cohorts are measured pre-admission-filter for those sources; per-model selected task counts total 30,530 in that PR's description.
+6. `9bfcd64bf9…` (13:55 entry, rev-19 line) is an **advisory-review artifact identifier**, not a marin commit; it does not resolve as a commit by design.
+7. The 2026-11-15 FULL-QC worker reference "(session ses_e264443f…)" is an internal session identifier, unnecessary for the public record; worker/owner identity should be referenced by campaign lane only. Internal GPU node labels (s41sxs64/shbrs64) are operational metadata retained for the audit trail; future entries will avoid internal session/host identifiers.
+8. The Puzzles headline is stage-specific: **oracle filter passed 6,921/6,921; SAMPLE completed (97 reviewed / 22 with issues, 22.68% = 22/97 tasks affected, 3 unavailable)** — the *source admission* remains pending the whole-source FULL review, the grading census, and the decontamination publication receipt (unchanged open items).
+9. The "245 SAMPLE panels — 168 GOOD / 72 SOME_ISSUES / 5 BAD" tally is the **archived panel** set as recorded in the PR #11277 body at a dated snapshot; it is not 245 current independent source results, and archived grades should not be read as current catalog-wide quality.
+10. The "as of ~14:00 UTC" statement in the 13:55 entry's rev-19 bullet refers to the compilation observation time; the entry's cutoff is 13:55 UTC.
+
+**Glossary (compact; the public Atlas reference is normative)**
+
+- **Atlas**: the RL data catalog/curation campaign. **TaskTrove**: the source corpus/pipeline where upstream datasets are converted to runnable tasks. **TaskCompendium**: published curated task releases on open-athena (Hugging Face org). **TaskSpec**: the per-task specification (description, environment, oracle, grading). **Harbor**: the agent-harness runtime used to execute tasks. **Iris / iris-task**: the job scheduler and its task-execution adapter. **open-athena**: the Hugging Face org hosting models/datasets (private releases need auth). **MarinSkyRL**: the RL training stack consuming these tasks; its 28 pre-existing blended sources are grandfathered out of the fidelity audit.
+- **pin**: an immutable registry binding to a dataset revision (SHA/digest). **receipt**: a hash-bound record of an operation (admission, census, seal). **NoP / nop**: no-op negative control — an empty/degenerate execution run alongside real oracle runs; admission requires oracle passes AND nop failures (a nop that "succeeds" indicates a broken oracle). **SAMPLE**: a per-source review of a fixed ≤100-task panel; **FULL**: whole-source review; **QUICK**: lightweight check tier. Result thresholds: GOOD ≥90% clean, BAD ≥50% issues; QC never rejects — results annotate.
+- **SWE**: software-engineering (agentic coding) sources. **NN overlap**: nearest-neighbor similarity survey across sources (pair-level duplicate risk). **actorless**: task variant without an agent role. **role / small-role / producer-1485 / 311 / 249 / 18**: legacy offline qualification cohorts (see 13:55 entry rulings). **positive-release binder**: bundling of positively-qualified releases (installs zero pins). **derived-contract census / grading census**: static metadata surveys of grader contracts.
+- **QA** in this record means the question-answer source category (not quality assurance); quality assurance is called QC.
+
+**Campaign question and completion criteria (record-keeping context)**
+
+- Technical question: can upstream agentic/non-agentic task sources be ingested and converted so each task runs in exactly its own declared environment, filtered by oracle validity with NoP controls, quality-reviewed (SAMPLE/FULL), deduplicated/overlapped, difficulty-measured, and published as a curated catalog — without production publication until the user lifts the v76 hold?
+- Completion criteria (campaign-level, as directed by the user): all runnable sources classified (a)/(b)/(c) on spec-vs-runtime fidelity with repairs landed; admission pipeline (oracle + NoP + QC + content gates) executed per source; preview app reflecting the catalog; production publication awaiting explicit user approval. Downstream RL benefit is explicitly **not** a measured criterion of this campaign.
+
+**Population and counts (reconciliation)**
+
+- 310 = live source IDs at the 2026-11-15 cuts (rev-13 and rev-18/19 snapshots); 326 archived = historical source ID population in the PR body (16 retired); the 28 MarinSkyRL blends are excluded from fidelity scope and from these counts.
+- Revision-13 (2026-11-14 14:52 UTC): 4,117,631 retained tasks = 3,226,076 no-oracle TRAIN + 350,205 no-oracle EVAL + 533,587 oracle TRAIN + 7,763 oracle EVAL.
+- Revision-18 (2026-11-15 ~02:00 UTC): 4,206,876 total instances; 3,251,230 shown; 3,322,365 admitted (TRAIN 2,972,160 · EVAL 350,205); 541,350 pending oracle filtration; 343,161 excluded. Units are task instances as counted per source contract (a task may appear in multiple source releases); "shown" is the preview view's display filter (folding hides overlap groups and filtered/pending cards); "admitted EVAL" is catalog EVAL admission (not an eval measurement). The 89,245 growth 13→18 and the 955,646 not-shown reflect the 2026-11-15 admissions plus view filtering; the per-snapshot reconciliation ledger lives in the registry [M], with the count-projection commits in marin (`11fff26215…`, `21fbf617b2…`) [P].
+- 2026-11-15 admissions per release ledger: QA lane — five pins (110,152 tasks, `635e7b907f…`), final three pins completing **nine QA releases totaling 431,389 tasks** (`8ea14c762f…`) [M]; raw Stack 110,600 tasks (`c707bfbd5e…`) [M] — raw Stack remains in FULL QC; Code lane — 14 Code admissions including rebuilt Unitsyn SAMPLE (`fd670c41d1…`) and TACO-laion (`0eaf9b7fb4…`), plus PyMethods-small EVAL (`2d8202d007…`) and CrossCode-Python EVAL (`c9f0235d8e…`); eight empty Code releases typed-excluded (`7765940987…`). Five filtered private Code releases (9,133 tasks) remain evidence-only pending qualification. These categories are disjoint release sets [M].
+
+**Admission policy matrix (effective 2026-11-15)**
+
+- Agentic sources: faithful-environment check; oracle filtering with NoP negative controls (admission = oracle passes AND nop fails, after the 2026-11-14 negative-control retry policy: one identical-budget re-drive for controls killed by -9/-6/-11 or producer interruption); content Result computed (GOOD/SOME_ISSUES/BAD; QC never rejects);SAMPLE panel + FULL review gates; executability proofs required.
+- Non-agentic sources: exempt from ALL agentic-only checks (ruling `nonagentic-exempt-agentic-checks-20261114` [R]); answer-graded oracle filtering applies where applicable.
+- No-oracle sources: per-task executability proof requirement dropped (ruling `no-oracle-executability-policy-20261114` [R]); other gates remain.
+- SAMPLE: fixed panel ≤100, ≥95% reviewed required (≤5% missing tolerance, ruling `sample-missing-tolerance-20261115`, retroactively applied to the TACO 99/100 panel); missing rows recorded; unknown/uncertain rows count against the reviewed denominator.
+- FULL: whole-source review; ≤1% unreviewed waiver standing for remaining sources. Legacy qualifications (311/249/18) are **adopted historical evidence**, offline, no replay/None-inference; they install no admitted pins by themselves.
+
+**Pass-3c failure: units and qualified interpretation**
+
+- Job `/benfeuer/atlas-full-qc-repair3-openreasoning-v3pass-c-v1` [M]; source rev `87f63bd2…` [P] binds the source snapshot (the app-layout change in that commit is coincident work, not the runner fix). Units: 118 = source rows in the repair population; 43 REVIEWED / 75 INVALID are row outcomes; 104 = touched repair batches; 710 = inference requests across the attempt. No final artifact was persisted; partial row states were observed in the attempt logs [R].
+- Telemetry: 8 GPUs (TP4×PP2), ~33% SM / ~1.5% tensor active (aggregate gauges), ~656 tok/s aggregate, mean 239 s/request, limits 8192/16384 completion tokens by batch tier, 92.1% length-finish (denominator: finished requests), 8.85M of 8.97M completion tokens reasoning-only. Zero vLLM engine preemption events in the queried logs; this establishes the engine-level fact only — scheduler/host-level events are excluded by the audit's job-lifecycle check [R], and the causal attribution (reasoning-only generations + sparse barrier-scheduled batches) is the auditor's inference, not a controlled comparison.
+- **Unfixed**: the tuple-unpacking bug at runner lines 143–144 remains open; the runner file path was not published here because the fix is pending — it will be linked when the repair commit lands.
+
+**Puzzles attempt table (SAMPLE lane)**
+
+| Attempt | Window (UTC) | Hardware | Outcome |
+|---|---|---|---|
+| 1 | 2026-11-14 | 4×GB200 serving gang | SchedulingGated → 4 h startup timeout, no verdicts |
+| 2 | 2026-11-14 | 4×GB200 serving gang | Same infrastructure failure |
+| 3 | 2026-11-14 | — | Cancelled by coordinator; frozen queue (sha `02ceafdb…`) handed to FULL QC |
+| 4 (FULL QC) | 2026-11-15 ~02:10–07:45 | 8×GB200 | Completed: 97/100 reviewed, 22 tasks with issues (22.68%), 3 unavailable |
+
+- The completed unit is the **SAMPLE review**, not the whole-source review (which remains with FULL QC). Empty controls 0.0 = 0 failing empty-control tasks / 6,921 oracle-filter population. Lexical contamination 0/6,921 = zero matches under the lexical decontamination test against the campaign's reference corpus; this does not establish absence of semantic contamination.
+- Reviewer: campaign-standard LLM reviewer per the QC configuration [M]; panel selection is a fixed seeded panel [M]; the 3 missing reviews are recorded as unavailable (missingness not random).
+
+**Limitations (added)**
+
+- Most evidence is [M]/[R]: an independent public reader cannot re-derive the counts or hashes from this record alone; sanitized aggregate receipts are published only as described here.
+- SAMPLE panels are small (≤100) with non-random missingness; LLM reviewers have unquantified error rates; archived panel grades may be stale.
+- Lexical-only decontamination; waived executability checks for no-oracle sources; legacy adoptions inherit historical evidence quality.
+- No downstream RL training benefit has been measured for this catalog; catalog/UI counts do not imply training utility.
+- This record was compiled by one secretary from primary artifacts; the PR #11277 comment thread and per-reviewer QC detail were not exhaustively audited.
+- GPU/CPU-hour accounting is incomplete in this record: per-run costs are not consistently reported by the campaign lanes; where absent, mark unknown. Known items: pass-3c 8×H100 (see units above); puzzles SAMPLE attempt 4 on 8×GB200; two failed 4×GB200 serving attempts. Other runs' costs are unrecorded here.
+
+**Open items (owners/criteria added)**
+
+1. Preview revision 19 publish + verify — owner: preview lane; criteria: deployment-v19 artifact, hosted verification, counts match the 13:51 registry cut.
+2. marin#11277 merge + v76/#11120 hold lift — owner: user decision; criteria: explicit user approval.
+3. Pass-3c repair — owner: FULL-QC lane; criteria: fixed runner, repaired pass completes, final artifact bound.
+4. Legacy adoptions (311/249/18) — owner: qualification lane; criteria: whole-source collection, global NegativeControlPolicy, content QA.
+5. Puzzles — owner: FULL QC; criteria: whole-source review + grading census + decontamination receipt.
+6. Full-QC remainder (Stack, Open Reasoning, OpenSWE) — owner: FULL-QC lane; criteria: sources reviewed to the ≤1% waiver or completion.
+- Interpretation and limitations: as above.
+- Decision and next action: hourly catch-up entries continue; this revision resolves the round-1 cold-read notes to the extent the public record can; the next fresh cold read will re-review the updated branch.
