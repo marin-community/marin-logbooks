@@ -244,3 +244,48 @@ status: active
 - Evidence: [P] links inline; reported-private items labeled.
 - Interpretation and limitations: previous limitations stand; the synopsis adds the explicit missed-target verdicts.
 - Decision and next action: fresh cold read round 4 next.
+
+### 2026-11-15 14:52 UTC - Revision 4 after cold-read round 4: consolidated corrected glossary and stage table, microbatch correction, selection-rule precision, consolidated open-work table
+
+- Question or hypothesis and reason for trying it: fresh cold-read round 4 returned NOTES (20 items); one concrete factual error remains in revision 3 (microbatch units). This entry consolidates the fully corrected operational detail in one place so readers need not apply per-entry patches.
+- Published source revision: round-1 SFT YAML https://github.com/marin-community/marin/blob/9662fdba02896ffb03fd21066c1750b363e78cb6/experiments/post_training/long_loop/specs/sft.yaml (global batch 256, accumulation 8); exp2 launch report https://github.com/marin-community/marin/pull/11120#issuecomment-6863473319 (round-2 global microbatch 8, 32 accumulation iterations); selection code https://github.com/marin-community/marin/blob/0c1e81ca93635ac157db90ff786a8f8fba65b13c/vendor/skyrl/marinskyrl/checkpoint_paths.py#L33 and https://github.com/marin-community/marin/blob/0c1e81ca93635ac157db90ff786a8f8fba65b13c/vendor/skyrl/marinskyrl/callbacks/builtin.py#L260; RL YAML (reasoning_span shaping) https://github.com/marin-community/marin/blob/0c1e81ca93635ac157db90ff786a8f8fba65b13c/experiments/post_training/long_loop/specs/rl.yaml.
+- Command or material configuration: see consolidated table below.
+- External inputs and artifact references: as above.
+- Environment and hardware when relevant: configured stage allocations: SFT 256 H100; RL 80 learner + 176 rollout; final eval 128 candidate + 8 judge (judge GPUs co-allocated locally). These are configured per-stage counts; no public concurrent-peak allocation timeline exists; requested-allocation totals: round 1 12,624.162622 H100-hours [P]; round 2 incomplete [M].
+
+**CURRENT GLOSSARY (consolidated; supersedes every earlier glossary text in the 13:55 and revision-1/2 entries)**
+
+- **RLOO-N** = RLOO-Neutral advantage estimator: infrastructure-failed samples are excluded from the group baseline and receive zero advantage; model failures remain eligible with zero reward; group size N=8. **Group admission**: a sample group is admitted via the group-admission rule; a stalled group admission halts training (exp1: `GroupAdmissionStalledError` at update 18).
+- **MuonH** = the round-1 SFT optimizer (`grug_moe_muonh_v1`); round 2 consumed Adam (LR 5e-5, betas 0.9/0.95, cosine). RL optimizer: AdamW (separate).
+- **Snowball** = the 67B-total / ~2B-active MoE initializer. **SFT** = supervised fine-tuning; **RL** = asynchronous RLOO-N RL; **Micro210** = frozen eval set at dataset revision `4564ed08…` — card total 210 tasks / 21 benchmarks / 450 slots, campaign-frozen cut excludes Tau3 → 200 tasks / 20 benchmarks / 440 attempt slots; the 120-task checkpoint-selection set (20 SWE + 100 non-agentic) is a separate training holdout; whether it overlaps final Micro210 membership is not publicly established.
+- **TB2** = Terminal-Bench 2 (version pinned in the consumed eval config [M]); **SWE** = software-engineering (agentic coding) tasks; **UID** = attempt identifier in the eval dashboard; **CP/EP** = context/expert parallelism; **Sonic / EP ring** = MoE token-dispatch implementations (round 1 local Sonic, round 2 EP ring); **dropless equivalence** = whether MoE expert-capacity dropping behaves identically without dropping (unmeasured).
+- **Harbor** (agent harness), **Pi** (agent CLI), **Daytona** (sandbox provider), **Kueue** (job queueing), **EvalDash** (eval dashboard), **Filer** (internal file store) — infrastructure services.
+- **IsoFLOP D cells**: width/depth variants of the small ablation model at global batch 256 (d512/d768/d1024; full vs assistant = loss-mask scope); #11440's completed workaround controls include separate calibration probes at global batch 8 or 2 with different geometry — those are diagnostics, not the D campaign cells.
+- **TITO / TIS / router replay**: token-in-token-out trajectory format, truncated importance sampling, and router-replay mechanics — defined in the linked tracker; not redefined here.
+
+**CORRECTED STAGE TABLE (consolidated; supersedes all earlier tables; [P] links for config claims)**
+
+| Field | Round 1 (exp1) | Round 2 (exp2) |
+|---|---|---|
+| SFT updates | 746 (linear schedule, horizon 4,750, 475-step decay, stopped at 746) | 204 (numbered 0–203; cosine) |
+| SFT global batch | 256 (global microbatch 32, accumulation 8) | 256 (global microbatch 8, accumulation 32) |
+| SFT context / positions | 262,144 / 50,063,212,544 packed | 262,144 / 13,690,208,256 sampled |
+| SFT optimizer | MuonH (`grug_moe_muonh_v1`) | Adam (LR 5e-5, betas 0.9/0.95, cosine) |
+| Precision / optimizer state | BF16 params/compute; offloaded optimizer state | FP32 params; on-device Adam state |
+| CP / EP / dispatch | CP8 / EP1 / local Sonic | CP32 / EP8 / EP ring |
+| Loss: SFT chat mask | assistant-only | assistant-only; plus 2,821,707,252 causal-replay loss tokens |
+| Loss: RL token coverage | 94.97% audited on the FIRST consumed RL SWE batch only (recorder repairs not in the scored model) | recorder/harness repairs present [M]; no public coverage audit |
+| RL context / budget / updates | 102,400 / 12 h / 17 completed (update-18 admission failed) | 102,400 / 10 h / 20 completed |
+| Judge allocation | 8 H100 co-allocated (eval YAML) | MiniMax judge via harness [M] |
+| Selected checkpoint / model | RL16 / Round1-2026.11.12.7 @ `475ba62d…` | native step 20 / Round2-2026.11.14.13 @ `6546ba2d…` |
+| Final eval scored | 439/440 (UID 399 unscored — a task in the tb2-recovery benchmark; tracker's "DNA assembly" is that task's name) | 437/440 (TB2 UIDs 225/268/269 unscored) |
+| Timing vs <36 h | 80.57 h — missed | ≥38 h 49 min bound — missed by ≥2 h 49 m |
+| Scores (scored-attempt mean / benchmark-mean avg) | 0.4525643127 / 0.5216066358 | 0.4048171547 / 0.4828958533 (round-1/2 tracker recomputation from published benchmark rows agrees to rounding) |
+
+- RL reward shaping: `reasoning_span.target: marker` in the pinned RL YAML [P] applies a configured 0.1 penalty keyed on a span marker; the exact trigger/unit semantics are defined by the base implementation, and round-2 equivalence (dirty build) is unverified. Shaped training reward ≠ raw validation reward.
+- Selection rule (pinned code [P]): selection uses an **adjusted finite trailing window of the five scheduled validations at two-update intervals**; every scheduled observation in the window must be complete (scored); ties keep the earliest checkpoint. Round-2 equivalence to this code is unverified (dirty build). Candidate ledgers remain unpublished.
+- Remaining unavailable evidence (explicit): consumed dirty-build sources/configs (no public reconstruction), SFT mixture source weights/realized round-1 exposure (unmeasured publicly), seven unknown upstream revisions (sources not named publicly), attempt-level score/recovery ledger, D-run audit tables, round-2 allocation-hours. These are acknowledged gaps, not broken links.
+- Open work (consolidated, dated 2026-11-15): (1) publish round-2 recipe/build provenance bundle — owner: campaign operator; blocked on private inputs; (2) retention/resumability verification (dated inventory + expiry check) — owner: campaign operator, untracked issue; (3) marin#11440 stall diagnosis — open; (4) IsoFLOP original-runtime throughput qualification — blocked (workaround timings excluded); (5) SFT-mix data arm — design publicly evidenced; no executed cleaning counts published; teacher/prompt pins undecided; (6) HF card revisions linking tracker/notebook — owner action, outstanding; (7) commit-metadata remediation (personal workstation email in the initial notebook/index commits) — repository-owner decision, flagged to the coordinator; (8) no new long-loop round authorized — user decision pending.
+- Evidence: [P] links inline; [M]/[R] labeled.
+- Interpretation and limitations: as previously recorded.
+- Decision and next action: fresh cold read round 5 next.
