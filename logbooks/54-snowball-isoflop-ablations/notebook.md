@@ -338,3 +338,12 @@ Failure denominators, labeled: **3/6 among success/failure outcomes; 3/7 includi
 - Evidence: pinned code above; FINAL.md [R].
 - Interpretation and limitations: as recorded.
 - Decision and next action: fresh cold read round 5 next.
+
+## Known limits
+
+This section lists what cannot be fixed in this public record by policy or by absence of measurement. Cold readers should not re-raise these as notes.
+
+1. **Private data and per-source contents**: validation/loss-curve per-step series beyond the retained `loss_curve` fields (`global_step`, `train/loss`, `eval/loss`, `eval/macro_loss` — the pinned writer retains nothing more), bounded-history.json contents [M], and any per-task artifacts are not published.
+2. **Unpublishable artifacts**: per-run frozen consumed configs/spec directories, untracked runtime-input bundles, the credentialed S3 re-audit's raw outputs (only its aggregate findings are reproduced), and the full event timeline per root.
+3. **Reproduction impossible by policy or inputs**: the campaign is stopped and archived — no reruns are authorized; several consumed configs/manifests are not retained locally, so end-to-end replay is impossible without them (individual stage configs are published where they exist).
+4. **Measurements never taken**: no equal-compute scientific result exists (20-update execution is not an IsoFLOP comparison); no d1024 seed-0 winner (5/6 trials; stop order); Q5 never launched; the final spend snapshot's A/B/C/Q5 per-phase column provenance (observed vs charged) is unresolvable locally; no pre-SFT baseline on the D holdout; per-root completed-update counts for cells without retained summaries are unattested.
