@@ -310,3 +310,21 @@ status: active
 - Evidence: [P] links inline.
 - Interpretation and limitations: unchanged.
 - Decision and next action: fresh cold read round 6 next.
+
+### 2026-11-15 15:10 UTC - Revision 6: sanitized evidence ledgers published (per user publication ruling)
+
+- Question or hypothesis and reason for trying it: cold reads rounds 1–6 identified private-evidence inaccessibility as the main SATISFIED blocker. The user ruled (2026-11-15, via the coordinator): everything except (1) cluster secrets/credentials and (2) the DATA itself (task text, prompts, model outputs, dataset rows — data requires separate sign-off) may be published. This entry publishes sanitized ledgers compiled from local records.
+- Published source revision: unchanged training identities; evidence compiled from local records [R] and public references [P].
+- Command or material configuration: n/a (see evidence files).
+- External inputs and artifact references — new evidence files in this directory (all metadata-only; no task text, prompts, model outputs, or dataset rows; no credential values):
+  - [evidence/selection-ledger.md](evidence/selection-ledger.md) — per-checkpoint validation ledger: exp2 evals 2–20 (evals 2/4 ineligible on 20 SWE snapshot-quota failures; evals 6–20 120/120 scored; raw means 0.1764–0.2834; trailing-5 EMA 0.2009→0.2526; best progression 14→16→18→20); exp1 v14/v16 rows + best16 selection; exp1 full per-step series unavailable.
+  - [evidence/final-eval-attempts.md](evidence/final-eval-attempts.md) — exp2: 200 tasks / 440 attempts / 437 scored / 3 TB2 infra-unscored (UIDs 225/268/269); BixBench UID1 verifier-only recovery (0.0); exp1: 432 → 439/440 scored, UID 399 sole permanent unscored; per-benchmark tables; attempt-level rows remain in the sealed private archives.
+  - [evidence/d-run-cancellation-audit.md](evidence/d-run-cancellation-audit.md) — per-job cancellation ledger (27 tasks; watchdog exit-124; self-cancel vs phase-budget-guard at 95.80/96 H100-h; r5 ceiling 143.80), the five counter-defect code references, query scopes (19,280/19,284 rows; no OOM events in queried logs) — findings of the local audit, with job identities now public.
+  - [evidence/timing-and-allocation.md](evidence/timing-and-allocation.md) — stage/timestamp ledgers: exp1 end-to-end 80.568904 h; 12,624.162622 requested H100-h (RL 3,447.11; SFT 5,393.89); exp2 attempt costs (66.3749, 110.252, 167.3094, 2,994.3104 H100-h); 36,000-s budget with 38,575.20-s consumption; ≥38 h 49 min bound computed from the two documented public timestamps.
+  - [evidence/build-provenance.md](evidence/build-provenance.md) — **the recorded "dirty" tree hashes (`00a8f56ce2`, `266e04d2a1`) resolve in the local `exp2-batch256` worktree and are byte-identical to the base commits' trees (`442bf9d878`, `038ad7f188`)**: the tracked-tree delta is empty, so tracked-source patches are trivially recoverable; "dirty" reflects untracked runtime-input bundles (present locally). This corrects the earlier "unreconstructable" framing for tracked sources.
+  - [evidence/exp2-data-accounting.md](evidence/exp2-data-accounting.md) — CPU accounting receipt contents: 52,224 realized samples; 13,690,208,256 sampled positions; 12,849,743,650 real tokens; 840,464,606 padding (6.139%); 7,751,383,148 assistant + 2,821,707,252 causal-replay loss tokens; realized-samples.jsonl SHA-256 `58713a89dd09…` (70,562,321 bytes); receipt `379ef811…`; 19,264-row preserved prefix / 32,960 reconstructed; 377-component declaration (375 per-source accounting entries), 216 chat / 1,711 replay leaves; 871,429 traces / 46 clipped.
+- Environment and hardware when relevant: allocation details in timing-and-allocation.md.
+- Result, including failure or restart: evidence now published; reconciliation note — the "Stack 13 findings" figure in earlier entries is a public commit-message report; the local panel artifacts reviewed here did not surface that anchor (its denominator/panel binding remains registry-bound [M]).
+- Evidence: the six files above (compiled 2026-11-15 ~15:05 UTC from [R] local records).
+- Interpretation and limitations: attempt-level reward rows and round-1 full selection series remain private; data (task text/outputs) requires user sign-off per the ruling.
+- Decision and next action: fresh cold read round 7 next.
