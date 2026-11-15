@@ -542,3 +542,21 @@ status: active
 - Evidence: code permalink above; sample-panels.md updated (Updated 2026-11-15 ~19:00 UTC).
 - Interpretation and limitations: reviewer calibration/blinded agreement remains unmeasured; the fidelity census and per-release inspectable receipts remain the main open evidence items.
 - Decision and next action: fresh cold read round 12 next.
+
+### 2026-11-15 19:40 UTC - Hourly catch-up (18:30–19:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `b5b4267ba2…` (17:49:45 UTC) to head `549a05d9512e56a4f39d09906d1e88c637d8c654`, landed 19:30:09 UTC (atlas-push landings log [R]).
+- Command or material configuration: evidence: landings.jsonl tail; `git log b5b4267b..549a05d9` (fetched).
+- External inputs and artifact references: landing records 18:48:31 UTC `38baf5b41c…`, 18:52:35 UTC `e1c4351074…`, 19:19:50 UTC `38c85626de…`, 19:30:09 UTC `549a05d951…`.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **New source intake pipelines prepared** (`3d40ef88e5…` pending verified-SWE and terminal-pivot intake pipelines; `0965e10512…` intake validation dependencies + regional storage setup; `7e61a5f523…` terminal-pivot grader environment for artifact builds).
+  - **BrowseComp-Plus offline search tasks prepared** (`acfed05dd5…`), with credential-free offline retrieval initialization enforced (`38baf5b41c…`, landed 18:48:31 UTC).
+  - **IFBench converted** (`0c250a6102…` released IFBench training split with its original scorer) but held pending intake measurements (`6fe3b4595d…` "Keep IFBench pending until intake measurements are bound").
+  - **Cascade terminal graders prepared** and unsupported runtimes accounted (`38c85626de…`, landed 19:19:50 UTC).
+  - **Actor-env repair SAMPLE receipts registered** (`549a05d951…`, 19:30:09 UTC — the head; actorless-lane SAMPLE receipts now bound).
+  - Infra: `[iris] Repair CPU topology drift and validate backend regions` (`e1c4351074…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings and receipt registration only; the new sources (verified SWE, terminal-pivot, BrowseComp-Plus, IFBench, Cascade) have not yet produced measured admissions in this record.
+- Decision and next action: next hourly check watches for IFBench/terminal-pivot intake measurements and the first licensed admissions of the new sources.
