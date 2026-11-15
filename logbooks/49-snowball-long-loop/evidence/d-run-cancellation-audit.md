@@ -1,7 +1,7 @@
 # D-sweep run-cancellation audit — findings of a local audit [R]; job identities now published
 
 - **What it is:** sanitized findings of a read-only local audit of the Snowball IsoFLOP phase-D run terminations on cluster `cw-rno2a` (2026-11-15). All times UTC; EST = UTC−05:00. Job IDs, task suffixes, exit codes, timestamps and budget figures are published below. This file publishes the audit's findings verbatim in aggregate form; **no OOM events were found in the queried logs**.
-- **Compiled at:** 2026-11-15T15:14Z
+- **Compiled at:** 2026-11-15T15:14Z. Updated 2026-11-15T18:45Z (round-10 cross-reference: the later decision-snapshot recovery published in the #54 record is linked in the Budget figures section below; the unavailability statement there is dated).
 - **Sources:** [R] `/Users/benfeuer/Documents/experiments/active/claim-audits/snowball-d-kills.report.md` (primary, full findings); [R] `.../snowball-d-kills.log` (supporting query transcript, 7,798 lines — consulted selectively, not read in full); [R] local audit-queried sources: Finelog hub `marin`/`log` rows and regional `iris.task_event`, controller DB attempts (queried read-only; regional workload-log queries returned no matching rows while the hub retained the attempts).
 - **Access class:** job identities, states, timestamps, exit codes and budget aggregates are publishable per ruling. Audit scope was read-only; no jobs, branches, configurations, controllers or clusters were changed.
 
@@ -54,7 +54,8 @@ Reconstructed completed GPU attempt durations (controller attempt start/end pair
 | D-r4 | 20.699533 |
 | **Total** | **95.802171** |
 
-This verifies the ~**95.8 of 96** accounting at the end of r4. With three active eight-GPU children the guard's one-minute allowance is **0.4 H100-hours**; stopping below 96 is expected. Reading the saved object `.../campaign-budget-guard-allocated/limit-reached.json` via `fsutil cat --raw` was unavailable because local CoreWeave credentials were missing; no credentials were printed or changed.
+This verifies the ~**95.8 of 96** accounting at the end of r4. With three active eight-GPU children the guard's one-minute allowance is **0.4 H100-hours**; stopping below 96 is expected. Reading the saved object `.../campaign-budget-guard-allocated/limit-reached.json` via `fsutil cat --raw` was unavailable **at this ledger's compilation (2026-11-15T15:14Z)** because local CoreWeave credentials were missing; no credentials were printed or changed.
+**Round-10 update — later recovery, distinct accounting bases:** the companion #54 record subsequently recovered that object in its credentialed re-audit and publishes the decision snapshot: `observed_h100_hours = charged_h100_hours = 95.77756444507175`, `reserved_h100_hours = 0.0`, `active_gpu_reservation = 24`, ceiling 96.0, `limit_reached = true`, with the guard condition evaluating 95.77756444507175 + 24/60 = 96.17756444507175 ≥ 96 (object last modified 11:20:21 UTC) — see the #54 notebook's revision-1 item 20 at [logbooks/54-snowball-isoflop-ablations/notebook.md (branch `codex/54-snowball-isoflop-ablations`, pinned revision)](https://github.com/marin-community/marin-logbooks/blob/8802f741f9e67f9634776c8636e56796bf4acbd5/logbooks/54-snowball-isoflop-ablations/notebook.md). Keep the two accounting bases distinct: the **decision-time** poll value (95.77756444507175) is not the **terminal** reconstruction (95.802171, the sum above from completed attempt durations) — the terminal total is 0.024606667 higher than the pre-cancel poll snapshot.
 
 ## Task/attempt census (27 audited tasks; all attempt IDs 0)
 
