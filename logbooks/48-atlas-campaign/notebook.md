@@ -624,3 +624,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only; measured effects not yet attested in this record.
 - Decision and next action: next hourly check watches for retained-release license/publication outcomes and any OpenResearcher search results.
+
+### 2026-11-15 23:45 UTC - Hourly catch-up (22:35–23:45 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `8dc5766a2f…` (22:28:06 UTC) to head `738638f20bed9bb0b6d706c01944833aa3d42ea3`, landed 23:32:09 UTC (landings 23:17:24 / 23:30:48 / 23:32:09 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 8dc5766a..738638f2` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: research grounding judge fitted on one H100 (`3de4e095d0…`); measured grounding host resources pinned before staging (`738638f20b…`, head).
+- Result, including failure or restart: material changes in the window:
+  - **License lane**: user-decided TaskTrove container licenses bound (`a4bf955d1f…`); approved research licenses bound to the retained population (`f469c6848d…`); research task conversion bound to complete grounding receipts (`0767c2fa7b…`).
+  - **Grounding/indexing lane continues**: HTTP transport recorded for the pinned grounding tokenizer (`ae964efff1…`); research grounding judge fitted on one H100; measured grounding host resources pinned before staging (head).
+  - **Archive hygiene**: truncated raw archive names kept valid on Hugging Face (`26a18f992a…`); complete raw repository acquisition clarified (`20d8363f69…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only; measured effects not yet attested in this record.
+- Decision and next action: next hourly check watches for the grounding-judge run results and the first license-bound retained-population publications.
