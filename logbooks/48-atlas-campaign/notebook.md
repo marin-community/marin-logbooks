@@ -448,3 +448,20 @@ status: active
 - Evidence: the six `evidence/` files as updated (17:05 UTC markers); [P]/[M]/[R] as labeled inline. Heading times in this record remain editorial labels; git commit metadata is the publication evidence.
 - Interpretation and limitations: the round-8 notes items that are **outside this branch's editable surface** are recorded, not fixed, here: the issue #48 baseline/navigation comment (still pins revision 5 and pre-revision-2 wording) and PR #50's earlier read-first text are public GitHub surfaces — updating them is an owned issue/PR-lane action; commit-metadata remediation remains a repository-owner decision; the 245→247 registry decomposition, the CrossPy candidate's 2/100 qualification semantics, distinct-task counting proofs, and sanitized receipts remain open evidence work. The "~40 child PRs merged Nov 13" figure remains approximate/unverified and outside the quantitative results.
 - Decision and next action: fresh cold-read round 9 next; the issue #48 navigation update and revision-19 hosted-verification check are the owned follow-ups.
+
+### 2026-11-15 17:30 UTC - Hourly catch-up (16:25–17:30 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `9fecbbf0…` (16:03:50 UTC) to head `b35a72d3335dcd03e5f711cb09c2436ebf374bfe`, landed 17:11:26 UTC (atlas-push landings log [R]).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 9fecbbf0..b35a72d3` (fetched).
+- External inputs and artifact references: landing records 16:44:44 UTC `4e8752fd8e…`, 17:03:10 UTC `d5d5603bf8…`, 17:11:26 UTC `b35a72d333…`.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **License-gating wave** (four commits, 17:03–17:11 UTC): `[Atlas] Gate new ingestion and admission on pinned license evidence` (`96007b259e…`), `Bind reviewed license receipts at standalone entry points` (`8639c56ac1…`), `Update Data Belay callers to the shared license policy` (`a4f7dfecbe…`), `Isolate reviewed-license fixtures from evaluation result roots` (`b35a72d333…`) — new ingestion/admission now requires pinned license evidence.
+  - **Main merge bringing the Lean proof lane** (`d5d5603bf8…` 17:03 UTC, merging `5699cf726e…` "Add a Lean v4.34.1 proof grader and ProofNet-Verified (#10879)" and `7cc6260615…` NuminaMath-LEAN training data) and `Merge main and hold ProofNet pending Atlas measurement` (`a11b0d3c76…`) — a new source family (Lean proofs) enters the pipeline with ProofNet explicitly held pending Atlas measurement.
+  - **Numina converter** merged pending Atlas measurements (`d5d5603bf8…`).
+  - **Single-worker curriculum preparation** (`108c4f85b2…` run in the caller, `4e8752fd8e…` storage init; landed 16:44:44 UTC).
+  - Also incoming from main: `Document per-task research logbook records (#11450)` — relevant to this record's conventions.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: these are code/merge landings; their measured effects (admissions, measurements) are not yet attested in this record.
+- Decision and next action: next hourly check watches for the first Numina/ProofNet/Lean measurement and license-gated admissions.
