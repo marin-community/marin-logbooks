@@ -31,7 +31,7 @@ status: active
 ## Entries
 
 > [!NOTE]
-> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file — especially **revision 4 (14:54 UTC)** with the consolidated current facts, gate matrix and evidence index, and the current synopsis in **revision 3 (14:44 UTC)**. Corrections are appended, never rewritten.
+> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file — the current synopsis is in **revision 3 (14:44 UTC)**, the consolidated current facts/gate matrix/evidence index in **revision 4 (14:54 UTC)**, and the corrected/extended sanitized evidence ledgers in **revisions 6–7 (15:12/15:45 UTC)** (see `evidence/`). Corrections are appended, never rewritten.
 
 ### 2026-11-15 13:55 UTC - Campaign catch-up record (2026-11-12 through 2026-11-15)
 
