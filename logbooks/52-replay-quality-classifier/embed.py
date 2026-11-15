@@ -7,6 +7,7 @@ import json
 import numpy as np
 from rigging.filesystem.factory import open_url
 from rigging.filesystem.s3_compat import configure_coreweave_s3
+from torch.nn.attention import SDPBackend, sdpa_kernel
 from transformers import AutoTokenizer
 
 from marin.processing.embeddings.harrier import HARRIER_DIM, HARRIER_REPO, HARRIER_REVISION, HarrierConfig, load_harrier
@@ -44,7 +45,8 @@ def main():
                     text=text[:-16]
                 texts.append(text)
             spans.append((begin,len(texts)))
-        embedding=embedder.embed(texts)
+        with sdpa_kernel([SDPBackend.FLASH_ATTENTION, SDPBackend.EFFICIENT_ATTENTION, SDPBackend.MATH]):
+            embedding=embedder.embed(texts)
         pooled=np.stack([embedding[a:b].mean(axis=0) for a,b in spans])
         pooled/=np.maximum(np.linalg.norm(pooled,axis=1,keepdims=True),1e-12)
         vectors.append(pooled)
@@ -54,7 +56,7 @@ def main():
     with open_url(args.output+'.npz','wb') as stream:
         stream.write(buffer.getvalue())
     with open_url(args.output+'.json','w') as stream:
-        json.dump({'config':config.__dict__,'input_sha256':hashlib.sha256(contents).hexdigest(),'output_sha256':hashlib.sha256(buffer.getvalue()).hexdigest(),'pooling':'mean of L2-normalized head/middle/tail window embeddings, renormalized; <=1024 Harrier tokens each'},stream)
+        json.dump({'config':config.__dict__,'sdpa_backends':['flash','efficient','math'],'input_sha256':hashlib.sha256(contents).hexdigest(),'output_sha256':hashlib.sha256(buffer.getvalue()).hexdigest(),'pooling':'mean of L2-normalized head/middle/tail window embeddings, renormalized; <=1024 Harrier tokens each'},stream)
 
 if __name__=='__main__':
     main()
