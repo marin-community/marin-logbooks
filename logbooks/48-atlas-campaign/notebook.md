@@ -584,3 +584,12 @@ status: active
 - Evidence: sample-panels.md (Updated 2026-11-15 ~20:10 UTC).
 - Interpretation and limitations: unchanged.
 - Decision and next action: fresh cold read round 15 next.
+
+## Known limits
+
+This section lists what cannot be fixed in this public record by policy or by absence of measurement. Cold readers should not re-raise these as notes.
+
+1. **Private data and per-source contents**: task text, prompts, model outputs, and dataset rows are never published (user data sign-off required); the per-task finding rows behind every panel count live in the private registry `open-athena/marin-rl-data-atlas-registry` [M]; counts are commit-message reports or local-ledger transcriptions.
+2. **Unpublishable artifacts**: the per-release admission receipts, SAMPLE/FULL panel receipts, ruling documents, frozen queue digests, the preview app (private deployment; hosted-verification receipts [M]), and per-run private configs/inputs. Pointers/hashes are published; the artifacts themselves are not.
+3. **Reproduction impossible by policy or inputs**: full end-to-end reproduction requires private registry inputs and per-run consumed configs not retained publicly; the failure reproducer for pass-3c is a local unpublished script (excerpt + SHA published); production publication (v76) and PR merges are user decisions, not reproducible actions.
+4. **Measurements never taken**: the aggregate (a)/(b)/(c) fidelity census tally over the final population (denominator not yet fixed); independent reviewer calibration/blinded agreement; GPU/CPU-hour accounting for most runs (only curriculum CPU-hours and some serving runs recorded); hosted preview revision-19 verification; landed-time (vs commit-time) records for most admissions.
