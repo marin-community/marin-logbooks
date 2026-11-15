@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
@@ -58,7 +59,13 @@ CATEGORIES = frozenset(
 
 
 def label_one(sample_path: Path, output: Path) -> dict:
-    sample_bytes = sample_path.read_bytes()
+    while True:
+        try:
+            sample_bytes = sample_path.read_bytes()
+            json.loads(sample_bytes)
+            break
+        except (FileNotFoundError, json.JSONDecodeError):
+            time.sleep(1)
     sample = json.loads(sample_bytes)
     destination = output / sample_path.name
     started = output / (sample_path.stem + ".started.json")
@@ -132,7 +139,8 @@ def main() -> None:
     if not 1 <= args.workers <= 8:
         raise ValueError("Authorized concurrency is 1..8")
     args.output.mkdir(parents=True, exist_ok=True)
-    paths = sorted(args.sample.glob("sample-*.json"))
+    frame = json.loads((args.sample / "frame.json").read_text())
+    paths = [args.sample / f"sample-{row['sample_id']:04d}.json" for row in frame]
     paths = [path for path in paths if not (args.output / (path.stem + ".started.json")).exists()]
     if args.limit is not None:
         paths = paths[: args.limit]
