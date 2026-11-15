@@ -31,7 +31,7 @@ status: active
 ## Entries
 
 > [!NOTE]
-> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries (14:30/14:33 UTC) at the end of this file, which append corrections, glossary, stage/difference tables, and evidence classes. Corrections are appended, never rewritten.
+> Read the newest entries first: the 13:55 UTC catch-up entry below is superseded **in part** by the later revision entries at the end of this file — especially **revision 4 (14:52 UTC)**, which contains the consolidated, corrected glossary and stage table, and the current synopsis in **revision 3 (14:42 UTC)**. Corrections are appended, never rewritten.
 
 ### 2026-11-15 13:55 UTC - Campaign catch-up record (2026-11-08 through 2026-11-15)
 
