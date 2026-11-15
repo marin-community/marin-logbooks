@@ -248,3 +248,52 @@ status: active
 - Evidence: [P] links above; [M]/[R] as labeled.
 - Interpretation and limitations: as stated.
 - Decision and next action: fresh cold read round 3 next.
+
+### 2026-11-15 14:44 UTC - Revision 3 after cold-read round 3: authoritative synopsis, three factual corrections, lane/hold tables, timeline
+
+- Question or hypothesis and reason for trying it: fresh cold-read round 3 returned NOTES (34/32 items) with three residual factual errors. This entry corrects them and consolidates the current state. Entry headings are editorial publication labels; git commit time is the publication evidence.
+- Published source revision: recorded cut `96fc0736fc95d8f21d11e1c03dfca108d568b220` (13:51 UTC); live head moved thereafter (observed `279a2655b3…` 14:18:12 UTC).
+- Command or material configuration: public evidence: https://github.com/marin-community/marin/blob/96fc0736fc95d8f21d11e1c03dfca108d568b220/docs/references/task-curation.md (SAMPLE tolerance section; admission policy); https://github.com/marin-community/marin/issues/11490; https://github.com/marin-community/marin/commit/fd670c41d16bd52e259e11c1562f6d4f55f408a3; https://github.com/marin-community/marin/commit/0eaf9b7fb447a4eaf1f528ac47c82ae7b2695407.
+- External inputs and artifact references: as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart:
+
+**CURRENT SYNOPSIS (authoritative as of this entry; supersedes earlier "Current state"/"Open items" blocks, retained as history)**
+
+- Technical question (how much faithful-environment fidelity was achieved?): **unanswered at this cut** — the per-source (a)/(b)/(c) fidelity census is not compiled into any public artifact yet; producing it is an owned next step (owner: audit lane; criterion: sanitized census published with denominators and exclusions). Admission/QC/preview/publication work proceeded in parallel.
+- Counts (publicly reported aggregates [P]; per-release identities/counts are registry-bound [M]): nine QA releases = 431,389 tasks (raw Stack 110,600 + five pins 110,152 + final three 210,637); fourteen Code releases = 42,406 tasks (41,906 TRAIN + 500 EVAL); eight empty Code releases typed-excluded; five filtered private Code releases (9,133 tasks) evidence-only pending qualification.
+- Hold state (as of this entry): production Atlas catalog publication (v76), TaskCompendium dataset publication, and controller rollout remain **held** pending explicit user decision; private preview deployments and private dataset release preparation were authorized and proceeded. marin#11277 OPEN/DRAFT (merge readiness includes outstanding CI/validation — separate from the user's publication authorization). marin#11120 is the related Snowball pipeline PR (open/held); its coupling to the Atlas hold is that both await the user's publication decisions.
+- Lanes still open: FULL-QC remainder (Stack, Open Reasoning, OpenSWE repairs); Puzzles (FULL review + grading census + decontamination receipt); difficulty continuation (no current solver measurements publicly available at this cut — PR #11421 states results not yet collected; a qualified 116-measurement cut is historical); overlap/folding (uncommitted diff handed to a separate worker); Tau repair (two censuses bound; execution qualification outstanding); derived-tags census (built; receipts pending first publication); curriculum integration (nearest-placement export staged, not selected by revision 18).
+
+**Corrections**
+
+1. **SAMPLE rounding** (replacing revision 2's wrong rule): maximum missing rows = **floor(0.05 × attempted rows)**; equivalently minimum conclusive = n − floor(0.05n). Example: a 30-row panel allows floor(1.5)=1 missing row (not 2); a 99-row panel allows floor(4.95)=4 (not 5). A FULL waiver additionally requires explicit pinned approval.
+2. **Curriculum thresholds reversed in revision 2**: the **original** minimum similarities were 0.55/0.75 (subject/capability); the **new** nearest-placement default is 0.30/0.30 (per marin#11490 and the pinned Atlas reference [P]). Coverage (100%) is explicitly not semantic correctness.
+3. **Admission authorship-time window completed**: the cited 2026-11-15 admission commits span **04:35:37Z (Stack) through 12:46:30Z (TACO-laion completion)**, including rebuilt Unitsyn at 12:29:25Z; the revision-2 range (04:35–07:12) covered only the early QA/PyMethods/CrossCode subset. Landing times remain reported-private.
+4. **QA terminology fixed**: "QA source lane" = the question-answering dataset category (the nine QA releases); "quality-assurance review" = QC/content review. Fidelity classes (a)/(b)/(c): (a) spec-accurate with QA evidence, (b) spec-accurate without QA evidence, (c) spec-vs-runtime mismatch — per the normative reference [P]. SAMPLE/FULL oversight levels are review levels, not dataset categories.
+5. **Preview-18 chronology resolved**: the reference documents (dated to the package preparation) describe revision 18 as 2026-11-14 — that is the **package preparation date**; deployment and hosted verification occurred **2026-11-15 ~02:00 UTC**. Approval states: revision 14 was built/deployed but its publication approval was held; the first approved successor after 13 is recorded in the preview lane's receipts [M].
+6. **Pass-3c runner**: the failing runner is an **unpublished script** (not a public file at the cited revision); "reproduced twice" and the telemetry figures are **reported** findings of the local audit [R] until a sanitized reproducer/receipt is published. The runner path/fix will be linked when the repair lands.
+7. **Puzzles reviewer binding**: the public binding commit identifies **seed 0 and the v3 reviewer** for the SAMPLE run [P]; FULL-QC reviewer routes (v2/v3, shared-relay) are distinguished in the normative reference; reviewer calibration/blinded agreement is unmeasured for these results.
+8. **Population reconciliation limit**: beyond the 9,133 new-conversion tasks, the 89,245 revision-13→18 growth is **not publicly reconcilable** from this record (per-source delta ledger is registry-bound [M]); display folding changes "shown" counts, not total population; hidden partitions include folded groups, filtered/pending cards, and QUICK/BAD hiding categories per the reference.
+9. **Control taxonomy** (per the references): original-oracle population filtering (full population, required); workspace negative controls (agentic, graded sources; must fail); generic sampled grader checks (95% sampled-control pass threshold can skip unsampled validation — a distinct control); content review (SAMPLE/FULL). Puzzles' empty-input test is a degenerate-input diagnostic distinct from workspace NoP (which is N/A for answer-graded tasks).
+10. **Privacy**: neutral noreply commit identity is in effect for commits after the initial ones; already-published commit metadata (initial commits expose a personal workstation email) requires repository-owner remediation — flagged to the coordinator, no history rewrite performed here. Internal session fragments will not be repeated; existing exposure is flagged.
+
+**Chronological event timeline (compact)**
+
+| Date (UTC) | Event |
+|---|---|
+| 2026-11-12 | Campaign start; BRIEF; fidelity audit scope; draft PR #11277 opened 21:09:15Z |
+| 2026-11-13 | Difficulty roster decision; ~40 child PRs merged to atlas-env-audit |
+| 2026-11-14 ~09:11 | Codex quota handoff; standing user policy |
+| 2026-11-14 12:29–16:13 | Branch-tip push incident resolved; merger retired 16:13 |
+| 2026-11-14 (rulings) | Non-agentic exemption; no-oracle executability drop; NoP retry policy; legacy adoptions 311/249/18 |
+| 2026-11-14 14:04–21:36 | Preview revisions 13–17; rev-13 population verified; pub-14 approval held |
+| 2026-11-15 00:08–02:00 | Contrast-audit landings; preview revision 18 deployed/verified ~02:00 |
+| 2026-11-15 02:10–07:45 | Puzzles SAMPLE attempt 4 completed (97/100 reviewed) |
+| 2026-11-15 03:44–12:31 | FULL-QC pass-3c failure audited (deterministic crash) |
+| 2026-11-15 04:35–12:46 | Admission commits (QA nine + Code fourteen) |
+| 2026-11-15 (ruling) | SAMPLE 5%-missing tolerance (floor rule) |
+| 2026-11-15 13:51 | Recorded cut 96fc0736; 13:55 catch-up entry published |
+- Evidence: [P] links inline; [M]/[R] labeled.
+- Interpretation and limitations: prior limitations stand; fidelity census explicitly pending.
+- Decision and next action: fresh cold read round 4 next.
