@@ -560,3 +560,15 @@ status: active
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings and receipt registration only; the new sources (verified SWE, terminal-pivot, BrowseComp-Plus, IFBench, Cascade) have not yet produced measured admissions in this record.
 - Decision and next action: next hourly check watches for IFBench/terminal-pivot intake measurements and the first licensed admissions of the new sources.
+
+### 2026-11-15 19:55 UTC - Revision 12 after cold-read round 13: affected-task semantics propagated to admission-ledger
+
+- Question or hypothesis and reason for trying it: cold-read rounds 11–13 repeatedly flagged that the canonical admission ledger still used "issue events" semantics. Corrected in evidence/admission-ledger.md (Updated 2026-11-15 ~19:55 UTC): its Finding-semantics note now derives the counting rule from the public runtime code — `issue_count` increments once per reviewed task whose verdict has issues (permalink `full_qc_review.py#L78–L103` at the recorded cut), so all panel counts in that ledger are distinct affected reviewed tasks. Labels remain reported pending per-task row publication.
+- Published source revision: recorded cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`; branch head has advanced to `549a05d951…` (19:30:09 UTC landing; hourly entry above).
+- Command or material configuration: as above.
+- External inputs and artifact references: as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the notebook's revision-10 "whether affected rows are distinct tasks or issue events remains unestablished" wording is superseded by this entry and by revision 11; the read-first note and index point here.
+- Evidence: permalink above; ledger update markers.
+- Interpretation and limitations: reviewer calibration unmeasured; fidelity census and per-release inspectable receipts remain the main open evidence items.
+- Decision and next action: fresh cold read round 14 next.

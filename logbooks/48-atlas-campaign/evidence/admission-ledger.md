@@ -31,11 +31,7 @@
   0eaf9b7fb447a4eaf1f528ac47c82ae7b2695407 (commit-message reports),
   [P] private registry `open-athena/marin-rl-data-atlas-registry` (repo name public; contents private).
 - **Access class**: metadata/counts/digests only. No task text, prompts or outputs.
-- **Finding semantics (applies to every panel row below)**: "findings" are reviewer **issue
-  events** (one task can generate multiple flags); they are **not** distinct-affected-task
-  counts. The BAD / SOME_ISSUES quality labels are **reported** (public commit messages and
-  local ledgers) until the counting inputs (per-task finding rows) are available for
-  independent counting.
+- **Finding semantics (applies to every panel row below; round-13 correction per the public runtime code)**: `issue_count` increments **once per reviewed task whose verdict has issues** (`full_qc_review.py#L78–L103` at the recorded cut — permalink https://github.com/marin-community/marin/blob/96fc0736fc95d8f21d11e1c03dfca108d568b220/experiments/post_training/task_curation/full_qc_review.py#L78-L103), so "findings" counts here are **distinct affected reviewed tasks**, not multi-flag event counts. The earlier "issue events; not distinct-affected-task counts" wording is withdrawn. The BAD / SOME_ISSUES quality labels remain **reported** (public commit messages and local ledgers) pending publication of the per-task finding rows for independent recomputation.
 
 ## 1. Nine QA (math) releases — oracle filtration + SAMPLE admission (FINAL_STATUS-v2.json)
 
