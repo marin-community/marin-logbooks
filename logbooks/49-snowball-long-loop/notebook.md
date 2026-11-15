@@ -474,3 +474,15 @@ status: active
 - Evidence: #54 record; receipts cited in evidence/selection-ledger.md.
 - Interpretation and limitations: unchanged.
 - Decision and next action: fresh cold read round 14 next.
+
+### 2026-11-15 20:10 UTC - Revision 13 after cold-read round 14: route-mean scope corrected
+
+- Question or hypothesis and reason for trying it: cold-read round 14 showed revision 12 misattributed the step-4 route reward means: exp2's eval4 receipt (not exp1's) publishes per-route reward means. Corrected in evidence/selection-ledger.md.
+- Published source revision: unchanged.
+- Command or material configuration: verification against `recovery13-eval4-aggregate-check-20261114T1958Z.json` [R] and STATUS.md aggregates.
+- External inputs and artifact references: as cited in the ledger.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: corrected scoping — per-route reward means are published for exp2 eval4 (structure 0.2, Nemotron 0.2513203125; scored-only mean 0.24105625 reconstructed in the ledger) and in exp1 aggregates; the fully-scored exp2 evals 6–20 publish route pass fractions only, so their overall means are not recomputable from published route numbers. The blanket "route reward means unavailable" is withdrawn (revision 12's exp1 attribution is withdrawn).
+- Evidence: ledger updated (Updated 2026-11-15 ~20:10 UTC).
+- Interpretation and limitations: unchanged.
+- Decision and next action: fresh cold read round 15 next.
