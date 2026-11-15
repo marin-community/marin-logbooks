@@ -148,3 +148,60 @@ status: active
 4. marin#11120 remains open/held pending user decision; another long-loop round is not currently authorized — undecided.
 - Evidence: report-path note: the cold-read notes report is local-only [R]; this entry is the durable response.
 - Decision and next action: fresh cold read on the updated branch next.
+
+### 2026-11-15 14:33 UTC - Revision 2 after cold-read round 2: optimizer and context corrections, timing bound, per-round recovery policy, stage/difference tables
+
+- Question or hypothesis and reason for trying it: a fresh cold-read round 2 returned NOTES (23/27 items), including two factual errors in revision 1. This entry corrects them with public sources.
+- Published source revision: round-1 SFT source https://github.com/marin-community/marin/commit/9662fdba02896ffb03fd21066c1750b363e78cb6; round-2 tracker entry https://github.com/marin-community/marin/issues/11337#issuecomment-6895748469; exp2 launch report https://github.com/marin-community/marin/pull/11120#issuecomment-6863473319; exp2 deadline controls https://github.com/marin-community/marin/pull/11120#issuecomment-6858592893.
+- Command or material configuration: see difference table below.
+- External inputs and artifact references: Micro210 dataset card at frozen revision https://huggingface.co/datasets/open-athena/Marin-Micro-Eval-210/blob/4564ed081c316bc3231ae5c3a53a46b39248c819/README.md; exp1 eval YAML https://github.com/marin-community/marin/blob/0c1e81ca93635ac157db90ff786a8f8fba65b13c/experiments/post_training/long_loop/specs/evaluation.yaml (`judge_gpu_count: 8`).
+- Environment and hardware when relevant: judge allocation is **local co-allocated GPUs, 8 H100s per eval** (per the pinned eval YAML), not a remote hosted service for the exp1 Micro eval; these judge GPUs count within the campaign's per-stage allocations; a complete round-2 allocation-hours total remains unmeasured [M]. The 64-GPU IsoFLOP allocation is outside the ≤256 ceiling.
+- Result, including failure or restart:
+
+**CORRECTIONS superseding revision 1 (and the 13:55 entry)**
+
+1. **SFT optimizer direction was wrong in revision 1.** Round 1 SFT used **MuonH** (`grug_moe_muonh_v1`, pinned round-1 SFT YAML at `9662fdba…` [P]); round 2 consumed **Adam** (LR 5e-5, betas 0.9/0.95, cosine schedule) per the round-2 tracker [P]. The RL optimizer (AdamW) is separate from both. "MuonH: round-2 optimizer" in the revision-1 glossary is withdrawn.
+2. **SFT context was wrong in revision 1.** Both full rounds used **262,144-token SFT context** (round-1 YAML and round-2 tracker [P]); no 262K-vs-shorter comparison exists. Smaller-context settings belonged to smokes/the 32k plumbing smoke only.
+3. **"Longer loop" is a historical plan label.** Executed comparison: SFT exposure fell 746 → 204 updates; RL budget fell 12 h → 10 h; RL context 102,400 in both; achieved RL updates rose 17 → 20. No dimension of the executed round 2 was longer than round 1 except the achieved update count.
+4. **Recovery policy is per-round.** Round 1: eight startup-failed slots were **restarted with the same identities/seed/settings**, yielding seven grades; 432 originally scored rows preserved; UID 399 unscored. Round 2: no generation resampling; only verifier-only regrade of BixBench UID1 (actual reward 0.0); TB2 UIDs 225/268/269 infra-unscored. Restarting a slot that never produced output ≠ rerunning a completed answer.
+5. **Round-2 elapsed time vs the 36-h target (bound from public reporting).** `.13.11` was publicly reported running 2026-11-13 20:00:54 UTC [P]; replacement-completion receipt 2026-11-15 10:49:53.982839 UTC [P] → **lower bound ≈38 h 49 min**, exceeding the 36-h end-to-end target under a submission-to-replacement-completion definition. The exp2 deadline controls additionally configured non-eval task deadlines totaling 36 h, a 72-h final-eval exception, and a 109-h coordinator deadline — configured safety deadlines, not the measured end-to-end elapsed time. **Assessment: the measured bound shows the end-to-end target was not demonstrably met in round 2** (missing native SFT-phase timing prevents an exact total; this does not make the target unknowable).
+6. **Timestamp discipline**: the revision-1 entry was drafted at 14:30 UTC and published at 14:24:13 UTC (commit `8fc7be25e7…`); observation/drafting/publication times were conflated. Going forward, entry headings use the publication time and observation times are stated separately. The 13:55 entry's heading is its publication label (actual commit 14:2x UTC); noted as a drafting-time label, not event time.
+7. **Micro210 vs validation vs dataset card**: the dataset card describes 210 tasks / 21 benchmarks / 450 repeated slots; the campaign's frozen eval excludes **Tau3** → 200 tasks / 20 benchmarks / 440 slots. The 120-task checkpoint-selection set (20 SWE + 100 non-agentic) is a **separate training holdout**, disjoint from training data; its identity is [M]. The card's profile is a compact/simplified uniform profile (e.g., generated-choice TruthfulQA rather than original MC2) and is not a full release-policy reproduction [P].
+8. **D-run cancellation audit**: relabeled as **findings reported by an unpublished (local) audit** [R]; marin#11440 concerns the underlying training stall and is related context only, not corroboration of the cancellation ledger. The per-job attempt/exit/audit tables remain [R]; code identifiers (`budget.py:107` etc.) remain without public permalinks (open work).
+9. **Exp1 failure causal history**: `.09.11` terminated on the runtime checkpoint-gate `checkpoint_samples` device-mesh ValueError [R]; separately, its recipe was invalidated because it used **fixed mixture weights instead of the intended schedule** [R] — the `.09.12` replacement fixed the recipe (and ran to completion). These are distinct: one terminated the run, the other invalidated the recipe and motivated replacement.
+10. **Exp2 launch history completed**: `.13.9` planned batch 8 / 6,410 updates (abandoned sizing plan); an earlier 32-H100 Adam attempt failed allocation; `.13.10` allocated workers and was cancelled for the batch change (66.3749 H100-hours); `.13.11` (batch 256 / 204 updates) reported running 2026-11-13 20:00:54 UTC [P]. The 13:55 entry's 16:19–19:07 range covered smokes only.
+11. **Operational shorthands**: "40/45" = Daytona snapshot quota used/limit at that moment [R]; "~14–19 rows/s" = CPU-accounting processing rate (rows = realized samples) [R]; checkpoints 10/16/18 committed are selected milestones at a two-update validation cadence, not the full save history [R]; "pre-capacity" = scored before full eval capacity was available; "group admission" = RLOO-N admission gating over sample groups; TB2 = Terminal-Bench 2 (version as pinned in the consumed eval config [M]); Atlas v76 hold is unrelated to this campaign and is cross-referenced in logbooks #48 only.
+
+**Stage lineage and difference table (public parts [P]; private consumed configs [M])**
+
+| Stage | Round 1 (exp1) | Round 2 (exp2) |
+|---|---|---|
+| Initializer | Snowball base (pins in tracker) | same base |
+| SFT updates | 746 | 204 (numbered 0–203) |
+| SFT positions | 50,063,212,544 packed | 13,690,208,256 sampled |
+| SFT context | 262,144 | 262,144 |
+| SFT optimizer | MuonH (`grug_moe_muonh_v1`) | Adam (LR 5e-5, betas 0.9/0.95, cosine) |
+| CP/EP geometry | CP8 within nodes | CP32 across nodes |
+| Microbatch | 32 | 8 |
+| MoE dispatch | local Sonic | EP ring |
+| Optimizer numerics | BF16 / offloaded | FP32 / on-device Adam |
+| Loss mask | assistant-only supervision; round-1 audited batch covered 94.97% of intended last-conversation assistant tokens (recorder repairs not applied to the scored model) | assistant-only (harness/recorder repairs present in round 2 [M]) |
+| Scheduling | — | cosine |
+| RL context | 102,400 | 102,400 |
+| RL budget | 12 h | 10 h (38,575 s consumed) |
+| Achieved RL updates | 17 completed; update-18 admission failed (`GroupAdmissionStalledError`) | 20 completed |
+| Selected checkpoint | RL16 | native step 20 |
+| Final model | open-athena/Snowball-LongLoop-Round1-2026.11.12.7 @ `475ba62d…` | open-athena/Snowball-LongLoop-Round2-2026.11.14.13 @ `6546ba2d…` |
+| Final eval | 439/440 scored, UID 399 unscored, run status infra_failed | 437/440 scored (TB2 UIDs 225/268/269 unscored), status infra_failed |
+| Scores (scored-attempt mean reward / mean of benchmark means) | 0.4525643127 / 0.5216066358 | 0.4048171547 / 0.4828958533 |
+
+- Active expert-capacity dropping was unmeasured and dropless equivalence unestablished (exp1-vs-exp2 audit summary [P]); the two rounds differ in many factors simultaneously — no single-factor attribution is supported.
+- Best-checkpoint selection: the per-checkpoint validation ledger (all candidates, eligibility, EMA sequence) is [M]/[R] and not yet published; the record cites only the selected point's values; selection maximality is **reported, not publicly re-verified**.
+- Final scores are tracker-reported aggregates [P]; attempt-level rows and recovery lineage are private; public recomputation is not yet possible.
+- 377 component declarations expand into 216 chat leaves + 1,711 replay leaves [P]; exact weights/per-source accounting [M]; seven unknown upstream revisions affect specific replay sources [M].
+- "Mild premise repairs" (data arm): planned/ongoing work governed by marin#10788's public contract (grounded repairs, no invented execution results, drop unverifiable continuations); nothing from this arm was consumed by exp2; teacher/prompt pins and counts not yet published.
+- Retention/resumability: retained artifacts (RL16/18/20, SFT203, corrected handoff) exist as of the round-2 tracker's snapshot; exact 14-day lifecycle expiry deadlines unverified; resumability **unverified**; assigned as a verification next action.
+- Next-step statuses: round-2 tracker entry **published** (14:12:05 UTC) — the carry-over work is the *follow-up*, not a pending publication; three unscored eval slots are accepted permanent limitations under the no-resampling policy (a new eval version would need separate authorization); no new round authorized — undecided pending user.
+- Evidence: all [P] items above link public commits/issues/cards; [M]/[R] items remain as labeled.
+- Interpretation and limitations: unchanged from revision 1's limitations section, plus: the 38 h 49 min figure is a public-reporting bound, not a measured phase-total.
+- Decision and next action: fresh cold read round 3 next.
