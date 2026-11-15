@@ -297,3 +297,45 @@ status: active
 - Evidence: [P] links inline; [M]/[R] labeled.
 - Interpretation and limitations: prior limitations stand; fidelity census explicitly pending.
 - Decision and next action: fresh cold read round 4 next.
+
+### 2026-11-15 14:54 UTC - Revision 4 after cold-read round 4: consolidated current facts, gate matrix, evidence index, timeline fixes
+
+- Question or hypothesis and reason for trying it: fresh cold-read round 4 returned NOTES (36 items); residual fixes are consolidation, a few dated-event corrections, and explicit evidence links beside claims. This entry consolidates; earlier entries remain as history.
+- Published source revision: recorded cut `96fc0736fc95d8f21d11e1c03dfca108d568b220` (13:51 UTC).
+- Command or material configuration: see evidence index below.
+- External inputs and artifact references: https://github.com/marin-community/marin/blob/96fc0736fc95d8f21d11e1c03dfca108d568b220/experiments/post_training/task_curation/README.md (v3-README statement), app README/RELEASE.md (preview lane docs), https://github.com/marin-community/marin/blob/96fc0736fc95d8f21d11e1c03dfca108d568b220/docs/references/task-curation.md.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart:
+
+**CURRENT FACTS (consolidated; supersedes all earlier "Current state" blocks)**
+
+- Central question status: the (a)/(b)/(c) fidelity census is not compiled publicly; the campaign's core "how much fidelity was achieved" is **unanswered at this cut** (owned next step: audit lane; criterion: sanitized census with denominators/exclusions). The 310 live IDs are the live source-ID population, not the runnable-agentic denominator; the 28 grandfathered MarinSkyRL blends are excluded from the fidelity population entirely (their exclusion is defined in the BRIEF [R]).
+- Admissions (publicly reported aggregates; per-release identities in registry [M]): nine QA releases = 431,389 tasks (raw Stack 110,600 + five pins 110,152 + final three 210,637); fourteen Code releases = 42,406 tasks (41,906 TRAIN + 500 EVAL, incl. PyMethods-small (TRAIN converter, 496/500 retained) and CrossCode-Python 500 EVAL); eight empty Code releases typed-excluded; five filtered private Code releases (9,133 tasks) evidence-only pending qualification.
+- Public quality outcomes (per-release SAMPLE panels; "findings" = findings in commit prose, distinct-task counts not always established): rebuilt Unitsyn 54/100 (BAD), TACO-laion 25/100, PyMethods-small 37/100, Stack 13/100, CrossCode-Python 1/100, final-three-QA aggregate 134 sampled findings across the nine QA sources [P commit messages]. Puzzles 22/97 affected (22.68%).
+- Holds (authorization states at this cut): private dataset release preparation/upload — authorized (new private releases are the policy mechanism); private preview deployment/verification — authorized; production Atlas catalog publication (v76) — HELD; public TaskCompendium dataset release — HELD; controller rollout — HELD; marin#11277 merge — pending (CI/validation outstanding, then user decision); marin#11120 — open/held (Snowball pipeline; awaits the same user publication decisions).
+- Gate matrix (current, per the curation reference [P]; effective 2026-11-15): original-oracle full-population filtering — required for all sources; workspace NoP negative controls — agentic workspace-graded sources only, must fail; verifier-deadline/source-error outcomes count as non-passing **annotations** (admissible without a scored control failure), unresolved infrastructure outcomes stay pending; generic sampled grader checks — 95% sampled-control pass threshold (distinct control); content review — SAMPLE level (fixed ≤100 panel, conclusive = n − floor(0.05n), issue rate = affected/conclusive) with FULL as follow-up for most lanes; Puzzles lane exception: FULL review required before source admission (lane-specific standing decision [R]; authority: campaign lane records); legacy adoptions (311/249/18) install no pins. Waiver: ≤1% unreviewed requires explicit pinned approval.
+
+**Evidence index (major claims → public links; items without a public link are [M]/[R])**
+
+| Claim | Public evidence |
+|---|---|
+| raw Stack admitted, 110,600 tasks | https://github.com/marin-community/marin/commit/c707bfbd5e872db9439f5f39dc8af1405a86e85b |
+| five QA pins, 110,152 tasks | https://github.com/marin-community/marin/commit/635e7b907f95ea7a25d4be93e60dbecc6faedb0c |
+| final three QA pins → 431,389 total; 134 sampled findings | https://github.com/marin-community/marin/commit/8ea14c762f158e9e9a6cc5bab53b3cb328e7f23e |
+| Code lane complete, 42,406 tasks (41,906 TRAIN + 500 EVAL) | https://github.com/marin-community/marin/commit/0eaf9b7fb447a4eaf1f528ac47c82ae7b2695407 |
+| rebuilt Unitsyn SAMPLE (54/100, BAD) | https://github.com/marin-community/marin/commit/fd670c41d16bd52e259e11c1562f6d4f55f408a3 |
+| PyMethods-small admitted (TRAIN converter; 496/500) | https://github.com/marin-community/marin/commit/2d8202d0071a3ac9bd57efc4e92043c73bb04df5 |
+| CrossCode-Python EVAL admitted (500 EVAL; 1 finding/100) | https://github.com/marin-community/marin/commit/c9f0235d8e8d6bf9e739caa907d213f9952ffc35 |
+| Puzzles SAMPLE binding (seed 0, v3 reviewer) | https://github.com/marin-community/marin/commit/4bdbc7eeed5a861e0bb22d25a434dd5a98744484 |
+| 71-pair overlap scan (7 duplicates, 1 partial) | message of cut commit 96fc0736fc95d8f21d11e1c03dfca108d568b220 |
+| curriculum experiment (0.569% → 100% placement) | https://github.com/marin-community/marin/issues/11490 |
+| difficulty protocol (results not yet collected at its snapshot) | https://github.com/marin-community/marin/pull/11421 |
+| SAMPLE tolerance rule (floor(0.05n)) | task-curation.md SAMPLE section at the recorded cut |
+
+- Timestamp corrections: the initial catch-up entry was committed at **14:07:50Z** (its "13:55" heading is an editorial label); the contrast-audit landing window is **00:08–02:15 UTC** (the synopsis's 02:00 was the deployment time); the "Nov 13 ~40 child PRs merged" count is **approximate** (evidence: the example PRs #11439/#11444/#11421/#11436/#11429 and the atlas-env-audit log; no exact count compiled).
+- Documentation-status notes: the task_curation README sentence "The v3 YAML has not yet been exercised by a live GPU job" is a **historical statement predating the recorded cut** — the recorded Puzzles SAMPLE run (seed 0, v3 reviewer, bound by commit 4bdbc7eeed) and pass-3c activity used v3; updating that README requires an authorized source revision (owned action, not a logbook change). The app README's "SAMPLE requires complete review" text is **obsolete** relative to the floor(0.05n) tolerance rule — same disposition.
+- Consolidated open work (owners/criteria; supersedes scattered lists): (1) fidelity census publication — audit lane; (2) preview revision 19 publish+verify — preview lane; (3) marin#11277 CI/validation then merge decision — code owners + user; (4) pass-3c repair (runner bug + reasoning-truncation reviewer strategy) — FULL-QC lane; (5) Puzzles FULL review + grading census + decontamination receipt — FULL-QC lane; (6) FULL-QC remainder (Stack whole-source review, Open Reasoning, OpenSWE) — FULL-QC lane; (7) legacy-adoption gates (whole-source collection, global NegativeControlPolicy, content QA) — qualification lane; (8) difficulty continuation measurements — difficulty lane (no current public results); (9) overlap/folding landing + fold-group decision table — folding worker; (10) Tau execution qualification; derived-tags census first publication — respective lanes; (11) curriculum nearest-placement integration decision — catalog lane; (12) run manifests + sanitized receipts publication — evidence owner (secretary can compile from public materials only); (13) commit-metadata remediation decision — repository owners (flagged to coordinator); (14) documentation fixes above — authorized source revision.
+- Privacy status: commits after the initial logbook/index commits use a neutral noreply identity; remediation of already-published personal-workstation email metadata is a repository-owner decision (tracked here and flagged to the coordinator). Internal identifiers (session fragments, node labels) are retained in the historical entries; they are operational metadata and will not be repeated.
+- Evidence: table above; [P]/[M]/[R] as labeled.
+- Interpretation and limitations: as previously recorded.
+- Decision and next action: fresh cold read round 5 next.
