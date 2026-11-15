@@ -49,6 +49,8 @@ def main():
     scores={'learned':dict(zip(map(int,all_scores['ids']),map(float,all_scores['score']),strict=True)),
             'rules':dict(zip(map(int,structural['ids']),map(float,structural['rules']),strict=True)),
             'junkgate2':{row['sample_id']:-row['score'] for row in junk['scores']}}
+    native=np.load(root/'native-rules-v1.npz')
+    scores['native_rules']=dict(zip(map(int,native['ids']),map(float,native['score']),strict=True))
     y=np.array([labels[i]['low_value'] for i in test],dtype=bool)
     cy=np.array([labels[i]['low_value'] for i in calibration],dtype=bool)
     reports={}
@@ -71,7 +73,7 @@ def main():
                        'pr_curve':{'precision':precision.tolist(),'recall':recall.tolist(),'thresholds':pr_thresholds.tolist()}}
     rng=np.random.default_rng(52611200)
     improvements={}
-    for baseline in ('junkgate2','rules'):
+    for baseline in ('junkgate2','rules','native_rules'):
         for limit in (.02,.05):
             difference=(predictions[('learned',limit)].astype(int)-predictions[(baseline,limit)].astype(int))[y]
             # Resample the same documents for both classifiers; thresholds remain frozen.
@@ -86,7 +88,7 @@ def main():
              'adjudicated':sum(len(json.loads(path.read_text())['labels']) for path in (root/'adjudication-v1').glob('batch-*/labels.json')),
              'models':reports,'paired_recall_improvement':improvements,
              'limitations':['Model-assisted labels, not human ground truth.','Bounded views can miss content between recorded windows.','Rates are unweighted on a balanced, capacity-capped cache sample; they do not establish corpus prevalence.','Grouping uses exact visible-content hashes; near duplicates can cross splits.','The same independent model also adjudicates in fresh contexts.','Astra used the initial rubric; GLM continuation explicitly excludes universal tokenizer wrappers as evidence.']}
-    (output/'evaluation.json').write_text(json.dumps(summary,indent=2))
+    (output/'evaluation-v2-native-rules.json').write_text(json.dumps(summary,indent=2))
     public=[]
     for i in sorted(samples):
         label=labels.get(i)
