@@ -101,8 +101,6 @@ def main():
     structural=max((row for row in candidates if row['variant']=='structural'),key=lambda row:(row['selection'],row['ap']))
     # Fixed cost-aware selection rule, before test evaluation.
     chosen=structural if structural['selection']>=best['selection']-.02 else best
-    if chosen['variant']=='embedding':
-        raise ValueError('Embedding-only export needs a separate feature schema; compare it but do not silently use the structural schema')
     values=variants[chosen['variant']]
     scaler=None
     if chosen['kind']=='gbdt':
@@ -113,7 +111,10 @@ def main():
         scaler=StandardScaler().fit(x(training,values))
         model=LogisticRegression(C=chosen['c'],max_iter=2000,random_state=52611).fit(scaler.transform(x(training,values)),y(training))
         all_scores=model.predict_proba(scaler.transform(values))[:,1]
-    exported=export(model,values.shape[1]-len(FEATURE_NAMES),scaler)
+    dimensions=0 if chosen['variant']=='structural' else 1024
+    exported=export(model,dimensions,scaler)
+    if chosen['variant']=='embedding': exported['feature_names']=[]
+    exported.update(features_version=1,window_tokens=2048,tokenizer='marin-community/marin-tokenizer@a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2')
     model_path=args.output/'model.json'; model_path.write_text(json.dumps(exported,separators=(',',':')))
     np.savez_compressed(args.output/'scores.npz',ids=data['ids'],score=all_scores)
     score=all_scores[[positions[i] for i in calibration]]
