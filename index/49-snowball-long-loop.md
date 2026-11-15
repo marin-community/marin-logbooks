@@ -1,7 +1,7 @@
-# Research question
+# Can a repeatable SFT → asynchronous RLOO-N RL → frozen Micro210 eval loop run end-to-end within 36 h on ≤256 H100s, and what have its first two rounds established?
 
 - Task issue — [#49](https://github.com/marin-community/marin-logbooks/issues/49)
-- Status — Active record of the Snowball long-loop RL campaign (SFT → asynchronous RLOO-N RL → frozen Micro210 eval, ≤256 H100, <36 h target). Catch-up through 2026-11-15 recorded: exp1 sealed 2026-11-13 (entered marin#11337 as round 1); exp2 sealed 2026-11-15 10:49 UTC "completed with limitations" — RL 20 updates, best = native step 20, final Micro210 eval 437/440 scored, model public at open-athena/Snowball-LongLoop-Round2-2026.11.14.13, seal tag experiments/exp2-rl20-2026.11.15.
+- Status — Active record (as of 2026-11-15 14:30 UTC). Scope: chronological, evidence-backed record of the Snowball long-loop campaign: exp1 (sealed 2026-11-13; 80.57 h vs <36 h target; RL update-18 admission failed after 17 completed updates; final eval 439/440 scored with run status infra_failed) and exp2 (sealed 2026-11-15 10:49 UTC "completed with limitations"; 20 RL updates; 437/440 scored; model open-athena/Snowball-LongLoop-Round2-2026.11.14.13; seal tag experiments/exp2-rl20-2026.11.15). Revision 1 after cold-read round 1 adds corrections, glossary, stage lineage, public tracker metrics and timing endpoints. Related: marin#11337 recipe tracker, marin#11120 (open, held), marin#11440.
 - Research branch — [codex/49-snowball-long-loop](https://github.com/marin-community/marin-logbooks/tree/codex/49-snowball-long-loop)
-- Notebook at commit — [Notebook](https://github.com/marin-community/marin-logbooks/blob/437b2e41dcfdbf6184b184ab422e3b04070e8ed6/logbooks/49-snowball-long-loop/notebook.md)
-- Marin contributions — None yet
+- Notebook at commit — [Notebook](https://github.com/marin-community/marin-logbooks/blob/8fc7be25e7/logbooks/49-snowball-long-loop/notebook.md)
+- Marin contributions — None merged into marin main by this record yet; the campaign's PR [marin#11120](https://github.com/marin-community/marin/pull/11120) is open and held
