@@ -105,6 +105,8 @@ in the private registry receipts and are not locally enumerable):
 
 ## 4. Anchor panels with PUBLIC reports (corrected — the earlier "not found" TODOs are removed)
 
+- **Pin discipline within each source (round-14 note 18)**: every row above distinguishes the **old (historical FULL-era) pin** from the **new (current admission) pin** *within that source* — e.g. Math Oracle: historical FULL binding `a90ec881…` vs the source's current binding `43d45617…` in the public transport; processed Stack: historical FULL pin `41a27ac6…` vs the admitted release pin `5c6818d7…` (commit `8ea14c762f`); code-oracle: frozen-assembly state vs the finalized binding `f2b8131f…` (§7). Rows whose old/new pins are the same say so.
+
 - **Raw Stack, 13 findings — public report [P]**: marin commit
   `c707bfbd5e872db9439f5f39dc8af1405a86e85b` (author 2026-11-15 04:35:37 UTC), "Admit the raw
   Stack oracle-filtered pin with current SAMPLE evidence": "its exact-pin 100-task content
@@ -246,7 +248,7 @@ admission commit `c9f0235d8e`, Nov 15): different pin, different converter, diff
   15,156-row population, each with its own date where the source records one: the frozen-assembly
   snapshot's date is not stated by REPORT.md:182/:2214 (it is the pre-repair state recorded during
   the assembly pass; the round-14 wording "both snapshots are dated" is withdrawn for that one), while the
-  finalized public binding carries its own receipt date (pin f2b8131f…, 2026-11-15):
+  finalized public binding carries its receipt/pin identity (pin f2b8131f…); the two dates now stated are the finalization event (2026-11-14 12:34:19 UTC, per the local sidecar) and the public binding's presence at the 2026-11-15 cut — the earlier "receipt date 2026-11-15" phrasing that conflicted with the finalization timestamp is corrected (round-14 fourth pass):
   1. **Frozen assembly (provisional; recorded in the full-qc REPORT, pre-repair)** [R: REPORT.md:182, :2214]:
      population 15,156 retained = **15,087 valid (conclusive-review denominator) + 69 INVALID**; 0
      unavailable; 0 uncertain; **1,026 affected conclusive rows** = 6.80% issue rate → **provisional GOOD

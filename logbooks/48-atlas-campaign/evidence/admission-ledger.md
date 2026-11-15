@@ -98,7 +98,7 @@ Per-source: pinned private revision (full 40-hex IDs below), retained count, see
 SAMPLE panel, findings, TRAIN/EVAL role, Daytona machine slots. All `selection_status:
 Available`, blockers []. All counts post-repair where a repair occurred (see below).
 
-| Release (source_id) | Retained | Revision | Reviewed | Unavail | Findings (affected tasks) | Use | Slots |
+| Release (source_id) | Retained | Revision | Reviewed | Unavail | Findings (affected tasks) | Use | Slots (Daytona machine slots reserved for the panel's serving/grading run; a scheduler quantity, not a task count) |
 | --- | ---: | --- | ---: | ---: | ---: | --- | ---: |
 | TaskTrove:DCAgent__exp_rpt_pymethods2test-v3 | 496 | `abf6368f9988a3a97745684fb6c3aa488f2ffa40` | 100 | 0 | 37 | train | 496 |
 | TaskTrove:laion__exp_rpt_crosscodeeval-python-v2 | 500 | `5c1270d7d2ec851e65d360e8efe752c556fe14ea` | 100 | 0 | 1 | eval | 500 |
