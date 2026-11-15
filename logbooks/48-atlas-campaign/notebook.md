@@ -403,3 +403,19 @@ status: active
 - Evidence: evidence/ files as corrected (compiled-at headers updated).
 - Interpretation and limitations: unchanged.
 - Decision and next action: fresh cold read round 8 next.
+
+### 2026-11-15 16:25 UTC - Hourly catch-up (15:20–16:25 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from the recorded 13:51 cut `96fc0736…` to head `9fecbbf0b4c976bb48c66ae0a2ff28792af8304d`, landed 16:03:50 UTC (atlas-push landings log [R]; PR #11277 updated 16:03:50Z, still OPEN [P]).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 96fc0736..9fecbbf0`; commit metadata.
+- External inputs and artifact references: https://github.com/marin-community/marin/pull/11277 (head now `9fecbbf0…`).
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Preview revision 19 docs synced**: commit `129fd7505a…` "[docs] Sync Atlas docs with preview revision 19" (authored 10:23:14-05:00 = 15:23:14 UTC; landed 15:24:24 UTC) touches docs/references/rl-data-atlas.md, task-curation.md, and the app guide.html — the revision-19 rollout is in motion. Hosted deployment/verification receipts remain preview-lane evidence [M].
+  - **Commit-time query-cache writes pinned for committed reviews** (`1323934187…`, landed 15:44:13 UTC) — QC query-cache behavior change.
+  - **Difficulty root resumed from its own sealed output after a preemption** (`9fecbbf0…`, authored 11:01:52-05:00 = 16:01:52 UTC; landed 16:03:50 UTC) — difficulty_campaign/evidence/recovery/trials changes plus tests; the first *actual* preemption-related recovery in this window (contrast with the audited D-run self-cancels).
+  - Supporting CI/infra commits landed 15:20–16:04 UTC (test-timeout scoping, preflight scenario separation, storage-layout isolation, supervisor termination handling, FULL-QC eval-labeled retention acceptance, served-row count projection keeping qualified oracle counts).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: hosted revision-19 verification not yet publicly attested from this record; head movement continues — timestamps here are commit/landing times.
+- Decision and next action: next hourly check verifies revision-19 hosted verification and any further landings.
