@@ -17,7 +17,7 @@ def main():
     args.output.mkdir(exist_ok=True)
     report=json.loads((args.model_dir/'evaluation.json').read_text())
     fig,ax=plt.subplots(figsize=(6.4,4.2))
-    names={'learned':'Structural GBDT','rules':'Rules','junkgate2':'Junkgate2'}
+    names={'learned':'Structural GBDT','rules':'Rules','junkgate2':'Junkgate2','native_rules':'Native rules'}
     for name,row in report['models'].items():
         curve=row['pr_curve']
         ax.step(curve['recall'],curve['precision'],where='post',label=f"{names[name]} (AP {row['average_precision']:.3f})")
@@ -26,7 +26,7 @@ def main():
     fig.savefig(args.output/'precision-recall.png',dpi=180)
     fig.savefig(args.output/'precision-recall.svg')
     rows=[]
-    for name in ('learned','rules','junkgate2'):
+    for name in ('learned','native_rules','rules','junkgate2'):
         for budget in ('0.02','0.05'):
             p=report['models'][name]['operating_points'][budget]
             rows.append(f"| {names[name]} | {float(budget):.0%} | {p['true_drops']}/204 ({p['recall']:.1%}) | {p['false_drops']}/687 ({p['false_drop_rate']:.2%}) | {p['precision']:.1%} |")
@@ -49,7 +49,8 @@ false-drop 1.16% (0.59–2.28%) and recall 34.80% (28.60–41.57%). These are sa
 estimates under frozen thresholds, not population guarantees.
 
 At the 5% point, the paired recall gain is 38.73 percentage points over junkgate2
-(bootstrap 95% interval 31.37–46.57) and 31.86 points over rules (24.51–39.22).
+(bootstrap 95% interval 31.37–46.57) and 31.37 points over native rules (24.02–38.73). The continuous total-share
+rule variant gives a 31.86-point gain (24.51–39.22).
 Thresholds remain fixed throughout the 10,000 paired document resamples.
 
 ## Protocol
@@ -89,7 +90,11 @@ The final model is 160 gradient-boosted trees, depth 3, minimum leaf 10, learnin
 rate .05, on 146 deterministic structural features. Model choice used a grouped
 inner validation slice of the training set; cutoffs used only calibration data.
 The model, cutoffs and selection record were published at research commit
-`90d61498a6` before test evaluation. Test labels were never used for training,
+`90d61498a6` before test evaluation. Packaging later corrected the tokenizer
+metadata to the exact frozen replay tokenizer: it renames two added tool-call IDs,
+neither of which appears in any sampled view. Learned parameters, views, labels
+and cutoffs are unchanged; final model and calibration JSON digests differ only
+because the bundle now pins the tokenizer files. Test labels were never used for training,
 model selection or cutoff fitting.
 
 The predeclared grid compared structural features, bounded Harrier-0.6B vectors
@@ -104,7 +109,10 @@ Junkgate2 uses its deployed Marin model and calibration over real complete-docum
 begin/middle/end 512-token windows. Both baseline cutoffs were fitted on exactly
 the same 643 calibration documents. The rules baseline is the continuous junk-chunk
 share from `dml/lce-junk-filter` at `70acdcfd6f08996e855e5ab7c1e805dcaa1f5558`.
-Its original fixed verdict threshold is not substituted for calibrated cutoffs.
+The native-rule ranking also preserves its separate machine priority via
+`max(total_share/.6, machine_share/.3)`; score 1 reproduces the published verdict.
+This additional baseline was added after the first test opening, without changing
+the learned model or its cutoffs. Both rule rankings are reported.
 
 ## Limits and use
 
