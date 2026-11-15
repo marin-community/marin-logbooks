@@ -609,3 +609,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings and receipt registrations; the measured effects (admissions, license-lift outcomes, indexer quality) are not yet attested in this record.
 - Decision and next action: next hourly check watches for the first license-gated admission outcomes and OpenResearcher index results. Note: this entry is appended after the branch's SATISFIED read (b319468a3aa) — routine catch-ups continue on the branch; the index pin (PR #50, merged at 546eb090f7) remains the reviewed snapshot.
+
+### 2026-11-15 22:35 UTC - Hourly catch-up (21:20–22:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `036cceab31…` (21:12:36 UTC) to head `8dc5766a2f1c23f883cf650c4f45b00425f56176`, landed 22:28:06 UTC (landings 21:51:31 / 22:07:10 / 22:28:06 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 036cceab..8dc5766a` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: research-judge children kept on their regional controller (`ade3515972…`).
+- Result, including failure or restart: material changes in the window:
+  - **OpenResearcher lane continues**: regional search images prepared with verified index layers (`0db5846e5f…`).
+  - **Retained-release lineage hardened**: exact raw source archives preserved in retained release lineage (`25516b242a…`); measured pending sources bound to retained release receipts (`4ba3fb99db…`); image capture artifact identities kept stable across CLI entry points (`8dc5766a2f…`, head).
+  - Incoming from main: `[verifyit] Stop Atlas retries after repeated math deadlines (#11518)` (`210239de55…`) — retry policy change for Atlas math-deadline loops.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only; measured effects not yet attested in this record.
+- Decision and next action: next hourly check watches for retained-release license/publication outcomes and any OpenResearcher search results.
