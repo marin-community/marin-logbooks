@@ -15,6 +15,11 @@
   clock bases, not roundings of one interval; attempt-4 timeline now anchored to the local
   gpu-attempt-times CSV; §5 FULL-lane semantics note added distinguishing row-level (FULL) from
   event-level (SAMPLE) finding counts).
+  Updated 2026-11-15 18:45 UTC (cold-read round 10: §7 code-oracle example reconciled with the
+  later finalized FULL binding — both dated snapshots and the repair-transition delta are given;
+  the public `full_content_results.json` transport is cited as the public source of the finalized
+  figures; §3 Math Oracle row and §7's closing caveat aligned with the round-9 finding-count
+  semantics; the later Stack FULL result reconciled against the admitted release pin).
 - **Source cut**: recorded 13:51 UTC Nov 15 cut `96fc0736fc95d8f21d11e1c03dfca108d568b220`.
   **Evidence cutoff**: no fact in this file postdates that cut. The latest cited events are the
   Puzzles SAMPLE registration (public commit 4bdbc7eeed, author 2026-11-15 11:05:16 UTC) and
@@ -44,7 +49,7 @@
   (ii) **FULL-lane aggregates in atlas-full-qc/REPORT.md are row-level (task-row) counts** — the
   numerators and denominators are distinct population rows, e.g. Math Oracle "5,020 issues across
   57,253 conclusive reviews (8.7681%)" [R: REPORT.md:1920, :118] and code-oracle "1,026 / 15,087
-  conclusive (6.80%)" [R: REPORT.md:2214] — each retained row is one task of the retained
+  conclusive (6.80%)" [R: REPORT.md:2214; frozen-assembly stage — later finalized to 1,033/15,151, see §7] — each retained row is one task of the retained
   population, so these ARE distinct-affected-row (task) counts; their per-row flag tallies (e.g.
   1,188 overlapping top flags on code-oracle) are NOT distinct-row counts and overlap across rows.
   Result thresholds (issue rate over affected conclusive rows) are computable only for type (ii);
@@ -106,7 +111,7 @@ in the private registry receipts and are not locally enumerable):
 | 245 archived aggregate (#11451) | 2026-11-14→15, merged 05:23:32 | mixed (v2/v3 boundary not itemized) | 168 GOOD / 72 SOME / 5 BAD | archived |
 | Knowledge FULL precedence | ≤2026-11-14 | — | replaces its SAMPLE | FULL-superseded |
 | Safety FULL precedence | ≤2026-11-14 | — | replaces its SAMPLE | FULL-superseded |
-| Math Oracle FULL (binding `a90ec881…`) | 2026-11-14 07:16 | pinned V2 | **GOOD Result; 5,020 issue rows among 57,253 conclusive reviews (8.7681% issue rate); 44 uncertain; 122 waived unreviewed — 57,253 + 44 + 122 = 57,419 = the retained population; accepted-incomplete final while strict-coverage-false/execution-pending stays explicit.** Whether the 5,020 are distinct affected tasks or issue events is not stated by the source — reported [R REPORT.md:225] | FULL-superseded its SAMPLE |
+| Math Oracle FULL (binding `a90ec881…`) | 2026-11-14 07:16 | pinned V2 | **GOOD Result; 5,020 issue rows among 57,253 conclusive reviews (8.7681% issue rate); 44 uncertain; 122 waived unreviewed — 57,253 + 44 + 122 = 57,419 = the retained population; accepted-incomplete final while strict-coverage-false/execution-pending stays explicit.** Whether the 5,020 are distinct affected tasks or issue events is not stated by the source — reported [R REPORT.md:225] (round-10 correction: per the Finding-count-semantics note these FULL aggregates are **row-level (task-row) counts** — each retained row is one task — so the 5,020 numerator and 57,253 denominator are distinct population rows; the public `full_content_results.json` transport at the recorded cut carries the same aggregate [P: `TaskTrove:tasktrove-math_oracle-qa`: reviewed 57,253 / issue_count 5,020 / issue_rate 0.08768099488236425 / verdict good / accepted_incomplete, input pin `43d45617…`]) | FULL-superseded its SAMPLE |
 | CrossCode Python FULL (#11459, merged 06:57:27) | 2026-11-14 | — | GOOD, 8/500 issues, complete coverage, zero unavailable/uncertain, no waiver | 6th current FULL Result |
 | QA-lane nine exact-pin panels | 2026-11-15 (FINAL_STATUS 05:33) | reviewer SHA `a3e17ee0…`, runtime `87f63bd2…` | 900 reviewed / 0 unavailable / 0 uncertain / 134 finding events (123 preserved + 11 new in repaired rows) | new-era panels, registry revision `b8920640e68a…` |
 | Code14 fourteen panels | 2026-11-15 (completed 13:15 entry) | pinned V3 (524,288 context) | per-release in admission-ledger.md §2 | new-era panels |
@@ -254,13 +259,41 @@ admission commit `c9f0235d8e`, Nov 15): different pin, different converter, diff
   [R] atlas-env-audit REPORT.md (17:11 UTC entry).
 - Findings may be issue-events: one task can generate multiple flags. Full-code-oracle
   example with explicit fields [R] atlas-full-qc REPORT.md:182, 2214
-  (`SankalpKJ__nemotron-code-oracle-filtered`): population 15,156 retained = **15,087 valid**
-  (conclusive-review denominator) + **69 INVALID**; 0 unavailable; 0 uncertain; **1,026
-  affected conclusive rows** = 6.80% issue rate → **provisional GOOD Result** (≤10% boundary);
-  top **overlapping** issue flags 706 rubric-mismatch + 217 missing-context + 193
-  wrong-reference + 72 ambiguity (sum 1,188 > 1,026 — flags overlap across rows, so flag
-  counts are not affected-row counts). The 1,026 is an affected-row count, not a clean count
-  and not a findings-vs-tasks claim; distinct-task counting is not established.
+  (`SankalpKJ__nemotron-code-oracle-filtered`); **round-10 reconciliation — the ledger's example is the earlier
+  frozen-assembly stage; the later finalized FULL binding is public.** Two dated snapshots of the same retained
+  15,156-row population:
+  1. **Frozen assembly (provisional; recorded in the full-qc REPORT, pre-repair)** [R: REPORT.md:182, :2214]:
+     population 15,156 retained = **15,087 valid (conclusive-review denominator) + 69 INVALID**; 0
+     unavailable; 0 uncertain; **1,026 affected conclusive rows** = 6.80% issue rate → **provisional GOOD
+     Result** (≤10% boundary); top **overlapping** issue flags 706 rubric-mismatch + 217 missing-context +
+     193 wrong-reference + 72 ambiguity (sum 1,188 > 1,026 — flags overlap across rows, so flag counts are
+     not affected-row counts).
+  2. **Finalized content (post-repair, 2026-11-14 12:34:19 UTC finalization as-of; public)** [P:
+     `experiments/post_training/task_curation/datasets/full_content_results.json` at the recorded cut
+     `96fc0736…`, `TaskTrove:SankalpKJ__nemotron-code-oracle-filtered`]: **15,151 reviewed / 1,033 issues /
+     5 unavailable (invalid) / 0 uncertain / 15,156 total; issue rate 0.06818031813081644 (= 1,033/15,151);
+     verdict GOOD; coverage_complete false → `accepted_incomplete`** (5 unreviewed = 0.033% ≤ the standing
+     ≤1% waiver); input pin `f2b8131f…` (retained-census release `…-b254a4c8-retained-20261113-v1`, converter
+     `2026.11.13.1`); contract/review/record SHAs match the local finalization sidecar (`code-oracle-content-final-v1.json`
+     [R: atlas-full-qc], same SHA-256s).
+  **Repair-transition delta (both figures accounted)**: the CPU repair overlay re-reviewed the 69 INVALID rows —
+  **64 became valid reviews, 5 remained invalid** (token-limit/schema-failure reasons itemized in the sidecar),
+  with the original 15,087 valid observations preserved byte-for-byte [R: `code-oracle-content-repair-audit-v1.json`
+  `primary_valid_records_byte_preserved: 15087`, `repair_status_counts: reviewed 64 / invalid 5`]. Hence 15,087 →
+  15,151 reviewed (+64) and 1,026 → 1,033 affected rows (+7 issues among the newly reviewed 64; per-flag deltas
+  706→710, 217→218, 193→195 = +7). The ledger's earlier undated 1,026/15,087 example is the historical
+  provisional stage; the 1,033/15,151 finalized binding is the current public figure — both are dated above.
+  Per the Finding-count-semantics note, both snapshots' numerators/denominators are row-level (task-row) counts.
+- **Later Stack FULL result (same public transport), reconciled with the admitted release** [P:
+  `full_content_results.json`, `TaskTrove:tasktrove-math_stack-qa`]: the **historical** processed-Stack FULL
+  review is bound at retained-census input pin `41a27ac6…` (`…-dc2bb4ac-retained-20261113-v1`): 110,168
+  conclusive / 21,412 issues (19.4358%) / 394 unavailable / 38 uncertain / 110,600 total → SOME_ISSUES,
+  `accepted_incomplete`. The **admitted** processed-Stack release in admission-ledger.md §1 is a different
+  revision pin (`5c6818d7…`, admission commit `8ea14c762f`, 13-findings SAMPLE panel) — the public transport's
+  pin does not supersede the admitted release's pin, and "Stack remains in FULL QC" in the notebook means review
+  at the *current* pin, not the historical `41a27ac6…` result. The raw-Stack twin's FULL status is likewise
+  distinct (raw Stack admitted `c707bfbd5e`, SAMPLE 13 findings; see §4). Historical FULL aggregates must not be
+  quoted as current-pin results without their pins.
 - GOOD/SOME/BAD rollups cited at multiple counts (245, 209, 181, 149, 132, 104, 100) are
   snapshots of the same growing archive, not independent panels.
 
