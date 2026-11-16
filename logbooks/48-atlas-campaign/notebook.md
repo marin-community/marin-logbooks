@@ -713,3 +713,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the license sweep's outcome (which rows are Available/Not-selectable/Excluded) is bound in the registry [M], not enumerated in this record.
 - Decision and next action: next hourly check watches for the post-sweep catalog publication and any further admissions.
+
+### 2026-11-16 05:35 UTC - Hourly catch-up (04:35–05:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `f87a9f8fde…` (04:28:24 UTC) to head `0fc733f087a0202183077fea2e5a1eda718806fe`, landed 05:25:23 UTC (landings 04:34:31 / 04:40:25 / 05:25:23 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log f87a9f8f..0fc733f0` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Retained IFBench training population ADMITTED** (`0fc733f087…`, head) — the second license-lift admission (following the `Evalchemy:ifbench` ban lift and the decontamination record from the 02:35 window).
+  - **Grounding/validation hardening**: grounding requirement budgets checked before nested validation (`5b85372021…`); prepared-image identity compared on runtime-relevant config only (`dd0b08ec1c…`); protected-adapter QA evidence named by run (`6da0915223…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commit reports the outcome; the underlying receipts stay registry-private [M]. IFBench is now the second source admitted through the license-gate regime (after Terminal-Pivot and the Cascade/MOPD batch).
+- Decision and next action: next hourly check watches for further license-lift admissions and post-sweep catalog publication.
