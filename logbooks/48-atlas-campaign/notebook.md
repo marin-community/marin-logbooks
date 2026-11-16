@@ -905,3 +905,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the four excluded unbuildable cohorts' identities are registry-bound [M].
 - Decision and next action: next hourly check watches for smartie/calibforge admissions and the status-page rollout.
+
+### 2026-11-16 18:40 UTC - Hourly catch-up (17:40–18:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d2f5b0ccbb1…` (17:29:35 UTC) to head `baa792383d421ae22fa9707d2d01545f2655d58e`, landed 18:33:14 UTC (~22 landings 18:30–18:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d2f5b0cc..baa79238` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Lexical remediation batches 1–3 and swesmith executed with receipts** (`662251fc80…`, `32be1e0c05…` incl. the ARC-AGI transductive tag-tuple fix, `95febca725…`) and their fingerprints refreshed (`13d9f9aead…`, `eeedad377a…`, `aecfd25a82…` pointing at the corrected/merged registry revisions `e2af6731`/`023b6c47`); status extras refreshed after the adoptions (`fa24a72528…`).
+  - **Ten verified FULL content Result bindings recorded** (`35b317af85…`); archived original-pin content receipts validated through zero-drop retained lineage (`01128dd427…`); mutual-best made the standing repair-lane matching rule (`305d0fbc74…`).
+  - **Catalog/infrastructure**: license CLI records parsed from stdout (`baa792383d…`, head); machine-less TaskSpec grading counted against declared network policy (`6e33840dd9…`); status-table columns bounded, reason-column nesting stopped (`4187a8d37e…`); status page readable in both themes with a permanent sweep (`e63cc6fb2c…`); root catalog fixtures given measured N/A backend rows (`ea4a2510fb…`); Harbor Daytona test provider aligned with blocking cleanup (`c2caaaf7aa…`, `4f72be9b70…`); large committed data guarded behind file/directory limits with a shrink-only allowlist (`799177e655…`); packaged admission module freed from taskcompendium with label-based backend matching (`afea5c7c03…`, `98b0d05741…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the remediation receipts' underlying panels stay registry-private [M].
+- Decision and next action: next hourly check watches for post-remediation admissions and the FULL-binding outcomes.
