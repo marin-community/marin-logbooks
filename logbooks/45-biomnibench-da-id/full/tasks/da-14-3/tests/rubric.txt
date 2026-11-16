@@ -1,0 +1,67 @@
+RUBRIC: Proportion of Critically Ill Patients per Immune Dysregulation Subgroup
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) states the analysis goal (quantify proportion of critically ill patients per immune-dysregulation subgroup defined from myeloid and lymphoid scores); (ii) loads the subspace score table with integrity checks; (iii) defines the four subgroups using a clear z-score threshold (e.g., z >= 1.65 for "high") with explicit handling of negative z-scores; (iv) reports exact proportions per subgroup with the largest / smallest identified; (v) interprets the distribution with stated assumptions / limitations.
+
+CRITERIA (6):
+
+Criterion 1: Analysis Goal and Cohort Context
+
+    Description: Evaluates clear statement of the analysis goal and cohort context.
+    Levels: A=11 B=6 C=0
+      [A]: Clearly states the goal is to quantify the proportion of critically ill patients in each immune-dysregulation subgroup defined from myeloid and lymphoid dysregulation scores.
+
+      [B]: Mentions subgroup proportions or dysregulation but does not specify cohort context or the quantitative aim.
+
+      [C]: Goal missing or incorrect (e.g., claims causal effects or analyses the wrong population).
+
+Criterion 2: Data Loading and Integrity Checks
+
+    Description: Evaluates correct data loading and validation of dimensions / columns / missingness.
+    Levels: A=16 B=7 C=0
+      [A]: Loads the required score table (e.g., `subspace_score_table.csv`); confirms expected columns for myeloid / lymphoid scores and patient identifiers; handles missing / duplicate patients appropriately (or states none present based on checks).
+
+      [B]: Loads the data but provides limited validation (no column / shape checks or incomplete missingness / duplicate handling).
+
+      [C]: Uses wrong dataset, fails to load required inputs, or produces unverifiable results.
+
+Criterion 3: Subgroup Definitions and z-Score Threshold Logic
+
+    Description: Evaluates definition of the four subgroups using a stated z-score threshold and handling of negative z-scores.
+    Levels: A=27 B=12 C=0
+      [A]: Defines the four subgroups unambiguously and mutually exclusively: states the threshold (z = 1.65); states which direction counts as "dysregulated" (e.g., high-only with z >= 1.65); explicitly handles negative z-scores (e.g., treated as "not high", grouped under Balanced in a high-only scheme); provides a brief rationale for the threshold (e.g., ~95th percentile / upper-tail cutoff under a normal assumption).
+
+      [B]: Defines subgroups but leaves ambiguity about ± vs high-only thresholds, OR does not state how negative z-scores are handled, OR omits the rationale.
+
+      [C]: Subgroups defined incorrectly, overlap, or threshold logic is fabricated.
+
+Criterion 4: Quantification and Exact Proportion Reporting
+
+    Description: Evaluates exact per-subgroup proportions and identification of largest / smallest subgroup.
+    Levels: A=23 B=12 C=0
+      [A]: Reports the exact proportion (percent) for each of the four subgroups; identifies which subgroup is largest and which is smallest; values are consistent with the notebook outputs.
+
+      [B]: Reports some proportions but omits one or more subgroups, OR rounds excessively without showing exact values, OR describes ordering qualitatively without numbers.
+
+      [C]: Proportions missing, incorrect, or largest / smallest misidentified.
+
+Criterion 5: Interpretation and Stated Assumptions
+
+    Description: Evaluates a brief interpretation of the distribution and explicit clarification of threshold assumptions.
+    Levels: A=23 B=9 C=0
+      [A]: Provides a brief interpretation that summarises the distribution (including correct ordering of subgroup sizes) and includes at least one clarity statement about assumptions / limitations relevant to interpretation (e.g., high-only threshold means negative z-scores are in Balanced; proportions depend on the chosen cutoff).
+
+      [B]: Interpretation present but shallow (repeats numbers without meaning) or lacks any clarification about threshold assumptions.
+
+      [C]: Interpretation incorrect, overclaims beyond the analysis, or contradicts reported proportions.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-subgroup proportions, n, threshold) are traceable to the provided score table or to a documented transformation. Patient identifiers and column names match the provided data file. Statistical method and threshold (z = 1.65) are explicitly documented. Biological / clinical interpretations of immune dysregulation in critical illness are supported by real, identifiable references (author + year + DOI / PubMed).
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, subgroup labels, or biological claims with no clear source. Hallucinated content (made-up cutoffs, fabricated proportions, invented citations) mixed with computed results.

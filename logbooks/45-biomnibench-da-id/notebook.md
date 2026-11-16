@@ -162,3 +162,18 @@ for the shared da-14 image. The documented cleanup tool identified and
 requested deletion of two stale unreferenced snapshots. Provider-owned
 snapshots are excluded. The image job prepares the remaining 40 images in
 one CPU job; its source is pinned at `1de749bc17912734264533cf6b514019ab428c3c`.
+
+The image job succeeded on 2026-11-16. Its output archive was read back and
+hashed as `69b19d6b28318daee3da36c28f595e2d5253b98fffc51c9f57632cc4b63440a9`.
+It contains all 40 new image manifests. Combining these with the four pilot
+images produced `full/task-manifest.json` and 50 task recipes. The local
+control input also matches its pinned Git blob identifier. All 50 original
+rubrics parse successfully and each has a maximum of 100 points.
+
+Daytona inventory confirms the two stale snapshots have been deleted; the
+remaining 14 entries are provider-owned. Runtime validation will use the
+actual Harbor-emitted snapshot specifications, with `PYTHONPATH=lib/marin/src`
+and `uv run --isolated --project vendor/harbor --frozen --extra runtime python
+logbooks/45-biomnibench-da-id/full/validate_runtime.py`. This CPU-only check
+prepares 45 snapshots and verifies all five modified tasks plus the two
+largest distinct unchanged inputs before starting the GPU services.

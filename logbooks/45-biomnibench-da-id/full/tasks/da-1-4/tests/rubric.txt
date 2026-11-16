@@ -1,0 +1,87 @@
+RUBRIC: Correlation Between Baseline Cell Subtype Proportions and Tumor Regression Ratio in Anti-PD-1 Treated Colorectal Cancer
+
+Total Points: 100/100
+
+Notes: Full-score answers demonstrate a complete predictive biomarker discovery workflow that correlates the pre-treatment (baseline) cellular composition of the tumor microenvironment with subsequent clinical response, measured by Tumor Regression Ratio. The analysis is grounded in the immuno-oncology principle that the baseline immunological state of a patient's tumor microenvironment shapes sensitivity to immunotherapy: cell subpopulations positively correlated with tumor regression typically reflect pre-existing anti-tumor immunity ("hot" tumor characteristics), while negatively correlated subpopulations reflect resistance barriers (immunosuppressive niche, stromal exclusion). A full-score answer: (1) restricts to baseline (Treatment='I') tumor tissue (Tissue='Tumor') so the correlation is predictive rather than confounded by treatment-induced shifts; (2) builds a patient-by-cell-subtype count matrix and converts it to per-patient proportions to control for variable cell yields across patients; (3) extracts and deduplicates per-patient Tumor Regression Ratio and merges it with the proportion table on patient ID; (4) excludes extremely rare or zero-variance cell subtypes that would yield unstable correlation estimates; (5) runs a per-cell-subtype correlation (Pearson or Spearman with justification) against Tumor Regression Ratio and reports both R and p; (6) identifies top positively correlated subtypes including c13_CD4_Treg_TNFRSF9 (R~0.50, p~0.017) and top negatively correlated subtypes including c87_Goblet_MUC2 (R~-0.39), c79_Fibro_FAP (R~-0.37), and c65_Mph_APOE (R~-0.36); and (7) interprets positive correlations as markers of pre-existing anti-tumor immunity and negative correlations as indicators of immunosuppressive or stromal barriers, with implications for stratification and combination therapy.
+
+CRITERIA (8):
+
+Criterion 1: Baseline Tumor Filtering with Predictive Validity Rationale
+
+    Description: Evaluates the data filtering step that restricts the analysis to baseline tumor tissue, recognizing that predictive biomarkers must be measured before treatment to avoid confounding by treatment-induced changes in the tumor microenvironment.
+    Levels: A=16 B=10 C=0
+      [A]: Applies both filters (Tissue == 'Tumor' to focus on the local tumor microenvironment rather than peripheral blood or adjacent normal tissue, AND Treatment == 'I' baseline/pre-treatment so the cellular composition reflects the patient's intrinsic untreated tumor state), and articulates why this dual restriction matters for predictive biomarker validity (post-treatment samples would conflate baseline predictors with treatment-induced cellular redistribution such as anti-PD-1-driven T cell expansion, invalidating the correlation as a prospective tool).
+
+      [B]: Filters for Tumor tissue but omits the baseline restriction (Treatment == 'I'), or filters for baseline but includes non-tumor tissues, introducing confounding variables that compromise the predictive interpretation.
+
+      [C]: Does not filter for tissue type or treatment stage, analyzing the entire dataset indiscriminately, making any resulting correlations uninterpretable as predictive biomarkers.
+
+Criterion 2: Patient-Level Cell Subtype Count Matrix Construction
+
+    Description: Evaluates correct construction of a patient-by-cell-subtype contingency table that forms the basis for calculating per-patient cell-type proportions.
+    Levels: A=13 B=8 C=0
+      [A]: Builds a patients (rows) by SubCellType (columns) count matrix where each cell holds the count of that subtype in that patient's baseline tumor sample (any pandas / R / numpy idiom is acceptable: pd.crosstab, groupby+pivot, table(), etc.), and verifies the resulting matrix dimensions are consistent with the analysis cohort (~22 patients after filtering for baseline tumor data with non-missing Tumor Regression Ratio).
+
+      [B]: Constructs a count matrix but with incorrect axis orientation (cell types as rows, patients as columns) or uses MajorCellType instead of SubCellType, losing the fine-grained subtype resolution needed for specific biomarker identification.
+
+      [C]: Does not construct a patient-level count matrix, or attempts cell-level analysis without patient-level aggregation.
+
+Criterion 3: Proportion Normalization and Outcome Data Merging
+
+    Description: Evaluates the normalization step that converts raw cell counts to proportions (dividing each patient's cell-type counts by that patient's total cell count), and the correct extraction and merging of the clinical outcome variable (Tumor Regression Ratio).
+    Levels: A=19 B=12 C=0
+      [A]: Converts raw counts to per-patient proportions using row-wise normalization (each row sums to 1), with the rationale that sequencing depth and total recovered cells vary substantially between patients so raw counts would confound biological signal with technical variation; deduplicates Tumor Regression Ratio to one value per patient (any aggregation that preserves the constant per-patient value is fine: groupby + first/mean, or extracting from the patient meta sheet) and drops patients without a Tumor Regression Ratio; merges the proportion table with the patient-outcome table on patient ID into a single analysis-ready dataframe.
+
+      [B]: Performs normalization but uses an incorrect denominator (e.g., total cells across all patients rather than per-patient totals), or correctly normalizes but fails to properly deduplicate or merge the outcome variable.
+
+      [C]: Uses raw counts directly for correlation analysis (confounding biology with sequencing depth), or fails to associate cell proportions with clinical outcomes at the patient level.
+
+Criterion 4: Rare Cell Type Filtering and Zero-Variance Handling
+
+    Description: Evaluates whether the analysis filters out extremely rare cell types that would yield unreliable correlation estimates and handles edge cases such as zero-variance proportion columns.
+    Levels: A=11 B=7 C=0
+      [A]: Applies a minimum-abundance threshold (e.g., min_cells around 50, or any reasonable equivalent such as a minimum number of patients above some proportion) so very sparse subtypes do not dominate the analysis, AND excludes zero-variance columns (proportion constant across patients) which would produce undefined correlation statistics.
+
+      [B]: Implements one of the two filters (abundance threshold OR zero-variance check) but not both, or uses an unreasonably low threshold that retains unreliable estimates.
+
+      [C]: Does not filter rare cell types or handle edge cases, potentially producing misleading correlations from sparse data.
+
+Criterion 5: Batch Correlation Analysis Across Cell Subtypes
+
+    Description: Evaluates the implementation of systematic correlation analysis across all qualifying cell subtypes, computing both correlation coefficient and p-value per subtype.
+    Levels: A=16 B=10 C=0
+      [A]: Iterates (or vectorizes) across each qualifying cell-subtype column, computes Pearson correlation between the proportion vector and Tumor Regression Ratio (Spearman is acceptable as a justified alternative for non-normal data), reports both R and p per subtype, and assembles the result into a sorted table (CellType, R, p) so top positive and top negative candidates can be read off.
+
+      [B]: Performs correlation for all cell types but reports only R values without p-values, or uses a correlation method without any justification, or tests some but not all qualifying cell types.
+
+      [C]: Does not perform systematic correlation analysis, tests only a single cell type, or uses fundamentally incorrect methods (e.g., correlating cell counts rather than proportions with outcomes).
+
+Criterion 6: Accuracy of Top Positive and Negative Correlation Identification
+
+    Description: Evaluates whether the analysis identifies the strongest positively and negatively correlated cell subtypes, with approximately correct R values and a sense of which reach statistical significance.
+    Levels: A=16 B=10 C=0
+      [A]: Identifies top positive subtypes (proportion up, regression up) including c13_CD4_Treg_TNFRSF9 (R~0.50, p~0.017), c23_CD8_Tex_LAYN (R~0.47, p~0.026), and c68_Endo_FABP5 (R~0.45, p~0.036), noting that the top 3 reach p<0.05; identifies top negative subtypes including c87_Goblet_MUC2 (R~-0.39), c79_Fibro_FAP (R~-0.37), c65_Mph_APOE (R~-0.36), and notes that with N~22 these negative correlations show meaningful trends but most do not reach p<0.05.
+
+      [B]: Identifies some of the top correlated cell types but misses key candidates (e.g., misses c13_CD4_Treg_TNFRSF9 as the top positive), or reports approximately correct correlations without distinguishing which are statistically significant.
+
+      [C]: Reports incorrect top candidates, swaps positive and negative correlations, or fails to identify specific cell subtypes.
+
+Criterion 7: Biological Interpretation of Correlation Directionality and Clinical Implications
+
+    Description: Evaluates biological interpretation of positive and negative correlations in the context of anti-PD-1 immunotherapy, plus translational implications for patient stratification.
+    Levels: A=9 B=5 C=0
+      [A]: Interprets positive correlations as markers of pre-existing anti-tumor immunity (e.g., TNFRSF9+/4-1BB+ Tregs reflect ongoing immune activation rather than pure suppression; LAYN+ exhausted CD8 T cells are the substrate that anti-PD-1 reinvigorates), interprets negative correlations as resistance barriers (e.g., FAP+ CAFs as physical/immunosuppressive ECM barriers; APOE+ TAMs as immunosuppressive macrophages), and connects this to a "hot vs cold" framing with at least one translational implication (combination therapy candidates such as anti-FAP or CSF1R inhibitors, or use as patient stratification biomarkers); acknowledges key limitations (small N, lack of multiple-testing correction, need for independent validation).
+
+      [B]: Correctly interprets directionality (positive = better outcome, negative = worse outcome) but provides superficial biological explanations without specific mechanisms or any translational angle.
+
+      [C]: Misinterprets the direction of correlations, provides no biological interpretation, or makes unsupported claims without acknowledging limitations.
+
+Criterion 8: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, annotations, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (cell counts, proportions, R values, p-values) are traceable to the provided data (clinical.xlsx, GSE236581 metadata, count matrix) or a documented transformation. SubCellType labels (e.g., c13_CD4_Treg_TNFRSF9, c79_Fibro_FAP) are taken from the provided metadata, not invented. Mechanistic claims about TNFRSF9/4-1BB, LAYN, FAP+ CAFs, APOE+ TAMs, etc. are supported by real, identifiable references (author + year, DOI, PubMed ID, or named review article) rather than free-floating assertions.
+
+      [B]: Most numerical results and labels are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, cell-type labels, or biological claims with no clear source. Hallucinated content (made-up labels, invented R/p values, fabricated citations) mixed with computed results.

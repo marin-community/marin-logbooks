@@ -1,0 +1,89 @@
+RUBRIC: DA-11-1
+
+# Rubric for Q1: Cell-Cell Communication Analysis
+
+Total Points: 100/100
+
+Notes: This rubric evaluates implementation of a complete cell-cell communication analysis pipeline using single-cell RNA-seq data. Excellence is shown by correct data preprocessing, accurate cell type identification with proper marker genes, rigorous ligand-receptor interaction analysis, and biologically sound pathway interpretation.
+
+CRITERIA (8):
+
+Criterion 1: Data Loading and Quality Control
+
+    Description: Assesses correct loading of scRNA-seq count matrices and implementation of quality control filtering.
+    Levels: A=12 B=6 C=0
+      [A]: Correctly loads count matrices from GEO data files (handles gzip or text format), calculates quality control metrics including mitochondrial gene percentage, total counts per cell, and genes detected per cell, implements filtering thresholds (e.g., minimum genes per cell ≥200, minimum cells per gene ≥3, optionally filters high mitochondrial percentage cells), reports pre-filtering and post-filtering cell and gene counts, and correctly handles multiple samples or batches if present.
+
+      [B]: Loads data correctly but implements incomplete QC (missing mitochondrial filtering or uses only one QC metric), applies filtering but with arbitrary or missing thresholds, does not report filtering statistics, or has issues handling multiple samples.
+
+      [C]: Fails to load data correctly, provides no QC filtering, or filtering is so aggressive/lenient that it invalidates downstream analysis.
+
+Criterion 2: Normalization, Dimensionality Reduction, and Clustering
+
+    Description: Evaluates proper normalization, identification of highly variable genes, dimensionality reduction, and unsupervised clustering.
+    Levels: A=13 B=7 C=0
+      [A]: Normalizes counts to consistent depth (e.g., TPM-like normalization to 10,000 counts per cell or equivalent), applies log transformation, identifies highly variable genes with appropriate parameters, scales data before PCA, performs PCA with sufficient components (e.g., 30-50 PCs), computes neighborhood graph using appropriate number of neighbors and PCs, generates UMAP or t-SNE embedding for visualization, and performs clustering (Leiden, Louvain, or equivalent) with reasonable resolution parameter.
+
+      [B]: Implements most steps but with methodological gaps (e.g., no data scaling before PCA, insufficient PCA components, skips highly variable gene selection, inappropriate neighborhood parameters, or no clustering performed).
+
+      [C]: Missing critical normalization step, no dimensionality reduction, or workflow is incorrect making downstream analysis invalid.
+
+Criterion 3: Marker Gene Selection and Expression Scoring
+
+    Description: Assesses definition of comprehensive marker gene sets and calculation of cell type scores.
+    Levels: A=15 B=8 C=0
+      [A]: Defines comprehensive marker gene sets including CD8+ T cell markers (CD8A, CD8B, CD3D, CD3E, CD3G or similar), CD4+ T cell markers (CD4, CD3 genes), KIR family genes (at least 5-6 KIR genes from KIR2DL, KIR2DS, KIR3DL, KIR3DS families), cytotoxic markers (GZMB, PRF1, GNLY, NKG7 or similar granzymes/perforin), and gliadin-specific or activated CD4+ markers (multiple genes such as TNFRSF9, CD40LG, IFNG, IL2, IL21, CD69, CD25, HLA-DR family), calculates marker scores using appropriate method (Scanpy's score_genes, mean expression, or UCell-like scoring), and validates that marker genes are expressed in the dataset.
+
+      [B]: Provides marker genes but with incomplete sets (e.g., only 2-3 KIR genes, missing cytotoxic markers for CD8+ validation, or uses only 1-2 CD4+ activation markers), calculates scores but method is suboptimal or not clearly described, or does not verify marker gene expression in dataset.
+
+      [C]: Uses incorrect or highly incomplete marker sets (e.g., only CD8A for CD8+ cells, no KIR genes), fails to calculate marker scores, or marker genes are mostly absent from dataset.
+
+Criterion 4: Cell Type Identification and Annotation
+
+    Description: Evaluates accurate identification of KIR+CD8+ T cells and gliadin-specific CD4+ T cells using thresholding and criteria combination.
+    Levels: A=15 B=8 C=0
+      [A]: Uses data-driven thresholds to define positive cells (percentile-based cutoffs e.g., 70th-80th percentile, or statistical methods), correctly combines multiple criteria for KIR+CD8+ identification (requires CD8+ AND KIR expression, optionally with cytotoxic marker support), correctly combines criteria for gliadin-specific CD4+ identification (requires CD4+ AND activation/gliadin-response markers), reports final cell counts for both populations (ideally with percentages of total cells), and validates that identified populations are biologically reasonable (sufficient cells identified, not all or none).
+
+      [B]: Uses thresholds but they are arbitrary/fixed rather than data-driven, incompletely combines criteria (e.g., only requires CD8+ without KIR for "KIR+CD8+" designation), reports cell counts but without validation of reasonableness, or identifies only one of the two required populations.
+
+      [C]: Uses biologically implausible identification criteria, fails to identify both required cell populations, or cell counts suggest identification failure (zero cells or suspiciously all cells).
+
+Criterion 5: Ligand-Receptor Interaction Analysis
+
+    Description: Assesses implementation of ligand-receptor interaction analysis including database, scoring method, directionality, and statistical validation.
+    Levels: A=25 B=13 C=0
+      [A]: Constructs or uses a comprehensive ligand-receptor database covering relevant pathways (cytokine signaling, death receptor signaling, coinhibitory pathways, TGF-beta signaling, costimulatory interactions, interferon signaling, TNF superfamily - at least 4-5 major pathway categories), explicitly excludes MHC-I interactions (HLA-A/B/C with KIR receptors), implements directional interaction scoring calculating separate scores for KIR+CD8+ → Gliadin-CD4+ and Gliadin-CD4+ → KIR+CD8+ directions, uses appropriate scoring method (mean product of ligand expression in sender × receptor expression in receiver, or percent-expressed-weighted approach, or equivalent), includes statistical validation (permutation test, comparison to background, or significance testing), filters interactions by expression threshold or statistical significance, and generates structured output with LR pair names, pathway annotations, directional scores, and significance indicators.
+
+      [B]: Uses ligand-receptor database but limited pathway coverage (only 2-3 pathway categories), does not explicitly filter MHC-I interactions, implements scoring but without clear directionality (only total/bidirectional scores), uses overly simple scoring without statistical validation, does not filter for expression/significance leading to many low-confidence results, or output lacks clear structure.
+
+      [C]: Does not implement proper LR interaction analysis, uses wrong approach (generic correlation without LR knowledge), fails to analyze KIR+CD8+ to Gliadin-CD4+ communication, or results lack pathway annotations.
+
+Criterion 6: Pathway-Level Analysis and Ranking
+
+    Description: Evaluates aggregation of LR interactions into pathways and identification of top pathways mediating suppression and cytotoxicity.
+    Levels: A=15 B=8 C=0
+      [A]: Groups ligand-receptor pairs by pathway annotations (e.g., groups all TGF-beta LR pairs, all death receptor pairs, etc.), calculates pathway-level summary statistics (total pathway score summing LR scores, mean pathway score, and/or count of significant interactions per pathway), ranks pathways by scores or significance, explicitly categorizes or highlights pathways relevant to suppressive function (TGF-beta signaling, IL-10 signaling, coinhibitory pathways like PD-1/PD-L1, CTLA-4, LAG-3, TIGIT) versus cytotoxic function (death receptor signaling FAS/FASL or TRAIL/DR5, cytotoxic granule-related interactions, TNF-mediated cytotoxicity), and presents ranked list or table of top pathways beyond MHC-I.
+
+      [B]: Groups interactions by pathway but categorization is incomplete, calculates pathway scores using only one metric without comprehensive summary, does not clearly distinguish suppressive vs cytotoxic pathway categories, or rankings lack biological relevance to the question.
+
+      [C]: Does not perform pathway-level aggregation (only individual LR pairs without grouping), fails to rank pathways, or pathway analysis is absent.
+
+Criterion 7: Biological Interpretation and Constraint Adherence
+
+    Description: Assesses biological interpretation quality, adherence to analysis constraints (sender-receiver directionality, exclusion of MHC-I), and mechanistic explanation.
+    Levels: A=5 B=3 C=0
+      [A]: Explicitly focuses on KIR+CD8+ → Gliadin-CD4+ communication as primary direction of interest, demonstrates exclusion of MHC-I interactions from top results, provides mechanistic interpretation of how identified pathways mediate suppressive function (e.g., TGF-beta or coinhibitory ligands suppress CD4+ activation/proliferation) and cytotoxic targeting (e.g., death receptors or granzyme pathways enable killing of CD4+ cells), and connects findings to experimental context (CeD, gliadin-specific responses).
+
+      [B]: Partially addresses sender-receiver constraint but analysis is unfocused (includes bidirectional without emphasis on KIR+CD8+ → CD4+), mentions MHC-I exclusion but not clearly demonstrated, identifies pathways but without mechanistic explanation, or interpretation is generic not specific to CeD context.
+
+      [C]: Ignores sender-receiver constraint, prominently includes MHC-I interactions despite instructions, fails to interpret pathways biologically, or interpretation contradicts T cell biology.
+
+Criterion 8: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

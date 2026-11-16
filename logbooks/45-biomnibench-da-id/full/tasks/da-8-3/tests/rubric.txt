@@ -1,0 +1,87 @@
+RUBRIC: Mediating Lipids in Potato- vs Grape-Spikers (Glycaemic Response × Metabolic Phenotype)
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) classifies subjects as potato-spikers vs grape-spikers via the median-split methodology on per-food peak glucose responses; (ii) processes metabolomics data to per-subject abundances; (iii) runs differential abundance analysis between groups, ranks the top 10 by p-value, and identifies which are lipid species with named class (acylcarnitines, phospholipids, etc.) and direction (higher / lower in which group); (iv) correlates each top-10 lipid with metabolic phenotypes (SSPG, Hepatic IR, DI, IE); (v) identifies "mediating lipids" as those satisfying both differential abundance AND a significant phenotype correlation; (vi) applies appropriate multiple-testing correction; (vii) interprets the biology and presents results coherently.
+
+CRITERIA (8):
+
+Criterion 1: Spiker Group Identification (Potato vs Grape)
+
+    Description: Evaluates classification of subjects into potato-spikers and grape-spikers based on per-food peak-glucose responses with median-split methodology.
+    Levels: A=8 B=4 C=0
+      [A]: Computes per-subject peak glucose delta from baseline for each food (potato, grape) separately; averages across replicates per (subject × food); applies median split per food; classifies subjects with above-median average peak as spikers for that food. Recognises that potato-spikers and grape-spikers are independent classifications (a subject can be both, neither, or one).
+
+      [B]: Classifies but uses an inappropriate threshold (fixed instead of median), OR fails to average across replicates before classification, OR applies the classification in the wrong direction (below median instead of above).
+
+      [C]: No spiker classification, or wrong methodology entirely.
+
+Criterion 2: Metabolomics Data Processing and Differential Abundance Analysis
+
+    Description: Evaluates per-subject metabolomics aggregation and differential-abundance testing between potato-spikers and grape-spikers.
+    Levels: A=17 B=8 C=0
+      [A]: Identifies abundance columns (`XB{subject}_{rep}` format), groups by subject, averages metabolite abundances across replicates per subject (mean, not sum / max / median), handles missing values appropriately. Performs per-metabolite differential abundance: t-test (parametric) or Mann-Whitney U (non-parametric) between potato-spikers and grape-spikers; reports fold change (potato / grape) and log2-FC; reports raw p-value per metabolite.
+
+      [B]: Processes data but uses wrong replicate aggregation (sum / max), OR runs the wrong test, OR fails to compute fold change.
+
+      [C]: No data processing or no DE analysis.
+
+Criterion 3: Top-10 Selection, Lipid Identification, and Directionality
+
+    Description: Evaluates ranking of metabolites by raw p-value to identify the top 10 most-differential, classification of those as lipid species with class names, and direction of abundance change.
+    Levels: A=23 B=12 C=0
+      [A]: Ranks metabolites by ascending raw p-value and selects the top 10 (regardless of FDR significance). Identifies which of the top 10 are lipid species using lipid keywords / classification (CE, CER, DAG, TAG, PC, LPC, PE, LPE, SM, FA, AC, CAR, carnitine, acyl, etc.). Names each lipid with molecular identifier where possible (e.g., "C16:0 AC (L-palmitoylcarnitine)") and assigns to a class (acylcarnitines, triglycerides, phospholipids). For each lipid, states direction (higher in potato-spikers vs higher in grape-spikers) with fold-change values and biological interpretation.
+
+      [B]: Selects top 10 but uses fold-change-based ranking instead of p-value, OR identifies some lipids but without class assignment / molecular identifiers, OR reports direction ambiguously without fold-change values.
+
+      [C]: No top-10, no lipid identification, or wrong direction.
+
+Criterion 4: Phenotype Correlation Analysis
+
+    Description: Evaluates correlation of each top-10 lipid against the four metabolic phenotypes.
+    Levels: A=11 B=6 C=0
+      [A]: For each top-10 lipid, computes correlation against SSPG, Hepatic IR, DI, AND IE (all four phenotypes). Uses Pearson (or Spearman for non-normal distributions); handles missing data; reports correlation coefficient r and p-value per (lipid × phenotype) pair. Confirms minimum sample size n >= 5 per pair.
+
+      [B]: Performs correlations but tests fewer than all four phenotypes, OR uses an inappropriate correlation method (e.g., Pearson on heavily-skewed data without checking), OR omits the p-value.
+
+      [C]: No correlation analysis.
+
+Criterion 5: Mediating Lipid Identification
+
+    Description: Evaluates the integration of differential abundance + phenotype correlation to identify lipids that statistically mediate the spiker-phenotype association.
+    Levels: A=16 B=7 C=0
+      [A]: Applies BOTH criteria: (a) lipid is in the top 10 differentially abundant metabolites; (b) lipid shows significant correlation (p < 0.05) with at least one phenotype (SSPG, Hepatic IR, DI, or IE). Reports the qualifying lipids with their differential-abundance statistics AND correlation statistics. Interprets these as "statistically mediating" the relationship between glucose response patterns and metabolic phenotypes (explicitly notes mediation requires causal modelling, but co-occurrence of association suggests mechanistic candidacy).
+
+      [B]: Uses only one of the two criteria (differential abundance OR correlation, not both), OR uses an inappropriate significance threshold, OR fails to report the statistics for the qualifying lipids.
+
+      [C]: No integration analysis, or claims mediation without supporting evidence.
+
+Criterion 6: Statistical Methodology and Multiple-Testing Correction
+
+    Description: Evaluates choice of statistical tests and correct application of multiple-testing correction.
+    Levels: A=11 B=6 C=0
+      [A]: Uses appropriate test for group comparison (t-test if normality holds; Mann-Whitney U otherwise, with normality verification). Applies BH-FDR correction across all tested metabolites (~974 metabolites); reports both raw and FDR-adjusted p-values. Notes that the top-10 selection uses raw p (to capture most-differential metabolites even if not strictly FDR-significant). Uses appropriate correlation test for phenotype associations.
+
+      [B]: Applies an FDR correction but with errors (wrong method, OR fails to report both raw and adjusted), OR uses an inappropriate test for group comparison, OR mixes test types inconsistently.
+
+      [C]: No multiple-testing correction, or uses wrong tests throughout.
+
+Criterion 7: Biological Interpretation and Results Presentation
+
+    Description: Evaluates biological interpretation of identified lipid species and clear presentation of all results.
+    Levels: A=14 B=6 C=0
+      [A]: Connects identified lipids to insulin-resistance mechanisms (acylcarnitines and mitochondrial fatty-acid oxidation; lipotoxicity from elevated long-chain ACs; phospholipid composition and membrane / signalling effects on β-cell function). Discusses how the lipid differences mechanistically link glucose-response patterns to metabolic phenotypes. Presents results with complete statistics (top-10 metabolites with means / FCs / p / FDR-q; correlation table; mediating-lipid summary), organised clearly.
+
+      [B]: Provides biological interpretation but stays generic (no specific pathway linkage), OR presents results but with missing columns / qualitative-only descriptions.
+
+      [C]: No biological interpretation or no results presentation.
+
+Criterion 8: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, lipid attributions, and biological interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-metabolite p-values, FDR q-values, fold changes, correlation r / p) are traceable to the provided metabolomics data files. Lipid identifiers come from named databases (LIPID MAPS, HMDB, KEGG) with the dataset's own feature index. Biological interpretation of acylcarnitines / lipotoxicity / β-cell function cites real, identifiable references (e.g., Koves et al. 2008 Cell Metab on AC accumulation in IR; or Stanford glycaemic-response cohort publications, with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and lipid attributions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, lipid attributions, or biological claims with no clear source. Hallucinated content (made-up lipid names, fabricated FCs, invented citations) mixed with computed results.

@@ -1,0 +1,67 @@
+RUBRIC: Overlap Between GAHT-Altered and Sex-Associated Proteins
+
+Total Points: 100/100
+
+Notes: This rubric evaluates cross-cohort validation comparing GAHT-altered proteins with sex-associated proteins from UK Biobank population data. Excellence requires correct identification of significantly altered GAHT proteins, proper selection of top 100 sex-associated proteins by appropriate ranking metric, accurate overlap calculation with hypergeometric enrichment testing, directional analysis assessing whether changes align with cis-female patterns, and biological interpretation of partial recapitulation of sex differences. Analysis should demonstrate that GAHT disproportionately affects proteins distinguishing sexes in the general population.
+
+CRITERIA (6):
+
+Criterion 1: Data Handling and GAHT Protein Selection
+
+    Description: Assesses correct loading of datasets and identification of significantly altered GAHT proteins.
+    Levels: A=20 B=10 C=0
+      [A]: Clearly states and loads required data sources including Supplementary Table 1 (41591_2025_4023_MOESM2_ESM(Supplementary Table 1).csv) for GAHT differential expression results and Supplementary Table 5 (41591_2025_4023_MOESM2_ESM(Supplementary Table 5).csv) for UK Biobank sex associations, handles header rows correctly (typically skiprows=3 to reach proper header), filters GAHT-altered proteins using appropriate significance threshold (adj p < 0.05) for CPA and SPIRO regimens separately, generates separate protein sets for each regimen (expected: CPA approximately 240-250 proteins, SPIRO approximately 70-90 proteins), standardizes protein identifiers for matching (e.g., uppercase conversion), and documents all steps reproducibly with clear code or methods description.
+
+      [B]: Uses correct datasets with minor issues such as incomplete header handling, missing verification of column names, inconsistent identifier standardization, or protein counts substantially different from expected due to filtering errors, but analysis can still be reproduced with some effort and captures majority of truly altered proteins.
+
+      [C]: Does not clearly state or load required data sources, uses wrong files, fails to filter GAHT proteins by significance threshold, or data preparation is so flawed that reproducibility is impossible.
+
+Criterion 2: Identification of Top 100 Sex-Associated Proteins
+
+    Description: Evaluates proper selection and matching of top sex-associated proteins from UK Biobank data.
+    Levels: A=20 B=10 C=0
+      [A]: Selects top 100 proteins from UK Biobank sex association table using correct ranking metric (highest Sex_log10_p values representing strongest sex differences in population), sorts by this metric in descending order to get top 100, deduplicates protein identifiers if needed to ensure exactly 100 unique proteins, standardizes identifiers for matching with GAHT data (e.g., uppercase conversion, handling of isoforms), performs case-insensitive matching between UK Biobank and GAHT protein IDs, handles missing values appropriately (removes NA values before ranking), and documents matching process clearly including any ID mapping or filtering steps.
+
+      [B]: Attempts to identify top 100 sex-associated proteins with issues such as using incorrect ranking metric (e.g., ranks by Beta__females instead of Sex_log10_p), incomplete deduplication resulting in wrong number of proteins, case-sensitive matching causing missed matches, or unclear documentation of selection process, but general approach captures substantial set of truly sex-associated proteins.
+
+      [C]: Fails to identify correct set of sex-associated proteins, uses arbitrary selection instead of statistical ranking, cannot match proteins to GAHT dataset due to identifier handling errors, or selection methodology is fundamentally incorrect.
+
+Criterion 3: Overlap Calculation and Hypergeometric Enrichment Testing
+
+    Description: Assesses accurate overlap quantification and proper statistical enrichment analysis.
+    Levels: A=20 B=10 C=0
+      [A]: Computes number of overlapping proteins between GAHT-altered set and top 100 sex-associated proteins separately for CPA and SPIRO regimens (expected: CPA approximately 35-37 overlaps, SPIRO approximately 21-23 overlaps), performs hypergeometric test using clearly defined universe size (M = total unique proteins in UK Biobank dataset, typically thousands), uses correct hypergeometric parameters (M = universe, N = 100 sex-associated, K = number of GAHT-altered proteins per regimen, k = observed overlap), reports p-values in scientific notation (expected: highly significant p-values ~10^-12 to 10^-14 for both regimens), provides percentages showing overlap relative to GAHT-altered proteins (what fraction of GAHT proteins are sex-associated) and relative to top 100 set (what fraction of sex-associated proteins are altered by GAHT).
+
+      [B]: Calculates overlap with methodological issues such as ambiguous or incorrect universe size (e.g., uses total human proteome instead of UK Biobank dataset size), incorrect hypergeometric parameters, p-values not reported in proper format or missing, or percentage calculations omitted or unclear, but overlap counts are approximately correct.
+
+      [C]: Does not compute overlap correctly, performs incorrect enrichment analysis (e.g., uses t-test instead of hypergeometric test), universe definition is nonsensical, or statistical testing is absent entirely.
+
+Criterion 4: Directional Concordance Analysis
+
+    Description: Evaluates assessment of whether GAHT changes align with cis-female proteomic pattern.
+    Levels: A=20 B=10 C=0
+      [A]: For overlapping proteins, evaluates whether GAHT-induced changes shift proteome toward cis-female direction by comparing sign/direction of GAHT effect sizes (estimate_CPA or estimate_SPIRO from Supplementary Table 1) with sex difference direction (Beta__females from UK Biobank showing female relative to male, or equivalent metric), determines concordance by checking if both effects have same sign (both positive or both negative indicating alignment toward female pattern), reports proportion of overlapping proteins showing directional concordance for each regimen (expected: very high concordance, e.g., 35/36 for CPA, 21/21 for SPIRO), identifies any notable exceptions where directions are discordant (e.g., proteins that change opposite to expected female pattern), and describes logic for determining concordance clearly including definition of what constitutes "toward female pattern."
+
+      [B]: Attempts directional analysis with issues such as misinterpreting effect direction signs (confusion about whether positive Beta__females means higher or lower in females), incomplete reporting of concordant proportions (only reports number without proportion or percentage), exceptions not identified, or logic for concordance determination is unclear, but general conclusion about high alignment is reached.
+
+      [C]: Does not assess directional concordance, misrepresents directionality of effects entirely (e.g., claims most changes are opposite to female pattern when data shows concordance), or methodology for directional comparison is fundamentally incorrect.
+
+Criterion 5: Biological Interpretation and Cross-Cohort Context
+
+    Description: Assesses depth and accuracy of interpretation regarding GAHT recapitulation of natural sex differences.
+    Levels: A=20 B=10 C=0
+      [A]: Explains biological meaning of observed overlap and enrichment noting that GAHT disproportionately affects proteins that distinguish cis men and women in general population (not random proteins), interprets high enrichment p-values as strong evidence that GAHT targets sex-differentiated biological pathways, notes that GAHT partially recapitulates cis-female proteomic patterns as evidenced by directional concordance but does not fully mirror them (only subset of sex-associated proteins are altered, e.g., 36/100 for CPA), discusses differences between CPA and SPIRO regimens (CPA shows larger overlap reflecting its stronger hormone suppression and broader proteomic remodeling compared to SPIRO), acknowledges limitations such as incomplete overlap indicating GAHT effects are not identical to natural sex differences and possible biases in dataset (Olink panel limited to specific proteins, UK Biobank population characteristics), and relates findings to published study context about feminizing hormone therapy effects on proteome.
+
+      [B]: Provides interpretation with limitations such as superficial biological meaning (states overlap exists without explaining significance), lacks nuance about partial versus complete recapitulation of sex patterns, omits or incompletely discusses regimen differences (CPA vs SPIRO), does not acknowledge analysis limitations, or interpretation is weakly connected to statistical findings.
+
+      [C]: Offers no interpretation, draws incorrect conclusions unrelated to data (e.g., claims GAHT has no effect on sex-associated proteins when strong enrichment is shown), or misrepresents biological implications (e.g., claims GAHT fully transforms proteome to cis-female pattern when data shows partial effect).
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

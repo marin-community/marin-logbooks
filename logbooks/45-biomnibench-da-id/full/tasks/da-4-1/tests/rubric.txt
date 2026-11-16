@@ -1,0 +1,67 @@
+RUBRIC: NMF-Based Tumor Immune Microenvironment (TIME) Classification
+
+Total Points: 100/100
+
+Notes: A full-score answer derives a TIME classification from the provided immune-cell metadata using a principled NMF workflow: (1) build a patient × immune-subtype composition matrix from the cell-level metadata (sampleID × sub_cell_type) with an explicit per-patient minimum-cell-count filter; (2) normalize for NMF input (any non-negativity-preserving scheme such as column-wise min-max is acceptable); (3) run an NMF rank sweep across a sensible range with multiple random initializations to mitigate local minima; (4) assess clustering stability with consensus matrices and a quantitative stability metric (cophenetic correlation, silhouette, or equivalent); (5) select an optimal rank with both a stability and a biological-coherence justification; (6) fit a final NMF, extract immune-module composition (max-loading per subtype on W) and per-patient TIME-subtype assignments (max-coefficient per patient on H); (7) interpret each TIME subtype by dominant immune program and discuss clinical relevance to pathological response.
+
+CRITERIA (6):
+
+Criterion 1: Composition Matrix Construction and Normalization
+
+    Description: Evaluates correct construction of the patient × immune-subtype composition matrix from cell-level metadata, with an explicit cell-count filter and a non-negative-preserving normalization suitable for NMF input.
+    Levels: A=16 B=9 C=0
+      [A]: Aggregates the immune-cell metadata to a patient × sub_cell_type count table (e.g., `groupby(['sampleID', 'sub_cell_type']).size().unstack(fill_value=0)`), applies a documented per-patient minimum-cell-count filter (e.g., >= 500 immune cells) and reports cohort-size before / after, then row-normalises to per-patient percentages so each patient sums to 1, and applies a non-negativity-preserving scaling (e.g., column-wise min-max with safe handling of zero-variance columns) before passing the matrix to NMF.
+
+      [B]: Builds a composition matrix but uses a normalization that violates non-negativity (z-score, mean-centred), normalises along the wrong axis, or skips the per-patient cell-count filter.
+
+      [C]: Does not build a per-patient composition matrix, or feeds raw counts / unrelated input to NMF.
+
+Criterion 2: NMF Rank Sweep with Stability Assessment
+
+    Description: Evaluates the rank sweep, the multiple-initialisation handling, and the stability metric used to compare ranks.
+    Levels: A=27 B=13 C=0
+      [A]: Runs NMF for a sensible range of ranks (e.g., k = 2..10 or similar) with multiple random initialisations per rank (>= 5 inits, picking the best by reconstruction error) using a non-negativity-preserving solver (`sklearn.decomposition.NMF`, `nimfa`, R `NMF` package, or equivalent). For each rank, builds connectivity / consensus matrices over repeated fits or bootstrap-style patient resamples (>= 50 iterations is acceptable; the original paper uses 200) and reports a quantitative stability metric (cophenetic correlation, silhouette on consensus, or equivalent) per rank.
+
+      [B]: Runs NMF across multiple ranks but without multiple initialisations (single-init per rank, vulnerable to local minima), OR uses too few stability iterations (e.g., < 10), OR does not compute a quantitative stability metric, leaving rank selection visual.
+
+      [C]: Does not perform a rank sweep, does not use NMF at all, or uses a method that allows negative components (PCA, SVD without thresholding).
+
+Criterion 3: Optimal Rank Selection with Dual Justification
+
+    Description: Evaluates the choice of optimal NMF rank with a justification grounded in both the quantitative stability metric AND the biological coherence of the resulting modules.
+    Levels: A=16 B=9 C=0
+      [A]: Selects an optimal rank k* from the swept range with a clearly stated decision rule. Provides BOTH (a) a quantitative argument (cophenetic / silhouette / consensus block-diagonality at k* is high or peaks vs neighbours), AND (b) a biological argument (modules at k* group cell subtypes into recognisable immune programs such as B / plasma cell, myeloid+DC, cytotoxic+NK, exhausted T+Treg, memory+effector T, or similar). Demonstrates why at least one smaller and one larger rank is inferior (smaller merges distinct programs; larger fragments coherent ones).
+
+      [B]: Selects k* but justifies on only one signal (stability OR biological), or omits the comparison with neighbouring ranks.
+
+      [C]: No rank selection, or arbitrary choice without justification.
+
+Criterion 4: Final NMF Fit, Module Extraction, and Patient Assignment
+
+    Description: Evaluates the final NMF model at k*, extraction of immune-cell modules from W (basis matrix), and per-patient TIME-subtype assignment from H (coefficient matrix).
+    Levels: A=21 B=10 C=0
+      [A]: Fits a final NMF at k* on the full cohort (with multiple initialisations, picking the best by reconstruction error). Extracts modules by assigning each immune subtype to the component with the highest loading in W (max-loading rule); reports the contents of each module (subtypes + their loadings). Assigns each patient to exactly one TIME subtype via max-coefficient on H, reports per-subtype patient counts, and shows a per-subtype compositional fingerprint (which immune programs dominate each TIME subtype).
+
+      [B]: Fits a final model and assigns patients but uses a single random initialisation (vulnerable to local minima), OR does not report per-module subtype contents, OR does not characterise per-subtype compositional fingerprints.
+
+      [C]: No final NMF fit, no per-patient assignment, or assignments inconsistent with the factorisation.
+
+Criterion 5: Biological Interpretation and Clinical Relevance
+
+    Description: Evaluates the biological interpretation of the immune modules and clinical relevance to pathological response (MPR vs non-MPR).
+    Levels: A=20 B=11 C=0
+      [A]: Names each TIME subtype by its dominant immune program (e.g., "cytotoxic / NK enriched", "exhausted T / Treg enriched", "memory / effector T enriched", "myeloid / DC enriched", "B-cell / plasma enriched"). Reports differential pathological-response rates (MPR vs non-MPR) across TIME subtypes, with at least the per-subtype response rates given. Discusses biological plausibility (e.g., cytotoxic-rich tumors as canonical "hot" responders; exhaustion / Treg-rich as immunosuppressive cold; myeloid-skewed as a known anti-PD-1 resistance pattern). Explicitly states limitations: NMF is non-unique with local-minima sensitivity; min-max scaling is one of several defensible normalisations; small-cohort-size limits power for subtype-vs-response association.
+
+      [B]: Names subtypes by composition but does not connect to pathological response, OR reports response rates without biological interpretation, OR omits limitations.
+
+      [C]: No interpretation, or labels subtypes as "Cluster 1 / 2 / 3" without naming the immune programs.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, cell-subtype labels, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (cell counts, per-patient subtype percentages, NMF reconstruction error, cophenetic correlation, per-TIME-subtype response rates) are traceable to the provided metadata or a documented transformation. Cell-subtype labels (e.g., `CD8T_Tex_LAYN`, `Bn_TCL1A`) come from the `sub_cell_type` column of the provided metadata, not invented. Biological interpretations of "hot vs cold tumour", exhaustion-Treg suppression, myeloid resistance pattern, etc. are supported by real, identifiable references (anti-PD-1 immunotherapy reviews, NSCLC TIME studies with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and labels are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, cell-type attributions, or biological claims with no clear source. Hallucinated content (made-up subtypes, invented cophenetic values, fabricated citations) mixed with computed results.

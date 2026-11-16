@@ -1,0 +1,77 @@
+RUBRIC: Sex-Stratified 4-Timepoint Directional Patterns in Skeletal Muscle Transcriptomics (MoTrPAC)
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) restricts to the TRNSCRPT × SKM-VL slice; (ii) requires significance at all four endurance-training timepoints (1w, 2w, 4w, 8w) per sex before encoding patterns; (iii) encodes a 4-character directional state per sex (Up / Down per timepoint using a stated logFC threshold, e.g., |logFC| > 0.2); (iv) classifies each gene's pattern as female-specific, male-specific, or shared (mutually exclusive); (v) ranks patterns by gene-count and reports the top patterns per category; and (vi) interprets the biological meaning of the dominant temporal and sex-specific patterns.
+
+CRITERIA (7):
+
+Criterion 1: Restrict to TRNSCRPT × SKM-VL
+
+    Description: Evaluates filtering to the transcriptomics assay (TRNSCRPT) and the gastrocnemius / skeletal-muscle-vastus-lateralis (SKM-VL) tissue.
+    Levels: A=15 B=7 C=0
+      [A]: Filters the DE table to `assay == 'TRNSCRPT'` AND `tissue == 'SKM-VL'`. Reports row count after filtering.
+
+      [B]: Filters by one of the two but not both, OR includes extra assay / tissue rows that should not be in scope.
+
+      [C]: Wrong assay / tissue combination.
+
+Criterion 2: Require Significance at All Four Timepoints per Sex
+
+    Description: Evaluates the 4-timepoint completeness requirement (each gene must be significant at 1w, 2w, 4w, AND 8w per sex before pattern encoding).
+    Levels: A=20 B=10 C=0
+      [A]: Per gene per sex, requires significance (`training_q < 0.05` or equivalent) at ALL FOUR timepoints (1w, 2w, 4w, 8w). Genes that are significant at only 1-3 timepoints in a given sex are excluded from that sex's pattern set.
+
+      [B]: Implements partial completeness (e.g., requires significance at >= 3 of 4 timepoints), which lets in genes with incomplete temporal coverage.
+
+      [C]: No completeness filter, OR uses any gene that has at least one significant timepoint.
+
+Criterion 3: Directional 4-State Encoding per Sex
+
+    Description: Evaluates encoding of each timepoint as Up or Down per sex using a stated logFC threshold and producing a 4-character state string.
+    Levels: A=20 B=10 C=0
+      [A]: For each gene × sex, builds a 4-character directional state string from the per-timepoint logFC values using a stated threshold (e.g., |logFC| > 0.2), e.g., `Up-Up-Up-Up`, `Down-Down-Up-Up`. Threshold and encoding rule are documented; encoding is consistent across genes.
+
+      [B]: State encoding exists but threshold is unclear or inconsistent across genes, OR uses a non-standard encoding (e.g., +/- without a |logFC| threshold).
+
+      [C]: No directional encoding.
+
+Criterion 4: Shared vs Sex-Specific Categorisation (Mutually Exclusive)
+
+    Description: Evaluates classification of each gene's pattern as female-specific, male-specific, or shared, with mutual exclusivity (a gene is not double-counted).
+    Levels: A=20 B=10 C=0
+      [A]: Implements three mutually exclusive categories: (a) shared = significant at all 4 timepoints in BOTH sexes with the same directional state; (b) female-specific = passes the 4-timepoint filter only in female; (c) male-specific = passes only in male. Genes in "shared" do NOT also appear in either sex-specific bucket.
+
+      [B]: Categories exist but with overlap (a gene appears in both shared and sex-specific lists), OR shared is defined as "significant in both sexes" without requiring matching directional state.
+
+      [C]: No sex-stratified categorisation.
+
+Criterion 5: Pattern Ranking and Frequency Analysis
+
+    Description: Evaluates ranking of the encoded 4-state patterns by gene count, with proper category labels.
+    Levels: A=15 B=7 C=0
+      [A]: Ranks patterns by gene count within each category (shared, female-specific, male-specific). Reports top patterns overall and per category with their gene counts. Verifies counting integrity (no double-counting between categories).
+
+      [B]: Produces a ranking but with counting errors, OR categorises only the top patterns globally without per-category breakdown.
+
+      [C]: No pattern ranking.
+
+Criterion 6: Biological Interpretation of Temporal and Sex Patterns
+
+    Description: Evaluates interpretation of the dominant patterns and what shared vs sex-specific dynamics imply for endurance-training adaptation biology.
+    Levels: A=10 B=5 C=0
+      [A]: Connects the dominant patterns to exercise-adaptation biology: e.g., sustained Up-Up-Up-Up patterns in shared category may reflect mitochondrial / oxidative-phosphorylation programs that adapt similarly in both sexes; sex-specific patterns may reflect hormonal modulation of metabolism. Names example genes from the top patterns and links to known exercise biology.
+
+      [B]: Provides interpretation but it stays generic (no example genes named, no linking to specific pathways).
+
+      [C]: No interpretation, or interpretation contradicts the data.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, gene attributions, and biological interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-pattern gene counts, per-category totals) are traceable to the provided DE spreadsheet with explicit assay / tissue / sex / timepoint filtering steps. Gene symbols come from the provided table or HGNC. Biological interpretation of endurance-training adaptation cites the MoTrPAC main reference (Sanford et al. 2020 Cell, or the MoTrPAC consortium publication with author + year + DOI), or other identifiable exercise-physiology references.
+
+      [B]: Most numerical results and gene attributions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values or biological claims with no clear source. Hallucinated content (fabricated counts, made-up gene attributions, invented citations) mixed with computed results.

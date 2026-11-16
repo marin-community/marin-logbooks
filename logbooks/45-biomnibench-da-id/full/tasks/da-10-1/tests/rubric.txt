@@ -1,0 +1,107 @@
+RUBRIC: Amino-Acid Composition Comparison and Predictor Evaluation for PS-Self vs PS-Part Proteins
+
+Total Points: 100/100
+
+Notes: A full-score answer demonstrates an end-to-end computational workflow for comparing amino-acid composition differences between PS-Self and PS-Part proteins and evaluating phase-separation predictor performance. A full-score answer: (1) correctly loads data and verifies schema including UniProt IDs and required columns, (2) correctly constructs SaPS versus NoPS and PdPS versus NoPS datasets for curated sets and human proteome sets avoiding label leakage, (3) computes amino-acid composition for 20 amino acids with proper normalization as fraction of total residues, (4) computes fold-change versus NoPS with appropriate stabilization, (5) applies property-based ordering or grouping of amino acids using defensible rationale such as IDR propensity or physicochemical properties, (6) correctly extracts IDR segments and computes amino-acid frequencies in IDR regions to derive ordering if IDR intervals are available, (7) replicates amino-acid frequency and fold-change analysis on human proteome sets and compares patterns with curated sets, (8) evaluates predictor performance separately for SaPS versus NoPS and PdPS versus NoPS using ROC curves and AUC metrics handling NaNs appropriately, and (9) provides evidence-based summary interpreting composition patterns and predictor performance differences between PS-Self and PS-Part proteins.
+
+CRITERIA (10):
+
+Criterion 1: Data Loading and Schema Verification
+
+    Description: Evaluates correct loading of protein dataset and verification that key columns and identifiers are usable.
+    Levels: A=8 B=4 C=0
+      [A]: Correctly loads data from provided file (sequence_prediction_filtered with appropriate file extension), confirms UniProt IDs are present as index or identifier column, checks presence of required columns including Sequence column with protein sequences, SaPS/PdPS/NoPS binary flags for curated protein classifications, hSaPS/hPdPS/hNoPS binary flags for human proteome classifications, predictor score columns (PScore, PLAAC, catGRANULE, FuzDrop if available) with numerical values, verifies data dimensions by reporting number of proteins and columns, handles missing values appropriately by checking for NaN values in critical columns, documents any data quality issues discovered during loading.
+
+      [B]: Loads data but schema checks are partial or slightly incorrect such as does not confirm UniProt identifiers explicitly (assumes index without verification), overlooks checking for missing predictor columns or does not verify all required flags are present, does not report data dimensions or check for missing values systematically, or minor issues in data loading that do not fundamentally prevent downstream analysis.
+
+      [C]: Fails to load data correctly (incorrect file path, wrong file format, data not imported), misinterprets identifiers or columns leading to downstream misalignment (uses wrong column as identifier, confuses sequence with other text fields), or does not verify that required columns exist resulting in analysis based on incomplete or incorrect data.
+
+Criterion 2: Dataset Construction and Sample Definitions
+
+    Description: Evaluates correct definition of positive and negative protein sets for each classification task.
+    Levels: A=12 B=6 C=0
+      [A]: Correctly defines curated datasets by constructing SaPS positive set (SaPS flag == 1) versus NoPS negative set (NoPS flag == 1) for self-assembling phase-separation proteins, constructing PdPS positive set (PdPS flag == 1) versus NoPS negative set (NoPS flag == 1) for partner-dependent phase-separation proteins, correctly defines human proteome datasets by constructing hSaPS positive set (hSaPS flag == 1) versus hNoPS negative set (hNoPS flag == 1), constructing hPdPS positive set (hPdPS flag == 1) versus hNoPS negative set (hNoPS flag == 1), avoids label leakage by ensuring SaPS and PdPS sets are mutually exclusive (no protein flagged as both SaPS and PdPS in same analysis), ensuring NoPS negatives are true non-phase-separating proteins (NoPS flag == 1) not simply absence of PS flags, documenting set sizes by reporting number of proteins in each positive and negative set, verifying no overlap between positive and negative sets for each task.
+
+      [B]: Defines datasets but with minor flaws such as includes PdPS proteins in SaPS positive set or vice versa without justification (treats all PS proteins as single positive class), uses "not SaPS" as negatives instead of explicit NoPS flag (may include PdPS in negatives inappropriately), does not clearly document set sizes or verify mutual exclusivity, or inconsistent handling between curated and human proteome sets.
+
+      [C]: Datasets are defined incorrectly invalidating comparisons such as mixes SaPS and PdPS as single positive class against NoPS without separating analyses, uses wrong flags or columns for classification (confuses predictor scores with class labels), includes overlapping proteins in positive and negative sets, or does not define separate analyses for SaPS versus NoPS and PdPS versus NoPS.
+
+Criterion 3: Amino-Acid Composition Frequency Computation
+
+    Description: Evaluates correct computation of amino-acid composition for 20 standard amino acids with proper normalization.
+    Levels: A=12 B=6 C=0
+      [A]: Correctly computes amino-acid frequencies by extracting protein sequences for each defined set (SaPS, PdPS, NoPS, hSaPS, hPdPS, hNoPS), counting occurrences of each of the 20 standard amino acids (A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y) across all sequences in each set, normalizing counts as fraction of total residues by dividing count of each amino acid by total number of amino acids across all sequences in the set, handling non-standard amino acids or non-string sequences safely by filtering out non-standard characters or empty sequences, reporting amino-acid composition profile for each set as 20-dimensional frequency vector summing to approximately 1.0, verifying frequencies are in reasonable range (0 to 1) and total frequency across 20 amino acids is close to 1.0 accounting for rounding.
+
+      [B]: Attempts frequency computation but with normalization errors such as computes per-protein average frequency instead of global frequency across set (averages individual protein compositions rather than pooling all residues), does not properly handle non-standard amino acids or special characters leading to incorrect counts, reports frequencies that do not sum to 1.0 without explanation or normalization is inconsistent across sets, or includes non-amino acid characters in counts without filtering.
+
+      [C]: No correct frequency computation performed, uses absolute counts instead of normalized frequencies without any normalization, computes frequencies for wrong set of characters (not 20 standard amino acids), or amino-acid composition is not calculated at all.
+
+Criterion 4: Fold-Change Computation Versus NoPS
+
+    Description: Evaluates robust computation of amino-acid fold-change for PS proteins relative to non-PS baseline.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly computes fold-change by calculating SaPS versus NoPS fold-change for each amino acid as ratio of SaPS frequency to NoPS frequency (SaPS_freq / NoPS_freq), calculating PdPS versus NoPS fold-change for each amino acid as ratio of PdPS frequency to NoPS frequency (PdPS_freq / NoPS_freq), adding small stabilizer epsilon (e.g., 1e-6 or 1e-10) to denominator to avoid division by zero when NoPS frequency is very small, maintaining consistent amino-acid ordering across all fold-change computations (using same 20-AA order for SaPS and PdPS comparisons), reporting fold-change values greater than 1 indicating enrichment in PS proteins and values less than 1 indicating depletion, identifying amino acids with largest positive fold-change (most enriched in PS) and largest negative fold-change (most depleted in PS), repeating fold-change computation for human proteome sets (hSaPS versus hNoPS, hPdPS versus hNoPS) using same methodology.
+
+      [B]: Computes fold-change but with minor issues such as does not add epsilon stabilizer causing infinite or undefined values when NoPS frequency is zero, uses inconsistent amino-acid ordering between SaPS and PdPS fold-changes making comparison difficult, reports fold-change but does not clearly identify enriched versus depleted amino acids, or does not repeat fold-change computation for human proteome sets.
+
+      [C]: Fold-change is incorrectly computed (uses subtraction instead of ratio, reverses numerator and denominator), fold-change is not computed at all, or calculation produces nonsensical values due to fundamental errors.
+
+Criterion 5: Property-Based Amino-Acid Ordering and Grouping
+
+    Description: Evaluates use of defensible physicochemical or sequence property basis to organize amino acids for pattern comparison.
+    Levels: A=12 B=6 C=0
+      [A]: Provides clear property-based ordering or grouping rationale by selecting defensible property basis such as intrinsically disordered region (IDR) propensity, prion-like domain propensity, charge (acidic, basic, neutral), hydrophobicity (hydrophobic, hydrophilic, neutral), size (small, medium, large), aromaticity, or other relevant physicochemical property, applying property-based ordering consistently across all analyses (same amino-acid order used for SaPS, PdPS, curated sets, and human proteome), explaining rationale for property choice in context of phase separation biology (e.g., IDR-enriched amino acids may drive liquid-liquid phase separation), grouping or ordering amino acids from disorder-promoting to order-promoting or from enriched to depleted based on property scale, using property-based ordering to highlight composition pattern differences between SaPS and PdPS proteins relative to NoPS.
+
+      [B]: Mentions physicochemical properties but applies them inconsistently or without clear organizational rule such as lists properties (charged, hydrophobic, etc.) but does not use them to order or group amino acids systematically, uses different property orderings for different analyses without justification, or property rationale is vague or disconnected from phase separation biology.
+
+      [C]: No property-based assessment beyond arbitrary or alphabetical amino-acid list, does not consider physicochemical properties at all, or property grouping is biologically implausible or incorrect.
+
+Criterion 6: IDR-Based Amino-Acid Ordering
+
+    Description: Evaluates correct extraction of intrinsically disordered region segments and computation of IDR amino-acid frequencies for ranking if IDR interval data is available.
+    Levels: A=12 B=6 C=0
+      [A]: Correctly handles IDR interval data by loading IDR ranges file (idr_ranges with appropriate file extension) containing protein identifiers and start-end coordinates of disordered regions, correctly interpreting interval format as 1-based inclusive coordinates (start and end positions both included in IDR segment), extracting IDR sequence segments for each protein by slicing full sequence from start to end position inclusive using correct indexing (adjusting for 0-based Python indexing by subtracting 1 from start only if needed), concatenating all IDR segments across proteins to create pooled IDR sequence set, computing amino-acid frequencies in IDR regions by counting occurrences of each amino acid in concatenated IDR sequences and normalizing by total IDR residues, deriving amino-acid ordering (aa_order) from IDR frequencies by ranking amino acids from highest to lowest IDR frequency (most disorder-promoting to least disorder-promoting), reporting proteins without IDR annotations or missing sequence data and excluding them appropriately, using IDR-based amino-acid ordering consistently in subsequent composition analyses and comparisons.
+
+      [B]: Extracts IDR sequences but with mistakes such as off-by-one indexing error (extracts start-1 to end-1 or start to end+1 instead of correct inclusive range), does not report proteins without IDR annotations or missing sequences (silently drops them without documentation), mixes full-sequence amino-acid frequencies with IDR-based ranking creating inconsistent ordering, or IDR extraction is attempted but IDR-derived ordering is not clearly used in downstream analyses.
+
+      [C]: IDR analysis is missing entirely despite IDR data being available, IDR interval extraction is fundamentally incorrect (wrong coordinates, wrong proteins, corrupted sequences), or IDR-based ordering is clearly wrong (random or contradicts IDR frequency data).
+
+Criterion 7: Human Proteome Analysis Replication
+
+    Description: Evaluates replication of amino-acid frequency and fold-change analyses on human proteome datasets to assess pattern reproducibility.
+    Levels: A=12 B=6 C=0
+      [A]: Correctly replicates curated analysis on human proteome by computing amino-acid frequencies for hSaPS, hPdPS, and hNoPS sets using same methodology as curated sets (fraction of total residues), computing fold-change for hSaPS versus hNoPS and hPdPS versus hNoPS using same stabilization and amino-acid ordering, applying same property-based or IDR-based amino-acid ordering to human proteome results, comparing human proteome composition patterns with curated set patterns by identifying whether same amino acids are enriched or depleted in hSaPS versus hNoPS as in SaPS versus NoPS, assessing whether hPdPS versus hNoPS patterns agree with PdPS versus NoPS patterns, reporting concordance or discrepancies between curated and human proteome findings, discussing biological implications of pattern reproducibility or differences (e.g., whether human proteome validates curated dataset patterns or reveals species-specific or annotation biases).
+
+      [B]: Attempts human proteome replication but with methodological inconsistencies such as uses different amino-acid frequency normalization for human sets than for curated sets without justification, uses different property ordering or amino-acid arrangement making direct comparison difficult, forgets to compute one of the human comparisons (e.g., computes hSaPS versus hNoPS but not hPdPS versus hNoPS), or does not explicitly compare patterns between curated and human datasets.
+
+      [C]: No human proteome replication performed, human proteome sets are not analyzed separately from curated sets (mixes human and curated proteins together), or human proteome analysis is fundamentally incorrect.
+
+Criterion 8: Predictor Performance Evaluation Using AUC
+
+    Description: Evaluates separate performance assessment of phase-separation predictors for distinguishing SaPS versus NoPS and PdPS versus NoPS using area under ROC curve (AUC) metrics.
+    Levels: A=16 B=8 C=0
+      [A]: Correctly evaluates predictor performance by for each predictor (PScore, PLAAC, catGRANULE, and FuzDrop if available), calculating area under ROC curve (AUC) separately for SaPS versus NoPS task using predictor scores as continuous decision variable and SaPS/NoPS labels as ground truth, calculating AUC separately for PdPS versus NoPS task using same predictor with PdPS/NoPS labels, handling missing predictor values (NaNs) appropriately by excluding proteins with missing scores from that predictor's evaluation or documenting exclusion strategy, comparing to random classifier baseline performance (AUC = 0.5) as reference, comparing predictor performance between SaPS versus NoPS and PdPS versus NoPS tasks to identify whether predictors perform better on one PS type than the other, repeating AUC evaluation on human proteome sets (hSaPS versus hNoPS, hPdPS versus hNoPS) to assess performance generalization, reporting AUC values clearly for each predictor on each task with interpretation of performance quality (e.g., AUC greater than 0.7 indicates good discrimination, AUC between 0.5 and 0.7 indicates weak discrimination).
+
+      [B]: Performs AUC evaluation but with partial implementation such as calculates AUC but missing for one or more predictors without justification, evaluates only one task (SaPS versus NoPS or PdPS versus NoPS) but not both, poor handling of NaN values (includes NaNs causing computation errors or excludes entire predictor without documenting reason), does not include random baseline comparison for reference, does not compare performance between SaPS and PdPS tasks, or does not repeat evaluation on human proteome sets.
+
+      [C]: No correct AUC evaluation performed, uses wrong labels or scores for evaluation (confuses class labels with predictor scores), AUC computation is fundamentally incorrect (calculates accuracy instead of AUC, uses wrong formula), or predictor performance is not assessed.
+
+Criterion 9: Result Summarization and Interpretation
+
+    Description: Evaluates provision of concise evidence-based summary interpreting amino-acid composition patterns and predictor performance differences with data-driven reasoning.
+    Levels: A=6 B=3 C=0
+      [A]: Provides clear evidence-based summary by briefly stating key amino-acid composition findings including which amino acids are enriched in SaPS proteins versus NoPS (high fold-change amino acids such as disorder-promoting residues), which amino acids are enriched in PdPS proteins versus NoPS, whether enrichment patterns differ between SaPS and PdPS (e.g., SaPS enriched in prion-like amino acids while PdPS shows different pattern), clearly comparing predictor performance between tasks by stating which predictors achieve higher AUC on SaPS versus NoPS task compared to PdPS versus NoPS task, offering plausible data-driven explanation for performance differences such as predictors may be biased toward intrinsically disordered regions or prion-like domains more characteristic of SaPS proteins, or PdPS proteins may have less distinctive sequence features making prediction harder, avoiding overclaiming causality or relying on outside knowledge not evident from the analysis results, connecting composition patterns to predictor behavior in logical evidence-based manner.
+
+      [B]: Summarizes results but interpretation is vague or lacks specificity such as states "some amino acids are enriched" without naming them or quantifying enrichment, mentions predictor performance differences but does not offer explanation or reasoning, overclaims causality beyond what data supports (e.g., claims predictors "fail because of X" without evidence), or provides interpretation relying heavily on outside knowledge not derived from the analysis.
+
+      [C]: No coherent summary or interpretation provided, conclusions contradict analysis results, claims are completely unsupported by data, or interpretation is missing entirely.
+
+Criterion 10: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

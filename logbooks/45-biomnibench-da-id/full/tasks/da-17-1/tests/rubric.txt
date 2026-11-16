@@ -1,0 +1,77 @@
+RUBRIC: Cell Composition Analysis in SLE
+
+Total Points: 100/100
+
+Notes: A full-score answer requires correctly analyzing cell composition changes between SLE patients and healthy controls using proper donor-level statistics, multiple testing correction, and clear reporting of all 8 significantly altered cell types with their directions of change.
+
+CRITERIA (7):
+
+Criterion 1: Data Loading and Exploration
+
+    Description: Evaluates correct loading of the h5ad file and identification of key metadata fields.
+    Levels: A=18 B=9 C=0
+      [A]: Loads data correctly (1,263,676 cells, 30,172 genes), identifies author_cell_type as the correct field with 11 cell types, and correctly maps disease to SLE/Control groups (162 SLE, 99 Control donors).
+
+      [B]: Loads data but misses some cell types or has minor mapping errors in disease groups.
+
+      [C]: Fails to load data or uses wrong cell type field entirely.
+
+Criterion 2: Per-Donor Percentage Calculation
+
+    Description: Evaluates correct calculation of cell type percentages at the donor level rather than global percentages.
+    Levels: A=15 B=7 C=0
+      [A]: Correctly calculates per-donor percentages with proper formula: 100 * cell_type_count / total_cells_per_donor. Properly aggregates at the donor level to avoid pseudoreplication (each donor contributes one value per cell type, not one value per cell).
+
+      [B]: Calculates percentages but uses global counts instead of per-donor (treats all cells as independent which inflates sample size), or has formula errors that affect accuracy.
+
+      [C]: No percentage calculation or fundamentally wrong approach (e.g., uses raw cell counts without accounting for different total cells per donor).
+
+Criterion 3: Low-Count Filtering
+
+    Description: Evaluates consideration and handling of observations with low cell counts per cell type per donor.
+    Levels: A=12 B=6 C=0
+      [A]: Applies reasonable low-count filtering (any threshold with justification, e.g., minimum 10 cells per donor per cell type) and documents impact on data (how many donors excluded per cell type). Justification explains that low counts lead to unstable percentage estimates.
+
+      [B]: Mentions filtering concern but doesn't implement, or filters without documenting rationale or impact on sample size.
+
+      [C]: No consideration of low-count observations at all, which could lead to unreliable estimates for donors with very few cells of certain types.
+
+Criterion 4: Statistical Analysis
+
+    Description: Evaluates use of appropriate statistical test and multiple testing correction.
+    Levels: A=20 B=10 C=0
+      [A]: Uses appropriate statistical test (WLS with cell counts as weights preferred to account for different precision across donors, or Wilcoxon/Mann-Whitney rank-sum test as a robust non-parametric alternative) with proper multiple testing correction (e.g., Benjamini-Hochberg FDR correction, Bonferroni) and reasonable significance threshold (e.g., FDR < 0.05 or adjusted p-value < 0.05). Clearly reports test statistics and both raw and corrected p-values.
+
+      [B]: Appropriate test but no multiple testing correction (uses raw p-values risking false positives when testing 11 cell types), OR correction applied but inappropriate test (e.g., parametric t-test without checking normality assumptions).
+
+      [C]: No statistical testing or fundamentally flawed approach (e.g., no group comparison, treats cells as independent units instead of aggregating by donor, or uses inappropriate test like chi-square on continuous percentages).
+
+Criterion 5: Correct Identification of Results
+
+    Description: Evaluates accurate identification of significantly altered cell types and their direction of change.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly identifies direction of change for ≥7 of 8 significant cell types with fold changes or mean differences. Increased in SLE: cM (classical monocytes, ~1.71x), Prolif (proliferating cells, ~3.10x), ncM (non-classical monocytes, ~1.59x), T8 (CD8+ T cells, ~1.24x), B (B cells, ~1.26x), PB (plasmablasts, ~1.70x). Decreased in SLE: T4 (CD4+ T cells, ~0.73x), pDC (plasmacytoid dendritic cells, ~0.61x). Reports adjusted p-values demonstrating statistical significance.
+
+      [B]: Identifies 4-6 cell types correctly with correct directions, or identifies ≥7 cell types but with wrong directions for some, or correct identification but missing fold changes/effect sizes.
+
+      [C]: Fewer than 4 correct cell types identified, or major errors in direction of change (reporting increased when actually decreased or vice versa), or results not supported by statistical analysis.
+
+Criterion 6: Scientific Accuracy and Interpretation
+
+    Description: Evaluates whether all claims are supported by the data and analysis presented, with appropriate interpretation.
+    Levels: A=15 B=7 C=0
+      [A]: All conclusions directly supported by presented analysis with no fabricated statistics. Provides biological interpretation connecting findings to SLE pathology (e.g., increased plasmablasts and proliferating cells consistent with B cell hyperactivity and autoantibody production; decreased pDCs and altered T cell subsets consistent with immune dysregulation). Acknowledges limitations such as need for validation in independent cohorts, potential confounding by medications or disease activity, and that cell composition changes alone don't establish causality.
+
+      [B]: Minor unsupported claims or slight misinterpretations of results. Basic interpretation provided but lacks depth or biological context. Limited or no discussion of limitations.
+
+      [C]: Major fabricated claims, statistics not from the analysis, conclusions contradicting data, or no biological interpretation of findings in context of SLE disease mechanisms.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

@@ -1,0 +1,67 @@
+RUBRIC: Microbiome Univariate Cox Survival Analysis (Kocuria, DA-12-4)
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) constructs the matched microbiome × survival cohort (~457 samples); (ii) runs univariate Cox PH per microbiome feature, reporting HR and p; (iii) applies the "poor prognosis" rule (HR > 1 AND p < 0.05); (iv) verifies Kocuria reaches significance (HR ≈ 1.0124, p ≈ 0.0234); (v) reports completeness (top hits, n_samples, n_events, Kocuria's rank).
+
+CRITERIA (6):
+
+Criterion 1: Matched-Cohort Construction
+
+    Description: Evaluates correct dataset alignment between microbiome features and survival outcomes.
+    Levels: A=19 B=10 C=0
+      [A]: Constructs the matched tumor-sample cohort, correctly aligns microbiome features to survival outcomes, yields the expected matched sample size (~457).
+
+      [B]: Uses correct files but matching is slightly off (minor ID parsing) causing a noticeable n_samples deviation.
+
+      [C]: Wrong files or no matching between microbiome and survival data.
+
+Criterion 2: Univariate Cox PH per Microbiome Feature
+
+    Description: Evaluates per-feature univariate Cox modelling with HR + p reporting.
+    Levels: A=19 B=10 C=0
+      [A]: Runs a univariate Cox PH model for each microbiome feature; reports HR and p-value per feature.
+
+      [B]: Cox is run but incomplete (not all microbiomes tested) or model specification unclear.
+
+      [C]: No Cox analysis or wrong method.
+
+Criterion 3: Poor-Prognosis Filtering Rule (HR > 1 AND p < 0.05)
+
+    Description: Evaluates exact application of the dual-threshold filter.
+    Levels: A=19 B=10 C=0
+      [A]: Applies the exact rule HR > 1 AND p < 0.05 to identify significant poor-prognosis microbiomes.
+
+      [B]: Uses only part of the rule (p only or HR only) or inconsistent thresholds.
+
+      [C]: Uses incorrect rule.
+
+Criterion 4: Kocuria-Specific Determination
+
+    Description: Evaluates the Kocuria conclusion + supporting statistics.
+    Levels: A=27 B=13 C=0
+      [A]: Concludes "Yes" for Kocuria, reports HR ≈ 1.0124 and p ≈ 0.0234 (within tolerance), notes that it meets HR>1 AND p<0.05.
+
+      [B]: Correct conclusion but missing one key stat (HR or p), OR values noticeably off.
+
+      [C]: Wrong conclusion about Kocuria significance.
+
+Criterion 5: Reporting Completeness
+
+    Description: Evaluates completeness of summary reporting.
+    Levels: A=16 B=9 C=0
+      [A]: Reports top results (at least top 10), includes cohort size (n_samples, n_events), and clearly states Kocuria's placement among significant features.
+
+      [B]: Provides partial reporting (missing counts or incomplete top list) but main conclusion present.
+
+      [C]: Unclear or missing essential outputs.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-feature HR, p, n_samples, n_events) are traceable to the provided data files or to a documented transformation. Microbiome / taxon identifiers come from named sources (NCBI Taxonomy, the dataset's feature index). Statistical method names match what was actually run. Biological interpretations of microbiome / survival associations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up taxa, fabricated HRs / p-values, invented citations) mixed with computed results.

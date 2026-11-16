@@ -1,0 +1,95 @@
+RUBRIC: DA-26-2
+
+Total Points: 100/100
+
+CRITERIA (9):
+
+Criterion 1: Normality Likelihood Ratio Test Implementation
+
+    Description: Evaluates the implementation of the Normality Likelihood Ratio Test to analyze gene essentiality.
+    Levels: A=15 B=8 C=0
+      [A]: Correctly perform the Normality Likelihood Ratio Test to identify significant genes without statistical errors.
+
+      [B]: Uses an alternative statistical method (e.g., t-test or Wilcoxon) to identify significant genes rather than the Normality Likelihood Ratio Test.
+
+      [C]: No analysis performed.
+
+Criterion 2: DepMap Score Loading
+
+    Description: Evaluates the correct loading and initialization of the cell line and patient-based DepMap scores.
+    Levels: A=5 B=1 C=0
+      [A]: Correctly load DepMap scores with correct formatting and data types.
+
+      [B]: Loads gene expression data for subsequent analysis but with formatting or coverage issues.
+
+      [C]: No data loaded.
+
+Criterion 3: Distribution Classification (Normal vs. T-Skewed)
+
+    Description: Evaluates the ability to classify the distribution of gene essentiality as normal or t-skewed based on the test results.
+    Levels: A=13 B=6 C=0
+      [A]: Correctly evaluates the distribution.
+
+      [B]: Attempts to classify the distribution but misinterprets the test outputs or applies incorrect significance thresholds.
+
+      [C]: Fails to classify the distribution of gene essentiality or incorrectly evaluates it.
+
+Criterion 4: Sum of Squared Deviations Calculation
+
+    Description: Checks the calculation of the Sum of Squared Deviations (SSD) for the genes in both patient and cell line cohorts.
+    Levels: A=16 B=13 C=0
+      [A]: Correctly calculated SSD for all genes in both patient and cell line cohorts. The calculation accounts for missing values (NA handling).
+
+      [B]: SSD was calculated for both cohorts, but failed to align genes between the two datasets.
+
+      [C]: No SSD values generated.
+
+Criterion 5: Druggable Gene List Integration
+
+    Description: Evaluates the integration of a druggable gene list to filter the ranked genes.
+    Levels: A=8 B=5 C=0
+      [A]: Successfully integrated an external druggable gene database (e.g., Therapeutic Target Database) to effectively filter and prioritize the ranked list into actionable therapeutic targets.
+
+      [B]: Incorporated a druggable gene list, but the filtering logic was incomplete.
+
+      [C]: No integration of external druggable gene data was performed to refine the results.
+
+Criterion 6: Patient vs. Cell Line Significance Comparison
+
+    Description: Assesses the logic used to identify genes that are statistically significant in patient DepMap scores but non-significant in cell line models.
+    Levels: A=11 B=6 C=0
+      [A]: Successfully implemented a robust comparative logic to isolate genes showing statistical significance in patient data while remaining non-significant in cell line models.
+
+      [B]: Performed a partial comparison between patient and cell line significance but with incomplete or inconsistent thresholds.
+
+      [C]: No logical comparison was performed to differentiate significance levels between patient and cell line datasets.
+
+Criterion 7: PTPN11 Biomarker Identification
+
+    Description: Evaluates the final conclusion derived from the analysis, specifically the identification of the PTPN11 biomarker.
+    Levels: A=21 B=8 C=0
+      [A]: PTPN11 was included in the results.
+
+      [B]: Identifies PTPN11 alongside incorrect biomarkers, or identifies closely related BRCA known genes but not PTPN11.
+
+      [C]: No BRCA known genes were included in the results.
+
+Criterion 8: BRCA-Specific Data Filtering
+
+    Description: Assesses whether the data is accurately filtered to specifically focus on Breast Cancer (BRCA) cell lines and patient data.
+    Levels: A=11 B=6 C=0
+      [A]: Successfully implemented precise filtering to isolate BRCA samples within both the DepMap cell line models and patient cohorts.
+
+      [B]: Performed partial filtering for BRCA data, but the resulting dataset contained either non-BRCA samples or incomplete patient identifiers.
+
+      [C]: No specific filtering was applied to restrict the analysis to BRCA data.
+
+Criterion 9: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

@@ -1,0 +1,95 @@
+RUBRIC: DA-26-4
+
+Total Points: 100/100
+
+CRITERIA (9):
+
+Criterion 1: Lasso Regression with Cross-Validated Lambda
+
+    Description: Evaluates whether Lasso regression was set up with cross-validation-based lambda selection to link multi-omics data with loss-of-function events.
+    Levels: A=20 B=15 C=0
+      [A]: Lasso regression implemented with cross-validation-based lambda selection (any reasonable k-fold or leave-one-out).
+
+      [B]: Lasso regression performed but uses a fixed or arbitrary lambda instead of cross-validation.
+
+      [C]: Failed to implement Lasso regression.
+
+Criterion 2: Dual-Threshold Refinement (Effect Size + FDR)
+
+    Description: Evaluates whether Lasso candidates were refined with a dual-threshold filter combining effect-size magnitude and multiple-testing-corrected significance.
+    Levels: A=13 B=10 C=0
+      [A]: Dual-threshold filter applied on both effect size (|coefficient| above a stated cutoff) and multiple-testing-corrected significance (adjusted p-value / FDR below a stated cutoff), with the thresholds reported in the trace.
+
+      [B]: Filtered using only one criterion (effect size or significance, but not both).
+
+      [C]: No coefficient- and significance-based filtering was implemented to refine the results.
+
+Criterion 3: Iterative Mutual-Exclusivity Prioritization
+
+    Description: Assesses whether candidates were prioritized via mutual-exclusivity analysis with an iterative / greedy ranking scheme.
+    Levels: A=12 B=8 C=0
+      [A]: Prioritization via mutual-exclusivity analysis using an iterative or greedy candidate-selection / ranking procedure (e.g., UNCOVER-style greedy optimization, sequential conditioning, or equivalent).
+
+      [B]: Mutual-exclusivity analysis included but without iterative / greedy ranking (e.g., flat ranking by raw p-value only).
+
+      [C]: No mutual-exclusivity-based prioritization was implemented.
+
+Criterion 4: Permutation-Based Significance Testing
+
+    Description: Evaluates whether candidates were prioritized using permutation-based (or analytically derived) significance testing for mutual exclusivity, with the permutation count and significance threshold stated.
+    Levels: A=12 B=5 C=0
+      [A]: Permutation-based (or analytically derived) significance testing for mutual exclusivity, with the number of permutations and the significance threshold explicitly stated in the trace.
+
+      [B]: Mutual-exclusivity significance assessed but without a permutation-based approach (e.g., simple overlap counts) or without the permutation count / threshold stated.
+
+      [C]: No statistical testing for mutual exclusivity was implemented.
+
+Criterion 5: Paralog Identification with Similarity Filter
+
+    Description: Evaluates whether paralog identification was performed using a curated ortholog/paralog resource, with a phylogenetic- or sequence-similarity-based filter applied to the candidate list.
+    Levels: A=12 B=7 C=0
+      [A]: Paralogs identified using a curated ortholog/paralog resource (Ensembl / biomaRt, HomoloGene, HCOP, or equivalent), with a phylogenetic- or sequence-similarity-based filter applied and the threshold stated.
+
+      [B]: Paralogs identified from a curated resource but without a phylogenetic- or sequence-similarity-based filter, or the threshold is unstated.
+
+      [C]: No orthology/paralog-based refinement was implemented.
+
+Criterion 6: PPI, Prevalence, and Literature Integration
+
+    Description: Evaluates whether the final selection integrates protein-protein interactions (PPI), patient prevalence, and literature evidence for translational relevance.
+    Levels: A=14 B=7 C=0
+      [A]: Final selection integrates protein-protein interaction evidence together with additional translational-relevance evidence (e.g., patient prevalence, literature curation).
+
+      [B]: Selection incorporates only one or two of these validation criteria.
+
+      [C]: No biological validation was used to establish the final list of candidates.
+
+Criterion 7: Canonical BRCA Paralog Pair Reporting
+
+    Description: Evaluates whether the final ranked list explicitly includes the canonical paralog synthetic-lethality pairs expected in BRCA.
+    Levels: A=12 B=8 C=0
+      [A]: Final list explicitly names both HSP90AA1 / HSP90AB1 and HDAC1 / HDAC2 as paralog synthetic-lethality pairs, with both members of each pair stated.
+
+      [B]: Final list explicitly names one of the two canonical pairs (HSP90AA1 / HSP90AB1 or HDAC1 / HDAC2) with both members stated; or names both pairs but with only one member of each pair explicit.
+
+      [C]: Final list names neither HSP90AA1 / HSP90AB1 nor HDAC1 / HDAC2.
+
+Criterion 8: Observed-vs-Expected Co-occurrence Reporting
+
+    Description: Evaluates whether the result table reports observed-vs-expected co-occurrence statistics with per-cell-line resolution.
+    Levels: A=5 B=2 C=0
+      [A]: Table reports observed-vs-expected co-occurrence statistics with per-cell-line resolution.
+
+      [B]: Some of the observed / expected / difference metrics are missing or not reported per cell line.
+
+      [C]: Table does not report observed-vs-expected co-occurrence statistics.
+
+Criterion 9: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

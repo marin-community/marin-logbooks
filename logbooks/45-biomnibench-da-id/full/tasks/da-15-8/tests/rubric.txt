@@ -1,0 +1,67 @@
+RUBRIC: DA-15-8
+
+Total Points: 100/100
+
+Notes: This rubric evaluates integrative three-level analysis combining spinal cord transcriptomics, spinal cord proteomics, and CSF proteomics to identify high-confidence CSF biomarker candidates. Excellence requires loading DE results and proteomics data from two sources, filtering proteins to positive log2 ratios (upregulated) in both spinal cord tissue and CSF, cross-referencing with upregulated transcriptomic DEGs, requiring concordant upregulation across all three modalities, ranking candidates by combined effect size product across modalities, identifying small set of triple-concordant genes, and recognizing that GPNMB and SERPINA3 emerge as top multi-evidence candidates while CHIT1 shows strong CSF signal but lacks spinal cord protein upregulation.
+
+CRITERIA (6):
+
+Criterion 1: Data Loading and Proteomics Data Extraction
+
+    Description: Assesses correct loading of transcriptomic and proteomic datasets and extraction of effect sizes.
+    Levels: A=15 B=8 C=0
+      [A]: Correctly loads cervical spinal cord differential expression results from DA-15-1 (Cervical_Spinal_Cord_DE_results.tsv), loads spinal cord proteomics data from Excel file (401_2019_2093_MOESM5_ESM.xlsx sheet 1), loads CSF proteomics data from Excel file (401_2019_2093_MOESM2_ESM.xlsx sheet 2), extracts log2 ratios for protein fold-changes from both datasets, converts p-values from log scale to linear scale (pval = 10^-log_p_value), and documents data sources clearly.
+
+      [B]: Loads data with issues such as incorrect sheet selection or header handling, unclear extraction of log2 ratios or p-values, incomplete loading (missing one proteomics dataset), or data extraction has errors that partially affect downstream integration.
+
+      [C]: Fails to load correct datasets (uses wrong files or wrong DE results), does not extract appropriate metrics (missing log2 ratios or p-values), or data loading is fundamentally flawed preventing multi-modal integration.
+
+Criterion 2: Proteomics Filtering and Directional Concordance
+
+    Description: Evaluates filtering proteins to upregulated candidates and ensuring concordant directionality.
+    Levels: A=20 B=10 C=0
+      [A]: Filters spinal cord proteomics to proteins with positive log2 ratio (lfc > 0 indicating upregulation), filters CSF proteomics to proteins with positive log2 ratio (lfc > 0) AND statistical significance (FDR < 0.05 after multiple testing correction), removes multi-gene entries by filtering out gene names containing semicolons (";") to ensure unambiguous matching, clearly documents filtering criteria for directionality (requiring upregulation not just dysregulation), and reports number of upregulated proteins in each dataset after filtering.
+
+      [B]: Filters proteomics with issues such as does not consistently apply directionality filter (includes downregulated proteins or unclear direction criteria), applies significance threshold inconsistently (missing FDR filter for CSF or wrong threshold), does not remove multi-gene entries (keeps ambiguous matches), unclear documentation of filtering logic, or filtering approach has technical issues affecting concordance analysis.
+
+      [C]: Does not filter proteomics appropriately (includes all proteins regardless of direction or significance), does not apply directionality requirement (mixes upregulated and downregulated), or filtering is so incorrect that concordantly upregulated candidates cannot be identified.
+
+Criterion 3: Three-Way Integration and Concordance Filtering
+
+    Description: Assesses integration across three modalities and filtering to concordantly upregulated genes.
+    Levels: A=25 B=12 C=0
+      [A]: Performs three-way matching by gene name across spinal cord transcriptome, spinal cord proteome, and CSF proteome, filters transcriptomic data to upregulated DEGs (log_fc > 0 AND adj_p_val < 0.05), requires genes to be upregulated in ALL three modalities (positive effect in transcriptome, positive effect in spinal cord protein, positive effect in CSF protein), correctly identifies small set of triple-concordant genes showing consistent upregulation across all levels, clearly distinguishes triple-concordant genes from genes concordant in only two modalities, and documents integration criteria explicitly stating requirement for positive direction in all three datasets.
+
+      [B]: Performs integration with issues such as matching approach unclear or inconsistent, does not clearly require concordance across all three modalities (accepts genes present in only two levels), directionality requirement not consistently applied (includes genes with mixed directions), unclear distinction between triple-concordant and partial-concordant genes, or integration has technical issues affecting identification of high-confidence candidates.
+
+      [C]: Does not perform three-way integration correctly (missing one or more modalities in matching), does not require concordant directionality (mixes upregulated and downregulated), integration logic is fundamentally flawed (wrong matching criteria or no valid multi-modal filtering), or cannot identify genes with evidence across all three levels.
+
+Criterion 4: Quantitative Ranking by Combined Effect Size
+
+    Description: Evaluates ranking of candidates using quantitative combined effect size metric.
+    Levels: A=20 B=10 C=0
+      [A]: Calculates combined effect size score for each triple-concordant gene using product of absolute effect sizes across all three modalities (e.g., abs(spinal_cord_protein_lfc) * abs(CSF_protein_lfc) * abs(transcriptome_log_fc)), ranks candidates in descending order by combined score to prioritize genes with strongest consistent effects across modalities, identifies top-ranked genes based on quantitative scoring, presents results in clear ranked format showing gene names, individual effect sizes from each modality, and combined score, and explains rationale that higher combined score indicates stronger multi-modal evidence for biomarker potential.
+
+      [B]: Ranks candidates with issues such as ranking method is unclear or not fully quantitative (uses qualitative assessment instead of product calculation), does not clearly document scoring formula, ranking does not appropriately weight all three modalities (overemphasizes one level), presents ranked list but missing individual effect sizes or combined scores, or ranking approach has technical issues but overall prioritization is recognizable.
+
+      [C]: Does not rank candidates quantitatively (no scoring scheme or arbitrary ranking), does not use combined effect size metric (ranks by single modality only), ranking is incorrect or inconsistent with data, or no clear prioritization of biomarker candidates is provided.
+
+Criterion 5: Biomarker Assessment and Clinical Interpretation
+
+    Description: Assesses correct identification of top candidates and interpretation in clinical biomarker context.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly identifies GPNMB and SERPINA3 as top triple-concordant biomarker candidates showing upregulation across spinal cord transcriptome, spinal cord proteome, and CSF proteome, recognizes that CHIT1 does NOT appear in triple-concordant list (CHIT1 lacks positive spinal cord protein signal despite strong transcriptome and CSF protein upregulation), explains that triple-concordance across tissue RNA, tissue protein, and CSF protein provides strongest evidence for reliable non-invasive CSF biomarkers (changes detectable in accessible CSF are validated at both transcriptional and translational levels in disease tissue), interprets biological significance explaining that GPNMB and SERPINA3 are glial activation markers whose consistent multi-level upregulation supports their utility for ALS clinical trial monitoring, notes that CSF-detectable proteins with triple-concordance offer advantage over tissue-only or RNA-only candidates for longitudinal patient monitoring, and avoids overstating by acknowledging need for validation in independent cohorts and functional studies to establish clinical utility.
+
+      [B]: Identifies biomarker candidates with issues such as mentions GPNMB or SERPINA3 but does not clearly establish them as top triple-concordant hits, incorrectly includes CHIT1 in triple-concordant list (misses that CHIT1 lacks spinal cord protein upregulation), does not explain significance of triple-concordance for clinical biomarker development (missing discussion of why multi-level validation strengthens confidence), biological interpretation is generic or shallow (states "these are biomarkers" without explaining glial activation or clinical utility), or interpretation lacks connection to practical implications for non-invasive monitoring in ALS trials.
+
+      [C]: Fails to identify GPNMB and SERPINA3 as top candidates (misses key genes or identifies wrong genes), provides incorrect assessment of CHIT1 (claims CHIT1 is triple-concordant when it is not), does not explain importance of multi-modal concordance for biomarker prioritization, makes biologically implausible conclusions inconsistent with data, or provides no meaningful interpretation connecting results to ALS clinical biomarker development.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

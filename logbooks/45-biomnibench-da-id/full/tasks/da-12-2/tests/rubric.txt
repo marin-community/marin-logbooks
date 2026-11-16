@@ -1,0 +1,79 @@
+RUBRIC: DA-12-2
+
+# Rubric for Q2: Over-Representation Analysis of Differentially Expressed Genes
+
+Total Points: 100/100
+
+Notes: This rubric evaluates implementation of an over-representation analysis pipeline. Excellence is shown by correct gene list extraction with proper filtering, appropriate ORA methodology using Fisher's exact test or hypergeometric distribution, rigorous multiple testing correction, accurate quantitative results for G2M checkpoint pathway, and clear reporting of enriched pathways.
+
+CRITERIA (7):
+
+Criterion 1: Correct Gene List Extraction
+
+    Description: Assesses proper loading and filtering of the gene list from TS7.
+    Levels: A=20 B=10 C=0
+      [A]: Uses TS7.xlsx file, extracts gene names from the appropriate column (gene name column), filters genes where the designated column equals "v", removes NA and blank values, deduplicates gene list, and yields approximately 1543 unique genes.
+
+      [B]: Uses TS7 but has minor column or filter mistakes (e.g., slightly wrong count due to different NA handling) yet produces mostly overlapping gene set that is usable for ORA.
+
+      [C]: Uses wrong file or sheet, ignores the "v" filter requirement, or produces gene list with incorrect size suggesting fundamental extraction error.
+
+Criterion 2: ORA Implementation with Correct Gene Sets
+
+    Description: Evaluates proper implementation of over-representation analysis using MSigDB Hallmark gene sets.
+    Levels: A=20 B=10 C=0
+      [A]: Implements over-representation analysis using Fisher's exact test or hypergeometric distribution (via GSEApy, scipy.stats, or equivalent library), uses GSEA_gmt.gmt file containing MSigDB Hallmark gene sets as the pathway database, tests against all Hallmark pathways (49 pathways total), and correctly sets up test with extracted gene list as query and Hallmark pathways as background.
+
+      [B]: Implements ORA but uses wrong gene set collection (not Hallmark, or not from GSEA_gmt.gmt file), unclear about GMT file usage, or tests incomplete set of pathways.
+
+      [C]: Does not implement ORA, uses completely wrong approach (e.g., GSEA ranked analysis instead of ORA), or fails to use appropriate gene sets.
+
+Criterion 3: Multiple Testing Correction and Significance Threshold
+
+    Description: Assesses application of multiple testing correction and proper significance determination.
+    Levels: A=15 B=8 C=0
+      [A]: Reports both raw p-values and FDR-corrected p-values (Benjamini-Hochberg or equivalent multiple testing correction method), applies stated significance threshold of p < 0.05 to FDR values for calling significant pathways, and consistently uses this threshold across all pathway evaluations.
+
+      [B]: Reports only raw p-values OR only FDR without both, applies significance threshold correctly but reporting is incomplete, or uses p < 0.05 but unclear whether applied to raw p or FDR.
+
+      [C]: Does not apply multiple testing correction, uses wrong significance threshold, or makes incorrect significance calls.
+
+Criterion 4: G2M Checkpoint Quantitative Results
+
+    Description: Evaluates accurate quantitative results for the G2M checkpoint pathway matching expected values.
+    Levels: A=25 B=12 C=0
+      [A]: Reports G2M checkpoint overlap of 37/200 genes (37 query genes out of 200 total genes in pathway), raw p-value approximately 1.69e-05, FDR approximately 2.76e-04, rank 3 out of 49 pathways tested, and correctly concludes "YES" the G2M checkpoint pathway is significantly enriched (FDR < 0.05).
+
+      [B]: Reaches correct "YES" conclusion with correct overlap count (37/200), but p-value, FDR, or rank differ materially from expected (e.g., due to different background gene set or tool defaults), or one key quantitative value is missing from report.
+
+      [C]: Reaches wrong conclusion (claims not significant when it should be significant), reports incompatible overlap count, or quantitative values are fundamentally incorrect.
+
+Criterion 5: Global ORA Summary and Top Pathways
+
+    Description: Assesses completeness of ORA results reporting including total pathways tested and ranked list of top enriched pathways.
+    Levels: A=10 B=5 C=0
+      [A]: States that 49 Hallmark pathways were tested, provides ranked list of top enriched pathways sorted by FDR (at least top 3-10 pathways), includes pathway names and key statistics (overlap counts, FDR values) for top pathways, and identifies other significantly enriched pathways beyond G2M checkpoint (e.g., MITOTIC_SPINDLE, UV_RESPONSE_DN).
+
+      [B]: Mentions top enriched pathways but omits total number tested, does not clearly rank by FDR, or provides incomplete statistics for top pathways.
+
+      [C]: Does not provide global ORA context, fails to report top pathways, or reporting is so incomplete that overall enrichment landscape is unclear.
+
+Criterion 6: Clarity and Reproducibility
+
+    Description: Assesses clarity of methods description and reproducibility of analysis.
+    Levels: A=10 B=5 C=0
+      [A]: Clearly references TS7.xlsx file with specific columns used (gene name column and filter column with "v" designation), references GSEA_gmt.gmt file as source of Hallmark gene sets, describes ORA methodology coherently (Fisher's exact test or hypergeometric, multiple testing correction method), presents results without contradictions, and provides sufficient detail for reproducibility.
+
+      [B]: Mostly clear but missing key references (does not name specific files or columns), contains minor inconsistencies that do not fundamentally affect interpretation, or lacks some methodological detail.
+
+      [C]: Analysis is not reproducible due to missing critical information (files, columns, methods), contains contradictions, or description is too vague to understand what was done.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

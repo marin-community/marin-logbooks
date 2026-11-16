@@ -1,0 +1,67 @@
+RUBRIC: Concordance Between GAHT- and MHT-Altered Proteins
+
+Total Points: 100/100
+
+Notes: This rubric evaluates directional concordance analysis comparing feminizing GAHT effects with menopausal hormone therapy (MHT) effects in cisgender women. Excellence requires proper loading and preparation of GAHT and MHT datasets, appropriate filtering by significance thresholds, accurate protein matching with identifier standardization, correct determination of effect direction (increase vs decrease) for both GAHT and MHT, quantification of same-direction versus opposite-direction changes, identification of notable discordant proteins (CXCL13, NOS3, immune modulators), and biological interpretation of overall concordance with acknowledgment of regimen differences and limitations.
+
+CRITERIA (6):
+
+Criterion 1: Data Preparation and Filtering
+
+    Description: Assesses correct loading, filtering, and preparation of GAHT and MHT datasets for comparison.
+    Levels: A=20 B=10 C=0
+      [A]: Loads GAHT differential expression data (Supplementary Table 1: 41591_2025_4023_MOESM2_ESM(Supplementary Table 1).csv) and MHT association data (Supplementary Table 7: 41591_2025_4023_MOESM2_ESM(Supplementary Table 7).csv) correctly handling header rows, filters GAHT-affected proteins using appropriate significance threshold (adj p < 0.05) for CPA and SPIRO regimens separately generating lists of significant proteins (expected: CPA ~240-250, SPIRO ~70-90), selects appropriate MHT effect for each protein handling age-stratified estimates (e.g., chooses age group with smaller p-value when multiple age groups available, or uses most significant effect), normalizes protein identifiers for matching (e.g., uppercase conversion, consistent formatting), and documents all steps reproducibly with clear code or methods description.
+
+      [B]: Loads datasets and applies filters with issues such as ambiguous or inconsistent MHT age group selection (e.g., always chooses one age group without considering p-values), incomplete identifier normalization causing some missed matches, or protein counts substantially different from expected due to filtering errors, but comparison can still proceed with majority of relevant proteins.
+
+      [C]: Fails to load or prepare datasets correctly, does not filter GAHT proteins by significance, MHT effects not selected appropriately, or data preparation is so flawed that valid comparison is impossible.
+
+Criterion 2: Protein Matching and Direction Determination
+
+    Description: Evaluates accurate matching of proteins between GAHT and MHT datasets and correct determination of effect direction.
+    Levels: A=20 B=10 C=0
+      [A]: Accurately matches proteins between GAHT-affected set and MHT dataset using standardized identifiers with successful overlap (expected: CPA approximately 200-215 overlapping proteins, SPIRO approximately 75-85 overlapping proteins out of those tested), determines direction of change (increase or decrease) based on sign of effect size estimates for both GAHT (estimate_CPA or estimate_SPIRO) and MHT (estimate_MHT), handles missing or ambiguous values sensibly (e.g., excludes proteins with NA values in either dataset, or uses most significant effect when multiple MHT estimates available), and documents matching logic clearly including any quality control steps to verify direction assignments.
+
+      [B]: Matches proteins with issues such as misassigning direction for subset of proteins due to sign interpretation errors, inconsistent handling of ambiguous values (sometimes includes NA, sometimes excludes without clear rule), overlap counts substantially different from expected suggesting matching problems, but majority of protein matches and direction assignments are still correct.
+
+      [C]: Does not match datasets correctly due to identifier mismatch, cannot determine effect direction (e.g., does not extract effect size estimates), direction assignment is fundamentally incorrect (e.g., reverses all signs), or matching methodology is absent or nonsensical.
+
+Criterion 3: Direction Concordance Quantification
+
+    Description: Assesses proper quantification and reporting of same-direction versus opposite-direction changes.
+    Levels: A=20 B=10 C=0
+      [A]: Reports number of overlapping proteins between GAHT-affected and MHT datasets for each regimen separately (CPA and SPIRO), quantifies how many overlapping proteins change in same direction (both GAHT and MHT effects have same sign) versus opposite direction (GAHT and MHT effects have opposite signs), provides concordance counts for each regimen (expected: CPA approximately 160 same-direction and 52 opposite-direction out of ~212 overlaps; SPIRO approximately 71 same-direction and 9 opposite-direction out of ~80 overlaps), calculates and reports percentages showing concordance rate (expected: CPA ~75% same-direction, SPIRO ~89% same-direction), and clearly labels all counts and percentages with appropriate context about what they represent.
+
+      [B]: Computes concordance with issues such as counts reported without percentages, percentages calculated but denominator unclear (e.g., unclear if relative to overlapping proteins or total GAHT proteins), minor miscounts present (off by a few proteins) but do not fundamentally change overall conclusion of majority concordance, or one regimen analyzed without the other.
+
+      [C]: Does not perform concordance analysis, misreports directional results (e.g., claims majority are discordant when data shows concordance), concordance methodology is fundamentally incorrect, or results are nonsensical (e.g., more concordant proteins than total overlaps).
+
+Criterion 4: Identification and Characterization of Notable Exceptions
+
+    Description: Evaluates identification of discordant proteins and highlighting of key biological examples.
+    Levels: A=20 B=10 C=0
+      [A]: Identifies proteins changing in opposite directions between GAHT and MHT (discordant proteins where GAHT effect and MHT effect have opposite signs), highlights key notable examples mentioned in published study including CXCL13 (chemokine, increased in CPA but decreased in MHT) and NOS3 (endothelial nitric oxide synthase, increased in CPA but decreased in MHT), identifies additional prominent discordant proteins such as immune modulators (CCL16, CCL25, CD70), reproductive proteins (ACRBP, INSL3), or other cytokines, provides counts of discordant proteins per regimen (expected: CPA ~50-52 discordant, SPIRO ~9-10 discordant), and offers brief biological rationale or potential reasons for discordance (e.g., regimen-specific effects, differences between feminizing GAHT and MHT mechanisms, immune activation in CPA group).
+
+      [B]: Identifies some discordant proteins but misses prominent examples such as CXCL13 or NOS3 which are highlighted in published study, lists discordant proteins without biological context or functional categorization, discordant protein counts not clearly reported, or explanation for discordance is superficial or absent.
+
+      [C]: Fails to identify or discuss discordant proteins, claims no discordant proteins exist when data shows ~25% discordance in CPA, or misidentifies concordant proteins as discordant.
+
+Criterion 5: Biological Interpretation and Contextualization
+
+    Description: Assesses depth and accuracy of interpretation regarding GAHT-MHT concordance and biological implications.
+    Levels: A=20 B=10 C=0
+      [A]: Explains that substantial fraction of GAHT-affected proteins overlap with MHT-associated proteins (majority of significant GAHT proteins have MHT estimates), notes that most overlapping proteins share same directional change indicating feminizing GAHT effects are generally consistent with menopausal hormone therapy effects on plasma proteome, interprets high concordance as evidence that GAHT mimics aspects of MHT (both involve estrogen and reduced androgens), discusses regimen differences with SPIRO showing higher concordance rate (~89%) than CPA (~75%) possibly reflecting SPIRO's narrower range of affected proteins or different mechanism, acknowledges limitations such as incomplete concordance (25% of CPA proteins discordant), age-dependent effects in MHT data, different biological contexts (transgender individuals starting GAHT vs cisgender women in menopause), and potential confounding factors, and frames findings within broader study context about comparing GAHT effects to natural hormonal transitions.
+
+      [B]: Provides interpretation with limitations such as lacking nuance about partial versus complete concordance, superficial discussion of biological meaning (states proteins overlap without explaining significance of directional concordance), omits or incompletely discusses regimen differences (CPA vs SPIRO concordance rates), does not acknowledge analysis limitations or different biological contexts, or interpretation is weakly connected to quantitative concordance findings.
+
+      [C]: Offers no interpretation, draws incorrect conclusions unrelated to data (e.g., claims GAHT and MHT have completely different effects when data shows 75-89% concordance), misrepresents biological implications, or interpretation contradicts the quantitative results.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

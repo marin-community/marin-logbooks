@@ -1,0 +1,77 @@
+RUBRIC: Ancestry-Specific Analysis of Immune Cell Changes in SLE
+
+Total Points: 100/100
+
+Notes: A full-score answer requires comparing CD4+ T cell frequencies between ancestries with proper stratification, within-ancestry disease comparisons, and formal between-ancestry statistical testing to determine whether Asian patients show more pronounced reduction.
+
+CRITERIA (7):
+
+Criterion 1: Data Loading and Ancestry Identification
+
+    Description: Evaluates correct identification of ancestry field and reporting of sample sizes.
+    Levels: A=17 B=8 C=0
+      [A]: Identifies self_reported_ethnicity field in the metadata, lists all available ethnicities (Asian, European American, African American, Hispanic), reports sample sizes per ethnicity per disease group (Asian: 83 SLE donors, 24 Control donors; European American: 75 SLE donors, 74 Control donors), and notes insufficient samples for African American/Hispanic analysis (too few donors for reliable statistical comparison). Documents that analysis will focus on Asian and European American ancestries due to adequate sample sizes.
+
+      [B]: Identifies field but incomplete sample size reporting (doesn't specify donor counts per group) or ignores sample size limitations (attempts to analyze ancestries with inadequate samples).
+
+      [C]: Cannot identify ancestry information or uses wrong field (uses processing cohort, disease status, or other non-ancestry field).
+
+Criterion 2: Per-Donor Cell Type Calculation
+
+    Description: Evaluates correct per-donor calculation stratified by ethnicity and disease.
+    Levels: A=15 B=7 C=0
+      [A]: Correctly calculates cell type percentages per donor (100 * cell_type_count / total_cells_per_donor, not global percentages), stratifies by both ethnicity and disease status (creates separate groups: Asian SLE, Asian Control, EA SLE, EA Control), and considers filtering for low cell counts (excludes or flags donors with very few cells of the target cell type to ensure stable percentage estimates).
+
+      [B]: Per-donor calculation but not properly stratified (pools ancestries or disease groups), or missing filtering consideration (includes all donors regardless of cell count leading to unstable estimates).
+
+      [C]: Global percentages (calculates overall frequency across all cells ignoring donor structure) or no stratification (doesn't separate by ancestry or disease).
+
+Criterion 3: Statistical Comparison Method
+
+    Description: Evaluates within-ancestry comparisons with appropriate test and correction.
+    Levels: A=20 B=10 C=0
+      [A]: Compares cell type frequencies between SLE and Control within each ancestry separately using appropriate statistical test (WLS with cell count weights to account for different precision across donors, or Wilcoxon/Mann-Whitney as robust non-parametric alternative) with multiple testing correction (FDR/Benjamini-Hochberg or valid method accounting for testing multiple cell types and/or ancestries). Reports test statistics and p-values for each ancestry comparison.
+
+      [B]: Comparisons made but missing correction (uses raw p-values without adjusting for multiple comparisons), or pooled across ancestries (compares SLE vs Control without stratifying by ancestry, missing population-specific effects).
+
+      [C]: No statistical comparison or fundamentally flawed approach (e.g., inappropriate test, no group comparisons performed).
+
+Criterion 4: Ancestry-Specific Results
+
+    Description: Evaluates accurate reporting of ancestry-specific fold changes.
+    Levels: A=20 B=10 C=0
+      [A]: Both ancestry-specific fold changes reported within acceptable ranges with quantitative support: Asian CD4+ T cell fold change approximately 0.61 (approximately 39% reduction in SLE compared to Control) and European American fold change approximately 0.83 (approximately 17% reduction in SLE compared to Control). Reports mean or median percentages for SLE and Control groups within each ancestry. Values are not hallucinated and match the actual analysis results.
+
+      [B]: One ancestry reported correctly with quantitative support, or both ancestries reported but outside acceptable ranges (e.g., due to different filtering criteria or calculation methods), or correct ranges but lacking supporting statistics (fold changes stated without showing the underlying means/medians).
+
+      [C]: No ancestry-specific results reported, or completely wrong values (hallucinated fold changes inconsistent with the analysis), or ancestries confused (Asian results reported as European American or vice versa).
+
+Criterion 5: Between-Ancestry Statistical Comparison and Interpretation
+
+    Description: Evaluates formal testing for difference between ancestries and correct interpretation.
+    Levels: A=13 B=6 C=0
+      [A]: Performs formal statistical test for between-ancestry difference in the magnitude of CD4+ T cell reduction (tests whether SLE effect differs between Asian and European American patients, e.g., interaction test or comparison of fold changes with p-value approximately 0.0001) and correctly concludes CD4+ T cell reduction IS more pronounced in Asian patients (larger effect size, stronger fold change reduction). Provides biological/clinical interpretation noting this ancestry-specific difference has implications for population-specific biomarker thresholds or treatment strategies.
+
+      [B]: Correct conclusion (Asian patients show more pronounced reduction) but no formal test (conclusion based on descriptive comparison of fold changes without statistical testing), or test performed but wrong interpretation (misinterprets p-value or effect direction).
+
+      [C]: No between-ancestry comparison attempted, or incorrect conclusion (states no difference when statistical test shows significant difference, or states European Americans show stronger effect when Asian patients actually do).
+
+Criterion 6: Scientific Accuracy and Population-Specific Implications
+
+    Description: Evaluates whether all claims are supported by the data and discusses clinical implications.
+    Levels: A=15 B=7 C=0
+      [A]: All conclusions directly supported by presented analysis with no fabricated statistics (all fold changes, p-values, and sample sizes match the actual analysis output). Discusses population-specific implications explaining that ancestry differences in immune cell changes suggest need for population-stratified diagnostic thresholds, biomarker validation in diverse populations, and consideration of ancestry in clinical trial design and treatment strategies. Acknowledges limitations such as self-reported ethnicity as imperfect proxy for genetic ancestry, limited sample sizes (especially for African American and Hispanic groups), and need for validation in independent diverse cohorts.
+
+      [B]: Minor unsupported claims or slight misinterpretations of results. Basic statement of ancestry differences without discussion of clinical implications for population-specific strategies. Limited or no acknowledgment of limitations regarding ethnicity measurement or sample sizes.
+
+      [C]: Major fabricated claims (fold changes, p-values, or sample sizes not from the analysis), statistics not from the analysis, conclusions contradicting data (e.g., claiming no ancestry differences when analysis shows significant differences), or no discussion of population-specific implications despite this being the focus of the research question.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

@@ -1,0 +1,67 @@
+RUBRIC: Activating Phosphosite Identification with Druggability and Dependency Integration
+
+Total Points: 100/100
+
+Notes: A full-score answer loads Table S4A (~18,169 phosphosite rows × 22 columns) and Table S2A (tier annotations, ~2,863 × 5), interprets each per-cancer-type flag in S4A as encoding BOTH tumour-vs-normal phosphosite upregulation AND lineage-matched DepMap dependency at adjusted p <= 0.01, filters to `ActivatingSite == 1`, restricts to druggable proteins via the Tier1-Tier5 flags in S4A, and keeps only phosphosite-cancer pairs supported in at least one of the 8 CPTAC cohorts. Expected ~90 unique activating phosphosites across ~213 phosphosite-cancer pairs.
+
+CRITERIA (6):
+
+Criterion 1: Data Loading, Validation, and Filtering Setup
+
+    Description: Evaluates loading of S4A + S2A (and optionally S2B for drug annotation), basic validation, and the activating-site + druggable-target filters.
+    Levels: A=15 B=7 C=0
+      [A]: Loads `mmc4.xlsx` Table S4A (~18,169 × 22) and `mmc2.xlsx` Table S2A (~2,863 × 5); optionally Table S2B (~4,048 × 8) for drug annotation. Confirms key columns (`ActivatingSite`, the 8 cancer-type cohort flags, Tier1-Tier5 flags, Gene Symbol, Phosphosite ID). Filters to `ActivatingSite == 1`. Restricts to druggable proteins by `sum(Tier1..Tier5) > 0` OR by joining to S2A with a valid `Assigned Tier`. Reports row counts at each filtering step.
+
+      [B]: Loads tables but skips column verification, OR uses an imprecise druggability filter (e.g., includes some non-druggable targets via wrong tier-column logic).
+
+      [C]: Wrong sheets, no activating-site filter, or no druggability restriction.
+
+Criterion 2: Cancer-Type Flag Interpretation and Pair Generation
+
+    Description: Evaluates the correct interpretation of S4A cohort flags as joint upregulation + dependency indicators, and the melt to phosphosite-cancer pairs.
+    Levels: A=30 B=14 C=0
+      [A]: Treats each S4A cancer-type flag `== 1` as encoding BOTH tumour-vs-normal phosphosite upregulation AND lineage-matched DepMap dependency. Restricts to phosphosites with at least one cohort flag set across the 8 CPTAC cohorts (CCRCC, COAD, HNSCC, LSCC, LUAD, OV, PDAC, UCEC). Melts the wide-form table to phosphosite-cancer pairs (one row per (phosphosite, cancer-type-with-flag-1)). Result: ~90 unique activating phosphosites and ~213 phosphosite-cancer pairs (±15% tolerance).
+
+      [B]: Generates pairs correctly but counts are off by >15 %, OR mishandles one cancer-type column, OR aggregates counts at the wrong granularity.
+
+      [C]: Misinterprets the cancer-type flag, OR uses wrong threshold, OR substantially incorrect pair counts.
+
+Criterion 3: Tier-Stratified Reporting and Cancer Distribution
+
+    Description: Evaluates the breakdown of pairs by druggability tier and by cancer type, with phosphosite-level reporting.
+    Levels: A=20 B=10 C=0
+      [A]: Reports each pair with phosphosite identifier (GENE_SITE format), cancer type, tier, and gene symbol. Stratifies by Assigned Tier, reporting tier distribution within tolerance: T1 ~55 pairs (~21 sites), T2 ~10 pairs (~2 sites), T3 ~74 pairs (~34 sites), T4 ~72 pairs (~32 sites), T5 ~2 pairs (~1 site). Reports per-cancer distribution: LUAD ~37, LSCC ~36, PDAC ~35, HNSCC ~33, CCRCC ~33, COAD ~24, UCEC ~11, OV ~4 (any reasonable tolerance).
+
+      [B]: Provides counts but skips tier stratification, OR omits the per-cancer distribution, OR reports only aggregated counts without per-pair detail.
+
+      [C]: No interpretable per-pair list or no tier / cancer breakdown.
+
+Criterion 4: Drug Annotation and Multi-Cancer-Breadth Highlights
+
+    Description: Evaluates annotation of hits with drug information from S2B and identification of multi-cancer breadth for the top phosphosites.
+    Levels: A=25 B=12 C=0
+      [A]: Annotates top hits with drug-target information from S2B: drug count per gene, approval status, indication. Names example T1 hits: TOP2A (~13 drugs, approved oncology indication), HDAC1 (~9 drugs, approved), EGFR (approved, multi-indication), XPO1 (selinexor, approved). Reports multi-cancer breadth for the broadest hits: TOP2A_S1106 across ~7 cancers, DNMT1_S154 across ~6 cancers.
+
+      [B]: Provides drug annotation for some hits but skips approval status, OR does not report multi-cancer breadth, OR annotates only 1-2 targets.
+
+      [C]: No drug annotation, or fabricated drug information.
+
+Criterion 5: Translational Interpretation, Limitations, and Next Steps
+
+    Description: Evaluates scientific interpretation, framing as hypothesis-generating, stated limitations, and proposed validation experiments.
+    Levels: A=10 B=5 C=0
+      [A]: Interprets the tier distribution: T1 sites have existing drugs (repurposing-ready) vs T3 / T4 sites that require novel chemistry. Discusses cancer breadth (multi-cancer pan-applicability vs lineage-specific). Highlights translational implications: phosphosite as pharmacodynamic biomarker; therapeutic-window considerations from pan-essentiality; differentiation between druggable activating sites and "passenger" PTMs. Proposes at least three specific follow-ups: phospho-antibody validation in primary tumour samples, phospho-mutant cell-line experiments to test causality, kinase-inhibitor sensitivity profiling stratified by phosphosite status. States key assumptions (cancer-type flag encoding, accuracy of `ActivatingSite` annotation, cell-line-to-tumour transferability) and limitations (binary flags lose effect-size information; pan-essentiality risk; PTM / isoform mapping uncertainty).
+
+      [B]: Provides interpretation but skips specific examples from the results, OR proposes generic validation steps, OR omits one of: assumptions, limitations, or pan-essentiality reasoning.
+
+      [C]: No interpretation beyond restating the output, or claims clinical readiness without caveats.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, table attributions, gene symbols, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-tier counts, per-cancer counts, multi-cancer-breadth values) are traceable to specific cells in S4A / S2A / S2B, or to a documented transformation. Phosphosite identifiers (GENE_SITE) and gene symbols come from the provided tables or from PhosphoSitePlus / UniProt. Drug-precedent claims (TOP2A → doxorubicin / etoposide; HDAC1 → vorinostat; EGFR → erlotinib / gefitinib; XPO1 → selinexor) cite real, identifiable references (FDA approvals, ClinicalTrials.gov, peer-reviewed publications with author + year + DOI).
+
+      [B]: Most numerical results and gene attributions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, gene attributions, or drug-precedent claims with no clear source. Hallucinated content (made-up tier counts, fabricated drug claims, invented citations) mixed with computed results.

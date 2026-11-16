@@ -1,0 +1,67 @@
+RUBRIC: Tumor Mutational Load Association with Anti-PD-1 Response
+
+Total Points: 100/100
+
+Notes: A full-score answer identifies Table S1B from `supplementary_tables.xls` as the data source, applies a non-parametric two-sample test (Mann-Whitney U / Wilcoxon rank-sum) to compare per-patient non-synonymous SNV counts between responders and non-responders, reports descriptive statistics per group, and interprets the result (this small cohort does not show a statistically significant TMB-response association) within the broader TMB-immunotherapy literature.
+
+CRITERIA (6):
+
+Criterion 1: Data Identification and Loading
+
+    Description: Evaluates correct identification of Table S1B as the source for non-synonymous SNV counts and Response status, and correct handling of the multi-row header.
+    Levels: A=15 B=8 C=0
+      [A]: Loads `supplementary_tables.xls` sheet `S1B` with the appropriate header skip (rows 1-2 are title / merged-header artifacts, actual column header is on row 3); identifies `TotalNonSyn` as the mutational-load variable and `Response` (R / NR) as the grouping variable; verifies the per-group sample sizes (≈21 R, 17 NR with mutation data).
+
+      [B]: Loads S1B but does not handle the header skip correctly (column names mis-parsed), OR uses an indirect path such as recomputing TMB from per-mutation calls in S1D when the summary already exists in S1B, OR does not verify per-group sample counts.
+
+      [C]: Uses the wrong sheet (S1A / S1C / S1D) or wrong columns, or cannot load the data.
+
+Criterion 2: Statistical Test Selection and Justification
+
+    Description: Evaluates appropriate choice of test and justification for non-parametric vs parametric, two-sided vs one-sided, paired vs unpaired.
+    Levels: A=21 B=10 C=0
+      [A]: Selects Mann-Whitney U / Wilcoxon rank-sum (`scipy.stats.mannwhitneyu` or `wilcox.test`) as the primary test, with rationale: non-parametric and robust to skew / hypermutator outliers; appropriate for two independent groups of small size (n=21, n=17) where normality is unlikely. Specifies two-sided, unpaired. A parametric two-sample t-test (Welch) is acceptable as a secondary check after explicit normality testing (Shapiro-Wilk).
+
+      [B]: Picks Mann-Whitney U / Wilcoxon with weak or no justification, OR picks Welch t-test without normality verification, OR omits the two-sided / unpaired specification.
+
+      [C]: Uses an inappropriate test (paired test for independent samples, chi-square on a continuous outcome, correlation without grouping), or does not perform any test.
+
+Criterion 3: Test Implementation and Reported Result
+
+    Description: Evaluates correct implementation, reporting of both the test statistic and the p-value, and consistency with expected results.
+    Levels: A=24 B=12 C=0
+      [A]: Calls `wilcox.test()` (R) or `scipy.stats.mannwhitneyu` (Python) on TotalNonSyn separated by Response (R vs NR); reports both the test statistic (U or W) and the p-value; specifies two-sided, unpaired. Result is consistent with the paper's reported finding (no statistically significant association at α = 0.05).
+
+      [B]: Test runs and produces a result, but only the p-value (or only the statistic) is reported, OR a non-standard but valid alternative (e.g., permutation test) is used and gives a similar conclusion.
+
+      [C]: Wrong implementation (groups swapped, paired call, ties incorrectly handled, or test errors out), or result substantially different from expected without explanation.
+
+Criterion 4: Descriptive Statistics per Response Group
+
+    Description: Evaluates reporting of group-level summary statistics so the comparison is interpretable beyond the test p-value.
+    Levels: A=17 B=8 C=0
+      [A]: Reports median non-synonymous SNV count per group (responders vs non-responders), with at least one additional summary (mean, IQR, or range) per group. Notes the directional trend (higher TMB in responders, even if not statistically significant).
+
+      [B]: Reports group medians but no additional summaries, OR reports summaries without clearly contrasting the two groups.
+
+      [C]: Reports only a global statistic without group separation, or omits group-level descriptive statistics entirely.
+
+Criterion 5: Interpretation in Context
+
+    Description: Evaluates interpretation of the negative result with appropriate methodological and biological context.
+    Levels: A=23 B=12 C=0
+      [A]: Concludes no statistically significant TMB-response association at α = 0.05 with the correct sign (trend, not significance). Discusses at least three of: (a) small cohort (n=38) is underpowered for moderate effects; (b) the cohort uses total non-synonymous SNV counts rather than the canonical mut / Mb TMB; (c) within-group heterogeneity (e.g., one BRAFwt hypermutator can shift the median); (d) the broader literature supports TMB-response association across larger cohorts (e.g., CheckMate, KEYNOTE), but this specific cohort does not reach significance. Notes the clinical implication that TMB is not universally predictive at this cohort size or this measurement convention.
+
+      [B]: Correct sign and p-value interpretation, but only one or two of the contextual points are discussed.
+
+      [C]: Misinterprets the p-value (claims significance), reverses the direction, or provides no methodological / biological context.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, sheet identifications, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-group medians, U / W statistic, p-value) are traceable to the provided `supplementary_tables.xls` (specifically Sheet S1B's `TotalNonSyn` and `Response` columns) or a documented transformation. Sheet labels and column names match the provided supplementary-table key exactly. Biological / clinical interpretations of TMB and immunotherapy response are supported by real, identifiable references (Hugo et al. 2016 Cell, DOI: 10.1016/j.cell.2016.02.065; Snyder et al. 2014 NEJM; Rizvi et al. 2015 Science) rather than free-floating assertions.
+
+      [B]: Most numerical results are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, sheet attributions, or biological claims with no clear source. Hallucinated content (made-up sheet contents, invented p-values, fabricated citations) mixed with computed results.

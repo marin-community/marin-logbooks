@@ -1,0 +1,79 @@
+RUBRIC: DA-20-3
+
+# Rubric for DA-20-3
+
+Total Points: 100/100
+
+Notes: The key to a full-score answer is demonstrating (1) correct scoping to Brefeldin-A across four cell types (AoSMCs, dermal fibroblasts, skeletal muscle myoblasts, melanocytes) and six concentrations (9.5-3000 nM), (2) proper execution of pre-ranked GSEA with MSigDB Hallmark gene sets using log2FoldChange as the ranking metric, (3) quantitative reporting of NES and adjusted p-values for the three target pathways (HALLMARK_TNFA_SIGNALING_VIA_NFKB, HALLMARK_APOPTOSIS, HALLMARK_INFLAMMATORY_RESPONSE) that serve as proxies for ER-Golgi transport, protein secretion, and inflammatory signaling disruption, (4) identification that all three pathways show consistent negative NES (suppression) with padj < 0.05 across all four cell types at concentrations >= 28.5 nM, with acknowledgment that some conditions at 9.5 nM did not reach significance. Answers that correctly identify the consistent pan-cellular suppression of the three target pathways at concentrations >= 28.5 nM, with supporting NES values, adjusted p-values, and acknowledgment of 9.5 nM non-significance, should receive full credit.
+
+CRITERIA (7):
+
+Criterion 1: Goal and Correct Scope (10 points)
+
+    Description: Evaluates whether the response correctly identifies the analytical objective, the compound, the cell types, the pathway targets, and the evidence criteria.
+    Levels: A=10 B=5 C=0
+      [A]: States that the goal is to determine which MSigDB Hallmark pathways are suppressed by Brefeldin-A treatment, names all four cell types (AoSMCs, dermal fibroblasts, skeletal muscle myoblasts, melanocytes), identifies the three target pathways by their full names (HALLMARK_TNFA_SIGNALING_VIA_NFKB, HALLMARK_APOPTOSIS, HALLMARK_INFLAMMATORY_RESPONSE), and defines evidence as negative NES with adjusted p-value < 0.05.
+
+      [B]: Names BFA and at least two cell types, mentions Hallmark GSEA as the method, and identifies at least two of the three target pathways, but omits the significance threshold or one or more cell types.
+
+      [C]: Fails to name BFA as the compound, uses wrong cell types, or does not identify the target pathways by name.
+
+Criterion 2: Data Ingestion and Preprocessing (15 points)
+
+    Description: Evaluates whether the response correctly specifies the DE results, the gene ranking approach, and any filtering applied before GSEA.
+    Levels: A=15 B=8 C=0
+      [A]: States that DE results are used as input, the genes are ranked by log2FoldChange in descending order to form the pre-ranked gene list, and that separate ranked lists are constructed for each cell type x concentration combination for BFA (24 lists total: 4 cell types x 6 concentrations).
+
+      [B]: Identifies log2FoldChange as the ranking metric but does not specify that 24 separate ranked lists are constructed (4 cell types x 6 concentrations) or omits that genes are sorted in descending order.
+
+      [C]: Uses wrong input data (e.g., raw counts instead of DE results), uses an incorrect ranking metric (e.g., p-value instead of log2FoldChange), or omits data loading entirely.
+
+Criterion 3: GSEA Implementation (20 points)
+
+    Description: Evaluates whether pre-ranked GSEA is correctly executed against MSigDB Hallmark gene sets with appropriate parameters.
+    Levels: A=20 B=10 C=0
+      [A]: Runs pre-ranked GSEA with a standard implementation (clusterProfiler::GSEA, fgsea, gseapy.prerank, or equivalent) against Hallmark gene sets (msigdbr or `gseapy.get_library('MSigDB_Hallmark_2020')` or equivalent, species = "human", category = "H"), applies the analysis to all 24 BFA condition-specific ranked gene lists, and extracts NES and adjusted p-values for each pathway-condition pair.
+
+      [B]: Runs GSEA with Hallmark gene sets but covers fewer than all 24 conditions (e.g., only one cell type or only the highest concentration).
+
+      [C]: Does not run GSEA, uses the wrong gene set collection (e.g., GO instead of Hallmark), or uses a fundamentally different method (e.g., ORA instead of GSEA).
+
+Criterion 4: Results Integration Across Conditions (15 points)
+
+    Description: Evaluates whether GSEA outputs are correctly combined into a unified results table suitable for cross-condition comparison.
+    Levels: A=15 B=8 C=0
+      [A]: Produces a combined results table containing NES, adjusted p-value, cell line, compound, and concentration for each pathway-condition pair, with at least 60 rows showing negative NES for the three target pathways, enabling systematic comparison across all cell types and concentrations.
+
+      [B]: Produces some form of combined output but the table is incomplete (e.g., missing one or more cell types, missing adjusted p-values, or covering fewer than all 24 conditions).
+
+      [C]: Does not combine results across conditions, or presents only individual condition results without enabling cross-condition comparison.
+
+Criterion 5: Quantitative Pathway Validation (25 points)
+
+    Description: Evaluates whether the response reports specific NES values and adjusted p-values for the three target pathways across cell types and concentrations, and applies correct significance criteria.
+    Levels: A=25 B=13 C=0
+      [A]: Reports that all three target pathways show negative NES across all four cell types at concentrations >= 28.5 nM with padj < 0.05, correctly notes that at 9.5 nM SkMMs and melanocytes did not reach significance for any of the three pathways and fibroblasts reached significance only for TNFA_SIGNALING_VIA_NFKB, provides representative NES values for each pathway (TNFA_SIGNALING NES approximately -1.6 to -2.5; APOPTOSIS NES approximately -1.3 to -1.9; INFLAMMATORY_RESPONSE NES approximately -1.5 to -2.4), and notes that NES magnitude increases from low concentrations to approximately 95-300 nM and then shows minimal further change at 900-3000 nM (e.g., AoSMC TNFA_SIGNALING NES: -1.61 at 9.5 nM, -2.50 at 95 nM, -2.50 at 3000 nM).
+
+      [B]: Reports negative NES and significance for the three pathways with representative NES values but omits the 9.5 nM non-significance caveat or does not note the dose-response plateau pattern.
+
+      [C]: Reports incorrect NES direction (positive instead of negative), fabricates NES or p-values not present in the notebook output, claims pathways are upregulated, or fails to report any quantitative results.
+
+Criterion 6: Assumptions and Limitations (15 points)
+
+    Description: Evaluates whether the response explicitly acknowledges methodological constraints and inferential limitations of the analysis.
+    Levels: A=15 B=8 C=0
+      [A]: Explicitly addresses at least two of the following: (1) GSEA rankings derived from single per-condition DE outputs mean NES values describe effect sizes without replicate-based variance estimation; (2) the three selected pathways are functional proxies for BFA mechanism and additional pathway context may be needed for full mechanistic interpretation; (3) the 9.5 nM non-significance in some cell types may reflect lower sensitivity rather than absence of biological effect; (4) conclusions about pan-cellular suppression require experimental validation such as orthogonal secretion assays or protein-level measurements.
+
+      [B]: Mentions at least one limitation but does not connect it to the inferential constraints of single-condition GSEA.
+
+      [C]: Omits limitations entirely or misrepresents the statistical significance of the results.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

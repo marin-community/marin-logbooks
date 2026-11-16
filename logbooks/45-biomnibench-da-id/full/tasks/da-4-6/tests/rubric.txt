@@ -1,0 +1,67 @@
+RUBRIC: Survival Stratification of Non-MPR Patients by Texp Within-Group Median
+
+Total Points: 100/100
+
+Notes: A full-score answer reproduces the survival stratification by (1) extracting RFS time / event and MPR status, (2) using the `Texp.in.Tex.relevant*10` metric to stratify non-MPR patients by the within-non-MPR median into high-Texp vs low-Texp subgroups, (3) generating Kaplan-Meier curves for the three groups (MPR, high-Texp non-MPR, low-Texp non-MPR), (4) running an overall log-rank test plus key pairwise comparisons, (5) estimating Cox-model hazard ratios with 95 % CI for each comparison, (6) quantifying the percentage of non-MPR patients with MPR-like outcomes, and (7) providing an interpretation with explicit limitations.
+
+CRITERIA (6):
+
+Criterion 1: Data Loading, Cohort Definition, and Endpoint Handling
+
+    Description: Evaluates loading of the supplementary table, plus correct survival-endpoint construction with explicit censoring handling.
+    Levels: A=16 B=9 C=0
+      [A]: Loads `mmc5.csv`; verifies the cohort with required columns (MPR label, `RFS_months_new`, `RFS_status_new`, the Texp metric); uses `RFS_months_new` as time, `RFS_status_new` (1 = recurrence, 0 = censored) as the event indicator with explicit interpretation; filters patients with missing time / event and reports the exclusion count.
+
+      [B]: Loads with one issue (mishandles censoring such as treating 0 as event), or omits the exclusion summary.
+
+      [C]: Wrong file, wrong endpoint variables, or invalid survival inputs.
+
+Criterion 2: Texp Metric Processing and Within-Non-MPR Median Stratification
+
+    Description: Evaluates correct conversion of the scaled Texp metric and median split within the non-MPR cohort only.
+    Levels: A=16 B=9 C=0
+      [A]: Extracts `Texp.in.Tex.relevant*10`, divides by 10 (or states the scale clearly), computes the median within the non-MPR cohort only (NOT pooled with MPR), and assigns high-Texp vs low-Texp non-MPR groups via the median with explicit tie-handling. Reports the cutoff value and the n in each non-MPR subgroup.
+
+      [B]: Stratifies by Texp but uses the median computed on all patients (instead of non-MPR only), OR uses a non-standard cutoff (quartile, optimal-split) without justification.
+
+      [C]: Does not stratify by the within-non-MPR median, or uses a wholly unrelated metric.
+
+Criterion 3: Kaplan-Meier Estimation and Log-Rank Testing
+
+    Description: Evaluates KM curves and log-rank tests for the three groups (MPR, high-Texp non-MPR, low-Texp non-MPR).
+    Levels: A=21 B=10 C=0
+      [A]: Produces Kaplan-Meier estimates for the three groups, reports per-group n, event count, and a survival summary (median RFS or fixed-time RFS); runs an overall 3-group log-rank test plus the key pairwise tests (high vs MPR, low vs MPR, high vs low); reports each test's statistic and p-value with interpretation.
+
+      [B]: KM and log-rank are present but missing one required group / pairwise comparison, OR omit per-group summary statistics, OR report p-values without interpretation.
+
+      [C]: No KM estimation or no log-rank testing.
+
+Criterion 4: Cox Model and Hazard Ratios with 95 % CI
+
+    Description: Evaluates Cox-PH HR estimation with the required reference and the within-non-MPR contrast.
+    Levels: A=21 B=10 C=0
+      [A]: Fits a Cox proportional-hazards model with MPR as the reference; reports HRs with 95 % CI and p-values for (a) high-Texp non-MPR vs MPR, (b) low-Texp non-MPR vs MPR, and (c) high-Texp non-MPR vs low-Texp non-MPR (via releveling or a valid contrast). Names the software (`survival::coxph`, `lifelines.CoxPHFitter`).
+
+      [B]: Fits a Cox model but reports HR without 95 % CI, OR uses a wrong reference group, OR omits the within-non-MPR high-vs-low contrast.
+
+      [C]: No Cox / HR estimation, or HR reported incorrectly.
+
+Criterion 5: Quantification of MPR-like Non-MPR Proportion + Interpretation, Assumptions, Limitations
+
+    Description: Evaluates the quantitative claim about how many non-MPR patients have MPR-like survival, plus interpretation of biological / clinical implications and key limitations.
+    Levels: A=26 B=13 C=0
+      [A]: Quantifies the proportion of non-MPR patients with high-Texp by reporting counts (overall non-MPR n, classifiable n, high-Texp subset n) with denominator clearly stated; defines an explicit "comparable to MPR" criterion (e.g., log-rank p > 0.05 vs MPR AND HR 95 % CI includes 1) and applies it. Provides an interpretation linking the survival difference to non-MPR heterogeneity (some non-MPR retain effective T-cell programs). States assumptions and limitations: small event counts limit power; median-split discards information vs continuous Texp; no adjustment for clinical confounders; possible immortal-time bias if Texp depends on biopsy time. Suggests actionable next steps (multivariable modelling, validation cohort, prospective stratification trial).
+
+      [B]: Reports the proportion and provides interpretation but with one issue: unclear denominator, OR no explicit comparability criterion, OR limitations stated only generically (no specific assumption stated).
+
+      [C]: No proportion quantification, or no interpretation, or interpretation contradicts the analysis.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, feature definitions, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-group n, event count, KM curves, log-rank p, HR + 95 % CI, MPR-like proportion) are traceable to the provided `mmc5.csv`, or to a documented transformation. Method names (`coxph`, `survminer::ggsurvplot`, log-rank test) match what was actually run. Biological interpretations of T-cell exhaustion / reinvigoration under PD-1 blockade are supported by real, identifiable references (e.g., Huang et al. 2017 Nature on Texp; anti-PD-1 NSCLC reviews; author + year + DOI / PubMed).
+
+      [B]: Most numerical results and feature definitions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, feature attributions, or biological claims with no clear source. Hallucinated content (made-up HR / CI values, fabricated citations) mixed with computed results.

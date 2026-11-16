@@ -1,0 +1,62 @@
+RUBRIC: WGCNA Co-expression Network Analysis in ALS Spinal Cord
+
+Total Points: 100/100
+
+Notes: This rubric evaluates WGCNA co-expression analysis using only ALS samples, detecting gene modules through network construction, testing cell-type marker enrichment, and reporting module sizes with associations. Excellence requires proper preprocessing (normalization, batch correction, QC), correct WGCNA implementation (soft-threshold selection, TOM calculation, module detection), rigorous enrichment testing (Fisher's exact with multiple testing correction), and clear reporting.
+
+CRITERIA (6):
+
+Criterion 1: Correct Understanding of Question and ALS-Only Subsetting
+
+    Levels: A=15 B=8 C=0
+      [A]: Clearly states goal (identify dysregulated/coordinated gene programs) and correctly restricts analysis to ALS samples only. Uses only relevant spinal cord expression data and correct sample annotations.
+
+      [B]: Mostly correct goal and subsetting, but has small mistakes (unclear filtering logic, keeps few non-ALS samples, or weak explanation).
+
+      [C]: Misunderstands question or runs WGCNA on wrong cohort (includes controls or wrong tissue/cell set without justification).
+
+Criterion 2: Processing for WGCNA (Normalization, Batch Effects, QC)
+
+    Levels: A=20 B=10 C=0
+      [A]: Produces WGCNA-ready expression matrix with appropriate normalization (e.g., TMM + voom), handling covariates/batch (site/tissue/technical metrics), and basic QC (PCA before/after correction, sample/gene checks). Avoids inappropriate inputs (e.g., raw TPM without rationale if workflow expects counts).
+
+      [B]: Generally correct preprocessing but misses one key component (no QC plots, incomplete batch correction, unclear filtering rules).
+
+      [C]: Incorrect preprocessing (wrong data type, no normalization when required, or no QC), making downstream WGCNA unreliable.
+
+Criterion 3: WGCNA Network Construction and Module Detection
+
+    Levels: A=33 B=16 C=0
+      [A]: Correctly runs WGCNA: selects/justifies soft-threshold power (expected ~8), builds network using signed adjacency, calculates TOM, detects modules with reasonable parameters (deepSplit/minModuleSize/merge settings), and generates module eigengenes. Results are internally consistent (expected ~24 modules, genes assigned, eigengenes computed).
+
+      [B]: Runs WGCNA but missing key justification or has minor technical issues (power choice not explained, parameters unclear, module merging not addressed, or incomplete outputs).
+
+      [C]: Does not run WGCNA correctly (wrong method, no module detection, or output not interpretable).
+
+Criterion 4: Cell-Type Marker Enrichment Testing (Astrocyte/Microglia/Oligo/Neuron)
+
+    Levels: A=22 B=11 C=0
+      [A]: Correctly tests module enrichment for four marker sets using Fisher's exact test, defines gene universe appropriately, applies multiple-testing correction (padj), and reports which modules are associated with each cell type clearly (e.g., M17 enriched for microglia padj<0.05, M13 for astrocytes).
+
+      [B]: Enrichment mostly correct but missing important detail (no multiple-testing correction, unclear universe, or incomplete reporting across 4 cell types).
+
+      [C]: No valid enrichment analysis, wrong test, or wrong marker logic.
+
+Criterion 5: Required Reporting of Module Sizes and Cell-Type Associations
+
+    Levels: A=10 B=5 C=0
+      [A]: Reports module sizes and cell-type associations clearly in tables with short summary. Saves outputs (module size table, gene-module assignments, enrichment results, eigengenes) with clear names and sufficient detail for reproduction.
+
+      [B]: Reports some required outputs but missing components (sizes without associations, associations without sizes, unclear saved files, or incomplete documentation).
+
+      [C]: Missing required reporting, no outputs saved, or results not reproducible.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

@@ -1,0 +1,77 @@
+RUBRIC: Correlation Structure of Endotype Scores
+
+Total Points: 100/100
+
+Notes: This rubric evaluates whether the analysis correctly characterizes the correlation structure among 21 endotype scores using Spearman correlation and hierarchical clustering. Excellence requires computing pairwise correlations appropriately, implementing hierarchical clustering with correct distance metric (1 - correlation) and linkage method, identifying major clusters (inflammatory/detrimental, adaptive/protective, IC-related, mixed groups), and providing biologically coherent interpretation without overclaiming clinical or prognostic relevance.
+
+CRITERIA (7):
+
+Criterion 1: Data Loading and Integrity Verification
+
+    Description: Assesses correct loading and validation of endotype score data.
+    Levels: A=15 B=8 C=0
+      [A]: Correctly loads the endotype score table (subspace_score_table.csv), verifies dimensions showing all 21 endotype scores are present as columns, confirms that all scores are numeric data types suitable for correlation analysis, checks sample alignment ensuring same set of samples across all score columns, documents data shape and structure clearly (e.g., reports number of samples and number of endotype scores), and handles missing values appropriately if present (e.g., documents missing data patterns or excludes incomplete cases with justification).
+
+      [B]: Loads the correct data file with issues such as incomplete validation (performs basic loading but does not verify dimensions or data types systematically), unclear sample alignment verification (assumes alignment without explicitly checking), missing documentation of data structure (does not report shape or number of scores), or superficial handling of missing values without clear justification.
+
+      [C]: Loads incorrect data file (wrong CSV or wrong columns), fails to demonstrate that the 21 endotype scores are present and comparable across samples, uses non-numeric or incompatible data for correlation analysis, or data loading approach is fundamentally flawed preventing downstream analysis.
+
+Criterion 2: Correlation Methodology and Computation
+
+    Description: Evaluates correct implementation of Spearman correlation analysis.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly computes pairwise Spearman correlations between all 21 endotype scores across samples producing complete 21×21 correlation matrix, clearly states why Spearman correlation is appropriate for this analysis (e.g., robustness to non-normality, measures monotonic relationships without assuming linearity, appropriate for potentially non-Gaussian score distributions), uses correct implementation of Spearman method (rank-based correlation), handles the symmetric nature of the correlation matrix appropriately (recognizes that correlation of score A with score B equals correlation of score B with score A), and reports correlation values with appropriate precision (2-3 decimal places).
+
+      [B]: Computes pairwise correlations with issues such as uses correlation method without clear justification (applies Spearman but does not explain why it is appropriate), incomplete correlation matrix (missing some pairwise comparisons), uses inappropriate correlation method (e.g., Pearson without discussing assumptions or justification), unclear description of computational approach making it difficult to verify correctness, or does not acknowledge symmetric structure of correlation matrix.
+
+      [C]: Uses incorrect or undefined correlation method (e.g., covariance instead of correlation, distance metrics without conversion), fails to compute pairwise correlations across all endotype scores, correlation matrix is fundamentally incorrect or incomplete preventing clustering analysis, or methodology is so flawed that results cannot be interpreted as Spearman correlations.
+
+Criterion 3: Hierarchical Clustering Implementation
+
+    Description: Assesses correct implementation of hierarchical clustering on correlation structure.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly implements hierarchical clustering using appropriate distance metric derived from Spearman correlations (typically distance = 1 - correlation, converting correlation similarity to dissimilarity), applies clustering to reorder both rows and columns of correlation matrix (symmetrically, since correlation matrix is symmetric), uses appropriate linkage method for hierarchical clustering (e.g., average linkage, complete linkage, or Ward's method) and documents the choice, correctly handles the symmetric nature of the correlation matrix ensuring consistent row and column ordering, produces dendrogram or linkage structure that reveals hierarchical relationships among endotype scores, and documents clustering parameters clearly (distance metric, linkage method, number of clusters if cut).
+
+      [B]: Performs hierarchical clustering with issues such as uses clustering method without clear documentation of distance metric or linkage method, does not clearly explain conversion from correlation to distance (uses correlation directly without discussing appropriateness), applies clustering asymmetrically or inconsistently (rows and columns ordered differently violating symmetry of correlation matrix), unclear clustering methodology making it difficult to verify correctness, or clustering implementation has minor technical errors that partially affect results but general structure is preserved.
+
+      [C]: Does not perform hierarchical clustering at all, uses completely incorrect distance metric (e.g., Euclidean distance on raw correlations without conversion), clustering methodology is fundamentally flawed (e.g., applies k-means to correlation matrix inappropriately), or clustering implementation is so incorrect that resulting groupings are meaningless or cannot be interpreted.
+
+Criterion 4: Identification and Description of Score Groupings
+
+    Description: Evaluates accurate identification of major clusters from hierarchical clustering results.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly identifies major clusters of endotype scores based on observed correlation structure and hierarchical clustering results, describes inflammatory/detrimental cluster grouping scores associated with adverse immune responses (e.g., inflammatory endotypes showing high pairwise correlations), describes adaptive/protective cluster grouping scores associated with beneficial immune responses (e.g., adaptive endotypes), identifies IC-related cluster if present (immune checkpoint-related scores clustering together), recognizes any mixed or orthogonal groups (scores that correlate weakly with others or form small distinct clusters), provides clear labeling of which specific endotype scores belong to each cluster (e.g., lists the scores in each group), and interprets cluster membership in terms of biological or functional similarity (scores cluster because they measure related immune processes).
+
+      [B]: Identifies score groupings with issues such as identifies some major clusters but omits important groups (e.g., finds inflammatory cluster but misses adaptive cluster), provides ambiguous cluster descriptions without clear listing of member scores, minor misclassification of scores into clusters (places 1-2 scores in wrong cluster but overall structure recognized), does not clearly interpret what cluster membership means biologically (just states clusters exist without explaining why scores group together), or incomplete description making it difficult to understand full clustering structure.
+
+      [C]: Does not identify or describe any meaningful clusters from the analysis, cluster descriptions are fabricated without connection to actual clustering results, fundamentally misinterprets clustering structure (e.g., claims all scores are uncorrelated when clear clusters exist, or invents clusters not supported by correlation data), or fails to meaningfully interpret the clustering results at all.
+
+Criterion 5: Biological Interpretation and Restraint
+
+    Description: Assesses biologically coherent interpretation without overclaiming.
+    Levels: A=15 B=8 C=0
+      [A]: Provides biologically coherent interpretation of identified clusters that is consistent with prior endotype frameworks (e.g., references SUBSPACE model or published endotype definitions if appropriate), explains why certain scores cluster together in terms of underlying immune biology (e.g., inflammatory scores correlate because they measure overlapping pro-inflammatory pathways, adaptive scores correlate because they reflect coordinated protective responses), interprets correlation structure as reflecting redundancy or shared biology among related scores (high correlation suggests scores measure similar or overlapping immune states), avoids making unsupported claims about survival outcomes, treatment response, or clinical utility that are not addressed in the analysis, does not claim causality from correlation (does not state that one score "causes" another to be high), and maintains appropriate scope recognizing this is descriptive analysis of score relationships not prognostic or mechanistic modeling.
+
+      [B]: Provides interpretation with issues such as interpretation is weakly grounded in biological literature or endotype frameworks (makes general statements without connecting to established immune biology), insufficient restraint in claims (hints at clinical or prognostic relevance without strong justification from the analysis), oversimplifies biological meaning of clusters (e.g., states clusters are "good" or "bad" without nuance), or interpretation is superficial lacking mechanistic insight into why scores correlate.
+
+      [C]: Introduces unsupported prognostic, predictive, or causal claims (e.g., states that certain clusters predict survival or treatment response without evidence from this analysis), provides biologically incoherent interpretation contradicting established endotype biology, fundamentally misinterprets correlation structure in biological terms (e.g., interprets high correlation as independence, or low correlation as strong relationship), or makes claims that are completely disconnected from the data and clustering results.
+
+Criterion 6: Acknowledgment of Limitations and Scope
+
+    Description: Assesses recognition of analytical limitations and appropriate restraint in conclusions.
+    Levels: A=10 B=5 C=0
+      [A]: Explicitly acknowledges that the analysis is descriptive and exploratory in nature (characterizes correlation patterns but does not establish causation or clinical utility), notes that correlation does not imply functional independence or orthogonality (high correlation suggests redundancy, while low correlation suggests different biology but not necessarily independent predictive value), identifies specific limitations such as redundancy among endotype scores (some scores may be measuring nearly identical biology leading to high correlations and limited additional information), recognizes that correlation structure alone does not validate clinical relevance or prognostic value (would require separate survival or outcome analysis), acknowledges that clustering depends on methodological choices (distance metric, linkage method, cluster cutoff) and different choices might yield different groupings, and notes that results are specific to this dataset and may not generalize to other cohorts or patient populations.
+
+      [B]: Mentions limitations with issues such as superficial acknowledgment without specific details (states "analysis has limitations" without identifying what they are), incomplete recognition of scope (acknowledges descriptive nature but does not discuss implications for claims about causation or clinical utility), or mentions only subset of important limitations (e.g., notes redundancy but does not discuss dependence on methodological choices).
+
+      [C]: Fails to acknowledge any limitations of the analysis, overstates conclusions beyond what descriptive correlation analysis can support (claims results prove clinical utility or causal relationships), or presents findings as definitive and generalizable without recognizing analytical and contextual constraints.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

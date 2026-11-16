@@ -1,0 +1,89 @@
+RUBRIC: DA-19-4
+
+# Rubric for DA-19-4
+
+Total Points: 100/100
+
+Notes: A full-score answer must solve the core analytical question using the provided H3K27ac ChIP-seq outputs: identify genomic regions with statistically reduced acetylation after AI-10-49 treatment and determine whether ME1, ME2, and BDME show decreased H3K27ac. Full credit requires (1) correct condition mapping from the manifest (DMSO: GSM2715535, AI-10-49: GSM2715536) with consistent sample labels, (2) construction of a union peak interval set and library-size-normalized quantification (e.g., CPM) of H3K27ac per interval from BAM read counts, (3) a one-sided significance test for AI-10-49 depletion with BH-FDR multiple-testing correction combined with an effect-size criterion (e.g., log2FC ≤ −1) and a minimum DMSO coverage filter, yielding approximately 3,829 significantly reduced intervals out of ~63,665 union intervals tested, (4) data-driven derivation of ME1/ME2/BDME anchor coordinates using RUNX1 ChIP-seq peak response within defined genomic distance bands downstream of MYC (ME1 ~0.1–0.3 Mb, ME2 ~0.4–0.7 Mb, BDME ~1.5–2.0 Mb), (5) explicit quantitative calls for all three enhancers with ME1 and BDME showing significant H3K27ac reduction and ME2 not reaching significance at its anchor interval, and (6) biologically grounded interpretation linking reduced H3K27ac to enhancer attenuation under AI-10-49 with honest acknowledgment of single-replicate and interval-definition limitations.
+
+CRITERIA (8):
+
+Criterion 1: Correct Inputs and Condition Mapping
+
+    Description: Evaluates correct use of H3K27ac DMSO and AI-10-49 files and proper sample/condition assignment throughout the analysis.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly uses required H3K27ac inputs by (1) selecting the proper DMSO and AI-10-49 peak/BAM files from the manifest (e.g., GSM2715535 for DMSO and GSM2715536 for AI-10-49), (2) verifying condition mapping from the manifest or metadata, and (3) keeping condition labels consistent throughout the analysis without swapping treatment and control.
+
+      [B]: Uses mostly correct files but with partial issues such as: (1) minor condition-label confusion that does not fully invalidate results, (2) incomplete file provenance documentation, OR (3) inconsistent naming conventions applied across analysis steps.
+
+      [C]: Uses incorrect files or conditions, swaps DMSO and AI-10-49, or fails to perform the requested DMSO vs AI-10-49 comparison.
+
+Criterion 2: Region-Level Differential H3K27ac Quantification
+
+    Description: Evaluates the method for constructing comparable genomic intervals, applying library-size normalization, and computing a directional change metric between conditions.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly quantifies regional H3K27ac change by (1) constructing a union or consensus interval set spanning both conditions, (2) extracting library-size-normalized condition-specific H3K27ac signal per interval (e.g., CPM from BAM read counts, accounting for differences in mapped read depth between DMSO and AI-10-49), and (3) computing a directional change metric (e.g., log2 fold-change of normalized values) for each interval.
+
+      [B]: Attempts interval-level comparison but with major methodological gaps such as: (1) uses only one condition's peak set rather than a union/consensus interval set, (2) computes fold-change from raw unnormalized read counts without adjusting for library-size differences between conditions, OR (3) extracts peak signal but does not compute a per-interval directional change metric.
+
+      [C]: No valid region-level differential quantification is performed.
+
+Criterion 3: Statistical Significance Framework
+
+    Description: Evaluates whether reduced acetylation is identified using an explicit one-sided significance procedure with multiplicity correction and effect-size filtering.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly applies statistical filtering by (1) defining a one-sided hypothesis test or inferential criterion specifically for AI-10-49 depletion rather than a symmetric two-sided test, (2) applying multiple-testing correction (e.g., BH-FDR) across all union intervals tested, and (3) combining the significance threshold (e.g., FDR < 0.05) with a minimum fold-change effect-size criterion (e.g., log2FC ≤ −1) and a minimum DMSO read-count filter to suppress low-coverage noise.
+
+      [B]: Includes partial significance handling but with weaknesses such as: (1) uses a two-sided test without directional post-filtering to isolate reductions, (2) applies a significance threshold without multiple-testing correction, OR (3) applies FDR filtering but omits an effect-size or minimum-coverage filter, accepting any statistically significant change regardless of magnitude.
+
+      [C]: Does not perform meaningful significance-based identification of reduced regions.
+
+Criterion 4: Reduced Region Output Quality
+
+    Description: Evaluates completeness and quantitative rigor of genome-wide reduced-region reporting.
+    Levels: A=10 B=5 C=0
+      [A]: Reports reduced regions with required evidence by (1) providing genomic coordinates for reduced intervals, (2) including quantitative support (read counts, normalized signal, fold-change, and significance values) per reported interval, and (3) summarizing overall scale with a total count of significantly reduced intervals genome-wide.
+
+      [B]: Provides partial reporting with missing essentials such as: (1) reports interval coordinates but omits associated statistical or fold-change evidence, (2) provides quantitative values but no overall count summary, OR (3) reports only a handful of cherry-picked examples without indicating total reduced-region scale.
+
+      [C]: Fails to provide usable reduced-region outputs with coordinates or quantitative support.
+
+Criterion 5: MYC Enhancer Anchor Definition Using RUNX1 Data
+
+    Description: Evaluates how ME1, ME2, and BDME loci are derived from RUNX1 ChIP-seq peak response within defined genomic distance bands relative to MYC.
+    Levels: A=15 B=7 C=0
+      [A]: Correctly defines enhancer anchors by (1) anchoring to MYC genomic coordinates from the provided GTF or annotation, (2) integrating RUNX1 ChIP-seq peak data (AI-10-49 response or differential signal) to identify RUNX1-responsive sites within defined distance bands from MYC (e.g., ME1: ~0.1–0.3 Mb, ME2: ~0.4–0.7 Mb, BDME: ~1.5–2.0 Mb downstream), and (3) providing explicit genomic coordinates for the selected ME1/ME2/BDME anchors with a clear data-driven selection rationale.
+
+      [B]: Defines loci with notable gaps such as: (1) uses fixed literature coordinates for ME1/ME2/BDME without integrating the provided RUNX1 ChIP-seq data, (2) uses RUNX1 data but with incorrect distance bands or an incorrect MYC reference point leading to mislocated anchors, OR (3) derives coordinates for only one or two of the three required enhancers.
+
+      [C]: Does not define ME1/ME2/BDME anchors from genomic data, ignores RUNX1 data with no justified alternative, or assigns anchors to an entirely wrong genomic region.
+
+Criterion 6: ME1/ME2/BDME Decrease Calls
+
+    Description: Evaluates correctness of final enhancer-specific H3K27ac decrease conclusions with quantitative support for all three loci.
+    Levels: A=15 B=7 C=0
+      [A]: Correctly reports enhancer outcomes by (1) providing quantitative DMSO vs AI-10-49 evidence (e.g., log2FC and FDR) for each of ME1, ME2, and BDME, (2) explicitly concluding that ME1 and BDME show decreased H3K27ac while ME2 does not reach significance at its anchor interval, and (3) acknowledging the negative result at ME2 (positive or near-zero fold-change, high FDR) without overclaiming reduction based on proximity alone.
+
+      [B]: Provides partially correct calls but with errors such as: (1) incorrectly classifying ME2 as significantly decreased despite a positive or non-significant fold-change at its anchor, (2) omitting one of the three required enhancers from the final call table, OR (3) stating decrease or no-decrease conclusions without any accompanying quantitative fold-change or significance evidence.
+
+      [C]: Fails to provide correct enhancer-level conclusions for two or more of ME1/ME2/BDME, or draws conclusions unsupported by the computed data.
+
+Criterion 7: Biological Interpretation and Limits
+
+    Description: Evaluates interpretation of findings in the context of MYC-driven leukemia and acknowledgment of key analytical constraints.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly interprets results by (1) linking reduced H3K27ac at ME1 and BDME to enhancer activity attenuation under AI-10-49 with appropriate mechanistic caution (H3K27ac loss as a proxy for reduced enhancer activity, not direct proof), (2) connecting the findings to MYC-associated leukemia maintenance and identifying ME1 and BDME as candidate regulatory vulnerabilities, and (3) stating key analysis limitations including single-replicate-per-condition design and sensitivity of enhancer-level calls to interval definition choices.
+
+      [B]: Interpretation is present but limited, such as: (1) discusses biology generically without connecting reduced acetylation specifically to MYC enhancer logic or leukemia maintenance, (2) overclaims that reduced H3K27ac proves functional enhancer silencing without appropriate caution, OR (3) omits acknowledgment of the single-replicate limitation or interval-definition sensitivity.
+
+      [C]: Biological interpretation is absent or scientifically unsound.
+
+Criterion 8: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

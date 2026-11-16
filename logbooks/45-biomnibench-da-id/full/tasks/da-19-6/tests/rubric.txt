@@ -1,0 +1,79 @@
+RUBRIC: DA-19-6
+
+# Rubric for DA-19-6
+
+Total Points: 100/100
+
+Notes: A full-score answer must directly and quantitatively determine whether AI-10-49 causes global chromatin accessibility changes in inv(16) AML using ATAC-seq data from GSE101790 (two DMSO replicates: GSM2715541, GSM2715542; two AI-10-49 replicates: GSM2715543, GSM2715544). The response should correctly identify the four relevant samples and their condition assignments, implement a defensible region-level accessibility quantification workflow, at minimum constructing a consensus or union peak set across all replicates, quantifying per-sample read coverage within those regions, and normalizing for library size (e.g., CPM) before computing condition-averaged log2 fold-changes, and explicitly report counts of regions with increased versus decreased accessibility under clearly stated decision rules. A supplementary peak-count comparison across conditions strengthens the evidence but is not sufficient alone. Full credit additionally requires a data-supported overall trend conclusion identifying global chromatin closing upon AI-10-49 treatment, a biologically coherent interpretation linking the accessibility changes to CBFβ-SMMHC inhibition in inv(16) AML, and transparent acknowledgment of analytical assumptions and limitations inherent to the small-replicate (n=2) design.
+
+CRITERIA (7):
+
+Criterion 1: ATAC Cohort Definition and Input Integrity
+
+    Description: Evaluates correct identification and condition assignment of DMSO and AI-10-49 ATAC-seq samples from GSE101790 and proper use of the corresponding peak and alignment files.
+    Levels: A=15 B=7 C=0
+      [A]: Correctly establishes the comparison by (1) assigning DMSO replicates (GSM2715541 and GSM2715542) to the control group, (2) assigning AI-10-49 replicates (GSM2715543 and GSM2715544) to the treatment group, and (3) loading the corresponding narrowPeak files and filtered BAM files for each sample without sample-to-condition mix-ups.
+
+      [B]: Uses mostly correct samples and files but has a minor mapping inconsistency OR incompletely handles one replicate, OR correctly identifies conditions but omits explicit sample-level validation of file assignments, OR uses only one replicate per condition without justification.
+
+      [C]: Uses incorrect assay data, swaps DMSO and AI-10-49 condition labels, fails to identify any valid replicates for both conditions, or does not establish a valid DMSO vs AI-10-49 comparison.
+
+Criterion 2: Region-Level Accessibility Quantification Workflow
+
+    Description: Evaluates the rigor and correctness of the computational workflow used to quantify per-region accessibility differences across conditions.
+    Levels: A=25 B=12 C=0
+      [A]: Implements a complete and valid quantification workflow containing all three steps: (1) construction of a consensus or union region set by merging peak calls from all samples (e.g., via bedtools merge), (2) per-sample read coverage quantification within those regions (e.g., bedtools multicov on filtered BAM files), and (3) library-size normalization appropriate for cross-condition comparison (e.g., CPM) followed by condition-averaged log2 fold-change computation.
+
+      [B]: Implements a partial workflow that captures the main analysis intent but omits one critical component, union/consensus region construction OR per-sample coverage quantification OR normalization, OR applies components inconsistently (e.g., normalizes only one condition, uses raw read counts without size correction, OR quantifies peak overlap presence/absence instead of coverage depth).
+
+      [C]: Does not produce any valid region-level accessibility quantification, relies solely on per-sample peak counts without region-level coverage analysis, or applies a methodologically invalid approach such as comparing unadjusted total read counts.
+
+Criterion 3: Increased vs Decreased Accessibility Region Counts
+
+    Description: Evaluates correct computation and explicit reporting of the number of regions with increased versus decreased accessibility after AI-10-49 treatment relative to DMSO.
+    Levels: A=25 B=12 C=0
+      [A]: Reports both directional counts such that (1) an explicit decision rule is stated (e.g., log2FC > 0 / < 0 for any-direction shift, or |log2FC| > 1 for strong changes, or replicate-consistent direction), (2) the reported counts are internally consistent with the computed log2FC or coverage metrics, and (3) the reported counts correctly reflect that decreased-accessibility regions substantially outnumber increased-accessibility regions, consistent with global chromatin closing upon AI-10-49 treatment.
+
+      [B]: Reports directional counts but incompletely, only one direction reported OR the decision rule is ambiguous or unstated OR there is a minor numerical inconsistency between the reported counts and the computed metrics OR the two counts are internally consistent but the directional labels (increased vs decreased) are inverted relative to the treatment comparison.
+
+      [C]: Fails to provide usable increased or decreased region counts, provides only a global peak-count comparison without region-level directional analysis, or reports counts that are fabricated or inconsistent with any valid analysis of the data.
+
+Criterion 4: Global Chromatin Openness Conclusion
+
+    Description: Evaluates whether the final conclusion on global chromatin opening versus closing is explicitly stated and directly supported by multiple quantitative evidence items from the analysis.
+    Levels: A=15 B=7 C=0
+      [A]: Reaches a clear and well-supported global trend conclusion where (1) the direction is explicitly stated (AI-10-49 leads to more closed/less accessible chromatin relative to DMSO), (2) the conclusion is supported by at least two independent quantitative evidence items (e.g., decreased regions outnumber increased regions, negative mean/median log2FC across active regions, reduction in called peak counts), and (3) the conclusion is logically consistent with all reported directional counts and fold-change metrics.
+
+      [B]: States a directional conclusion supported by only a single quantitative metric OR the stated direction is correct but the cited evidence contains inaccuracies OR concludes global opening without adequate justification counter to the data.
+
+      [C]: Does not provide any clear conclusion on global chromatin openness, states a conclusion that directly contradicts the computed results without explanation, or provides only a qualitative narrative without any numeric grounding.
+
+Criterion 5: Biological Reasoning and Mechanistic Relevance
+
+    Description: Evaluates the quality of biological interpretation linking observed chromatin accessibility changes to the mechanistic context of CBFβ-SMMHC inhibition in inv(16) AML.
+    Levels: A=10 B=5 C=0
+      [A]: Provides a biologically coherent interpretation that (1) explicitly connects the observed global chromatin closing to AI-10-49's mechanism of action (inhibition of the CBFβ-SMMHC fusion oncoprotein) in inv(16) AML, and (2) discusses downstream chromatin remodeling implications such as transcriptional repression, reduced accessibility at oncogenic regulatory elements, or relevance to therapeutic response in AML.
+
+      [B]: Provides a partial interpretation that connects the findings to the AML treatment context but omits mention of the CBFβ-SMMHC mechanism OR provides only generic statements about chromatin and gene expression without inv(16) AML specificity OR overgeneralizes to all AML subtypes without acknowledging the inv(16) context.
+
+      [C]: Interpretation is absent, biologically implausible, factually incorrect about the mechanism of AI-10-49, or is simply a restatement of numerical results with no mechanistic or clinical context.
+
+Criterion 6: Assumptions, Uncertainty, and Limitations
+
+    Description: Evaluates explicit acknowledgment of key assumptions and limitations inherent in the analytical approach and their impact on confidence in the conclusions.
+    Levels: A=10 B=5 C=0
+      [A]: Clearly identifies and discusses the impact of at least three relevant limitations or assumptions, specifically including (1) the small replicate count (n=2 per condition) that precludes formal statistical dispersion modeling, (2) the dependence of directional conclusions on the chosen fold-change threshold or CPM activity filter, and (3) the recommendation of or comparison to replicate-aware statistical tools (e.g., DiffBind, DESeq2, or edgeR) that would strengthen inference with larger sample sizes.
+
+      [B]: Mentions at least one relevant limitation but does not fully address its impact on confidence, e.g., notes the low replicate count without discussing its effect on statistical reliability, OR mentions normalization choices without explaining compositional bias implications, OR recommends better tools without explaining why the current approach is constrained.
+
+      [C]: No assumptions or limitations are discussed, or only mentions a trivially generic caveat unrelated to the specific analytical choices made (e.g., vague reference to "biological variability" without connection to the replicate count, threshold choices, or normalization decisions).
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

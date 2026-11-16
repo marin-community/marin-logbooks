@@ -1,0 +1,79 @@
+RUBRIC: DA-18-1
+
+# Rubric for DA-18-1
+
+Total Points: 100/100
+
+Notes: A full-score answer loads and organises clinical, mutation, and copy-number data; defines HR and HER2 status to assign samples to HR+/HER2-, HR+/HER2+, HR-/HER2+, and TNBC subtypes; computes TMB summary statistics per subtype; identifies recurrently mutated driver genes stratified by subtype; separates ERBB2 point mutations from amplifications and reports frequencies; and synthesises results into a biologically coherent interpretation noting subtype-specific drivers and the clinical relevance of ERBB2 alterations in HER2-negative disease.
+
+CRITERIA (7):
+
+Criterion 1: Data Loading and Preparation
+
+    Description: Evaluates whether clinical, mutation, and copy-number datasets are correctly loaded and linked for analysis.
+    Levels: A=15 B=7 C=0
+      [A]: Reads all required datasets correctly, handles comment lines, and constructs linked data structures mapping samples to mutations and copy-number events.
+
+      [B]: Loads at least two of the required datasets or creates partial links between them but with omissions or errors that do not prevent analysis.
+
+      [C]: Fails to load the necessary data or uses an incorrect dataset.
+
+Criterion 2: Subtype Classification
+
+    Description: Evaluates correct assignment of samples to receptor subtypes using HR and HER2 status.
+    Levels: A=10 B=5 C=0
+      [A]: Defines HR positivity using ER or PR status, determines HER2 positivity, and assigns samples to HR+/HER2-, HR+/HER2+, HR-/HER2+, and TNBC.
+
+      [B]: Partially defines HR or HER2 status but misclassifies some samples or omits a subtype.
+
+      [C]: Does not classify samples by receptor subtype or uses incorrect criteria.
+
+Criterion 3: Tumour Mutational Burden Analysis
+
+    Description: Evaluates correct computation and comparison of TMB summary statistics across receptor subtypes.
+    Levels: A=15 B=7 C=0
+      [A]: Computes summary statistics (medians and inter-quartile ranges) for TMB in each subtype and reports observed differences between subtypes with appropriate quantitative support.
+
+      [B]: Computes some statistics but misreports distributions for one or more subtypes or provides only partial quantitative comparison.
+
+      [C]: Does not analyse TMB across subtypes.
+
+Criterion 4: Driver Gene Analysis
+
+    Description: Evaluates identification and subtype-stratified reporting of recurrently mutated driver genes.
+    Levels: A=20 B=10 C=0
+      [A]: Maps genes to samples, counts mutated samples per gene for each subtype, identifies top drivers (e.g., PIK3CA, TP53, GATA3 for HR+/HER2- and TP53 for TNBC) and reports their frequencies.
+
+      [B]: Reports some recurrent genes but omits key drivers or does not stratify by subtype.
+
+      [C]: Provides no analysis of recurrent genes or lists genes unrelated to the dataset.
+
+Criterion 5: ERBB2 Alteration Analysis
+
+    Description: Evaluates correct separation and quantification of ERBB2 point mutations versus amplifications across subtypes.
+    Levels: A=20 B=10 C=0
+      [A]: Separates ERBB2 point mutations from high-level amplifications, counts altered samples within each subtype, reports fractions, and notes enrichment of amplifications in HER2-positive tumours and low-frequency mutations in HER2-negative tumours.
+
+      [B]: Provides counts but does not distinguish between mutations and amplifications or misclassifies subtypes.
+
+      [C]: Does not analyse ERBB2 alterations.
+
+Criterion 6: Interpretation and Biological Context
+
+    Description: Evaluates synthesis of results into a biologically coherent narrative linking findings to subtype biology.
+    Levels: A=20 B=10 C=0
+      [A]: States that HR+ tumours harbour PIK3CA, GATA3, and ESR1 mutations with low TMB; HER2-positive tumours show widespread ERBB2 amplification; TNBC has the highest TMB dominated by TP53 alterations; and notes that rare ERBB2 mutations in HER2-negative disease may be clinically actionable.
+
+      [B]: Summarises results but omits key subtype-specific drivers or the clinical relevance of ERBB2 alterations.
+
+      [C]: Fails to interpret the results or makes incorrect statements about breast cancer subtype biology.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

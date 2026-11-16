@@ -1,0 +1,77 @@
+RUBRIC: Cross-Platform CyTOF-Olink Correlation at C2D1 (PRINCE Pharmacodynamics)
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) loads CyTOF populations + metadata, Olink proteins + metadata, and clinical (5 files in total); (ii) filters both platforms to C2D1, pivots to wide form, and matches patients (~73 matched at C2D1); (iii) selects 3 CyTOF features (Conventional DC, HLA-DR+ Non-Naive CD4, HLA-DR+ Non-Naive CD8) × 4 Olink analytes (IFN-γ, CXCL9, CXCL10, Soluble PD-1) = 12 pairs; (iv) computes Spearman correlations both pooled and stratified by arm with BH-FDR correction; (v) reports the NULL pooled result (no q < 0.05); (vi) reports the one arm-specific finding in Arm C2 (sotiga + nivo + chemo): HLA-DR+ Non-Naive CD4 vs IFN-γ ρ ≈ -0.627, q ≈ 0.037; Arms A1 and B2 show no FDR-significant correlations.
+
+CRITERIA (7):
+
+Criterion 1: Data Loading and Validation
+
+    Description: Evaluates correct loading of all 5 required datasets with dimension and column verification.
+    Levels: A=12 B=6 C=0
+      [A]: Loads `NatureMed_CyTOF_select_cell_populations.csv` (1633×3), `NatureMed_CyTOF_metadata.csv` (509×4), `NatureMed_Olink_select_proteins.csv` (4597×3), `NatureMed_Olink_metadata.csv` (423×4), `PICI0002_ph2_clinical.csv` (108×29). Verifies dimensions and required columns (`sample.id`, `value`, `paper.name`, `Deidentified.ID`, `timepoint.id`). States the analysis question (CyTOF × Olink correlation at C2D1).
+
+      [B]: Loads most files but with limited validation, OR does not specify the C2D1 timepoint, OR has minor loading issues.
+
+      [C]: Wrong datasets or no validation.
+
+Criterion 2: C2D1 Harmonisation, Patient Matching, and Arm Integration
+
+    Description: Evaluates harmonisation of CyTOF + Olink at C2D1 and integration with clinical for arm stratification.
+    Levels: A=20 B=10 C=0
+      [A]: Merges CyTOF with its metadata and Olink with its metadata on `sample.id`. Filters both to `C2D1`. Pivots to wide form (patients × features). Identifies the ~73 patients matched at C2D1 across both platforms. Handles duplicates (median or mean over multiple samples per patient × feature). Selects 3 CyTOF features (Conventional DC, HLA-DR+ Non-Naive CD4 T cells, HLA-DR+ Non-Naive CD8 T cells) and 4 Olink analytes (IFN-γ, CXCL9, CXCL10, Soluble PD-1). Merges clinical for arm assignment so both pooled and per-arm analyses are possible.
+
+      [B]: Filters to C2D1 but with imperfect patient matching (e.g., n != ~73), OR does not handle duplicates, OR implements only pooled OR per-arm (not both).
+
+      [C]: Does not filter to C2D1, fails to match the platforms, or does not integrate arm.
+
+Criterion 3: Spearman Correlation with Preprocessing and Stratified Computation
+
+    Description: Evaluates preprocessing and Spearman correlation computation for pooled and per-arm analyses.
+    Levels: A=23 B=12 C=0
+      [A]: Ensures CyTOF features are numeric frequencies and Olink analytes are NPX-scale numeric. Drops features with excessive missingness or zero variance. Uses Spearman (not Pearson) for robustness to non-normality. Computes pairwise Spearman ρ and p for all 12 pairs in the pooled analysis AND separately within each arm. Reports per-pair direction, magnitude, n, p. Requires minimum n (e.g., n >= 10 pooled, n >= 8 per-arm).
+
+      [B]: Computes correlations but uses Pearson without justification, OR omits the per-arm stratification, OR omits sample-size threshold, OR does not report n.
+
+      [C]: No correlation analysis or wrong statistical method.
+
+Criterion 4: Multiple-Testing Correction Scoping
+
+    Description: Evaluates BH-FDR correction with appropriate scoping (pooled and per-arm corrected separately).
+    Levels: A=15 B=8 C=0
+      [A]: Applies BH-FDR correction separately for the pooled analysis AND for each per-arm analysis (so the correction does not mix testing families). Reports both raw p and q values for all pairs. Uses a stated threshold (q < 0.05 or q < 0.10). Documents the number of tests in each correction family.
+
+      [B]: Applies FDR but with incorrect scoping (one global correction over both pooled and per-arm), OR omits q-value reporting for some pairs.
+
+      [C]: No multiple-testing correction.
+
+Criterion 5: Results Accuracy and Null-Findings Reporting
+
+    Description: Evaluates correctness of reported pooled and per-arm results, including the NULL pooled finding and the single Arm-C2 hit.
+    Levels: A=15 B=8 C=0
+      [A]: Reports the pooled result clearly: NO pair reaches q < 0.05 (lowest pooled q > 0.6). Reports per-arm results: Arms A1 and B2 show no FDR-significant correlations; Arm C2 shows one FDR-significant finding (HLA-DR+ Non-Naive CD4 vs IFN-γ, ρ ≈ -0.627, p ≈ 0.003, q ≈ 0.037). Notes that Arm C2 trends toward predominantly negative correlations between T-cell markers and Th1 cytokines. Presents results in structured tables (cytof_feature, olink_analyte, n, ρ, p, q per stratum).
+
+      [B]: Reports results but incompletely (missing the pooled-null statement, OR missing the C2 hit, OR omits per-pair statistics).
+
+      [C]: Claims significant pooled correlations where none exist, OR fabricates results, OR omits reporting.
+
+Criterion 6: Interpretation, Limitations, and Compartment Caveats
+
+    Description: Evaluates interpretation of the null pooled result, the single C2 hit, and the cross-compartment limitations.
+    Levels: A=15 B=8 C=0
+      [A]: States the null pooled result clearly. Treats nominal per-arm correlations as exploratory without claiming validation. Interprets the Arm C2 negative correlation (HLA-DR+ CD4 vs IFN-γ) as potentially reflecting treatment-arm-specific immune dynamics under the triple combination (sotiga + nivo + chemo). Discusses limitations: limited C2D1 sample size (~73), high multiple-testing burden across 12 pairs × 4 strata, cross-platform / cross-compartment variability (cellular frequencies in blood vs secreted proteins reflect different biology and kinetics).
+
+      [B]: Interpretation is broadly correct but does not clearly distinguish pooled from per-arm findings, OR omits the cross-compartment caveat.
+
+      [C]: Interpretation contradicts the statistical results, or claims strong correlations where none meet FDR.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, marker / analyte attributions, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (ρ, p, q per pair, per-arm n) are traceable to the provided clinical / CyTOF / Olink CSVs or to a documented transformation. CyTOF marker definitions match `paper.name`; Olink analyte names match the dataset. Biological interpretations of cross-compartment immune kinetics, IFN-γ signalling, and arm-specific dynamics cite real, identifiable references (Padron et al. 2022 Nature Medicine on PRINCE; anti-PD-1 / CD40 reviews with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and marker / analyte attributions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, marker / analyte attributions, or biological claims with no clear source. Hallucinated content (made-up correlations, fabricated p-values, invented citations) mixed with computed results.

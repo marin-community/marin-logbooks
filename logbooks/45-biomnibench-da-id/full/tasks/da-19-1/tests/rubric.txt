@@ -1,0 +1,99 @@
+RUBRIC: DA-19-1
+
+# Rubric for DA-19-1
+
+Total Points: 100/100
+
+Notes: A full-score answer correctly performs differential expression analysis on the provided ME-1 RNA-seq Cuffdiff output (`processed_data/rnaseq/cuffdiff/gene_exp.diff`), applying all three required filters exactly: `status == OK`, `log2(fold_change) <= -1` (>2-fold downregulation in AI-10-49 relative to DMSO), and `q_value < 0.01`. The analysis must verify contrast orientation (AI-10-49 is the treated condition relative to DMSO control), produce a correctly ranked list of the top downregulated genes with quantitative statistics (gene name, log2FC, FDR, and expression values), and explicitly assess MYC's repression status with its rank among filtered genes and supporting log2FC/q_value evidence. Biological interpretation must link the findings to CBFβ-SMMHC inhibition and MYC's mechanistic role in inv(16) AML, and the discussion must acknowledge key methodological assumptions such as reliance on the Cuffdiff output, handling of infinite fold-change edge cases (where AI-10-49 expression is zero), and limitations of a single-cell-line model.
+
+CRITERIA (9):
+
+Criterion 1: Data Source and Provenance
+
+    Description: Evaluates whether the answer correctly identifies the processed data files and documents their processing provenance.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly documents (1) the primary processed data file (`processed_data/rnaseq/cuffdiff/gene_exp.diff` or equivalent path), (2) the sample/replicate metadata confirming three DMSO and three AI-10-49 ME-1 replicates from the alignment manifest, and (3) the Cuffdiff processing provenance including the command-line label order (`-L DMSO,AI-10-49`) from `run.info` or `run_multiomics_pipelines.py`.
+
+      [B]: Documents the data source partially but misses key provenance details, OR references the correct file without confirming replicate counts or label orientation, OR documents processing context without linking it to the correct output file.
+
+      [C]: Fails to identify the correct processed data file or provides no provenance documentation.
+
+Criterion 2: Contrast Validation and Setup
+
+    Description: Evaluates whether the response verifies the DMSO vs AI-10-49 comparison orientation before interpreting results.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly verifies (1) sample grouping by confirming `sample_1 = DMSO` and `sample_2 = AI-10-49` in the DE table, (2) that fold-change is expressed as AI-10-49 relative to DMSO (so negative log2FC means repression in the treated condition), and (3) applies this orientation consistently in all downstream filtering and interpretation.
+
+      [B]: Attempts contrast validation but introduces ambiguity in fold-change direction, OR verifies group labels without explicitly confirming the fold-change reference orientation, OR states the correct orientation without showing verification from the data.
+
+      [C]: Uses incorrect group orientation, does not validate contrast setup, or interprets fold-change direction backwards.
+
+Criterion 3: Differential Expression Filtering
+
+    Description: Evaluates correct implementation of all three required filtering criteria.
+    Levels: A=18 B=9 C=0
+      [A]: Correctly applies all three filters: (1) `status == 'OK'` to retain only tested genes, (2) `log2(fold_change) <= -1` for >2-fold downregulation in AI-10-49, and (3) `q_value < 0.01` for FDR control, yielding approximately 716 genes (or a count consistent with the processed data).
+
+      [B]: Applies some filtering but makes one major error, such as using wrong sign (`log2FC >= 1` instead of `<= -1`), wrong threshold (`q_value < 0.05` instead of `< 0.01`, or fold-change threshold of 1.5 instead of 2), OR omitting the `status == OK` filter entirely.
+
+      [C]: Filtering criteria are largely incorrect or absent, or uses a completely different approach that does not implement the specified thresholds.
+
+Criterion 4: Top Downregulated Gene Reporting
+
+    Description: Evaluates whether the top repressed genes are correctly ranked and reported with sufficient quantitative detail.
+    Levels: A=16 B=8 C=0
+      [A]: Reports a correctly ranked list of top downregulated genes including (1) gene names or identifiers consistent with the processed DE results, (2) log2 fold-change and q_value for each reported gene, (3) ranking by log2FC magnitude (most negative first), and (4) explicit acknowledgment and handling of the infinite fold-change edge case (gene with `value_2 = 0`, e.g., IGHV4-4 in the processed data).
+
+      [B]: Provides a partially correct gene list but: omits q_value or log2FC statistics, uses a ranking inconsistent with the computed results, OR omits the infinite fold-change edge case without acknowledging it.
+
+      [C]: Fails to report top downregulated genes or uses a ranking method that is entirely incorrect.
+
+Criterion 5: MYC Repression Assessment
+
+    Description: Evaluates whether MYC is explicitly identified, filtered, and quantitatively ranked among the most repressed genes.
+    Levels: A=14 B=7 C=0
+      [A]: Correctly determines that MYC passes all filters and provides (1) MYC's log2FC and q_value consistent with the data (log2FC ≈ −3.30, q_value ≈ 0.0002 in the processed file), (2) MYC's rank among all filtered downregulated genes (approximately #4 of 715 finite fold-change genes in the processed data), and (3) an explicit conclusion that MYC is among the most repressed genes with quantitative justification.
+
+      [B]: Mentions MYC and confirms it passes filters, but provides incomplete quantitative support (missing rank, missing q_value), OR states MYC is repressed without showing its position in the ranked list.
+
+      [C]: Omits MYC assessment entirely, states MYC does not pass filters (incorrect conclusion), or reaches an unsupported conclusion about MYC status.
+
+Criterion 6: Domain Reasoning and Interpretation
+
+    Description: Evaluates the quality and accuracy of biological interpretation connecting DE findings to therapeutic context.
+    Levels: A=14 B=7 C=0
+      [A]: Provides coherent and accurate interpretation that (1) links the broad transcriptional repression pattern to CBFβ-SMMHC inhibition by AI-10-49 in inv(16) AML ME-1 cells, (2) explains why MYC repression is mechanistically and clinically significant (e.g., MYC-driven proliferation/survival programs downstream of the fusion protein), and (3) appropriately qualifies biological conclusions relative to the strength of the statistical evidence without overstating causal claims from a single cell-line experiment.
+
+      [B]: Provides interpretation with limited mechanistic depth, OR overstates conclusions (e.g., claims direct causation without acknowledging observational nature), OR correctly interprets MYC repression without connecting it to CBFβ-SMMHC biology.
+
+      [C]: Interpretation is missing, biologically implausible, factually incorrect about the mechanism, or entirely disconnected from the computed results.
+
+Criterion 7: Assumptions and Uncertainty Handling
+
+    Description: Evaluates whether methodological assumptions, edge cases, and analytical uncertainty are explicitly addressed.
+    Levels: A=10 B=5 C=0
+      [A]: Explicitly addresses at least two of the following: (1) dependence on Cuffdiff's normalization and statistical modeling (results not re-derived from raw FASTQ), (2) infinite fold-change edge cases caused by zero expression in AI-10-49 and how they are handled in ranking, (3) sensitivity of gene ranking to the choice of fold-change threshold or to ties in q_value, (4) low replicate count (n=3 per group) as a constraint on statistical power and confidence.
+
+      [B]: Mentions uncertainty or assumptions superficially without specific detail, OR addresses only one of the listed edge cases or constraints without elaborating on its impact on interpretation.
+
+      [C]: No assumptions or uncertainty discussion is present, or the discussion is entirely generic and unrelated to this specific analysis.
+
+Criterion 8: Limitations and Actionable Next Steps
+
+    Description: Evaluates acknowledgment of study-specific limitations and quality of concrete follow-up recommendations.
+    Levels: A=8 B=4 C=0
+      [A]: Clearly states (1) at least two specific limitations relevant to this analysis (e.g., single cell-line model restricting generalizability, fold-change ranking bias toward low-expression genes, reliance on a single time point or dose of AI-10-49), and (2) at least one concrete actionable next step with a rationale (e.g., qPCR validation of top hits, integration with ChIP-seq or ATAC-seq to link MYC repression to chromatin changes, functional perturbation assays in additional inv(16) AML models).
+
+      [B]: Addresses limitations OR next steps, but not both with concrete detail, OR provides only vague or generic recommendations (e.g., "further validation is needed") without specifying the experimental approach or biological rationale.
+
+      [C]: Omits both limitations and actionable follow-up entirely, or provides only a single generic statement that does not reflect understanding of the analysis context.
+
+Criterion 9: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

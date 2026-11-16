@@ -1,0 +1,88 @@
+RUBRIC: DA-25-1
+
+Total Points: 100/100
+
+CRITERIA (8):
+
+Criterion 1: Dataset Structure and Annotation Limits
+
+    Description: Evaluates the model's ability to correctly identify the dataset's structure, dimensions, and limitations, specifically recognizing the absence of explicit pathogenicity annotations in the MAF file.
+    Levels: A=9 B=8 C=0
+      [A]: States that the MAF contains 40,731 mutations, 499 tumor samples, and 97 columns, and explicitly notes that there is no direct pathogenic / oncogenic annotation field; for example, Hotspot is all 0 and the file does not provide an explicit mutation-level oncogenicity label.
+
+      [B]: Correctly describes the mutation dataset in general and notes the lack of clear pathogenicity labels, but misses one of the required structural details above.
+
+      [C]: Fails to describe the dataset structure correctly or incorrectly claims that explicit pathogenicity annotations are already available in the MAF.
+
+Criterion 2: Pathogenic Mutation Filter Methodology
+
+    Description: Assesses the methodology used to filter mutations, specifically how the model defines pathogenic/oncogenic alterations in the absence of explicit pathogenic/oncogenic annotation.
+    Levels: A=16 B=9 C=0
+      [A]: States that pathogenic / oncogenic mutations were defined using a proxy rule, not a direct label:
+(1) keep functional non-silent variant classes;
+(2) retain mutations in CGC-annotated genes and/or MUTSIG_Published_Results genes;
+(3) use the union of those filtered sets as the final oncogenic/pathogenic mutation set.
+
+      [B]: Uses a reasonable proxy definition based on functional mutations plus CGC or MUTSIG information, but does not clearly state the final combined rule.
+
+      [C]: Uses no clear rule for defining pathogenic / oncogenic mutations, or incorrectly treats all mutations as pathogenic.
+
+Criterion 3: Mutation Frequency Ranking
+
+    Description: Evaluates the accuracy of calculating and ranking the most frequently mutated genes based on the defined pathogenic/oncogenic criteria.
+    Levels: A=16 B=9 C=0
+      [A]: Calculates mutation frequency at the patient level using the filtered oncogenic/pathogenic set and correctly identifies the top genes, including TP53 (12.05%), SPOP (11.45%), followed by genes such as SYNE1, LRP1B, ATM, CSMD3, and PTEN.
+
+      [B]: Correctly ranks the major top genes but misses the patient-level frequency logic or omits the leading frequencies.
+
+      [C]: Ranks genes incorrectly or bases the ranking on the wrong mutation set.
+
+Criterion 4: T Stage Extraction and Grouping
+
+    Description: Evaluates the handling of clinical data, specifically the extraction and grouping of T stage information for downstream statistical analysis.
+    Levels: A=16 B=9 C=0
+      [A]: Extracts CLIN_T_STAGE and PATH_T_STAGE, removes invalid entries such as [Not Available] / [Discrepancy] / [Unknown], simplifies stages to T1 / T2 / T3 / T4, and uses PATH_T_STAGE as the main analysis variable because it is more complete; for the main test, compares T2 vs T3/T4.
+
+      [B]: Handles T stage in a generally correct way, but misses one of the required steps above or does not clearly justify using PATH_T_STAGE as the primary variable.
+
+      [C]: Does not extract or group T stage correctly, or uses an invalid stage grouping.
+
+Criterion 5: Mutation–T Stage Statistical Testing
+
+    Description: Assesses the statistical methodology used to test associations between gene mutations and T stage, including the use of multiple testing correction.
+    Levels: A=16 B=9 C=0
+      [A]: Uses Fisher’s exact test on 2×2 mutation-by-stage tables, tests only genes mutated in at least 5 patients within the relevant clinical subset, and applies multiple-testing correction using FDR / Benjamini–Hochberg.
+
+      [B]: Uses an appropriate association test and multiple-testing correction, but misses either the subset-specific mutation filter or the exact binary testing setup.
+
+      [C]: Uses an inappropriate test, omits multiple-testing correction, or does not define the tested gene set properly.
+
+Criterion 6: Mutation–T Stage Association Results
+
+    Description: Evaluates the association results of gene mutations and T stage.
+    Levels: A=16 B=9 C=0
+      [A]: Reports the main result correctly: for PATH_T_STAGE (T2 vs T3/T4), TP53 is the only FDR-significant gene (OR = 3.08, p = 0.000601, FDR = 0.0379), with higher mutation frequency in T3/T4 than T2; for CLIN_T_STAGE, no gene remains FDR-significant.
+
+      [B]: Gets the overall result pattern right but misses one required anchor, such as the exact significant gene, the endpoint distinction, or the fact that CLIN_T_STAGE yields no FDR-significant genes.
+
+      [C]: Reports association results inconsistent with the reference answer.
+
+Criterion 7: Biological Insight Quality
+
+    Description: Evaluates the quality of the biological insights provided in the final answer, specifically regarding prostate cancer biology and the clinical significance of the findings.
+    Levels: A=11 B=3 C=0
+      [A]: Provides the correct biological interpretation: TP53 mutation is associated with more advanced pathological local stage and more aggressive prostate cancer biology, while common mutations such as SPOP are frequent but not stage-associated here; also recognizes that pathological T stage gives a clearer signal than clinical T stage.
+
+      [B]: Gives a generally correct biological interpretation, but misses one of the key points above.
+
+      [C]: Provides biological conclusions that are unsupported or inconsistent with the trace.
+
+Criterion 8: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

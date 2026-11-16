@@ -1,0 +1,99 @@
+RUBRIC: Hypertension-Associated Metabolites in Bread-Spikers
+
+Total Points: 100/100
+
+Question: Which hypertension-associated metabolites show a statistically significant positive correlation with systolic blood pressure within the 'Bread-spiker' phenotypic group? (Using the multi-omics profiling data, adjust for age and BMI as covariates. Filter for metabolites with significant positive correlations specifically within this cohort and report the results.)
+
+Notes: The key to a full-score answer is demonstrating a complete understanding of the computational workflow: (1) correctly identifying bread-spikers using the median threshold method on glucose peak responses, (2) performing proper statistical analysis with multiple linear regression adjusting for age and BMI, (3) applying the correct filtering criteria (p < 0.05 AND positive coefficient), and (4) interpreting the results in the context of hypertension-associated metabolites. Answers that perform the analysis correctly and identify metabolites with significant positive correlations should receive full credit.
+
+CRITERIA (9):
+
+Criterion 1: Baseline and Peak Glucose Calculation
+
+    Description: Evaluates correct calculation of baseline glucose and peak glucose delta for each subject-rep combination.
+    Levels: A=12 B=6 C=0
+      [A]: Correctly calculates baseline glucose by computing mean from pre-meal time points (typically -25 to 0 minutes) for each subject-rep combination, excluding post-meal time points. Correctly calculates peak glucose delta by identifying maximum glucose value from post-meal time points (≥ 0 minutes), subtracting baseline glucose from peak to get delta, and performing this calculation for each subject-rep combination separately.
+
+      [B]: Calculates baseline and/or peak glucose but with errors such as: uses incorrect time window (includes post-meal data in baseline or wrong peak window), uses incorrect aggregation method (median/single time point instead of mean for baseline), uses absolute peak without subtracting baseline, or fails to calculate per subject-rep combination.
+
+      [C]: Fails to calculate baseline glucose or peak glucose delta, uses completely wrong methodology, or does not address baseline or peak calculation.
+
+Criterion 2: Excluding Mitigators and Replicate Averaging
+
+    Description: Evaluates correct filtering to exclude mitigated bread consumption and proper averaging of peak responses across replicates.
+    Levels: A=9 B=4 C=0
+      [A]: Correctly filters bread consumption data to exclude rows where mitigator is not null/NA, ensuring only pure bread consumption (without preloads) is analyzed. Correctly averages peak glucose delta values across all replicates per subject using mean aggregation (not sum, max, or median), creating a single average peak response per subject before classification.
+
+      [B]: Attempts filtering and averaging but with errors such as: applies mitigator filtering incorrectly or includes some mitigators, uses incorrect aggregation method for averaging, averages incorrectly (across subjects instead of replicates), or describes the approach but implementation is unclear.
+
+      [C]: Fails to exclude mitigators, includes mitigated bread consumption in analysis, fails to average across replicates, or uses raw per-rep values for classification.
+
+Criterion 3: Median Threshold Classification
+
+    Description: Evaluates correct use of median threshold to classify bread-spikers.
+    Levels: A=6 B=3 C=0
+      [A]: Correctly classifies subjects as bread-spikers by: (1) calculating the median of all subjects' average peak responses, (2) classifying subjects with average peak response above median as bread-spikers, and (3) demonstrating understanding that this results in approximately half the subjects being classified as spikers (e.g., 18 out of 37).
+
+      [B]: Uses median threshold but applies it incorrectly (e.g., below median instead of above), uses wrong variable (e.g., absolute glucose instead of delta), or uses fixed threshold instead of data-driven median.
+
+      [C]: Fails to use median threshold, uses completely arbitrary threshold, or does not address classification method.
+
+Criterion 4: Metabolite Data Preparation
+
+    Description: Evaluates correct identification of metabolomics columns and averaging of metabolite abundances across replicates per subject.
+    Levels: A=11 B=5 C=0
+      [A]: Correctly identifies abundance columns by recognizing column format (XB{subject}_{rep}), extracting subject ID from column names, and grouping columns by subject. Correctly averages metabolite abundances by averaging all replicate values for each metabolite and each subject, handling missing values appropriately (using only valid non-NA values for mean calculation), and creating a subject-level metabolite matrix.
+
+      [B]: Identifies columns and averages abundances but with errors such as: uses incorrect parsing method, fails to group by subject correctly, uses incorrect aggregation (sum, median, or max instead of mean), incorrectly handles missing values (includes NA in mean), or fails to create proper subject-level matrix.
+
+      [C]: Fails to identify subject-specific columns, uses incorrect column format, does not average across replicates, or uses raw replicate-level data.
+
+Criterion 5: Regression Model Specification
+
+    Description: Evaluates correct specification of multiple linear regression model with appropriate dependent variable, independent variables, and covariates.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly specifies regression model with: (1) systolic blood pressure as dependent variable, (2) metabolite abundance as primary independent variable, (3) Age and BMI as covariates, (4) includes intercept term, and (5) applies this model structure to each metabolite separately within the bread-spiker cohort. Extracts coefficients, p-values, and R-squared for all variables systematically.
+
+      [B]: Specifies regression but with errors such as: uses incorrect dependent variable, missing one or more required covariates (Age or BMI), fails to include intercept, applies model incorrectly (to all metabolites at once instead of separately), or provides incomplete results extraction (missing coefficients, p-values, or R-squared).
+
+      [C]: Uses incorrect model type (e.g., correlation, univariate regression without covariates), fails to specify regression model, or provides completely wrong model structure.
+
+Criterion 6: Missing Data Handling
+
+    Description: Evaluates proper handling of missing data in regression analysis.
+    Levels: A=5 B=2 C=0
+      [A]: Correctly handles missing data by: (1) converting variables to numeric with error handling, (2) removing rows with missing values (dropna) before regression, and (3) ensuring sufficient sample size (n ≥ 5) after data cleaning for each metabolite regression.
+
+      [B]: Handles missing data but with errors such as: uses incorrect method (e.g., imputation when exclusion is appropriate), fails to check minimum sample size, or removes too many or too few observations.
+
+      [C]: Fails to handle missing data, includes NA values in regression, or does not address missing data.
+
+Criterion 7: Statistical Filtering Criteria
+
+    Description: Evaluates correct application of p-value threshold and positive coefficient filtering to identify significant positive associations.
+    Levels: A=22 B=11 C=0
+      [A]: Correctly applies p-value filtering by extracting p-value for the metabolite coefficient from regression results and filtering for p-value < 0.05. Correctly applies positive coefficient filter by extracting coefficient for metabolite and filtering for positive coefficient (coef > 0), understanding that positive coefficient indicates positive correlation with systolic BP. Requires BOTH p < 0.05 AND positive coefficient simultaneously using AND logic (not OR).
+
+      [B]: Applies filtering but with errors such as: uses incorrect p-value threshold (< 0.01 or < 0.10), uses p-value from wrong coefficient (intercept or covariate), uses wrong direction for coefficient (filters for negative instead of positive), fails to extract metabolite coefficient correctly, or applies only one criterion instead of both.
+
+      [C]: Fails to apply p-value filtering, uses completely wrong significance criterion, does not filter by coefficient sign, or does not address positive correlation requirement.
+
+Criterion 8: Results Interpretation and Limitations
+
+    Description: Evaluates comprehensive reporting of results with appropriate interpretation and explicit acknowledgment of assumptions and limitations.
+    Levels: A=15 B=7 C=0
+      [A]: Comprehensively reports all metabolites meeting both filtering criteria (expected ~41 metabolites) with complete statistics (metabolite name, coefficient, p-value, sample size, R-squared) in clear organized format. Correctly interprets that these metabolites show statistically significant positive association with systolic BP in bread-spikers, adjusted for age and BMI. Clearly states key assumptions (median threshold defines phenotype, linear relationships, age/BMI are primary confounders) and articulates important limitations (sample size n=18, multiple testing concerns, observational nature, unmeasured confounders, generalizability), appropriately qualifying conclusions as hypothesis-generating.
+
+      [B]: Reports results but with incomplete statistics or poor organization. Interpretation attempted but with errors such as: incorrectly interprets direction or meaning, fails to recognize covariate adjustment, or provides generic statements not specific to bread-spikers. Mentions some assumptions or limitations but incomplete list or generic caveats, with limited qualification of conclusions.
+
+      [C]: Results not reported or incomplete, interpretation completely incorrect, no discussion of assumptions or limitations, or makes definitive claims without qualification.
+
+Criterion 9: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, metabolite attributions, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-subject baseline / peak glucose, peak deltas, regression coefficients, p-values) are traceable to the provided multi-omics data files (CGM, metabolomics, clinical) or to a documented transformation. Metabolite IDs come from named sources (HMDB, KEGG, the dataset's own feature index). Biological / clinical interpretations of hypertension-associated metabolites are supported by real, identifiable references (Stanford glycaemic-response cohort publications, hypertension-metabolomics reviews, with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and metabolite attributions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, metabolite attributions, or biological claims with no clear source. Hallucinated content (made-up metabolite names, fabricated coefficients / p-values, invented citations) mixed with computed results.

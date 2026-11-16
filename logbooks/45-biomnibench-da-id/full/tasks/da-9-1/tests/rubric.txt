@@ -1,0 +1,77 @@
+RUBRIC: Baseline Circulating T-Cell Biomarkers of Survival in Nivo / Chemo (PRINCE)
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) loads the 3 CSV files (clinical 108×29; CyTOF cell populations long-format 1633×3; CyTOF metadata 509×4); (ii) pivots CyTOF to wide form (263 samples × 17 columns including 16 cell populations); (iii) merges with metadata on `sample.id`, then filters to baseline (`timepoint.id == 'C1D1'`), nivo / chemo arm (`Actual Arm == 'A1'`), and `%leukocytes` measurement scale (`ms == 'Blood: CyTOF %leuk'`); (iv) merges with clinical on `Deidentified.ID` yielding 27 patients (16 events, 11 censored); (v) selects 5 T-cell features by keyword; (vi) runs median-split KM + log-rank per feature; (vii) identifies 4 features significant at p < 0.05: NKT cells (p ≈ 0.009), Tbet+ T cells (p ≈ 0.011), Tbet+ TCRgd+ T cells (p ≈ 0.025), Ki-67+ T cells (p ≈ 0.027); HLA-DR+ T cells is NOT significant (p ≈ 0.078).
+
+CRITERIA (7):
+
+Criterion 1: Data Loading and Reshaping
+
+    Description: Evaluates loading of all three required CSVs and pivoting CyTOF from long to wide format.
+    Levels: A=15 B=8 C=0
+      [A]: Loads `PICI0002_ph2_clinical.csv` (108×29 with survival + treatment-arm columns), `NatureMed_CyTOF_select_cell_populations.csv` (1633×3 long format with `sample.id`, `value`, `paper.name`), and `NatureMed_CyTOF_metadata.csv` (509×4 with `Deidentified.ID`, `sample.id`, `ms`, `timepoint.id`). Pivots the CyTOF long table to wide format using `paper.name` as columns (263 samples × 17 columns including 16 cell populations). Merges CyTOF wide with metadata on `sample.id`. Confirms survival columns: `clinical.observation.os` (time in days) and `clinical.observation.os.event` (boolean).
+
+      [B]: Loads files but skips the long-to-wide pivot, OR uses approximate merge keys, OR omits dimension verification.
+
+      [C]: Wrong files or fundamentally wrong data structure.
+
+Criterion 2: Cohort Filtering and Preparation
+
+    Description: Evaluates filtering to baseline, nivo / chemo arm, %leukocytes measurement scale, and final cohort assembly.
+    Levels: A=10 B=5 C=0
+      [A]: Applies all four filters: `timepoint.id == 'C1D1'` (baseline); `ms == 'Blood: CyTOF %leuk'` (single measurement scale); clinical filter `Actual Arm == 'A1'` (nivo / chemo arm, NOT the more general `Arm` column); inner-merges filtered CyTOF with filtered clinical on `Deidentified.ID` yielding 27 patients (16 OS events, 11 censored).
+
+      [B]: Filters baseline + arm correctly but uses `Arm` instead of `Actual Arm`, OR mixes %leukocytes with %parent measurement scales, OR has residual patient duplication.
+
+      [C]: Wrong arm, includes non-baseline samples, or fundamentally wrong cohort.
+
+Criterion 3: T-Cell Feature Selection
+
+    Description: Evaluates identification of the 5 T-cell-related features from the 16 available CyTOF populations.
+    Levels: A=15 B=8 C=0
+      [A]: Selects the 5 T-cell features: HLA-DR+ T cells (% of leukocytes), Ki-67+ T cells (% of CD3+), NKT cells (% of leukocytes), Tbet+ T cells (% of CD3+), Tbet+ TCRgd+ T cells (% of TCRgd T cells). Documents the selection rule (e.g., keyword `T cell` / `T cells` in `paper.name`). Excludes the 11 non-T-cell populations (B cells, DCs, MDSCs, plasmablasts).
+
+      [B]: Selects most T-cell features but misses one OR includes one non-T-cell population, OR the selection rule is not documented.
+
+      [C]: Tests primarily non-T-cell populations, selects fewer than 3 T-cell features, or no systematic selection.
+
+Criterion 4: Median-Split Survival Analysis Methodology
+
+    Description: Evaluates per-feature median-split stratification, KM estimation, and log-rank test execution.
+    Levels: A=20 B=10 C=0
+      [A]: For each T-cell feature: drops patients with missing values, computes the median, stratifies high (>= median) vs low (< median), fits KM curves on OS time + event, applies log-rank test, records the p-value. Uses p < 0.05 as the significance threshold. Reports per-group sample sizes (e.g., 14 / 13). Implements via `lifelines` or equivalent survival library.
+
+      [B]: Performs survival analysis but uses arbitrary cutoffs instead of median, OR does not handle missingness before splitting, OR reports the test without per-group sample sizes.
+
+      [C]: Uses inappropriate statistical approach (t-test, correlation), or no survival analysis.
+
+Criterion 5: Results Accuracy and Reporting
+
+    Description: Evaluates correctness and completeness of the identified significant T-cell populations with their p-values.
+    Levels: A=25 B=13 C=0
+      [A]: Identifies all 4 significant features with approximately correct p-values: NKT cells (p ≈ 0.009, median ≈ 0.016); Tbet+ T cells (p ≈ 0.011, median ≈ 0.179); Tbet+ TCRgd+ T cells (p ≈ 0.025, median ≈ 0.792); Ki-67+ T cells (p ≈ 0.027, median ≈ 0.950). Explicitly reports that HLA-DR+ T cells is NOT significant (p ≈ 0.078). Presents results in a structured table with feature names, p-values, and group sizes.
+
+      [B]: Identifies 3 of 4 significant features, OR misclassifies HLA-DR+ as significant, OR p-values differ noticeably from expected.
+
+      [C]: Reports wrong features as significant, misses most, fabricates p-values, or no results reported.
+
+Criterion 6: Biological Interpretation and Limitations
+
+    Description: Evaluates phenotypic-marker descriptions, PD-1 mechanistic context, and acknowledged study limitations.
+    Levels: A=15 B=8 C=0
+      [A]: Describes phenotypic markers per significant population: NKT = innate-like T cells; Tbet = Th1 / cytotoxic-program transcription factor; TCRgd = gamma-delta T cells; Ki-67 = proliferation marker. Connects findings to PD-1 blockade biology (baseline T-cell activation / proliferation reflects pre-existing anti-tumour immunity that anti-PD-1 reinvigorates). Acknowledges limitations: small cohort (n=27), single-arm, median-split discards continuous information, multiple-testing across 5 features, validation in independent cohorts needed.
+
+      [B]: Describes some markers but incompletely, OR mentions PD-1 mechanism superficially without linking to specific features, OR omits key limitations.
+
+      [C]: No phenotypic descriptions, no biological context, or no limitations.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, marker attributions, and biological interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-feature medians, log-rank p-values, n_high / n_low) are traceable to the provided clinical / CyTOF / metadata CSVs or to a documented transformation. CyTOF marker definitions match the dataset's `paper.name` column. Biological interpretations of NKT / Tbet / Ki-67 / TCRgd cite real, identifiable references (Padron et al. 2022 Nature Medicine on PRINCE, or anti-PD-1 / T-cell immunotherapy reviews with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and marker attributions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, marker attributions, or biological claims with no clear source. Hallucinated content (made-up p-values, fabricated markers, invented citations) mixed with computed results.

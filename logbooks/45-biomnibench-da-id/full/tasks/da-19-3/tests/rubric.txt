@@ -1,0 +1,69 @@
+RUBRIC: DA-19-3
+
+# Rubric for DA-19-3
+
+Total Points: 100/100
+
+Notes: A full-score answer directly computes RUNX1 peak changes from local processed ChIP-seq files in processed_data/chipseq/peaks/ without relying on paper-reported values. It begins by correctly identifying RUNX1-specific rows in chipseq_peak_calls.tsv through the chip_antibody column and mapping those rows to the proper DMSO and AI-10-49 conditions without label confusion, resolving valid narrowPeak paths even when the manifest uses a results/ prefix that must be remapped to processed_data/. The core computation applies a symmetric interval-comparison method, such as bedtools merge with per-peak condition labels, that avoids asymmetric one-to-many overlaps, and classifies merged clusters into gained (AI-10-49 only), lost (DMSO only), and unchanged (both conditions) sets, yielding numerical results consistent with the local data: gained ≈ 7,950, lost ≈ 97, unchanged ≈ 1,219 (supporting DMSO ≈ 1,329 and AI-10-49 ≈ 9,169 raw peaks). Beyond counting, the answer annotates gained and unchanged clusters against GTF-derived intervals for all four feature classes, promoter (±2 kb of TSS), exon, intron, and intergenic, using a defined precedence rule (promoter > exon > intron > intergenic) to avoid double-counting, then applies a quantitative test such as Fisher's exact test with unchanged clusters as the reference set, correctly identifying promoter regions as the only positively enriched feature class (enrichment ratio ≈ 1.28, Fisher p ≈ 1.65e-09) while confirming that exon, intron, and intergenic classes are not enriched. Finally, the answer interprets these results in biological terms, linking the promoter-enriched redistribution of RUNX1 to transcriptional rewiring after CBFβ-SMMHC inhibition by AI-10-49.
+
+CRITERIA (6):
+
+Criterion 1: RUNX1 Data Selection and Conditioning
+
+    Description: Evaluates correct extraction of RUNX1 ChIP-seq peak inputs for both DMSO and AI-10-49 conditions from the provided manifest.
+    Levels: A=15 B=7 C=0
+      [A]: Correctly (1) identifies RUNX1-specific entries from chipseq_peak_calls.tsv by filtering on the chip_antibody column (e.g., matching "RUNX1" or "Anti-RUNX1/AML1 antibody"), (2) maps the two resulting rows to the correct DMSO and AI-10-49 conditions without label confusion, and (3) resolves valid narrowPeak file paths for both conditions, handling the results/ to processed_data/ path remap if necessary.
+
+      [B]: Partially correct input setup but with condition-label swaps, OR RUNX1 filtering that selects a superset of relevant rows without further disambiguation, OR ambiguous or unresolved peak-file path selection that nonetheless yields at least one valid condition file.
+
+      [C]: Uses wrong assay or antibody files, conflates conditions, or fails to establish any valid RUNX1 DMSO-vs-AI-10-49 inputs.
+
+Criterion 2: Differential Peak Occupancy Computation
+
+    Description: Evaluates correct computational method for deriving gained, lost, and unchanged RUNX1 peak clusters.
+    Levels: A=30 B=15 C=0
+      [A]: Correctly (1) applies an explicit interval-comparison method (e.g., bedtools merge with per-peak condition labels) that avoids asymmetric one-to-many overlaps from naive pairwise intersection, (2) defines gained, lost, and unchanged sets consistently and symmetrically (gained = AI-10-49 only, lost = DMSO only, unchanged = both conditions present in the merged cluster), and (3) executes the comparison reproducibly without logical contradictions in set membership definitions.
+
+      [B]: Attempts differential occupancy analysis but with inconsistent overlap rules, OR uses an asymmetric method such as one-directional bedtools intersect yielding double-counted or non-complementary sets, OR has implementation issues that nevertheless produce structurally recognizable gained/lost/unchanged categories.
+
+      [C]: No valid peak-comparison method applied, or gained/lost/unchanged derivation is fundamentally incorrect such that the resulting sets are meaningless or undefined.
+
+Criterion 3: Quantitative Reporting Accuracy
+
+    Description: Evaluates correctness and completeness of peak-count reporting for all required output categories.
+    Levels: A=25 B=12 C=0
+      [A]: Correctly (1) reports numeric gained, lost, and unchanged cluster counts consistent with the local processed data (gained ≈ 7,950, lost ≈ 97, unchanged ≈ 1,219), (2) includes supporting condition-level totals or sanity checks (DMSO ≈ 1,329 raw peaks, AI-10-49 ≈ 9,169 raw peaks), and (3) presents internally consistent quantitative results where the three cluster categories are mutually exclusive and together account for all merged clusters.
+
+      [B]: Reports partial counts, OR omits one required count category (e.g., reports gained and lost but not unchanged), OR has minor arithmetic or category inconsistencies, OR reports counts that are structurally plausible but numerically inconsistent with the local data due to implementation errors.
+
+      [C]: Missing all required counts, reports values numerically incompatible with the stated method, or presents numbers not derived from the analysis.
+
+Criterion 4: Genomic Feature Enrichment of Gained Peaks
+
+    Description: Evaluates rigorous identification of genomic features enriched among gained RUNX1 binding sites relative to unchanged sites.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly (1) annotates gained and unchanged peak clusters to all four genomic feature classes, promoter (±2 kb of TSS), exon, intron, and intergenic, using GTF-derived intervals with the explicit precedence rule promoter > exon > intron > intergenic to prevent double-counting, (2) compares gained versus unchanged as the reference set using a quantitative statistical test (e.g., Fisher's exact test), and (3) correctly identifies promoter regions as the only positively enriched class (enrichment ratio ≈ 1.28, Fisher p ≈ 1.65e-09) while correctly reporting that exon, intron, and intergenic regions are not positively enriched; does not claim unsupported enrichment of other feature classes.
+
+      [B]: Performs feature annotation but applies fewer than four feature classes, OR uses no precedence rule leading to double-counting of overlapping features, OR lacks a statistical comparison against unchanged regions as the reference set, OR incorrectly claims additional feature classes beyond promoter are enriched, OR provides enrichment conclusions without quantitative support.
+
+      [C]: Does not perform feature enrichment analysis, annotates only gained peaks with no reference comparison against unchanged peaks, or reports conclusions that are unsupported by or directly contradict the computed enrichment statistics.
+
+Criterion 5: Mechanistic Interpretation
+
+    Description: Evaluates interpretation of how RUNX1 occupancy changes relate to the AI-10-49 therapeutic mechanism.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly (1) interprets the direction and magnitude of RUNX1 redistribution, noting the dominant gain of binding sites far exceeding losses (gained ≈ 7,950 vs lost ≈ 97), (2) links the promoter-region enrichment of gained sites to a regulatory consequence such as broad transcriptional rewiring or activation of new gene programs following CBFβ-SMMHC inhibition by AI-10-49, and (3) states biologically meaningful conclusions that are consistent with the computed peak counts and enrichment results rather than contradicting them.
+
+      [B]: Interpretation is partially correct but generic, OR notes RUNX1 occupancy increases without grounding the claim in specific computed counts, OR invokes plausible biology without connecting it to the specific promoter-enrichment finding, OR correctly identifies the net gain in RUNX1 binding but omits the mechanistic implication of promoter-proximal redistribution.
+
+      [C]: Interpretation is absent, contradicts the reported results, or presents conclusions that are directionally inconsistent with the computed RUNX1 occupancy changes.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

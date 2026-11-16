@@ -1,0 +1,95 @@
+RUBRIC: DA-24-3
+
+Total Points: 100/100
+
+CRITERIA (9):
+
+Criterion 1: Inverse-Variance Weights and Standard Error
+
+    Description: Evaluates the calculation of inverse-variance weights and the combined standard error for the fixed-effects meta-analysis.
+    Levels: A=10 B=8 C=0
+      [A]: Correctly calculates inverse-variance weights and accurately computes the weighted effect size (Beta).
+
+      [B]: Calculates the meta-Beta by Sample Size Weighted.
+
+      [C]: Fails to calculate weights.
+
+Criterion 2: Meta P-value via Z-test
+
+    Description: Assesses the computation meta-P-value using a Z-test.
+    Levels: A=10 B=8 C=0
+      [A]: Calculates the meta-P-value using the appropriate Z-score and normal distribution function.
+
+      [B]: Calculates the meta-P-value using sample size weight.
+
+      [C]: Fails to compute the P-value correctly.
+
+Criterion 3: Allele Frequency, MAF, and Locus Definition
+
+    Description: Evaluates the calculation of the weighted allele frequency, minor allele frequency (MAF), and the definition of genomic loci based on chromosome and position.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly computes weighted allele frequency based on sample sizes, accurately derives MAF, and correctly defines loci using appropriate genomic windows.
+
+      [B]: Calculates allele frequency but misses the sample size weighting, or defines loci with incorrect window sizes.
+
+      [C]: Fails to calculate allele frequency or define loci.
+
+Criterion 4: P-value Thresholds and Direction Consistency
+
+    Description: Assesses the application of strict P-value thresholds for discovery, replication, and meta-analysis, as well as checking for effect direction consistency.
+    Levels: A=10 B=8 C=0
+      [A]: Applies strict and correct P-value thresholds across all cohorts and ensures the effect direction (Beta sign) is consistent between discovery and replication.
+
+      [B]: Applies other genome-wide significant thresholds of P-value filtering or Applies FDR methods for multiple-test.
+
+      [C]: Fails to filter the data at genome-wide significance or Fails to FDR methods for multiple-test or forgets to check for effect direction consistency.
+
+Criterion 5: Multi-Phenotype Locus Identification
+
+    Description: Evaluates the logic used to identify loci that are significantly associated with more than one phenotype.
+    Levels: A=10 B=5 C=0
+      [A]: Correctly aggregates filtered data to count unique phenotypes per locus and accurately identifies target loci shared across multiple phenotypes.
+
+      [B]: Aggregates data but makes minor errors in counting or selects loci that do not strictly meet the shared criteria.
+
+      [C]: Fails to identify shared loci or uses flawed logic for aggregation.
+
+Criterion 6: Metabolite Data Loading and SD Calculation
+
+    Description: Assesses the loading of raw metabolite data and the calculation of standard deviations required for colocalization analysis.
+    Levels: A=10 B=2 C=0
+      [A]: Successfully loads raw metabolite data and correctly calculates the standard deviation for each phenotype, handling NA values appropriately.
+
+      [B]: Loads the data but makes errors in standard deviation calculation, such as failing to exclude non-numeric columns or mishandling NAs.
+
+      [C]: Fails to load raw data or calculate standard deviations.
+
+Criterion 7: Coloc.abf Pairwise Execution
+
+    Description: Evaluates the preparation of dataset lists (pvalues, beta, varbeta, snp, MAF, sdY) and the execution of the pairwise coloc.abf function.
+    Levels: A=20 B=5 C=0
+      [A]: Perfectly formats the input lists for coloc.abf with all required parameters and successfully runs the pairwise colocalization loop.
+
+      [B]: Runs colocalization but misses or incorrectly formats some parameters in the input lists, such as missing MAF or sdY.
+
+      [C]: Fails to format the data correctly or the colocalization function crashes due to invalid inputs.
+
+Criterion 8: Top Hypothesis Extraction and Conclusion
+
+    Description: Assesses the extraction of the top hypothesis (H0-H4) from the colocalization results and the accuracy of the final written conclusion.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly extracts the hypothesis with the highest posterior probability and provides a clear, accurate final answer identifying the shared locus and the H4 conclusion.
+
+      [B]: Extracts results but misinterprets the posterior probabilities, or provides a vague final answer that misses specific metabolite names.
+
+      [C]: Fails to extract the correct hypothesis or provides an entirely incorrect final conclusion.
+
+Criterion 9: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

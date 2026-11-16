@@ -1,0 +1,67 @@
+RUBRIC: Differential Expression Analysis of Feminizing GAHT Proteomics
+
+Total Points: 100/100
+
+Notes: This rubric evaluates differential expression analysis of Olink proteomics data for feminizing GAHT. Excellence requires proper paired sample matching, correct statistical testing with multiple testing correction, accurate identification of significant proteins with direction of change, comparison between regimens to identify unique and shared proteins, and biological interpretation of results. The analysis focuses on methodology, statistical rigor, and biological insights without visualization requirements.
+
+CRITERIA (6):
+
+Criterion 1: Data Handling and Preprocessing
+
+    Description: Assesses correct loading, preparation, and structuring of Olink NPX data and metadata for paired analysis.
+    Levels: A=20 B=10 C=0
+      [A]: Loads Olink NPX dataset (Olink_CPA_SPIRO_GAHT_and_pregnancy.npx.csv) and sample metadata (GAHT_pregnancy_metadata_SDRF.tsv) correctly, restricts analysis to GAHT samples, identifies baseline (0 months) and 6-month samples for both CPA and SPIRO groups, matches paired samples by participant identifier, handles duplicate assay measurements (averages or appropriate method), reshapes data to sample × protein matrix, and handles missing values appropriately without biasing results.
+
+      [B]: Loads correct datasets with minor issues such as incomplete handling of duplicates, a few mislabeled samples, or suboptimal missing value handling, but overall data structure supports valid downstream analysis.
+
+      [C]: Fails to load required data, misidentifies GAHT sample groups or timepoints, does not match paired samples correctly, or structures data incorrectly preventing valid statistical analysis.
+
+Criterion 2: Statistical Testing and Multiple Testing Correction
+
+    Description: Evaluates proper paired statistical testing and multiple testing correction for differential expression analysis.
+    Levels: A=35 B=18 C=0
+      [A]: For each regimen (CPA and SPIRO) separately, performs paired statistical test (e.g., paired t-test or Wilcoxon signed-rank test) comparing 6-month vs baseline within matched participants for every protein, applies appropriate multiple testing correction (e.g., Benjamini-Hochberg FDR or Bonferroni) across all proteins tested, defines significance at adjusted p-value threshold (typically adj p < 0.05), and reports both raw p-values and adjusted p-values in results.
+
+      [B]: Conducts statistical testing but with methodological issues such as using unpaired approach instead of paired, incomplete sample matching, inappropriate or unclear multiple testing correction, or incomplete reporting of p-values and adjusted p-values, though these issues do not fundamentally invalidate the main conclusions.
+
+      [C]: Does not perform statistical tests, uses inappropriate comparisons (e.g., comparing baseline across different participants or mixing regimens), omits multiple testing correction entirely, or methodology is fundamentally flawed.
+
+Criterion 3: Identification of Significant Proteins with Direction of Change
+
+    Description: Assesses accurate identification, quantification, and characterization of significantly changed proteins.
+    Levels: A=18 B=9 C=0
+      [A]: Reports the number of proteins that change significantly (adj p < 0.05) within each regimen separately, determines direction of change (increase or decrease) for each significant protein using mean differences or fold changes, correctly classifies proteins as upregulated or downregulated, and provides representative examples of proteins with largest changes in each direction.
+
+      [B]: Reports counts of significant proteins per regimen but with issues such as mislabeling direction of change for some proteins, incomplete directional analysis, or omitting representative examples of top changed proteins.
+
+      [C]: Fails to identify significant proteins correctly, does not assess or reports incorrect direction of change, or significance threshold is not applied properly.
+
+Criterion 4: Comparison Between Regimens for Unique and Shared Proteins
+
+    Description: Evaluates correct identification of regimen-specific and shared protein changes.
+    Levels: A=10 B=5 C=0
+      [A]: Identifies proteins that are unique to CPA (significant in CPA only), unique to SPIRO (significant in SPIRO only), and shared between both regimens (significant in both CPA and SPIRO) based on the set of significant proteins (adj p < 0.05), describes the overlap accurately using set operations or Venn diagram logic, and quantifies the number of proteins in each category (CPA-unique, SPIRO-unique, shared).
+
+      [B]: Identifies overlap between regimens but with issues such as misclassifying some proteins into wrong categories, omitting counts for one category, or using unclear methodology for determining uniqueness versus overlap.
+
+      [C]: Does not compare regimens, misinterprets the overlap entirely (e.g., reports only shared proteins without unique ones), or methodology for comparison is fundamentally incorrect.
+
+Criterion 5: Biological Interpretation of Results
+
+    Description: Assesses depth and accuracy of biological interpretation relating findings to GAHT mechanisms.
+    Levels: A=17 B=8 C=0
+      [A]: Discusses biological meaning of results including overarching patterns (e.g., general suppression or elevation of plasma proteome after GAHT, metabolic effects, immune changes), highlights proteins that show unique changes in one regimen (particularly those elevated uniquely in CPA or SPIRO), relates findings to known mechanisms of feminizing GAHT (estrogen and antiandrogen effects on protein synthesis, liver metabolism, cardiovascular markers), and acknowledges how results align with or differ from published study expectations.
+
+      [B]: Provides some biological interpretation but misses important patterns (e.g., only discusses individual proteins without overarching themes), makes limited connections to GAHT mechanisms, or omits discussion of regimen-specific differences.
+
+      [C]: Offers no biological interpretation, draws incorrect conclusions unrelated to the data, or interpretation contradicts the statistical findings.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

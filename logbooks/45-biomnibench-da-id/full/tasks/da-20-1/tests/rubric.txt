@@ -1,0 +1,79 @@
+RUBRIC: DA-20-1
+
+# Rubric for DA-20-1
+
+Total Points: 100/100
+
+Notes: The key to a full-score answer is demonstrating (1) correct isolation of baseline transcriptional signatures by filtering for DMSO controls at 0.0625% concentration with duplicate removal and QC review, (2) implementation of a standard DRUG-seq bioinformatics pipeline (logCPM normalization, variance filtering to top 10,000 genes, TruncatedSVD to ~50-100 components), (3) K-means clustering (k=4) with quantitative verification of cluster-to-cell-line concordance, and (4) biological interpretation with marker-gene evidence showing that fibroblasts and melanocytes are transcriptionally distinct while AoSMCs and SkMMs show similarity due to their shared mesenchymal/contractile lineage. Answers that correctly identify the four distinct baseline clusters and the AoSMC-SkMM contractile-lineage similarity with supporting marker-gene evidence should receive full credit.
+
+CRITERIA (7):
+
+Criterion 1: Data Selection and Precision Filtering (20 points)
+
+    Description: Evaluates the ability to correctly subset the high-throughput DRUG-seq dataset for baseline validation by filtering metadata, handling duplicates, and reviewing sample quality.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly filters for compound == "DMSO" and percent_volume_dmso == 0.0625, removes duplicate sample entries via drop_duplicates() or equivalent, aligns metadata sample IDs with the gene count matrix column indices, and summarizes QC metrics (total_umi_count, sequencing_saturation, ngenes3, percent_mitochondrial) via .describe() or equivalent to verify no extreme outliers in the resulting 192-sample subset.
+
+      [B]: Correctly filters for compound == "DMSO" and percent_volume_dmso == 0.0625 and handles duplicate removal, but does not summarize or review QC metrics for the subsetted samples.
+
+      [C]: Fails to filter for the correct control condition (DMSO at 0.0625%), uses compound-treated samples for the baseline analysis, or does not address duplicate entries, resulting in an invalid baseline dataset or matrix alignment errors.
+
+Criterion 2: Normalization and Feature Selection (25 points)
+
+    Description: Evaluates the implementation of the bioinformatics pipeline for noise reduction and signal enhancement on sparse UMI count data.
+    Levels: A=25 B=13 C=0
+      [A]: Implements logCPM normalization (library-size scaling to 1e6 followed by log2(x+1) transformation), applies variance-based filtering to retain the top ~10,000 most variable genes for downstream analysis, and uses TruncatedSVD (or converts sparse to dense before standard PCA) for dimensionality reduction to ~50-100 components, stating that TruncatedSVD is preferred for sparse UMI count matrices to avoid materializing a dense ~59,000-gene matrix.
+
+      [B]: Performs logCPM normalization and dimensionality reduction but omits variance-based gene filtering, or uses standard PCA on a densified matrix without mentioning TruncatedSVD is preferred for sparse UMI count matrices.
+
+      [C]: Skips normalization entirely, attempts to cluster or reduce raw UMI counts, or fails to perform any feature selection, leading to technical artifacts dominating biological signal.
+
+Criterion 3: Dimensionality Reduction (15 points)
+
+    Description: Evaluates correct execution of TruncatedSVD and choice of components for downstream clustering.
+    Levels: A=15 B=8 C=0
+      [A]: Applies TruncatedSVD with an appropriate number of components (50-100), verifies that the selected components capture meaningful biological variance (e.g., by inspecting explained variance or scree-equivalent plot), and uses the reduced embedding as input to clustering rather than the full gene-expression matrix.
+
+      [B]: Uses TruncatedSVD with some number of components but does not justify the component count, or applies dimensionality reduction after clustering rather than before.
+
+      [C]: Does not perform dimensionality reduction, clusters directly on the high-dimensional normalized matrix, or uses a method incompatible with sparse matrices.
+
+Criterion 4: Cluster Validation and Cell-Line Concordance (20 points)
+
+    Description: Evaluates K-means clustering with k=4 and quantitative verification that each cluster maps to exactly one cell line.
+    Levels: A=20 B=10 C=0
+      [A]: Applies K-means clustering with k=4 to the SVD-reduced embedding, states that k was chosen based on the four known cell types, and demonstrates cluster-to-cell-line concordance via a cross-tabulation or value_counts showing each K-means cluster maps to exactly one cell line with no misassignment (48 samples per cluster).
+
+      [B]: Performs K-means clustering with k=4 but does not quantitatively verify cluster-to-cell-line concordance via cross-tabulation, or the clusters do not perfectly separate the four cell types.
+
+      [C]: Fails to implement clustering, does not justify the choice of k=4, or produces results where cell types are intermixed due to poor preprocessing.
+
+Criterion 5: Biological Interpretation of Lineage Similarity (10 points)
+
+    Description: Evaluates the biological interpretation of clustering results, specifically whether the respondent identifies and explains the AoSMC-SkMM transcriptional similarity using marker-gene evidence and lineage biology.
+    Levels: A=10 B=5 C=0
+      [A]: States that fibroblasts and melanocytes are transcriptionally distinct from each other and from the muscle-lineage cells, while AoSMCs and SkMMs show greater transcriptional similarity; identifies established cell-type markers including at minimum ACTA2 and TAGLN for AoSMCs, MEST or MDK for SkMMs, PMEL or MLANA for melanocytes, and DCN or LUM for fibroblasts; and attributes AoSMC-SkMM similarity to their shared mesenchymal/contractile lineage.
+
+      [B]: States that fibroblasts and melanocytes are distinct while AoSMCs and SkMMs show greater similarity, and references cell-type markers, but does not attribute AoSMC-SkMM similarity to their shared mesenchymal/contractile lineage or does not cite specific shared markers such as ACTA2 and TAGLN as evidence of this lineage relationship.
+
+      [C]: Misinterprets the data to claim all four cell types are equally distinct, fails to identify the AoSMC-SkMM similarity pattern, or provides no biological interpretation of the clustering results.
+
+Criterion 6: Assumptions and Limitations (10 points)
+
+    Description: Evaluates whether key analytical assumptions and limitations are explicitly acknowledged.
+    Levels: A=10 B=5 C=0
+      [A]: Explicitly addresses at least two of the following: (1) K-means assumes spherical clusters with equal variance and may be sensitive to initialization; (2) TruncatedSVD component selection is arbitrary and different choices may alter cluster boundaries slightly; (3) the 192-sample DMSO subset may not fully represent population-level baseline variability across batches or donors; (4) cell-type markers used for annotation are database-derived and require experimental validation in this specific DRUG-seq context.
+
+      [B]: Mentions at least one limitation but without sufficient specificity about how it affects the conclusions.
+
+      [C]: Omits limitations entirely or misrepresents the robustness of the clustering results.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

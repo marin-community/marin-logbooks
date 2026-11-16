@@ -1,0 +1,67 @@
+RUBRIC: DA-10-3
+
+Total Points: 100/100
+
+Notes: A full-score answer demonstrates screening performance evaluation across multiple MLO participant datasets and membrane-bound control datasets using a fixed negative background set. A full-score answer: (1) correctly identifies MLO participant datasets versus membrane-bound control datasets, defines the fixed negative background set, and lists all evaluated predictor score columns, (2) constructs labels for each dataset with positives from dataset membership and negatives from the same fixed background set removing any overlap, (3) properly handles missing predictor scores by dropping NaNs per predictor-dataset pair and checking that both classes remain with valid sample sizes, (4) correctly computes ROC-AUC for every dataset × predictor combination with correct score direction and no index or label mismatches, (5) provides clear structured AUC summary table with dataset-by-predictor results including sample sizes, and (6) quantitatively compares predictor performance on MLO datasets versus control datasets using group-level aggregation and states main conclusion consistent with computed results.
+
+CRITERIA (6):
+
+Criterion 1: Correct Identification of Inputs
+
+    Description: Evaluates correct identification and separation of MLO participant datasets, membrane-bound control datasets, fixed negative background set, and predictor score columns.
+    Levels: A=16 B=9 C=0
+      [A]: Correctly separates datasets into MLO participant group (proteins that participate in membraneless organelles or undergo liquid-liquid phase separation) versus membrane-bound or control group (proteins associated with membrane-bound organelles or serving as negative controls), clearly defines the fixed negative or background set (consistent set of non-phase-separating proteins used as negatives across all dataset comparisons to enable fair cross-dataset performance evaluation), lists all evaluated predictor score columns present in data (PScore, PLAAC, catGRANULE, FuzDrop if available, or other phase separation predictors), documents which proteins belong to each dataset category with clear membership criteria, verifies that dataset groupings are mutually exclusive where appropriate (same protein not counted in multiple positive datasets unless biologically justified).
+
+      [B]: Mostly correct identification but with minor omissions such as missing one dataset from MLO or control group without justification, does not clearly distinguish between MLO participants and control datasets (groups them together or separation is ambiguous), lists most predictors but misses one predictor column that is available in data, or fixed negative set definition is unclear or inconsistent across comparisons.
+
+      [C]: Incorrect or unclear dataset definitions (does not distinguish MLO from control datasets, confuses positive and negative sets), fails to identify fixed negative background set (uses different negatives for each dataset comparison invalidating performance comparisons), does not list predictor columns or uses wrong columns for evaluation, or fundamental misunderstanding of dataset structure.
+
+Criterion 2: Label Construction per Dataset
+
+    Description: Evaluates correct construction of binary labels for each dataset ensuring positives come from dataset membership and negatives come from fixed background set with overlap removal.
+    Levels: A=23 B=9 C=0
+      [A]: Correctly constructs labels for each dataset by for each MLO participant dataset or control dataset, defining positive samples as proteins that are members of that specific dataset based on dataset membership flags or identifiers, defining negative samples as proteins from the SAME fixed background set (consistent negative set used across all datasets for fair comparison), explicitly checking for and removing any overlap between positive and negative sets (proteins appearing in both dataset membership and fixed background are handled appropriately by exclusion or prioritization with clear documentation), ensuring label arrays match protein identifiers or indices correctly (no misalignment between labels and predictor scores), verifying that each dataset comparison has sufficient positive and negative samples for ROC-AUC computation (minimum sample size requirements met), documenting final positive and negative counts per dataset after overlap removal.
+
+      [B]: Constructs labels mostly correctly but with issues such as uses fixed background set for negatives but does not explicitly check or remove overlap between positives and negatives (may include same protein in both classes), label construction is correct for some datasets but inconsistent across all datasets, does not verify label-to-score alignment (potential index mismatches not checked), or does not document final sample counts per dataset making it unclear if sufficient samples exist.
+
+      [C]: Label construction is wrong or inconsistent (uses different negative sets for different datasets preventing fair comparison, confuses positive and negative labels, positives and negatives overlap without proper handling), labels do not match protein identifiers leading to misaligned evaluation, or fundamental errors in binary label assignment.
+
+Criterion 3: Proper Handling of Missing Scores and Validity Checks
+
+    Description: Evaluates appropriate handling of missing predictor values and verification that valid evaluation is possible for each dataset-predictor combination.
+    Levels: A=17 B=6 C=0
+      [A]: Correctly handles missing values by for each predictor-dataset pair combination, identifying proteins with missing predictor scores (NaN or undefined values), removing proteins with missing scores for that specific predictor from that specific dataset evaluation (predictor-specific filtering preserves maximum data for each analysis), after removing missing values checking that both positive and negative classes still have sufficient samples (e.g., at least 5-10 samples per class minimum), flagging or skipping invalid cases where one class has too few samples or all samples have missing scores for that predictor (documents which predictor-dataset combinations are not evaluable), using broad filtering cautiously (does not remove proteins across all predictors if only one predictor has missing score for that protein, filters per predictor separately), documenting how many proteins are excluded due to missing scores per predictor-dataset combination.
+
+      [B]: Handles missing values but with issues such as drops NaN values but does not verify both classes remain after filtering (may proceed with evaluation when one class has very few or zero samples), uses overly broad filtering (removes protein from all analyses if any single predictor has missing score for that protein, unnecessarily reducing sample sizes), does not flag or document invalid cases where evaluation is not reliable, or missing value handling is inconsistent across predictor-dataset combinations.
+
+      [C]: Missing values are mishandled (treats NaN as 0 or other numeric value leading to incorrect score distributions, includes NaN values in ROC-AUC computation causing errors), does not remove missing values at all, or results are unreliable due to insufficient samples or invalid data not being checked.
+
+Criterion 4: ROC-AUC Computation Correctness
+
+    Description: Evaluates correct computation of ROC-AUC for all dataset × predictor combinations with proper score direction and label alignment.
+    Levels: A=29 B=15 C=0
+      [A]: Correctly computes AUC by for every valid dataset × predictor combination, extracting predictor scores for proteins in that dataset comparison (positives from dataset membership, negatives from fixed background set), extracting corresponding binary labels (1 for positives, 0 for negatives or equivalent encoding), ensuring scores and labels are properly aligned (same ordering, no index mismatches between score array and label array), using correct score direction (higher predictor score indicates higher probability of phase separation or dataset membership, if predictor uses reverse scoring this is handled appropriately), calculating area under ROC curve (AUC) as numerical summary metric of classifier discrimination performance, verifying AUC values are in valid range (0 to 1, with values near 0.5 indicating random performance and values near 1.0 indicating excellent discrimination), documenting which function is used for AUC computation (e.g., sklearn roc_auc_score or equivalent, ensuring correct usage), computing AUC for all predictors across all datasets without missing combinations (unless flagged as invalid due to insufficient data).
+
+      [B]: Computes AUC but with partial implementation or methodological issues such as AUC computed for most dataset-predictor combinations but some are missing without explanation or flagging, score direction is incorrect for some predictors (uses reverse scoring without correction leading to AUC < 0.5 when should be > 0.5 or vice versa), minor index or label misalignment issues that affect some but not all computations, does not verify AUC values are in reasonable range (accepts invalid AUC values without checking), or uses AUC computation method incorrectly (wrong parameters, wrong input format).
+
+      [C]: AUC computation is missing entirely, fundamentally incorrect (computes accuracy or other metric instead of AUC), uses wrong labels or scores (swaps positive and negative classes, uses wrong predictor column), massive index mismatches causing nonsensical results, or AUC values are clearly wrong (all values equal 0.5, values outside 0-1 range).
+
+Criterion 5: MLO versus Control Comparison and Conclusion
+
+    Description: Evaluates quantitative comparison of predictor performance on MLO datasets versus control datasets with group-level aggregation and evidence-based conclusion.
+    Levels: A=15 B=5 C=0
+      [A]: Provides rigorous comparison and conclusion by computing group-level aggregation of AUC values for MLO participant datasets (e.g., mean AUC, median AUC across all MLO datasets for each predictor), computing group-level aggregation of AUC values for membrane-bound or control datasets (e.g., mean AUC, median AUC across control datasets for each predictor), quantitatively comparing MLO group performance versus control group performance for each predictor (reporting whether predictors achieve higher AUC on MLO datasets than on control datasets, calculating difference or ratio between MLO and control group AUCs), stating main conclusion consistent with computed results (e.g., if MLO datasets show higher AUC than controls conclude predictors are more effective at identifying MLO participants, if no difference conclude predictors do not distinguish MLO from controls), supporting conclusion with specific quantitative evidence (citing mean AUC values, AUC differences, or statistical comparisons), avoiding overclaiming or stating conclusions not supported by data.
+
+      [B]: Provides comparison but without rigorous group-level aggregation such as offers qualitative conclusion (e.g., "predictors work better on MLO datasets") without computing mean or median AUC per group to support claim, mentions differences between MLO and control datasets but does not quantify differences numerically, grouping of datasets into MLO versus control is unclear or inconsistent, or conclusion is generally consistent with results but lacks specific quantitative support.
+
+      [C]: No comparison between MLO and control dataset groups provided, conclusion is missing entirely, conclusion contradicts computed AUC results (claims predictors work well on MLO datasets when AUC values show poor performance, or vice versa), or fundamental misunderstanding of task (does not recognize that goal is to compare predictor performance on different dataset types).
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

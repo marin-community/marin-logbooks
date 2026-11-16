@@ -1,0 +1,67 @@
+RUBRIC: Body Composition-Protein Associations in Feminizing GAHT
+
+Total Points: 100/100
+
+Notes: This rubric evaluates correlation analysis between proteomic changes and body composition changes (percent fat and breast volume) during feminizing GAHT. Excellence requires correct data parsing, appropriate significance filtering using adjusted p-values, proper ranking by absolute effect size for each phenotype, biological interpretation of association directions and top proteins (especially adipokines like leptin), and contextualization within the broader study framework showing body composition drives proteomic remodeling.
+
+CRITERIA (6):
+
+Criterion 1: Data Parsing and Preparation
+
+    Description: Assesses correct loading and preparation of protein-body composition association data.
+    Levels: A=15 B=8 C=0
+      [A]: Correctly reads association table (e.g., Supplementary Table 4: 41591_2025_4023_MOESM2_ESM(Supplementary Table 4).csv), skips descriptor lines appropriately (e.g., skiprows=3 or equivalent to reach proper header row), identifies and uses correct header row for column names (protein_id, estimate_Percent_Fat, adj.p.value_Percent_Fat, estimate_Breast_Volume, adj.p.value_Breast_Volume), converts numeric columns to appropriate data types (float for estimates and p-values), and verifies data structure to ensure accurate downstream analysis.
+
+      [B]: Parses table with minor issues such as misreading some column names, extra descriptor lines included, or data type conversion problems affecting a small subset of proteins, but these issues do not fundamentally prevent analysis of the majority of proteins.
+
+      [C]: Fails to parse table correctly, uses wrong file, misidentifies all column names, or data structure is so corrupted that valid analysis cannot be performed.
+
+Criterion 2: Significance Filtering by Adjusted P-Value
+
+    Description: Evaluates proper application of adjusted p-value threshold to identify significant associations.
+    Levels: A=15 B=7 C=0
+      [A]: Applies adjusted p-value threshold (adj p < 0.05) to identify proteins significantly associated with percent body fat changes, applies same threshold separately to identify proteins significantly associated with breast volume changes, performs filtering for both phenotypes independently (same protein can be significant for one or both), reports number of significant proteins for each phenotype (expected scale: tens for percent fat, hundreds for breast volume), and documents filtering criteria clearly.
+
+      [B]: Attempts significance filtering with issues such as using incorrect threshold (e.g., unadjusted p-value instead of adjusted, or wrong cutoff like p < 0.01), applies filter to only one phenotype instead of both, or filtering logic is unclear but still identifies substantial set of significant associations.
+
+      [C]: Does not perform any significance filtering, uses arbitrary non-statistical criteria, or filtering is so incorrect that significant proteins are excluded while non-significant are retained.
+
+Criterion 3: Ranking of Associations by Effect Size
+
+    Description: Assesses proper ranking of significant proteins by absolute effect size for each phenotype.
+    Levels: A=25 B=12 C=0
+      [A]: For each phenotype separately, ranks significant proteins by absolute value of their effect size estimates (|estimate_Percent_Fat| and |estimate_Breast_Volume|) to identify strongest associations regardless of direction, reports top associated proteins for percent fat (e.g., top 10 including proteins like LEP/leptin, MAPK4, DEFB4A, CA6, MUC1) with their estimates and adjusted p-values, reports top associated proteins for breast volume (e.g., top 10 including SPINT3, INSL3, ATP5F1D, KMT5B, EDDM3B, CXCL13) with their estimates and adjusted p-values, and clearly indicates direction (positive or negative estimate) for each top protein showing whether protein levels increase or decrease with body composition changes.
+
+      [B]: Lists significant proteins with partial ranking such as not using absolute values correctly (ranks only by signed estimate missing strong negative associations), does not rank separately for both phenotypes, omits some top proteins or their effect sizes, or direction of association (positive/negative) is unclear or missing for some proteins.
+
+      [C]: Does not rank proteins by effect size, misidentifies leading associations entirely (lists proteins that are not significant or not in top ranks), or ranking methodology is fundamentally incorrect.
+
+Criterion 4: Biological Interpretation of Associations and Protein Functions
+
+    Description: Evaluates depth and accuracy of biological interpretation of association patterns and protein roles.
+    Levels: A=27 B=13 C=0
+      [A]: Interprets meaning of positive and negative effect size estimates in biological context (positive estimate means protein levels increase as body fat or breast volume increases; negative estimate means protein levels decrease), discusses biological roles of leading associated proteins with emphasis on leptin (LEP) as a well-known adipokine secreted by adipose tissue that increases with fat accumulation validating the analysis, explains why leptin and other adipokines would correlate with percent fat changes (direct production by adipose tissue), notes overlap between percent fat and breast volume associated proteins (e.g., LEP, CA6, DEFB4A, MUC1 appear in both lists), and explains why some proteins associate with both phenotypes (breast development during GAHT involves adipose tissue deposition, so adiposity markers correlate with both fat percentage and breast volume).
+
+      [B]: Provides some biological interpretation but misses key points such as not explaining effect direction meaning, limited discussion of protein functions (e.g., only mentions leptin without explaining its role as adipokine), does not recognize or explain overlap between phenotypes, or interpretation lacks mechanistic depth about why certain proteins correlate with body composition changes.
+
+      [C]: Does not interpret associations biologically, draws incorrect conclusions (e.g., reverses meaning of positive vs negative estimates), or interpretation contradicts the data findings.
+
+Criterion 5: Contextualization Within Study Framework
+
+    Description: Assesses placement of findings within broader study context and acknowledgment of analysis scope.
+    Levels: A=18 B=9 C=0
+      [A]: Relates findings to broader study conclusions by explaining that changes in body composition (increased adiposity and breast development) are major drivers of plasma proteome remodeling during feminizing GAHT, notes that body composition changes and hormone level changes together shape the proteomic response (not just hormone effects alone), explains that adipokines and metabolic proteins respond to increases in body fat and breast volume as expected from known physiology, acknowledges that correlation does not imply causation (body composition changes and protein changes may both result from hormone therapy rather than body composition directly causing protein changes), and mentions any limitations such as observational nature of associations or potential confounding factors.
+
+      [B]: Mentions study context with limited detail such as acknowledging body composition affects proteome but not explaining the broader framework, omits key connections between body composition and hormone effects, does not discuss limitations or assumptions, or contextualization is superficial.
+
+      [C]: Provides no contextualization, misrepresents study conclusions (e.g., claims body composition has no effect on proteome when data shows otherwise), or context provided is irrelevant to the analysis.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.

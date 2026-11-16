@@ -1,0 +1,77 @@
+RUBRIC: Cell-Type-Specific Transcriptional Effects of Dabrafenib (Drug-seq, GDPx2)
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) implements DESeq2 with DMSO-volume-matched controls + apeglm shrinkage; (ii) runs ranked GSEA against MSigDB Hallmark across all cell-type × concentration combinations; (iii) interprets NES values for KRAS_SIGNALING_UP, EPITHELIAL_MESENCHYMAL_TRANSITION, and MYOGENESIS across the four cell types (AoSMC, SkMM, fibroblast, melanocyte); (iv) identifies melanocytes as the cleanest BRAF-inhibition signature with concurrent suppression of all three pathways at high doses.
+
+CRITERIA (7):
+
+Criterion 1: Scope and Framing
+
+    Description: Evaluates whether the response identifies the compound, cell types, target pathways, and research-question framing.
+    Levels: A=10 B=5 C=0
+      [A]: Identifies dabrafenib; names all four cell types (human aortic smooth muscle cells / AoSMCs, human skeletal muscle myoblasts / SkMMs, human dermal fibroblasts, human epithelial melanocytes); names the three target Hallmark pathways (KRAS_SIGNALING_UP, EPITHELIAL_MESENCHYMAL_TRANSITION, MYOGENESIS); frames the question as comparing transcriptional responses across cell types for tissue-specific safety / efficacy assessment.
+
+      [B]: Identifies dabrafenib and at least three cell types but omits or misnames one or more pathways, or frames the question too narrowly.
+
+      [C]: Fails to identify dabrafenib, names fewer than three cell types, omits the pathways, or fundamentally misframes the question.
+
+Criterion 2: Differential Expression Pipeline
+
+    Description: Evaluates DE pipeline setup, preprocessing, control matching, and shrinkage.
+    Levels: A=25 B=10 C=0
+      [A]: Preprocesses (gene filtering for >3 UMI in >=3 samples; voom or equivalent normalisation; IQR-based outlier removal); runs a standard count-based DE method (DESeq2, PyDESeq2, edgeR, limma-voom, or equivalent) with effect-size shrinkage (apeglm, ashr, or equivalent) for each of the 24 (cell-type × concentration) combinations (4 × 6: 9.5, 28.5, 95, 300, 900, 3000 nM) versus DMSO controls matched on `percent_volume_dmso`; per-subset low-count filter (rowSums >= 4 in >= 3 samples); produces per-condition DE tables with shrunken log2FoldChange, p, padj.
+
+      [B]: Runs a count-based DE method but skips preprocessing OR uses pooled DMSO instead of volume-matched controls OR omits effect-size shrinkage OR analyses a subset of the 24 conditions.
+
+      [C]: No DE analysis, OR uses fundamentally incorrect method (t-tests on raw counts), OR applies DE to the wrong compound.
+
+Criterion 3: GSEA Implementation
+
+    Description: Evaluates ranked GSEA setup, ranking metric, and Hallmark collection use.
+    Levels: A=15 B=8 C=0
+      [A]: Ranks genes by shrunken log2FC (descending); runs `clusterProfiler::GSEA` (or equivalent) with MSigDB Hallmark (`msigdbr` species = `human`, category = `H`) for all (cell-type × concentration); drops NA log2FC / gene_symbol before ranking; extracts NES and adjusted p for the three target pathways.
+
+      [B]: Runs GSEA but uses an inappropriate ranking metric (raw p, unsigned fold change) OR uses a wrong collection (GO instead of Hallmark) OR analyses only a subset of conditions.
+
+      [C]: No GSEA, OR substitutes a fundamentally different method (overlap-based ORA without ranking), OR uses wrong gene sets.
+
+Criterion 4: KRAS Signalling Interpretation (Cell-Type Specific)
+
+    Description: Evaluates whether the response correctly identifies cell-type-specific KRAS suppression vs paradoxical activation.
+    Levels: A=20 B=10 C=0
+      [A]: Identifies that KRAS_SIGNALING_UP suppression is NOT shared across all cell types: melanocytes show negative NES at high doses (~-1.51 at 900 nM, ~-1.99 at 3000 nM); AoSMCs suppress only at the highest dose (~-1.66 at 3000 nM); fibroblasts (NES ~1.08-2.18) and myoblasts (NES ~1.75-2.27) show paradoxical KRAS activation.
+
+      [B]: States that KRAS suppression is not uniform but provides incomplete characterisation (e.g., identifies melanocyte suppression but omits fibroblast / myoblast paradoxical activation, OR does not note the AoSMC dose threshold).
+
+      [C]: Claims KRAS suppression is shared across all cell types, reports NES directions opposite to data, or does not interpret KRAS results.
+
+Criterion 5: EMT Pathway Interpretation (Dose-Dependent)
+
+    Description: Evaluates the broader-but-dose-dependent EMT suppression pattern.
+    Levels: A=20 B=10 C=0
+      [A]: Identifies EMT suppression as broader than KRAS but still dose-dependent: fibroblasts and melanocytes show consistent negative NES at moderate-to-high doses (fibroblasts negative 95-3000 nM; melanocytes 300-3000 nM); AoSMCs at higher doses (300-3000 nM); myoblasts mostly positive or mixed.
+
+      [B]: Identifies the dose-dependent pattern but mischaracterises one or more cell types, OR captures the trend for only two cell types.
+
+      [C]: Claims uniform EMT suppression, reports wrong NES directions, or no EMT interpretation.
+
+Criterion 6: Melanocyte BRAF-Inhibition Signature
+
+    Description: Evaluates identification of melanocytes as the cleanest BRAF-inhibition signature with mechanistic rationale.
+    Levels: A=10 B=5 C=0
+      [A]: Identifies melanocytes as showing the clearest BRAF-inhibition signature: concurrent negative NES for all three pathways at high doses (3000 nM: KRAS ~-1.99, EMT ~-1.91, myogenesis ~-1.83; 900 nM: KRAS ~-1.51, EMT ~-1.95, myogenesis ~-1.42). Connects this to dabrafenib's BRAF-inhibitor mechanism (BRAF / MAPK / ERK pathway) and explains that melanocytes depend on BRAF / MAPK signalling for proliferation so inhibition produces a coordinated quiescent-phenotype suppression.
+
+      [B]: Identifies melanocytes as distinct but fails to connect all three pathways concurrently, OR omits specific NES values, OR doesn't link to BRAF kinase inhibition mechanism.
+
+      [C]: Does not identify the melanocyte-specific signature, attributes it to the wrong cell type, or no mechanistic interpretation.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-(cell-type × concentration) NES, padj, DE counts) are traceable to the provided counts matrix or to a documented transformation. Pathway names come from MSigDB Hallmark with explicit collection / release. Cell-type names come from the dataset's metadata. Biological interpretations of dabrafenib / BRAF / MAPK signalling cite real, identifiable references (FDA approval; Hauschild et al. 2012 Lancet; Lito et al. 2013 Cancer Cell on paradoxical activation; with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, pathway / cell-type attributions, or biological claims with no clear source. Hallucinated content (made-up NES values, fabricated mechanisms, invented citations) mixed with computed results.

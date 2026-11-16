@@ -1,0 +1,77 @@
+RUBRIC: Public TCR Discovery from Expanded Terminal-Tex Cells for TCR-T Therapy
+
+Total Points: 100/100
+
+Notes: A full-score answer identifies expanded terminal-Tex (CD8T_terminal_Tex_LAYN with `T_new_name == "expanded_terminal_Tex"`) cells, defines clonotypes from paired TRA + TRB CDR3 + V/J gene usage (NOT patient-specific clonotype IDs), filters per patient for clonotypes with >=10 cells, identifies public TCRs shared by >=2 patients, reports complete TCR specifications with per-patient expansion metrics, prioritises candidates from MPR / pCR patients, and proposes concrete preclinical-validation criteria.
+
+CRITERIA (7):
+
+Criterion 1: Data Loading and Expanded Terminal-Tex Identification
+
+    Description: Evaluates loading of TCR-annotated cells + clinical metadata, validation of required columns, and correct subsetting to expanded terminal Tex cells.
+    Levels: A=19 B=10 C=0
+      [A]: Loads `GSE243013_T_with_TCR_annotation.csv.gz` (~434k T cells) and `mmc1.csv` (clinical metadata with MPR / pCR labels). Verifies required columns (sampleID, T-state annotation, TRA / TRB V / J / CDR3, clonotype expansion info). Subsets cells where `T_new_name == "expanded_terminal_Tex"` (corresponds to CD8T_terminal_Tex_LAYN with expansion status); does NOT include non-expanded terminal Tex or all CD8 cells. Reports per-patient terminal-Tex cell totals to contextualise the cohort.
+
+      [B]: Loads files but with one issue: omits column verification, OR includes non-expanded terminal Tex / all CD8 cells (loose subset), OR fails to enforce the "expanded" criterion.
+
+      [C]: Cannot load the files, or uses an unrelated cell population.
+
+Criterion 2: Clonotype Definition Using Paired TRA + TRB Chains
+
+    Description: Evaluates correct sequence-based clonotype definition that supports cross-patient comparison.
+    Levels: A=14 B=7 C=0
+      [A]: Defines each clonotype using paired TRA + TRB information: CDR3 amino-acid sequence + V gene + J gene for both chains. Uses a sequence-based key independent of patient-specific clonotype IDs (e.g., `f"{TRA_v}|{TRA_cdr3}|{TRA_j}+{TRB_v}|{TRB_cdr3}|{TRB_j}"`). Justifies why patient-specific IDs (`P1_clonotype_123`) cannot be used for public-TCR discovery.
+
+      [B]: Uses TRB-only or CDR3-only definition (less stringent but usable), OR partially relies on patient-specific clonotype IDs without an explicit cross-patient identifier.
+
+      [C]: Uses patient-specific IDs only, or fails to define clonotypes from sequences.
+
+Criterion 3: Per-Patient Expansion Quantification with >=10-Cell Filter
+
+    Description: Evaluates per-patient quantification of clonotype size and the >=10-cells-per-patient filter.
+    Levels: A=17 B=9 C=0
+      [A]: Counts cells within each (patient, clonotype) combination. Applies >=10 cells per patient filter exactly (>= 10, not >, >= 5, or >= 20). Reports retained clonotypes with their per-patient counts and any clonal-dominance metric (fraction of terminal Tex cells per patient that the clonotype occupies). Filter is applied at per-patient granularity, not pooled across all patients.
+
+      [B]: Quantifies expansion but uses a wrong threshold (>10, >=5, >=20), OR applies the filter at the wrong granularity (across patients combined), OR omits per-patient counts.
+
+      [C]: No expansion quantification or no >=10-cell filter.
+
+Criterion 4: Public TCR Search Across >=2 Patients
+
+    Description: Evaluates cross-patient aggregation of clonotypes and the public-TCR (>=2 patients) filter.
+    Levels: A=17 B=9 C=0
+      [A]: Aggregates the clonotype identifier across the entire patient cohort, counts unique patients per clonotype, and filters to clonotypes shared by >=2 patients (not >2, not >=3). Verifies no single-patient clonotypes survive into the candidate list. Reports the per-clonotype patient count and (optionally) the patient IDs.
+
+      [B]: Performs cross-patient aggregation but with one issue: counts replicates instead of unique patients, OR includes single-patient clonotypes, OR uses an undocumented threshold (>=3 instead of >=2).
+
+      [C]: No cross-patient public-TCR search, or analyses only within single patients.
+
+Criterion 5: Complete TCR-Candidate Reporting
+
+    Description: Evaluates whether each candidate TCR is reported with paired chain information, expansion metrics, and patient-sharing counts.
+    Levels: A=18 B=9 C=0
+      [A]: Per candidate, reports paired-chain specifications (TRA CDR3 + V + J; TRB CDR3 + V + J) and per-patient expansion metrics (cell counts per sharing patient demonstrating the >=10-cell threshold; optional clonal-dominance fraction) and patient-sharing count. Presents the candidates in a structured table. All reported sequences are traceable to the source data.
+
+      [B]: Reports candidates but is missing one major element: V/J gene usage for one chain, OR per-patient expansion metrics, OR patient-sharing counts, OR the chain pairing.
+
+      [C]: Reports only summary statistics without per-candidate details, or sequences are unverifiable.
+
+Criterion 6: MPR / pCR Prioritisation and Biological Rationale
+
+    Description: Evaluates linking candidates to patient response, MPR-prioritised ranking, and biological rationale for terminal-Tex expansion as a TCR-T target source.
+    Levels: A=15 B=8 C=0
+      [A]: Joins MPR / pCR labels from `mmc1.csv` to the candidate list and reports the response breakdown per candidate (which sharing patients are MPR / pCR vs non-MPR). Prioritises candidates enriched in MPR / pCR patients (responders cleared tumour, so their expanded terminal-Tex clones are more likely tumour-reactive). Provides biological rationale: chronic antigen stimulation drives terminal exhaustion; clonal expansion (>=10 cells) indicates antigen-driven proliferation and selection; public TCRs across patients suggest shared tumour-antigen targets. Connects to TCR-T therapy logic.
+
+      [B]: Reports response labels but does not use them to prioritise the ranking, OR provides only generic exhaustion biology without linking to antigen-driven expansion, OR omits the TCR-T-therapy rationale.
+
+      [C]: No MPR integration, no biological rationale, or rationale contradicts immunology.
+
+Criterion 7: Assumptions, Limitations, Preclinical-Validation Criteria, and Source Reliability
+
+    Description: Evaluates explicit assumptions / limitations stated, concrete preclinical-validation criteria proposed, and source-grounding of all claims.
+    Levels: A=0 B=-5 C=-10
+      [A]: States key assumptions and limitations: paired-chain matching is stringent (may miss near-matches with 1-2 AA differences); >=10 cells / >=2 patients are practical heuristics, not biological thresholds; terminal-Tex expansion is correlative with tumour-reactivity, not causal (bystander / viral specificity possible); no antigen identification or HLA restriction provided; potential for off-tumour toxicity unknown without safety screening; patient HLA heterogeneity may limit candidate generalisability. Proposes concrete preclinical validation steps: HLA restriction typing of candidate TCRs; antigen-specificity screening (peptide-MHC libraries, mass-spec immunopeptidomics); safety assessment against normal tissue antigens; in vitro potency (IFN-γ, cytotoxicity, proliferation against tumour); in vivo efficacy in HLA-matched PDX models; manufacturability (TCR transfer efficiency, T-cell expansion potential). Numerical results (per-clonotype counts, patient-sharing counts) are traceable to the provided data; method names match what was actually run; biological / clinical interpretations of TCR-T therapy and tumour-reactive T-cell biology are supported by real, identifiable references (e.g., D'Angelo et al. 2018 Nat Med on TCR-T; Chandran & Klebanoff 2019 Nat Rev Cancer; author + year + DOI).
+
+      [B]: Mentions limitations and validation steps but vaguely ("more validation needed"), OR omits a major validation step (HLA, safety, specificity), OR cites only generic literature without identifiable references.
+
+      [C]: No limitations or validation criteria, or all values / claims are unsourced or fabricated.

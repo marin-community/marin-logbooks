@@ -1,0 +1,67 @@
+RUBRIC: Mutation Enrichment Analysis in Anti-PD-1 Response
+
+Total Points: 100/100
+
+Notes: A full-score answer identifies which genes are mutated at significantly different rates between responders and non-responders in the Hugo et al. cohort, applying a non-parametric, multiple-testing-corrected test on a properly-classified cohort. Two valid analytical paths exist: (i) recompute from per-mutation calls in Sheet S1D using a Fisher's exact / hypergeometric test on patient-level recurrence vs Response, with BH-FDR; (ii) read the paper's own pre-computed gene-level enrichment from Sheet S1E (columns `Gene`, `pAdjR`, `pAdjNR`, etc.) and report the significant genes directly with attribution. BRCA2 should appear as the canonical responder-enriched finding.
+
+CRITERIA (6):
+
+Criterion 1: Data Identification and Cohort Loading
+
+    Description: Evaluates correct identification of the relevant supplementary sheets and loading the cohort of 38 patients with their irRECIST response.
+    Levels: A=15 B=7 C=0
+      [A]: Loads `supplementary_tables.xls` and identifies (a) Sheet S1A for patient-level irRECIST and demographic info, (b) Sheet S1D for per-mutation somatic calls, and (c) Sheet S1E for the pre-computed gene-level mutation-enrichment table. Handles the row-1-2 title / merged-header artifacts (skip=2 or equivalent). Confirms 38 patients with response classification.
+
+      [B]: Loads supplementary_tables but identifies fewer than 3 of the 4 relevant sheets (S1A / S1D / S1E), OR fails to handle the header skip, OR loads S1D without joining it to the per-patient response from S1A.
+
+      [C]: Loads the wrong sheet entirely or cannot parse the table.
+
+Criterion 2: Response Classification and Per-Gene Aggregation
+
+    Description: Evaluates correct mapping of irRECIST categories into Responder vs Non-Responder, and per-gene patient-level recurrence counting (not raw mutation counts).
+    Levels: A=25 B=12 C=0
+      [A]: Reads irRECIST classifications from Sheet S1A (not hardcoded) and groups Complete Response + Partial Response as Responders, Progressive Disease + Stable Disease as Non-Responders. Aggregates Sheet S1D per-mutation calls to per-gene patient counts (one count per patient per gene, not one count per mutation), so a hypermutator with multiple mutations in the same gene contributes 1 to that gene's count. Reports per-gene `n_R` (responders mutated) and `n_NR` (non-responders mutated) with cohort denominators.
+
+      [B]: Counts per-mutation rather than per-patient (overcounts hypermutators), OR mis-groups irRECIST (e.g., treats Stable Disease as Responder), OR hardcodes per-patient classifications instead of reading Sheet S1A.
+
+      [C]: Cannot separate Responders from Non-Responders, or cannot aggregate mutations to gene-by-patient counts.
+
+Criterion 3: Statistical Test and Multiple-Testing Correction
+
+    Description: Evaluates choice and application of a per-gene enrichment test, with multiple-testing correction.
+    Levels: A=20 B=10 C=0
+      [A]: Applies a per-gene 2x2 contingency test, ideally Fisher's exact (or chi-square with continuity correction when warranted), comparing mutated-vs-unmutated counts in Responders vs Non-Responders. Filters genes with too few hits to test (e.g., requires >=2 mutated patients in at least one group) before testing. Applies BH-FDR (`p.adjust(p, method='BH')` or `statsmodels.stats.multitest.multipletests`) across all tested genes and uses FDR-adjusted p <= 0.05 as the significance call. Reports both raw p and adjusted p per gene. Alternatively, may read the paper's pre-computed `PvalR`, `pAdjR`, `PvalNR`, `pAdjNR` from Sheet S1E and apply the same significance threshold to those values, with explicit attribution.
+
+      [B]: Picks Fisher's exact / chi-square but skips multiple-testing correction, OR applies a less-appropriate test (chi-square on small cells), OR uses raw p-values for the significance call.
+
+      [C]: Wrong test (correlation, paired test, no test), or no significance call at all.
+
+Criterion 4: Key Finding (BRCA2 Responder-Enrichment) and Results Reporting
+
+    Description: Evaluates whether the agent identifies the canonical BRCA2 enrichment in responders and presents the result table in a usable format.
+    Levels: A=25 B=12 C=0
+      [A]: Identifies BRCA2 as significantly mutated more often in responders. Reports a results table with at minimum: Gene, mutation-counts per group, raw p-value, FDR-adjusted p-value, and significance flag. If multiple significant genes are reported, lists them with their direction (R-enriched vs NR-enriched).
+
+      [B]: Identifies BRCA2 enrichment but presents results in a format that is hard to read (free text rather than table), OR reports a table without one of the required columns (e.g., missing FDR), OR identifies the wrong direction of the BRCA2 enrichment.
+
+      [C]: Does not identify BRCA2 enrichment in responders, or reports results inconsistent with the data.
+
+Criterion 5: Interpretation, Limitations, and Methodological Caveats
+
+    Description: Evaluates the interpretation of the BRCA2 finding and discussion of methodological caveats inherent in this small-cohort genome-wide mutation-enrichment analysis.
+    Levels: A=15 B=7 C=0
+      [A]: Interprets BRCA2 mutation responder-enrichment in the context of homologous-recombination deficiency, neoantigen load, and immunotherapy responsiveness. Discusses at least three of the following caveats: (a) very small cohort (n=38) gives low power for genome-wide multiple testing; (b) per-gene tests with only a handful of events have wide confidence intervals; (c) without a properly-matched external background (CGAN, Hodis, TCGA-SKCM), enrichment is relative within the study cohort, not vs the broader melanoma population; (d) hypermutators can dominate per-gene counts if not aggregated correctly; (e) clinical implications should reference larger cohorts (Snyder 2014, Rizvi 2015, Le 2017, etc.).
+
+      [B]: Interprets BRCA2 correctly but discusses fewer than 3 of the listed caveats, OR mentions caveats without connecting them to the specific BRCA2 finding.
+
+      [C]: Misinterprets BRCA2 enrichment, attributes it without biological context, or does not discuss any methodological caveat.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, sheet attributions, gene labels, and biological interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-gene mutation counts, p-values, FDR-adjusted p-values) are traceable to specific cells in `supplementary_tables.xls` Sheets S1A / S1D / S1E or to a documented transformation. Gene symbols come from the provided supplementary tables or HGNC. Statistical method names match what was actually run. Biological interpretations of BRCA2 / HRD / immunotherapy response are supported by real, identifiable references (Hugo et al. 2016 Cell, DOI: 10.1016/j.cell.2016.02.065; Davies et al. 2017 Nat Med on HRDetect; or the broader anti-PD-1 + DDR literature) rather than free-floating assertions.
+
+      [B]: Most numerical results are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, gene attributions, or biological claims with no clear source. Hallucinated content (made-up p-values, fabricated citations, invented supplementary-table contents) mixed with computed results.

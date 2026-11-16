@@ -1,0 +1,77 @@
+RUBRIC: PDAC Drug-Target Prioritization with Druggability and Dependency Integration
+
+Total Points: 100/100
+
+Notes: A full-score answer integrates Tables S2A (druggability tiers, ~2,863 rows) and S3A (per-tumour-type dual-evidence flags, ~5,262 rows). It (1) filters for PDAC dual-evidence using the `PDAC == 1` precomputed flag (combines tumour overexpression AND CRISPR dependency); (2) merges druggability tier annotations on Ensembl Gene ID; (3) prioritises by tier (T1 / T2 are the repurposing-friendly tiers) and by non-pan-essentiality (therapeutic window); (4) ranks by multi-cancer validation strength (`CancerTypes_with_TvN+Dep`); (5) gives biological rationale per top target; (6) discusses limitations and source-grounding. Expected top candidates include MET, ERBB2, ATIC, GART, SRC, MAP2K2, IKBKB, ALOX5.
+
+CRITERIA (7):
+
+Criterion 1: Data Loading, PDAC Filtering, and Tier Merge
+
+    Description: Evaluates loading of S2A + S3A, application of the `PDAC == 1` dual-evidence flag, and the join on Ensembl Gene ID to add tier annotations.
+    Levels: A=19 B=10 C=0
+      [A]: Loads S2A (~2,863 rows × 5 cols) and S3A (~5,262 rows × 19 cols) with sheet-name verification. Filters S3A by `PDAC == 1` yielding ~1,431 PDAC hits. Merges with S2A on Ensembl Gene ID via a left join, handles duplicate IDs, and retains the tier-annotated subset (~222 druggable candidates). Reports the row counts at each step.
+
+      [B]: Loads tables and applies the filter but with one issue: misses the duplicate-ID handling, OR row counts are off by >20 %, OR misinterprets the `PDAC` flag as a fold-change.
+
+      [C]: Wrong tables, wrong merge key, or no PDAC filter.
+
+Criterion 2: Druggability Tier Stratification and Interpretation
+
+    Description: Evaluates tier-distribution reporting and interpretation of what each tier means clinically.
+    Levels: A=15 B=8 C=0
+      [A]: Reports the tier distribution among the ~222 PDAC druggable candidates (T1 ~34 / 15 %; T2 ~32 / 14 %; T3 ~61 / 28 %; T4 ~73 / 33 %; T5 ~22 / 10 %). Explains tier meaning: T1 has FDA-approved drug classes (repurposing-ready), T2 has clinical-stage precedent, T3-T5 require novel chemistry. Identifies T1+T2 (~66 candidates) as the repurposing pool.
+
+      [B]: Reports the tier distribution but without explaining tier meaning, OR omits the repurposing interpretation, OR reports counts off by >25 %.
+
+      [C]: No tier stratification or tier interpretation is wrong.
+
+Criterion 3: Cancer-Selective Dependency (Pan-Essential Filter)
+
+    Description: Evaluates use of the `EssentialGenes` flag to separate pan-essential from non-pan-essential candidates and reasoning about therapeutic window.
+    Levels: A=13 B=6 C=0
+      [A]: Splits the ~222 PDAC candidates into pan-essential (~32, ~14 %) vs non-pan-essential (~190, ~86 %); explains that pan-essential genes narrow the therapeutic window (toxicity in healthy proliferating tissue); prioritises non-pan-essential candidates for downstream ranking.
+
+      [B]: Identifies the pan-essential subset but does not connect to therapeutic-window reasoning, OR misses the prioritisation step.
+
+      [C]: Does not assess essentiality or misinterprets the flag.
+
+Criterion 4: Top-Target Identification and Multi-Cancer Validation Ranking
+
+    Description: Evaluates identification of the top PDAC drug-target candidates and their ranking by multi-cancer validation evidence.
+    Levels: A=23 B=12 C=0
+      [A]: Identifies 8-12 specific gene names that satisfy `PDAC == 1` AND tier in {T1, T2} AND non-pan-essential. Ranks by `CancerTypes_with_TvN+Dep` (number of cancer types showing both overexpression and dependency, indicating broader validation). Expected top candidates include MET, ERBB2, ATIC, GART, SRC, MAP2K2, IKBKB, ALOX5 (any 6+ of these in the list).
+
+      [B]: Identifies 5-7 correct targets with mostly correct ranking but misses 2-3 high-priority candidates, OR includes 1-2 false positives that don't meet the criteria.
+
+      [C]: Does not name specific genes, or majority don't meet the criteria.
+
+Criterion 5: Biological Rationale per Top Target
+
+    Description: Evaluates pathway-level and clinical-precedent reasoning for the top candidates in the context of PDAC biology.
+    Levels: A=19 B=10 C=0
+      [A]: Connects top targets to PDAC-relevant pathways: KRAS-MAPK (MAP2K2), RTK signalling (MET, ERBB2), nucleotide metabolism (ATIC, GART), NF-kB / inflammation (IKBKB), eicosanoid / inflammation (ALOX5), SRC-family signalling (SRC). Notes the KRAS-mutant (~95 %) and high-proliferation context of PDAC. Cites approved drugs or clinical-trial precedent for top T1 candidates (e.g., ERBB2 → trastuzumab deruxtecan; MET → capmatinib / tepotinib).
+
+      [B]: Provides pathway context for most targets but skips clinical precedent or omits the PDAC biological context.
+
+      [C]: No rationale, or rationale is factually incorrect.
+
+Criterion 6: Limitations and Next Steps
+
+    Description: Evaluates acknowledgment of analytical limitations and proposed validation paths.
+    Levels: A=11 B=6 C=0
+      [A]: Discusses key limitations: cell-line dependency vs primary-tumour relevance gap; binary `PDAC` flag hides effect-size variation; pan-essential filtering can exclude conditionally-essential targets that still have good therapeutic windows; CRISPR dependency does not guarantee small-molecule druggability. Proposes validation: PDX / patient-derived organoid functional studies, target-engagement assays, drug-sensitivity profiling.
+
+      [B]: Mentions some limitations but coverage is partial or generic.
+
+      [C]: No limitations discussed, or claims are unsupported.
+
+Criterion 7: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, gene-symbol attributions, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (row counts, tier distribution, top-N target list) are traceable to the provided S2A / S3A tables, with explicit Ensembl Gene IDs / Gene Symbols. Pathway annotations come from named databases (KEGG, Reactome, MSigDB) with collection + release. Drug-target / clinical-precedent claims cite real, identifiable references (Pharos for druggability tiers; ClinicalTrials.gov, FDA approvals, or peer-reviewed publications with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and gene attributions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, gene attributions, or biological claims with no clear source. Hallucinated content (fabricated tier counts, made-up clinical precedent, invented citations) mixed with computed results.

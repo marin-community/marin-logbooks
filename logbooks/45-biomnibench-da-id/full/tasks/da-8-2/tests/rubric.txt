@@ -1,0 +1,67 @@
+RUBRIC: Insulin-Resistance × Preload Interaction on Rice Peak Glucose
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) classifies baseline insulin-resistance status using DI (Disposition Index, primary; lower = higher IR) with SSPG fallback for missing DI; (ii) computes peak glucose for both protein-preloaded and fiber-preloaded rice conditions per subject; (iii) computes peak-glucose reduction (Fiber - Protein) per subject; (iv) tests for moderation by IR status using a two-way ANOVA with an interaction term (condition × IR_status); and (v) reports the interaction effect size (partial eta-squared) and clinical interpretation. The expected interaction magnitude is ~-16.90 mg/dL (Low IR mean reduction ~+11.53 mg/dL vs High IR ~-5.37 mg/dL); the interaction p-value is non-significant (~0.598) but the clinical pattern is informative.
+
+CRITERIA (6):
+
+Criterion 1: Baseline Insulin-Resistance Classification
+
+    Description: Evaluates correct classification of subjects into Low / High IR using DI (primary) and SSPG (fallback for missing DI), with median-split methodology.
+    Levels: A=20 B=10 C=0
+      [A]: Uses DI (Disposition Index) as the primary IR marker with correct directionality (lower DI = higher IR). Falls back to SSPG when DI is missing for a subject. Applies median-split classification within the analysis cohort. Identifies the cohort with complete data (~19 subjects: ~6 High IR, ~13 Low IR) and treats IR status as a categorical moderator.
+
+      [B]: Classifies IR but uses an inappropriate marker (fasting glucose / HbA1c only without DI / SSPG), OR uses a non-median threshold without justification, OR mishandles missing DI without falling back to SSPG.
+
+      [C]: Does not classify IR status, or uses fundamentally wrong methodology.
+
+Criterion 2: Per-Condition Peak Glucose Calculation
+
+    Description: Evaluates per-subject computation of baseline and peak glucose under both protein-preloaded and fiber-preloaded rice conditions, with replicate handling.
+    Levels: A=25 B=12 C=0
+      [A]: Filters to protein-preloaded vs fiber-preloaded rice conditions separately. Defines baseline as the mean of pre-meal time points (time <= 0); defines peak as the maximum of post-meal time points (time >= 0); computes peak glucose delta = peak - baseline per subject per condition. Averages across replicates per (subject × condition) using mean (not sum / max / median). Confirms ~19 subjects with complete data for both conditions.
+
+      [B]: Computes peak glucose but with one error: wrong time windows (includes post-meal in baseline), OR uses absolute peak without baseline subtraction, OR fails to separate protein and fiber conditions correctly, OR uses sum / max instead of mean for replicate averaging.
+
+      [C]: Does not compute peak glucose correctly, or fails to separate conditions.
+
+Criterion 3: Peak Glucose Reduction (Fiber - Protein)
+
+    Description: Evaluates per-subject computation of (Fiber peak - Protein peak) and interpretation of sign.
+    Levels: A=20 B=10 C=0
+      [A]: Computes reduction per subject as Fiber peak - Protein peak. Interprets positive values as "protein preload is beneficial" (lowers peak vs fiber) and negative values as "protein preload is less effective". Reports per-IR-group means: Low IR ~+11.53 mg/dL, High IR ~-5.37 mg/dL.
+
+      [B]: Computes reduction but uses the wrong sign (Protein - Fiber), OR aggregates before computing per-subject reduction, OR fails to interpret positive vs negative values.
+
+      [C]: Does not compute the per-subject reduction.
+
+Criterion 4: Two-Way ANOVA with Interaction Term
+
+    Description: Evaluates correct two-way ANOVA testing for IR-status moderation of the condition effect.
+    Levels: A=25 B=12 C=0
+      [A]: Fits a two-way ANOVA model with `condition × IR_status` interaction term. Reports F-statistic for the interaction (~0.28) and p-value (~0.598). Correctly interprets the interaction effect as the difference of differences (Low IR effect minus High IR effect, ~-16.90 mg/dL). States that the result is non-significant at α = 0.05 but the magnitude is clinically meaningful. Names the implementation (e.g., `statsmodels.formula.api.ols` with `peak_diff ~ C(condition) * C(IR_status)` then `anova_lm`).
+
+      [B]: Runs the analysis but uses two separate t-tests instead of a two-way ANOVA, OR omits the interaction term, OR misinterprets the difference of differences.
+
+      [C]: No interaction analysis, or uses fundamentally wrong statistical method.
+
+Criterion 5: Interaction Effect Size and Clinical Interpretation
+
+    Description: Evaluates calculation and interpretation of partial eta-squared (or equivalent) and the clinical pattern.
+    Levels: A=10 B=5 C=0
+      [A]: Calculates partial eta-squared (η²p ~0.0083) or an equivalent effect size. Categorises as negligible / small / medium / large per Cohen's conventions; this is a negligible effect by η²p but a clinically interesting magnitude (~17 mg/dL difference of differences). Interprets the clinical pattern: Low IR subjects benefit more from protein preload, High IR less so. Acknowledges non-significance while noting the small sample (n=19) limits power.
+
+      [B]: Reports an effect size but uses a wrong formula, OR omits the categorical interpretation (negligible / small / medium / large), OR fails to discuss clinical relevance vs statistical significance.
+
+      [C]: No effect size, or interpretation contradicts the data.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, IR-marker definitions, and clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (per-subject peak glucose, reductions, ANOVA F / p, partial η²p) are traceable to the provided CGM and clinical files. DI / SSPG marker definitions match the dataset's documentation or named references (e.g., the original Stanford glycaemic-response cohort publication). Clinical interpretations of the protein-preload effect on glycaemic response cite real, identifiable references (e.g., Zeevi et al. 2015 Cell on personalised glycaemic response, with author + year + DOI / PubMed).
+
+      [B]: Most numerical results and definitions are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, IR-marker attributions, or clinical claims with no clear source. Hallucinated content (made-up DI cutoffs, fabricated F / p values, invented citations) mixed with computed results.

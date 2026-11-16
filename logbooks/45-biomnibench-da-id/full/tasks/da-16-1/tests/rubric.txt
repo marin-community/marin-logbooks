@@ -1,0 +1,97 @@
+RUBRIC: NAFLD Molecular Subtypes by Unsupervised Clustering (DA-16-1)
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) loads the GSE135251 hepatic count matrix and matches it to the SOFT/series-matrix metadata at the sample level; (ii) drops HTSeq summary rows and (when the question requires) excludes healthy controls so the clustering speaks to severity within NAFLD; (iii) applies a count-appropriate normalization (e.g., DESeq2 size factors / VST, edgeR TMM + log-CPM, or limma voom) plus low-expression filtering before any distance-based or PCA computation; (iv) runs an unsupervised method (hierarchical clustering and/or PCA, optionally k-means) and explicitly reports the parameter choices (number of PCs, distance metric, linkage, number of clusters); (v) characterizes the clusters with cluster sizes and the distribution of clinical features (fibrosis stage, NAS score, NASH group, early/moderate); (vi) tests cluster membership against ordinal/categorical clinical features with appropriate tests (Kruskal-Wallis / Mann-Whitney for ordinal; chi-square / Fisher for categorical) and applies a multiple-testing correction; (vii) gives a direct yes/no answer to the stratification question grounded in the cluster-vs-feature evidence; (viii) interprets the clusters in NAFLD-clinical-trial context (enrichment for advanced fibrosis / NASH, who would be selected, what the next step would be); (ix) cites real references and grounds identifiers / methods.
+
+CRITERIA (9):
+
+Criterion 1: Data Loading, Metadata Parsing, and Cohort Filtering
+
+    Description: Evaluates whether the per-sample count files were loaded into a gene x sample matrix, HTSeq summary rows were excluded, the SOFT/series-matrix metadata was parsed at the sample level, and (when relevant) controls were dropped so the analysis speaks to NAFLD severity.
+    Levels: A=14 B=7 C=0
+      [A]: Loads the GSE135251 count files into a gene x sample matrix, drops HTSeq summary rows (e.g., __no_feature, __ambiguous, __too_low_aQual, __not_aligned, __alignment_not_unique), parses the SOFT or series-matrix metadata into a per-sample table with the relevant clinical fields (fibrosis stage, NAS score, NASH group / disease label, early/moderate stage), and excludes healthy controls (or explicitly justifies keeping them) before clustering.
+
+      [B]: Loads the count matrix and metadata but misses one of: dropping HTSeq summary rows, excluding controls, or extracting one of the clinical features needed downstream.
+
+      [C]: Fails to load expression and metadata correctly, or does not link sample IDs to clinical features.
+
+Criterion 2: Gene Expression Normalization and Low-Expression Filtering
+
+    Description: Assesses whether a count-appropriate normalization was applied and whether low-expression genes were filtered (or the absence of explicit filtering was justified by the chosen pipeline).
+    Levels: A=11 B=6 C=0
+      [A]: Applies a normalization appropriate for clustering of RNA-seq counts — DESeq2 size factors with VST or rlog, edgeR TMM with log-CPM, or limma voom — and either filters low-expression genes (e.g., `filterByExpr`, CPM threshold, minimum count) or explicitly notes that the chosen step handles it. The transformed matrix is variance-stabilized rather than raw counts when used for distance / PCA.
+
+      [B]: Applies a reasonable normalization but skips low-expression filtering without justification, or applies a non-stabilized transform (e.g., plain CPM without log) before distance-based clustering.
+
+      [C]: Uses raw counts directly for distance-based clustering or PCA, applies an inappropriate transform (e.g., only z-scoring raw counts), or does not normalize.
+
+Criterion 3: Unsupervised Clustering Method and Parameter Reporting
+
+    Description: Evaluates whether at least one valid unsupervised method was applied, with the key parameters named, and whether the sensitivity of clusters to those choices was discussed.
+    Levels: A=16 B=8 C=0
+      [A]: Runs hierarchical clustering and/or PCA (optionally k-means / consensus clustering) on the normalized matrix and explicitly reports the parameters that were chosen — number of PCs used, distance metric (Euclidean, correlation, etc.), linkage method (Ward, complete, average) or k for k-means, and how the number of clusters was decided (dendrogram cut, silhouette, elbow, prior). Notes how robust the cluster assignment is to those choices (alternate metric / linkage / k tried, or stability assessment).
+
+      [B]: Runs a valid clustering / PCA but reports only the method name without parameter details, or does not address sensitivity / robustness.
+
+      [C]: Does not run a real clustering or PCA, or reports clusters without a defensible method.
+
+Criterion 4: Cluster Characterization (Sizes and Feature Distributions)
+
+    Description: Checks whether clusters are described by their sample counts and by the distribution of the clinical features the question lists (fibrosis stage, NAS score, NASH group / disease label, early/moderate).
+    Levels: A=11 B=6 C=0
+      [A]: Reports the size of each cluster and the distribution of multiple clinical features across clusters (e.g., a contingency table or stacked-bar plot showing fibrosis stages per cluster, NAS score distribution per cluster, etc.). Includes at least one visualization or summary table in the trace / code.
+
+      [B]: Reports cluster sizes but only one clinical feature, or reports feature distributions without sizes.
+
+      [C]: Does not characterize clusters quantitatively.
+
+Criterion 5: Statistical Testing of Cluster vs Clinical Feature
+
+    Description: Assesses whether appropriate tests were applied to assess cluster differences on multiple clinical features, with multiple-testing correction.
+    Levels: A=14 B=7 C=0
+      [A]: Applies tests appropriate to feature type — Kruskal-Wallis or Mann-Whitney for ordinal features (fibrosis stage, NAS score), chi-square or Fisher exact for categorical features (NASH group, sex) — across multiple features, reports p-values, and applies a multiple-testing correction (Bonferroni, Benjamini-Hochberg) since several features are tested.
+
+      [B]: Applies appropriate tests across multiple features and reports p-values, but does not correct for multiple testing.
+
+      [C]: Uses inappropriate tests (e.g., t-test on ordinal stage), tests only one feature, or does not test at all.
+
+Criterion 6: Direct Answer to the Stratification Question
+
+    Description: Evaluates whether the agent gives a clear, evidence-grounded yes/no answer to "can unsupervised clustering of hepatic transcriptomes stratify patients by disease severity?".
+    Levels: A=11 B=6 C=0
+      [A]: States plainly whether clustering does or does not stratify severity in this cohort, and ties the conclusion directly to the cluster-vs-clinical-feature evidence (specific p-values or distributions for fibrosis stage, NAS score, or NASH group).
+
+      [B]: Answers the question, but the answer is vague ("clustering can stratify"), is not tied to specific evidence, or covers only one feature.
+
+      [C]: Does not answer the question, or answers based on hallucinated evidence.
+
+Criterion 7: Clinical-Trial Enrichment Interpretation
+
+    Description: Checks whether the agent explains why the clustering result matters for clinical-trial enrichment in NAFLD / NASH, in concrete terms.
+    Levels: A=16 B=8 C=0
+      [A]: Explains in NAFLD-trial-specific terms why molecular subtyping helps trial enrichment — e.g., enriching for advanced fibrosis (F3-F4) or NASH, separating high-NAS responders, reducing heterogeneity that can dilute treatment effects — and states a concrete next step (independent cohort validation, confirmatory marker panel, biopsy / non-invasive correlate). The interpretation is grounded in the actual cluster-vs-feature pattern from this analysis, not generic boilerplate.
+
+      [B]: Discusses clinical-trial relevance in general terms, but without tying it to the specific cluster pattern or without naming a next step.
+
+      [C]: Does not interpret the result in a clinical-trial / translational context, or asserts implications inconsistent with the analysis.
+
+Criterion 8: Limitations Stated
+
+    Description: Evaluates whether the agent names concrete limitations of this clustering screen rather than generic disclaimers.
+    Levels: A=7 B=4 C=0
+      [A]: Names concrete limitations relevant to this design — single-cohort discovery without independent validation, sensitivity to normalization / clustering parameters, residual confounding by sex or age, ordinal-feature reduction (e.g., binarising fibrosis stage), or limited power for rare advanced-stage subgroups — with a one-line indication of what would address each.
+
+      [B]: Names limitations but in generic terms ("results need validation") without tying them to the specific design.
+
+      [C]: Does not state limitations or asserts there are none.
+
+Criterion 9: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results (cluster sizes, p-values, distributions) are traceable to the provided data files or to a documented transformation. Identifiers (gene / sample / clinical-feature names) come from named sources (HGNC, GEO sample annotation, the GSE135251 SOFT / series-matrix file). Statistical method names (Kruskal-Wallis, Fisher, DESeq2, voom) match what was actually run. Biological / clinical interpretations (NAFLD severity scoring, NASH-trial enrichment rationale) are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up gene names, fabricated p-values, invented citations) mixed with computed results.

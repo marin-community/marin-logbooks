@@ -1,0 +1,77 @@
+RUBRIC: Cross-Tissue Coordination of Training-Regulated Features in MoTrPAC
+
+Total Points: 100/100
+
+Notes: A full-score answer (i) constructs per-(tissue, assay) training-regulated feature sets at 5 % FDR; (ii) computes a tissue × tissue similarity matrix per assay using a defined set-similarity metric (Jaccard, overlap coefficient) on the training-regulated feature sets; (iii) handles tissue × assay coverage gaps explicitly (some tissues are not measured by all 9 omes); (iv) aggregates per-assay similarities to a single cross-assay tissue-pair score using a principled method (mean / rank-sum / median); and (v) interprets the most-coordinated tissue pairs in the context of known endurance-training physiology.
+
+CRITERIA (7):
+
+Criterion 1: Identify Assay and Tissue Coverage
+
+    Description: Evaluates correct identification of assay and tissue columns and iteration over all 9 omes present in the data.
+    Levels: A=15 B=7 C=0
+      [A]: Identifies the assay and tissue fields correctly; iterates over all 9 omes (TRNSCRPT, METAB, PHOSPHO, ACETYL, UBIQ, IMMUNO, etc.) and reports the per-assay × per-tissue feature counts.
+
+      [B]: Misses some assays / tissues due to parsing issues (e.g., case-sensitivity, hyphenated names) and ends up working with < 8 of the 9 assays.
+
+      [C]: Wrong fields or incomplete extraction.
+
+Criterion 2: Training-Regulated Feature Definition at 5 % FDR
+
+    Description: Evaluates use of the paper's 5 % FDR criterion for training-regulated features.
+    Levels: A=20 B=10 C=0
+      [A]: Uses `training_q < 0.05` (or the equivalent 5 % FDR criterion) consistently across all assays. Reports per-(tissue, assay) feature count after the filter.
+
+      [B]: Uses raw p-values OR mixes thresholds across assays without justification.
+
+      [C]: No defensible significance filtering.
+
+Criterion 3: Per-(Tissue, Assay) De-duplication
+
+    Description: Evaluates de-duplication of features within each (tissue, assay) cell so each feature is counted once regardless of sex / time stratification.
+    Levels: A=15 B=7 C=0
+      [A]: De-duplicates by feature ID within each (tissue, assay) (and collapses across sex / timepoint if rows are stratified). Reports unique feature counts after de-duplication.
+
+      [B]: Partial de-duplication that double-counts across sex OR timepoint.
+
+      [C]: Counts rows directly without de-duplication.
+
+Criterion 4: Per-Assay Tissue × Tissue Similarity Computation
+
+    Description: Evaluates per-assay similarity computation between training-regulated feature sets across tissue pairs.
+    Levels: A=20 B=10 C=0
+      [A]: Computes a tissue × tissue similarity matrix per assay using a well-defined set-similarity metric. Jaccard (`|A ∩ B| / |A ∪ B|`) is the canonical choice; overlap coefficient (`|A ∩ B| / min(|A|, |B|)`) is acceptable when set sizes are very different. Defines the metric explicitly and applies it consistently.
+
+      [B]: Computes similarity but the metric is unclear or unprincipled (e.g., raw intersection counts without normalisation, so larger tissue sets dominate).
+
+      [C]: No similarity analysis.
+
+Criterion 5: Tissue × Assay Coverage Gap Handling
+
+    Description: Evaluates handling of tissues that are not measured by all assays (silently dropping missing coverage biases the cross-assay aggregation).
+    Levels: A=15 B=7 C=0
+      [A]: Explicitly accounts for tissue × assay coverage gaps. For each tissue pair, only includes assays where BOTH tissues have data, and reports how many assays contributed per tissue pair. States the rule for tissue pairs with very limited shared coverage (e.g., minimum 3 shared assays required).
+
+      [B]: Drops missing coverage silently, potentially inflating similarity for tissue pairs measured by only 1-2 shared assays.
+
+      [C]: Assumes full coverage incorrectly.
+
+Criterion 6: Cross-Assay Aggregation
+
+    Description: Evaluates aggregation of per-assay similarities to a single cross-assay tissue-pair score.
+    Levels: A=15 B=7 C=0
+      [A]: Aggregates per-assay tissue × tissue similarities using a principled method: mean (or median for robustness), rank-sum across assays, or weighted aggregation with weights stated. The aggregation is balanced so a single high-coverage assay does not dominate.
+
+      [B]: Aggregates but arbitrarily (sum without normalisation, dominated by transcriptomics simply because it has more features).
+
+      [C]: No cross-assay aggregation.
+
+Criterion 7: Interpretation of Coordinated Tissue Pairs and Source Reliability
+
+    Description: Evaluates interpretation of the most-coordinated tissue pairs in known exercise-physiology terms, plus source-grounding of values and claims.
+    Levels: A=0 B=-5 C=-10
+      [A]: Identifies the top coordinated tissue pairs from the aggregated similarity matrix and interprets them in the context of known endurance-training biology (e.g., skeletal-muscle coordination across SKM-VL and gastrocnemius reflects shared contractile / metabolic adaptation; liver-adipose coordination reflects systemic energy-balance signalling). Numerical results (per-(tissue, assay) feature counts, Jaccard / overlap values, top tissue-pair scores) are traceable to the provided DE spreadsheet. Biological interpretation cites the MoTrPAC main publication (Sanford et al. 2020 Cell, or the relevant MoTrPAC consortium paper with author + year + DOI), or other identifiable exercise-physiology references.
+
+      [B]: Lists top coordinated pairs but interpretation is generic, OR most numerical results are traceable but some claims lack source attribution.
+
+      [C]: No interpretation, or values / interpretations are unsourced or fabricated.

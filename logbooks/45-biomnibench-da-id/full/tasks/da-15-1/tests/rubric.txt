@@ -1,0 +1,68 @@
+RUBRIC: DA-15-1
+
+Total Points: 100/100
+
+Notes:
+A full-score answer requires demonstrating a statistically rigorous RNA-seq differential expression analysis focused on core analytical reasoning rather than workflow documentation or plotting. The student must (1) define an appropriate differential expression framework for comparing disease versus control samples, (2) specify a correct statistical model with disease status as the primary variable and include relevant biological and technical covariates to control confounding, (3) apply appropriate normalization and variance modeling for RNA-seq count data, (4) perform differential expression testing using a valid statistical method with multiple-testing correction, (5) correctly define significance thresholds and quantify the number of significant differentially expressed genes, (6) prioritize genes based on both statistical significance and effect size, (7) correctly identify the strongest up-regulated and down-regulated genes, and (8) interpret the statistical meaning of the results, including the relationship between adjusted p-values, log fold change, and biological prioritization. The answer should show clear understanding of why covariate adjustment, normalization, variance modeling, false discovery rate control, and effect-size ranking are all necessary for reliable differential expression analysis.
+
+CRITERIA (6):
+
+Criterion 1: Statistical Model Specification
+
+    Description: Statistical model specification for differential expression analysis.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly specifies a statistically appropriate model for RNA-seq differential expression with disease status as the primary variable of interest. The answer clearly defines the comparison being tested and frames the analysis as a formal statistical model rather than a simple fold-change comparison.
+
+      [B]: Identifies disease versus control as the main comparison, but the statistical model is only partially described or lacks clarity.
+
+      [C]: No valid statistical model is specified, or the analysis is framed incorrectly.
+
+Criterion 2: Covariate Adjustment and Confounder Control
+
+    Description: Covariate adjustment and confounder control.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly includes relevant biological and technical covariates in the model, such as sex, age, RIN, library preparation, site effects, genotype principal components, and RNA composition metrics. Demonstrates clear understanding that these variables are needed to reduce confounding and improve inference on disease-associated expression changes.
+
+      [B]: Includes some relevant covariates but omits important confounders, or includes covariates without explaining their analytical purpose.
+
+      [C]: Fails to control for confounding variables or uses an inappropriate covariate strategy.
+
+Criterion 3: Normalization, Variance Modeling, and Testing
+
+    Description: Normalization, variance modeling, and statistical testing methodology.
+    Levels: A=25 B=12 C=0
+      [A]: Correctly applies an appropriate RNA-seq statistical framework, including normalization of count data, variance modeling suitable for RNA-seq expression distributions, and differential expression testing using a valid method such as Limma + voom or an equivalent framework. Correctly applies multiple-testing correction using FDR or an equivalent adjusted significance measure.
+
+      [B]: Uses a generally appropriate method for differential expression analysis, but normalization, variance modeling, or multiple-testing correction is incomplete, unclear, or only partially justified.
+
+      [C]: Uses an invalid or inappropriate statistical method, or fails to apply normalization and multiple-testing correction correctly.
+
+Criterion 4: Significance Thresholding and DEG Quantification
+
+    Description: Significance thresholding and quantification of differential expression results.
+    Levels: A=15 B=8 C=0
+      [A]: Correctly defines statistically significant DEGs using an adjusted significance threshold such as FDR < 0.05, reports the number of significant genes, and correctly distinguishes statistical significance from raw p-values or fold change alone.
+
+      [B]: Applies a DEG threshold but the thresholding logic is incomplete, inconsistently described, or only partially correct.
+
+      [C]: Does not use appropriate statistical thresholds for defining DEGs, or confuses raw significance with corrected significance.
+
+Criterion 5: Effect-Size Prioritization and Top Gene Interpretation
+
+    Description: Effect-size prioritization and statistical interpretation of top genes.
+    Levels: A=20 B=10 C=0
+      [A]: Correctly ranks significant genes by effect size using log fold change and identifies the strongest up-regulated and down-regulated genes. Appropriately interprets both adjusted p-values and log fold changes, showing understanding that gene prioritization should consider both statistical significance and magnitude of effect.
+
+      [B]: Identifies significant genes but prioritization by effect size is incomplete, inconsistently applied, or interpretation of log fold change versus statistical significance is only partial.
+
+      [C]: Fails to rank genes by effect size, selects genes arbitrarily, or misinterprets the statistical meaning of top differential expression results.
+
+Criterion 6: Source Reliability
+
+    Description: Evaluates whether the agent grounds its values, identifiers, and biological / clinical interpretations in identifiable sources, the provided data files, named public databases, or real peer-reviewed references, rather than asserting facts from memory without source.
+    Levels: A=0 B=-5 C=-10
+      [A]: Numerical results are traceable to the provided data files or to a documented transformation. Identifiers (gene / protein / sample / pathway names) come from named sources (HGNC, UniProt, MSigDB, KEGG, the dataset's own feature index). Statistical method names match what was actually run. Biological / clinical interpretations are supported by real, identifiable references (author + year + DOI / PubMed) rather than free-floating assertions.
+
+      [B]: Most numerical results and identifiers are traceable, but some interpretive claims are asserted without source attribution or cite only vague phrases like "studies show".
+
+      [C]: Reports values, identifiers, or biological claims with no clear source. Hallucinated content (made-up identifiers, fabricated statistics, invented citations) mixed with computed results.
