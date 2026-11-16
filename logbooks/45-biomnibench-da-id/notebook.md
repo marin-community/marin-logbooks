@@ -188,3 +188,24 @@ the helper to run from the policy directory with an absolute driver path and
 module path, and expose subprocess stderr for any further diagnostics. Keep
 the failed job `/exedev/biomnibench-public50-runtime-20261116` separate from
 its corrected successor. Neither attempt starts model GPUs.
+
+The corrected runtime job `/exedev/biomnibench-public50-runtime-v2-20261116`
+succeeded on source `e082006b24a47c18f185fbfcdf7359a4b6e40525`. Readback
+confirmed 45 active snapshots and seven passing input checks, with every
+test sandbox closed. The last two snapshots to finish were the 2.64 GB
+lupus image and 3.63 GB da-19-4 input image. Daytona exposed their pulling
+state but not registry-image download logs. The validation archive SHA-256
+is `2c52849eb7f97ae5f6e0e4582e3549e972fa3a22240dc52402ed44a48d12f5cc`.
+Both image and validation archives were copied to durable preparation
+storage and their remote checksums matched. See `full/validation-summary.json`.
+
+Submitted the full public-50 launcher as
+`/exedev/biomnibench-public50-qwen-20261116` on source
+`c4e8f2a29c13fb3a3f3d399481c2f49d0f3d198f`, after reading back the passing
+validation. The launcher uses one CPU, 2 GiB RAM, and a 16 GiB disk, with
+failure and preemption retries disabled and an eight-hour cap. It calls the
+standard evaluation submission path and remains alive until its child
+evaluation finishes. The fresh 50-task pass retains 16 concurrent trials,
+one Qwen H100x4 service and one shared MiniMax H100x8 judge. Submission is
+not evidence of model readiness, grading, or EvalDash ingestion; those
+checks remain pending. See `full/launch-summary.json`.
