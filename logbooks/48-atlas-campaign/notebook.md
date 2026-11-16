@@ -874,3 +874,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for repair-candidate lane results and license-gate admissions.
+
+### 2026-11-16 16:40 UTC - Hourly catch-up (15:50–16:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `e3826a043e…` (15:42:30 UTC) to head `2215bf34c06b43ad5c1f260d32d45aaa50dc597c`, landed 16:22:31 UTC (~7 landings 16:17–16:22 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log e3826a04..2215bf34` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **License-filtered source admission decision typed**: the typed user-decision receipt bound for the license-filtered Skill2Env source (`2215bf34c0…`, head) — a user decision recorded as a receipt, the pattern the cold reads asked for.
+  - **First QUICK-oversight admission**: QUICK oversight admitted, lexical remediation queued, unsupported backends excluded (`64c560adcd…`); difficulty-gap exclusion reasons added with the shared mapping (`0335753c16…`); normalization approved and running per the repair-candidate lane STATUS (`81ea7a3d85…`).
+  - **Repair-candidate matching hardened**: stripped tracked index rebuilt from pinned URIs (`a6b6127e9e…`); shared leading setup sections stripped before repair matching — an approved policy (`216e508097…`); the strongest pair's stripped text sampled in match diagnostics (`1148009186…`).
+  - **Root tests importable; Harbor preflight timeout guard lifted** (`050cfe96f2…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the Skill2Env user-decision and QUICK-admission outcomes are committed reports, registry-private underneath [M].
+- Decision and next action: next hourly check watches for the lexical remediation outcome and further typed user-decision receipts.
