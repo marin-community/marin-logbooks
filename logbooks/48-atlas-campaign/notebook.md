@@ -890,3 +890,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the Skill2Env user-decision and QUICK-admission outcomes are committed reports, registry-private underneath [M].
 - Decision and next action: next hourly check watches for the lexical remediation outcome and further typed user-decision receipts.
+
+### 2026-11-16 17:40 UTC - Hourly catch-up (16:40–17:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `2215bf34c0…` (16:22:31 UTC) to head `d2f5b0ccbb1e6dfe9cdb6731d85050f9d559b121`, landed 17:29:35 UTC (~12 landings 17:22–17:29 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 2215bf34..d2f5b0cc` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **More backend-gate decisions**: absent-role sources exempt from the backend gate; the four unbuildable cohorts excluded (`761122b0f5…`); empty backend maps kept blocked by the admission gate (`275fba1d1d…`); full admission required only for Available rows on catalog load (`89c17d9b85…`); judge tiers served inside the federated campaign root (`d2f5b0ccbb1…`, head).
+  - **OpenResearcher pre-admission fingerprint bound** (`743f03880f…`); audit count projections appended after the retained cohort view columns (`af5cfc8ca4…`); Daytona difficulty sources prepared through the declarative-capable backends (`354490699c…`).
+  - **Status extras rebuilt on the rebased head** (`bc16010003…`, `e056cd914a…`); served BackendSurvey identity cited in the math_tir claims (`75fe18cf9c…`); status page composed from unique source IDs (`46754aef91…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the four excluded unbuildable cohorts' identities are registry-bound [M].
+- Decision and next action: next hourly check watches for smartie/calibforge admissions and the status-page rollout.
