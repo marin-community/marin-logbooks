@@ -667,3 +667,9 @@ Correction to earlier termination wording: requests used ignore_eos=true and max
 [Findings](pinned-tokenizer-findings.md): the checkpoint-recommended tokenizer exactly reproduces all nine saved boundary tokenizations. Roundtrip checks establish that standalone space followed by bare A is noncanonical, although it decodes to the same text as the single leading-space A token. Offline audit source fea245f07d; 0.66 s, peak RSS 217,284 KiB, no model weights or inference.
 
 The SFT export requires an explicit Marin chat template and EOS 128009, whereas tokenizer metadata alone names EOS 128001 and contains no chat template. This is not evidence of a misconfigured deployment, whose effective settings remain unavailable. The recommended assistant-header/newline format also differs from our raw Answer: benchmark; compare it as a separate condition when the endpoint returns. Root cause of the high end-of-text probability remains unproved. Existing benchmark scores are unchanged.
+
+## 2026-11-16: six-request raw versus chat diagnostic complete
+
+[Report](chat-probe-report.md), [exact inputs](chat-probe-inputs.json), and [results](chat-probe-summary.json). Same advertised SFT checkpoint export, changed serving build; fresh raw baselines included. All 18 tokenizer checks passed. On one forward-strand pilot variant, A/B mass rose from 55.14% to 95.01% zero-shot and 13.23% to 98.61% two-shot with chat plus Answer: assistant prefill. Raw decoding emitted space then end-of-text; chat prefill emitted B then end-of-turn; native chat emitted 1. in both shot conditions. EOS stopping was disabled, so this establishes token behavior rather than natural termination.
+
+Six completions, 12 generated tokens, 25 HTTP requests including checks, 12.79 seconds. No panel rerun or score replacement. This is evidence of formatting sensitivity, not improved VEP accuracy. A broader stability/mapping check remains unrun.
