@@ -76,3 +76,28 @@ The current co-hosted launcher holds the judge for the evaluation batch. A share
 ## Next decision
 
 Verify the three new solver outcomes, durable grades, dashboard ingestion and resource cleanup. Audit rubric judgments and modified-input feasibility before agreeing on full-50 baselines. Research code has not been promoted into a Marin contribution PR. See [README.md](README.md) for reproduction prerequisites and commands.
+
+## 2026-11-16: continuation results and judge-only recovery
+
+The three-task continuation ended with two scores: da-1-3 scored 67/100
+(72 without signed penalties); da-17-3 reached the 3600-second agent limit
+and received 0/100. Task da-20-3 has no grade. Its saved MiniMax response
+contains exactly `{}`, with finish_reason=stop and two completion tokens.
+The strict parser correctly rejected this as missing criterion ratings.
+The native run remains infrastructure-failed with 2/3 grading coverage;
+its 33.5 mean among graded tasks is not a benchmark score.
+
+Both da-20-3 reports were retrieved from durable storage. Their SHA-256
+values are pinned in `pilot/regrade_saved.py`. That script prepares one
+judge-only retry using the existing rubric, prompt, MiniMax revision,
+8192-token output cap, temperature zero, and 120-second request timeout.
+The original failed response and native run remain unchanged. The retry
+uses a separate storage prefix and no solver or Daytona execution.
+At preparation time no compatible judge was identified in the running-job
+inventory. The proposed execution starts the original eight-H100 judge
+under a CPU parent capped at 5400 seconds, then cleans it up after one
+request. Source and configuration are committed before submission.
+
+Recovery has not yet executed. It must produce a complete valid grade;
+another empty object remains an ungraded failure. The four-task pilot,
+including the earlier 28/100 control, is not a full baseline.
