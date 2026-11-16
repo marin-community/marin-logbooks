@@ -8,6 +8,7 @@ import json
 import os
 import shlex
 import subprocess
+import sys
 from pathlib import Path
 
 from rigging.secrets import require_secret
@@ -23,9 +24,16 @@ async def main():
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
     # Resolve actual Harbor resource enforcement instead of guessing snapshot identities.
     result = subprocess.run(
-        ["python", "lib/marin/src/marin/evaluation/harbor/trial_driver.py", "snapshot-specs", str(ROOT / "full.yaml")],
+        [
+            sys.executable,
+            str(ROOT.parents[2] / "lib/marin/src/marin/evaluation/harbor/trial_driver.py"),
+            "snapshot-specs",
+            str(ROOT / "full.yaml"),
+        ],
         check=True,
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        cwd=ROOT,
+        env={**os.environ, "PYTHONPATH": str(ROOT.parents[2] / "lib/marin/src")},
         text=True,
     )
     (output / "snapshot-specs.json").write_text(result.stdout)

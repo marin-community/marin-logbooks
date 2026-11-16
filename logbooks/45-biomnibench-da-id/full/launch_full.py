@@ -6,10 +6,12 @@
 import json
 import os
 import sys
+from contextlib import nullcontext
 from functools import partial
 from pathlib import Path
 
 from iris.cli.connect import open_iris_client
+from iris.client.client import iris_ctx
 from iris.rpc import job_pb2
 from marin.evaluation.hardware import Platform
 from marin.evaluation.model_config import load_model_config
@@ -43,7 +45,8 @@ spec = LaunchSpec(
     ),
 )
 batch = prepare_evaluation_batch(spec)
-if "--submit" not in sys.argv:
+remote = "--submit-in-cluster" in sys.argv
+if "--submit" not in sys.argv and not remote:
     print(
         json.dumps(
             {
@@ -56,7 +59,10 @@ if "--submit" not in sys.argv:
     )
     raise SystemExit(0)
 assert not (root / "full-evaluation-submission.json").exists(), "Submission already recorded; inspect before any retry"
-with open_iris_client(cluster_name="marin", workspace=root.parents[2]) as client:
+connection = (
+    nullcontext(iris_ctx().client) if remote else open_iris_client(cluster_name="marin", workspace=root.parents[2])
+)
+with connection as client:
     # Bound this standard launch_group submission without changing evaluator behavior.
     client.submit = partial(
         client.submit,
@@ -76,3 +82,9 @@ with open_iris_client(cluster_name="marin", workspace=root.parents[2]) as client
     }
     (root / "full-evaluation-submission.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
+    if remote:
+        (Path(os.environ["IRIS_OUTPUT_DIR"]) / "full-evaluation-submission.json").write_text(
+            json.dumps(result, indent=2) + "\n"
+        )
+        sys.stdout.flush()
+        group.job.wait(timeout=28800, poll_interval=60)

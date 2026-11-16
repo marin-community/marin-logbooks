@@ -177,3 +177,14 @@ and `uv run --isolated --project vendor/harbor --frozen --extra runtime python
 logbooks/45-biomnibench-da-id/full/validate_runtime.py`. This CPU-only check
 prepares 45 snapshots and verifies all five modified tasks plus the two
 largest distinct unchanged inputs before starting the GPU services.
+
+The full launcher preflight passed on source `9db13af9eba8c4bb2e3bd47e11b3eea74e5f3efa`.
+It peaked at 555,708 KiB RSS, exceeding the shared VM's 500 MiB limit; future
+launch preparation will run remotely. The remote mode uses the standard
+`launch_group` and keeps its CPU parent alive until the evaluation finishes.
+The first CPU runtime check exited before snapshot creation: the snapshot
+driver consumes relative dataset paths from its working directory. Correct
+the helper to run from the policy directory with an absolute driver path and
+module path, and expose subprocess stderr for any further diagnostics. Keep
+the failed job `/exedev/biomnibench-public50-runtime-20261116` separate from
+its corrected successor. Neither attempt starts model GPUs.

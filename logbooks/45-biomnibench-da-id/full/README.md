@@ -34,6 +34,13 @@ plus the two largest distinct unchanged-input images. Each validation sandbox
 is closed. Read back its `validation.json` and `runtime-report.json` before
 running `launch_full.py --submit`; without that flag the launcher only
 preflights. These commands allocate resources and require run authorization.
+On this shared VM, submit an Iris CPU launcher running
+`launch_full.py --submit-in-cluster` instead: full launcher preflight peaked
+at 543 MiB locally, above the node's 500 MiB limit. The remote launcher calls
+the same `launch_group` entry point and waits for its child evaluation, so
+the parent remains alive. Supply the approved named storage and Daytona
+secrets, `MARIN_GIT_SHA`, and `MARIN_EVAL_USER`; retain the eight-hour parent
+cap. The submission receipt is printed and archived in `IRIS_OUTPUT_DIR`.
 
 Offline grading tests use the real OpenAI client with a local mock HTTP
 transport and make no network requests:
