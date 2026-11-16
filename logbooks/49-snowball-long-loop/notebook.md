@@ -641,3 +641,15 @@ The production code commit remains `0f5721bbb4953e98898c847896110dee32a5b293`. T
 - Evidence: monitoring artifacts [R].
 - Interpretation and limitations: cadence metrics from monitoring snapshots.
 - Decision and next action: continue hourly tracking.
+
+### 2026-11-16 23:40 UTC - Hourly catch-up (22:40–23:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch; monitoring artifacts checked 23:31:35 UTC.
+- External inputs and artifact references: `production51-latest-wandb.json`, `production51-latest-checkpoint-list.json` [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **exp3 at update 210** (23:13 UTC readback): train/loss 0.78643 (down from 0.80899 at update 190), grad norm 0.10819 (still trending down), learner ~160.83 s/update; state running. **Checkpoints continue**: steps 201 (22:49:12 UTC) and 212 (23:20:02) — 30-min cadence holding.
+- Evidence: monitoring artifacts [R].
+- Interpretation and limitations: cadence metrics from monitoring snapshots.
+- Decision and next action: continue hourly tracking.
