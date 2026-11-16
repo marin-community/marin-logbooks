@@ -227,3 +227,12 @@ Model readiness, first graded trials, final coverage, cleanup and EvalDash
 ingestion still require verification. The passing input validation is reused;
 the failed first launcher did not create any solver attempts to combine with
 this fresh public-50 pass.
+
+At 20:27 UTC, Qwen model preparation had succeeded but its H100x4 worker
+remained scheduling-gated after about one hour in the queue. Kueue reported
+insufficient unused GPU and RDMA quota. No solver task or judge call had
+started. A read-only comparison of the other H100 region found some free
+GPU quota but many CPU/GPU placement waits; it did not establish a faster
+placement. Retain the validated hardware and current queue rather than
+claiming that submitted means evaluating. The run advances automatically
+when admitted, within its existing eight-hour parent cap.
