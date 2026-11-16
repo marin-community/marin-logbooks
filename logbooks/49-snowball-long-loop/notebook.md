@@ -604,6 +604,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Interpretation and limitations: cadence metrics from monitoring snapshots.
 - Decision and next action: continue hourly tracking.
 
+
+### 2026-11-16 20:55 UTC — Known Exp3 data deviation: newline after assistant EOT
+
+A census of the five retained OpenCode sources found newline token 198 immediately after every assistant end-of-turn marker; each newline receives loss weight. These are rows remaining after the candidate filters and Atlas decontamination. The 409,004 rows changed by V5 raw-question unquoting contain 3,082,618 such endings. The 17 rows without a successful raw-question metadata join contain 310; unquoting left those rows unchanged. The frozen original OpenCode cohort contains zero post-EOT newlines across 409,950 rows and 3,086,924 assistant endings. This comparison covers OpenCode, not the entire control mixture.
+
+V5 unquoting edits the user-question input text. All 409,021 final rows exactly match their pre-unquoting supervised target-token arrays. Earlier scripted `merge_system_turns` receipts report re-rendering all 409,638 rows retained before Atlas, which subsequently removed 617. That renderer appends a newline after each EOT. The format difference therefore predates V5 exact raw-question unquoting.
+
+The 3,082,928 newline targets are 0.276920% of OpenCode supervised positions, 0.00356733% of all V5 chat supervised positions, and 0.00256049% of all V5 supervised positions, including non-chat replay. The denominator is the unsampled sealed cache population; actual sampled training-loss exposure was not measured. All supervised tokens in the affected OpenCode rows, including their ordinary content, comprise 0.924632% of the full population's supervised positions. The extra target mass is small, but the formatting difference is systematic. Its behavioral effect is unknown.
+
+The user decided to keep live Exp3 artifact `2026.11.16.51` unchanged and prepare a new V6 candidate for the next run. V6 will adopt the serializer correction once it lands: splice changed message bodies into the original rendering while preserving its turn separators. The other V5 recipe controls stay fixed. V6 requires the relevant data checks, a fresh audit and a new release seal; it has no training-launch approval.
+
+The production code commit remains `0f5721bbb4953e98898c847896110dee32a5b293`. The audited V5 release-manifest SHA256 is `3e2161945e1adc60c9edcdb6b0d7395946966dc4e0d16b88660fbc38989603f5`. [Sanitized counts and receipt checksums](evidence/exp3-eot-newline.json) identify the measured populations and private receipts. Full cache bodies and receipts remain access-controlled, so these public aggregates do not enable independent reproduction. A supplemental census of the other final chat sources is still running.
+
 ### 2026-11-16 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window)
 
 - Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
@@ -615,3 +628,4 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: monitoring artifacts [R].
 - Interpretation and limitations: cadence metrics from monitoring snapshots.
 - Decision and next action: continue hourly tracking.
+-loop

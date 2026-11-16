@@ -1,0 +1,59 @@
+{
+  "audited_release_sha256": "3e2161945e1adc60c9edcdb6b0d7395946966dc4e0d16b88660fbc38989603f5",
+  "production_source": "0f5721bbb4953e98898c847896110dee32a5b293",
+  "production_artifact": "2026.11.16.51",
+  "scope": "All five retained OpenCode sources in V5; comparison with all six original native-cache partitions for those sources. Other chat sources are outside these counts.",
+  "v5_repaired": {
+    "assistant_eot_count": 3082618,
+    "assistant_eot_followed_by_newline_token": 3082618,
+    "assistant_turns": 3082618,
+    "exact_198_newline_after_assistant_eot": 3082618,
+    "rows": 409004,
+    "rows_with_supervised_post_eot_newline": 409004,
+    "supervised_newline_after_assistant_eot": 3082618,
+    "supervised_positions": 1113178730,
+    "supervised_positions_in_affected_rows": 1113178730,
+    "tokens": 5856740500,
+    "v5_vs_pre_unquote_supervised_target_array_mismatch": 0
+  },
+  "v5_unjoined": {
+    "assistant_eot_count": 310,
+    "assistant_eot_followed_by_newline_token": 310,
+    "assistant_turns": 310,
+    "exact_198_newline_after_assistant_eot": 310,
+    "rows": 17,
+    "rows_with_supervised_post_eot_newline": 17,
+    "supervised_newline_after_assistant_eot": 310,
+    "supervised_positions": 113717,
+    "supervised_positions_in_affected_rows": 113717,
+    "tokens": 355239,
+    "v5_vs_pre_unquote_supervised_target_array_mismatch": 0
+  },
+  "original_opencode_control": {
+    "assistant_eot_count": 3086924,
+    "assistant_turns": 3086924,
+    "rows": 409950,
+    "supervised_positions": 1111764644,
+    "tokens": 6090272755,
+    "assistant_eot_followed_by_newline_token": 0,
+    "exact_198_newline_after_assistant_eot": 0,
+    "supervised_newline_after_assistant_eot": 0
+  },
+  "fractions": {
+    "opencode_supervised_newlines": 3082928,
+    "opencode_supervised_positions": 1113292447,
+    "percent_of_opencode_targets": 0.27691987027376286,
+    "percent_of_all_chat_targets": 0.003567334380153758,
+    "percent_of_all_targets": 0.002560490254033687,
+    "percent_all_targets_in_affected_rows": 0.924632187463611,
+    "percent_chat_targets_in_affected_rows": 1.2882189987403552,
+    "denominator_scope": "Natural sealed-cache population; not measured sampled training-loss exposure.",
+    "v5_unquote_target_array_mismatches": 0
+  },
+  "core_worker_sha256": "6b071f99404cd5cfa16d7d9dad33078823fe4f1e0375b74766773f0af5fe3942",
+  "v5_scan_receipt_sha256": "474e1891b0f0548e7cd43a694b4974ab5daa3828cce5cf1f785a70649e544583",
+  "original_control_scan_receipt_sha256": "6c99333954774ff99909701ac2ea5d127f920b5c6154c57783ee8b53f79e8a97",
+  "known_deviation": "Earlier turn re-rendering adds a supervised newline after assistant EOT. V5 raw-question unquoting preserves all supervised target arrays.",
+  "decision": "Keep live Exp3 unchanged; prepare a separately audited V6 candidate using the landed serializer correction. V6 is not approved for training.",
+  "access_limit": "Full receipts, input caches and raw transcripts remain access-controlled. Public aggregate counts and checksums do not make the audit independently reproducible without those inputs."
+}
