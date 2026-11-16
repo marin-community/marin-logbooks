@@ -7,6 +7,7 @@ import json
 import os
 import sys
 from contextlib import nullcontext
+from dataclasses import replace
 from functools import partial
 from pathlib import Path
 
@@ -62,6 +63,8 @@ if "--submit" not in sys.argv and not remote:
 assert not (root / "full-evaluation-submission.json").exists(), "Submission already recorded; inspect before any retry"
 if remote:
     os.environ["DAYTONA_API_KEY"] = require_secret("DAYTONA_API_KEY")
+    # The outer CPU job already federated; children stay on its destination.
+    batch = replace(batch, submission_cluster=batch.accelerator.target_cluster)
 connection = (
     nullcontext(iris_ctx().client) if remote else open_iris_client(cluster_name="marin", workspace=root.parents[2])
 )

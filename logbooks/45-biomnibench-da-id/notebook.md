@@ -209,3 +209,11 @@ evaluation finishes. The fresh 50-task pass retains 16 concurrent trials,
 one Qwen H100x4 service and one shared MiniMax H100x8 judge. Submission is
 not evidence of model readiness, grading, or EvalDash ingestion; those
 checks remain pending. See `full/launch-summary.json`.
+
+The first full launcher failed before creating an evaluation child or model
+service. `launch_group` attempted a second federation hop from the already
+federated CPU launcher, and the regional controller rejected that destination.
+Correct the remote launch mode's submission-cluster identity to its existing
+destination so children stay on the same controller. Preserve the failed
+launcher receipt and reuse the completed input validation for its successor;
+no solver attempt or GPU service was started by the rejected submission.
