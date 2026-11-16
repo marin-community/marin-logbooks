@@ -862,3 +862,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the repair-candidate lane's dry-run findings are recorded in its STATUS, not yet attested here in detail.
 - Decision and next action: next hourly check watches for repair-candidate lane results and further user-ruling adoptions.
+
+### 2026-11-16 15:50 UTC - Hourly catch-up (14:40–15:50 UTC window; resumed after a model-switch gap)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief. The secretary's session was switched to a new model after the previous provider hit its monthly limit; this entry covers 14:40→15:48 UTC.
+- Published source revision: branch `atlas-env-audit` advanced from `455379a668…` (14:23:11 UTC) to head `e3826a043ee7afd5cdd7aaebf810764ec11f3ce4`, landed 15:42:30 UTC (two landings).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 455379a6..e3826a04` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: two landings in the window — protected source graders exposed in versioned review evidence (`c8bb502552…`); historical review pins and original verifier access clarified (`e3826a043e…`, head — ties the review-evidence pins to original verifier access, the discipline the cold reads requested).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for repair-candidate lane results and license-gate admissions.
