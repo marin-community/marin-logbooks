@@ -815,3 +815,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the lifted bans' admission outcomes are not yet attested in this record.
 - Decision and next action: next hourly check watches for smartie/calibforge admissions following the ban lifts.
+
+### 2026-11-16 12:40 UTC - Hourly catch-up (11:35–12:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `f7c0bbc301…` (11:33:35 UTC) to head `f484da62b76c518dc3726deb0864c91b707f1fc1`, landed 12:30:25 UTC (landings 12:18:20 / 12:25:45 / 12:30:25 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log f7c0bbc3..f484da62` (fetched).
+- External inputs and artifact references: landing records as above. Cross-campaign: exp3 production launched (logged in the #49 notebook this hour).
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **IF/Cascade re-pinning**: re-pinned IF and Cascade sources fingerprinted and stale retained pins refreshed (`f484da62b7…`, head).
+  - **Assessment/Result gates**: Atlas empty assessment pages checked without masking missing evidence (`b8ce30bf3a…`); the computed-Result gate kept for campaign-reviewed unavailable sources (`7126925e9d…`).
+  - **Delivery contracts adopted**: Multi-SWE home delivery and the typed delivery contract added (`e226cb6c8f…`); declarative Docker contexts exposed in TaskSpec trial preparation (`ae0e65907d…`).
+  - **OpenResearcher**: complete documents transferred (`912e04c03c…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the re-pinned IF/Cascade admission outcomes are not yet attested in this record.
+- Decision and next action: next hourly check watches for IF/Cascade re-pinned admissions and exp3 progression.
