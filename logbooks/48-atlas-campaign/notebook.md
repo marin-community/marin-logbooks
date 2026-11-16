@@ -639,3 +639,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only; measured effects not yet attested in this record.
 - Decision and next action: next hourly check watches for the grounding-judge run results and the first license-bound retained-population publications.
+
+### 2026-11-16 00:35 UTC - Hourly catch-up (23:45–00:35 UTC window, now 2026-11-16)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `738638f20b…` (23:32:09 UTC Nov 15) to head `47c99fc4229a76ee61a8c91c8f97119e478fb721`, landed 00:23:08 UTC Nov 16 (landings 00:00:52 / 00:18:11 / 00:23:08 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 738638f2..47c99fc4` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **First license lift**: the `Evalchemy:ifbench` license ban was lifted on its pinned ODC-BY grant (`943750a4bd…`) — the first recorded ban→grant transition under the new license-gate regime.
+  - **IFBench and Cascade intake measurements recorded** (`6a5cd0bb5d…`); IFBench train checked against the full held-out benchmark (`112fa38131…`); original IFBench exclusions verified before sealing reports (`49695efb7a…`).
+  - **Grading-boundary hardening**: shared-source grading boundaries fail closed (`47c99fc422…`, head); SHARED source-scorer graders protected for the Prime pytest families (`75e67c8dc4…`).
+  - **Terminal-Pivot admission decision documented** with grader limits (`c6d3ec51b9…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings and measurement records; the admission outcomes flowing from the IFBench measurements and license lift are not yet attested in this record.
+- Decision and next action: next hourly check watches for the IFBench/Cascade admission decisions and any further license lifts.
