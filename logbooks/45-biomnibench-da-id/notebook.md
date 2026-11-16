@@ -217,3 +217,13 @@ Correct the remote launch mode's submission-cluster identity to its existing
 destination so children stay on the same controller. Preserve the failed
 launcher receipt and reuse the completed input validation for its successor;
 no solver attempt or GPU service was started by the rejected submission.
+
+The corrected launcher `/exedev/biomnibench-public50-qwen-v2-20261116`, on
+source `90cc6ad17d243a60135937ed8403a9a892c3760b`, successfully submitted its
+evaluation child at 19:25 UTC. At 19:26 UTC the evaluation and its Qwen model
+preparation job were running. Its run ID is
+`20261116-192525-Qwen-Qwen3.6-35B-A3B-50cdfb029c2c4394a664f6c57b20fdf1-biomnibench-public50-qwen-37e4ab136e2755f08bc074ebe26abcf1`.
+Model readiness, first graded trials, final coverage, cleanup and EvalDash
+ingestion still require verification. The passing input validation is reused;
+the failed first launcher did not create any solver attempts to combine with
+this fresh public-50 pass.
