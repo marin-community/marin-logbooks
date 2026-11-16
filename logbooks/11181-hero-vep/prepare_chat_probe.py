@@ -13,11 +13,14 @@ from tokenizers import Tokenizer
 from prompts import classification_prompt
 
 
-def prepare(panels_path, tokenizer_path):
+def prepare(panels_path, tokenizer_path, *, query_index=0, mapping=None, tokenizer=None):
     panels = json.loads(panels_path.read_text())["panels"]
-    row = panels["pilot"][0]
+    row = dict(panels["pilot"][query_index])
+    if mapping is not None:
+        assert mapping in {"primary", "reversed"}
+        row["answer_mapping"] = mapping
     assert row["chrom"] not in ("X", "chrX", 23, "23")
-    tokenizer = Tokenizer.from_file(str(tokenizer_path))
+    tokenizer = tokenizer or Tokenizer.from_file(str(tokenizer_path))
     path = Path(__file__).parent / "templates/marin-chat-pinned.jinja"
     template_text = path.read_text().strip()
     # HF generation tags annotate token masks; they emit no text. No assistant
