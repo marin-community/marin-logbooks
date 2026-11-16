@@ -920,3 +920,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the remediation receipts' underlying panels stay registry-private [M].
 - Decision and next action: next hourly check watches for post-remediation admissions and the FULL-binding outcomes.
+
+### 2026-11-16 19:40 UTC - Hourly catch-up (18:40–19:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `baa792383d…` (18:33:14 UTC) to head `d9056675328448388417a18f1457439ad6f64fd3`, landed 19:19:24 UTC (~9 landings 19:05–19:19 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log baa79238..d9056675` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **License receipt registry moved to a referenced private Hugging Face dataset** (`b89222bb67…`), with the referenced registry documented (`d905667532…`, head); lowercase package-grant identifiers for HF card validation (`2f9005de05…`).
+  - **User-decided retained-pin licenses bound for the MiMo and CalibForge remediation releases** (`fb298c9336…`).
+  - **Docs synced to preview revision 21** (`5c7e57a9ff…` — rev 21 follows rev 20's sync from the 13:40 window); status-table Reasons column clamped (`cab7a906c7…`); import probe pointed at the repository root (`271b1e7515…`).
+  - **Zero-drop retained lineage**: archived original-pin content evidence bound through it (`37c764979c…`, duplicate `0241beec87…` — two landing records for the same change).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the HF-hosted license registry is private [M].
+- Decision and next action: next hourly check watches for rev-21 hosted verification and post-remediation admissions.
