@@ -797,3 +797,21 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for root-delivery consumer adoption in new admissions and further license lifts.
+
+### 2026-11-16 11:35 UTC - Hourly catch-up (10:35–11:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `fada02f02b…` (10:25:48 UTC) to head `f7c0bbc30162586cd43626b87c66a86577206895`, landed 11:33:35 UTC (~10 landings 11:09–11:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log fada02f0..f7c0bbc3` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Two more license bans lifted (user-approved)**: smartie swesmith-admitted and calibforge-shared-v2 origin bans lifted (`f7c0bbc301…`, head).
+  - **Protected SWE retention selected**: protected SWE retained private releases selected (`6f130d22fa…`) — a retention/selection step toward admission.
+  - **Delivered-verifier lane matured**: native reward-file result mode added to delivered verifiers (`e86420612c…`); delivered-verifier streams redirected into a declared artifact path (`0b5f0049c4…`); RST source verifiers bound to original-root TaskSpecs (`c96c06158f…`).
+  - **Declarative Daytona adoption**: original TaskSpec builds run through declarative Daytona (`a5a64a697a…`); process sessions preserved through TaskSpec machine wrappers (`d8ffd6dc4d…`).
+  - **Pin moves**: user-approved card-only TaskTrove pin moves adopted (`ecb748e990…`).
+  - **Docs/availability**: pinned OpenCode question repair phases documented (`067f9e221b…`); unavailable metadata preserved without computed results (`36d98e2374…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the lifted bans' admission outcomes are not yet attested in this record.
+- Decision and next action: next hourly check watches for smartie/calibforge admissions following the ban lifts.
