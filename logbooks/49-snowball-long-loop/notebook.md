@@ -579,3 +579,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: monitoring artifacts [R].
 - Interpretation and limitations: cadence metrics from monitoring snapshots.
 - Decision and next action: continue hourly tracking.
+
+### 2026-11-16 19:40 UTC - Hourly catch-up (18:40–19:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch; monitoring artifacts checked 19:33:03 UTC.
+- External inputs and artifact references: `production51-latest-wandb.json`, `production51-latest-checkpoint-list.json` [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **exp3 at update 131** (19:33 UTC readback): train/loss 0.83172 (down from 0.88975 at update 107), grad norm 0.13081 (still trending down), learner ~161.34 s/update; state running, heartbeat fresh. **Checkpoints continue**: steps 112 (18:35:17 UTC) and 123 (19:06:28) — 30-min cadence holding.
+- Evidence: monitoring artifacts [R].
+- Interpretation and limitations: cadence metrics from monitoring snapshots.
+- Decision and next action: continue hourly tracking.
