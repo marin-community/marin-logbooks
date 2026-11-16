@@ -742,3 +742,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the exclusion ledger contents stay registry-private [M].
 - Decision and next action: next hourly check watches for OpenResearcher index measurement results and further admissions.
+
+### 2026-11-16 07:35 UTC - Hourly catch-up (06:35–07:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `9ca238b157…` (06:23:19 UTC) to head `c1b5d37d18b5494a46ca689c16b3d3ac54837856`, landed 07:18:57 UTC (landings 06:39:24 / 07:18:57 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 9ca238b1..c1b5d37d` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: two landings in the window — protected SWE converters bound to complete source image maps (`c1b5d37d18…`, head: the faithful-environment pairing now covers the SWE converters' image maps); shared controllers kept loadable on 3.9 task interpreters (`dd0cce7306…`, extending the compatibility fix from the previous window to all shared controllers). No long-loop changes (STATE.md unchanged).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for OpenResearcher results and further license-gate admissions.
