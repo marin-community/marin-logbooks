@@ -41,6 +41,10 @@ the same `launch_group` entry point and waits for its child evaluation, so
 the parent remains alive. Supply the approved named storage and Daytona
 secrets, `MARIN_GIT_SHA`, and `MARIN_EVAL_USER`; retain the eight-hour parent
 cap. The submission receipt is printed and archived in `IRIS_OUTPUT_DIR`.
+`submit_remote.py --validation <verified-validation.json> --job-name <unique-name>`
+performs that submission with one CPU, 2 GiB RAM, and a 16 GiB disk. Both
+failure and preemption retries are disabled to prevent automatic duplicate
+full passes. It refuses to submit without the seven-check validation result.
 
 Offline grading tests use the real OpenAI client with a local mock HTTP
 transport and make no network requests:
