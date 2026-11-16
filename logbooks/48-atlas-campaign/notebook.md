@@ -846,3 +846,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the rev-20 hosted deployment is not attested from this record.
 - Decision and next action: next hourly check watches for rev-20 hosted verification and frozen-intake progression.
+
+### 2026-11-16 14:40 UTC - Hourly catch-up (13:40–14:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `0628828443…` (13:25:54 UTC) to head `455379a66821a9e0f0a6ae11e20c6a18fc5fb6b7`, landed 14:23:11 UTC (~21 landings 14:20–14:23 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 06288284..455379a6` (fetched).
+- External inputs and artifact references: landing records as above; new repair-candidate lane dirs /experiments/active/atlas-repair-candidate-lane/ and new-rl-data-ingest/.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **New repair-candidate lane built**: match and comparative review built (`48dff0e55e…`), lint addressed (`f924bcd5de…`), tracked parquet inputs streamed to local files before decode (`44c352ec8e…`), match diagnostics with similarity samples and previews reported (`87706ba9c7…`), drop advisories suppressed for candidates with no tracked overlap (`79a351f350…`), tracked task archives lowered through the same preview conversion (`17e8821a1a…`), prepared content and archive pins supported in the tracked loader (`9c40911e70…`); lane stage documented in the task-curation reference (`c212765e9c…`); lane STATUS updated with dry-run findings (`4f674d012a…`).
+  - **Sharded license receipt override documented** (`455379a668…`, head — following the 04:35 registry sharding).
+  - **Status taxonomy / Atlas UI**: source status taxonomy with typed exclusion claims (`df04188b86…`), source-status page + pending queue rows + metadata exclusions (`b46c19a822…`), admission procedure documented (`cdc8c002b2…`), typed QC findings and manual audit served in the Atlas (`09d6d89d42…`), unreachable source judges treated like unspecified ones for judge-tier choice (`94c6dc2429…`), Excluded sources hidden from the default view (`3f3349ae5a…`), status-page journey/filter fixes.
+  - **User rulings recorded**: needs-ruling and OpenGCUA rows (`3bd135eb94…`); RL source status rules for experiment agents documented (`30871a72b7…`); zero-drop retention plans published through the standard CLI (`d6b4a80b92…`); candidate shell checks and interrupted dedup recovery documented (`cf0dd53eaf…`); original shell interface enabled in converted workspace tasks (`92905eb368…`); pending intake queue refreshed (`eed759613c…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the repair-candidate lane's dry-run findings are recorded in its STATUS, not yet attested here in detail.
+- Decision and next action: next hourly check watches for repair-candidate lane results and further user-ruling adoptions.
