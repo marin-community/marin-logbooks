@@ -292,6 +292,7 @@ status: active
 
     | Paired difference, 95% interval over documents | Kept | Flagged | Flagged minus kept |
     | --- | --- | --- | --- |
+    | Filtered minus the mean of the two control seeds | -0.003 (-0.009 to +0.001) | -0.010 (-0.023 to +0.004) | |
     | Filtered minus seed 0 | -0.007 (-0.018 to +0.000) | -0.003 (-0.018 to +0.018) | +0.004 (-0.014 to +0.026) |
     | Filtered minus seed 1 | +0.001 (-0.002 to +0.004) | -0.018 (-0.030 to -0.007) | -0.018 (-0.030 to -0.007) |
     | Seed 1 minus seed 0 | -0.008 (-0.018 to -0.001) | +0.015 (+0.002 to +0.032) | +0.022 (+0.006 to +0.042) |
