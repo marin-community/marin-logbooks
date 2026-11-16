@@ -766,3 +766,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only; the retained responses' access class follows the standing publication rule (no task data).
 - Decision and next action: next hourly check watches for OpenResearcher index results and further retained-release publications.
+
+### 2026-11-16 09:35 UTC - Hourly catch-up (08:35–09:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `ed848d11fe…` (08:24:58 UTC) to head `d5d7571ba28efda6f11981294140d388cdedaaa6`, landed 09:24:26 UTC (landings 08:44:34 / 09:08:36 / 09:24:26 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log ed848d11..d5d7571b` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: explicit declarative Daytona provisioning ported (`de34dfccea…` — the canonical Harbor/Daytona declarative provisioning used by exp2's eval, now in the Atlas lane).
+- Result, including failure or restart: material changes in the window:
+  - **Root-delivery contract typing**: the root-delivery SHARED contract typed for original-root sources (`ce0eea3f1b…`) and bound to ScriptGrader consumers with unbounded deadlines (`d5d7571ba2…`, head — the grading-time hidden-verifier delivery lane from the 06:35 window gets its contract formalized).
+  - **Protected-adapter QA**: the source testbed Python recorded in the protected-adapter QA (`1d1fe38188…`).
+  - **Daytona provisioning**: explicit declarative Daytona provisioning ported (`de34dfccea…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for root-delivery consumer adoption in admissions and further retained-release publications.
