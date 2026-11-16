@@ -29,11 +29,6 @@ publishing. Reuse passing checks while their inputs remain unchanged.
 
 ## Operations and measurement
 
-For Mochi/Hero on B200s and Snowball on H100s, use the
-[AgentX/vLLM tuning guide](agentx-vllm-tuning.md) to choose experiments and
-interpret throughput, correctness and measurement limits. Use the skills below
-for execution and telemetry.
-
 | Skill | Owns | Boundary |
 |---|---|---|
 | `use-iris` | Job, task, cluster, and accelerator operations; Zephyr monitoring and infrastructure troubleshooting | Experiment recipes, production lineage, and telemetry interpretation have separate owners |
@@ -41,6 +36,7 @@ for execution and telemetry.
 | `use-fsutil` | Object-storage operations through Marin bucket routing | Accessing storage does not require launching compute |
 | `manage-hero-run` | Production run identity, retention, recovery, monitoring, cutovers, and closure | Domain skills own recipes; code-cutover trial gates override ordinary recovery |
 | `run-ferries` | Canary and daily ferry recipes, interpretation, and closure | Uses Iris for execution; CI failure diagnosis follows its diagnosis-only procedure |
+| [`inference-perfmax`](https://github.com/marin-community/marin/blob/main/.agents/skills/inference-perfmax/SKILL.md) | Inference throughput and GPU-efficiency campaigns for RL serving, with AgentX comparisons and reusable evidence | Uses the [campaign guide](agentx-vllm-tuning.md); Iris owns execution and research engineering owns the archive |
 | `ab-test-zephyr` | Controlled Zephyr comparisons with equivalent workloads | Measures stage efficiency and latency; monitoring belongs to Iris |
 | `profile-training` | Training-profile capture and interpretation | Measures bottlenecks; implementation changes use the relevant domain workflow |
 | `audit-grader` | Audits of programmatic checkers, LLM judges, RL rewards, and agent-task verifiers against their task text, with score effects and a blinded error-rate estimate | Recommends admitting the grader, fixing it, or replacing the benchmark; the fix is ordinary implementation, and routine grader changes need no audit |
