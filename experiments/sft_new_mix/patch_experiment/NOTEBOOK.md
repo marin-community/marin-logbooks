@@ -199,3 +199,44 @@ the eval stack's served defaults for temperature on MATH-500 and the guards.
 **Next decision.** A null at two-thirds removal does not show that long reasoning is irrelevant. The
 cheapest discriminating follow-up is a cap on every reasoning source, or a decoding-side length penalty,
 before changing the production mix. The cap32k AIME24 gain needs a second seed before it is treated as real.
+
+## 2026-11-16: typography-normalized arm (`utf-normalize`)
+
+**Question.** The gpt-oss teacher writes U+202F (narrow no-break space) and U+2011 (non-breaking hyphen)
+where other text uses a space or a hyphen, and the step-222 control reproduces both in its eval outputs.
+Each is usually one token (`âĢ¯`, `ĠâĢ¯`, `âĢĳ`), and the word after a U+202F is split non-canonically
+(`110 miles` -> `110`, U+202F, `m`, `iles`). Does replacing them in the SFT data remove the habit from
+outputs, and does it change accuracy?
+
+**Arm.** Every SFT store of the control catalog, every turn, U+202F -> space and U+2011 -> hyphen; replay
+untouched. Same recipe, initializer, 222 steps and 16 Reno nodes as the control; only the catalog differs.
+Compared with `control-s100b` and `control-s222` (the control is reused, not retrained).
+
+**Normalizer.** `experiments/sft_new_mix/typography_store_normalize.py`. Occurrences are found on the row's
+bytes because U+2011 is sometimes split across tokens; the words around each occurrence are decoded,
+replaced and re-encoded, so replacement text gets the tokenization a fresh encode gives. Each rewritten row
+must decode to its source text with only those characters replaced, keep its special tokens, and hold no
+target character. A 900-row read-back of a written store found no mismatch.
+
+| | Value |
+|---|---|
+| SFT stores rewritten | 123 of 216 |
+| Rows rewritten | 7,143,608 of 21,245,136 |
+| U+202F / U+2011 replaced | 32,459,383 / 45,939,268 |
+| SFT tokens | 234.42B -> 234.36B |
+| Most affected | `instruction_following_chat_v3/instruction_following` 87% of rows; `opencode_v1/agent_skills` 100%; `finance_v1` 99.6%; `math_v2/*` 71-76%; `math_proofs_v2` 94%; `math_v3` 34% |
+
+Normalization jobs `/dml/sft-typography-normalize-p0`..`p7` (cw-us-east-08a, 32 CPUs each, about 30 min).
+Catalog `s3://marin-us-east-02a/tmp/ttl=30d/sft-data-patch-11188/typography/cache_catalog.json`, per-store
+counts in `typography/stores/catalog-report.json`. Replay and validation entries and every row count equal
+the control catalog's.
+
+**Training.** `/dml/sft-patch-11188-utf-normalize-cw-rno2a`, launched 10:54 UTC, output
+`runs/utf-normalize/sft`. Losses at steps 0-9 are within 0.003 of the control's; throughput 505k tokens/s,
+as the control.
+
+**Evaluation plan.** Export steps 100 and 222 with `patch_arm.py export`; run groups
+`sft11188-utf-normalize-s100` and `-s222` with the launcher at `12f0ceff06` and the same six campaign
+Evalchemy configs. The model configs are rebuilt from the `cap32k-giveup-s100` run record and differ from
+it only in name and location. Readout: share of outputs containing U+202F or U+2011 (prompt-free), plus the
+primary and guard metrics above.
