@@ -967,3 +967,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the CI restoration effects are not yet attested in this record.
 - Decision and next action: next hourly check watches for CI state on the merged head and further repair-lane/V6 progress.
+
+### 2026-11-16 23:40 UTC - Hourly catch-up (22:40–23:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `4155e3cb03…` (22:20:54 UTC) to head `db12047ab89cbb207edefaaf8e00a6385be8e9f3`, landed 23:26:40 UTC (~10 landings 23:06–23:26 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 4155e3cb..db12047a` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **math_gym-qa re-pin chain completed**: math-v5 deprecation in favor of the repaired math_gym-qa pin (`33326cb6b1…`), repointed retained-population fingerprint pinned (`8ef84b5c67…`), measured containment in its math-v5 origin acknowledged (`c91ba5a977…`), stale whole-source Result binding superseded on the current derived head (`febcf7fcad…`).
+  - **POLARIS intake progressed**: complete intake measurements recorded (`81ca07ba59…`); status moved from Intake-queued to Measurements-pending (`db12047ab8…`, head).
+  - **Infrastructure NoP re-drives retained** when diagnosed (`b87db43ae3…`); fresh SAMPLE receipts bound for the remediation versions (`137e57df8d…`).
+  - **Infra/docs**: data allowlist compared against origin/main and fetched in lint CI (`99eba82474…`); judge serving probe stops advertising tools (`3fe9559d3c…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the math_gym-qa retained-population admission outcome is not yet attested in this record.
+- Decision and next action: next hourly check watches for POLARIS measurements and the math_gym-qa admission.
