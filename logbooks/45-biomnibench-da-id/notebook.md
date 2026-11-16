@@ -111,3 +111,11 @@ Its preparation child reported a shared-cache hit for the pinned MiniMax
 weights. Grading is still pending at this checkpoint. Submission receipts,
 private storage paths, and monitoring state are retained under the local
 `artifacts/biomnibench-qwen-pilot/recovery-da-20-3/` directory.
+
+At 17:21 UTC, the judge worker was `building` with `SchedulingGated`:
+Kueue had not admitted the GPU workload. No grading request had run.
+The single recovery remains queued under its 5400-second parent cap;
+there is no additional launch. The local monitoring record names the job
+and next checks. No host scheduling tool is available for an automatic
+follow-up after this session yields; a later status check must verify the
+job's terminal state, saved grade/error, and descendant cleanup.
