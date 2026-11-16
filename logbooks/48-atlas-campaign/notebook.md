@@ -682,3 +682,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings and measurement records; the decontamination outcome and admission decisions are not yet attested in this record.
 - Decision and next action: next hourly check watches for the IFBench admission decision following the decontamination record.
+
+### 2026-11-16 03:35 UTC - Hourly catch-up (02:35–03:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `91816039f9…` (02:09:40 UTC) to head `01242464815072dbe017828693d9d66e29d703a9`, landed 03:31:01 UTC (landings 03:06:15 / 03:08:43 / 03:31:01 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 91816039..01242464` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window — **first admissions under the license-gate regime**:
+  - **Terminal-Pivot ADMITTED** with its original grader and BAD content quality (`19a5f21787…`) — the first admission carrying an explicit BAD content Result (consistent with QC-never-rejects); its measured source-overlap results retained (`6c8e8901e2…`).
+  - **Retained Cascade multi-domain and MOPD tasks admitted** (`0124246481…`, head).
+  - Failed grounding HTTP responses preserved for diagnosis (`d3ca57ba4e…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commits report the outcomes; the underlying receipts stay registry-private [M]. These are the first post-license-gate admissions observed in this record.
+- Decision and next action: next hourly check watches for further license-lift admissions (IFBench following its decontamination record) and Cascade/OpenResearcher results.
