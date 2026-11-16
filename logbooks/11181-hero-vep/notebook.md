@@ -679,3 +679,9 @@ Six completions, 12 generated tokens, 25 HTTP requests including checks, 12.79 s
 [Replication report](chat-replication-report.md), [inputs](chat-replication-inputs.json), [scores and checks](chat-replication-summary.json). Forty sequential completions across four variants, two mappings, two shot settings and raw/chat-prefill formats, including eight end repeats. All 96 tokenizer checks passed, all repeats matched exactly, 137 HTTP requests in 74.93 seconds. Source 81367cfc02.
 
 Chat-prefill raises mean A/B mass to 94.47% zero-shot and 98.27% two-shot (raw 55.39% and 9.80%). However, zero-shot chooses literal B across all eight primary comparisons; semantic predictions flip for every variant when the mapping swaps. Two-shot chat-prefill has one semantic flip among four variants. Formatting improvement is replicated; improved VEP discrimination is not established. No panel rerun or score replacement.
+
+## 2026-11-16: 100-variant chat-prefill condition complete
+
+[Report](chat-pilot-report.md), [metrics](chat-pilot-metrics.json), [variant scores](chat-pilot-variants.json), [candidate score records](chat-pilot-scores.jsonl). All 400 contexts and eight repeats completed; 1,200 tokenizer checks passed, zero repeat drift, 1,609 successful HTTP requests in 791.74 seconds. Frozen seeded mappings and strands preserved; validation untouched. Runtime 23232bc141, analysis c174af0e90.
+
+Chat zero-shot AUPRC 0.157243 (SE 0.054894), two-shot 0.117975 (SE 0.056681), versus historical raw 0.109660/0.101492. Paired improvement intervals include zero; serving build changed. A/B probability mass remains high (94.50%/98.10%), but zero-shot prefers literal B in all 200 contexts; two-shot prefers B in 120, A in 79, one tie. Mapping slices have 3 versus 7 positives and differing prevalence. Formatting compliance is replicated, useful VEP improvement is not established. No PR or main merge.
