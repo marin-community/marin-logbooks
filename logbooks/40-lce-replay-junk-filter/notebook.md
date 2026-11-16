@@ -271,10 +271,44 @@ status: active
   - Repeats average out agent sampling only; training noise is still bounded by one extra control seed and no extra filtered seed.
 - Decision and next action: see the final decision.
 
+### 2026-11-16 23:30 UTC - Held-out replay loss split by filter verdict
+
+- Hypothesis or decision under test: removing junk from the long replay makes the model forget more on the kind of text the filter removes. If so, the filtered arm's held-out loss on flagged documents rises relative to the controls by more than its loss on kept documents.
+- Published code revision: research branch `14b55fa542` (held-out builder `experiments/sft_cold_start/heldout_replay.py`, scorer `experiments/grug/moe_hero_ep/replay_loss_eval.py`, launcher `experiments/grug/moe_hero_ep/launch_snowball_replay_loss_eval.py`); comparison with `scripts/paired_replay_loss.py` (`a20b8602c2`).
+- Inputs:
+  - Held-out set `s3://marin-us-east-02a/tmp/ttl=30d/lce-junk-filter/heldout-replay-262k-20261116` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-02a%2Ftmp%2Fttl%3D30d%2Flce-junk-filter%2Fheldout-replay-262k-20261116)). It holds the first 16 documents longer than 65,536 tokens from each of the reproduction's 200 validation cells (2,192 documents; some cells have fewer than 16). These shards were never listed by any training cell, so neither arm saw them.
+  - Each document is judged exactly as the filtered replay builder does: 175 flagged (structured_data 89, encoded_blob 23, numeric_table 18, minified_code 17, repetition 13, item_list 8, binary 4, lock_file 3) and 2,017 kept. Flagged documents by quality tier: q0 49 of 314, q1 68 of 459, q2 38 of 479, q3 18 of 506, q4 2 of 434.
+  - Builder: `python -m experiments.sft_cold_start.heldout_replay --cells logbooks/40-lce-replay-junk-filter/replay-cells-20261024a.yaml.gz --output <set> --tokenizer s3://marin-us-east-02a/marin/grug_sft/tokenizer/2026.09.18 --documents-per-cell 16 --tokens 262144 --workers 16`.
+- Run identities: `lce40-replay-loss-{base-s0,control-s238,control-seed1-s238,filtered-s238}`, outputs under `s3://marin-us-east-02a/marin/eval/replay-loss-snowball/<run id>/2026.11.16/` (`replay_document_losses.jsonl`, `replay_loss_metrics.json`). Command: `python -m experiments.grug.moe_hero_ep.launch_snowball_replay_loss_eval --run-id <id> --checkpoint <step dir> --data <set> --nodes 2 --version 2026.11.16 --run`.
+- Environment and hardware: two 8xH100 nodes per checkpoint on `cw-us-east-02a` at interactive priority. Each document is one row padded to 262,144 tokens with its own segment, sequence-sharded over a node's eight GPUs, so the scorer has the paired-MRCR example shape. Every position that predicts one of the document's own tokens is scored: up to 262,143 positions.
+- Result, including failure or restart:
+
+    | Token-weighted loss | Kept (2,017) | Flagged (175) |
+    | --- | ---: | ---: |
+    | Step-0 base | 1.3067 | 0.8400 |
+    | Control seed 0, step 238 | 1.3221 | 0.8991 |
+    | Control seed 1, step 238 | 1.3144 | 0.9138 |
+    | Filtered, step 238 | 1.3150 | 0.8961 |
+
+    | Paired difference, 95% interval over documents | Kept | Flagged | Flagged minus kept |
+    | --- | --- | --- | --- |
+    | Filtered minus seed 0 | -0.007 (-0.018 to +0.000) | -0.003 (-0.018 to +0.018) | +0.004 (-0.014 to +0.026) |
+    | Filtered minus seed 1 | +0.001 (-0.002 to +0.004) | -0.018 (-0.030 to -0.007) | -0.018 (-0.030 to -0.007) |
+    | Seed 1 minus seed 0 | -0.008 (-0.018 to -0.001) | +0.015 (+0.002 to +0.032) | +0.022 (+0.006 to +0.042) |
+    | Base minus seed 0 | -0.015 (-0.026 to -0.008) | -0.059 (-0.090 to -0.033) | -0.044 (-0.076 to -0.016) |
+
+  - The first scorer design (four 65,536-token documents per row-batch) never finished XLA compilation: thread dumps after more than an hour showed all eight ranks in `backend_compile_and_load`. Switching to one padded 262,144-token document per node reused the probe's compiled shape. Each batch then took about 2.5 seconds.
+  - The first seed-1 job failed when its JAX coordinator could not bind its port; a rerun on another port succeeded.
+- Interpretation and limitations:
+  - Filtering did not cost loss on flagged-type text. The filtered arm's flagged loss (0.896) is the lowest of the three step-238 checkpoints: level with seed 0 and 0.018 below seed 1. Its kept loss sits between the two seeds.
+  - The comparison can see forgetting of this size. SFT itself raises flagged loss by 0.06 against the base, about four times the rise on kept text. The two control seeds differ by 0.015 on flagged documents, so seed noise is of the same size as any arm difference here.
+  - These are step-238 checkpoints and single-checkpoint measurements, as for every other result in this logbook. The flagged group is 175 documents, mostly structured data.
+- Decision and next action: see the final decision.
+
 ## Final decision
 
-- Selected approach and evidence: adopt the filtered long replay. The long-context probe favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise.
+- Selected approach and evidence: adopt the filtered long replay. The long-context probe favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents the filtered arm loses nothing on the text its filter removes: its loss on flagged documents is 0.896 against 0.899 and 0.914 for the two control seeds, with kept-document loss level.
 - Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
 - Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
 - Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
-- Remaining uncertainty: training noise beyond one extra control seed and no extra filtered seed; held-out replay loss split by filter verdict (in progress); whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
+- Remaining uncertainty: training noise beyond one extra control seed and no extra filtered seed; whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
