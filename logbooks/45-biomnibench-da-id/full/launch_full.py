@@ -15,6 +15,7 @@ from iris.client.client import iris_ctx
 from iris.rpc import job_pb2
 from marin.evaluation.hardware import Platform
 from marin.evaluation.model_config import load_model_config
+from rigging.secrets import require_secret
 from rigging.timing import Duration
 
 from experiments.evaluation.evals import HarborDefinition
@@ -59,6 +60,8 @@ if "--submit" not in sys.argv and not remote:
     )
     raise SystemExit(0)
 assert not (root / "full-evaluation-submission.json").exists(), "Submission already recorded; inspect before any retry"
+if remote:
+    os.environ["DAYTONA_API_KEY"] = require_secret("DAYTONA_API_KEY")
 connection = (
     nullcontext(iris_ctx().client) if remote else open_iris_client(cluster_name="marin", workspace=root.parents[2])
 )
