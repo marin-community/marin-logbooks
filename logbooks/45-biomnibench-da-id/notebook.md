@@ -101,3 +101,13 @@ request. Source and configuration are committed before submission.
 Recovery has not yet executed. It must produce a complete valid grade;
 another empty object remains an ungraded failure. The four-task pilot,
 including the earlier 28/100 control, is not a full baseline.
+
+The recovery was submitted at 17:09 UTC from
+`6aebb77b0a47ec9bb33165da715749ae1555e538`, after lint and a storage-read
+preflight passed. The preflight matched both report hashes and the original
+failed reply. The 5400-second parent runs `pilot/regrade_saved.py` with
+`--source-commit` set to that revision and distinct source/output prefixes.
+Its preparation child reported a shared-cache hit for the pinned MiniMax
+weights. Grading is still pending at this checkpoint. Submission receipts,
+private storage paths, and monitoring state are retained under the local
+`artifacts/biomnibench-qwen-pilot/recovery-da-20-3/` directory.
