@@ -531,3 +531,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: exp3-recipe.md (readback) and artifacts above [R].
 - Interpretation and limitations: one checkpoint commit; cadence unchanged for the live run.
 - Decision and next action: hourly checks track checkpoint cadence and update counts; the two-hour policy applies to future runs only.
+
+### 2026-11-16 15:50 UTC - Hourly catch-up (14:40–15:50 UTC window; resumed after a model-switch gap)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief. Note: the secretary's session was switched to a new model after the previous provider hit its monthly limit — the 15:40-ish revive turns failed client-side and this entry covers the gap through the 15:48 UTC readback.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch; monitoring artifacts `production51-latest-checkpoint-list.json` and `production51-latest-wandb.json` (checked 15:46:50 UTC).
+- External inputs and artifact references: as above [R: /experiments/active/long-loop-exp3/artifacts/].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **exp3 progressing healthily at update 52** (15:46 UTC readback): train/loss 0.85098 (from 0.94784 at update 1), grad norm 0.26355, update norm 0.13635, param norm 5549.579; per-update learner duration ~164.15 s; W&B state running, heartbeat 15:46:45 UTC. **Checkpoints on the 30-min cadence**: step 22 (14:17:42 UTC), step 33 (14:49:16), step 45 (15:22:39) — all temporary, 11-step spacing as configured.
+- Evidence: monitoring artifacts above; exp3-recipe.md unchanged since the 14:40 readback.
+- Interpretation and limitations: cadence metrics from monitoring snapshots; not steady-state certification.
+- Decision and next action: continue hourly tracking; watch for update 52+ progression and the first protected-best selection.
