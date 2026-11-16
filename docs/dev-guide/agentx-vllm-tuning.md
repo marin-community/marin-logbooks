@@ -73,12 +73,13 @@ correctness criteria, or consequential designs that are hard to reverse.
 Keep the selected model and measurement controls fixed within a comparison,
 except the declared change. Separate diagnostic, calibration and confirmation
 evidence. A short calibration cannot establish a full-hour result. AgentX
-reports metrics and curves; the ladder has no universal AgentX score.
+reports metrics and curves. This optional ladder is a campaign strategy;
+AgentX does not assign it a score.
 
 Compare completed output tokens/s at fixed GPU allocation and output tokens/s
 per allocated GPU across allocations. Show repeat variation, latency and tails,
-errors and deadline cancellations alongside throughput. Recommend a measured
-point in the high-throughput region before small gains incur a large latency
+errors and requests canceled at the profiling cutoff alongside throughput.
+Recommend a measured point in the high-throughput region before small gains incur a large latency
 cost. Prefer lower latency among similar-throughput choices; explain the
 tradeoff against the baseline and agreed criteria.
 

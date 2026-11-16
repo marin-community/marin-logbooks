@@ -36,7 +36,8 @@ does not establish a full-hour result. Use the agreed target protocol for
 confirmation and repeat enough to distinguish gain from observed variation.
 
 Preserve upstream exports and inspect `submission_valid` with reasons, error
-and warmup failures, context overflow, metric coverage and deadline cancellations.
+and warmup failures, context overflow, metric coverage and requests canceled
+at the profiling cutoff.
 Replay validity does not establish model correctness. InferenceX
 [filters warmup/error records][records] and computes throughput over the
 [span from the first retained request's start to the last one's finish][metrics].
@@ -90,9 +91,10 @@ The [existing model qualification][gqa] found Snowball FP8 matching the old
 implementation while failing BF16-reference checks (10 of 58 H100 observations).
 Each observation scores the next-token distribution for one input history.
 The [parity contract][parity] limits maximum absolute probability error on the
-reference's top five tokens to 0.075. All five must have returned scores. The
-greedy winner must belong to that set, with its reference probability gap to
-the best token at most twice the measured maximum probability error. The
+reference's top five tokens to [Snowball's 0.075 bound][snowball-bound]. All five
+must have returned scores. The greedy winner must belong to that set, with its
+reference probability gap to the best token at most twice the measured maximum
+probability error. The
 qualification also preserves its 0.005 material-change criteria for direct
 old/native probability changes and extra reference error.
 
@@ -127,14 +129,19 @@ Snowball's [ten H100 measurements](data/agentx-snowball-h100-calibration.csv)
 include three full-hour runs at 128 concurrent replay sessions averaging 134.95
 completed output tokens/s/GPU and three at 256 averaging 110.55. The
 90th-percentile time to first token rose from 7.7–7.9 to 197–207 seconds.
-Keep the CSV's identities and artifact hashes when reusing these results.
+These summaries span two recipe/source revisions; within each, C256 throughput
+fell by 17.88–18.48%. Keep the CSV's identities and artifact hashes when reusing
+these results.
 
 The [Hero/Mochi handoff][hero] covers 900-second GB200 calibration, draft
 parallelism builds and an unresolved reduction failure at tensor-parallel size
 two. Its full-hour rankings and long-context quality remain unconfirmed.
 Verify actual B200/GB200 hardware, topology and current software before reuse.
-Available engine changes can be evaluated within a campaign's scope; completing
-vLLM #110/#119 is not a prerequisite for this workflow.
+Before writing a launcher, inspect the [existing draft AgentX runner][runner]
+and check its current status and protocol support; it is unmerged code, not a
+main-branch command. Available engine changes can be evaluated within a
+campaign's scope; completing vLLM #110/#119 is not a prerequisite for this
+workflow.
 
 [scenario]: https://github.com/SemiAnalysisAI/agentx-harness/blob/18015a2d77a6077bee9750c6929a889d52c7df54/src/aiperf/common/scenario/inferencex_agentx_mvp.py
 [standalone]: https://github.com/SemiAnalysisAI/InferenceX/blob/d40220b7bc455a6f146f202ea08b64597a9b27f4/inferencex-e2e/docs/agentx-standalone.md
@@ -163,3 +170,5 @@ vLLM #110/#119 is not a prerequisite for this workflow.
 
 [faq]: https://github.com/SemiAnalysisAI/agentx-harness/blob/18015a2d77a6077bee9750c6929a889d52c7df54/docs/benchmark-modes/semianalysis-agentx-faq.md
 [parity]: https://github.com/marin-community/marin/blob/83ab8b902e/lib/marin/src/marin/testing/inference/backend_parity.py
+[snowball-bound]: https://github.com/marin-community/marin/blob/83ab8b902e/lib/marin/src/marin/testing/inference/snowball.py
+[runner]: https://github.com/marin-community/marin/pull/10645

@@ -14,7 +14,8 @@ Hero and Mochi name the same model. Discover the actual checkpoint and hardware.
 Resolve available context and propose defaults for the model, checkpoint pin,
 workload, baseline, success criteria, allowed changes, correctness requirements
 and resource budget. Present consequential uncertainties together for user
-review. Use the model team's qualified reference runs as baseline candidates.
+review. Propose the latest qualified reference run and the best comparable run
+as baseline candidates.
 
 Optimize completed output throughput and GPU efficiency for RL serving. Find a
 high-throughput region with acceptable latency against the baseline; prefer

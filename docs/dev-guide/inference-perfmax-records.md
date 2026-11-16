@@ -8,16 +8,19 @@ there is no dedicated perfmax runner, validator or Marina ingester yet.
 
 ## Store records beside upstream exports
 
-Choose the existing CoreWeave bucket for the execution region from
-[`config/coreweave.yaml`][buckets]. For example, `us-west-04a` uses
-`s3://marin-us-west-04a`. Propose this layout under that bucket:
+Resolve the execution cluster's permanent output prefix: `MARIN_PREFIX` in
+`lib/iris/config/<cluster>.yaml`, including actual job overrides. Follow the
+[CoreWeave storage guide](../tutorials/cloud-gpu.md#keep-data-on-coreweave).
+Exclude `hero-checkpoints`, which is reserved for checkpoints. Record the
+resolved bucket, region and any transfer cost; configured output prefixes can
+cross regions. For `cw-us-west-04a`, the current permanent prefix is
+`s3://marin-us-west-04a/marin`. Use this layout:
 
 ```text
-marin/inference-perfmax/<campaign>/
+<permanent-prefix>/inference-perfmax/<campaign>/
   contracts/<revision>/.artifact.json
   attempts/<attempt-id>/.artifact.json
   attempts/<attempt-id>/agentx/             # unchanged upstream exports
-  attempts/<attempt-id>/transient/          # large diagnostic captures
   decisions/<revision>/.artifact.json      # selected attempts and interpretation
 ```
 
@@ -66,11 +69,28 @@ attempt records. Preserve original exports before deriving comparisons.
 ## Retain and recover
 
 Keep compact records, configuration, qualification evidence and confirmed
-result exports durably. Verify the bucket lifecycle supports that retention.
-For large intermediate outputs, propose an expiry at kickoff (for example,
-30 days after the decision); record its date and retained summary. Apply the
-agreed cleanup policy. Temporary task archives and expiring CI artifacts alone
-cannot serve as durable evidence.
+result exports under the permanent prefix. For large intermediates, choose a
+supported TTL at kickoff and use existing [lifecycle-managed scratch](../tutorials/storage-bucket.md#step-4-ttl-scratch-prefixes-tmpttlnd):
+`tmp/ttl=Nd/` expires objects N days after they are written. Record the resolved
+URI, TTL and write time. Preserve compact failure evidence and promote confirmed
+exports to durable storage before expiry, retaining their digests and links.
+Temporary task archives and expiring CI artifacts alone cannot serve as durable
+evidence.
+
+The [existing helper][scratch-helper] below only constructs a path. Its
+CoreWeave default uses shared scratch in `marin-us-east-08a`; pass `temp_prefix`
+with an existing managed bucket when the campaign needs region-local scratch. This illustrative example
+selects west-region scratch explicitly and performs no storage write:
+
+```python
+from rigging.filesystem.cluster_config import marin_temp_bucket
+
+scratch = marin_temp_bucket(
+    ttl_days=30, prefix="inference-perfmax/example-campaign/a1",
+    temp_prefix="s3://marin-us-west-04a",
+)
+# s3://marin-us-west-04a/tmp/ttl=30d/inference-perfmax/example-campaign/a1
+```
 
 Archive experimental source, analysis and notebook on the Marin-derived
 `marin-logbooks` research branch. No merge to main is needed. Preserve exact
@@ -150,4 +170,4 @@ campaign cost, qualification evidence and remaining uncertainty.
 
 [artifact]: https://github.com/marin-community/marin/blob/83ab8b902e/lib/marin/src/marin/execution/artifact.py
 [sweep]: https://github.com/marin-community/marin/blob/83ab8b902e/lib/marin/src/marin/execution/sweep.py
-[buckets]: https://github.com/marin-community/marin/blob/83ab8b902e/config/coreweave.yaml
+[scratch-helper]: https://github.com/marin-community/marin/blob/83ab8b902e/lib/rigging/src/rigging/filesystem/cluster_config.py
