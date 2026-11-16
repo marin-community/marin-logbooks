@@ -936,3 +936,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the HF-hosted license registry is private [M].
 - Decision and next action: next hourly check watches for rev-21 hosted verification and post-remediation admissions.
+
+### 2026-11-16 20:40 UTC - Hourly catch-up (19:40–20:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d905667532…` (19:19:24 UTC) to head `ad2d01588a4661c328fabf993d7e35aa33732142`, landed 20:30:42 UTC (~13 landings 20:26–20:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d9056675..ad2d0158` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Re-pinned Numina retention completed**: census, dedup, lexical and retained receipts bound in the registry (`d4baae8153…`); retained-release license receipt bound (`d7b3b618fc…`); complete retained receipt collection restored with the re-pinned Numina receipt (`4b52e74098…`); fingerprint pinned onto the landed index (`a6cc725a12…`, `907af187a4…`).
+  - **License remediation batches 6–9 + reasoning gym + adopted-hold receipts recorded** (`504fb461d1…`) and bound onto the restored registry (`230cbfd182…`); staged receipts file accepted by the license reader (`476ab4323d…`).
+  - **Consumed NoP identity preserved for scored oracle failures** (`204d3d6af1…`); repair lane's serving placement wait extended to 24 hours (`068d23bb06…`, `ad2d01588a…` head).
+  - **Source-duplicate acknowledgements moved to the referenced private HF dataset** (`285bc25b66…` — following the license registry's move last window).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the Numina retained-population admission outcome is not yet attested in this record.
+- Decision and next action: next hourly check watches for the Numina admission and further remediation-batch adoptions.
