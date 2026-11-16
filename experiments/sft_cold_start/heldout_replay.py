@@ -1,14 +1,15 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Build a held-out long replay set labelled by the junk filter, one truncated document per row.
+"""Build a held-out long replay set labelled by the junk filter, one document per row.
 
 Each validation cell of the reproduction's replay preparation names one held-out source shard that no
 train cell lists; the filtered builder never reached them either. From each, this takes the first
 ``documents_per_cell`` long documents in index order, judges each exactly as ``filtered_replay`` does,
-and keeps the first ``tokens`` tokens. Every long document is longer than ``LENGTH_THRESHOLD`` tokens,
-so with ``tokens`` at most that, every row has exactly ``tokens`` tokens and a fixed-length window over
-the cache is one whole row. The manifest lists the rows in cache order with each verdict.
+and keeps at most its first ``tokens`` tokens. Rows are stored as processed chat records whose
+``assistant_masks`` cover every token, so an unpacked chat dataset scores each document alone, padded
+to the eval length, on every position that predicts one of its tokens. The manifest lists the rows in
+cache order with each verdict and the number of positions the eval will score.
 """
 
 import gzip
@@ -73,7 +74,7 @@ def cell_documents(cell: dict, tokenizer, *, documents_per_cell: int, tokens: in
         plans.append([(begin + start, begin + start + WINDOW_TOKENS) for start in window_starts(end - begin)])
     with ts.Batch():
         window_reads = [[store.data[a:b].read() for a, b in plan] for plan in plans]
-        prefix_reads = [store.data[int(begins[i]) : int(begins[i]) + tokens].read() for i in chosen]
+        prefix_reads = [store.data[int(begins[i]) : min(int(ends[i]), int(begins[i]) + tokens)].read() for i in chosen]
     documents = []
     for index, windows, prefix in zip(chosen, window_reads, prefix_reads, strict=True):
         text = [
@@ -100,7 +101,7 @@ def cell_documents(cell: dict, tokenizer, *, documents_per_cell: int, tokens: in
 @click.option("--output", required=True, help="Prefix to receive validation/ (the cache) and manifest.jsonl.")
 @click.option("--tokenizer", "tokenizer_path", required=True, help="Tokenizer the source shards were built with.")
 @click.option("--documents-per-cell", type=click.IntRange(min=1), required=True)
-@click.option("--tokens", type=click.IntRange(min=2, max=LENGTH_THRESHOLD), required=True, help="Tokens kept per row.")
+@click.option("--tokens", type=click.IntRange(min=2), required=True, help="Most tokens kept per row; the eval length.")
 @click.option("--workers", type=click.IntRange(min=1), default=8, show_default=True)
 def main(cells_path: str, output: str, tokenizer_path: str, documents_per_cell: int, tokens: int, workers: int) -> None:
     configure_logging(logging.INFO)
@@ -117,13 +118,11 @@ def main(cells_path: str, output: str, tokenizer_path: str, documents_per_cell: 
             )
         )
     documents = [document for group in per_cell for document in group]
-    for document in documents:
-        if len(document.input_ids) != tokens:
-            raise ValueError(
-                f"{document.cell} row {document.index}: {len(document.input_ids)} tokens, expected {tokens}"
-            )
     write_levanter_cache(
-        ({"input_ids": document.input_ids} for document in documents),
+        (
+            {"input_ids": document.input_ids, "assistant_masks": np.ones_like(document.input_ids)}
+            for document in documents
+        ),
         str(root / "validation"),
         metadata={"tokenizer": tokenizer_path, "tokens_per_row": tokens},
         batch_size=1,
@@ -131,7 +130,16 @@ def main(cells_path: str, output: str, tokenizer_path: str, documents_per_cell: 
     )
     (root / MANIFEST_NAME).write_text(
         "".join(
-            json.dumps({"cell": d.cell, "shard": d.shard, "index": d.index, "tokens": d.tokens, "category": d.category})
+            json.dumps(
+                {
+                    "cell": d.cell,
+                    "shard": d.shard,
+                    "index": d.index,
+                    "tokens": d.tokens,
+                    "category": d.category,
+                    "scored_tokens": len(d.input_ids) - 1,
+                }
+            )
             + "\n"
             for d in documents
         )

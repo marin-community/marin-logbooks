@@ -3,10 +3,12 @@
 
 """Score each document of a held-out replay set under a checkpoint, grouped by junk-filter verdict.
 
-The cache holds one document per row, every row exactly ``seq_len`` tokens long, so the text dataset's
-fixed windows over the token stream coincide with the rows and each window is one whole document.
-The manifest has one line per row in cache order with the document's identity and its junk-filter
-``category`` (``null`` when the filter keeps it).
+The cache holds processed chat records, one document per row, with ``assistant_masks`` covering every
+token (``experiments.sft_cold_start.heldout_replay``). Read unpacked, each row is one document padded to
+``seq_len`` with its own segment, scored on every position that predicts one of its tokens: the same
+example structure and shape as paired MRCR, so the two share a compiled scorer. The manifest has one
+line per row in cache order with the document's identity, its junk-filter ``category`` (``null`` when
+the filter keeps it) and the positions the eval should score.
 """
 
 import dataclasses
@@ -28,7 +30,7 @@ from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
 from levanter.data.loader import DataLoader
 from levanter.data.text.datasets import DatasetComponent, LmDataConfig
-from levanter.data.text.formats import TextLmDatasetFormat
+from levanter.data.text.formats import ChatLmDatasetFormat
 from levanter.eval import _calculate_bytes_per_token_type
 from levanter.grug.grug_moe import MoeImplementation
 from rigging.filesystem.storage_path import StoragePath
@@ -43,6 +45,10 @@ REPLAY_LOSS_MANIFEST_NAME = "manifest.jsonl"
 REPLAY_LOSS_DOCUMENTS_NAME = "replay_document_losses.jsonl"
 REPLAY_LOSS_METRICS_NAME = "replay_loss_metrics.json"
 REPLAY_LOSS_METRIC_PREFIX = "eval/heldout_replay"
+# The chat format requires a template, but the cache is already tokenized, so it is never rendered.
+_UNUSED_CHAT_TEMPLATE = (
+    "{% for message in messages %}{% generation %}{{ message['content'] }}{% endgeneration %}{% endfor %}"
+)
 
 
 @dataclass(frozen=True)
@@ -67,11 +73,15 @@ class ReplayDocumentLoss:
     scored_bytes: int
 
 
+def _replay_format() -> ChatLmDatasetFormat:
+    return ChatLmDatasetFormat(chat_template=_UNUSED_CHAT_TEMPLATE, pack=False)
+
+
 def replay_data_config(data_path: str, tokenizer: str) -> LmDataConfig:
     return LmDataConfig(
         tokenizer=tokenizer,
         cache_dir=None,
-        components={REPLAY_LOSS_COMPONENT: DatasetComponent(cache_dir=data_path, format=TextLmDatasetFormat())},
+        components={REPLAY_LOSS_COMPONENT: DatasetComponent(cache_dir=data_path, format=_replay_format())},
         train_weights={REPLAY_LOSS_COMPONENT: 0.0},
         auto_build_caches=False,
     )
@@ -94,7 +104,7 @@ def score_replay_documents(
         REPLAY_LOSS_COMPONENT
     ]
     if len(dataset.as_sync_dataset()) != len(manifest):
-        raise ValueError(f"cache has {len(dataset.as_sync_dataset())} windows, manifest has {len(manifest)} rows")
+        raise ValueError(f"cache has {len(dataset.as_sync_dataset())} rows, manifest has {len(manifest)}")
     loader = DataLoader(dataset, config.batch_size, mesh=mesh, axis_resources={"batch": _BATCH_AXES})
     byte_lengths = _calculate_bytes_per_token_type(data.the_tokenizer)
     sharding = NamedSharding(mesh, P(_BATCH_AXES, None))
@@ -119,10 +129,13 @@ def score_replay_documents(
             loss_sums, scored, scored_bytes = (
                 np.asarray(multihost_utils.process_allgather(value, tiled=True)).reshape(-1) for value in sums
             )
+            # A padded final batch has more rows than the manifest has left; only real rows bind.
             for offset, record in enumerate(manifest[len(output) : len(output) + config.batch_size]):
-                # Every row is one whole window, so every position but the last predicts a token.
-                if int(scored[offset]) != config.seq_len - 1:
-                    raise ValueError(f"row {len(output)}: scored {int(scored[offset])} of {config.seq_len} positions")
+                if int(scored[offset]) != record["scored_tokens"]:
+                    raise ValueError(
+                        f"row {len(output)}: scored {int(scored[offset])} positions, "
+                        f"manifest says {record['scored_tokens']}"
+                    )
                 output.append(
                     ReplayDocumentLoss(
                         cell=record["cell"],

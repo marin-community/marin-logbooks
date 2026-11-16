@@ -3,9 +3,9 @@
 
 """Score one Snowball 67B checkpoint on a held-out replay set split by junk-filter verdict, on H100 nodes.
 
-The data is a cache built by ``experiments.sft_cold_start.heldout_replay``: one document per row, every
-row ``ROW_TOKENS`` long. Each node scores ``ROWS_PER_NODE`` rows per batch, the same tokens per node as one
-262,144-token MRCR row, with the sequence sharded over its eight GPUs.
+The data is a cache built by ``experiments.sft_cold_start.heldout_replay`` with ``--tokens`` equal to
+``MRCR_CONTEXT_CAP``: one document per row, padded to 262,144 tokens. As in paired MRCR, each node holds
+one row across its eight GPUs as context shards, so the batch is one row per node.
 """
 
 import dataclasses
@@ -44,9 +44,6 @@ from experiments.grug.moe_hero_ep.snowball_recipe import (
 )
 from experiments.marin_tokenizer import marin_tokenizer
 
-ROW_TOKENS = 65_536
-ROWS_PER_NODE = MRCR_CONTEXT_CAP // ROW_TOKENS
-
 
 def build_snowball_replay_loss_eval(
     *,
@@ -61,7 +58,7 @@ def build_snowball_replay_loss_eval(
     if not run_id.strip():
         raise ValueError("run_id must not be empty")
     model = dataclasses.replace(SNOWBALL_67B_MODEL_CONFIG, max_seq_len=MRCR_CONTEXT_CAP)
-    batch_size = nodes * ROWS_PER_NODE
+    batch_size = nodes
     resources = ResourceConfig.with_gpu(
         "H100",
         count=SNOWBALL_GPUS_PER_NODE,
@@ -112,14 +109,14 @@ def build_snowball_replay_loss_eval(
             resources=ctx.runtime_arg("resources"),
             checkpoint_path=checkpoint_path,
             seq_lens=(),
-            eval_tokens_per_batch=batch_size * ROW_TOKENS,
+            eval_tokens_per_batch=batch_size * MRCR_CONTEXT_CAP,
             context_axis_size=SNOWBALL_GPUS_PER_NODE,
             replay_loss=ReplayLossEvalConfig(
                 data_path=data_path,
                 output_path=ctx.output_path,
                 tokenizer=marin_tokenizer,
                 batch_size=batch_size,
-                seq_len=ROW_TOKENS,
+                seq_len=MRCR_CONTEXT_CAP,
                 max_batches=max_batches,
             ),
             dropless_moe_implementation=SNOWBALL_DROPLESS_MOE_IMPLEMENTATION,

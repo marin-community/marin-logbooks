@@ -53,27 +53,43 @@ CONFIG = model.GrugModelConfig(
     moe_implementation="fixed_all_to_all",
 )
 CATEGORIES = [None, "structured_data", None, "minified_code", None, None, "repetition", None]
+# Document lengths in cache order; the first fills the sequence and the rest are padded.
+LENGTHS = [16, 5, 9, 16, 12, 3, 7, 14]
 
 
 def _write_fixture(directory):
     tokenizer = Tokenizer(WordLevel({"<unk>": 0, **{str(i): i for i in range(1, 64)}}, unk_token="<unk>"))
     tokenizer.save(f"{directory}/tokenizer.json")
-    rows = [np.random.default_rng(i).integers(2, 64, size=SEQ_LEN).astype(np.int32) for i in range(len(CATEGORIES))]
-    write_levanter_cache(iter({"input_ids": row} for row in rows), f"{directory}/data/validation", metadata={})
+    rows = [np.random.default_rng(i).integers(2, 64, size=length).astype(np.int32) for i, length in enumerate(LENGTHS)]
+    write_levanter_cache(
+        iter({"input_ids": row, "assistant_masks": np.ones_like(row)} for row in rows),
+        f"{directory}/data/validation",
+        metadata={},
+    )
     manifest = [
-        {"cell": f"c{i:02d}q0-validation", "shard": "part-00207", "index": 10 * i, "category": category}
-        for i, category in enumerate(CATEGORIES)
+        {
+            "cell": f"c{i:02d}q0-validation",
+            "shard": "part-00207",
+            "index": 10 * i,
+            "category": category,
+            "scored_tokens": len(row) - 1,
+        }
+        for i, (category, row) in enumerate(zip(CATEGORIES, rows, strict=True))
     ]
     (directory / "data" / "manifest.jsonl").write_text("".join(json.dumps(record) + "\n" for record in manifest))
     return rows, manifest
 
 
-def _reference_loss(weights, tokens):
-    """Score one document alone in its batch, every position but the last predicting the next token."""
-    ids = np.zeros((4, SEQ_LEN), dtype=np.int32)
-    ids[0] = tokens
+def _reference_loss(weights, tokens, *, padding=0):
+    """Score one document alone in its batch, its padding a chosen value, every position but its last."""
+    length = len(tokens)
+    segments = np.full((4, SEQ_LEN), -1, dtype=np.int32)
+    segments[0, :length] = 0
+    ids = np.full((4, SEQ_LEN), padding, dtype=np.int32)
+    ids[0, :length] = tokens
     weight = np.zeros((4, SEQ_LEN), dtype=np.float32)
-    weight[0, : SEQ_LEN - 1] = 1.0
+    weight[0, : length - 1] = 1.0
+    mask = model.AttentionMask.causal().with_segment_ids(jnp.asarray(segments))
     expert_mlp = weights.stacked_blocks.stacked.mlp.expert_mlp
     local = eqx.tree_at(
         lambda m: m.stacked_blocks.stacked.mlp.expert_mlp,
@@ -81,13 +97,13 @@ def _reference_loss(weights, tokens):
         dataclasses.replace(expert_mlp, implementation="scatter", expert_chunks=1),
     )
     losses = local.next_token_loss(
-        jnp.asarray(ids), jnp.asarray(weight), mask=model.AttentionMask.causal(), reduction="none", logsumexp_weight=None
+        jnp.asarray(ids), jnp.asarray(weight), mask=mask, reduction="none", logsumexp_weight=None
     )
     return float(np.sum(np.asarray(losses)[0] * weight[0]))
 
 
 @pytest.mark.timeout(300)
-def test_each_row_is_one_whole_document_bound_to_its_manifest_line(tmp_path):
+def test_each_row_is_one_padded_document_bound_to_its_manifest_line(tmp_path):
     rows, manifest = _write_fixture(tmp_path)
     with use_test_devices(8):
         mesh = compact_grug_mesh(expert_axis_size=1, replica_axis_size=1, context_axis_size=2)
@@ -110,8 +126,10 @@ def test_each_row_is_one_whole_document_bound_to_its_manifest_line(tmp_path):
                 (m["cell"], m["index"], m["category"]) for m in manifest
             ]
             for result, tokens in zip(scored, rows, strict=True):
-                assert result.scored_tokens == SEQ_LEN - 1
+                assert result.scored_tokens == len(tokens) - 1
                 np.testing.assert_allclose(result.loss_sum, _reference_loss(params, tokens), rtol=2e-4)
+                # Padding reaches neither the attention of real tokens nor the loss.
+                np.testing.assert_allclose(result.loss_sum, _reference_loss(params, tokens, padding=7), rtol=2e-4)
 
 
 def test_metrics_split_documents_by_verdict():
