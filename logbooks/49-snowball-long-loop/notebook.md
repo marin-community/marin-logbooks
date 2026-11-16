@@ -507,3 +507,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: exp3-recipe.md (7:29 EST readback) and artifacts listed above; the coordinator's launch flag.
 - Interpretation and limitations: the launch is queued/building; no SFT updates yet; the provisional step-0 reference is an estimate pending the true value; legacy gradient parity (native trainer vs frozen Grug path) remains unmeasured.
 - Decision and next action: hourly checks now track exp3 progression (BUILDING→RUNNING→SFT start) and the atlas branch separately; exp2 records remain sealed history.
+
+### 2026-11-16 13:40 UTC - Hourly catch-up (12:40–13:40 UTC window): Exp3 first optimizer updates
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch.
+- External inputs and artifact references: `artifacts/production51-wandb-first-update.json`, `production-recovery52-preflight-receipt.json`, `validation-recovery-advisory-disposition.json` [R: /experiments/active/long-loop-exp3/].
+- Environment and hardware when relevant: full-context compiled-memory analysis reports 27,932,091,664 bytes/device (reported, not a measured allocator peak).
+- Result, including failure or restart: **exp3 completed its first two optimizer updates** at 13:13:48 and 13:16:41 UTC. Both initializer checks passed: raw C4 loss 2.57068157 and post-reseed loss 2.57307887 against the provisional reference 2.31374189 ± 0.5 (inside the allowance). First training loss 0.94783515; gradient norm 3.40971971; parameter norm 5549.55225; update norm 0.23865230 (update/parameter ratio 4.3004e-5) — startup observations, not steady-state certification. The initial 45-minute startup watchdog starts inside `Trainer.train` (~13:00:47 UTC, after packing/loading/initializer evaluation), not at Iris task start; the first update landed inside it. 32 started producer receipts present; no committed checkpoint visible at the configured temporary prefix at early inspection. A prepared recovery `.52` (14 stages, 69 passes/7 skips; two IID regressions fail on `.51` and pass with the correction) was preflighted but **not launched** — `.51` stays live while progressing; recovery authority is coordinator message `e040816ac0…`, conditional on diagnosed failure.
+- Evidence: exp3-recipe.md (07:29+ readback) and artifacts above [R].
+- Interpretation and limitations: two updates do not establish throughput; compiled-memory figure is analysis-reported.
+- Decision and next action: hourly checks now track update cadence, checkpoint commits, and whether the IID regressions force a diagnosed recovery.
