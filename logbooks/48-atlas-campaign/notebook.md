@@ -655,3 +655,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings and measurement records; the admission outcomes flowing from the IFBench measurements and license lift are not yet attested in this record.
 - Decision and next action: next hourly check watches for the IFBench/Cascade admission decisions and any further license lifts.
+
+### 2026-11-16 01:35 UTC - Hourly catch-up (00:35–01:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `47c99fc422…` (00:23:08 UTC) to head `d1fd107b7784f76591cce6fa943d4aaec5297f17`, landed 00:55:28 UTC.
+- Command or material configuration: evidence: landings.jsonl tail; `git log 47c99fc4..d1fd107b` (fetched).
+- External inputs and artifact references: landing record as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — `[Atlas] Bind static retention evidence to selected private releases` (`d1fd107b77…`): the static-retention path (the no-oracle sources' retention route per the 2026-11-14 ruling) now has its evidence bound to the selected private releases. No long-loop changes (STATE.md unchanged).
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: single code landing; measured effects not yet attested.
+- Decision and next action: next hourly check watches for further license lifts/admissions and any retained-publication outcomes.
