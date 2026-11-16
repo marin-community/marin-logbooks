@@ -142,3 +142,23 @@ five disclosed input changes. Reuse four validated pilot images and prepare
 to the shared VM. Native LFS SHA-256 or Git blob identifiers validate source
 bytes before publishing layers. All original instructions and rubrics remain
 pinned; the existing five input-disclosure notes are retained.
+
+Full-pass safeguards now include a strict finite-numeric reward check in the
+research branch's Harbor aggregation path. An invalid present verifier reward
+is unscored, including a missing value, string, NaN, infinity, or boolean;
+a genuine numeric zero remains scored. Existing agent-error taxonomy is
+unchanged. The focused runner suite passed 51 tests.
+
+The full-pass verifier retries only a malformed judge reply once, retaining
+both raw responses and error metadata under `judge-attempts/`. Frozen reports
+are copied to the verifier root even if both attempts fail. It inspects the
+submission directory before assigning an empty-submission zero. Five offline
+OpenAI-transport tests passed for valid, retry-success, twice-invalid, empty,
+and missing-directory cases. The original prompt and rubric are unchanged.
+
+The current US Daytona quota supports 16 sandboxes at the requested resources.
+There are 45 required snapshots: 44 input images plus a second resource size
+for the shared da-14 image. The documented cleanup tool identified and
+requested deletion of two stale unreferenced snapshots. Provider-owned
+snapshots are excluded. The image job prepares the remaining 40 images in
+one CPU job; its source is pinned at `1de749bc17912734264533cf6b514019ab428c3c`.

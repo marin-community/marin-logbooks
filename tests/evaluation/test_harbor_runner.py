@@ -1050,3 +1050,20 @@ def test_harbor_executor_reads_native_correction_without_recomputing_rewards(tmp
     assert result.canonical_metrics["sotopia-hard"][corrected.name] == 0.25
     assert result.canonical_metrics["sotopia-hard"]["reward"] == 0.75
     assert result.tasks[0].benchmark.primary_metric == corrected.name
+
+
+@pytest.mark.parametrize("reward", [None, "0", float("nan"), float("inf"), True])
+def test_invalid_verifier_rewards_do_not_count_as_scored_zero(tmp_path, reward):
+    valid = tmp_path / "valid"
+    invalid = tmp_path / "invalid"
+    valid.mkdir()
+    invalid.mkdir()
+    (valid / "result.json").write_text(json.dumps({"verifier_result": {"rewards": {"reward": 0}}}))
+    rewards = {} if reward is None else {"reward": reward}
+    (invalid / "result.json").write_text(json.dumps({"verifier_result": {"rewards": rewards}}))
+
+    trials = _read_trials(StoragePath(str(tmp_path)), _ERROR_TAXONOMY)
+
+    assert sum(trial.scored for trial in trials) == 1
+    assert [trial.reward for trial in trials if trial.scored] == [0.0]
+    assert [trial.error["type"] for trial in trials if trial.error] == ["InvalidReward"]

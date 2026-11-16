@@ -209,8 +209,9 @@ def _read_trial(result_file: StoragePath, taxonomy: HarborErrorTaxonomy) -> Harb
     data = json.loads(result_file.read_text())
     verifier_result = data.get("verifier_result")
     rewards = (verifier_result or {}).get("rewards") or {}
-    reward = rewards.get("reward", 0.0)
-    reward = float(reward) if isinstance(reward, int | float) else 0.0
+    raw_reward = rewards.get("reward")
+    valid_reward = type(raw_reward) in (int, float) and math.isfinite(raw_reward)
+    reward = float(raw_reward) if valid_reward else 0.0
     exc = data.get("exception_info")
     exception_type = exc.get("exception_type") if exc else None
     error = {"type": exception_type, "message": exc.get("exception_message")} if exc else None
@@ -227,6 +228,9 @@ def _read_trial(result_file: StoragePath, taxonomy: HarborErrorTaxonomy) -> Harb
     else:
         error["type"] = f"{_UNKNOWN_ERROR_PREFIX}{exception_type or _UNKNOWN_ERROR}"
         scored = False
+    if verifier_result is not None and not valid_reward:
+        scored = False
+        error = error or {"type": "InvalidReward", "message": "Verifier reward must be a finite number"}
     return HarborTrial(
         reward=reward,
         scored=scored,
