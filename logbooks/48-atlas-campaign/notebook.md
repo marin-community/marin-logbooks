@@ -727,3 +727,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: admission commit reports the outcome; the underlying receipts stay registry-private [M]. IFBench is now the second source admitted through the license-gate regime (after Terminal-Pivot and the Cascade/MOPD batch).
 - Decision and next action: next hourly check watches for further license-lift admissions and post-sweep catalog publication.
+
+### 2026-11-16 06:35 UTC - Hourly catch-up (05:35–06:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `0fc733f087…` (05:25:23 UTC) to head `9ca238b157ab45cb83cd095132d89e9757adabaf`, landed 06:23:19 UTC (landings 06:02:44 / 06:16:24 / 06:23:19 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 0fc733f0..9ca238b1` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: shared-source controller kept loadable on 3.9 task images (`6b240fe9d5…`) with the interpreter resolved to 3.9-or-newer (`590ec31ab8…`) — a compatibility constraint for task-image runners.
+- Result, including failure or restart: material changes in the window:
+  - **OpenResearcher exclusions bounded**: incomplete OpenResearcher grounding exclusions bound/recorded (`9ca238b157…`, head) — the indexer lane's grounding coverage limits are now explicit.
+  - **Hidden verifier delivery**: root-actor hidden verifiers delivered at grading time after quiesce (`6156a2ab12…` / `fb51ae2b7c…` duplicate landing).
+  - **Shared-source controller compatibility**: kept loadable on 3.9 task images; interpreter resolution to 3.9-or-newer.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the exclusion ledger contents stay registry-private [M].
+- Decision and next action: next hourly check watches for OpenResearcher index measurement results and further admissions.
