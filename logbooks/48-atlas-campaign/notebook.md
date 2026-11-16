@@ -952,3 +952,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the Numina retained-population admission outcome is not yet attested in this record.
 - Decision and next action: next hourly check watches for the Numina admission and further remediation-batch adoptions.
+
+### 2026-11-16 22:40 UTC - Hourly catch-up (21:40–22:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `63f9bc5eef…` (20:45:34 UTC) to head `4155e3cb032136b25d55b4e9a3db819f31860e12`, landed 22:20:54 UTC (~21 landings 22:19–22:20 UTC incl. **two main merges**).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 63f9bc5e..4155e3cb` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Main merges into atlas-env-audit** (`203aa08a5f…`, `4155e3cb03…` head): "restore the pull_request merge ref and CI" — brings #10661 (faster RL startup), #11554 (importable root tests / preflight timeout), #11551 (Iris supervisor termination handling), #11550 (taskforge image unpacking / registry manifest readback), #11549 (Iris test logging/E2E timeouts) from main.
+  - **Grading-channel clarifications**: conclusive controls kept for ungraded oracle outcomes (`74f355acfa…`); original vs NoP grading-channel comparison clarified (`2ae2828790…`); proved upstream verifier exceptions recorded as source exclusions (`f7cefc33d6…`).
+  - **Repair-lane splice**: scripted-filter turn edits spliced into the original rendered text (`27a4eee30b…` — the V6 serializer correction for exp3's data arm); surviving turn order kept across dropped turns (`903b9bca13…`); concurrent Bloom cache fills isolated (`1985d3b598…`); numbered receipt shards only for next-part picking (`835e186860…`); raw-open verified FULL content Result binding referenced (`0b3a9fe477…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the CI restoration effects are not yet attested in this record.
+- Decision and next action: next hourly check watches for CI state on the merged head and further repair-lane/V6 progress.
