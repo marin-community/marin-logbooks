@@ -673,3 +673,9 @@ The SFT export requires an explicit Marin chat template and EOS 128009, whereas 
 [Report](chat-probe-report.md), [exact inputs](chat-probe-inputs.json), and [results](chat-probe-summary.json). Same advertised SFT checkpoint export, changed serving build; fresh raw baselines included. All 18 tokenizer checks passed. On one forward-strand pilot variant, A/B mass rose from 55.14% to 95.01% zero-shot and 13.23% to 98.61% two-shot with chat plus Answer: assistant prefill. Raw decoding emitted space then end-of-text; chat prefill emitted B then end-of-turn; native chat emitted 1. in both shot conditions. EOS stopping was disabled, so this establishes token behavior rather than natural termination.
 
 Six completions, 12 generated tokens, 25 HTTP requests including checks, 12.79 seconds. No panel rerun or score replacement. This is evidence of formatting sensitivity, not improved VEP accuracy. A broader stability/mapping check remains unrun.
+
+## 2026-11-16: balanced four-variant chat replication complete
+
+[Replication report](chat-replication-report.md), [inputs](chat-replication-inputs.json), [scores and checks](chat-replication-summary.json). Forty sequential completions across four variants, two mappings, two shot settings and raw/chat-prefill formats, including eight end repeats. All 96 tokenizer checks passed, all repeats matched exactly, 137 HTTP requests in 74.93 seconds. Source 81367cfc02.
+
+Chat-prefill raises mean A/B mass to 94.47% zero-shot and 98.27% two-shot (raw 55.39% and 9.80%). However, zero-shot chooses literal B across all eight primary comparisons; semantic predictions flip for every variant when the mapping swaps. Two-shot chat-prefill has one semantic flip among four variants. Formatting improvement is replicated; improved VEP discrimination is not established. No panel rerun or score replacement.
