@@ -781,3 +781,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for root-delivery consumer adoption in admissions and further retained-release publications.
+
+### 2026-11-16 10:35 UTC - Hourly catch-up (09:35–10:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d5d7571ba2…` (09:24:26 UTC) to head `fada02f02b0ed4c12da050da751b4723bbcb2153`, landed 10:25:48 UTC (landings 09:59:23 / 10:10:13 / 10:25:48 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d5d7571b..fada02f0` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Root-delivery contracts adopted in the exporter**: TaskSpec Harbor exporter now accepts root-delivery contracts (`41a8cf743b…`) — completing the 09:35 window's contract formalization.
+  - **Protected SWE population measurements bound** (`2801347c3a…`).
+  - **DECLARATIVE DockerBuildExecution exporter opt-in added** (`fbb6400fdfe6…`) — extends the declarative-provisioning port.
+  - **OpenCode prompts repaired from pinned raw questions** (`fada02f02b…`, head; by a different landing session `01a1dfb7`) — OpenCode-prompt repair work is part of this campaign's prompt-repair lane.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for root-delivery consumer adoption in new admissions and further license lifts.
