@@ -667,3 +667,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit above; landing timestamp in the local atlas-push log [R].
 - Interpretation and limitations: single code landing; measured effects not yet attested.
 - Decision and next action: next hourly check watches for further license lifts/admissions and any retained-publication outcomes.
+
+### 2026-11-16 02:35 UTC - Hourly catch-up (01:35–02:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d1fd107b77…` (00:55:28 UTC) to head `91816039f97035ec1e2606c3f2fbff063608bcac`, landed 02:09:40 UTC (landings 01:42:24 / 02:05:18 / 02:09:40 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d1fd107b..91816039` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **IFBench decontamination recorded** against the complete test split (`91816039f9…`, head) — follows the license lift and intake measurements from the previous window.
+  - **Grounding retries within sealed budget**: truncated grounding responses retried within the sealed budget (`dc288fd79e…`).
+  - **SAMPLE retry documentation**: fixed-panel SAMPLE retries documented with a fresh response cache (`1d231c30c1…`); SAMPLE retry evidence and missing-review accounting clarified (`d6b5f17f3b…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings and measurement records; the decontamination outcome and admission decisions are not yet attested in this record.
+- Decision and next action: next hourly check watches for the IFBench admission decision following the decontamination record.
