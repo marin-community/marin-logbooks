@@ -754,3 +754,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for OpenResearcher results and further license-gate admissions.
+
+### 2026-11-16 08:35 UTC - Hourly catch-up (07:35–08:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `c1b5d37d18…` (07:18:57 UTC) to head `ed848d11fec0e8ef9d3f9cb6defe00fe256a0d21`, landed 08:24:58 UTC (landings 08:10:43 / 08:24:58 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log c1b5d37d..ed848d11` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: two landings in the window — native declared setup now recorded in **physical NoP controls** (`c7054cf453…`: the negative controls capture the physical setup, strengthening the faithful-environment pairing for the NoP lane); large OpenResearcher retrieval responses preserved (`ed848d11fe…`, head: the indexer lane's retrieval outputs retained, with the known privacy boundary — retrieval responses are metadata/index material, not task data). No long-loop changes (STATE.md unchanged).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only; the retained responses' access class follows the standing publication rule (no task data).
+- Decision and next action: next hourly check watches for OpenResearcher index results and further retained-release publications.
