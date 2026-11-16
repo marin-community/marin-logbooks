@@ -67,6 +67,7 @@ from experiments.grug.moe_hero_ep.hero_recipe import (
 )
 from experiments.grug.moe_hero_ep.model import GrugModelConfig, Transformer
 from experiments.grug.moe_hero_ep.mrcr_eval import MrcrEvalConfig, evaluate_mrcr
+from experiments.grug.moe_hero_ep.replay_loss_eval import ReplayLossEvalConfig, evaluate_replay_loss
 from experiments.grug.moe_hero_ep.train import (
     DEFAULT_DROPLESS_MOE_IMPLEMENTATION,
     GrugEvalConfig,
@@ -98,14 +99,15 @@ class CheckpointEvalConfig:
     eval_tokens_per_batch: int
     context_axis_size: int = 1
     mrcr: MrcrEvalConfig | None = None
+    replay_loss: ReplayLossEvalConfig | None = None
     dropless_moe_implementation: MoeImplementation = DEFAULT_DROPLESS_MOE_IMPLEMENTATION
     compute_bpb: bool = True
     tensorstore_cache_bytes: int | None = None
     processes_per_task: int = 1
 
     def __post_init__(self):
-        if not (self.seq_lens or self.mrcr) or len(set(self.seq_lens)) != len(self.seq_lens):
-            raise ValueError(f"seq_lens must be distinct and non-empty without MRCR, got {self.seq_lens}")
+        if not (self.seq_lens or self.mrcr or self.replay_loss) or len(set(self.seq_lens)) != len(self.seq_lens):
+            raise ValueError(f"seq_lens must be distinct and non-empty without MRCR or replay loss, got {self.seq_lens}")
         for seq_len in self.seq_lens:
             if seq_len < 2 or self.eval_tokens_per_batch % seq_len:
                 raise ValueError(f"eval length {seq_len} must divide eval_tokens_per_batch={self.eval_tokens_per_batch}")
@@ -177,6 +179,22 @@ def evaluate_checkpoint(config: CheckpointEvalConfig) -> tuple[int, dict[str, fl
             )
             levanter.tracker.log(mrcr_metrics, step=step)
             metrics.update(mrcr_metrics)
+        if config.replay_loss is not None:
+            replay_metrics = evaluate_replay_loss(
+                params,
+                config.replay_loss,
+                mesh=mesh,
+                mp=config.trainer.mp,
+                implementation=config.dropless_moe_implementation,
+                record={
+                    "checkpoint_path": config.checkpoint_path,
+                    "checkpoint_step": step,
+                    "context_axis_size": config.context_axis_size,
+                    "max_batches": config.replay_loss.max_batches,
+                },
+            )
+            levanter.tracker.log(replay_metrics, step=step)
+            metrics.update(replay_metrics)
         for seq_len in config.seq_lens:
             eval_cfg = GrugEvalConfig(
                 eval_batch_size=config.eval_tokens_per_batch // seq_len,

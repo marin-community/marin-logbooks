@@ -324,7 +324,7 @@ def mrcr_data_config(data_path: str, tokenizer: str) -> LmDataConfig:
     )
 
 
-def _sequence_score_sums(
+def sequence_score_sums(
     model: Transformer,
     tokens: jax.Array,
     loss_weight: jax.Array,
@@ -374,7 +374,7 @@ def score_condition_rows(
     loader = DataLoader(dataset, config.batch_size, mesh=mesh, axis_resources={"batch": _BATCH_AXES})
     byte_lengths = _calculate_bytes_per_token_type(data.the_tokenizer)
     sharding = NamedSharding(mesh, P(_BATCH_AXES, None))
-    score = eqx.filter_jit(_sequence_score_sums)
+    score = eqx.filter_jit(sequence_score_sums)
 
     output: list[MrcrConditionLoss] = []
     batch_start = time.monotonic()
