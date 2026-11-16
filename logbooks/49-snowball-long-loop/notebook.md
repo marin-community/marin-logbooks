@@ -519,3 +519,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: exp3-recipe.md (07:29+ readback) and artifacts above [R].
 - Interpretation and limitations: two updates do not establish throughput; compiled-memory figure is analysis-reported.
 - Decision and next action: hourly checks now track update cadence, checkpoint commits, and whether the IID regressions force a diagnosed recovery.
+
+### 2026-11-16 14:40 UTC - Hourly catch-up (13:40–14:40 UTC window): exp3 first checkpoint committed
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch. New user directive (coordinator message `562ddc814e…`): **two-hour periodic SFT checkpoints plus a guaranteed final checkpoint in future runs** — applied via commit `5fd0b71f21…` on the unused `benfeuer/exp3-validation-packing` branch to newly constructed native profiles; existing rolling counts preserved; production keeps three + protected best. Future-policy validation: 17 focused passes; broader validation 174 passes/1 skip; four interval regressions fail on the pinned 30-minute parent; no production source cutover occurred (adopting the policy into the running job would require a new source/artifact identity).
+- External inputs and artifact references: `artifacts/production51-first-checkpoint-verification.json`, `future-checkpoint-policy-verification.json` [R: /experiments/active/long-loop-exp3/].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **exp3's first native temporary checkpoint, step 11, committed at 13:46:19 UTC** and metadata readback verified it; native payload 502.29 GiB. The running `.51` retains its consumed 30-minute cadence.
+- Evidence: exp3-recipe.md (readback) and artifacts above [R].
+- Interpretation and limitations: one checkpoint commit; cadence unchanged for the live run.
+- Decision and next action: hourly checks track checkpoint cadence and update counts; the two-hour policy applies to future runs only.
