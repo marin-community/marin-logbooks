@@ -243,10 +243,38 @@ status: active
   - One eval run per checkpoint, so each seed difference also contains agent sampling noise. The snapshot-quota losses depend on which tasks needed a new snapshot while the quota was full, which should not depend on the model, but the missing tasks were not rerun.
 - Decision and next action: see the final decision.
 
+### 2026-11-16 18:00 UTC - DS-1000 repeated four times on each step-238 checkpoint
+
+- Hypothesis or decision under test: the filtered arm's DS-1000 deficit (0.206 against 0.235 for both control seeds, one attempt per task) is agent sampling noise rather than a difference between checkpoints.
+- Published code revision: research branch `f10867d334` (`harbor-configs/ds-1000-local-x4.yaml`, which is `ds-1000-local.yaml` with `n_attempts: 4`); comparison with `scripts/paired_repeats.py` (`97f642387c`), which averages each task's scored attempts and bootstraps the paired difference over tasks (10,000 resamples, seed 0). On the earlier single-attempt runs it reproduces 0.236 against 0.206.
+- Run identities: groups `lce40-ds1000x4-{control,control-seed1,filtered}-step238`, records `...-ds-1000-local-x4-{2bae94d121bf5fdc8dc95e63d8f86887,0a4fd6595c9e5d7289fb24495dc77dbf,0df2ff2da3bf5e2cb9ed69f3e0f77703}` under `s3://marin-us-east-02a/tmp/ttl=30d/lce-junk-filter/evals/`. Drivers: filtered `/dml/eval-lce40-ds1000x4-filtered-step238-45532f85`; control `-7165684f`, `-8d3eb5ac` (refused), `-ca7c3fd7`; seed 1 `-0c741a74`, `-d0af3181` (refused), `-e9c6e848`.
+- Environment and hardware: one 8xH100 node per checkpoint on `cw-us-east-02a` at interactive priority; the same serving and agent settings as the guard runs; Daytona eval account. The single DS-1000 snapshot was created with `shellbox-daytona-snapshots ensure` before launch so trials did not create it under quota pressure.
+- Result, including failure or restart:
+
+    | | Control seed 0 | Control seed 1 | Filtered |
+    | --- | ---: | ---: | ---: |
+    | Four attempts: scored attempts | 797 | 796 | 791 |
+    | Four attempts: mean over tasks | 0.229 | 0.226 | 0.254 |
+    | Five attempts (adding the single-attempt run): mean over tasks | 0.230 | 0.226 | 0.244 |
+
+    | Paired difference over 200 tasks | Four attempts | Five attempts |
+    | --- | --- | --- |
+    | Filtered minus seed 0 | +0.025 (-0.005 to +0.055) | +0.013 (-0.015 to +0.041) |
+    | Filtered minus seed 1 | +0.028 (-0.000 to +0.056) | +0.018 (-0.007 to +0.044) |
+    | Filtered minus the control mean | | +0.016 (-0.007 to +0.038) |
+    | Seed 1 minus seed 0 | -0.003 (-0.031 to +0.026) | -0.005 (-0.032 to +0.022) |
+
+  - Both control drivers died near the end with Harbor's `Incomplete archived attempt` error. A relaunch from a later research-branch revision was refused because the resume identity binds the launching tree (`harbor @ vendor/harbor#tree=5c38ef5df5`); relaunching from a detached checkout of `f10867d334` resumed and finished.
+  - The remaining unscored attempts (3 to 9 per checkpoint) are Daytona connection errors, agent timeouts and tmux failures, outside the Harbor configs' taxonomy, so each record is marked `infra_failed`.
+- Interpretation and limitations:
+  - There is no DS-1000 deficit. With repeats the filtered arm is level with or slightly above both controls, and the two control seeds agree within 0.005. The single-attempt 0.206 was a low draw: one attempt per task leaves a paired interval about twice as wide as the deficit it seemed to show.
+  - Repeats average out agent sampling only; training noise is still bounded by one extra control seed and no extra filtered seed.
+- Decision and next action: see the final decision.
+
 ## Final decision
 
-- Selected approach and evidence: adopt the filtered long replay. The long-context probe favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 is 0.235 for both control seeds and 0.206 filtered, a small deficit that is consistent across seeds but far from significant.
+- Selected approach and evidence: adopt the filtered long replay. The long-context probe favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise.
 - Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
 - Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
 - Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
-- Remaining uncertainty: a DS-1000 deficit of about 0.03, which would need far more tasks or eval repeats to resolve; probe and guard noise beyond one extra seed; whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
+- Remaining uncertainty: training noise beyond one extra control seed and no extra filtered seed; held-out replay loss split by filter verdict (in progress); whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
