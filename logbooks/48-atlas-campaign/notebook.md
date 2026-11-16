@@ -831,3 +831,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the re-pinned IF/Cascade admission outcomes are not yet attested in this record.
 - Decision and next action: next hourly check watches for IF/Cascade re-pinned admissions and exp3 progression.
+
+### 2026-11-16 13:40 UTC - Hourly catch-up (12:40–13:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `f484da62b7…` (12:30:25 UTC) to head `062882844315cdb0c9d1491bd81a771d8bd7d522`, landed 13:25:54 UTC (landings 13:04:38 / 13:07:11 — by the coordinator session itself — / 13:25:54 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log f484da62..06288284` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Preview revision 20 synced**: curation docs and Getting Started synced to preview revision 20 (`84bba26de4…`), with worker-provider and cluster-credential detail kept out of curation docs (`900ef88733…`) — revision 20 is now in the docs; hosted verification remains preview-lane evidence [M].
+  - **Publication hardening**: prior catalog snapshot frozen before testing publication (`7d41c56f60…`); unavailable publication verified to preserve archived assessments (`f26743f112…`); frozen OpenResearcher intake registered as pending (`7451834ea9…`); campaign quality regression kept after the shared gate fix (`0628828443…`, head).
+  - **Multi-SWE delivery**: images bound to faithful delivery and host report parsing (`dbaba96d34…`); home restore reproduces source member validation and destination removal (`dd5c7ba361…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the rev-20 hosted deployment is not attested from this record.
+- Decision and next action: next hourly check watches for rev-20 hosted verification and frozen-intake progression.
