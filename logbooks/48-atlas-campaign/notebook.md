@@ -697,3 +697,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: admission commits report the outcomes; the underlying receipts stay registry-private [M]. These are the first post-license-gate admissions observed in this record.
 - Decision and next action: next hourly check watches for further license-lift admissions (IFBench following its decontamination record) and Cascade/OpenResearcher results.
+
+### 2026-11-16 04:35 UTC - Hourly catch-up (03:35–04:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `0124246481…` (03:31:01 UTC) to head `f87a9f8fde921c544eaeb8ead6aca2d137ba5328`, landed 04:28:24 UTC (landings 04:02:54 / 04:11:42 / 04:28:24 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 01242464..f87a9f8f` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **License-receipt sweep completes**: swept checker-PASS receipts bound for **Available** catalog sources (`161f80bed4…`) and for **Not selectable / Excluded** rows (`fcd2c8a021…`) — the license sweep now covers every catalog disposition; the canonical license receipt registry is sharded (`9a167fd13c…`); licensed unavailable sources are preserved in catalog publication (`f87a9f8fde…`, head).
+  - **Adapter QA driver**: protected shared-source adapter QA driver added (`6678ea4cc9…`).
+  - **Grounding budget**: grounding prompt tokens counted before enforcing the context budget (`cac61710ad…`).
+  - **Capture identity**: prepared-image identity restored across skopeo OCI config rewrites (`23455512ac…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the license sweep's outcome (which rows are Available/Not-selectable/Excluded) is bound in the registry [M], not enumerated in this record.
+- Decision and next action: next hourly check watches for the post-sweep catalog publication and any further admissions.
