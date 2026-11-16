@@ -119,3 +119,26 @@ there is no additional launch. The local monitoring record names the job
 and next checks. No host scheduling tool is available for an automatic
 follow-up after this session yields; a later status check must verify the
 job's terminal state, saved grade/error, and descendant cleanup.
+
+## 2026-11-16: recovered grade and full-pass authorization
+
+The judge-only retry succeeded: da-20-3 scored 74/100, signed and unsigned,
+with both reports present. The parent succeeded after 55m16s including queue
+and startup; its judge worker and broker are terminal. The original failure
+is preserved. This establishes saved-submission recovery without a solver
+rerun, but does not establish the judge's error rate.
+
+The user authorized completing the grading safeguards and a full public-50
+Qwen pass, with speed prioritized. Plan one fresh solver attempt per task,
+16 concurrent trials, unchanged 3600-second agent and 900-second verifier
+limits, one Qwen H100x4 service and one shared MiniMax H100x8 service, with
+an eight-hour parent cap. No Marin models or additional repetitions are
+included. Allow at most one immediate retry for a malformed judge response,
+preserving both responses, while the shared judge remains warm.
+
+Metadata inventory contains 50 tasks and 44 distinct input sets after the
+five disclosed input changes. Reuse four validated pilot images and prepare
+40 missing images on remote CPU resources; no dataset payloads are downloaded
+to the shared VM. Native LFS SHA-256 or Git blob identifiers validate source
+bytes before publishing layers. All original instructions and rubrics remain
+pinned; the existing five input-disclosure notes are retained.
