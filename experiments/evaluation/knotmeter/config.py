@@ -122,7 +122,11 @@ def load_profile(path: Path, overrides: list[str]) -> Profile:
         cursor = values
         *parents, leaf = key.split(".")
         for parent in parents:
+            if not isinstance(cursor, dict):
+                raise ValueError(f"Cannot index a list or scalar in {key!r}; replace its whole value")
             cursor = cursor.setdefault(parent, {})
+        if not isinstance(cursor, dict):
+            raise ValueError(f"Cannot index a list or scalar in {key!r}; replace its whole value")
         cursor[leaf] = yaml.safe_load(value)
     return Profile.model_validate(values)
 

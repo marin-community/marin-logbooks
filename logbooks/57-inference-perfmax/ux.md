@@ -59,3 +59,39 @@ weights. The job IDs and status command remained usable; native logs and exports
 were retained. A clearer phase indicator would improve this. Profiling duration
 also excludes startup and native warmup, so a 90-second diagnostic still pays
 those costs. The skill and measurement reference make that distinction explicit.
+
+## Final review corrections
+
+The final review found three gaps. The runner now takes the default storage
+prefix from the target cluster; an ambient workstation `MARIN_PREFIX` cannot
+redirect it. Accepted recommendations require a passed numerical check whose
+checkpoint and runtime match the measured trial. Removing or relabeling that
+check cannot waive qualification. Recovery keeps interrupted exports and their
+allocated costs; plans without results stay visible with unknown cost.
+
+The table now links the serving-runtime commit. List-index overrides receive a
+clear error, and the README explains whole-list replacement. Unknown CUDA
+backends fail before allocation. The experimental JSON loader remains separate
+from the promoted TOML-pin updater because those inputs have different purposes;
+its unused optional-path branch was removed.
+
+## Examples for an RFC revision
+
+The RFC's path-based `run --profile .../snowball-h100.yaml` command works.
+The implementation also accepts a preset name and offers a read-only plan:
+
+```sh
+uv run python -m experiments.evaluation.knotmeter.cli plan \
+  --profile snowball-h100 --campaign review
+uv run python -m experiments.evaluation.knotmeter.cli run \
+  --profile snowball-h100 --campaign review \
+  --session-concurrency 8 --diagnostic-seconds 90
+```
+
+A copied YAML preset must include `gpus.per_host` and exact model/tokenizer
+identities. Serving controls live under `serving`. Numerical checks declare
+`kind`, `checkpoint_revision` and `runtime_source`; an empty command stays
+pending. The supplied files give complete examples. `cw-rno2a` is the current
+Snowball default, selected from live Iris configuration. `--cluster` is explicit.
+Native exports use checksummed archives; plans, results and receipts remain
+separate JSON objects. Use `report --recommend TRIAL_ID` only after qualification.

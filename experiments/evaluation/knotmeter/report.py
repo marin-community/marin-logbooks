@@ -64,11 +64,18 @@ def accepted(result: dict) -> bool:
     if not measurement or not result["job_succeeded"] or not result["cost_complete"]:
         return False
     checks = measurement["checks"]
+    numerical = [check for check in checks if check.get("kind") == "numerical"]
+    manifest = result["manifest"]
     validity = measurement["validity"]
     return (
         validity["protocol_valid"]
         and validity["gang_valid"]
-        and bool(checks)
+        and bool(numerical)
+        and all(
+            check.get("checkpoint_revision") == manifest["series"]["profile"]["model"]["revision"]
+            and check.get("runtime_source") == manifest["vllm_release"]["source_commit"]
+            for check in numerical
+        )
         and all(check["status"] == "passed" for check in checks)
     )
 
@@ -90,12 +97,19 @@ def render_report(
         "",
         "Throughput counts completed output tokens. Latencies are seconds. Each row is a separate trial.",
         "",
-        "| Trial | GPU job | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
+        "| Trial | Runtime | GPU job | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
         "p90 completion | AgentX | Checks | GPU-hours |",
-        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: |",
+        "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: |",
     ]
     for result in results:
         profile = result["manifest"]["series"]["profile"]
+        commit = result["manifest"]["vllm_release"]["source_commit"]
+        repository = (profile["vllm"].get("repo") or "https://github.com/marin-community/vllm").removesuffix(".git")
+        runtime = (
+            f"[{commit[:10]}]({repository}/commit/{commit})"
+            if repository.startswith("https://github.com/")
+            else commit[:10]
+        )
         measurement = result["measurement"]
         metrics = measurement["aggregate"]["request_metrics"] if measurement else {}
         rate = metrics.get("throughput", {}).get("per_gpu", {}).get("output_tput_tps")
@@ -117,8 +131,11 @@ def render_report(
         if result["manifest"]["diagnostic"]:
             agentx += "; diagnostic"
         cost = format_value(result["gpu_seconds"] / 3600) + (" + unknown" if not result["cost_complete"] else "")
+        if not result["cost_complete"] and not result["gpu_seconds"]:
+            cost = "unknown"
+        record_file = "plan.json" if result["job_state"] == "unrecorded" else "result.json"
         lines.append(
-            f"| [{result['trial_id']}]({result['trial_uri']}/result.json) | {result['job_state']} | "
+            f"| [{result['trial_id']}]({result['trial_uri']}/{record_file}) | {runtime} | {result['job_state']} | "
             f"{profile['session_concurrency']} | {profile['gpus']['count']} {profile['gpus']['type']} | "
             f"{format_value(rate)} | {change_text} | "
             f"{format_value(latency.get('ttft', {}).get('p90'))} | "
@@ -132,7 +149,7 @@ def render_report(
         "",
     ]
     if any(not row["cost_complete"] for row in results):
-        lines.append("Total cost is incomplete because at least one native attempt lacks timestamps.")
+        lines.append("Total cost is incomplete: a trial lacks a result or an attempt lacks allocation times.")
     groups = {json.dumps(comparison_controls(row), sort_keys=True) for row in results}
     if len(groups) > 1:
         lines += [
@@ -179,6 +196,32 @@ def throughput_change(result: dict, baseline: dict | None) -> float | None:
 def report_campaign(campaign_uri: str, recommendation: str | None = None, baseline: str | None = None) -> str:
     filesystem, path = filesystem_for(prefix_join(campaign_uri, "trials/*/result.json"))
     results = [read_record(filesystem.unstrip_protocol(item)) for item in sorted(filesystem.glob(path))]
+    recorded = {row["trial_id"] for row in results}
+    for item in sorted(filesystem.glob(path.removesuffix("result.json") + "plan.json")):
+        plan = read_record(filesystem.unstrip_protocol(item))
+        if plan["trial_id"] in recorded:
+            continue
+        results.append(
+            {
+                "trial_id": plan["trial_id"],
+                "trial_uri": plan["trial_uri"],
+                "manifest": (
+                    plan.get("manifest")
+                    or {
+                        "series": plan["series"],
+                        "diagnostic": bool(plan["series"].get("diagnostic")),
+                        "vllm_release": plan["vllm_release"],
+                        "workload": {"recipe": None},
+                    }
+                ),
+                "job_state": "unrecorded",
+                "job_succeeded": False,
+                "measurement": None,
+                "gpu_seconds": 0.0,
+                "cost_complete": False,
+            }
+        )
+    results.sort(key=lambda row: row["trial_id"])
     if recommendation is None and baseline is None:
         try:
             decision = read_record(prefix_join(campaign_uri, "decision.json"))

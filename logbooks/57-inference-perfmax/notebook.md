@@ -163,3 +163,29 @@ trial/identity/check cases, seven released-router cases and corrected real
 AgentX/InferenceX fixture pass. No new numerical or RL investigation ran.
 [UX findings and proposed RFC clarifications](ux.md) preserve the remaining gaps.
 The final High GOAL review is pending; PRs remain draft and unmerged.
+
+### Final High GOAL review
+
+One High review batch ran serially through the native Claude, Codex and AGY
+CLIs. Claude Opus 5.5 and Codex 6.1 Sol were confirmed in native records; both
+used the requested models. Codex's recorded effort is xhigh. Claude's effort was
+requested as xhigh but is absent from its result metadata. AGY completed the
+request for Gemini 3.8 Flash High; its actual model and tool trace were not
+exposed. Keep those fields unknown. No second panel was requested.
+
+All readers identified partial-export recovery as a material gap. Claude and
+AGY also found that an ambient storage prefix could override the target and a
+serving-only check could replace numerical qualification. The contribution
+fixes all three. Trials without results now remain visible with unknown cost.
+Checksums and native identity mismatches remain hard errors. Numerical checks
+must be present, passed and scoped to the exact checkpoint/runtime pair.
+This enforces Romain's existing acceptance decision; no waiver was introduced.
+
+Smaller fixes add runtime code links, explain whole-list overrides and reject
+unknown CUDA toolchains before allocation. The experimental JSON loader keeps
+its separate role from the promoted TOML updater; broad parser consolidation is
+deferred. Fifty-one focused CPU cases pass after these changes, including
+interrupted native archives, missing results, check removal/relabeling and wrong
+scope. No further GPU run or numerical investigation is needed: serving, native
+replay and the validated hardware commands are unchanged. The final contribution
+source is `02fcd6469902c93c02c3806c7487d332c62dc463`; its CI is pending.

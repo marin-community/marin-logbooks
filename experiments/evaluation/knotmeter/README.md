@@ -35,6 +35,9 @@ uv run python -m experiments.evaluation.knotmeter.cli run \
   --set serving.max_num_batched_tokens=4096
 ```
 
+Replace whole lists with `--set 'checks=[...]'`, or edit a copy of the preset
+for longer check commands. Dotted paths address mappings; list indices are unsupported.
+
 The runner resolves Marin's selected serving wheel once. `--vllm-release TAG`
 uses another published release. `--vllm-manifest URI` accepts a build manifest
 without changing `config/external/vllm/gpu.toml`. For an experimental build, reuse
@@ -63,7 +66,8 @@ checkpoint and serving settings. Numerical checks declare `checkpoint_revision`
 and `runtime_source`. A mismatched pass stays regression evidence and leaves
 qualification pending. `kind: serving` identifies a serving-only check. Link
 reused evidence in the check's `evidence` list; a link alone does not establish a
-pass. Missing or failed required checks block recommendations.
+pass. Recommendations require a passed numerical check for this checkpoint
+and runtime, plus all other required checks. A serving-only check cannot replace it.
 Passing these checks does not qualify RL learning.
 
 Outputs live at `MARIN_PREFIX/knotmeter/campaigns/CAMPAIGN/`. The selected
@@ -94,7 +98,9 @@ collects terminal work and never submits GPUs. After coordinator loss, inspect
 its `/serve` child and cancel or wait for it before recovery. Check provider
 cleanup before retrying.
 The report prints the same Markdown saved as `summary.md`, including all attempts'
-GPU cost. `report --recommend TRIAL_ID` requires valid protocol, unchanged gang,
+GPU cost. Trials without a result remain visible with unknown cost. Interrupted
+partial exports retain attempt costs without qualifying a measurement.
+`report --recommend TRIAL_ID` requires valid protocol, unchanged gang,
 passed checks and complete cost. Every physical host must retain the same Iris
 attempt ID throughout profiling. The command writes `recommended.yaml` with a
 frozen runtime. Add `--baseline TRIAL_ID` to show changes within a comparison
