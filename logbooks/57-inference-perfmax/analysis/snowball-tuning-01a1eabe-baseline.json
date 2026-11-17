@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "trial_id": "20261117T182804Z-6603a552927f",
+  "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T182804Z-6603a552927f",
+  "source_commit": "548b9fd14d79db11148c7d637d32d4e9c8685f16",
+  "checker_source_commit": "548b9fd14d79db11148c7d637d32d4e9c8685f16",
+  "source_tree_hash": "d5c4ace781",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "gpu_job_id": "/romain/knotmeter-20261117t182804z-6603a552927f/serve",
+  "iris_gpu_state": "succeeded",
+  "iris_gpu_exit": 0,
+  "failures": 0,
+  "preemptions": 0,
+  "attempt_uid": "fced1e4b46787c9a",
+  "gpus": 8,
+  "node": "g5ba762",
+  "profile": {
+    "session_concurrency": 128,
+    "max_num_batched_tokens": 8192,
+    "max_num_seqs": 128
+  },
+  "validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 5165,
+    "profiling_errors": 1,
+    "profiling_error_ratio": 0.00019357336430507162,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "upstream_duration_coverage": [
+    {
+      "phase_name": "profiling",
+      "expected_duration_seconds": 3600.0,
+      "required_ratio": 0.95,
+      "ttft_ratio": 1.0,
+      "inter_token_latency_ratio": 1.0
+    }
+  ],
+  "completed_output_tokens_per_second_per_gpu": 124.39607,
+  "duration_seconds": 3629.77401,
+  "p90_ttft_seconds": 103.33113,
+  "p90_completion_seconds": 297.61639,
+  "p90_itl_seconds": 0.21861,
+  "native_profiling_deadline_cancellations": 59,
+  "warmup": {
+    "requests": 1406.0,
+    "nonempty_responses": 989.0,
+    "empty_content_errors": 417.0,
+    "note": "InvalidInferenceResultError: no response with actual content. Retained separately from the one profiling ServerDisconnectedError; upstream submission validity is true."
+  },
+  "request_accounting": {
+    "records_total": 6572,
+    "records_profiled": 5165,
+    "records_dropped_total": 1407,
+    "records_warmup_dropped": 1406,
+    "records_error_dropped": 418,
+    "error_categories": {
+      "InvalidInferenceResultError": 417,
+      "ServerDisconnectedError": 1
+    }
+  },
+  "checks": {
+    "status": "passed",
+    "groups": {
+      "batch": "passed",
+      "cache": "passed",
+      "decode": "passed",
+      "deployment": "passed",
+      "reference": "passed"
+    },
+    "report_sha256": "325d7b21f1f51b10262ed03f2e0c9296b9bdc7b84f44e8534d9e217adb193477",
+    "policy_sha256": "9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375",
+    "golden_manifest": {
+      "sha256": "f296e39eb6f4fae9f1964c92698667d5985bc9d2bfa9dcea16d22b2e0d8e8cd2",
+      "uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/manifest.json"
+    }
+  },
+  "workload": {
+    "key": "2a67e147dfbe10a76d1f901c5a3de2539298aaf1a8fdc8e8c746aa8d14aa7b59",
+    "archive_uri": "s3://marin-us-east-08a/tmp/ttl=30d/agentx-workload/2a67e147dfbe10a76d1f901c5a3de2539298aaf1a8fdc8e8c746aa8d14aa7b59/workload-ce86367e7a15a98e373d6483a5e72cae4f422f4b5eb3107f820201226c88f3ce.tar.zst",
+    "archive_sha256": "ce86367e7a15a98e373d6483a5e72cae4f422f4b5eb3107f820201226c88f3ce",
+    "cache_status": "hit"
+  },
+  "native_archive": {
+    "uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T182804Z-6603a552927f/attempts/fced1e4b46787c9a/hosts/0/native-d0e7155d691a6f0894dabce4a1304756b2f32236fd652d8f36dc0f29d97135eb.tar.zst",
+    "sha256": "d0e7155d691a6f0894dabce4a1304756b2f32236fd652d8f36dc0f29d97135eb",
+    "bytes": 240376477
+  },
+  "aggregate": {
+    "uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T182804Z-6603a552927f/attempts/fced1e4b46787c9a/hosts/0/aggregate.json",
+    "sha256": "895e458fd3641ce7302ca51382cc0d503bb00d51da88bd6b1eededee97f25a3c"
+  },
+  "allocated_gpu_seconds": 40928.0,
+  "allocated_gpu_hours": 11.36888888888889,
+  "cost_complete": true,
+  "allocation": {
+    "pod_uid": "a5803c31-80c5-4867-911b-ef8d7728efdb",
+    "attempt_uid": "fced1e4b46787c9a",
+    "pod_name": "iris-romain-knotmeter-20261117t1828-589ffb1b-0-fced1e4b46787c9a",
+    "node_name": "g5ba762",
+    "observed_unix": 1794946039.4403436,
+    "phase": "Succeeded",
+    "scheduled_unix": 1794940181.0,
+    "finished_unix": 1794945297.0,
+    "status": "measured",
+    "end_basis": "pod-container-finish",
+    "end_unix": 1794945297.0
+  },
+  "cleanup": {
+    "gpu_pod_phase": "Succeeded",
+    "gpu_all_containers_finished_unix": 1794945297.0,
+    "coordinator_pod_phase": "Succeeded",
+    "coordinator_finished_utc": "2026-11-17T20:06:28Z"
+  },
+  "local_wrapper_exit": 127,
+  "local_wrapper_note": "The Bash source was edited while its baseline command was running. After the CLI printed its successful final report, Bash read shifted file-tail bytes as a command. The helper now execs its final command. No GPU or coordinator failure resulted."
+}
