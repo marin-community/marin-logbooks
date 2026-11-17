@@ -1220,3 +1220,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for coverage-driven rounds results and further aime supersessions.
+
+### 2026-11-17 19:45 UTC - Hourly catch-up (18:45–19:45 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `c80683567d…` (18:32:50 UTC) to head `b2661b15516eecd476148357310958125e0ed421`, landed 19:24:25 UTC (5 landings 18:53–19:24 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log c8068356..b2661b15` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **New-admission rule tightened**: the SAMPLE panel is now required on the **current pin** for new admissions (`b2661b1551…`, head) — closing the earlier gap where a panel on a prior pin could support a new admission.
+  - **FACET filesystem binding**: FACET tasks bound to the preserved SIF image filesystems (`9e3f1963e5…`).
+  - **Fingerprint summaries projected** before transferring source rows (`36f5b9a351…`).
+  - **Docs**: the PARTIAL backend state and matched delivery contracts documented (`acf864bbab…`).
+  - **Rounds double-submit guard** now ignores terminal prior attempts (`1fd4352377…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for current-pin SAMPLE enforcement effects on new admissions.
