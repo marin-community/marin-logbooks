@@ -197,3 +197,49 @@ of a few points would be measurable task by task. Plan:
   published from `worktree-open-swe-outcome-pilot`.
 - Remaining uncertainty: effects at larger models, larger data or other stopping points; effects smaller than the
   paired test's CI.
+
+## Qwen3.6-35B-A3B repeat
+
+### 2026-11-17 23:30 UTC - Levanter model for Qwen3.6-35B-A3B (Phase 0, training path)
+
+- Question: can Levanter train `Qwen/Qwen3.6-35B-A3B`? Phase 0 step 1 of [next-steps.md](next-steps.md).
+- Prior work: an Echo search and a Marin PR search found no Qwen3.5 or Qwen3.6 training work. Levanter had the
+  pieces: a `GatedDeltaNet` layer, a Qwen3 MoE block and a gated-attention layer, but nothing that combined them
+  or read this checkpoint.
+- Source: this branch, Marin base `18ae01ee42` (main on 2026-11-17) merged with the #39 archive at `a0c600138a`.
+  - New: `lib/levanter/src/levanter/models/qwen3_5_moe.py` (`Qwen35MoeConfig`, registered as `qwen3_5_moe`;
+    the defaults are Qwen3.6-35B-A3B's), and `lib/levanter/tests/test_qwen3_5_moe.py`.
+  - Small changes: a `partial` RoPE config in `layers/rotary.py`, because Qwen3.6 rotates 64 of the 256
+    dimensions in each head. `GatedRmsNorm.axis` in `layers/gated_deltanet.py` became a static field so the layer
+    can be stacked and serialized.
+- Architecture, checked against `transformers` 5.12.1 `modeling_qwen3_5_moe.py`:
+  - 40 layers in 10 groups. Each group is 3 Gated DeltaNet layers followed by 1 gated softmax-attention layer.
+    Levanter scans over the groups so the mixed layer pattern compiles as one block.
+  - Every layer: 256 routed experts (top 8, renormalized) plus a shared expert scaled by a sigmoid gate.
+  - RMSNorm scales are stored as offsets from 1, as in Gemma.
+  - The attention `q_proj` emits a query and an output gate for each head. Levanter stores them as separate
+    parameters and packs them into one tensor only when reading or writing a checkpoint.
+  - The released checkpoint is a vision-language model. The loader keeps the text decoder under
+    `model.language_model.*` and drops `model.visual.*` and the multi-token-prediction head `mtp.*`. Exports are
+    therefore text-only `Qwen3_5MoeForCausalLM` checkpoints.
+- Verification:
+  - `uv run --package marin-levanter --group test --extra torch_test pytest lib/levanter/tests/test_qwen3_5_moe.py -m "torch or not torch"`:
+    4 passed. These tests cover:
+    - A tiny randomized HF model (6 layers, 8 experts). Levanter's logits, loss and every parameter
+      gradient match HF's eager implementation within 1e-4.
+    - A Levanter export reloads in HF with identical logits.
+    - Loading from a vision-language checkpoint.
+    - Causality, and independence from the delta-rule chunk size.
+  - Mutation check: dropping the shared-expert gate fails both HF parity tests (largest logit error 4.6).
+  - Neighbouring suites (`test_gdn_layer`, `test_gdn_kernels`, `test_rotary`, `test_qwen3_moe`): 54 passed.
+  - Full-size layout: [qwen36_hub_shapes.py](qwen36_hub_shapes.py) reads the safetensors headers of the Hub
+    checkpoint at revision `345d467b117d` without downloading weights.
+    - Levanter's model initialized from that config has the same 693 text tensors, with identical names and
+      shapes: 34,660,610,688 parameters, all BF16 on the Hub. `total_trainable_params` gives the same count.
+    - The checkpoint's other 1.29B parameters are the vision tower and the MTP head.
+- Not yet verified: logits from the real 35B weights against HF, any run on an accelerator, step time and
+  memory at 65,536 tokens, and sharding of the 256 experts. The delta-rule kernel is the existing pure-JAX
+  chunked implementation; no fused kernel is wired in.
+- Interpretation: there is now a training path in Levanter, so the decision between Levanter and another trainer is
+  settled in Levanter's favour unless cost (step 2) rules it out. Remaining Phase 0 work is in
+  [next-steps.md](next-steps.md).
