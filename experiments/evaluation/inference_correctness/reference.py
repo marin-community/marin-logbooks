@@ -39,6 +39,20 @@ logger = logging.getLogger(__name__)
 TOP_K = 64
 
 
+def score_snowball_positions(model: SnowballLMHeadModel, tokens, positions):
+    """Project selected causal positions without materializing sequence-wide logits."""
+    hidden = model.activations(tokens).rearrange(("batch", "position", "embed")).array
+    selected = hidden.at[jnp.arange(hidden.shape[0])[:, None], positions].get(out_sharding=P("data"))
+
+    def project(state):
+        logits = jnp.einsum("bh,hv->bv", state, model.transformer.output_proj, out_sharding=P("data"))
+        values = jax.nn.log_softmax(logits.astype(jnp.float32), axis=-1)
+        return jax.lax.top_k(values, min(TOP_K, model.Vocab.size))
+
+    values, token_ids = jax.lax.map(project, jnp.swapaxes(selected, 0, 1))
+    return jnp.swapaxes(values, 0, 1), jnp.swapaxes(token_ids, 0, 1)
+
+
 def save_immutable(uri: str, raw: bytes) -> Artifact:
     """Reuse identical bytes and refuse to replace an existing reference."""
     filesystem, path = filesystem_for(uri)
@@ -87,20 +101,7 @@ def generate_snowball_reference(
         )
         reference_model = _with_attention_implementation(model, "reference")
 
-        @hax.named_jit(axis_resources=trainer.compute_axis_mapping)
-        def score_positions(m: SnowballLMHeadModel, tokens, positions):
-            hidden = m.activations(tokens).rearrange(("batch", "position", "embed")).array
-            selected = hidden.at[jnp.arange(hidden.shape[0])[:, None], positions].get(out_sharding=P("data"))
-
-            def project(state):
-                # Match the BF16 compute projection used by the existing Snowball gate.
-                logits = jnp.einsum("bh,hv->bv", state, m.transformer.output_proj, out_sharding=P("data"))
-                values = jax.nn.log_softmax(logits.astype(jnp.float32), axis=-1)
-                return jax.lax.top_k(values, TOP_K)
-
-            values, token_ids = jax.lax.map(project, jnp.swapaxes(selected, 0, 1))
-            return jnp.swapaxes(values, 0, 1), jnp.swapaxes(token_ids, 0, 1)
-
+        score_positions = hax.named_jit(score_snowball_positions, axis_resources=trainer.compute_axis_mapping)
         batch_size = jax.device_count()
         ordered = sorted(cases, key=lambda case: len(case.tokens))
         for start in range(0, len(ordered), batch_size):
