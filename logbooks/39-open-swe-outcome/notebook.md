@@ -6,7 +6,7 @@ related_issues: ["https://github.com/marin-community/marin/pull/10813"]
 research_branch: "codex/39-open-swe-outcome"
 marin_base_revision: "9cde3e5b69871ba733ccbe6ac84cd589d25b3003"
 archive_template_revision: "ba8edcdfd730b451e18aed6245234566be5053af"
-status: active
+status: completed
 ---
 
 # Outcome-filtering Open-SWE traces for Qwen3-8B SFT
@@ -188,8 +188,9 @@ of a few points would be measurable task by task. Plan:
 
 ## Final decision
 
-- Selected approach and evidence: pending the Qwen3.6-35B-A3B repeat. At Qwen3-8B and 10,000 rows, outcome
-  filtering showed no benefit on any measure.
+- Selected approach and evidence: no outcome filter at Qwen3-8B. At 10,000 rows per arm, outcome filtering
+  showed no benefit on any measure. Issue #39 closed on 2026-11-17; the Qwen3.6-35B-A3B repeat is planned in
+  [next-steps.md](next-steps.md) and will run under a new issue.
 - Rejected alternatives and why: none yet.
 - Marin contribution PRs: none.
 - Reproduction instructions: see the commands in each entry. The arm-building and training code still needs to be

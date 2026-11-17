@@ -4,6 +4,9 @@ Handoff for [marin-logbooks#39](https://github.com/marin-community/marin-logbook
 Qwen3-8B results are in [notebook.md](notebook.md); read its entries before starting. This file says
 what to run next, what to measure, and what would change the decision.
 
+Issue #39 closed with the Qwen3-8B result. Open a new logbooks issue for this repeat (through `file-issue`),
+link #39 from it, and keep this branch's notebook as the record of the Qwen3-8B work.
+
 ## Where we are
 
 [marin#10813](https://github.com/marin-community/marin/pull/10813) proposed training only on Open-SWE-Traces
