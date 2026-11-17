@@ -998,3 +998,21 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for shared-adapter re-run outcomes and POLARIS progression.
+
+### 2026-11-17 01:40 UTC - Hourly catch-up (00:40–01:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `abf170f40e…` (~00:20 UTC) to head `86775b6632fe62aebdeab70635d188cc869a6185`, landed 01:34:31 UTC (~10 landings 01:15–01:34 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log abf170f4..86775b66` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **License decisions continue**: FWeindel dataset-level ban replaced with per-folder decisions under the repackager ruling (`86775b6632…`, head); FWeindel/validated-tasks banned on the missing dataset-level license (`cf80b02e71…`).
+  - **POLARIS pre-admission fingerprint bound** (`f9e15a4369…`).
+  - **Registry publish guard**: publishes that would blank rows held by unstaged sibling shards refused (`bf2ba49620…`).
+  - **NoP retries**: approved NoP retries allowed after verifier archive failures (`5dfd0022f3…`).
+  - **Evalchemy identity carry-forward**: fingerprints rebound to the carried-forward identity (`219a3615be…`); receipts re-measured and carried across dedup, census and sample panels to the post-Minerva identity (`346c35df85…`).
+  - **Difficulty coverage computed in the Atlas rebuild as code** (`2612179fe5…`); tool-free model upath import sourced from universal-pathlib (`37004a63fe…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the FWeindel per-folder decisions' details are registry-bound [M].
+- Decision and next action: next hourly check watches for POLARIS progression and further license decisions.
