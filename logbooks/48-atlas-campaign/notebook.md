@@ -1045,3 +1045,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: admission commit reports the outcome; receipts registry-private [M].
 - Decision and next action: next hourly check watches for PDBThink outcomes and further license decisions.
+
+### 2026-11-17 03:40 UTC - Hourly catch-up (02:40–03:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `05ccef1257…` (02:32:57 UTC) to head `6089da60a9a1144e34d00f06f58eb3eab9dd59f4`, landed 03:31:03 UTC (~10 landings 03:23–03:31 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 05ccef12..6089da60` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: guest controller runtime kept compatible with Python 3.9 (`df3c389ed0…`, `1581b5cab5…`).
+- Result, including failure or restart: material changes in the window:
+  - **PDBThink chain progressed**: train population measurements recorded (`032c16a1e0…`); repair serialization kept aligned with its census (`54bd638fcd…`); native verifier limits preserved in private repairs (`af6694751e…`).
+  - **puzzles-qa prepared locator rebuilt** from the retained-release pinned inputs (`6089da60a9…`, head); frozen-packet QA driver rebound to the v2026.11.16.3 freeze (`4e3b71287f…`).
+  - **Journey oracle census bound** at the exact declaration identity (`1f09d31d8a…`); review summaries decoupled from execution artifact imports (`3142fa462a…`); directory symlinks kept outside the large-data payload classifier (`e3c5071fc8…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; PDBThink measurement contents are registry-bound [M].
+- Decision and next action: next hourly check watches for PDBThink admission progression and puzzles-qa locator effects.
