@@ -25,15 +25,16 @@ from iris.resources.state import is_job_finished
 from iris.rpc import job_pb2
 from marin.inference.vllm_release import vllm_gpu_wheel_for_architecture
 from rigging.config_discovery import resolve_cluster_config
-from rigging.filesystem.storage_path import StoragePath, prefix_join
+from rigging.filesystem.buckets import filesystem_for
+from rigging.filesystem.storage_path import prefix_join
 from rigging.provenance import launch_provenance
 from rigging.timing import Duration
 
 from experiments.evaluation.knotmeter.allocation import capture_allocations, track_allocations
 from experiments.evaluation.knotmeter.artifacts import read_record, write_record
 from experiments.evaluation.knotmeter.collect import collect_trial, record_preparation_failure, refresh_costs
-from experiments.evaluation.knotmeter.coordinator import run_coordinator
 from experiments.evaluation.knotmeter.config import Profile, load_profile, resolved_series
+from experiments.evaluation.knotmeter.coordinator import run_coordinator
 from experiments.evaluation.knotmeter.report import report_campaign
 from experiments.evaluation.knotmeter.runtime import gpu_release, resolve_release
 
@@ -45,7 +46,9 @@ def pin_profile(profile: Profile) -> Profile:
     revision = model.revision
     if model.path:
         for name, expected in (("export-manifest.json", model.revision), ("config.json", model.config_sha256)):
-            actual = hashlib.sha256(StoragePath(prefix_join(model.path, name)).read_bytes()).hexdigest()
+            filesystem, path = filesystem_for(prefix_join(model.path, name))
+            with filesystem.open(path, "rb") as stream:
+                actual = hashlib.file_digest(stream, "sha256").hexdigest()
             if actual != expected:
                 raise ValueError(f"Checkpoint identity differs: {name}")
     else:
@@ -194,7 +197,7 @@ def main() -> None:
         command.add_argument(
             "--diagnostic-seconds", type=int, help="Use a short unsafe upstream replay; always unqualified"
         )
-        command.add_argument("--placement-uri", help="Verified spare-node receipt for multi-host validation")
+        command.add_argument("--placement-uri", help="Optional verified spare-node receipt for a placement guard")
         command.add_argument("--marin-prefix", help="Explicit job MARIN_PREFIX override")
         command.add_argument("--controller", help="Iris entry cluster; defaults to the selected target")
         command.add_argument("--logbook", help="Coordinating research issue or notebook URL retained with this trial")

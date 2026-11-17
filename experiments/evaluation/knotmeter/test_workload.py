@@ -20,8 +20,8 @@ from tokenizers import Tokenizer, models, pre_tokenizers
 
 from experiments.evaluation.knotmeter.artifacts import file_digest, pack_server_metrics, restore_server_metrics
 from experiments.evaluation.knotmeter.collect import process_point
-from experiments.evaluation.knotmeter.processes import run_logged
 from experiments.evaluation.knotmeter.config import load_profile, resolved_series
+from experiments.evaluation.knotmeter.processes import run_logged
 from experiments.evaluation.knotmeter.recipe import benchmark_command, workload_environment
 from experiments.evaluation.knotmeter.workload import prepare_workload
 

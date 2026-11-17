@@ -9,7 +9,6 @@ from typing import TypedDict
 
 import yaml
 
-
 DIRECTORY = Path(__file__).parent
 
 

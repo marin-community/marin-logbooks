@@ -6,6 +6,7 @@
 from pathlib import Path
 from typing import Literal
 
+import yaml
 from marin.inference.config import VLLM_TOPOLOGY_OPTIONS
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 

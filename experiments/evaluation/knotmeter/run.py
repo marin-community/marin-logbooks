@@ -35,8 +35,8 @@ from experiments.evaluation.knotmeter.artifacts import (
     retain_artifacts,
     write_record,
 )
-from experiments.evaluation.knotmeter.processes import run_logged
 from experiments.evaluation.knotmeter.config import Profile
+from experiments.evaluation.knotmeter.processes import run_logged
 from experiments.evaluation.knotmeter.recipe import PointManifest, benchmark_command, workload_environment
 from experiments.evaluation.knotmeter.runtime import gpu_release
 from experiments.evaluation.knotmeter.workload import check_native_cache, restore_workload
