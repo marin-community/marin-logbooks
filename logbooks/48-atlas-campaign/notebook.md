@@ -1237,3 +1237,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for current-pin SAMPLE enforcement effects on new admissions.
+
+### 2026-11-17 20:40 UTC - Hourly catch-up (19:45–20:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `b2661b1551…` (19:24:25 UTC) to head `69841e38a40015bfc88e6c009eedd7b81477aac4`, landed 20:00:58 UTC (1 landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log b2661b15..69841e38` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — Atlas docs updated for the new license-receipt registry reference (`69841e38a4…`, following the 19:40 window's registry move to the referenced private HF dataset).
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: docs landing only.
+- Decision and next action: next hourly check watches for license-receipt documentation follow-through and further admissions.
