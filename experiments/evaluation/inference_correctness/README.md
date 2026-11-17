@@ -56,24 +56,34 @@ tokens. Equal hit counts can still leave different prefill steps: a hybrid cache
 may introduce a new checkpoint inside the suffix. Initial seed/branch comparisons
 use the bound for changed splits. Exact comparisons fully prepare the usable
 prefix, then verify it survives a branch that differs inside the cached region.
+That exact control checks persistence after branching; a wrong state that stays
+unchanged can escape it. Fresh/reused comparisons provide a separate screen.
 Raw responses and per-position differences remain available after a failure.
 Later reference histories and cache boundaries still run after an individual
 case fails. Coverage failures remain separate from measured probability errors.
 
-Both presets retain periodic cache checkpoints every 128 tokens. In the pinned
-runtime, interval zero keeps selected replay and shared-prefix checkpoints; a
+Both presets set the retention interval to 128 tokens. Hero retains periodic
+Mamba states; Snowball's shorter-than-window interval retains all SWA blocks.
+In the pinned runtime, interval zero keeps selected replay and shared-prefix checkpoints; a
 miss on generated history can therefore be legitimate. The positive interval
 lets the suite require and verify decode-created reuse across its boundaries.
 The report records actual hit counts and cache settings. A miss still fails the
 required coverage check; it does not establish corrupt state.
+The fixed probe generates 257 tokens. Interval zero, or an interval too large
+for the probe to reach, therefore permits diagnostics only. The throughput effect
+of changing zero to 128 is unmeasured on both models. Both Snowball measurement
+windows use 128; no Hero AgentX window was run.
 
-The probability metric is a bound on the largest absolute error among returned
-top tokens, including missing tokens' possible probability range. It is not
-full-vocabulary KL. Policies report maximum, p99, p90 and the fraction above
-0.075 across the checked token positions in each group. The current policies
-are provisional. Their evidence and limits are in Git; a pass covers the saved
-histories and listed state cases. It does not
-qualify every context, task quality or RL trainer probability ratios.
+Reference checks bound the largest absolute probability error over the union of
+saved top-64 and serving top-50 scores. Cache and batch checks use two serving
+top-50 lists. Both bounds account for a missing token's possible probability
+range. Decode checks instead compare the emitted token's probability during
+generation and fresh scoring. They record its log-probability error too, without
+an acceptance limit on that error. Policies report maximum, p99, p90 and the
+fraction above 0.075 across these per-position values. None measures
+full-vocabulary KL. The policies are provisional; a pass covers the saved
+histories and listed state cases. It does not qualify every context, task
+quality or RL trainer probability ratios.
 
 Durable goldens live under `s3://marin-us-east-02a/marin/inference/goldens/`.
 Checkpoint and suite identities name each directory. Manifests hash the prompt
