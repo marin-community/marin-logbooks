@@ -36,6 +36,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", type=Path, required=True)
     parser.add_argument("--name", required=True)
+    parser.add_argument("--pytest-test", default="tests/cluster/vllm/test_inference_correctness.py")
     parser.add_argument("--runtime-manifest", help="Published release or normalized experimental build manifest")
     parser.add_argument("--set", action="append", default=[], help="The same YAML-valued overrides as perfmax")
     parser.add_argument(
@@ -81,7 +82,7 @@ def main() -> None:
         "--extra",
         "cpu",
         "pytest",
-        "tests/cluster/vllm/test_inference_correctness.py",
+        args.pytest_test,
         "-m",
         "cluster",
         "-o",
@@ -97,7 +98,7 @@ def main() -> None:
             endpoint.url,
             credentials=endpoint.credentials,
             workspace=Path.cwd(),
-            extra_bundle_includes=REMOTE_TEST_FILES,
+            extra_bundle_includes=(*REMOTE_TEST_FILES, args.pytest_test.split("::")[0]),
         ) as client:
             job = client.submit(
                 entrypoint=Entrypoint(
