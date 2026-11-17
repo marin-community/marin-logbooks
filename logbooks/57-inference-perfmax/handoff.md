@@ -6,12 +6,13 @@ one-hour C128 baseline. Its C64 retry is running after preemption. The final
 C64-versus-C128 comparison and required goal-completion review remain pending. [PR #11320](https://github.com/marin-community/marin/pull/11320)
 is draft and unmerged.
 
-Contribution [64bfff4bc5](https://github.com/yonromai/marin/commit/64bfff4bc5612a4bf34a17719d7e7c7a14f7595e)
+Contribution [e929e4528e](https://github.com/yonromai/marin/commit/e929e4528e399e8f8d1dd6f5f4bf6909532b020f)
 contains the [82-line skill](../../.agents/skills/inference-perfmax/SKILL.md),
 [manual runner](../../experiments/evaluation/knotmeter/README.md) and
 [shared checks](../../experiments/evaluation/inference_correctness/README.md).
-Forty-four focused CPU/HTTP/CLI cases, required lint and type checks pass.
-CI is terminal on that source: 17 successful checks and 20 skipped. Earlier
+Forty-four focused CPU/HTTP/CLI cases passed; the 20 affected report cases passed
+again after the reporting-only scope fix. Required lint and type checks pass.
+CI passed on `64bfff4bc5`; the reporting fix's new CI is pending. Earlier
 [review resolutions](analysis/goal-review-resolution.json) apply to unchanged
 code; they do not replace the new goal's final review.
 
@@ -68,8 +69,9 @@ Snowball's reference cutoffs and the nonzero cache, batch and decode cutoffs
 remain initial screens. The metric bounds absolute probability error over
 returned top-50 lists; it does not establish full-vocabulary KL, acceptable
 trainer probability ratios or RL learning quality. Validated checking behavior
-and suitable acceptance limits are separate claims. Goldens stayed fixed;
-this phase generated no new reference scores. The older step42150
+and suitable acceptance limits are separate claims. Selected reports and saved
+configurations keep that RL scope limit visible. Goldens stayed fixed; this
+phase generated no new reference scores. The older step42150
 [release gate](analysis/runtime-adoption-11241.json) remains regression evidence
 for another checkpoint, with its original coverage and 0.125 bound.
 

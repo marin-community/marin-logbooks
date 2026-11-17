@@ -667,3 +667,17 @@ comparison and launch scope. Snowball's reference cutoffs and the nonzero cache,
 batch and decode cutoffs remain initial screens. Passing checking code and
 passing those provisional limits are separate claims. RL trainer ratios
 remain unqualified.
+
+### Keep the qualification scope after selecting a point
+
+The report previously showed the RL qualification limit only when no point was
+selected. Contribution `e929e4528e` keeps it visible after selection and in the
+saved YAML comments. This is a reporting change: acceptance rules, numerical
+limits and measurement code are unchanged. The
+[20 affected report cases](analysis/report-scope-tests.txt) pass, including
+saved-profile parsing and retained runtime selection; required lint and types
+pass. A local render using the completed baseline confirmed the selected path's
+footer without writing a campaign decision. C64 keeps its submitted source
+`06b9a63682`. After the tuning agent finishes, the coordinating agent will
+refresh the final report wording without another GPU allocation or a changed
+point selection.
