@@ -168,7 +168,7 @@ def print_plan(plan: TrialPlan) -> None:
             sort_keys=False,
         )
     )
-    pending = [check["name"] for check in profile["checks"] if not check["command"]]
+    pending = [check["name"] for check in profile["checks"] if not check["command"] and not check["fixture"]]
     if pending or not profile["checks"]:
         print(
             f"Required check commands remain pending: {', '.join(pending) or 'none configured'}. "
