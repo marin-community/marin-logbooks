@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-11-17T22:51:05.978240+00:00",
+  "campaign_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe",
+  "selected_trial": "20261117T182804Z-6603a552927f",
+  "selected_session_concurrency": 128,
+  "baseline_checker_source": "548b9fd14d79db11148c7d637d32d4e9c8685f16",
+  "candidate_checker_source": "06b9a63682da6b75161172e11f9acb9ec36d19b1",
+  "checker_coverage_note": "The baseline used the earlier checker. C64 used the corrected prepared-prefix branch controls; all policy values/hashes and performance protocol inputs are unchanged. All actual serving settings are identical.",
+  "qualitative_user_objective": "High completed output-token throughput per GPU before latency rises sharply for little throughput. No numeric latency cap was supplied.",
+  "similarity_heuristic": {
+    "relative_throughput": 0.05,
+    "origin": "agent-predeclared experiment heuristic",
+    "not_a_user_supplied_numeric_target": true
+  },
+  "candidate_relative_changes": {
+    "throughput": -0.2579998708962429,
+    "p90_ttft": -0.415510021036255,
+    "p90_native_request_latency": -0.4822164195997405
+  },
+  "selection_reason": "Retain C128 for the primary throughput objective. C64 lowers per-request latency but loses 25.8% of measured completed-token throughput, outside the predeclared similarity heuristic. C64 remains a measured lower-latency option.",
+  "limits": [
+    "One normal window per point; no confidence interval or exact optimum claim.",
+    "The native concurrency change also changes the realized replay request mix.",
+    "Cache-pressure observations motivated the alternative but do not prove the bottleneck.",
+    "The two checker source revisions and their coverage differ as recorded.",
+    "Saved-history serving checks under a provisional policy do not qualify RL learning or trainer probability ratios."
+  ],
+  "gpu_cost": {
+    "unit": "H100-hours",
+    "baseline": 11.36888888888889,
+    "c64_successful_attempt": 10.366666666666667,
+    "c64_preempted_attempt_recorded_upper_bound": 2.371966666645474,
+    "total_recorded_upper_bound": 24.10752222220103,
+    "total_lower_bound": 23.964314191076493,
+    "complete": true,
+    "uncertainty": "Only the preempted attempt uses a conservative Iris-observed terminal timestamp; queueing is excluded."
+  },
+  "cleanup": "snowball-tuning-01a1eabe-cleanup.json",
+  "native_ids": {
+    "originating_session": "01a1eabe-cfa1-7f52-bd95-a69658df86e3",
+    "baseline_gpu_attempt": "fced1e4b46787c9a",
+    "c64_interrupted_gpu_attempt": "6a769724214e39be",
+    "c64_successful_gpu_attempt": "b8c996746c69fdca"
+  }
+}

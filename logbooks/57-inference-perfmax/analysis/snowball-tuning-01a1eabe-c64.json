@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-11-17T22:51:05.971037+00:00",
+  "trial_id": "20261117T201915Z-0af609b36ad6",
+  "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6",
+  "source_commit": "06b9a63682da6b75161172e11f9acb9ec36d19b1",
+  "checker_source_commit": "06b9a63682da6b75161172e11f9acb9ec36d19b1",
+  "source_tree_hash": "d3c87544f4",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "gpu_job_id": "/romain/knotmeter-20261117t201915z-0af609b36ad6/serve",
+  "gpu_job_state": "succeeded",
+  "job_succeeded": true,
+  "manual_restarts": 0,
+  "configured_preemption_retries_used": 1,
+  "current_attempt_uid": "b8c996746c69fdca",
+  "gpus": 8,
+  "profile": {
+    "session_concurrency": 64,
+    "max_num_batched_tokens": 8192,
+    "max_num_seqs": 128
+  },
+  "only_series_difference_from_baseline": "profile.session_concurrency: 128 to 64",
+  "validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 3392,
+    "profiling_errors": 0,
+    "profiling_error_ratio": 0.0,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "metric_definition": "Sum of usage_completion_tokens, equal to output_sequence_length in every retained successful profiling record, divided by the pinned upstream measurement span and eight physical GPUs. Native per-request request_latency supplies the completion-latency column. This is not session-tree or RL-step throughput or latency.",
+  "successful_profile_completion_tokens": 2679789,
+  "completed_reported_tokens_per_second_per_gpu": 92.3019,
+  "duration_seconds": 3629.10885,
+  "p90_ttft_seconds": 60.39601,
+  "p90_native_request_latency_seconds": 154.10088,
+  "p90_itl_seconds": 0.11583,
+  "phase_counts": {
+    "warmup_successful": 510,
+    "warmup_empty_content_errors": 192,
+    "warmup_completed": 702,
+    "profiling_successful": 3392,
+    "profiling_errors": 0,
+    "deadline_credit_cancellations": 25,
+    "native_completed_sessions": 33
+  },
+  "checks": {
+    "status": "passed",
+    "groups": {
+      "batch": "passed",
+      "cache": "passed",
+      "decode": "passed",
+      "deployment": "passed",
+      "reference": "passed"
+    },
+    "reference_histories": 64,
+    "reference": {
+      "status": "passed",
+      "positions": 1770,
+      "statistics": {
+        "fraction_above_0075": 0.015254237288135594,
+        "maximum": 0.19600160846359038,
+        "p90": 0.03044609248788532,
+        "p99": 0.08875527313778746
+      },
+      "limits": {
+        "fraction_above_0075": 0.05,
+        "maximum": 0.25,
+        "p90": 0.05,
+        "p99": 0.125
+      }
+    },
+    "batch": {
+      "status": "passed",
+      "positions": 4,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.04213253663047367,
+        "p90": 0.03296850501607419,
+        "p99": 0.04121613346903372
+      },
+      "limits": {
+        "fraction_above_0075": 0.5,
+        "maximum": 0.2,
+        "p90": 0.15,
+        "p99": 0.18
+      }
+    },
+    "cache_same_split": {
+      "status": "passed",
+      "positions": 10,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      },
+      "limits": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      }
+    },
+    "cache_different_split": {
+      "status": "passed",
+      "positions": 27,
+      "statistics": {
+        "fraction_above_0075": 0.037037037037037035,
+        "maximum": 0.08005052117310857,
+        "p90": 0.028348073015095624,
+        "p99": 0.06941233863701138
+      },
+      "limits": {
+        "fraction_above_0075": 0.15,
+        "maximum": 0.2,
+        "p90": 0.06,
+        "p99": 0.12
+      }
+    },
+    "prepared_branch_controls": 9,
+    "decode_created_reuse_boundaries": 9,
+    "decode": {
+      "status": "passed",
+      "positions": 64,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.04110021832206168,
+        "p90": 0.018732870819207742,
+        "p99": 0.03860880406356601
+      },
+      "limits": {
+        "fraction_above_0075": 0.15,
+        "maximum": 0.25,
+        "p90": 0.075,
+        "p99": 0.15
+      }
+    },
+    "report_sha256": "3688f541c3a20b96540490f0faab9d4a4d967689df4170b050e34265ea0009f6",
+    "policy_sha256": "9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375",
+    "golden_manifest": {
+      "sha256": "f296e39eb6f4fae9f1964c92698667d5985bc9d2bfa9dcea16d22b2e0d8e8cd2",
+      "uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/manifest.json"
+    },
+    "limits_note": "The policy remains fixed and provisional. This campaign did not calibrate or relax its values. Passing these selected serving cases does not qualify RL learning or trainer probability ratios."
+  },
+  "workload": {
+    "key": "2a67e147dfbe10a76d1f901c5a3de2539298aaf1a8fdc8e8c746aa8d14aa7b59",
+    "archive_uri": "s3://marin-us-east-08a/tmp/ttl=30d/agentx-workload/2a67e147dfbe10a76d1f901c5a3de2539298aaf1a8fdc8e8c746aa8d14aa7b59/workload-ce86367e7a15a98e373d6483a5e72cae4f422f4b5eb3107f820201226c88f3ce.tar.zst",
+    "archive_sha256": "ce86367e7a15a98e373d6483a5e72cae4f422f4b5eb3107f820201226c88f3ce",
+    "cache_status": "hit"
+  },
+  "native_archive": {
+    "uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/b8c996746c69fdca/hosts/0/native-adcaba094fa3a0b27bb1b73f8450debd49212115a11d38e92a0d9df03c32a570.tar.zst",
+    "sha256": "adcaba094fa3a0b27bb1b73f8450debd49212115a11d38e92a0d9df03c32a570",
+    "bytes": 227613286
+  },
+  "aggregate": {
+    "uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/b8c996746c69fdca/hosts/0/aggregate.json",
+    "sha256": "3b08f900699253ef37b37c3c017f8b2ee61dfefdad1bb5856d74adb775b58a37",
+    "bytes": 7490
+  },
+  "result": {
+    "uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/result.json",
+    "sha256": "890ce7119b2297f03c72667fb51e370c9d564cd1abf054d23a4f66db712a5693",
+    "bytes": 62806
+  },
+  "successful_attempt": {
+    "attempt_uid": "b8c996746c69fdca",
+    "node": "g1cc242",
+    "allocation": {
+      "pod_uid": "2a26e52f-f563-46fd-9bbc-61e9abf8aae3",
+      "attempt_uid": "b8c996746c69fdca",
+      "pod_name": "iris-romain-knotmeter-20261117t2019-f12ebbb8-1-b8c996746c69fdca",
+      "node_name": "g1cc242",
+      "observed_unix": 1794955189.950528,
+      "phase": "Succeeded",
+      "scheduled_unix": 1794950465.0,
+      "finished_unix": 1794955130.0,
+      "status": "measured",
+      "end_basis": "pod-container-finish",
+      "end_unix": 1794955130.0
+    },
+    "gpu_hours": 10.366666666666667
+  },
+  "interrupted_attempt": {
+    "attempt_uid": "6a769724214e39be",
+    "state": "preempted",
+    "worker_status": "failed",
+    "worker_error": "InterruptedError: Attempt interrupted by signal 15",
+    "checks_status": "passed",
+    "check_report_sha256": "6b48a07af64f183dc8e6917ece598e8329162420789c3898a53d720ec1c7054c",
+    "native_archive": {
+      "uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/6a769724214e39be/hosts/0/native-d9871cccec806dac210e16891eb1369f80323e297a8152234acdd21762a3fd33.tar.zst",
+      "sha256": "d9871cccec806dac210e16891eb1369f80323e297a8152234acdd21762a3fd33",
+      "bytes": 194314446
+    },
+    "receipt_recovery": {
+      "schema_version": 1,
+      "recorded_utc": "2026-11-17T21:07:42.137353+00:00",
+      "originating_session": "devbox/codex/01a1eabe-cfa1-7f52-bd95-a69658df86e3",
+      "action": "reconstructed-from-verified-native-archive",
+      "source_commit": "06b9a63682da6b75161172e11f9acb9ec36d19b1",
+      "receipt_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/6a769724214e39be/hosts/0/receipt.json",
+      "archive_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/6a769724214e39be/hosts/0/native-d9871cccec806dac210e16891eb1369f80323e297a8152234acdd21762a3fd33.tar.zst",
+      "archive_sha256": "d9871cccec806dac210e16891eb1369f80323e297a8152234acdd21762a3fd33",
+      "worker_record_sha256": "6e676c0f3441d524197910c58a966085dc95a1f90f59714b95e1a87df6206f51",
+      "worker_status": "failed",
+      "worker_error": "InterruptedError: Attempt interrupted by signal 15",
+      "note": "The archive was committed before preemption but the worker receipt was missing. The reconstructed receipt retains the archived worker status, checks and all timestamps. It does not qualify an AgentX measurement.",
+      "derived_label_field": "receipt_provenance"
+    },
+    "performance_eligible": false,
+    "stage": "interrupted during native warmup",
+    "last_logged_returned": 593,
+    "warmup_target": 702,
+    "retained_partial_records": {
+      "warmup_successful": 431,
+      "warmup_empty_content_errors": 183,
+      "profiling": 0
+    },
+    "final_agentx_export": "missing",
+    "allocation": {
+      "pod_uid": "a886f597-05ae-4811-911e-a836786884ea",
+      "attempt_uid": "6a769724214e39be",
+      "pod_name": "iris-romain-knotmeter-20261117t2019-f12ebbb8-0-6a769724214e39be",
+      "node_name": "g5c0474",
+      "observed_unix": 1794948938.941386,
+      "phase": "Running",
+      "scheduled_unix": 1794947936.0,
+      "finished_unix": null,
+      "status": "measured",
+      "end_basis": "iris-observed-terminal",
+      "end_unix": 1794949003.385
+    },
+    "gpu_hours_lower_bound": 2.228758635520935,
+    "gpu_hours_recorded_upper_bound": 2.371966666645474
+  },
+  "allocated_gpu_seconds": 45859.079999923706,
+  "allocated_gpu_hours_recorded": 12.73863333331214,
+  "cost_complete": true,
+  "cost_uncertainty": "The preempted pod expired before a final container timestamp was captured. Its recorded cost conservatively ends at Iris terminal observation; its last observed Running time gives the lower bound."
+}
