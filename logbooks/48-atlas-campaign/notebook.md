@@ -1076,3 +1076,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for repaired-source admission outcomes and RST capture progression.
+
+### 2026-11-17 10:40 UTC - Hourly catch-up (09:40–10:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `f1fc42c6a4…` (08:56:31 UTC) to head `2ff07684cf2c9a68f10ebc3b6981c3ac8e13ea8e`, landed 10:33:16 UTC (~8 landings 10:26–10:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log f1fc42c6..2ff07684` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: harmony-served judge probes rendered through the openai_harmony encoder (`c82170ac1a…`).
+- Result, including failure or restart: material changes in the window:
+  - **Repaired Codeforces release ADMITTED** (`4754e71408…`) — following the 09:40 window's dedup/raw restoration.
+  - **Qualified passing subsets admitted with pending excluded tasks** (`0fe8259846…`); passing subsets published alongside pending infrastructure outcomes (`5ac8f6ad03…`) — the infrastructure-failure carve-out from the standing retry policy is now visible in admissions.
+  - **CalibForge lineage ruled**: the calibforge rebuilt-vs-shared overlap acknowledged as ruled lineage (`2ff07684cf…`, head); CF-adoption advisory cleanups applied across the shared lanes (`2f583394d2…`); reviewed overlap pairs from run 44012930875 acknowledged (`26354678cc…`).
+  - **Runtime**: identity-affecting #11547 review fixes synced onto the shared runtime (`2997d803ca…`); harmony encoder for judge probes.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
+- Decision and next action: next hourly check watches for further passing-subset admissions and judge-probe qualification.
