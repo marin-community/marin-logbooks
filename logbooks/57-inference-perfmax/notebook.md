@@ -6,7 +6,7 @@ related_issues: []
 research_branch: "codex/57-inference-perfmax"
 marin_base_revision: "5a439b9c00f56ad6d20f1ef62bffb3d867b58ece"
 archive_template_revision: "ba8edcdfd730b451e18aed6245234566be5053af"
-status: complete
+status: active
 ---
 
 # Manual inference-perfmax workflow and UX
@@ -208,3 +208,30 @@ and a complete normal AgentX window remain qualification work for a separate
 scope. The manual workflow implementation and UX pressure test are complete;
 contribution and index PRs remain draft and unmerged. All owned resource-board
 rows are closed. No post-green monitor was started.
+
+## 2026-11-17 — Shared correctness checks
+
+A new delegated goal supersedes the earlier diagnostics-only scope. Keep
+Snowball v0.1.1 at `59852d6f07261722bbec1edb6ab148317156b58e`. Replace Hero
+step144000 with finalized SFT step400407. Work until 17:00 UTC, without asking
+questions. Provisional tolerance choices are delegated. The aggregate interactive
+ceilings are 48 H100s and 128 GB200s, including children and retries.
+
+The initial implementation is contribution source `8dbbc3a13885f8067969928534bc1b9876585473`.
+The shared checker separates saved-reference agreement, engine batching, cache
+state, and decode versus recomputation. Deployment and score generation stay
+outside its HTTP functions. This is a working checkpoint; real HTTP tests and
+GPU qualification are still required.
+
+[Hero #11430](https://github.com/marin-community/marin/issues/11430) already has
+matching Levanter reference scores for step400407, including independent
+context-parallel layouts through 262K. Preserve its raw files beyond their TTL
+and verify each token-history hash. Its reviewed wheel is still `0ac9dcb157ee`.
+Use its graph-enabled PIECEWISE settings as the released starting point; the
+faster full-graph overlay is experimental and is not silently adopted.
+
+Snowball's supplied tokenizer reproduces all 64 representative prompt token
+arrays exactly. Generate missing scores with the Snowball class and explicit
+model config recorded by that checkpoint's identity SFT. Its public HF metadata
+says `production`, while that record specifies the Snowball snapshot. Retain
+this discrepancy and use the recorded training config explicitly.
