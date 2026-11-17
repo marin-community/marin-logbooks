@@ -374,3 +374,55 @@ fixtures. Their hard-coded paths lack `python3` and `head` on this Nix host;
 [narrow rechecks and source identities](analysis/affected-host-limitations.json)
 confirm the local limitation. The [partial summary](analysis/affected-cpu-summary.json)
 is not a full-suite pass. Use contribution CI for broad completion.
+
+### Comparator correction and diagnostic handoff
+
+The High-tier final review inspected source
+`7db04440dcd9873c517d034a585d67e69e1e8f8c`. It found that a returned observed
+prompt token below the top 50 could lower the missing-token cutoff and
+understate the probability-error bound. Contribution source
+`2cd493de0bcedf598a61bd2974b44bd65f15857a` restricts distribution comparisons to
+the true top 50 while retaining the observed token for decode rescoring. An
+independent normalized 80-token example reproduces the old under-bound.
+Forty-two focused CPU cases pass, including the corrected bound, partial
+reference retention, cache coverage failures and HTTP/CLI recommendation
+blocking. Required lint and type checks pass. CI on that exact source is
+terminal: 17 successful checks and 20 skipped. The
+[resolutions](analysis/goal-review-resolution.json) record targeted fixes.
+
+Hero a4 completed all 37 reference histories before the comparator correction.
+CPU replay of its saved observations now passes all 15,855 positions under the
+unchanged provisional limits. Short/long maxima are 0.470978/0.278653; p99 values
+are 0.093855/0.054485. Snowball a2 yielded 13 of 64 complete histories. Replaying
+its 194 observed positions gives maximum 0.078634 and p99 0.064165, within the
+provisional limits. Its remaining 51 histories and 1,576 positions stay pending.
+The [replay script](analysis/recompute_reference.py) is published at
+`50c2cc5fcc70f56ac6f294a4a5dc62601b4ae098`. It verifies matching artifact,
+checkpoint, runtime and policy hashes. Read-back hashes match both uploaded
+reports. Original reports and observations remain intact; overall cache
+failures still block both profiles.
+
+Both final live cache probes reported 112 cached tokens after a 127-token seed
+and 257 generated tokens. That covers no generated tokens. The old checker
+aborted before eight remaining boundaries and the final matched-repeat control.
+Source `2cd493de0b` keeps the failed decode-reuse subcheck while collecting the
+remaining prefill groups. Real HTTP fixtures verify this behavior; the new full
+suite has not run on either GPU profile. Prefix retention interval zero may
+explain the missing decode reuse, but the cause is uninvestigated. No setting,
+limit or required check was changed to force a pass.
+
+Snowball's final transport retry remained unadmitted and was canceled after
+more than half an hour. All owned GPU jobs are terminal and resource-board rows
+are closed. This goal recorded 4.802 H100-hours and 9.338 GB200-hours, including
+reference generation, setup and failed attempts. Two unadmitted Snowball
+receipts have incomplete allocation timing and no observed allocation. The
+[cost ledger](analysis/correctness-costs.json) retains that uncertainty.
+
+The agreed completion boundary permits labeled workflow diagnostics and precise
+qualification gaps, with no new numerical investigations. Neither preset is
+qualified. No normal AgentX window, accepted recommendation or tuning child was
+produced. The integrated perfmax GPU path has component evidence but no new
+end-to-end GPU run. The merged step42150 gate at the same reviewed runtime is
+regression evidence only. RL trainer probability ratios and learning quality
+remain unqualified. The [handoff](handoff.md) records commands, identities,
+provisional limits, measured differences and the remaining evidence.
