@@ -6,7 +6,7 @@ related_issues: []
 research_branch: "codex/57-inference-perfmax"
 marin_base_revision: "5a439b9c00f56ad6d20f1ef62bffb3d867b58ece"
 archive_template_revision: "ba8edcdfd730b451e18aed6245234566be5053af"
-status: active
+status: complete
 ---
 
 # Manual inference-perfmax workflow and UX
@@ -189,3 +189,22 @@ interrupted native archives, missing results, check removal/relabeling and wrong
 scope. No further GPU run or numerical investigation is needed: serving, native
 replay and the validated hardware commands are unchanged. The final contribution
 source is `02fcd6469902c93c02c3806c7487d332c62dc463`; its CI is pending.
+
+### Handoff
+
+Final CI is terminal and green on `02fcd6469902c93c02c3806c7487d332c62dc463`.
+All current PR comments and reviews were read; none require action. The final
+code successfully reprocessed the saved real Snowball exports through recovery
+without resubmitting GPUs. The refreshed terminal reports match their saved
+summaries and include both confirmed pre-admission launch rejections at zero
+GPU cost. Those records use the original INVALID_ARGUMENT responses and fresh
+controller NOT_FOUND checks; no allocation was inferred from a missing file.
+
+[Snowball summary](analysis/snowball-summary.md), [Hero summary](analysis/hero-summary.md),
+[CI](analysis/ci-final.json), [review disposition](analysis/final-review.json)
+and [submission evidence](analysis/submission-rejections.json) preserve the final
+state. Both campaigns contain no recommended.yaml. Matching numerical checks
+and a complete normal AgentX window remain qualification work for a separate
+scope. The manual workflow implementation and UX pressure test are complete;
+contribution and index PRs remain draft and unmerged. All owned resource-board
+rows are closed. No post-green monitor was started.

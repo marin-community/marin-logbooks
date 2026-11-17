@@ -1,0 +1,53 @@
+{
+  "kind": "GOAL",
+  "tier": "High",
+  "reviewed_source": "8f664fc5921bb12e409ba19744606bc1f2a8630d",
+  "fixed_source": "02fcd6469902c93c02c3806c7487d332c62dc463",
+  "batches": 1,
+  "concurrency": 1,
+  "reviewers": [
+    {
+      "provider": "Claude Code",
+      "requested_model": "claude-opus-5-5",
+      "observed_model": "claude-opus-5-5",
+      "requested_effort": "xhigh",
+      "observed_effort": null,
+      "completed": true
+    },
+    {
+      "provider": "Codex",
+      "requested_model": "gpt-6.1-sol",
+      "observed_model": "gpt-6.1-sol",
+      "requested_effort": "xhigh",
+      "observed_effort": "xhigh",
+      "completed": true
+    },
+    {
+      "provider": "AGY",
+      "requested_model": "gemini-3.8-flash-high",
+      "observed_model": null,
+      "observed_tool_trace": null,
+      "completed": true
+    }
+  ],
+  "material_findings": [
+    {
+      "finding": "Partial exports block recovery and omit costs",
+      "disposition": "Incomplete measurements retain attempt cost; unknown results remain visible."
+    },
+    {
+      "finding": "Ambient storage prefix overrides target",
+      "disposition": "Only the named flag overrides target configuration; local paths rejected."
+    },
+    {
+      "finding": "Numerical check can be removed or relabelled",
+      "disposition": "Acceptance requires scoped numerical passes and all other required checks."
+    }
+  ],
+  "targeted_validation": {
+    "passed_cases": 51,
+    "seconds": 4.61,
+    "new_gpu_runs": 0,
+    "new_numerical_investigations": 0
+  }
+}
