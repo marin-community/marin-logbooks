@@ -52,8 +52,10 @@ The report separates checkpoint and runtime identity, reference disagreement,
 batch dependence, cache reuse and decode versus recomputation. Batch requests
 are pinned to one engine; its running-request metrics must show overlap. Cache
 checks require actual hits, varied inputs, branches and reuse of decode-created
-tokens. Reusing the same number of cached tokens has a separate bound from
-changing where cached computation ends and fresh prefill begins.
+tokens. Equal hit counts can still leave different prefill steps: a hybrid cache
+may introduce a new checkpoint inside the suffix. Initial seed/branch comparisons
+use the bound for changed splits. Exact comparisons fully prepare the usable
+prefix, then verify it survives a branch that differs inside the cached region.
 Raw responses and per-position differences remain available after a failure.
 Later reference histories and cache boundaries still run after an individual
 case fails. Coverage failures remain separate from measured probability errors.
