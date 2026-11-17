@@ -281,3 +281,30 @@ responses, cache/batch coverage failures, wrong reference identity, CLI report
 agreement, scope and recommendation checks. The independent selected-position
 oracle also passed. Remote dependency preflight and real endpoint comparisons
 are next; neither model is qualified by this entry.
+
+### Launch failure and recommendation blocking
+
+The latest completion boundary permits clearly labeled workflow diagnostics
+with a precise list of missing qualification evidence. Keep measurement validity,
+numerical correctness and recommendation acceptance separate. Run applicable
+existing checks and reuse matching evidence; start no new numerical investigation.
+A different checkpoint's pass remains regression evidence.
+
+The remote CPU preflight passed seven HTTP/CLI cases in the pinned task image
+with no GPU allocation. Hero attempt
+`/romain/knotmeter-20261117t092450z-884fd63135d9` failed before model loading:
+the compilation-cache identity treated the literal chat template as a filename
+and raised `ENAMETOOLONG`. A local reproduction confirms the error. Write the
+template to a file before native serving. Retain the
+[failed execution](analysis/hero-correctness-a1-execution.json) and its 0.210
+GB200-hours; all four pods were absent at cleanup. Snowball's first endpoint
+attempt remains queued at this checkpoint. Neither attempt supplies a pass.
+
+Contribution source `9cd50ea15915929e05fdd53a19afc71de04e2341` fixes that launch
+path, retains the full numerical policy hash and labels provisional decisions.
+Thirty-eight focused CPU cases pass, including real HTTP and CLI reports fed
+into recommendation selection. Missing references, cache failures, unmatched
+checkpoint/runtime evidence, omitted required checks, invalid AgentX submission
+validity and explicit diagnostics all block recommendations. Reports remain
+available for review. These fixtures establish workflow behavior, not model
+numerical qualification.
