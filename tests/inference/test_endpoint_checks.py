@@ -138,6 +138,8 @@ class HttpEngine:
         body = await request.json()
         if self.mode == "reference-error" and request.headers["X-Request-Id"] == "reference-case-1":
             return web.json_response({"error": "Reference request interrupted"}, status=503)
+        if self.mode == "cache-error" and request.headers["X-Request-Id"] == "cache-7-fresh":
+            return web.json_response({"error": "Cache request interrupted"}, status=503)
         tokens = tuple(body["prompt"])
         count = body["max_tokens"]
         assert request.headers["X-data-parallel-rank"] == "0"
@@ -241,6 +243,7 @@ async def http_endpoint(engine: HttpEngine):
         ("streamed-model", None),
         ("wrong-weights", "deployment"),
         ("reference-error", "reference"),
+        ("cache-error", "cache"),
         ("prefill-only", "cache"),
         ("no-cache", "cache"),
         ("no-batch", "batch"),
@@ -260,10 +263,21 @@ async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, refere
             return
         if mode == "reference-error":
             reference = report["checks"]["reference"]
-            assert reference["completed_cases"] == ["case-0"]
+            assert reference["completed_cases"] == ["case-0", "case-2", "case-3"]
             assert reference["total_cases"] == 4
-            assert reference["failure"]["case"] == "case-1"
-            assert reference["groups"]["representative"]["positions"] == 1
+            assert [failure["case"] for failure in reference["failures"]] == ["case-1"]
+            assert reference["groups"]["representative"]["positions"] == 3
+        if mode == "cache-error":
+            cache = report["checks"]["cache"]
+            assert [failure["boundary"] for failure in cache["failures"]] == [7]
+            assert [row["boundary"] for row in cache["cache_evidence"]] == [7, 8, 9]
+            assert [row["boundary"] for row in cache["decode_reuse"]["observations"]] == [8, 9]
+            assert cache["matched_repeat"]["status"] == "passed"
+        if mode == "no-cache":
+            cache = report["checks"]["cache"]
+            assert cache["prefill_reuse"]["status"] == "failed"
+            assert len(cache["decode_reuse"]["observations"]) == len(reference_fixture.policy.boundary_lengths)
+            assert cache["different_split"]["positions"] == 0
         if mode == "prefill-only":
             cache = report["checks"]["cache"]
             assert cache["decode_reuse"]["status"] == "failed"
