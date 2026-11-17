@@ -236,3 +236,17 @@ GPU quota but many CPU/GPU placement waits; it did not establish a faster
 placement. Retain the validated hardware and current queue rather than
 claiming that submitted means evaluating. The run advances automatically
 when admitted, within its existing eight-hour parent cap.
+
+## November 17: reconcile the interrupted public-50 pass
+
+The evaluation driver was preempted by Kueue after 3h26m; its candidate and judge services terminated with the parent. The last durable Harbor summary, updated November 16 at 22:49:58 UTC, has 38 terminal trials: 29 recorded rewards and nine errors. Twelve trials were unfinished. This is not a complete benchmark score, and dashboard ingestion has not been verified.
+
+Three errors (da-1-4, da-13-5, da-13-6) are malformed judge responses after both configured attempts. Their answers and traces are archived. The first task returned criterion entries without the required outer schema; the other two returned empty objects. Preserve those failures rather than accepting a different schema retrospectively.
+
+Task da-15-1 finished its solver but failed Daytona command-output collection. Its trajectory contains successful `write` calls for `/app/trace.md` and `/app/answer.txt` at steps 63 and 64. Recovery inputs were extracted verbatim from those payloads, with hashes and provenance, without executing trajectory commands. They are reconstructed submissions, not sandbox filesystem readbacks.
+
+Five tasks (da-8-1, da-8-2, da-8-3, da-9-1, da-9-7) failed before solver execution because the account's 45-snapshot quota was reached. On November 17, none of the 45 preflight snapshots remained; the account held 25 non-provider snapshots. The deletion timing and actor are unverified. No sandboxes matching the prepared snapshot names or benchmark name remained. Preflight readiness before a long GPU queue did not guarantee runtime readiness.
+
+The [recovery selection](full/recovery-plan-nov17.json) preserves 29 scored tasks, selects four saved submissions for separate grading recovery, and selects only 17 tasks for solver continuation. No replacement run has been launched. A fresh bounded compute window is requested because the original eight-hour allocation has ended. Before launch, recheck snapshot capacity and ensure the selected subset close to task execution. Keep original results and recovery identities separate.
+
+Raw trial metadata, saved judge replies, answer/trace inputs, hashes and private account inventory are retained under the task's ignored `artifacts/biomnibench-qwen-full/reconciliation/` directory. The original durable object prefix is recorded in the existing submission evidence; no private endpoint or credential is copied into this notebook.
