@@ -1016,3 +1016,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the FWeindel per-folder decisions' details are registry-bound [M].
 - Decision and next action: next hourly check watches for POLARIS progression and further license decisions.
+
+### 2026-11-17 01:45 UTC - Correction to the 01:40 hourly entry (FWeindel license decisions)
+
+- Question or hypothesis and reason for trying it: coordinator correction relayed from the user's repackager ruling — the 01:40 entry's phrase "FWeindel/validated-tasks banned on the missing dataset-level license" is wrong.
+- Published source revision: unchanged `86775b6632…`.
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator correction (rhizome message, 2026-11-17); commit `86775b6632…`.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **Corrected reading** — per the repackager ruling, the FWeindel dataset-level ban was **removed** by `86775b6632…`, not applied. The per-folder decisions: **27 FWeindel folders PASS on their original upstreams and are lifted**; **6 folders (BugsInPy, TermiGen) carry per-folder bans**; **4 folders (Endless v1–v3, TMax v1.1) await the user**. The 01:40 hourly entry's banned-on-missing-license phrasing is superseded by this correction.
+- Evidence: commit `86775b6632…` [P]; coordinator correction [R].
+- Interpretation and limitations: the per-folder license detail lives in the registry [M].
+- Decision and next action: next hourly entries use the corrected reading.
