@@ -638,3 +638,32 @@ GB200-hours. Root verified the retained report and native archive hashes and
 [all four provider pods](analysis/hero-qualified-a2-cleanup.json) have terminated
 containers. The resource-board entry is closed. Snowball's C64 candidate is
 still queued; it will run the corrected CLI checks before its normal window.
+
+### Both corrected suites pass; C64 continues after preemption
+
+The first C64 allocation passed every updated shared check on source
+`06b9a63682`: 64 histories, 1,770 reference positions, all nine prefill,
+prepared-branch and decode-created reuse boundaries, and ten exact controls
+with zero error. Root independently verified the report and native archive
+hashes in the [audit](analysis/snowball-c64-attempt0-root-audit.json). The
+[submitted-plan audit](analysis/snowball-c64-plan-root-audit.json) confirms
+that client concurrency, 128 to 64, is the only profile difference from baseline.
+
+Kueue preempted this allocation during native warmup. No profiling window or
+final export completed. The native archive preserves the original failed
+worker record. A [derived receipt](analysis/snowball-c64-attempt0-derived-receipt.json)
+and separate [recovery record](analysis/snowball-c64-attempt0-receipt-recovery.json)
+state that the original receipt was missing and identify the verified inputs.
+This recovers evidence; it does not turn the interrupted attempt into a pass
+for measurement or recommendation. Iris queued its configured retry. No manual
+restart or scheduling change was made.
+
+The reissued goal also asks for the evidence and limits behind each numerical
+policy, using retained data without a new calibration campaign. The
+[policy explanation](numerical-policies.md) covers each comparison and the
+[observed statistics](analysis/numerical-policy-observations.json). Hero's
+reference margins have prior BF16 control evidence, with a different top-k
+comparison and launch scope. Snowball's reference cutoffs and the nonzero cache,
+batch and decode cutoffs remain initial screens. Passing checking code and
+passing those provisional limits are separate claims. RL trainer ratios
+remain unqualified.

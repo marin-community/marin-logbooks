@@ -1,0 +1,99 @@
+{
+  "observed_at_utc": "2026-11-17T21:07:59.070714+00:00",
+  "inspection": "Root recomputed archive and report hashes and inspected all stage/coverage outcomes.",
+  "source": {
+    "tree_hash": "d3c87544f4",
+    "base_commit": "06b9a63682",
+    "dirty": false,
+    "branch": "research/perfmax-snowball-01a1d379",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T12:19:15.204441",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/perfmax-snowball-campaign-01a1d379/experiments/evaluation/knotmeter/cli.py",
+      "run",
+      "--profile",
+      "snowball-h100",
+      "--campaign",
+      "perfmax-snowball-tuning-01a1eabe",
+      "--priority",
+      "interactive",
+      "--logbook",
+      "https://github.com/marin-community/marin-logbooks/issues/57",
+      "--session-concurrency",
+      "64"
+    ]
+  },
+  "attempt_uid": "6a769724214e39be",
+  "archive_sha256": "d9871cccec806dac210e16891eb1369f80323e297a8152234acdd21762a3fd33",
+  "report_sha256": "6b48a07af64f183dc8e6917ece598e8329162420789c3898a53d720ec1c7054c",
+  "status": "failed",
+  "checks_status": "passed",
+  "histories": 64,
+  "reference_positions": 1770,
+  "exact_controls": 10,
+  "exact_maximum": 0,
+  "prefill_boundaries": 9,
+  "settled_branch_boundaries": 9,
+  "decode_reuse_boundaries": 9,
+  "policy_sha256": "9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "limitations": [
+    "Attempt interrupted during native warmup; no completed AgentX window or final export.",
+    "Engineering checks use provisional policy; no RL qualification."
+  ],
+  "plan_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/plan.json",
+  "archive_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/6a769724214e39be/hosts/0/native-d9871cccec806dac210e16891eb1369f80323e297a8152234acdd21762a3fd33.tar.zst",
+  "receipt_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/6a769724214e39be/hosts/0/receipt.json",
+  "receipt_provenance": {
+    "kind": "derived-from-verified-native-archive",
+    "original_worker_record": "attempt.json",
+    "worker_record_sha256": "6e676c0f3441d524197910c58a966085dc95a1f90f59714b95e1a87df6206f51",
+    "archive_sha256": "d9871cccec806dac210e16891eb1369f80323e297a8152234acdd21762a3fd33",
+    "recovery_record_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/6a769724214e39be/hosts/0/receipt-recovery.json"
+  },
+  "recovery_record_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/6a769724214e39be/hosts/0/receipt-recovery.json",
+  "model": {
+    "config_sha256": "c49b753df32bb2efe438c101a2fe9d43ea1ecc081ddab7d1de62a693e3cfa4c5",
+    "eos_token_id": 128001,
+    "revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+    "tokenizer": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+    "tokenizer_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+    "weights": "open-athena/Marin-Snowball-67B-A2B-v0.1.1"
+  },
+  "manifest": {
+    "sha256": "f296e39eb6f4fae9f1964c92698667d5985bc9d2bfa9dcea16d22b2e0d8e8cd2",
+    "uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/manifest.json"
+  },
+  "check_outcomes": {
+    "batch": {
+      "status": "passed",
+      "positions": 4,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.04213253663047367,
+        "p90": 0.03296850501607419,
+        "p99": 0.04121613346903372
+      }
+    },
+    "cache": {
+      "status": "passed"
+    },
+    "decode": {
+      "status": "passed",
+      "positions": 64,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.04110021832206168,
+        "p90": 0.018732870819207742,
+        "p99": 0.03860880406356601
+      }
+    },
+    "deployment": {
+      "status": "passed"
+    },
+    "reference": {
+      "status": "passed"
+    }
+  }
+}
