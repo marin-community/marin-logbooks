@@ -7,6 +7,7 @@ import argparse
 import getpass
 import json
 import subprocess
+from datetime import UTC, datetime
 from pathlib import Path
 
 from iris.cli.connect import open_iris_client
@@ -22,7 +23,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--job-name", required=True)
     args = parser.parse_args()
-    receipt = ROOT / "recovery-launcher-submission.json"
+    receipt = ROOT / f"{args.job_name}-submission.json"
+    deadline = datetime(2026, 11, 18, 2, 25, 28, tzinfo=UTC)
+    remaining = int((deadline - datetime.now(UTC)).total_seconds())
+    assert remaining > 0, "Approved recovery window has expired"
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
     source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     secrets = {name: require_secret(name) for name in ("CW_KEY_ID", "CW_KEY_SECRET")}
@@ -55,12 +59,12 @@ def main():
                 Constraint.create(key=CLUSTER_CONSTRAINT_KEY, op=ConstraintOp.EQ, value="cw-us-east-02a"),
                 preemptible_constraint(False),
             ],
-            timeout=Duration.from_seconds(28800),
+            timeout=Duration.from_seconds(remaining),
             scheduling_timeout=Duration.from_seconds(1800),
             max_retries_failure=0,
             max_retries_preemption=0,
         )
-        result = {"job_id": str(job.job_id), "source_commit": source, "parent_timeout_seconds": 28800}
+        result = {"job_id": str(job.job_id), "source_commit": source, "parent_timeout_seconds": remaining}
         receipt.write_text(json.dumps(result, indent=2) + "\n")
         print(json.dumps(result, indent=2))
 

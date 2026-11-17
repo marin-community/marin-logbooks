@@ -3,7 +3,6 @@
 
 """Recover frozen grades and prepare the selected tasks while serving is warm."""
 
-import asyncio
 import hashlib
 import json
 import os
@@ -18,19 +17,31 @@ from marin.evaluation.runner import EvalExecutor, EvaluationOutcome
 from marin.inference.iris import RemoteInferenceSession
 from marin.inference.types import InferenceBackendState
 from rigging.filesystem.storage_path import StoragePath
-from shellbox.backends.daytona.connection import DEFAULT_DAYTONA_API_URL, DaytonaConnection
-from shellbox.backends.daytona.snapshot import SnapshotRequest, ensure_snapshot
 
 ROOT = Path(__file__).resolve().parent
 
 
-async def prepare_snapshots(api_key: str) -> None:
-    connection = DaytonaConnection(api_key, DEFAULT_DAYTONA_API_URL, "us")
-    specs = json.loads((ROOT / "recovery-snapshots.json").read_text())
-    async with connection.client_factory()() as client:
-        for spec in specs:
-            await ensure_snapshot(client, SnapshotRequest.from_dict(spec))
-            print(json.dumps({"snapshot_ready": spec["name"]}), flush=True)
+def prepare_snapshots(api_key: str) -> None:
+    subprocess.run(
+        [
+            "uv",
+            "run",
+            "--project",
+            "lib/shellbox",
+            "--frozen",
+            "--extra",
+            "daytona",
+            "shellbox-daytona-snapshots",
+            "--api-key-env",
+            "DAYTONA_RECOVERY_KEY",
+            "ensure",
+            "--specs",
+            str(ROOT / "recovery-snapshots.json"),
+        ],
+        env={**os.environ, "DAYTONA_RECOVERY_KEY": api_key, "DAYTONA_TARGET": "us"},
+        check=True,
+        timeout=3600,
+    )
 
 
 def recover_grades(judge: RemoteInferenceSession, output_dir: str) -> None:
@@ -100,5 +111,5 @@ class RecoveryExecutor:
     ) -> EvaluationOutcome:
         assert judge is not None
         recover_grades(judge, output_dir)
-        asyncio.run(prepare_snapshots(env_vars["DAYTONA_API_KEY"]))
+        prepare_snapshots(env_vars["DAYTONA_API_KEY"])
         return self.delegate(session, output_dir, env_vars, backend_state=backend_state, judge=judge)
