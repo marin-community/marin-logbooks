@@ -900,3 +900,21 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring state [R]; #11619 [P].
 - Interpretation and limitations: gate/recovery status only.
 - Decision and next action: hourly checks watch for the #11619 probe execution and the recovery decision.
+
+### 2026-11-18 00:35 UTC - Hourly catch-up (23:40–00:35 UTC window): #11619 probes DONE — full transport matrix published; exp3 restarting from scratch on IB
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; coordinator correction relayed the completed #11619 probe results and the exp3 restart.
+- Published source revision: the terminal exp3 `.51` run is being restarted **from scratch**; the restarting run's source/artifact identities are recorded by the exp2-session owner (this record's next entries will bind them).
+- Command or material configuration: per the [#11619 probe comment](https://github.com/marin-community/marin/issues/11619#issuecomment-6964135906) [P]: same script, pinned SkyRL image and megatron profile (NCCL 2.30.7), production priority, 8 CPU/32 GB/200 GB per task; two nodes per H100 run (gangs spread across nodes); GB200 runs use two single-tray jobs with a shared registry endpoint.
+- External inputs and artifact references: [#11619 probe comment 6964135906](https://github.com/marin-community/marin/issues/11619#issuecomment-6964135906) [P]; coordinator correction [R].
+- Environment and hardware when relevant: cw-rno2a and cw-us-east-02a (H100, cross-node) vs cw-us-east-08a (GB200, intra-rack NVL72).
+- Result, including failure or restart:
+  1. **Probe coverage complete for all three clusters** — correcting this record's 23:40 entry ("probe still OPEN/not run" is withdrawn; the probes are DONE, reported in PR #11619 comment 6964135906).
+  2. **cw-rno2a and cw-us-east-02a PASS the default environment over InfiniBand** (`NET/IB GDRDMA`): all-reduce 85–88 GB/s (02a per-variant table: default 85.6, AF_INET-only 87.5, IB_GID_INDEX_0 88.1 GB/s; all-to-all 63–65 GB/s).
+  3. **cw-us-east-08a runs intra-rack over NVLink** — both two-job pairs landed their trays in one NVL72 rack, so every variant (including the full socket override) passed at NVLink speed (all-reduce 523–534 GB/s, all-to-all 373–387 GB/s) with an empty NET census; within one NVL72 rack the NCCL variables do not change the transport. Cross-rack 08a coverage comes from production instead (the Mochi three-rack runs `2026.11.13.9403`–`.9405` forced `NCCL_NET=IB` with `NCCL_IB_HCA=ibp` and recorded no IB transport errors).
+  4. **On 02a, the three-variable override alone ABORTS in the collective** (the exp3 `.51` failure mode); adding `NCCL_SOCKET_IFNAME` (the cluster config's ambient value `^ibs,ibp,lo,docker,veth,cilium,lxc`) restores a passing socket path at **1/20th the bandwidth** (prod_exact: 4.2 GB/s all-reduce vs 85.6 GB/s IB); `net_socket_only`/`ib_disable_only` hang; `ib_hca=mlx5_0/1` fall back to socket then hang.
+  5. **Launch-gate summary**: no cluster needs the socket override today; the socket path is 12–24× slower where it works and hangs/aborts when partially applied; the live gate check should assert the census shows `NET/IB` (or no NET transport) and fail closed otherwise.
+  6. **Exp3 `.51` is being restarted from scratch on IB by the exp2-session owner** — the terminal `.51` run is superseded; this record will bind the restart's identities when published.
+- Evidence: #11619 probe comment [P]; coordinator correction [R].
+- Interpretation and limitations: the probe used NCCL 2.30.7 (the terminal `.51` run used 2.29.7 — same symptom class, different patch version); the restart's own identity evidence is pending.
+- Decision and next action: hourly checks now track the from-scratch IB restart (new source/artifact, gate census assert, launch) and the V6 data candidate.
