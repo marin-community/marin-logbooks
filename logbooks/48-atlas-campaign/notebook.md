@@ -1187,3 +1187,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for SWE-rebench family progression and further delivered-verifier outcomes.
+
+### 2026-11-17 17:40 UTC - Hourly catch-up (16:40–17:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `81a120a913…` (16:26:11 UTC) to head `7de61d0b06a5e792ade2a8182579e98844cb48c9`, landed 17:29:45 UTC (~10 landings 17:00–17:29 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 81a120a9..7de61d0b` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **AIME decontamination chain completed and ADMITTED**: historical AIME routed through training decontamination (`7995b24e45…`); the decontaminated 918-task AIME training release adopted (`4b6c745449…`); AIME's training decontamination receipt selected in the Atlas (`24c08194cc…`); the AIME training fingerprint view selected in the Atlas (`7de61d0b06…`, head).
+  - **Delivery contracts honored**: the backend survey honors matched delivery contracts (`7e066abb4f…`).
+  - **e2egit-v2 corrections**: census pair restored and stale math_tir rulings withdrawn (`64a739cb79…`); census/lexical references pointed at the re-measured receipts (`a2345c9f18…`).
+  - **Identical evaluation-ID groups reused during causal attribution** (`d21bf96d84…`).
+  - **Status UI keyboard traversal**: scroll containers included (`35126d475d…`); keyboard targets kept visible on narrow screens (`af414c144a…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
+- Decision and next action: next hourly check watches for further decontamination-chain admissions.
