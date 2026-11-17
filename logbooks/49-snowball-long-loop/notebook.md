@@ -732,3 +732,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: per-item references above [R]/[P].
 - Interpretation and limitations: SFT success does not certify the RL/eval outputs; RL is capacity-gated.
 - Decision and next action: hourly checks now track the RL gate and (once running) RL updates; admission remains untouched per the standing queue rule.
+
+### 2026-11-17 10:40 UTC - Hourly catch-up (09:40–10:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch.
+- External inputs and artifact references: monitoring state (10:33 UTC) and `production51-latest-kueue-status.json` [R].
+- Environment and hardware when relevant: **quota condition identified — the RL gate needs 232 more GPU + RDMA slots** (Kueue status artifact).
+- Result, including failure or restart: exp3's **RL 32 tasks remain Kueue SchedulingGated at 10:33 UTC** — no failure/preemption/learner start; queue untouched; SFT/handoff remain certified. New detail: the monitor's latest signal reports a fresh **quota condition requiring 232 more GPU+RDMA slots** before the RL tasks can schedule (Kueue status artifact captures the breakdown).
+- Evidence: monitoring state + kueue-status artifact [R].
+- Interpretation and limitations: gate status only; the quota resolution is a cluster/capacity matter outside this record.
+- Decision and next action: hourly checks track the gate; admission stays untouched per the standing queue rule.
