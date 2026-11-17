@@ -41,17 +41,18 @@ spec = LaunchSpec(
     judge_accelerator="H100x8",
     version="biomnibench-da-recovery17-signed-v1",
     description=(
-        "Recovery of 17 tasks only, preserving 29 prior scores; four separate saved-submission grades; Pi 0.87.0; "
+        "Recovery of 17 tasks only, preserving 29 prior scores; saved-submission grades tracked separately; Pi 0.87.0; "
         "3600s agent; 900s verifier; 16 concurrent; zero solver retries; "
         "at most one malformed-judge retry preserving both responses; "
         "one shared MiniMax judge; eight-hour cap; proposal evidence, not adopted ID policy"
     ),
 )
 batch = prepare_evaluation_batch(spec)
-recovery = importlib.import_module("logbooks.45-biomnibench-da-id.full.recovery_executor")
-batch = replace(
-    batch, evaluations=tuple(replace(e, executor=recovery.RecoveryExecutor(e.executor)) for e in batch.evaluations)
-)
+if "--solver-only" not in sys.argv:
+    recovery = importlib.import_module("logbooks.45-biomnibench-da-id.full.recovery_executor")
+    batch = replace(
+        batch, evaluations=tuple(replace(e, executor=recovery.RecoveryExecutor(e.executor)) for e in batch.evaluations)
+    )
 remote = "--submit-in-cluster" in sys.argv
 if "--submit" not in sys.argv and not remote:
     print(

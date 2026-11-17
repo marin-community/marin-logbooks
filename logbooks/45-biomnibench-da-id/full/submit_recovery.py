@@ -22,7 +22,9 @@ ROOT = Path(__file__).resolve().parent
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--job-name", required=True)
-    parser.add_argument("--judge-only", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--judge-only", action="store_true")
+    mode.add_argument("--solver-only", action="store_true")
     args = parser.parse_args()
     receipt = ROOT / f"{args.job_name}-submission.json"
     deadline = datetime(2026, 11, 18, 2, 25, 28, tzinfo=UTC)
@@ -47,6 +49,7 @@ def main():
                     if args.judge_only
                     else ["logbooks/45-biomnibench-da-id/full/launch_recovery.py", "--submit-in-cluster"]
                 ),
+                *(["--solver-only"] if args.solver_only else []),
             ),
             name=args.job_name,
             resources=ResourceSpec(cpu=1, memory="2g", disk="16g"),
