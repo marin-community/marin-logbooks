@@ -292,7 +292,6 @@ status: active
 
     | Paired difference, 95% interval over documents | Kept | Flagged | Flagged minus kept |
     | --- | --- | --- | --- |
-    | Filtered minus the mean of the two control seeds | -0.003 (-0.009 to +0.001) | -0.010 (-0.023 to +0.004) | |
     | Filtered minus seed 0 | -0.007 (-0.018 to +0.000) | -0.003 (-0.018 to +0.018) | +0.004 (-0.014 to +0.026) |
     | Filtered minus seed 1 | +0.001 (-0.002 to +0.004) | -0.018 (-0.030 to -0.007) | -0.018 (-0.030 to -0.007) |
     | Seed 1 minus seed 0 | -0.008 (-0.018 to -0.001) | +0.015 (+0.002 to +0.032) | +0.022 (+0.006 to +0.042) |
@@ -306,10 +305,53 @@ status: active
   - These are step-238 checkpoints and single-checkpoint measurements, as for every other result in this logbook. The flagged group is 175 documents, mostly structured data.
 - Decision and next action: see the final decision.
 
+### 2026-11-17 01:00 UTC - Which held-out documents move, and a correction
+
+- Question or hypothesis and reason for trying it: the held-out split shows small group differences and a seed-to-seed spread of the same size. Which documents carry those differences, and does the filtered arm differ from both controls on any of them by more than the controls differ from each other?
+- Published source revision: research branch, `scripts/replay_loss_movers.py` (this commit), reading the four runs of the previous entry. Excerpts were read from the held-out cache to classify documents; they are not archived because they are raw corpus text.
+- Command or material configuration: `python logbooks/40-lce-replay-junk-filter/scripts/replay_loss_movers.py 12`. The gap is filtered minus the mean of the two controls, in nats per token. A document is filtered-specific when the gap exceeds 0.05 and the seeds differ by less than half of it. A breakdown is a document on which one step-238 checkpoint is more than 0.5 above both others.
+- Result, including failure or restart:
+  - Two small groups carry nearly all of the movement:
+    - **Encoded blobs:** 23 documents, 12% of flagged tokens. These are notebooks, feeds and Mathematica files whose bulk is base64 of compressed images. That is close to random text, so the best a model can do is spread probability over the 64 characters. Every step-238 checkpoint is 0.4–1.2 nats per token worse than the base on them, with no consistent order between checkpoints. The ten largest flagged documents carry 0.040 of the 0.059 rise from the base and most of the 0.015 seed-to-seed gap.
+    - **Breakdowns:** four kept documents on which one trained checkpoint scores far worse while the others stay near the base. Control seed 0 scores 9.02 and 7.00 on two badly OCR'd Cyrillic scans (`c26q0` 2329, `c21q0` 1218) and 3.49 on Cyrillic mojibake (`c24q0` 1493). The filtered arm scores 4.97 on a Maithili Bible translation (`c25q1` 4382). The batch-mates of these documents score normally, so a batch fault does not explain them. Where in each document the loss rises is unknown, because the scorer stores one sum per document.
+  - With both groups set aside, the step-238 checkpoints are nearly level:
+
+    | Token-weighted loss | Base | Control seed 0 | Control seed 1 | Filtered |
+    | --- | ---: | ---: | ---: | ---: |
+    | Kept, all 2,017 | 1.3067 | 1.3221 | 1.3144 | 1.3150 |
+    | Kept, without the 4 breakdowns | 1.3030 | 1.3118 | 1.3107 | 1.3099 |
+    | Flagged, all 175 | 0.8400 | 0.8991 | 0.9138 | 0.8961 |
+    | Flagged, without the 23 encoded blobs | 0.6199 | 0.6349 | 0.6363 | 0.6308 |
+
+  - Filtered-specific documents split by verdict:
+
+    | Slice | Gap over 0.05 | Filtered-specific | Seed-dominated |
+    | --- | ---: | --- | ---: |
+    | Kept | 38 | 10, all worse | 28 |
+    | Flagged | 21 | 5, all better | 16 |
+
+    - **Flagged, filtered better:** all five are encoded blobs, with gaps of −0.11 to −0.45.
+    - **Kept, filtered worse:** gaps of +0.06 to +0.37, plus +3.61 for the Bible breakdown. On each of these the two seeds agree within 0.04.
+      - Five pages of SEO spam: medical-textbook text with drug advertising spliced in, three of them from cell `c01q0`.
+      - Two PDF extractions whose font map turned every letter into a dingbat.
+      - Two Bible translations in low-resource languages.
+      - One IRC log.
+
+      The filter keeps all of these because on the surface they look like prose.
+    - **Kept, filtered better:** none are filtered-specific. The largest movers are the two control seed 0 breakdowns, and keyword-stuffed SEO pages on which control seed 1 is about 0.4 above seed 0 while the filtered arm sits near seed 0.
+- Interpretation and limitations:
+  - Correction: the previous entry called the filtered arm's flagged loss the lowest of the three. That ordering comes from encoded blobs, on which the two seeds differ by 0.11. On the other flagged documents the three checkpoints are within 0.006, and on kept documents without breakdowns within 0.002. The previous entry's conclusion stands: filtering costs nothing measurable on either verdict. Its lead on flagged text over control seed 1 is not evidence of a benefit.
+  - The asymmetry between verdicts comes from 15 documents, and its cause is untested. One untested explanation is that the replacement documents changed how much spam and broken-encoding text the filtered arm saw. The filtered arm's replacement documents have not been inspected.
+  - The kept-document cases name two kinds of junk the filter misses: SEO spam spliced into medical text, and broken-font PDF extractions.
+- Decision and next action: no change to the decision. Open follow-ups:
+  - Inspect the replacement documents for spam and broken-encoding text.
+  - Run a per-position loss trace on the four breakdown documents.
+  - Consider rules for the two missed junk kinds.
+
 ## Final decision
 
-- Selected approach and evidence: adopt the filtered long replay. The long-context probe favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents the filtered arm loses nothing on the text its filter removes: its loss on flagged documents is 0.896 against 0.899 and 0.914 for the two control seeds, with kept-document loss level.
+- Selected approach and evidence: adopt the filtered long replay. The long-context probe favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents filtering costs nothing on either verdict: with the 23 encoded-blob documents and four single-checkpoint breakdowns set aside, the three step-238 checkpoints are within 0.006 nats per token on flagged documents and 0.002 on kept ones.
 - Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
 - Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
 - Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
-- Remaining uncertainty: training noise beyond one extra control seed and no extra filtered seed; whether either difference persists past step 238; and whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently.
+- Remaining uncertainty: training noise beyond one extra control seed and no extra filtered seed; whether either difference persists past step 238; whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently; why one trained checkpoint breaks down on a few damaged or rare-script documents; and two junk kinds the filter misses (spliced SEO spam and broken-font PDF extractions), on which the filtered arm is slightly worse.
