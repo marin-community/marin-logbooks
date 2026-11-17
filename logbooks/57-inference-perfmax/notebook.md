@@ -84,3 +84,13 @@ Iris/native attempt identity, checks, measurements, allocation cost and cleanup
 with the focused execution results.
 
 Contribution: https://github.com/marin-community/marin/pull/11320
+
+### Direct-controller launch rejection
+
+Source `4846f4781a6083f58c45a480efb15799bd15b644` attempted Snowball
+`20261117T015312Z-6ca63b0cc654` and Hero `20261117T015313Z-f85a8d257772`.
+Both controllers rejected the root launch with `INVALID_ARGUMENT`: a local
+`cluster` constraint was interpreted as a federation-peer name. No root job
+or GPU child was admitted, so allocated GPU cost was zero. Omit the federation
+constraint when entry and target controller are the same; retain it for a
+cross-controller launch. Retain the failed local plans and logs as diagnostics.

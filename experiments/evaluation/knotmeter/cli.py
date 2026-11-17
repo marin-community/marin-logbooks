@@ -124,7 +124,11 @@ def submit_coordinator(client: IrisClient, plan: dict):
             sync_packages=["marin-core"], extras=["cpu"], env_vars={"MARIN_PREFIX": plan["marin_prefix"]}
         ),
         constraints=[
-            Constraint.create(key="cluster", op=ConstraintOp.EQ, value=plan["cluster"]),
+            *(
+                [Constraint.create(key="cluster", op=ConstraintOp.EQ, value=plan["cluster"])]
+                if plan["controller"] != plan["cluster"]
+                else []
+            ),
             preemptible_constraint(False),
         ],
         priority_band={"batch": job_pb2.PRIORITY_BAND_BATCH, "interactive": job_pb2.PRIORITY_BAND_INTERACTIVE}[
