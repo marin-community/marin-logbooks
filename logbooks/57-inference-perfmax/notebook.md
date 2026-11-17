@@ -308,3 +308,31 @@ checkpoint/runtime evidence, omitted required checks, invalid AgentX submission
 validity and explicit diagnostics all block recommendations. Reports remain
 available for review. These fixtures establish workflow behavior, not model
 numerical qualification.
+
+### Streamed weight identity and admission retry
+
+Hero's second attempt loaded the selected export and exposed a checker bug.
+RunAI sets `model` to a local metadata directory and preserves the original
+weight URI in `model_weights`. The
+[pinned runtime source](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/config/model.py#L131)
+defines that contract. Verify the preserved source strictly and retain both
+fields. The [report](analysis/hero-correctness-a2-report.json) failed deployment
+identity before any numerical request. Its [execution](analysis/hero-correctness-a2-execution.json)
+used 2.321 GB200-hours; all four pods were gone at cleanup. Reference, batch,
+cache and decode comparisons remain pending for this deployment.
+
+Contribution source `2ace0b2eeefd1ad90e74194f22e67ca00d132349` fixes that
+normalization. Thirty-nine focused CPU cases pass, including valid streamed
+weights and rejection of the wrong preserved weight source before scoring.
+The mandatory advisory batch completed once; its
+[resolutions](analysis/shared-checks-advisory-resolution.json) cover typed
+comparison records, storage joins, test value and fixture documentation.
+
+Snowball's first endpoint attempt never passed its scheduling gate. Cancel it
+after 30 minutes and retry the existing suite with a 384-GB host request. Its
+8-H100 allocation is now running. The numerical settings and policy are the
+same. The [canceled receipt](analysis/snowball-correctness-a1-execution.json)
+retains incomplete allocation timing; no allocation was observed before
+cancellation. The local broad safe-test run recorded five failures before its
+own 4-GiB cap ended it. Identify the first failure and use CI for full coverage.
+Do not count that partial run as a pass.
