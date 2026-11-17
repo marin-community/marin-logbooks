@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import asyncio
+import dataclasses
 import hashlib
 import json
 import math
@@ -12,6 +13,7 @@ from pathlib import Path
 
 import pytest
 from aiohttp import web
+from marin.external_dependencies import VLLM_GPU_RELEASE
 from marin.testing.inference.endpoint_checks import check_endpoint
 from marin.testing.inference.goldens import (
     AcceptancePolicy,
@@ -27,6 +29,11 @@ from marin.testing.inference.goldens import (
     history_digest,
     lookup_reference,
 )
+
+from experiments.evaluation.knotmeter.artifacts import write_record
+from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
+from experiments.evaluation.knotmeter.report import report_campaign
+from experiments.evaluation.knotmeter.run import run_checks
 
 RUNTIME = "0ac9dcb157ee86ccb447bc717259159c41ad456a"
 LOGPROBS = {token: math.log(0.5 if token == 1 else 0.3 if token == 2 else 0.2 / 14) for token in range(16)}
@@ -259,3 +266,67 @@ def test_lookup_distinguishes_wrong_checkpoint_missing_and_modified_scores(tmp_p
     assert lookup_reference(reference_fixture).status == LookupStatus.MISMATCHED
     (tmp_path / "scores.json").unlink()
     assert lookup_reference(reference_fixture).status == LookupStatus.MISSING
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("mode", ["correct", "no-cache", "missing-reference"])
+async def test_perfmax_retains_real_check_report_and_blocks_unqualified_recommendations(
+    tmp_path, reference_fixture, mode
+):
+    fixture_path = tmp_path / "fixture.json"
+    fixture_path.write_text(reference_fixture.model_dump_json())
+    if mode == "missing-reference":
+        (tmp_path / "scores.json").unlink()
+    profile = load_profile(Path("snowball-h100"), [])
+    profile = profile.model_copy(
+        update={
+            "model": profile.model.model_copy(
+                update={"repo": "test-model", "revision": reference_fixture.model.revision}
+            ),
+            "checks": [Check(name="shared-policy", fixture=str(fixture_path), timeout=60)],
+        }
+    )
+    async with http_endpoint(HttpEngine(mode, reference_fixture.model)) as url:
+        checks = await asyncio.to_thread(run_checks, profile, url, tmp_path, RUNTIME)
+    report_bytes = (tmp_path / "check-0.json").read_bytes()
+    assert checks[0]["report_sha256"] == hashlib.sha256(report_bytes).hexdigest()
+    assert checks[0]["status"] == json.loads(report_bytes)["status"]
+
+    # AgentX validity and allocation are synthetic here. The numerical input comes
+    # from the real HTTP/CLI workflow above; only a pass may produce a decision.
+    campaign = tmp_path / "campaign"
+    trial_uri = campaign / "trials" / "candidate"
+    result = {
+        "trial_id": "candidate",
+        "trial_uri": str(trial_uri),
+        "job_state": "succeeded",
+        "job_succeeded": True,
+        "cost_complete": True,
+        "gpu_seconds": 0,
+        "attempts": [],
+        "manifest": {
+            "series": resolved_series(profile),
+            "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE),
+            "diagnostic": False,
+            "workload": {"recipe": {"fixture": True}},
+        },
+        "measurement": {
+            "checks": checks,
+            "validity": {"protocol_valid": True, "submission_valid": True, "gang_valid": True},
+            "aggregate": {
+                "request_metrics": {
+                    "throughput": {"per_gpu": {"output_tput_tps": 100}},
+                    "latency": {"ttft": {"p90": 1}, "e2el": {"p90": 10}},
+                }
+            },
+        },
+    }
+    write_record(str(trial_uri / "result.json"), result)
+    if mode == "correct":
+        report_campaign(str(campaign), recommendation="candidate")
+        assert (campaign / "recommended.yaml").is_file()
+        assert json.loads((campaign / "decision.json").read_bytes())["provisional"] is True
+    else:
+        with pytest.raises(ValueError):
+            report_campaign(str(campaign), recommendation="candidate")
+        assert not (campaign / "recommended.yaml").exists()

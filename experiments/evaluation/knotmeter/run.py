@@ -98,7 +98,9 @@ def create_server(manifest: PointManifest, output: Path, launch: IrisVllmLaunch 
     if profile.quantization:
         args += ["--quantization", profile.quantization]
     if model.chat_template == "marin":
-        args += ["--chat-template", MARIN_CHAT_TEMPLATE]
+        template = output / "chat-template.jinja"
+        template.write_text(MARIN_CHAT_TEMPLATE)
+        args += ["--chat-template", str(template)]
     if model.eos_token_id is not None:
         args += ["--override-generation-config", json.dumps({"eos_token_id": model.eos_token_id})]
     if model.path:
@@ -196,6 +198,7 @@ def run_checks(profile: Profile, server_url: str, output: Path, runtime_source: 
                         "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
                         "reference": report["manifest"],
                         "policy": report["policy"]["id"],
+                        "policy_sha256": report["policy_sha256"],
                         "provisional": report["policy"]["provisional"],
                     }
                     if report["status"] != "passed":

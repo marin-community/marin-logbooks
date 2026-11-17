@@ -56,6 +56,11 @@ def comparison_controls(result: dict) -> dict:
     } | {
         "preparation_recipe": manifest["workload"]["recipe"],
         "gpu_type": series["profile"]["gpus"]["type"],
+        "numerical_policies": [
+            {key: check.get(key) for key in ("name", "policy", "policy_sha256", "reference")}
+            for check in (result["measurement"]["checks"] if result["measurement"] else [])
+            if check.get("kind") == "numerical"
+        ],
     }
 
 
@@ -67,9 +72,14 @@ def accepted(result: dict) -> bool:
     numerical = [check for check in checks if check.get("kind") == "numerical"]
     manifest = result["manifest"]
     validity = measurement["validity"]
+    required = manifest["series"]["profile"]["checks"]
     return (
-        validity["protocol_valid"]
+        not manifest["diagnostic"]
+        and validity["protocol_valid"]
+        and validity["submission_valid"]
         and validity["gang_valid"]
+        and sorted((check["name"], check["kind"]) for check in checks)
+        == sorted((check["name"], check["kind"]) for check in required)
         and bool(numerical)
         and all(
             check.get("checkpoint_revision") == manifest["series"]["profile"]["model"]["revision"]
@@ -119,6 +129,7 @@ def render_report(
         checks = (
             ", ".join(
                 f"{check['name']}: {check['status']}"
+                + (" (provisional policy)" if check.get("provisional") else "")
                 + (f" (regression {check['regression_status']})" if "regression_status" in check else "")
                 for check in measurement["checks"]
             )
@@ -236,7 +247,10 @@ def report_campaign(campaign_uri: str, recommendation: str | None = None, baseli
         runtime = prefix_join(selected["trial_uri"], "runtime.json")
         write_record(runtime, selected["manifest"]["vllm_release"])
         profile = profile | {"vllm": profile["vllm"] | {"release": None, "manifest": runtime}}
-        write_text(prefix_join(campaign_uri, "recommended.yaml"), yaml.safe_dump(profile, sort_keys=False))
+        policies = [check for check in selected["measurement"]["checks"] if check.get("kind") == "numerical"]
+        provisional = any(check.get("provisional") for check in policies)
+        prefix = "# Numerical qualification uses a provisional policy. See decision.json.\n" if provisional else ""
+        write_text(prefix_join(campaign_uri, "recommended.yaml"), prefix + yaml.safe_dump(profile, sort_keys=False))
         reference = next((row for row in results if row["trial_id"] == baseline), None)
         write_record(
             prefix_join(campaign_uri, "decision.json"),
@@ -245,6 +259,8 @@ def report_campaign(campaign_uri: str, recommendation: str | None = None, baseli
                 "baseline_trial": baseline,
                 "throughput_change": throughput_change(selected, reference),
                 "controls": comparison_controls(selected),
+                "provisional": provisional,
+                "numerical_checks": policies,
             },
         )
     write_text(prefix_join(campaign_uri, "summary.md"), report)
