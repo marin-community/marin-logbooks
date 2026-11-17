@@ -460,3 +460,18 @@ The pytest launchers will run the complete shared suite using the checked-in
 profiles and saved goldens. Their execution receipts record exact source,
 settings, run URI and all native attempts. No reference regeneration, fork
 refresh or RL trainer-alignment investigation is part of this phase.
+
+
+### Live validation and campaign dispatch
+
+Both pytest validation gangs are running from contribution source
+`12055994a685e6fdff27c6ece463f4998c247e3e`. Snowball's API is responding; Hero
+has reached compilation. The [launch record](analysis/complete-validation-start.json)
+contains the exact commands, live job IDs, pinned runtime, plans and receipt
+locations. A running job supplies no qualification pass.
+
+A fresh-context child, native session `01a1eabe-cfa1-7f52-bd95-a69658df86e3`,
+has its own isolated research worktree and an eight-H100 share. Its dispatch
+supplies the skill, profile, objective and scope. It must choose an alternative,
+establish a baseline and produce at least one valid normal one-hour AgentX
+window. The parent will inspect its native commands and retained artifacts.

@@ -1,0 +1,99 @@
+{
+  "observed_at_utc": "2026-11-17T18:26:41.216341+00:00",
+  "contribution_source": "12055994a685e6fdff27c6ece463f4998c247e3e",
+  "focused_cases_passed": 43,
+  "lint_and_types": "passed",
+  "jobs": [
+    {
+      "model": "snowball",
+      "job_id": "/romain/knotmeter-20261117t182002z-84fa26881755",
+      "cluster": "cw-rno2a",
+      "plan_uri": "s3://marin-us-east-08a/marin/inference/correctness/runs/20261117T182002Z-84fa26881755/plan.json",
+      "execution_uri": "s3://marin-us-east-08a/marin/inference/correctness/runs/20261117T182002Z-84fa26881755/execution.json",
+      "command": [
+        "uv",
+        "run",
+        "python",
+        "-m",
+        "experiments.evaluation.inference_correctness.launch",
+        "--profile",
+        "snowball-h100",
+        "--name",
+        "snowball-retention128-a1",
+        "--output",
+        "snowball-execution.json"
+      ],
+      "state_observed": "running",
+      "source": {
+        "tree_hash": "8712bf0739",
+        "base_commit": "12055994a6",
+        "dirty": false,
+        "branch": "docs/agentx-tuning-guide",
+        "built_by": "romain",
+        "git_remote": "git@github.com:marin-community/marin.git",
+        "created_at": "2026-11-17T10:20:02.562917",
+        "command_line": [
+          "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+          "--profile",
+          "snowball-h100",
+          "--name",
+          "snowball-retention128-a1",
+          "--output",
+          "/home/romain/.cache/inference-perfmax-01a1d379/complete-validation/snowball-retention128-a1-execution.json"
+        ]
+      },
+      "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "gpu_count": 8,
+      "gpu_type": "H100",
+      "retention_interval": 128,
+      "gpu_hours": null
+    },
+    {
+      "model": "hero",
+      "job_id": "/romain/knotmeter-20261117t182032z-4cf6edeef5dd",
+      "cluster": "cw-us-east-08a",
+      "plan_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261117T182032Z-4cf6edeef5dd/plan.json",
+      "execution_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261117T182032Z-4cf6edeef5dd/execution.json",
+      "command": [
+        "uv",
+        "run",
+        "python",
+        "-m",
+        "experiments.evaluation.inference_correctness.launch",
+        "--profile",
+        "hero-gb200",
+        "--name",
+        "hero-retention128-a1",
+        "--output",
+        "hero-execution.json"
+      ],
+      "state_observed": "running",
+      "source": {
+        "tree_hash": "8712bf0739",
+        "base_commit": "12055994a6",
+        "dirty": false,
+        "branch": "docs/agentx-tuning-guide",
+        "built_by": "romain",
+        "git_remote": "git@github.com:marin-community/marin.git",
+        "created_at": "2026-11-17T10:20:32.662146",
+        "command_line": [
+          "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+          "--profile",
+          "hero-gb200",
+          "--name",
+          "hero-retention128-a1",
+          "--output",
+          "/home/romain/.cache/inference-perfmax-01a1d379/complete-validation/hero-retention128-a1-execution.json"
+        ]
+      },
+      "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "gpu_count": 16,
+      "gpu_type": "GB200",
+      "retention_interval": 128,
+      "gpu_hours": null
+    }
+  ],
+  "qualification": "Pending live shared-check reports; running is not a pass.",
+  "tuning_child_native_id": "01a1eabe-cfa1-7f52-bd95-a69658df86e3",
+  "tuning_share_h100": 8
+}
