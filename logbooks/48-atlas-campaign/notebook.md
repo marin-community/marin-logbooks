@@ -1028,3 +1028,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit `86775b6632…` [P]; coordinator correction [R].
 - Interpretation and limitations: the per-folder license detail lives in the registry [M].
 - Decision and next action: next hourly entries use the corrected reading.
+
+### 2026-11-17 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `86775b6632…` (01:34:31 UTC) to head `05ccef12575b1a936d28616f9505928401705650`, landed 02:32:57 UTC (~10 landings 02:22–02:32 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 86775b66..05ccef12` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **POLARIS ADMITTED**: its 53,167 retained training tasks admitted (`90ebae40a5…`) — following the pre-admission fingerprint binding from the previous window.
+  - **PDBThink checked against its complete native held-out splits** (`05ccef1257…`, head).
+  - **Frozen-packet QA driver hardened** after the v1 run abort (`6258459da4…`).
+  - **Retention/dedup hardening**: conversion shards checked before deduplication repartitions them (`70d0f1ea9c…`); memory bounded during task retention and deduplication (`171005b6ae…`).
+  - **Infra/docs**: campaign continuation's serving digest documented (`363951727f…`); campaign queue fetched through the Atlas query channel (`5adf6f573b…`); evaluation-corpus publication delegated to the shared publisher with advisory cleanups (`886de3e565…`, `2311738682…`); tool-free completion request payload typed explicitly (`a67780fac5…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commit reports the outcome; receipts registry-private [M].
+- Decision and next action: next hourly check watches for PDBThink outcomes and further license decisions.
