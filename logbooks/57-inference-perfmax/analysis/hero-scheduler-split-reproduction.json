@@ -1,0 +1,191 @@
+{
+  "cases": [
+    {
+      "seed_prefix_tokens": 127,
+      "with_dense_only_junction": {
+        "chunks": [
+          {
+            "end": 128,
+            "requested": 32,
+            "returned": 16,
+            "start": 112
+          },
+          {
+            "end": 144,
+            "requested": 16,
+            "returned": 16,
+            "start": 128
+          }
+        ],
+        "joint_hit": 112,
+        "prompt_tokens": 144,
+        "shared_prefix_boundary": 128
+      },
+      "without_junction": {
+        "chunks": [
+          {
+            "end": 144,
+            "requested": 32,
+            "returned": 32,
+            "start": 112
+          }
+        ],
+        "joint_hit": 112,
+        "prompt_tokens": 144,
+        "shared_prefix_boundary": 0
+      }
+    },
+    {
+      "seed_prefix_tokens": 255,
+      "with_dense_only_junction": {
+        "chunks": [
+          {
+            "end": 256,
+            "requested": 32,
+            "returned": 16,
+            "start": 240
+          },
+          {
+            "end": 272,
+            "requested": 16,
+            "returned": 16,
+            "start": 256
+          }
+        ],
+        "joint_hit": 240,
+        "prompt_tokens": 272,
+        "shared_prefix_boundary": 256
+      },
+      "without_junction": {
+        "chunks": [
+          {
+            "end": 272,
+            "requested": 32,
+            "returned": 32,
+            "start": 240
+          }
+        ],
+        "joint_hit": 240,
+        "prompt_tokens": 272,
+        "shared_prefix_boundary": 0
+      }
+    },
+    {
+      "seed_prefix_tokens": 2047,
+      "with_dense_only_junction": {
+        "chunks": [
+          {
+            "end": 2048,
+            "requested": 32,
+            "returned": 16,
+            "start": 2032
+          },
+          {
+            "end": 2064,
+            "requested": 16,
+            "returned": 16,
+            "start": 2048
+          }
+        ],
+        "joint_hit": 2032,
+        "prompt_tokens": 2064,
+        "shared_prefix_boundary": 2048
+      },
+      "without_junction": {
+        "chunks": [
+          {
+            "end": 2064,
+            "requested": 32,
+            "returned": 32,
+            "start": 2032
+          }
+        ],
+        "joint_hit": 2032,
+        "prompt_tokens": 2064,
+        "shared_prefix_boundary": 0
+      }
+    }
+  ],
+  "hook_smoke": {
+    "inputs_unchanged": true,
+    "installed_log_records": 9,
+    "logging_failure_preserves_results": true,
+    "original_exception_preserved": true,
+    "original_restored": true,
+    "real_method_calls_compared": 9,
+    "result_identity_preserved": true,
+    "signature_preserved": true,
+    "status": "passed",
+    "unrelated_requests_not_logged": true,
+    "wrong_source_rejected_before_install": true
+  },
+  "method_ast_sha256": "0b07607b1f36b1d00aebe7a2c50d670b334d73eb141a7dfe5cba10bcc0dd985e",
+  "reference_clone": "/home/romain/repos/marin-community/vllm",
+  "runtime_assumptions": {
+    "cache_config": {
+      "block_size": 16
+    },
+    "hash_block_size": 16,
+    "mamba_fine_grained_prefix_cache": false,
+    "mamba_has_prefill_checkpoint_blocks": false,
+    "mamba_partial_cache_hit": false,
+    "mamba_prefill_checkpoint_alignment": null,
+    "max_num_scheduled_tokens": 2048,
+    "scheduler_config": {
+      "long_prefill_token_threshold": 0
+    },
+    "use_eagle_block_drop": false
+  },
+  "scope": "CPU execution of the pinned split body. This does not observe live scheduler inputs or GPU state bytes.",
+  "signature": "(self, request: 'Request', num_new_tokens: 'int', num_new_local_computed_tokens: 'int' = 0, num_external_computed_tokens: 'int' = 0) -> 'int'",
+  "sitecustomize_import_smoke": {
+    "hook_loaded_processes": 3,
+    "installed_processes": 2,
+    "parent_and_spawn_child_results_preserved": true,
+    "split_records": 18,
+    "status": "passed",
+    "unrelated_requests_not_logged": true
+  },
+  "source_extraction": [
+    {
+      "first_line": 10,
+      "function": "cdiv",
+      "function_ast_sha256": "3955c7c7131ff112bacb60d7ff6f1b927617e19e3f416005e64c343dfbdd3818",
+      "function_source_sha256": "6ef6663643d135cc27b2d67219c6edfc44e56b728ab6ec1bafb0299f351158f6",
+      "last_line": 12,
+      "path": "vllm/utils/math_utils.py",
+      "source_file_sha256": "23d9d5af62ee43dc55fd647822265f5e20b813bf89e5510130065932c7868fa6"
+    },
+    {
+      "first_line": 1078,
+      "function": "get_mamba_prefill_checkpoint_position",
+      "function_ast_sha256": "8bab3011fe5a6f5abd4ee56b5ad8ebd7a2057a2ea47f8430f8622449bcce480b",
+      "function_source_sha256": "d02c7fe20683865aa3c3772c2d064be460bda89be3e160950c8fdba964198fd6",
+      "last_line": 1087,
+      "path": "vllm/v1/kv_cache_interface.py",
+      "source_file_sha256": "85432958a0572f4aeaf0a37fc25439f71559a53b98511b80bfa2ac78f9c539ed"
+    },
+    {
+      "first_line": 1090,
+      "function": "is_mamba_prefill_checkpoint_valid",
+      "function_ast_sha256": "71b81e8ff429012110ebf2fd4f31915bf706ddf54c71807aa8aa05574709ebc2",
+      "function_source_sha256": "0ae597a80faeeeee575bc92f0b79d08a114978169d764cd9d421d4df7cdc9c2e",
+      "last_line": 1111,
+      "path": "vllm/v1/kv_cache_interface.py",
+      "source_file_sha256": "85432958a0572f4aeaf0a37fc25439f71559a53b98511b80bfa2ac78f9c539ed"
+    },
+    {
+      "first_line": 415,
+      "function": "_mamba_block_aligned_split",
+      "function_ast_sha256": "0b07607b1f36b1d00aebe7a2c50d670b334d73eb141a7dfe5cba10bcc0dd985e",
+      "function_source_sha256": "7ac71f4f18b63e9d62deeb7d90fa0fda3e32f8916c1423a9add39c57cdeeedd2",
+      "last_line": 528,
+      "path": "vllm/v1/core/sched/scheduler.py",
+      "source_file_sha256": "1ed0da5612570e5f7521309694a7d48056b48c674ab288ceaf2e7aad45a130ef"
+    }
+  ],
+  "source_revision": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "status": "passed",
+  "target": "vllm.v1.core.sched.scheduler.Scheduler._mamba_block_aligned_split",
+  "python_version": "3.12.16 (main, Nov 11 2026, 00:15:59) [Clang 23.1.3 ]"
+}

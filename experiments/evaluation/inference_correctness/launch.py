@@ -29,6 +29,9 @@ REMOTE_TEST_FILES = (
     "tests/cluster/vllm/__init__.py",
     "tests/cluster/vllm/conftest.py",
     "tests/cluster/vllm/test_inference_correctness.py",
+    "logbooks/57-inference-perfmax/analysis/hero_trace_hook/sitecustomize.py",
+    "logbooks/57-inference-perfmax/analysis/hero_trace_hook/hero_scheduler_import_hook.py",
+    "logbooks/57-inference-perfmax/analysis/hero_trace_hook/scheduler_split_trace.py",
 )
 
 
