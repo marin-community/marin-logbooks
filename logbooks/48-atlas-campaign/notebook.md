@@ -1138,3 +1138,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the pending-marker semantics follow the VERIFY level defined in the previous window.
 - Decision and next action: next hourly check watches for VERIFY-pending progression to full admission.
+
+### 2026-11-17 14:40 UTC - Hourly catch-up (13:40–14:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `908b57e410…` (13:30:21 UTC) to head `7c1ebdb0823b5412a82e32aae2422fe617208791`, landed 14:30:17 UTC (~13 landings 14:11–14:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 908b57e4..7c1ebdb0` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Difficulty measurement instrumentation**: bulk difficulty and declaration reads paginated under the transport bound (`7ae58fe23a…` + duplicate landing); measurement objects stored with bounded readbacks and a checkbox accent (`ceca95f3ca…`); difficulty measurement inserts/readbacks batched (`b523cef69a…`); loader difficulty reads projected to the server's summary shape (`7c1ebdb082…`, head); journey geometry derived from the served inventory with the fixture backend renamed (`e13262f168…`).
+  - **VERIFY/admission semantics refined**: only Available sources counted as admitted, and the VERIFY downgrade gated on runnable support (`0a3493cea2…`); grader network-profile conflicts shipped as typed Pending (`9112004bb6…`); a pending source's Examples cell kept unmeasured (`f625e3af62…`).
+  - **FULL cohort summaries honor the review policy** (`7a7f90b1fa…` + duplicate landing); TaskSpec identity now distinguishes absent execution requirements from explicit nulls (`baf6327d53…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the difficulty-instrumentation rollout and further VERIFY semantics.
