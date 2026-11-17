@@ -29,7 +29,7 @@ from aiperf.dataset.loader.weka_trace import _trace_peak_context_length
 from aiperf.dataset.loader.weka_trace_models import WekaTrace
 from huggingface_hub import snapshot_download
 
-from experiments.evaluation.knotmeter.recipe import PREPARATION_VERSION, load_series, profile_arguments
+from experiments.evaluation.knotmeter.recipe import PREPARATION_VERSION, SERVER_PORT, load_series, profile_arguments
 
 
 class PreparationManager(DatasetManager):
@@ -110,7 +110,7 @@ def prepare_sources(series: dict, bundle: Path) -> dict:
 
 
 def benchmark_run(series: dict, output: Path) -> BenchmarkRun:
-    _, bound, _ = app.parse_args(profile_arguments(series, 8, "http://127.0.0.1:38197", output))
+    _, bound, _ = app.parse_args(profile_arguments(series, 8, f"http://127.0.0.1:{SERVER_PORT}", output))
     config = resolve_config(bound.arguments["cli_config"], None)
     random_generator.reset()
     random_generator.init(config.random_seed)

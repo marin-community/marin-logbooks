@@ -21,7 +21,7 @@ def evidence_link(uri: str) -> str:
 
 
 def write_text(uri: str, content: str) -> None:
-    # Share the existing bucket-routing and atomic-write path used for metadata.
+    # Use the same bucket routing as metadata writes.
     filesystem, path = filesystem_for(uri)
     parent = path.rsplit("/", 1)[0]
     if filesystem.protocol == "file" or filesystem.protocol == ("file", "local"):
@@ -90,9 +90,9 @@ def render_report(
         "",
         "Throughput counts completed output tokens. Latencies are seconds. Each row is a separate trial.",
         "",
-        "| Trial | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
+        "| Trial | GPU job | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
         "p90 completion | AgentX | Checks | GPU-hours |",
-        "| --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: |",
+        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: |",
     ]
     for result in results:
         profile = result["manifest"]["series"]["profile"]
@@ -109,7 +109,7 @@ def render_report(
                 for check in measurement["checks"]
             )
             if measurement
-            else result["job_state"]
+            else ", ".join(f"{check['name']}: pending" for check in profile["checks"]) or "not run"
         )
         agentx = "no window"
         if measurement:
@@ -118,7 +118,7 @@ def render_report(
             agentx += "; diagnostic"
         cost = format_value(result["gpu_seconds"] / 3600) + (" + unknown" if not result["cost_complete"] else "")
         lines.append(
-            f"| [{result['trial_id']}]({result['trial_uri']}/result.json) | "
+            f"| [{result['trial_id']}]({result['trial_uri']}/result.json) | {result['job_state']} | "
             f"{profile['session_concurrency']} | {profile['gpus']['count']} {profile['gpus']['type']} | "
             f"{format_value(rate)} | {change_text} | "
             f"{format_value(latency.get('ttft', {}).get('p90'))} | "

@@ -35,6 +35,7 @@ from experiments.evaluation.knotmeter.artifacts import read_record, write_record
 from experiments.evaluation.knotmeter.collect import collect_trial, record_preparation_failure, refresh_costs
 from experiments.evaluation.knotmeter.config import Profile, load_profile, resolved_series
 from experiments.evaluation.knotmeter.coordinator import run_coordinator
+from experiments.evaluation.knotmeter.recipe import TrialPlan
 from experiments.evaluation.knotmeter.report import report_campaign
 from experiments.evaluation.knotmeter.runtime import gpu_release, resolve_release
 
@@ -77,7 +78,7 @@ def resolve_plan(
     placement: dict | None = None,
     controller: str | None = None,
     logbook: str | None = None,
-) -> dict:
+) -> TrialPlan:
     """Resolve a self-contained trial before submission; this function allocates no compute."""
     profile = pin_profile(profile)
     if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", campaign) is None:
@@ -108,12 +109,12 @@ def resolve_plan(
         "placement": placement or {},
         "job_id": str(job_id),
         "gpu_job_id": str(job_id.child("serve")),
-        "source": dataclasses.asdict(launch_provenance()),
+        "source": json.loads(json.dumps(dataclasses.asdict(launch_provenance()))),
         "research_logbook": logbook,
     }
 
 
-def submit_coordinator(client: IrisClient, plan: dict):
+def submit_coordinator(client: IrisClient, plan: TrialPlan):
     profile = Profile.model_validate(plan["series"]["profile"])
     series = plan["series"]
     return client.submit(
@@ -145,7 +146,7 @@ def submit_coordinator(client: IrisClient, plan: dict):
     )
 
 
-def print_plan(plan: dict) -> None:
+def print_plan(plan: TrialPlan) -> None:
     profile = plan["series"]["profile"]
     print(
         yaml.safe_dump(

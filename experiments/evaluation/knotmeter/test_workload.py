@@ -19,7 +19,7 @@ import pytest
 from tokenizers import Tokenizer, models, pre_tokenizers
 
 from experiments.evaluation.knotmeter.artifacts import file_digest, pack_server_metrics, restore_server_metrics
-from experiments.evaluation.knotmeter.collect import process_point
+from experiments.evaluation.knotmeter.collect import process_point, validate_window
 from experiments.evaluation.knotmeter.config import load_profile, resolved_series
 from experiments.evaluation.knotmeter.processes import run_logged
 from experiments.evaluation.knotmeter.recipe import benchmark_command, workload_environment
@@ -216,6 +216,13 @@ def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_pat
     pack_server_metrics(point)
     restore_server_metrics(point)
     assert file_digest(metrics) == digest
+    validity = validate_window(
+        point,
+        {"series": series | {"duration": 3}, "diagnostic": True},
+        {"worker_metrics_url": url + "/metrics"},
+    )
+    assert validity["profiling_successes"] > 0
+    assert not validity["coverage_complete"] and not validity["protocol_valid"]
     (point / "attempt.json").write_text("{}")
     (point / "hardware.txt").write_text("CPU fixture; physical GPU counts are processor inputs only.\n")
     outputs = []

@@ -22,6 +22,7 @@ from rigging.config_discovery import resolve_cluster_config
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.artifacts import read_record, write_record
+from experiments.evaluation.knotmeter.recipe import TrialPlan
 
 logger = logging.getLogger(__name__)
 # Project only timing and identity fields. Task environment values never enter this output.
@@ -39,7 +40,7 @@ def timestamp(value: str) -> float:
     return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
 
 
-def capture_allocations(client: IrisClient, plan: dict) -> None:
+def capture_allocations(client: IrisClient, plan: TrialPlan) -> None:
     """Read only this trial's native pods and retain compact timing snapshots."""
     try:
         tasks = client.list_tasks(JobName.from_string(plan["gpu_job_id"]))
@@ -89,7 +90,7 @@ def capture_allocations(client: IrisClient, plan: dict) -> None:
 
 
 @contextlib.contextmanager
-def track_allocations(client: IrisClient, plan: dict) -> Iterator[None]:
+def track_allocations(client: IrisClient, plan: TrialPlan) -> Iterator[None]:
     """Keep timing evidence while the local terminal waits; Iris owns job lifetime."""
     stopped = threading.Event()
 

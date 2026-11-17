@@ -94,3 +94,29 @@ Both controllers rejected the root launch with `INVALID_ARGUMENT`: a local
 or GPU child was admitted, so allocated GPU cost was zero. Omit the federation
 constraint when entry and target controller are the same; retain it for a
 cross-controller launch. Retain the failed local plans and logs as diagnostics.
+
+### Live diagnostics: native execution and delivery failures
+
+Published source `5a3b94f821` admitted Snowball
+`20261117T015550Z-e7ef55077e67` and Hero `20261117T015550Z-b09439ebe1fc`.
+CPU preparation finished before GPU admission. Snowball loaded the pinned wheel,
+completed native warmup and the 90-second replay, and exported nine requests
+with no errors. Hero's four-host gang stopped during startup: the pinned task
+image lacks `numactl`, required by its copied `--numa-bind` flag. Remove that
+optional binding flag for this image; keep the approved ShortConv compiler
+guard. This changes a placement optimization, not model numerics.
+
+Both coordinator collections rejected their own worker receipts because launch
+provenance held `command_line` as a tuple before JSON and as a list afterward.
+Normalize provenance at planning. A boundary regression test now checks complete
+plan equality after JSON delivery. Manual recovery reads the retained JSON and
+can collect these original attempts without another GPU allocation. Hero's first
+failed gang costs 0.485 GB200-hours; all four native attempts and archives are
+retained. A recovered report must show job state separately from pending checks.
+
+Snowball recovery then found that upstream omits `metric_duration_coverage`
+for a short unsafe replay. Treat missing coverage as incomplete instead of
+crashing. Full runs still require complete coverage; diagnostics cannot pass.
+The real isolated fixture now exercises this exported format and passes in
+19.42 seconds. Snowball's recovered report records 0.996 H100-hours, nine
+successful profiling requests, pending model numerics and no recommendation.

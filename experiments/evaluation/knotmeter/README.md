@@ -14,6 +14,7 @@ uv run python -m experiments.evaluation.knotmeter.cli run \
 
 `--profile` accepts a preset name or YAML path. Use `hero-gb200` for Hero/Mochi.
 The presets request eight H100s on one host or sixteen GB200s on four hosts.
+Hero leaves NUMA binding off because the pinned task image lacks `numactl`.
 Inspect live capacity through `use-iris` and coordinate resources before running.
 For an additional allowed-host check, pass `--placement-uri` with a JSON document
 such as `{"nodes":["NODE1","NODE2","NODE3","NODE4"]}`. Choose spare nodes from live

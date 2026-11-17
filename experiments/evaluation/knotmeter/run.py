@@ -37,7 +37,13 @@ from experiments.evaluation.knotmeter.artifacts import (
 )
 from experiments.evaluation.knotmeter.config import Profile
 from experiments.evaluation.knotmeter.processes import run_logged
-from experiments.evaluation.knotmeter.recipe import PointManifest, benchmark_command, workload_environment
+from experiments.evaluation.knotmeter.recipe import (
+    SERVER_PORT,
+    PointManifest,
+    TrialPlan,
+    benchmark_command,
+    workload_environment,
+)
 from experiments.evaluation.knotmeter.runtime import gpu_release
 from experiments.evaluation.knotmeter.workload import check_native_cache, restore_workload
 
@@ -118,7 +124,7 @@ def create_server(manifest: PointManifest, output: Path, launch: IrisVllmLaunch 
     )
     return VllmEnvironment(
         InferenceModelConfig(name=model.repo, path=model.path, engine_kwargs={}),
-        port=38197,
+        port=SERVER_PORT,
         timeout_seconds=manifest["series"]["ready_timeout"],
         extra_args=args,
         launcher=launcher,
@@ -178,7 +184,7 @@ def run_checks(profile: Profile, server: VllmEnvironment, output: Path, runtime_
     return checks
 
 
-def run_point(plan: dict, output: Path, bundle: Path, launch: IrisVllmLaunch | None) -> None:
+def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunch | None) -> None:
     manifest = plan["manifest"]
     series = manifest["series"]
     profile = Profile.model_validate(series["profile"])
@@ -295,7 +301,7 @@ def run_point(plan: dict, output: Path, bundle: Path, launch: IrisVllmLaunch | N
             notify_iris_vllm_stopped(launch)
 
 
-def run(plan: dict) -> None:
+def run(plan: TrialPlan) -> None:
     signal.signal(signal.SIGTERM, interrupt)
     signal.signal(signal.SIGINT, interrupt)
     profile = Profile.model_validate(plan["manifest"]["series"]["profile"])

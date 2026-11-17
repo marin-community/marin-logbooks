@@ -5,6 +5,7 @@
 
 import copy
 import dataclasses
+import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -13,14 +14,26 @@ import pytest
 from iris.cluster.types import JobName
 from iris.resources.state import JobState, TaskState
 from marin.external_dependencies import VLLM_GPU_RELEASE
+from rigging.provenance import Provenance
 from rigging.timing import Timestamp
 
 from experiments.evaluation.knotmeter.artifacts import read_record, write_record
+from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial
 from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
 from experiments.evaluation.knotmeter.report import report_campaign
 from experiments.evaluation.knotmeter.run import run_checks
 from experiments.evaluation.knotmeter.runtime import resolve_release
+
+
+def test_launch_plan_survives_json_delivery_without_invalidating_worker_identity(monkeypatch):
+    monkeypatch.setattr("experiments.evaluation.knotmeter.cli.pin_profile", lambda profile: profile)
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.cli.launch_provenance",
+        lambda: Provenance("fixture", "b" * 40, False, "fixture", None, command_line=("knotmeter", "run")),
+    )
+    plan = resolve_plan(load_profile(Path("snowball-h100"), []), "fixture")
+    assert json.loads(json.dumps(plan)) == plan
 
 
 def trial(root: Path, name: str, rate: float, *, diagnostic: bool = False) -> dict:

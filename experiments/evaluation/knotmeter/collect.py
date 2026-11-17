@@ -24,7 +24,7 @@ from experiments.evaluation.knotmeter.artifacts import (
     write_record,
 )
 from experiments.evaluation.knotmeter.config import Profile
-from experiments.evaluation.knotmeter.recipe import DIRECTORY, PointManifest, processor_package
+from experiments.evaluation.knotmeter.recipe import DIRECTORY, PointManifest, TrialPlan, processor_package
 
 
 def process_point(point: Path, manifest: PointManifest, artifacts: Path) -> dict:
@@ -90,7 +90,7 @@ def validate_window(point: Path, manifest: PointManifest, record: dict) -> dict:
     successful_metrics = record["worker_metrics_url"] in metrics["summary"]["endpoints_successful"] and any(
         name.startswith("vllm:") for name in metrics["metrics"]
     )
-    coverage = [row for row in export["metadata"]["metric_duration_coverage"] if row["phase_name"] == "profiling"]
+    coverage = [row for row in export["metadata"].get("metric_duration_coverage", []) if row["phase_name"] == "profiling"]
     complete = len(coverage) == 1 and coverage[0]["expected_duration_seconds"] == manifest["series"]["duration"]
     if complete:
         complete = all(
@@ -126,7 +126,7 @@ def validate_window(point: Path, manifest: PointManifest, record: dict) -> dict:
     }
 
 
-def collect_trial(client: IrisClient, plan: dict, work: Path) -> dict:
+def collect_trial(client: IrisClient, plan: TrialPlan, work: Path) -> dict:
     """Read terminal work only. Recovery cannot submit another allocation."""
     status = client.job_status(JobName.from_string(plan["gpu_job_id"]))
     if not is_job_finished(status.state):
@@ -256,7 +256,7 @@ def collect_trial(client: IrisClient, plan: dict, work: Path) -> dict:
     return result
 
 
-def refresh_costs(plan: dict) -> dict:
+def refresh_costs(plan: TrialPlan) -> dict:
     """Apply later allocation snapshots without reprocessing unchanged exports."""
     uri = prefix_join(plan["trial_uri"], "result.json")
     result = read_record(uri)
@@ -276,7 +276,7 @@ def refresh_costs(plan: dict) -> dict:
     return result
 
 
-def record_preparation_failure(plan: dict, error: str) -> None:
+def record_preparation_failure(plan: TrialPlan, error: str) -> None:
     """Preserve failures before the durable-before-GPU-submit boundary."""
     result = {
         "trial_id": plan["trial_id"],

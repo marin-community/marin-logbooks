@@ -5,7 +5,7 @@
 
 import os
 from pathlib import Path
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 import yaml
 
@@ -19,6 +19,7 @@ REQUIREMENTS_PATH = DIRECTORY / "requirements-harness.txt"
 
 
 PREPARATION_VERSION = 1
+SERVER_PORT = 38197
 
 
 class PointManifest(TypedDict):
@@ -31,6 +32,24 @@ class PointManifest(TypedDict):
     source: dict
     placement: dict
     diagnostic: bool
+
+
+class TrialPlan(TypedDict):
+    schema_version: int
+    trial_id: str
+    trial_uri: str
+    campaign_uri: str
+    controller: str
+    cluster: str
+    marin_prefix: str
+    series: dict
+    vllm_release: dict
+    placement: dict
+    job_id: str
+    gpu_job_id: str
+    source: dict
+    research_logbook: str | None
+    manifest: NotRequired[PointManifest]
 
 
 def load_series(path: Path = SERIES_PATH) -> dict:
