@@ -720,3 +720,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring artifacts [R].
 - Interpretation and limitations: cadence metrics from monitoring snapshots.
 - Decision and next action: continue hourly tracking.
+
+### 2026-11-17 09:40 UTC - Hourly catch-up (03:40–09:40 UTC window; resumed after a session gap): Exp3 SFT completed, RL capacity-gated
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief. The session was idle from ~04:40 UTC; this entry covers the gap through the 09:34 readback.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch.
+- External inputs and artifact references: exp3-recipe.md §§"SFT completion"/"batch-CPU audit" (09:34 readback), `artifacts/production51-finalization-rank0-20261117T0747.log`, receipt `s3://…/actual388-exposure-v1/receipt.json` SHA256 `056c6f378c44e3d5…` [P Filer link in the recipe], monitoring artifacts [R].
+- Environment and hardware when relevant: full 256-H100 production geometry through SFT.
+- Result, including failure or restart: **Exp3 SFT COMPLETED — 388 updates, permanent checkpoint `step-387` selected** (stop_reason=time_bound vs the 746 maximum; 72,000-s duration with 2,400-s finalization and 600-s update reserves; finalization completed 2026-11-17 08:02:14 UTC before its deadline). All 32 SFT tasks succeeded; the canonical journal verifier checked every producer history/phase hashes, phase boundaries, and exact step coverage 0–387; HF source and handoff verified (39 model shards; 49 handoff file sizes; 262,144-token context; handoff SHA256 `0010f0f6cafd…`). Regional batch-CPU audit (exact packing/source exposure at 388 updates): 99,328 sequences, 26,038,239,232 context positions, 24,996,002,779 real tokens, 4.00% padding, zero token drops and zero sampled-IID overlap; mixture phases 0 and 250 reached, 500 not; original LR schedule/natural weights/746-max not retuned. Temporary checkpoints 358/369/380 auto-deleted by the pinned runtime after the permanent commit (no operator deletion; immutable metadata preserved). **RL child submitted 08:17:21 UTC and remains Kueue SchedulingGated** (monitor 09:24 UTC: no failure/preemption/learner startup evidence; queue untouched). Last W&B observation before SFT finish: update 387, train/loss 0.77019, grad norm 0.10200, learner ~176.19 s (state finished 08:06 UTC).
+- Evidence: per-item references above [R]/[P].
+- Interpretation and limitations: SFT success does not certify the RL/eval outputs; RL is capacity-gated.
+- Decision and next action: hourly checks now track the RL gate and (once running) RL updates; admission remains untouched per the standing queue rule.
