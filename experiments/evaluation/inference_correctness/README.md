@@ -44,18 +44,24 @@ uv run pytest tests/cluster/vllm/test_inference_correctness.py \
   --runtime-source FULL_SHA --correctness-output correctness.json
 ```
 
+`FULL_SHA` is the `marin-community/vllm` source commit in the runtime manifest.
+The suite checks its prefix against the endpoint's `/version`, compares
+`/server_info` identities and verifies checkpoint metadata hashes.
+
 The report separates checkpoint and runtime identity, reference disagreement,
 batch dependence, cache reuse and decode versus recomputation. Batch requests
 are pinned to one engine; its running-request metrics must show overlap. Cache
 checks require actual hits, varied inputs, branches and reuse of decode-created
-tokens. Matched cache splits and changed prefill splits have separate bounds.
+tokens. Reusing the same number of cached tokens has a separate bound from
+changing where cached computation ends and fresh prefill begins.
 Raw responses and per-position differences remain available after a failure.
 
 The probability metric is a bound on the largest absolute error among returned
 top tokens, including missing tokens' possible probability range. It is not
 full-vocabulary KL. Policies report maximum, p99, p90 and the fraction above
-0.075. The current policies are provisional. Their evidence and limits are in
-Git; a pass covers the saved histories and listed state cases. It does not
+0.075 across the checked token positions in each group. The current policies
+are provisional. Their evidence and limits are in Git; a pass covers the saved
+histories and listed state cases. It does not
 qualify every context, task quality or RL trainer probability ratios.
 
 Durable goldens live under `s3://marin-us-east-02a/marin/inference/goldens/`.
