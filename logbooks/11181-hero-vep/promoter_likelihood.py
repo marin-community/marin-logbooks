@@ -62,6 +62,7 @@ def aggregate(plan,path):
  assert records[-1]==dict(type='complete',scores=800,repeats=80)
  scores=[r for r in records if r['type']=='score'];assert [r['index'] for r in scores]==list(range(800))
  repeats=[r for r in records if r['type']=='repeat'];assert len(repeats)==80 and max(r['delta'] for r in repeats)<=1e-6
+ recovery=[r for r in records if r['type']=='recovery_check'];assert len(recovery) in [0,8] and all(r['delta']<=1e-6 for r in recovery)
  ts=targets(plan)
  for t,r in zip(ts,scores):
   assert all(r[k]==t[k] for k in ['variant','strand','method','allele'])
@@ -100,3 +101,25 @@ if __name__=='__main__':
  else:
   data=json.loads(a.paths[0].read_text());r=aggregate(data,a.paths[1]) if a.mode=='aggregate' else metrics(data)
   a.paths[-1].write_text(json.dumps(r,indent=2,allow_nan=False)+'\n')
+
+
+def resume(client,plan,prior,emit):
+ """Continue only missing targets after process interruption; revalidate anchors first."""
+ assert not any(r['type']=='complete' for r in prior)
+ scores=[r for r in prior if r['type']=='score'];repeats=[r for r in prior if r['type']=='repeat']
+ assert len(scores)==662 and [r['index'] for r in scores]==list(range(662))
+ assert len(repeats)==64 and max(r['delta'] for r in repeats)<=1e-6
+ ts=targets(plan);base={r['index']:r['logprob'] for r in scores[:8]}
+ def score(t,kind):
+  result=client.score(t['prefix'],t['text'],False)
+  r=dict(type=kind,**{k:t[k] for k in ['index','variant','strand','method','allele']},**result)
+  if kind!='score':r['delta']=abs(r['logprob']-base[t['index']])
+  emit(r)
+  if kind!='score':assert r['delta']<=1e-6,'Recovery/continuation score drift'
+ emit(dict(type='resume',completed_targets=len(scores),completed_repeats=len(repeats)))
+ for t in ts[:8]:score(t,'recovery_check')
+ for i,t in enumerate(ts[len(scores):],len(scores)+1):
+  score(t,'score')
+  if i%plan['repeat_every']==0:
+   for anchor in ts[:8]:score(anchor,'repeat')
+ emit(dict(type='complete',scores=800,repeats=80))
