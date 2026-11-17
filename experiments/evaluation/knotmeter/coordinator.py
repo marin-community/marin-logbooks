@@ -18,7 +18,7 @@ from rigging.timing import Duration
 from experiments.evaluation.knotmeter.artifacts import write_record
 from experiments.evaluation.knotmeter.collect import collect_trial, record_preparation_failure
 from experiments.evaluation.knotmeter.config import Profile
-from experiments.evaluation.knotmeter.recipe import PointManifest
+from experiments.evaluation.knotmeter.recipe import PointManifest, TrialPlan
 from experiments.evaluation.knotmeter.report import report_campaign
 from experiments.evaluation.knotmeter.run import run
 from experiments.evaluation.knotmeter.workload import prepare_workload
@@ -26,7 +26,7 @@ from experiments.evaluation.knotmeter.workload import prepare_workload
 logger = logging.getLogger(__name__)
 
 
-def submit_point(client: IrisClient, plan: dict):
+def submit_point(client: IrisClient, plan: TrialPlan):
     profile = Profile.model_validate(plan["manifest"]["series"]["profile"])
     series = plan["manifest"]["series"]
     return client.submit(
@@ -59,7 +59,7 @@ def submit_point(client: IrisClient, plan: dict):
     )
 
 
-def prepare_plan(plan: dict, work: Path) -> dict:
+def prepare_plan(plan: TrialPlan, work: Path) -> TrialPlan:
     """Freeze the native workload before any GPU child can be submitted."""
     series = plan["series"]
     path = work / "series.json"
@@ -81,10 +81,10 @@ def prepare_plan(plan: dict, work: Path) -> dict:
         "placement": plan["placement"],
         "diagnostic": bool(series.get("diagnostic")),
     }
-    return plan | {"manifest": manifest}
+    return {**plan, "manifest": manifest}
 
 
-def run_coordinator(plan: dict) -> None:
+def run_coordinator(plan: TrialPlan) -> None:
     logging.basicConfig(level=logging.INFO)
     client = iris_ctx().client
     assert client is not None

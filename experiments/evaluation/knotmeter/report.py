@@ -21,7 +21,7 @@ def evidence_link(uri: str) -> str:
 
 
 def write_text(uri: str, content: str) -> None:
-    # Share the existing bucket-routing and atomic-write path used for metadata.
+    # Use the same bucket routing as metadata writes.
     filesystem, path = filesystem_for(uri)
     parent = path.rsplit("/", 1)[0]
     if filesystem.protocol == "file" or filesystem.protocol == ("file", "local"):
