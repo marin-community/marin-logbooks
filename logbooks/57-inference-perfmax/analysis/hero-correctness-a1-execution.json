@@ -1,0 +1,275 @@
+{
+  "plan": {
+    "schema_version": 1,
+    "trial_id": "20261117T092450Z-884fd63135d9",
+    "trial_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261117T092450Z-884fd63135d9",
+    "campaign_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/hero-correctness-a1",
+    "controller": "cw-us-east-08a",
+    "cluster": "cw-us-east-08a",
+    "marin_prefix": "s3://marin-us-east-02a/marin",
+    "series": {
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "processor_source": "80dff120d27fd6092210f4546b8faa5e6c9723ac",
+      "duration": 3600,
+      "max_context": 262144,
+      "max_profiling_error_ratio": 0.01,
+      "random_seed": 42,
+      "warmup_grace_period": 1800,
+      "trace_idle_gap_cap_seconds": 300,
+      "prepare_timeout": 1800,
+      "ready_timeout": 4200,
+      "task_timeout": 18000,
+      "scheduling_timeout": 7200,
+      "max_retries_failure": 0,
+      "max_retries_preemption": 1,
+      "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "model": "hero-sft-step400407",
+      "model_prefix": "hero-sft-step400407",
+      "model_revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+      "tokenizer": "marin-community/marin-tokenizer-tools",
+      "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+      "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+      "precision": "bfloat16",
+      "tensor_parallel": 1,
+      "profile": {
+        "model": {
+          "repo": "hero-sft-step400407",
+          "revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+          "tokenizer": "marin-community/marin-tokenizer-tools",
+          "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+          "path": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+          "config_sha256": "1a05f3dbaddd2c1aa28064dc0d4140d53d80cf5c25a7c8418b0e013c91b1a43e",
+          "chat_template": "marin",
+          "eos_token_id": 128009
+        },
+        "gpus": {
+          "type": "GB200",
+          "count": 16,
+          "per_host": 4
+        },
+        "cluster": "cw-us-east-08a",
+        "priority": "interactive",
+        "session_concurrency": 64,
+        "quantization": null,
+        "serving": {
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 1,
+          "max_model_len": 262144,
+          "max_num_seqs": 128,
+          "max_num_batched_tokens": 2048,
+          "gpu_memory_utilization": 0.95,
+          "prefix_caching": true,
+          "router": true,
+          "extra_args": [
+            "--enable-prompt-tokens-details",
+            "--max-logprobs",
+            "50",
+            "--reasoning-parser",
+            "grug",
+            "--enable-auto-tool-choice",
+            "--tool-call-parser",
+            "hermes",
+            "--seed",
+            "42",
+            "--hf-overrides",
+            "{\"max_seq_len\":262144,\"max_position_embeddings\":262144}",
+            "--load-format",
+            "runai_streamer",
+            "--model-loader-extra-config",
+            "{\"distributed\":true,\"concurrency\":4,\"memory_limit\":17179869184}",
+            "--kernel-config",
+            "{\"moe_backend\":\"triton\",\"enable_flashinfer_autotune\":false}",
+            "--kv-cache-dtype",
+            "auto",
+            "--attention-backend",
+            "FLASHINFER",
+            "--compilation-config",
+            "{\"cudagraph_mode\":\"PIECEWISE\",\"splitting_ops\":[\"vllm::unified_attention_with_output\",\"vllm::unified_kv_cache_update\",\"vllm::grug_moe_short_conv\"],\"inductor_compile_config\":{\"enable_auto_functionalized_v2\":false,\"combo_kernels\":true,\"benchmark_combo_kernel\":true}}",
+            "--additional-config",
+            "{\"grug_logical_kv_cache\":true}",
+            "--prefix-cache-retention-interval",
+            "0"
+          ],
+          "environment": {
+            "VLLM_SERVER_DEV_MODE": "1"
+          }
+        },
+        "workload": {
+          "public_dataset": "semianalysis_cc_traces_weka_062126_256k"
+        },
+        "vllm": {
+          "release": null,
+          "manifest": null,
+          "repo": null,
+          "revision": null
+        },
+        "checks": [
+          {
+            "name": "model-numerics",
+            "command": [],
+            "fixture": "hero-sft-step400407",
+            "timeout": 3600,
+            "kind": "numerical",
+            "checkpoint_revision": null,
+            "runtime_source": null,
+            "evidence": []
+          }
+        ],
+        "cpu": 32,
+        "memory": "768GB",
+        "disk": "1TB"
+      },
+      "profiles": {
+        "gb200": {
+          "gpu": "GB200",
+          "gpus": 4,
+          "hosts": 4
+        }
+      }
+    },
+    "vllm_release": {
+      "release_tag": "marin-vllm-gpu-20261113-0ac9dcb157ee",
+      "source_commit": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "version": "0.0.0.dev20261113+marin.0ac9dcb157ee.cu132",
+      "torch_backend": "cu132",
+      "torch_version": "2.14.1+cu132",
+      "wheels": [
+        {
+          "architecture": "aarch64",
+          "sm_targets": [
+            "10.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261113-0ac9dcb157ee/vllm-0.0.0.dev20261113%2Bmarin.0ac9dcb157ee.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "e0a2b9e2bb6b16ba6d4e1821770123cc74f04b86128536c2744e91b59c6e4b6a"
+        },
+        {
+          "architecture": "x86_64",
+          "sm_targets": [
+            "9.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261113-0ac9dcb157ee/vllm-0.0.0.dev20261113%2Bmarin.0ac9dcb157ee.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "b8897bde70bf353a08f37450fb89fca5ebf50d768d6756807a43867ef11134f4"
+        }
+      ]
+    },
+    "placement": {},
+    "job_id": "/romain/knotmeter-20261117t092450z-884fd63135d9",
+    "gpu_job_id": "/romain/knotmeter-20261117t092450z-884fd63135d9",
+    "source": {
+      "tree_hash": "b3b7ebcbda",
+      "base_commit": "46d99fd858",
+      "dirty": false,
+      "branch": "codex/57-inference-perfmax",
+      "built_by": "romain",
+      "git_remote": "git@github.com:marin-community/marin.git",
+      "created_at": "2026-11-17T01:24:50.716054",
+      "command_line": [
+        "/home/romain/work/marin-community/marin/perfmax-research-57-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+        "--profile",
+        "hero-gb200",
+        "--name",
+        "hero-correctness-a1",
+        "--output",
+        "/home/romain/.cache/inference-perfmax-01a1d379/correctness/hero-correctness-a1-execution.json"
+      ]
+    },
+    "research_logbook": null
+  },
+  "state": "failed",
+  "attempts": [
+    {
+      "task_id": "/romain/knotmeter-20261117t092450z-884fd63135d9/0",
+      "attempt_uid": "d491af0bb18ab470",
+      "state": "failed",
+      "pod_uid": "8104492a-0fe3-4e39-87b9-0b0850dbd8ed",
+      "node_name": "s6btxs64",
+      "gpu_seconds": 187.79599952697754,
+      "allocation": {
+        "pod_uid": "8104492a-0fe3-4e39-87b9-0b0850dbd8ed",
+        "attempt_uid": "d491af0bb18ab470",
+        "pod_name": "iris-romain-knotmeter-20261117t0924-de0e76bb-0-d491af0bb18ab470",
+        "node_name": "s6btxs64",
+        "observed_unix": 1794907543.5609946,
+        "phase": "Running",
+        "scheduled_unix": 1794907501.0,
+        "finished_unix": null,
+        "status": "measured",
+        "end_basis": "iris-observed-terminal",
+        "end_unix": 1794907547.949
+      },
+      "error": "s\": \\' -}}\\n    {{- function.arguments if function.arguments is string else function.arguments | tojson -}}\\n    {{- \\'}\\n</tool_call>\\' -}}\\n  {%- endfor -%}\\n{%- endmacro -%}\\n\\n{%- for message in messages -%}\\n  {%- set content = message.get(\\'content\\') -%}\\n  {%- set text_content = content is string\\n      or (content is mapping and content.get(\\'text\\') is string)\\n      or (content is sequence and content is not string and content is not mapping\\n          and content | selectattr(\\'type\\', \\'equalto\\', \\'text\\') | list | length == content | length) -%}\\n  {{- \\'<|start_header_id|>\\' ~ message.role ~ \\'<|end_header_id|>\\n\\' -}}\\n  {%- if message.role == \\'assistant\\' -%}\\n    {% generation %}\\n    {%- if message.get(\\'reasoning_content\\') -%}\\n      {{- \\'<|start_think|>\\' ~ message.reasoning_content ~ \\'<|end_think|>\\' -}}\\n    {%- endif -%}\\n    {{- text(content) | trim -}}\\n    {{- tool_calls(message.get(\\'tool_calls\\') or []) -}}\\n    {{- \\'<|eot_id|>\\' -}}\\n    {% endgeneration %}\\n  {%- elif message.role == \\'tool\\' -%}\\n    {{- \\'<tool_response\\' -}}\\n    {%- set name = message.get(\\'name\\') or tool_names.by_id.get(message.get(\\'tool_call_id\\')) -%}\\n    {%- if name -%}{{- \\' name=\"\\' ~ name ~ \\'\"\\' -}}{%- endif -%}\\n    {{- \\'>\\' -}}\\n    {{- text(content) if text_content else content | tojson if content is not none else \\'\\' -}}\\n    {{- \\'</tool_response><|eot_id|>\\n\\' -}}\\n  {%- elif message.role == \\'ipython\\' -%}\\n    {{- {\"output\": text(content) if text_content else content} | tojson -}}\\n    {{- \\'<|eot_id|>\\n\\' -}}\\n  {%- else -%}\\n    {{- (text(content) | trim) ~ \\'<|eot_id|>\\n\\' -}}\\n  {%- endif -%}\\n{%- endfor -%}\\n{%- if add_generation_prompt -%}\\n  {{- \\'<|start_header_id|>assistant<|end_header_id|>\\n\\' -}}\\n{%- endif -%}'\n=========================== short test summary info ============================\nERROR tests/cluster/vllm/test_inference_correctness.py::test_candidate_matches_shared_correctness_policy\n=============================== 1 error in 2.14s ===============================\n"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261117t092450z-884fd63135d9/1",
+      "attempt_uid": "0cc8d3f9fc0b10e8",
+      "state": "cosched_failed",
+      "pod_uid": "3fc5a0cf-c9ec-4e04-a328-0a2e46510627",
+      "node_name": "sbftxs64",
+      "gpu_seconds": 187.79599952697754,
+      "allocation": {
+        "pod_uid": "3fc5a0cf-c9ec-4e04-a328-0a2e46510627",
+        "attempt_uid": "0cc8d3f9fc0b10e8",
+        "pod_name": "iris-romain-knotmeter-20261117t0924-3bcad148-0-0cc8d3f9fc0b10e8",
+        "node_name": "sbftxs64",
+        "observed_unix": 1794907540.6732976,
+        "phase": "Running",
+        "scheduled_unix": 1794907501.0,
+        "finished_unix": null,
+        "status": "measured",
+        "end_basis": "iris-observed-terminal",
+        "end_unix": 1794907547.949
+      },
+      "error": "Coscheduled sibling /romain/knotmeter-20261117t092450z-884fd63135d9/0 failed"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261117t092450z-884fd63135d9/2",
+      "attempt_uid": "e4566dfbedfd5bf2",
+      "state": "cosched_failed",
+      "pod_uid": "40a50970-9dde-4f9e-89aa-e435ca29bb7f",
+      "node_name": "sg8sxs64",
+      "gpu_seconds": 187.79599952697754,
+      "allocation": {
+        "pod_uid": "40a50970-9dde-4f9e-89aa-e435ca29bb7f",
+        "attempt_uid": "e4566dfbedfd5bf2",
+        "pod_name": "iris-romain-knotmeter-20261117t0924-cb49e357-0-e4566dfbedfd5bf2",
+        "node_name": "sg8sxs64",
+        "observed_unix": 1794907542.5258675,
+        "phase": "Running",
+        "scheduled_unix": 1794907501.0,
+        "finished_unix": null,
+        "status": "measured",
+        "end_basis": "iris-observed-terminal",
+        "end_unix": 1794907547.949
+      },
+      "error": "Coscheduled sibling /romain/knotmeter-20261117t092450z-884fd63135d9/0 failed"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261117t092450z-884fd63135d9/3",
+      "attempt_uid": "ca9a9495c3a55833",
+      "state": "cosched_failed",
+      "pod_uid": "92ad289f-7cb0-4cd2-b9d2-8c44f41b25ad",
+      "node_name": "sgltxs64",
+      "gpu_seconds": 191.79599952697754,
+      "allocation": {
+        "pod_uid": "92ad289f-7cb0-4cd2-b9d2-8c44f41b25ad",
+        "attempt_uid": "ca9a9495c3a55833",
+        "pod_name": "iris-romain-knotmeter-20261117t0924-9b224e39-0-ca9a9495c3a55833",
+        "node_name": "sgltxs64",
+        "observed_unix": 1794907541.5955315,
+        "phase": "Running",
+        "scheduled_unix": 1794907500.0,
+        "finished_unix": null,
+        "status": "measured",
+        "end_basis": "iris-observed-terminal",
+        "end_unix": 1794907547.949
+      },
+      "error": "Coscheduled sibling /romain/knotmeter-20261117t092450z-884fd63135d9/0 failed"
+    }
+  ],
+  "observed_unix": 1794907564.1380017
+}

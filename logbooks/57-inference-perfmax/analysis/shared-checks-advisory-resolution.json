@@ -1,0 +1,19 @@
+{
+  "source": "88a302fdcb43b2e0ba8e0bd879dffcfda19b0511",
+  "review": "One bounded six-lane advisory batch, run serially to protect devbox memory.",
+  "changes": [
+    "Use a typed DistributionDifference dataclass at the probability-comparison boundary; keep serialized report fields unchanged.",
+    "Use prefix_join for correctness run paths, immutable reference outputs and checkpoint metadata objects.",
+    "Remove the standalone config-guard test; check unknown cost through the report table field instead of a prose sentence.",
+    "Describe the endpoint fixture lifetime contract directly."
+  ],
+  "retained": [
+    {
+      "finding": "collect_trial orchestration",
+      "reason": "Keep the per-attempt accounting and recovery traversal together. Existing helpers own allocation cost, archive extraction, window validity and benchmark processing. Splitting the terminal traversal adds another record interface without resolving a demonstrated defect. Existing recovery tests cover missing receipts and partial exports. The lint rule allows a linear single-purpose routine; this function collects one terminal trial."
+    }
+  ],
+  "validation": {
+    "focused_before": "38 passed; broad local run reached44% and hit its4GiB cgroup cap after five not-yet-attributed failures. Identify the first failure; CI must supply broad completion."
+  }
+}

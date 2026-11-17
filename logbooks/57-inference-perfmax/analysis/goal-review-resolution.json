@@ -1,0 +1,36 @@
+{
+  "reviewed_source": "7db04440dcd9873c517d034a585d67e69e1e8f8c",
+  "fixed_source": "2cd493de0bcedf598a61bd2974b44bd65f15857a",
+  "batch": "One High GOAL batch: Claude, Codex and AGY completed read-only; no follow-up panel requested.",
+  "provider_evidence": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T104032Z/observed-providers.json",
+  "fixed": [
+    {
+      "finding": "P2 top-k bound",
+      "change": "Reference and next-token comparisons use the true top50. Full returned scores retain the observed prompt token for greedy validation and decode rescoring.",
+      "validation": "Independent normalized80token CPU oracle reproduces the old under-bound; regression now passes.42focused tests pass."
+    },
+    {
+      "finding": "Cache stage discarded prefill observations",
+      "change": "Missing decode-created reuse records a failed sub-check while prefill boundary comparisons and matched-repeat control continue. Overall failure still blocks acceptance.",
+      "validation": "Real HTTP prefill-only fixture returns all configured boundary evidence and partial comparison groups while its cache stage fails. Existing real runs predate this logging change; their remaining cache coverage is still missing."
+    },
+    {
+      "finding": "Interrupted reference discarded completed observations",
+      "change": "Retain completed cases, group statistics and the failed case. Overall reference result remains failed.",
+      "validation": "Real HTTP503 fixture retains completedcase0 and its comparison, records case1 failure, and cannot pass."
+    },
+    {
+      "finding": "Configured fixture falsely advertised as missing command",
+      "change": "Plan marks a command missing only when neither command nor fixture is configured.",
+      "validation": "Existing plan journey run on CPU after correction; noGPU submission."
+    }
+  ],
+  "qualification_gaps": [
+    "Decode-created prefix reuse was not exercised under current settings. Keep it required and blocking; do not change retention settings, loosen policy or start a cache investigation.",
+    "Completed prefill split groups, remaining eight boundaries and the matched-repeat control were not measured in old live runs because of the early abort. Updated logging is CPU/HTTP-tested; its fullGPU coverage remains missing.",
+    "New shared-check perfmax GPU path has not run end-to-end after integration. Real pinned-image CPU CLI tests, HTTP acceptance tests and GPU pytest checks provide component evidence; no normal AgentX window is qualified.",
+    "Non-reference bounds remain provisional initial screens, without broad empirical calibration. No accepted recommendation relies on them.",
+    "Existing step42150 gate at reviewed0ac9dcb passed64prompts each at PP1/PP2, maxima0.124960/0.124768 under original0.125 bound per mergedPR11241. Regression evidence only; no pass transfers to selected presets."
+  ],
+  "scope": "Latest user permits labeled workflow diagnostics and precise missing qualification evidence; no new numerical investigation. Recompute only retained matching reference data on CPU with the corrected comparator. No moreGPU work."
+}
