@@ -617,3 +617,24 @@ empty-content validation errors; profiling had 5,165 successes and one
 disconnect. Native submission validity and both duration-coverage checks pass.
 The agent chose C64 next to test whether lower cache pressure improves this
 throughput/latency tradeoff. Prepared workload reuse avoids repeated data work.
+
+### Hero completes the corrected shared suite
+
+Hero's ordinary [full pytest report](analysis/hero-qualified-a2-summary.json)
+passes all five groups on published contribution `64bfff4bc5`. It completes
+37 saved histories and 15,855 positions. Reference maxima are 0.560200 for
+short histories and 0.256977 for long histories, within the unchanged
+provisional policy. Batch overlap reaches four requests on engine 0; all four
+batch and 64 decode comparisons pass.
+
+All nine prefill, fully prepared branch and decode-created reuse boundaries
+pass. The nine branch comparisons and final repeat have exactly zero error.
+Changed prefill comparisons retain a maximum error of 0.032986. These results
+resolve the required cache coverage and exact branch checks for this deployment;
+they do not establish the cause of the earlier equal-count differences.
+
+The [execution](analysis/hero-qualified-a2-execution.json) costs 4.992222
+GB200-hours. Root verified the retained report and native archive hashes and
+[all four provider pods](analysis/hero-qualified-a2-cleanup.json) have terminated
+containers. The resource-board entry is closed. Snowball's C64 candidate is
+still queued; it will run the corrected CLI checks before its normal window.
