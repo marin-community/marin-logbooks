@@ -864,3 +864,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: marin#11618 [P]; the 19:45 verification entry in this notebook; the resolved launch config quoted in #11618.
 - Interpretation and limitations: #11618 establishes the misconfiguration chain and the transport evidence for `.51`; the fix (unsetting the variables on `rdma/ib` jobs) is a marin-source change outside this record's write scope; a recovery relaunch decision remains with the coordinator/user.
 - Decision and next action: hourly checks watch for the #11618 fix landing and any recovery decision.
+
+### 2026-11-17 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window): partial #11618 fix merged
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: n/a (fix landed on marin main; not adopted into the terminal exp3 run).
+- External inputs and artifact references: marin issue [#11618](https://github.com/marin-community/marin/issues/11618) fix-status comment; [marin PR #11178](https://github.com/marin-community/marin/pull/11178) — MERGED 2026-11-17 21:00:56 UTC, merge commit `f008c071cd7576864b76dfb94626fbf430493eee` [P].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **partial fix landed for the interconnect finding (marin#11618)**: marin PR #11178 merged at 21:00:56 UTC (merge commit `f008c071…`) — main's `experiments/post_training/inventory/train_quick_loop.py` **no longer sets** `NCCL_NET=Socket`, `NCCL_IB_DISABLE=1` or `NCCL_SOCKET_FAMILY=AF_INET`, so the quick-loop lineage is fixed on main. **Still carrying the override** (per the #11618 fix-status comment): the long-loop `specs/rl.yaml` copy, the Snowball preset/entry-point lineage, the Mochi one-rack recipe, and the NVL72 smoke recipe — i.e., the exact lineage that produced the exp3 `.51` failure is not yet fully cleared on all recipes. The issue remains OPEN.
+- Evidence: #11618 comment + PR #11178 metadata [P]; verified via `gh pr view`.
+- Interpretation and limitations: the fix post-dates the terminal exp3 run and does not change it; remaining recipe copies are tracked in #11618.
+- Decision and next action: hourly checks watch for the remaining `rl.yaml`/preset-lineage fixes; recovery decision stays with the coordinator/user.
