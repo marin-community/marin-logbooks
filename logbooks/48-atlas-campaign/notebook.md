@@ -1288,3 +1288,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the FACET census/lexical measurement contents are registry-bound [M].
 - Decision and next action: next hourly check watches for FACET admission progression and the private-tier publication outcomes.
+
+### 2026-11-18 00:35 UTC - Hourly catch-up (23:40–00:35 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` — no new landings since `9cbe20a66a…` (23:30:35 UTC Nov 17) at this readback.
+- Command or material configuration: evidence: landings.jsonl tail; `git ls-remote` (no new head).
+- External inputs and artifact references: as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no new Atlas landings in the window; the branch state is unchanged from the 23:40 entry. Cross-campaign note: the #11619 NCCL transport probes completed on all three clusters (default env passes over InfiniBand/NVLink everywhere; no cluster needs the socket override) and exp3 `.51` is being restarted from scratch on IB — recorded in the #49 notebook.
+- Evidence: `git ls-remote` [R]; #11619 comment 6964135906 [P].
+- Interpretation and limitations: quiet window.
+- Decision and next action: next hourly check resumes normal Atlas coverage.
