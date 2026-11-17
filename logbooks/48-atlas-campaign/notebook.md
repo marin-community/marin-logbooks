@@ -1153,3 +1153,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the difficulty-instrumentation rollout and further VERIFY semantics.
+
+### 2026-11-17 15:40 UTC - Hourly catch-up (14:40–15:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `7c1ebdb082…` (14:30:17 UTC) to head `50d2fdd6b6df0ae2322be4d77ee99664d5cab122`, landed 15:30:25 UTC (~12 landings 15:23–15:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 7c1ebdb0..50d2fdd6` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Lexical clearance now gates new Available admissions** (`7e53f42d8e…`) — implementing the standing lexical-clearance policy; armed for new Available admissions (`dd86422b4e…`); aime eval-benchmark overlaps acknowledged with the batched readback mock updated (`2e8736cded…`); lexical gate test imports hoisted (`41b5d01fbe…`).
+  - **RST v3 private release ADMITTED** (`f873cccf6b…`) — the archived RST v3 private release admitted.
+  - **License-gate fixture qualified as an admitted source** (`aa3f0e8a82…`).
+  - **TaskSpec serializer hardening**: caller include/exclude arguments honored (`191cef19b8…`); str-typed late-joining fields serialized without assuming models (`0f569bbde3…`).
+  - **Infra**: oversized campaign evidence archived atomically (`45d90022df…`); /sources cohort summaries fetched per pipeline under the gateway bound (`a5069372cc…`) with the item grouping key indexed (`4c4a4ae71e…`); internal GHCR visibility allowed for FACET images (`50d2fdd6b6…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
+- Decision and next action: next hourly check watches for lexical-clearance-gated admissions and RST v3 downstream outcomes.
