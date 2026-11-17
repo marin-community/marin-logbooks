@@ -426,3 +426,37 @@ end-to-end GPU run. The merged step42150 gate at the same reviewed runtime is
 regression evidence only. RL trainer probability ratios and learning quality
 remain unqualified. The [handoff](handoff.md) records commands, identities,
 provisional limits, measured differences and the remaining evidence.
+
+
+## 2026-11-17 — Complete validation and tuning
+
+The new goal replaces diagnostic-only completion and the overnight deadline.
+It requires complete shared-check evidence on both models, supported cache
+reuse, a valid one-hour AgentX window and an inspected fresh-context campaign.
+The aggregate ceilings are 48 H100s and 128 GB200s at interactive priority.
+The initial parent allocation is eight H100s plus sixteen GB200s. One tuning
+child may use eight additional H100s.
+
+Contribution source `12055994a685e6fdff27c6ece463f4998c247e3e` keeps the reviewed
+vLLM runtime and fixed Levanter scores. Both presets now retain periodic cache
+checkpoints every 128 tokens. The pinned
+[cache configuration](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/config/cache.py#L148)
+and [retention masks](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/v1/core/single_type_kv_cache_manager.py#L1576)
+retain selected replay/shared-prefix states at interval zero and periodic
+states at positive intervals. The old probe required an arbitrary generated
+history to be reusable, which zero does not promise. The prior 112-token hits
+show missing coverage; they do not establish corrupt state. Test the supported
+128-token setting without removing decode-created reuse or changing bounds.
+
+The checker now retains each failed reference/cache case and runs later cases.
+Missing prefill hits and unmatched-repeat coverage are explicit failed
+requirements. They cannot supply numerical cache comparisons. Forty-three
+focused CPU/HTTP/CLI cases pass, including an interrupted cache boundary followed
+by successful later boundaries and an interrupted reference followed by later
+histories. Required lint and type checks pass. Snowball uses the previously
+admitted 384-GB host request. Neither new profile is qualified before live tests.
+
+The pytest launchers will run the complete shared suite using the checked-in
+profiles and saved goldens. Their execution receipts record exact source,
+settings, run URI and all native attempts. No reference regeneration, fork
+refresh or RL trainer-alignment investigation is part of this phase.
