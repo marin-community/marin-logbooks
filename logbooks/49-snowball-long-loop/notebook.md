@@ -852,3 +852,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: exp3-recipe.md verification section + artifacts above [R].
 - Interpretation and limitations: the socket-size discrepancy is the recorded symptom; the root cause is unresolved.
 - Decision and next action: hourly checks watch for the recovery decision; the record carries the verified failure detail.
+
+### 2026-11-17 20:40 UTC - Hourly catch-up (19:45–20:40 UTC window): interconnect root-cause finding for the exp3 update-4 failure
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; the coordinator directed inclusion of today's interconnect finding (marin issue #11618).
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: the resolved launch config for the `2026.11.16.51` long-loop RL run (cluster cw-rno2a, 32 nodes × 8 H100, attempt `cb784b53b8fd`) sets `NCCL_IB_DISABLE: '1'`, `NCCL_NET: Socket`, `NCCL_SOCKET_FAMILY: AF_INET` — while the job requested 256 GPUs and 256 `rdma/ib` devices.
+- External inputs and artifact references: **marin issue [#11618](https://github.com/marin-community/marin/issues/11618)** "[rl] RL recipes force NCCL onto socket transport and disable InfiniBand" (OPEN, bug, agent-generated) — primary evidence [P].
+- Environment and hardware when relevant: cw-rno2a; 256 `rdma/ib` devices requested but bypassed.
+- Result, including failure or restart: **Root-cause finding for the update-4 failure recorded above**: per marin#11618, Snowball RL recipes **force NCCL onto socket transport and disable InfiniBand** while their jobs request `rdma/ib` — multi-node collectives bypass the fast cross-node interconnect, and the exp3 update-4 failure matches exactly: NCCL 2.29.7 `NET/Socket : peer … message truncated : receiving 941,711,616 bytes instead of 32` (the same symptom the 19:45 entry verified). Provenance per #11618 [P]: commit `410e9c25a8…` ("Use IPv4 socket transport for Snowball inventory smoke", 2026-10-20) added the three variables with no recorded reason and **no measured InfiniBand failure accompanies any of the copies**; the variables were copied forward into `inventory/train_quick_loop.py` (main, lines 82–84, still present), `long_loop/specs/rl.yaml` (branch `long-loop`, lines 222–224) and six further recipe/entry-point commits. Expected behavior: NCCL uses InfiniBand (`NET/IB`) for cross-node collectives on jobs that request `rdma/ib`.
+- Evidence: marin#11618 [P]; the 19:45 verification entry in this notebook; the resolved launch config quoted in #11618.
+- Interpretation and limitations: #11618 establishes the misconfiguration chain and the transport evidence for `.51`; the fix (unsetting the variables on `rdma/ib` jobs) is a marin-source change outside this record's write scope; a recovery relaunch decision remains with the coordinator/user.
+- Decision and next action: hourly checks watch for the #11618 fix landing and any recovery decision.
