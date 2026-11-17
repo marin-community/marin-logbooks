@@ -22,6 +22,7 @@ Present the model and tokenizer revisions, workload, hardware, runtime, latest
 qualified and best comparable baselines, objective, allowed changes, required
 checks and resource budget. Show consequential unknowns together. Record the
 agreed scope and baseline with the research notebook and resolved trial plans.
+Treat a complete dispatch as agreement; use its delegated choices without asking again.
 
 Prioritize completed output tokens/s/GPU for RL rollouts and evaluations. Seek
 high throughput before latency rises sharply for little additional throughput.
@@ -60,12 +61,13 @@ Use the runner's shared recipe and upstream public-dataset selector names.
 Preserve AgentX replay, warmup, cache busting and validity. Each attempt starts
 a fresh server. Keep diagnostics distinct from comparable measurements.
 
-Run the agreed existing checks outside the timed window against the measured
-settings. Preserve their numerical bounds and known failures. Recommendations
-require an in-scope numerical pass and all other required checks. The presets leave
-unmatched numerical checks pending; resolve that at kickoff. Passing serving
-checks does not establish task quality or RL learning quality. New evaluations
-and trainer-mismatch investigations need a separate scope.
+Use the preset's [shared checks](../../../experiments/evaluation/inference_correctness/README.md)
+against the actual settings. Reuse its immutable goldens across runtime changes.
+The runner checks before AgentX and resets caches before native warmup. Retain
+failed observations; missing evidence and failed checks block recommendations.
+Use the agreed policy, including its provisional status. Change bounds only with
+recorded evidence and delegated authority. These checks do not qualify RL learning
+or trainer probability ratios; new investigations need their own scope.
 
 Preserve native exports, actual settings, checks, failures, repeats, Iris
 identities and allocation cost under the configured `MARIN_PREFIX` campaign.

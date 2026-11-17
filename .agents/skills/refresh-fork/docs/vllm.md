@@ -169,7 +169,19 @@ uv run config/update-external.py \
   --promote-gpu-release release/marin-vllm-gpu-manifest.json
 uv run pytest tests/cluster/vllm/test_snowball_backend_parity.py \
   -m cluster -o addopts= --import-mode=importlib -vv -s
+uv run python -m experiments.evaluation.inference_correctness.launch \
+  --profile snowball-h100 --name adoption-snowball --output snowball-correctness.json \
+  --runtime-manifest release/marin-vllm-gpu-manifest.json
+uv run python -m experiments.evaluation.inference_correctness.launch \
+  --profile hero-gb200 --name adoption-hero --output hero-correctness.json \
+  --runtime-manifest release/marin-vllm-gpu-manifest.json
 ```
+
+The [shared endpoint suite](../../../../experiments/evaluation/inference_correctness/README.md)
+uses the same checking functions and saved goldens as perfmax. It adds the selected
+Snowball v0.1.1 and Hero SFT step400407 profiles under their recorded policies.
+Keep provisional passes labeled and retain missing evidence and failures. The
+older gate's checkpoint-specific pass does not transfer to either selected model.
 
 Open one draft Marin PR with `gpu.toml`, the generated pins, the full source
 SHA, both wheel hashes, and links to the fork qualification and Snowball results.

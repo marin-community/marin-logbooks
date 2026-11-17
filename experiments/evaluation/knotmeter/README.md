@@ -55,20 +55,22 @@ pins. Normal runs retain upstream warmup, replay and validity. Data preparation
 runs on CPU before GPU submission. `--diagnostic-seconds N` explicitly requests
 a short unsafe upstream replay; it cannot produce an accepted recommendation.
 
-Preset `checks` run after profiling against the same deployment. Each check has
-a name, argv list and timeout. Commands receive `KNOTMETER_SERVER_URL` (the
-worker's `/v1` URL), `KNOTMETER_MODEL`, `KNOTMETER_MODEL_REVISION`,
-`KNOTMETER_RUNTIME_SOURCE`, `KNOTMETER_PROFILE` and
-`KNOTMETER_CHECK_OUTPUT`. A zero exit status records a pass; retain detailed
-results in that output file. An empty command records a pending check. Both
-presets leave model numerics pending because an existing gate must match the
-checkpoint and serving settings. Numerical checks declare `checkpoint_revision`
-and `runtime_source`. A mismatched pass stays regression evidence and leaves
-qualification pending. `kind: serving` identifies a serving-only check. Link
-reused evidence in the check's `evidence` list; a link alone does not establish a
-pass. Recommendations require a passed numerical check for this checkpoint
-and runtime, plus all other required checks. A serving-only check cannot replace it.
-Passing these checks does not qualify RL learning.
+Both presets use the [shared correctness suite](../inference_correctness/README.md).
+It compares saved Levanter scores, engine batches, cache states and decode versus
+recomputation. The Git fixture pins the manifest and a separate numerical policy.
+The runner verifies references on CPU, then checks the actual server before
+AgentX. It retains `check-N.json` and raw responses. Both the CLI exit and report
+must pass. Missing or failed required checks stop ordinary measurements;
+explicit diagnostics may continue. The cache is reset before native warmup.
+
+Additional check commands receive `KNOTMETER_SERVER_URL` (the worker's `/v1` URL),
+`KNOTMETER_MODEL`, `KNOTMETER_MODEL_REVISION`, `KNOTMETER_RUNTIME_SOURCE`,
+`KNOTMETER_PROFILE` and `KNOTMETER_CHECK_OUTPUT`. An empty command stays pending.
+External numerical checks declare `checkpoint_revision` and `runtime_source`;
+a mismatched pass remains regression evidence. `kind: serving` identifies checks
+that cannot replace numerical evidence. Recommendations require all required
+checks, a numerical pass for this deployment and valid AgentX evidence. Passing
+these serving checks does not qualify RL learning or trainer probability ratios.
 
 Outputs live at `MARIN_PREFIX/knotmeter/campaigns/CAMPAIGN/`. The selected
 cluster's configured prefix supplies the default; `--marin-prefix` is an explicit

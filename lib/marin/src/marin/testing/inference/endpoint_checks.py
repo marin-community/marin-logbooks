@@ -451,6 +451,7 @@ async def check_endpoint(
         "runtime_source": runtime_source,
         "manifest": fixture.manifest.model_dump(),
         "policy": fixture.policy.model_dump(),
+        "policy_sha256": hashlib.sha256(canonical_bytes(fixture.policy.model_dump(mode="json"))).hexdigest(),
         "started_unix": time.time(),
         "reference_lookup": {"status": references.status, "reason": references.reason},
         "checks": {},

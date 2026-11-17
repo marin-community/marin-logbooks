@@ -5,6 +5,7 @@
 
 import copy
 import dataclasses
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -13,7 +14,9 @@ from types import SimpleNamespace
 import pytest
 from iris.cluster.types import JobName
 from iris.resources.state import JobState, TaskState
+from marin.datakit.chat_template import MARIN_CHAT_TEMPLATE
 from marin.external_dependencies import VLLM_GPU_RELEASE
+from marin.inference.vllm_cache import VllmCompileIdentity
 from rigging.provenance import Provenance
 from rigging.timing import Timestamp
 
@@ -22,8 +25,23 @@ from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial
 from experiments.evaluation.knotmeter.config import Check, Runtime, load_profile, resolved_series
 from experiments.evaluation.knotmeter.report import report_campaign
-from experiments.evaluation.knotmeter.run import run_checks
+from experiments.evaluation.knotmeter.run import create_server, run_checks
 from experiments.evaluation.knotmeter.runtime import resolve_release
+
+
+def test_chat_template_survives_native_compilation_cache_identity(tmp_path):
+    profile = load_profile(Path("snowball-h100"), ["model.chat_template=marin"])
+    manifest = {"series": resolved_series(profile), "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE)}
+    server = create_server(manifest, tmp_path, None)
+    template = Path(server.extra_cli_args[server.extra_cli_args.index("--chat-template") + 1])
+    assert template.read_text() == MARIN_CHAT_TEMPLATE
+    # Passing the literal template used to raise ENAMETOOLONG at this boundary,
+    # before any model weights or native serving process could be loaded.
+    identity = VllmCompileIdentity.from_vllm_args(
+        model_name_or_path=server.model_name_or_path,
+        extra_cli_args=tuple(server.extra_cli_args),
+    )
+    assert hashlib.sha256(template.read_bytes()).hexdigest() in identity.extra_cli_args
 
 
 def test_launch_plan_survives_json_delivery_without_invalidating_worker_identity(monkeypatch):
@@ -61,6 +79,7 @@ def test_unregistered_cuda_build_and_list_index_override_fail_before_submission(
 
 def trial(root: Path, name: str, rate: float, *, diagnostic: bool = False) -> dict:
     profile = load_profile(Path("snowball-h100"), [])
+    profile = profile.model_copy(update={"checks": [Check(name="synthetic-fixture-check")]})
     series = resolved_series(profile, diagnostic_seconds=3 if diagnostic else None)
     runtime = json.loads(json.dumps(dataclasses.asdict(VLLM_GPU_RELEASE))) | {
         "release_tag": "fixture",
@@ -136,6 +155,7 @@ def test_existing_check_pass_transfers_only_to_its_checkpoint_and_runtime(tmp_pa
     profile = base.model_copy(update={"checks": [check]})
     checks = run_checks(profile, "http://fixture/v1", tmp_path, "b" * 40)
     result = trial(tmp_path, "candidate", 120)
+    result["manifest"]["series"] = resolved_series(profile)
     result["measurement"]["checks"] = checks
     write_record(f"{result['trial_uri']}/result.json", result)
     if scope == "matching":
@@ -149,6 +169,25 @@ def test_existing_check_pass_transfers_only_to_its_checkpoint_and_runtime(tmp_pa
             report_campaign(str(tmp_path), recommendation="candidate")
         assert not (tmp_path / "recommended.yaml").exists()
         assert read_record(f"{result['trial_uri']}/result.json")["measurement"]["checks"] == checks
+
+
+@pytest.mark.parametrize("missing", ["required-check", "submission-validity", "qualification"])
+def test_numerical_pass_does_not_replace_other_acceptance_requirements(tmp_path, missing):
+    result = trial(tmp_path, "candidate", 120)
+    if missing == "required-check":
+        result["manifest"]["series"]["profile"]["checks"].append(
+            Check(name="serving-contract", kind="serving").model_dump()
+        )
+    elif missing == "submission-validity":
+        result["measurement"]["validity"]["submission_valid"] = False
+    else:
+        result["manifest"]["diagnostic"] = True
+    write_record(f"{result['trial_uri']}/result.json", result)
+    report_campaign(str(tmp_path))
+    assert (tmp_path / "summary.md").is_file()
+    with pytest.raises(ValueError):
+        report_campaign(str(tmp_path), recommendation="candidate")
+    assert not (tmp_path / "recommended.yaml").exists()
 
 
 @pytest.mark.parametrize("name", [None, "smoke", "model-numerics", "other-checkpoint", "other-runtime"])
