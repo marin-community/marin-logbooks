@@ -12,6 +12,7 @@ from pathlib import Path
 from iris.client.client import IrisClient, iris_ctx
 from iris.cluster.types import CoschedulingConfig, Entrypoint, EnvironmentSpec, ResourceSpec, gpu_device
 from iris.rpc import job_pb2
+from marin.testing.inference.goldens import LookupStatus, lookup_reference, read_fixture
 from rigging.filesystem.storage_path import prefix_join
 from rigging.timing import Duration
 
@@ -62,6 +63,11 @@ def submit_point(client: IrisClient, plan: TrialPlan):
 def prepare_plan(plan: TrialPlan, work: Path) -> TrialPlan:
     """Freeze the native workload before any GPU child can be submitted."""
     series = plan["series"]
+    for check in Profile.model_validate(series["profile"]).checks:
+        if check.fixture:
+            reference = lookup_reference(read_fixture(check.fixture))
+            if reference.status != LookupStatus.FOUND and not series.get("diagnostic"):
+                raise ValueError(f"Required reference is {reference.status}: {reference.reason}")
     path = work / "series.json"
     path.write_text(json.dumps(series))
     workload = prepare_workload(work / "preparation", series_path=path)

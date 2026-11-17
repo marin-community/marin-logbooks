@@ -24,6 +24,8 @@ class Model(Config):
     tokenizer_revision: str
     path: str | None = None
     config_sha256: str | None = None
+    chat_template: Literal["marin"] | None = None
+    eos_token_id: int | None = None
 
 
 class Gpus(Config):
@@ -58,12 +60,19 @@ class Workload(Config):
 
 class Check(Config):
     name: str
-    command: list[str]
+    command: list[str] = Field(default_factory=list)
+    fixture: str | None = None
     timeout: int = Field(default=900, gt=0)
     kind: Literal["serving", "numerical"] = "numerical"
     checkpoint_revision: str | None = None
     runtime_source: str | None = None
     evidence: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def one_implementation(self) -> "Check":
+        if self.fixture and self.command:
+            raise ValueError("Use a shared fixture or an external command for a check")
+        return self
 
 
 class Profile(Config):

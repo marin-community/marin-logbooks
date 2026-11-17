@@ -75,7 +75,10 @@ class AcceptancePolicy(Record):
     provisional: bool
     rationale: str
     evidence: tuple[str, ...]
+    hardware: tuple[str, ...]
     dtype: str = "bfloat16"
+    quantization: str | None = None
+    kv_cache_dtypes: tuple[str, ...] = ("auto", "bfloat16")
     reference: dict[str, ErrorLimits]
     same_split: ErrorLimits
     different_split: ErrorLimits
@@ -83,6 +86,7 @@ class AcceptancePolicy(Record):
     decode: ErrorLimits
     batch_size: int = Field(default=4, ge=2)
     decode_tokens: int = Field(default=32, ge=2)
+    cache_decode_tokens: int = Field(default=257, ge=2)
     boundary_lengths: tuple[int, ...] = (127, 128, 129, 255, 256, 257, 2047, 2048, 2049)
 
 

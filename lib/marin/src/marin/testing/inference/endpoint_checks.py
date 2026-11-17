@@ -18,7 +18,7 @@ import aiohttp
 import numpy as np
 from prometheus_client.parser import text_string_to_metric_families
 
-from marin.testing.inference.backend_parity import TokenScore
+from marin.testing.inference.backend_parity import TokenDistribution, distribution_difference
 from marin.testing.inference.goldens import (
     ErrorLimits,
     LookupStatus,
@@ -27,6 +27,7 @@ from marin.testing.inference.goldens import (
     canonical_bytes,
     history_digest,
     lookup_reference,
+    read_bytes,
 )
 
 TOP_K = 50
@@ -34,49 +35,13 @@ HTTP_TIMEOUT = aiohttp.ClientTimeout(total=900)
 RANK_HEADER = "X-data-parallel-rank"
 
 
-@dataclass(frozen=True)
-class TokenDistribution:
-    token_ids: tuple[int, ...]
-    logprobs: tuple[float, ...]
-
-    @classmethod
-    def from_response(cls, entries: dict) -> "TokenDistribution":
-        scores = sorted(
-            (
-                TokenScore(token_id=int(token.removeprefix("token_id:")), logprob=float(value))
-                for token, value in entries.items()
-            ),
-            key=lambda score: (-score.logprob, score.token_id),
-        )
-        if not scores or any(not math.isfinite(score.logprob) or score.logprob > 0 for score in scores):
-            raise ValueError("The endpoint returned missing, positive or non-finite log probabilities")
-        return cls(tuple(score.token_id for score in scores), tuple(score.logprob for score in scores))
-
-
-def distribution_difference(first: TokenDistribution, second: TokenDistribution) -> dict:
-    """Bound top-k probability error without treating absent tokens as known scores.
-
-    A token outside a returned top-k has probability between zero and its kth
-    probability. The upper bound is conservative; it is not full-vocabulary KL.
-    """
-    a = dict(zip(first.token_ids, map(math.exp, first.logprobs), strict=True))
-    b = dict(zip(second.token_ids, map(math.exp, second.logprobs), strict=True))
-    errors = []
-    lower = []
-    for token in a.keys() | b.keys():
-        if token in a and token in b:
-            lower.append(abs(a[token] - b[token]))
-            errors.append(lower[-1])
-        else:
-            known, floor = (a[token], min(b.values())) if token in a else (b[token], min(a.values()))
-            lower.append(max(0.0, known - floor))
-            errors.append(max(known, abs(known - floor)))
-    return {
-        "max_probability_error_lower_bound": max(lower),
-        "max_probability_error": max(errors),
-        "shared_tokens": len(a.keys() & b.keys()),
-        "same_greedy_token": first.token_ids[0] == second.token_ids[0],
-    }
+def response_distribution(entries: dict) -> TokenDistribution:
+    return TokenDistribution.from_logprob_map(
+        {
+            int(str(token).removeprefix("token_id:")): float(value["logprob"] if isinstance(value, dict) else value)
+            for token, value in entries.items()
+        }
+    )
 
 
 def mismatch_summary(rows: list[dict], limits: ErrorLimits) -> dict:
@@ -187,7 +152,7 @@ class EndpointClient:
         if len(choice["token_ids"]) != count:
             raise ValueError(f"The endpoint returned an incomplete continuation: {label}")
         for token, top in zip(choice["token_ids"], choice["logprobs"]["top_logprobs"], strict=True):
-            distribution = TokenDistribution.from_response(top)
+            distribution = response_distribution(top)
             if int(token) not in distribution.token_ids or int(token) != distribution.token_ids[0]:
                 # Equal maximum scores may have a different tie order.
                 scores = dict(zip(distribution.token_ids, distribution.logprobs, strict=True))
@@ -197,7 +162,7 @@ class EndpointClient:
 
 
 def next_distribution(response: dict) -> TokenDistribution:
-    return TokenDistribution.from_response(response["choices"][0]["logprobs"]["top_logprobs"][0])
+    return response_distribution(response["choices"][0]["logprobs"]["top_logprobs"][0])
 
 
 def cached_tokens(response: dict) -> int:
@@ -224,10 +189,11 @@ async def verify_deployment(client: EndpointClient, fixture: ModelFixture, runti
         "model": identity.weights,
         "tokenizer": identity.tokenizer,
         "tokenizer_revision": identity.tokenizer_revision,
+        "quantization": fixture.policy.quantization,
     }
     if not identity.weights.startswith(("s3://", "gs://")):
         expected["revision"] = identity.revision
-    mismatches = {
+    mismatches: dict = {
         name: {"actual": model.get(name), "expected": value}
         for name, value in expected.items()
         if model.get(name) != value
@@ -236,11 +202,57 @@ async def verify_deployment(client: EndpointClient, fixture: ModelFixture, runti
         mismatches["runtime"] = {"actual": version["version"], "expected": runtime_source}
     if str(model["dtype"]).removeprefix("torch.") != fixture.policy.dtype:
         mismatches["dtype"] = {"actual": str(model["dtype"]), "expected": fixture.policy.dtype}
+    hardware = information["system_env"]["nvidia_gpu_models"]
+    if not any(device in hardware for device in fixture.policy.hardware):
+        mismatches["hardware"] = {"actual": hardware, "expected": fixture.policy.hardware}
+    if identity.weights.startswith(("s3://", "gs://")):
+        manifest_bytes = await asyncio.to_thread(read_bytes, f"{identity.weights.rstrip('/')}/export-manifest.json")
+        digest = hashlib.sha256(manifest_bytes).hexdigest()
+        if digest != identity.revision:
+            mismatches["export_manifest"] = {"actual": digest, "expected": identity.revision}
+        config_uri = f"{identity.weights.rstrip('/')}/config.json"
+    elif Path(identity.weights).is_absolute():
+        config_uri = str(Path(identity.weights) / "config.json")
+    else:
+        config_uri = f"https://huggingface.co/{identity.weights}/resolve/{identity.revision}/config.json"
+    config_bytes = await asyncio.to_thread(read_bytes, config_uri)
+    config_digest = hashlib.sha256(config_bytes).hexdigest()
+    if config_digest != identity.config_sha256:
+        mismatches["model_config"] = {"actual": config_digest, "expected": identity.config_sha256}
+    graph_mode = config["compilation_config"].get("cudagraph_mode")
+    if graph_mode in (None, 0, "NONE", "CUDAGraphMode.NONE"):
+        mismatches["cuda_graphs"] = {"actual": graph_mode, "expected": "Enabled"}
+    if config["cache_config"].get("enable_prefix_caching") is not True:
+        mismatches["prefix_caching"] = {"actual": config["cache_config"].get("enable_prefix_caching"), "expected": True}
+    cache_dtype = config["cache_config"].get("cache_dtype")
+    if cache_dtype not in fixture.policy.kv_cache_dtypes:
+        mismatches["kv_cache_dtype"] = {"actual": cache_dtype, "expected": fixture.policy.kv_cache_dtypes}
+    eos = model.get("override_generation_config", {}).get("eos_token_id", json.loads(config_bytes).get("eos_token_id"))
+    if identity.eos_token_id not in (eos if isinstance(eos, list) else [eos]):
+        mismatches["eos_token_id"] = {"actual": eos, "expected": identity.eos_token_id}
     return {
         "status": "failed" if mismatches else "passed",
         "mismatches": mismatches,
         "version": version,
-        "model_config": model,
+        "hardware": hardware,
+        "config_sha256": config_digest,
+        "model_config": {
+            key: value
+            for key, value in model.items()
+            if key
+            in {
+                "model",
+                "revision",
+                "tokenizer",
+                "tokenizer_revision",
+                "dtype",
+                "max_model_len",
+                "quantization",
+                "generation_config",
+                "override_generation_config",
+                "trust_remote_code",
+            }
+        },
         "scheduler_config": config["scheduler_config"],
         "cache_config": config["cache_config"],
         "parallel_config": config["parallel_config"],
@@ -262,7 +274,7 @@ async def check_reference(client: EndpointClient, references: ReferenceLookup, f
             raise ValueError(f"Missing prompt log probabilities: {case.id}")
         for position in case.positions:
             row = expected[(case.id, position)]
-            actual = TokenDistribution.from_response(positions[position])
+            actual = response_distribution(positions[position])
             reference = TokenDistribution(row.token_ids, row.logprobs)
             mismatch = distribution_difference(reference, actual) | {"case": case.id, "position": position}
             groups[case.group].append(mismatch)
@@ -355,11 +367,13 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
         # The seed decode crosses a block/state boundary. Reuse its exact generated history,
         # then branch and recompute it from scratch to expose stale recurrent/conv state.
         await client.reset_cache()
-        decoded = await client.complete(prefix, label=f"cache-{length}-decode-seed", count=fixture.policy.decode_tokens)
+        decoded = await client.complete(
+            prefix, label=f"cache-{length}-decode-seed", count=fixture.policy.cache_decode_tokens
+        )
         history = prefix + tuple(decoded["choices"][0]["token_ids"]) + source[length : length + 3]
         reused = await client.complete(history, label=f"cache-{length}-decode-reuse")
-        if cached_tokens(reused) <= 0:
-            raise ValueError(f"Decode-created history did not reuse cached state at {length}")
+        if cached_tokens(reused) <= len(prefix):
+            raise ValueError(f"The cache hit did not reach decode-created tokens at {length}: {cached_tokens(reused)}")
         await client.reset_cache()
         recomputed = await client.complete(history, label=f"cache-{length}-decode-fresh")
         different_split.append(
@@ -367,6 +381,7 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
             | {"boundary": length, "seed": "decode"}
         )
         evidence[-1]["decode_cached_tokens"] = cached_tokens(reused)
+        evidence[-1]["decode_generated_tokens"] = fixture.policy.cache_decode_tokens
     # An exact repeat of a warmed history supplies a matched-split control even if prefix
     # seeding and branching fill different numbers of blocks on this model.
     await client.complete(branch, label="cache-matched-seed")
@@ -402,8 +417,8 @@ async def check_decode(client: EndpointClient, references: ReferenceLookup, fixt
         for position, (token, top) in enumerate(
             zip(choice["token_ids"], choice["logprobs"]["top_logprobs"], strict=True)
         ):
-            decode_distribution = TokenDistribution.from_response(top)
-            prefill_distribution = TokenDistribution.from_response(prompt_scores[len(case.tokens) + position])
+            decode_distribution = response_distribution(top)
+            prefill_distribution = response_distribution(prompt_scores[len(case.tokens) + position])
             a = dict(zip(decode_distribution.token_ids, decode_distribution.logprobs, strict=True))[token]
             b = dict(zip(prefill_distribution.token_ids, prefill_distribution.logprobs, strict=True))[token]
             differences.append(
@@ -446,8 +461,11 @@ async def check_endpoint(
         output.write_bytes(canonical_bytes(report))
 
     if references.status != LookupStatus.FOUND:
+        if references.status == LookupStatus.MISMATCHED:
+            report["status"] = "failed"
+            report["checks"]["reference_identity"] = {"status": "failed", "reason": references.reason}
         save()
-        return report
+        return json.loads(output.read_bytes())
     async with EndpointClient(base_url, model, output.parent / f"{output.stem}-requests") as client:
         stages: tuple[tuple[str, Callable[[], Awaitable[dict]]], ...] = (
             ("deployment", lambda: verify_deployment(client, fixture, runtime_source)),
@@ -474,4 +492,4 @@ async def check_endpoint(
     )
     report["finished_unix"] = time.time()
     save()
-    return report
+    return json.loads(output.read_bytes())
