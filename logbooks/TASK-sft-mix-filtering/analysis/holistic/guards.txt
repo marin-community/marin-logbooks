@@ -1,0 +1,44 @@
+
+######## humanevalplus
+control        s222 n=164 acc=0.683 medL=494 p95=3037 n>10k=1 acc|L>10k=1.00 wait-words=0.043 codeblock=1.000
+     metric means: {'accuracy': 0.683}
+cap32k         s222 n=164 acc=0.628 medL=471 p95=2671 n>10k=3 acc|L>10k=0.33 wait-words=0.037 codeblock=0.945
+     metric means: {'accuracy': 0.628}
+     vs control: gained 18 lost 27 exact-McNemar p=0.233
+     lost items: arm output length median 446.0 control 608.0 ; lost with arm L>5k: 0
+cap32k-giveup  s222 n=164 acc=0.665 medL=562 p95=3893 n>10k=3 acc|L>10k=0.67 wait-words=0.091 codeblock=0.963
+     metric means: {'accuracy': 0.665}
+     vs control: gained 21 lost 24 exact-McNemar p=0.766
+     lost items: arm output length median 509.0 control 695.5 ; lost with arm L>5k: 2
+control        s100 n=164 acc=0.652 medL=482 p95=1750 n>10k=1 acc|L>10k=0.00 wait-words=0.012 codeblock=0.988
+     metric means: {'accuracy': 0.652}
+cap32k-giveup  s100 n=164 acc=0.683 medL=624 p95=6478 n>10k=6 acc|L>10k=0.33 wait-words=0.116 codeblock=0.957
+     metric means: {'accuracy': 0.683}
+
+######## ifbench
+control        s222 n=300 acc=0.250 medL=1221 p95=6664 n>10k=10 acc|L>10k=0.10 wait-words=0.050 codeblock=nan
+     metric means: {'strict_prompt_accuracy': 0.197, 'strict_instruction_accuracy': 0.223, 'strict_per_type:format': 0.38, 'loose_prompt_accuracy': 0.25, 'loose_instruction_accuracy': 0.277, 'loose_per_type:format': 0.495, 'strict_per_type:sentence': 0.036, 'loose_per_type:sentence': 0.036, 'strict_per_type:words': 0.106, 'loose_per_type:words': 0.135, 'strict_per_type:count': 0.315, 'loose_per_type:count': 0.347, 'strict_per_type:ratio': 0.182, 'loose_per_type:ratio': 0.205, 'strict_per_type:repeat': 0.0, 'loose_per_type:repeat': 0.0, 'strict_per_type:custom': 0.091, 'loose_per_type:custom': 0.182}
+cap32k         s222 n=300 acc=0.243 medL=1209 p95=8024 n>10k=10 acc|L>10k=0.20 wait-words=0.050 codeblock=nan
+     metric means: {'strict_prompt_accuracy': 0.197, 'strict_instruction_accuracy': 0.225, 'strict_per_type:format': 0.391, 'loose_prompt_accuracy': 0.243, 'loose_instruction_accuracy': 0.275, 'loose_per_type:format': 0.51, 'strict_per_type:words': 0.082, 'loose_per_type:words': 0.106, 'strict_per_type:count': 0.298, 'loose_per_type:count': 0.298, 'strict_per_type:ratio': 0.136, 'loose_per_type:ratio': 0.136, 'strict_per_type:sentence': 0.179, 'loose_per_type:sentence': 0.214, 'strict_per_type:repeat': 0.111, 'loose_per_type:repeat': 0.111, 'strict_per_type:custom': 0.182, 'loose_per_type:custom': 0.273}
+     vs control: gained 27 lost 29 exact-McNemar p=0.894
+cap32k-giveup  s222 n=300 acc=0.283 medL=1162 p95=9757 n>10k=15 acc|L>10k=0.33 wait-words=0.053 codeblock=nan
+     metric means: {'strict_prompt_accuracy': 0.217, 'strict_instruction_accuracy': 0.242, 'strict_per_type:format': 0.349, 'loose_prompt_accuracy': 0.283, 'loose_instruction_accuracy': 0.31, 'loose_per_type:format': 0.484, 'strict_per_type:count': 0.379, 'loose_per_type:count': 0.395, 'strict_per_type:words': 0.118, 'loose_per_type:words': 0.176, 'strict_per_type:ratio': 0.159, 'strict_per_type:sentence': 0.179, 'loose_per_type:ratio': 0.205, 'loose_per_type:sentence': 0.286, 'strict_per_type:repeat': 0.0, 'loose_per_type:repeat': 0.0, 'strict_per_type:custom': 0.091, 'loose_per_type:custom': 0.091}
+     vs control: gained 37 lost 27 exact-McNemar p=0.260
+control        s100 n=300 acc=0.253 medL=1195 p95=8340 n>10k=8 acc|L>10k=0.25 wait-words=0.063 codeblock=nan
+     metric means: {'strict_prompt_accuracy': 0.197, 'strict_instruction_accuracy': 0.223, 'strict_per_type:sentence': 0.036, 'loose_prompt_accuracy': 0.253, 'loose_instruction_accuracy': 0.287, 'loose_per_type:sentence': 0.143, 'strict_per_type:format': 0.396, 'loose_per_type:format': 0.542, 'strict_per_type:words': 0.082, 'loose_per_type:words': 0.106, 'strict_per_type:ratio': 0.114, 'loose_per_type:ratio': 0.136, 'strict_per_type:count': 0.355, 'loose_per_type:count': 0.387, 'strict_per_type:repeat': 0.0, 'loose_per_type:repeat': 0.0, 'strict_per_type:custom': 0.091, 'loose_per_type:custom': 0.091}
+cap32k-giveup  s100 n=300 acc=0.237 medL=1364 p95=11936 n>10k=19 acc|L>10k=0.11 wait-words=0.097 codeblock=nan
+     metric means: {'strict_prompt_accuracy': 0.197, 'strict_instruction_accuracy': 0.22, 'strict_per_type:format': 0.359, 'loose_prompt_accuracy': 0.237, 'loose_instruction_accuracy': 0.26, 'loose_per_type:format': 0.484, 'strict_per_type:words': 0.082, 'loose_per_type:words': 0.088, 'strict_per_type:ratio': 0.182, 'loose_per_type:ratio': 0.205, 'strict_per_type:count': 0.306, 'loose_per_type:count': 0.306, 'strict_per_type:sentence': 0.107, 'loose_per_type:sentence': 0.107, 'strict_per_type:repeat': 0.0, 'loose_per_type:repeat': 0.0, 'strict_per_type:custom': 0.091, 'loose_per_type:custom': 0.091}
+
+######## gsm8k-0shot
+control        s222 n=1319 acc=0.812 medL=503 p95=2630 n>10k=10 acc|L>10k=0.60 wait-words=0.105 codeblock=nan
+     metric means: {'exact_match': 0.812}
+cap32k         s222 n=1319 acc=0.841 medL=535 p95=2913 n>10k=8 acc|L>10k=0.50 wait-words=0.130 codeblock=nan
+     metric means: {'exact_match': 0.841}
+     vs control: gained 162 lost 124 exact-McNemar p=0.029
+cap32k-giveup  s222 n=1319 acc=0.825 medL=562 p95=3343 n>10k=14 acc|L>10k=0.50 wait-words=0.108 codeblock=nan
+     metric means: {'exact_match': 0.825}
+     vs control: gained 166 lost 149 exact-McNemar p=0.367
+control        s100 n=1319 acc=0.863 medL=608 p95=3756 n>10k=17 acc|L>10k=0.41 wait-words=0.148 codeblock=nan
+     metric means: {'exact_match': 0.863}
+cap32k-giveup  s100 n=1319 acc=0.829 medL=609 p95=3931 n>10k=21 acc|L>10k=0.43 wait-words=0.151 codeblock=nan
+     metric means: {'exact_match': 0.829}

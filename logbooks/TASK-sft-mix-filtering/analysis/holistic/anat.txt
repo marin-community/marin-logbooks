@@ -1,0 +1,26 @@
+cat                               long:answered-right  long:answered-wrong  long:loop  long:no-answer  short
+bench         arm           step                                                                            
+aime24        cap32k        s222                 11.7                  1.7        4.0            14.7   68.0
+              cap32k-giveup s100                 12.0                  1.7        6.0            18.0   62.3
+                            s222                 13.3                  3.3        7.3            16.0   60.0
+              control       s100                  9.0                  1.3        6.0            19.7   64.0
+                            s222                  7.0                  1.3        4.3            20.7   66.7
+olympiadbench cap32k        s222                  3.7                 22.7        7.0            18.3   48.3
+              cap32k-giveup s100                  3.0                 25.0        4.3            17.7   50.0
+                            s222                  2.3                 17.0       10.0            22.3   48.3
+              control       s100                  1.3                 21.3        6.0            20.3   51.0
+                            s222                  2.3                 18.0        8.0            20.0   51.7
+aime24 problem-level long-share correlation across arms:
+ arm            cap32k  cap32k-giveup  control
+arm                                          
+cap32k           1.00           0.95     0.93
+cap32k-giveup    0.95           1.00     0.91
+control          0.93           0.91     1.00
+ problems never solved by control: 3  their long share (ctrl): 1.0  problems always solved by ctrl: 12 long share: 0.05
+olympiadbench problem-level long-share correlation across arms:
+ arm            cap32k  cap32k-giveup  control
+arm                                          
+cap32k           1.00           0.88     0.91
+cap32k-giveup    0.88           1.00     0.92
+control          0.91           0.92     1.00
+ problems never solved by control: 15  their long share (ctrl): 0.58  problems always solved by ctrl: 2 long share: 0.0
