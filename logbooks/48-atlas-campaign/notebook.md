@@ -1107,3 +1107,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for policy-pinned admission outcomes.
+
+### 2026-11-17 12:40 UTC - Hourly catch-up (11:40–12:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `abe5f511d4…` (11:28:32 UTC) to head `2b7ee67d967623ba78b3f7e6aee083e186d22dca`, landed 12:33:26 UTC (~10 landings 12:26–12:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log abe5f511..2b7ee67d` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Atlas preview staged with prebuilt assets and no build command** (`3867eed37c…`) — the preview deployment path changes shape; deployment class carried through survey merges (`2b7ee67d96…`, head).
+  - **FACET artifact lane**: each pinned FACET image preserved as a sealed artifact (`a63eb0f3bd…`); image receipts loadable after CLI execution (`6b8c4d6afe…`); FACET artifact model formatted (`9ad96332fe…`).
+  - **production_checkers module import guards added with a rename test** (`4ef1967b12…` and two duplicate landing records).
+  - **Rounds/watchdog layer**: advisory findings resolved on the rounds layer and watchdog (`309e521db8…`); a warning added when a rounds launch ships a worktree behind atlas-env-audit (`0cfd8595b8…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the prebuilt-asset preview deployment outcome.
