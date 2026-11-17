@@ -23,3 +23,7 @@ If both historical subsets pass reuse,3200new targets (eight chunks) plus40compa
 ## Analysis and reporting
 
 Validate all4800target likelihoods and score reuse provenance; report AUPRC, group-bootstrap SE, paired healthy-minus-null95%interval and within-group pairwise accuracy for each300-row subset separately. Same native MarinDNA metrics hash `bee720324d61ea8b88a4644b6bd036569e9bab6f8e931d6335d165fb2e2b2395`,2000resamples,seed11181. Existing100-row results remain archived; do not call the expansion independent confirmation or select groups based on outcomes. Keep issue logs and commit-pinned evidence. Research branch only, no PR or main merge.
+
+## Explicit transport recovery amendment (before recovery execution)
+
+After two complete chunks and150saved targets in chunk3, a completion returned HTTP502 with an empty body. The runner stopped without retrying. A separate read-only model-discovery check returned200 and the same advertised checkpoint. Permit one explicit recovery attempt within the existing global time/HTTP budget: preserve all originals; verify the same fingerprint and all four anchors before scoring only the missing250targets. Repeat anchors every80targets and at the end. Combine original and recovery streams only after both pass coverage/provenance checks. No score replacement or automatic request retries. Any further serving failure stops this run. Recovery uses a new output stream and records its exact source revision.
