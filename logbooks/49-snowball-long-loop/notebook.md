@@ -804,3 +804,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring state [R].
 - Interpretation and limitations: grade-0 agent trial verifies the harness path only; optimizer evidence is the next milestone.
 - Decision and next action: hourly checks now track RL updates/optimizer evidence and the first admission decisions.
+
+### 2026-11-17 16:40 UTC - Hourly catch-up (15:40–16:40 UTC window): exp3 RL update 1 complete
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch.
+- External inputs and artifact references: monitoring state (16:34 readback) [R].
+- Environment and hardware when relevant: update-1 timing split: 2,955.703 s inclusive = 361.161 s learner + 2,569.976 s admission.
+- Result, including failure or restart: **exp3's RL update 1 is complete** (16:08:15 UTC) — stdout metrics match the W&B history index. **No optimizer learning evidence yet**: the update's time went to admission (2,569.976 s) plus a short learner segment (361.161 s); the native final seal and checkpoint are pending; the run itself is unchanged.
+- Evidence: monitoring state [R].
+- Interpretation and limitations: update completion ≠ learner progress; the admission-dominated first update is expected (the admission phase assembles the first sample groups).
+- Decision and next action: hourly checks now track the learner/ admission split per update, the first checkpoint, and steady-state cadence.
