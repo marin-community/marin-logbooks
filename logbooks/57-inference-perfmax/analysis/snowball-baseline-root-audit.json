@@ -1,0 +1,159 @@
+{
+  "observed_at_utc": "2026-11-17T20:29:58.871079+00:00",
+  "inspection": "Root read native exports, commands, check report, worker receipt and allocation; recomputed hashes and phase/token totals.",
+  "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T182804Z-6603a552927f",
+  "source": {
+    "tree_hash": "d5c4ace781",
+    "base_commit": "548b9fd14d",
+    "dirty": false,
+    "branch": "research/perfmax-snowball-01a1d379",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T10:28:04.330143",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/perfmax-snowball-campaign-01a1d379/experiments/evaluation/knotmeter/cli.py",
+      "run",
+      "--profile",
+      "snowball-h100",
+      "--campaign",
+      "perfmax-snowball-tuning-01a1eabe",
+      "--priority",
+      "interactive",
+      "--logbook",
+      "https://github.com/marin-community/marin-logbooks/issues/57"
+    ]
+  },
+  "report_sha256": "325d7b21f1f51b10262ed03f2e0c9296b9bdc7b84f44e8534d9e217adb193477",
+  "archive_sha256": "d0e7155d691a6f0894dabce4a1304756b2f32236fd652d8f36dc0f29d97135eb",
+  "record_counts": [
+    {
+      "phase": "profiling",
+      "outcome": "error",
+      "count": 1
+    },
+    {
+      "phase": "profiling",
+      "outcome": "success",
+      "count": 5165
+    },
+    {
+      "phase": "warmup",
+      "outcome": "error",
+      "count": 417
+    },
+    {
+      "phase": "warmup",
+      "outcome": "success",
+      "count": 989
+    }
+  ],
+  "error_counts": [
+    {
+      "phase": "profiling",
+      "type": "ServerDisconnectedError",
+      "count": 1
+    },
+    {
+      "phase": "warmup",
+      "type": "InvalidInferenceResultError",
+      "count": 417
+    }
+  ],
+  "profiling_token_totals": {
+    "output_sequence_length": 3612237,
+    "usage_completion_tokens": 3612237,
+    "output_token_count": 3255255
+  },
+  "validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 5165,
+    "profiling_errors": 1,
+    "profiling_error_ratio": 0.00019357336430507162,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "native_export": {
+    "was_cancelled": false,
+    "start_time": "2026-11-17T18:51:32.672165",
+    "end_time": "2026-11-17T19:52:12.673571",
+    "benchmark_duration": {
+      "unit": "sec",
+      "avg": 3629.773935872
+    },
+    "coverage": [
+      {
+        "phase_name": "profiling",
+        "expected_duration_seconds": 3600.0,
+        "required_ratio": 0.95,
+        "ttft_ratio": 1.0,
+        "inter_token_latency_ratio": 1.0
+      }
+    ]
+  },
+  "checks": {
+    "batch": {
+      "status": "passed",
+      "histories": null,
+      "positions": 4,
+      "coverage": null,
+      "running_peak": 4.0
+    },
+    "cache": {
+      "status": "passed",
+      "histories": null,
+      "positions": null,
+      "coverage": null,
+      "running_peak": null
+    },
+    "decode": {
+      "status": "passed",
+      "histories": null,
+      "positions": 64,
+      "coverage": null,
+      "running_peak": null
+    },
+    "deployment": {
+      "status": "passed",
+      "histories": null,
+      "positions": null,
+      "coverage": null,
+      "running_peak": null
+    },
+    "reference": {
+      "status": "passed",
+      "histories": null,
+      "positions": null,
+      "coverage": null,
+      "running_peak": null
+    }
+  },
+  "gpu_hours": 11.36888888888889,
+  "cost_complete": true,
+  "allocation": {
+    "pod_uid": "a5803c31-80c5-4867-911b-ef8d7728efdb",
+    "attempt_uid": "fced1e4b46787c9a",
+    "pod_name": "iris-romain-knotmeter-20261117t1828-589ffb1b-0-fced1e4b46787c9a",
+    "node_name": "g5ba762",
+    "observed_unix": 1794946039.4403436,
+    "phase": "Succeeded",
+    "scheduled_unix": 1794940181.0,
+    "finished_unix": 1794945297.0,
+    "status": "measured",
+    "end_basis": "pod-container-finish",
+    "end_unix": 1794945297.0
+  },
+  "metric_scope": "Completed successful profiling requests, native reported completion tokens. p90 completion is per-request latency, not a full session or RL step.",
+  "limitations": [
+    "417 empty-content warmup validation errors; one profiling disconnect. Native validity passes.",
+    "One normal window at C128; stronger branch checker is being exercised by C64."
+  ],
+  "native_deadline": {
+    "in_flight_credits_cancelled": 59,
+    "profiling_sessions_completed": 44,
+    "profiling_sessions_cancelled": 1,
+    "source": "native agentx.log PhaseRunner completion at 2026-11-17T19:52:12.673; independent root read"
+  }
+}

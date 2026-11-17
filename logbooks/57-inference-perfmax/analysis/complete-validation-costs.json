@@ -1,0 +1,92 @@
+{
+  "scope": "Complete-validation phase and fresh-context campaign, starting 2026-11-17T18:06Z; previous phases are shown separately.",
+  "fixed_completed_runs": [
+    {
+      "name": "snowball-retention128-a1",
+      "gpu": "H100",
+      "gpu_seconds": 4520.0,
+      "gpu_hours": 1.2555555555555555,
+      "source": "snowball-retention128-a1-execution.json",
+      "job_id": "/romain/knotmeter-20261117t182002z-84fa26881755",
+      "cost_complete": true
+    },
+    {
+      "name": "hero-retention128-a1",
+      "gpu": "GB200",
+      "gpu_seconds": 17184.0,
+      "gpu_hours": 4.773333333333333,
+      "source": "hero-retention128-a1-execution.json",
+      "job_id": "/romain/knotmeter-20261117t182032z-4cf6edeef5dd",
+      "cost_complete": true
+    },
+    {
+      "name": "hero-repeat-controls-a1",
+      "gpu": "GB200",
+      "gpu_seconds": 9348.0,
+      "gpu_hours": 2.5966666666666667,
+      "source": "hero-repeat-controls-a1-execution.json",
+      "job_id": "/romain/knotmeter-20261117t190120z-2121298b0679",
+      "cost_complete": true
+    },
+    {
+      "name": "hero-scheduler-trace-a1",
+      "gpu": "GB200",
+      "gpu_seconds": 4372.723999977112,
+      "gpu_hours": 1.2146455555491977,
+      "source": "hero-scheduler-trace-a1-execution.json",
+      "job_id": "/romain/knotmeter-20261117t195336z-1c57a9d1e32d",
+      "cost_complete": true
+    },
+    {
+      "name": "hero-qualified-a2",
+      "gpu": "GB200",
+      "gpu_seconds": 17972.0,
+      "gpu_hours": 4.992222222222222,
+      "source": "hero-qualified-a2-execution.json",
+      "job_id": "/romain/knotmeter-20261117t202034z-78f37c29b0f5",
+      "cost_complete": true
+    },
+    {
+      "name": "snowball-c128-baseline",
+      "gpu": "H100",
+      "gpu_seconds": 40928.0,
+      "gpu_hours": 11.36888888888889,
+      "source": "snowball-tuning-01a1eabe-baseline.json",
+      "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T182804Z-6603a552927f",
+      "cost_complete": true
+    }
+  ],
+  "known_phase_gpu_hours_excluding_c64": {
+    "H100": 12.624444444444446,
+    "GB200": 13.576867777771419
+  },
+  "phase_cost_complete": false,
+  "pending_trial": {
+    "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6",
+    "status": "Configured retry running after a warmup preemption; total cost must include both attempts."
+  },
+  "previous_phases": {
+    "manual_workflow_diagnostics": {
+      "H100": 1.8377777777777777,
+      "GB200": 5.032824444240994
+    },
+    "references_and_initial_shared_checks": {
+      "H100": 4.802222222222222,
+      "GB200": 9.337551110585531
+    }
+  },
+  "known_program_gpu_hours_excluding_c64": {
+    "H100": 19.264444444444447,
+    "GB200": 27.947243332597942
+  },
+  "historical_uncertainty": "Two earlier unadmitted Snowball attempts have incomplete allocation receipts. No allocation was observed; unknown remains visible in correctness-costs.json.",
+  "basis": "PodScheduled through final container finish, with explicit Iris terminal-time fallback when the provider pod expired. Setup, checks, warmup, drain and failures count; queueing does not.",
+  "concurrent_ceilings": {
+    "H100": 48,
+    "GB200": 128
+  },
+  "observed_concurrent_peaks": {
+    "H100": 8,
+    "GB200": 16
+  }
+}

@@ -1,0 +1,810 @@
+{
+  "status": "passed",
+  "manifest": {
+    "sha256": "ffecfe5e324e4379933b64c64dcef8aba1cbfc1fe7ff9f9b9b030299ab18e39b",
+    "uri": "s3://marin-us-east-02a/marin/inference/goldens/hero-sft-step400407-1a7886b05df2/6c8cd4e838a11be468be75e11c2a0876bfb99fa51bdd7933e9a018e4ae08fb73/manifest-ffecfe5e324e4379933b64c64dcef8aba1cbfc1fe7ff9f9b9b030299ab18e39b.json"
+  },
+  "policy_sha256": "b247a9605ba950e9929b83eb45454817a4e6d2f88ca08934da0aa9350adfd05b",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "report_sha256": "906c509b4bd86b181fb2037a4324eee01d6ccb2cde8bde9f337a1725ac2394f7",
+  "archive": {
+    "archive_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261117T202034Z-78f37c29b0f5/attempts/377b946e84857b47/hosts/0/native-57fe0023cbd60a2d61d12b21f3ea964292cd5b42d572a1cff7ed4f03462f1bda.tar.zst",
+    "archive_sha256": "57fe0023cbd60a2d61d12b21f3ea964292cd5b42d572a1cff7ed4f03462f1bda",
+    "source": {
+      "tree_hash": "641212c64b",
+      "base_commit": "64bfff4bc5",
+      "dirty": false,
+      "branch": "docs/agentx-tuning-guide",
+      "built_by": "romain",
+      "git_remote": "git@github.com:marin-community/marin.git",
+      "created_at": "2026-11-17T12:20:34.962363",
+      "command_line": [
+        "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+        "--profile",
+        "hero-gb200",
+        "--name",
+        "hero-qualified-a2",
+        "--output",
+        "/home/romain/.cache/inference-perfmax-01a1d379/complete-validation/hero-qualified-a2-execution.json"
+      ]
+    },
+    "task_index": 0,
+    "attempt_uid": "377b946e84857b47"
+  },
+  "checks": {
+    "batch": {
+      "status": "passed",
+      "seconds": 15.090287923812866,
+      "positions": 4,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.007570874890301643,
+        "p90": 0.00596315581797691,
+        "p99": 0.007410102983069169
+      },
+      "running_peak": 4.0
+    },
+    "cache": {
+      "status": "passed",
+      "seconds": 169.1465666294098,
+      "failures": [],
+      "cache_evidence": [
+        {
+          "boundary": 127,
+          "decode_cached_tokens": 256,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 112,
+          "warm_cached_tokens": 112
+        },
+        {
+          "boundary": 128,
+          "decode_cached_tokens": 384,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 144,
+          "warm_cached_tokens": 128
+        },
+        {
+          "boundary": 129,
+          "decode_cached_tokens": 384,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 144,
+          "warm_cached_tokens": 128
+        },
+        {
+          "boundary": 255,
+          "decode_cached_tokens": 384,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 240,
+          "warm_cached_tokens": 240
+        },
+        {
+          "boundary": 256,
+          "decode_cached_tokens": 512,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 272,
+          "warm_cached_tokens": 256
+        },
+        {
+          "boundary": 257,
+          "decode_cached_tokens": 512,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 272,
+          "warm_cached_tokens": 256
+        },
+        {
+          "boundary": 2047,
+          "decode_cached_tokens": 2176,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 2032,
+          "warm_cached_tokens": 2032
+        },
+        {
+          "boundary": 2048,
+          "decode_cached_tokens": 2304,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 2064,
+          "warm_cached_tokens": 2048
+        },
+        {
+          "boundary": 2049,
+          "decode_cached_tokens": 2304,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 2064,
+          "warm_cached_tokens": 2048
+        }
+      ],
+      "same_split": {
+        "status": "passed",
+        "positions": 10,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        }
+      },
+      "different_split": {
+        "status": "passed",
+        "positions": 27,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.032985965506584614,
+          "p90": 0.02684606260596631,
+          "p99": 0.03285086452237668
+        }
+      },
+      "prefill_reuse": {
+        "observations": [
+          {
+            "boundary": 127,
+            "cached_tokens": [
+              112,
+              112
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 128,
+            "cached_tokens": [
+              128,
+              144
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 129,
+            "cached_tokens": [
+              128,
+              144
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 255,
+            "cached_tokens": [
+              240,
+              240
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 256,
+            "cached_tokens": [
+              256,
+              272
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 257,
+            "cached_tokens": [
+              256,
+              272
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 2047,
+            "cached_tokens": [
+              2032,
+              2032
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 2048,
+            "cached_tokens": [
+              2048,
+              2064
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 2049,
+            "cached_tokens": [
+              2048,
+              2064
+            ],
+            "status": "passed"
+          }
+        ],
+        "status": "passed"
+      },
+      "settled_branches": {
+        "observations": [
+          {
+            "boundary": 127,
+            "comparison": {
+              "boundary": 127,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 128,
+            "preparation_hits": [
+              128
+            ],
+            "repeat_cached_tokens": 128,
+            "status": "passed"
+          },
+          {
+            "boundary": 128,
+            "comparison": {
+              "boundary": 128,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 144,
+            "preparation_hits": [
+              144
+            ],
+            "repeat_cached_tokens": 144,
+            "status": "passed"
+          },
+          {
+            "boundary": 129,
+            "comparison": {
+              "boundary": 129,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 144,
+            "preparation_hits": [
+              144
+            ],
+            "repeat_cached_tokens": 144,
+            "status": "passed"
+          },
+          {
+            "boundary": 255,
+            "comparison": {
+              "boundary": 255,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 256,
+            "preparation_hits": [
+              256
+            ],
+            "repeat_cached_tokens": 256,
+            "status": "passed"
+          },
+          {
+            "boundary": 256,
+            "comparison": {
+              "boundary": 256,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 272,
+            "preparation_hits": [
+              272
+            ],
+            "repeat_cached_tokens": 272,
+            "status": "passed"
+          },
+          {
+            "boundary": 257,
+            "comparison": {
+              "boundary": 257,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 272,
+            "preparation_hits": [
+              272
+            ],
+            "repeat_cached_tokens": 272,
+            "status": "passed"
+          },
+          {
+            "boundary": 2047,
+            "comparison": {
+              "boundary": 2047,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 2048,
+            "preparation_hits": [
+              2048
+            ],
+            "repeat_cached_tokens": 2048,
+            "status": "passed"
+          },
+          {
+            "boundary": 2048,
+            "comparison": {
+              "boundary": 2048,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 2064,
+            "preparation_hits": [
+              2064
+            ],
+            "repeat_cached_tokens": 2064,
+            "status": "passed"
+          },
+          {
+            "boundary": 2049,
+            "comparison": {
+              "boundary": 2049,
+              "case": "settled-branch",
+              "max_probability_error": 0.0,
+              "max_probability_error_lower_bound": 0.0,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            "expected_cached_tokens": 2064,
+            "preparation_hits": [
+              2064
+            ],
+            "repeat_cached_tokens": 2064,
+            "status": "passed"
+          }
+        ],
+        "status": "passed"
+      },
+      "decode_reuse": {
+        "observations": [
+          {
+            "boundary": 127,
+            "cached_tokens": 256,
+            "prompt_tokens": 127,
+            "status": "passed"
+          },
+          {
+            "boundary": 128,
+            "cached_tokens": 384,
+            "prompt_tokens": 128,
+            "status": "passed"
+          },
+          {
+            "boundary": 129,
+            "cached_tokens": 384,
+            "prompt_tokens": 129,
+            "status": "passed"
+          },
+          {
+            "boundary": 255,
+            "cached_tokens": 384,
+            "prompt_tokens": 255,
+            "status": "passed"
+          },
+          {
+            "boundary": 256,
+            "cached_tokens": 512,
+            "prompt_tokens": 256,
+            "status": "passed"
+          },
+          {
+            "boundary": 257,
+            "cached_tokens": 512,
+            "prompt_tokens": 257,
+            "status": "passed"
+          },
+          {
+            "boundary": 2047,
+            "cached_tokens": 2176,
+            "prompt_tokens": 2047,
+            "status": "passed"
+          },
+          {
+            "boundary": 2048,
+            "cached_tokens": 2304,
+            "prompt_tokens": 2048,
+            "status": "passed"
+          },
+          {
+            "boundary": 2049,
+            "cached_tokens": 2304,
+            "prompt_tokens": 2049,
+            "status": "passed"
+          }
+        ],
+        "status": "passed"
+      },
+      "matched_repeat": {
+        "cached_tokens": [
+          2064,
+          2064
+        ],
+        "status": "passed"
+      }
+    },
+    "decode": {
+      "status": "passed",
+      "seconds": 6.114269018173218,
+      "positions": 64,
+      "statistics": {
+        "fraction_above_0075": 0.015625,
+        "maximum": 0.1054591412253757,
+        "p90": 0.00966186448299399,
+        "p99": 0.06571260368260931
+      }
+    },
+    "deployment": {
+      "status": "passed",
+      "seconds": 1.752866506576538,
+      "mismatches": {},
+      "cache_config": {
+        "_block_size_resolved": true,
+        "block_size": 16,
+        "cache_dtype": "auto",
+        "enable_mamba_fine_grained_prefix_cache": false,
+        "enable_prefix_caching": true,
+        "gpu_memory_utilization": 0.95,
+        "is_attention_free": false,
+        "kv_cache_dtype_skip_layers": [],
+        "kv_cache_layout": null,
+        "kv_cache_max_concurrency": 4.205830438991061,
+        "kv_cache_memory_bytes": null,
+        "kv_cache_size_tokens": 1102533,
+        "kv_offloading_backend": "native",
+        "kv_offloading_size": null,
+        "kv_sharing_fast_prefill": false,
+        "mamba_block_size": 16,
+        "mamba_cache_dtype": "auto",
+        "mamba_cache_mode": "align",
+        "mamba_page_size_padded": null,
+        "mamba_ssm_cache_dtype": "auto",
+        "num_cpu_blocks": null,
+        "num_gpu_blocks": 1181872,
+        "num_gpu_blocks_override": null,
+        "prefix_cache_retention_interval": 128,
+        "prefix_caching_hash_algo": "sha256",
+        "prefix_match_unit": null,
+        "replayssm_buffer_len": 16,
+        "skip_page_size_padded": null,
+        "sliding_window": null,
+        "use_kda_recoverssm": false,
+        "use_replayssm": false,
+        "user_specified_block_size": false,
+        "user_specified_mamba_block_size": false
+      },
+      "compilation_config": {
+        "backend": "inductor",
+        "cache_dir": "",
+        "compilation_time": 0.0,
+        "compile_cache_save_format": "binary",
+        "compile_mm_encoder": false,
+        "compile_ranges_endpoints": [
+          2048
+        ],
+        "compile_sizes": [],
+        "cudagraph_capture_sizes": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          24,
+          32,
+          40,
+          48,
+          56,
+          64,
+          72,
+          80,
+          88,
+          96,
+          104,
+          112,
+          120,
+          128,
+          136,
+          144,
+          152,
+          160,
+          168,
+          176,
+          184,
+          192,
+          200,
+          208,
+          216,
+          224,
+          232,
+          240,
+          248,
+          256
+        ],
+        "cudagraph_copy_inputs": false,
+        "cudagraph_mm_encoder": false,
+        "cudagraph_mode": 1,
+        "cudagraph_num_of_warmups": 1,
+        "cudagraph_specialize_lora": true,
+        "custom_ops": [
+          "none"
+        ],
+        "debug_dump_path": null,
+        "disabled_custom_ops": {},
+        "dynamic_shapes_config": {
+          "assume_32_bit_indexing": false,
+          "evaluate_guards": false,
+          "type": "backed"
+        },
+        "enabled_custom_ops": {},
+        "encoder_compilation_time": 0.0,
+        "encoder_cudagraph_max_frames_per_batch": null,
+        "encoder_cudagraph_max_vision_items_per_batch": 0,
+        "encoder_cudagraph_token_budgets": [],
+        "fast_moe_cold_start": false,
+        "inductor_compile_config": {
+          "benchmark_combo_kernel": true,
+          "combo_kernels": true,
+          "enable_auto_functionalized_v2": false
+        },
+        "inductor_passes": {},
+        "ir_enable_torch_wrap": true,
+        "local_cache_dir": null,
+        "max_cudagraph_capture_size": 256,
+        "mode": 3,
+        "pass_config": {
+          "eliminate_noops": true,
+          "enable_qk_norm_rope_fusion": false,
+          "enable_sp": false,
+          "fi_allreduce_fusion_max_size_mb": null,
+          "fuse_act_padding": false,
+          "fuse_act_quant": false,
+          "fuse_allreduce_rms": false,
+          "fuse_attn_quant": false,
+          "fuse_gemm_comms": false,
+          "fuse_mla_dual_rms_norm": null,
+          "fuse_norm_quant": false,
+          "fuse_qk_norm_rope_kvcache": false,
+          "fuse_rope_kvcache": null,
+          "fuse_rope_kvcache_cat_mla": true,
+          "rope_kvcache_fusion_max_token_num": 256,
+          "sp_min_token_num": null
+        },
+        "splitting_ops": [
+          "vllm::unified_attention_with_output",
+          "vllm::unified_kv_cache_update",
+          "vllm::grug_moe_short_conv"
+        ],
+        "static_all_moe_layers": [],
+        "static_forward_context": {},
+        "traced_files": [],
+        "use_inductor_graph_partition": false
+      }
+    },
+    "reference": {
+      "status": "passed",
+      "seconds": 380.75017976760864,
+      "total_cases": 37,
+      "failures": [],
+      "completed_cases": 37,
+      "groups": {
+        "long": {
+          "limits": {
+            "fraction_above_0075": 0.02,
+            "maximum": 0.35,
+            "p90": 0.04,
+            "p99": 0.09
+          },
+          "positions": 4485,
+          "statistics": {
+            "fraction_above_0075": 0.00379041248606466,
+            "maximum": 0.2569770211751245,
+            "p90": 0.024454598870688425,
+            "p99": 0.0531604599026839
+          },
+          "status": "passed",
+          "worst": [
+            {
+              "case": "long131072",
+              "max_probability_error": 0.2569770211751245,
+              "max_probability_error_lower_bound": 0.2569770211751245,
+              "position": 130623,
+              "same_greedy_token": false,
+              "shared_tokens": 50
+            },
+            {
+              "case": "long32768",
+              "max_probability_error": 0.15524629970880743,
+              "max_probability_error_lower_bound": 0.15524629970880743,
+              "position": 32571,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            {
+              "case": "long131072",
+              "max_probability_error": 0.1489303096766691,
+              "max_probability_error_lower_bound": 0.1489303096766691,
+              "position": 130625,
+              "same_greedy_token": true,
+              "shared_tokens": 45
+            },
+            {
+              "case": "long262144",
+              "max_probability_error": 0.12188223297981615,
+              "max_probability_error_lower_bound": 0.12188223297981615,
+              "position": 261933,
+              "same_greedy_token": false,
+              "shared_tokens": 50
+            },
+            {
+              "case": "long262144",
+              "max_probability_error": 0.10139465937363501,
+              "max_probability_error_lower_bound": 0.10139465937363501,
+              "position": 190720,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            {
+              "case": "long4096",
+              "max_probability_error": 0.09761262736332366,
+              "max_probability_error_lower_bound": 0.09761262736332366,
+              "position": 3600,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            },
+            {
+              "case": "long32768",
+              "max_probability_error": 0.09596488392432939,
+              "max_probability_error_lower_bound": 0.09596488392432939,
+              "position": 32392,
+              "same_greedy_token": false,
+              "shared_tokens": 50
+            },
+            {
+              "case": "long262144",
+              "max_probability_error": 0.09127369046878003,
+              "max_probability_error_lower_bound": 0.09127369046878003,
+              "position": 261881,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "long131072",
+              "max_probability_error": 0.08694569223735471,
+              "max_probability_error_lower_bound": 0.08694569223735471,
+              "position": 131006,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "long131072",
+              "max_probability_error": 0.08542030435443915,
+              "max_probability_error_lower_bound": 0.08542030435443915,
+              "position": 130700,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            }
+          ]
+        },
+        "short": {
+          "limits": {
+            "fraction_above_0075": 0.035,
+            "maximum": 0.65,
+            "p90": 0.04,
+            "p99": 0.125
+          },
+          "positions": 11370,
+          "statistics": {
+            "fraction_above_0075": 0.014599824098504837,
+            "maximum": 0.5601996861620684,
+            "p90": 0.027404862836765062,
+            "p99": 0.0892480341205961
+          },
+          "status": "passed",
+          "worst": [
+            {
+              "case": "book03",
+              "max_probability_error": 0.5601996861620684,
+              "max_probability_error_lower_bound": 0.5601996861620684,
+              "position": 769,
+              "same_greedy_token": false,
+              "shared_tokens": 50
+            },
+            {
+              "case": "book07",
+              "max_probability_error": 0.4549960000136702,
+              "max_probability_error_lower_bound": 0.4549960000136702,
+              "position": 817,
+              "same_greedy_token": true,
+              "shared_tokens": 41
+            },
+            {
+              "case": "chat12",
+              "max_probability_error": 0.3141312577812551,
+              "max_probability_error_lower_bound": 0.3141312577812551,
+              "position": 59,
+              "same_greedy_token": false,
+              "shared_tokens": 49
+            },
+            {
+              "case": "chat16",
+              "max_probability_error": 0.2991349620099099,
+              "max_probability_error_lower_bound": 0.2991349620099099,
+              "position": 34,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "book07",
+              "max_probability_error": 0.27855030341347187,
+              "max_probability_error_lower_bound": 0.27855030341347187,
+              "position": 30,
+              "same_greedy_token": false,
+              "shared_tokens": 45
+            },
+            {
+              "case": "book07",
+              "max_probability_error": 0.2491723111796818,
+              "max_probability_error_lower_bound": 0.2491723111796818,
+              "position": 1104,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "chat08",
+              "max_probability_error": 0.22515651021616373,
+              "max_probability_error_lower_bound": 0.22515651021616373,
+              "position": 43,
+              "same_greedy_token": false,
+              "shared_tokens": 50
+            },
+            {
+              "case": "book07",
+              "max_probability_error": 0.22085350307033047,
+              "max_probability_error_lower_bound": 0.22085350307033047,
+              "position": 811,
+              "same_greedy_token": true,
+              "shared_tokens": 47
+            },
+            {
+              "case": "book07",
+              "max_probability_error": 0.2198805798650324,
+              "max_probability_error_lower_bound": 0.2198805798650324,
+              "position": 943,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "book03",
+              "max_probability_error": 0.20886373641187345,
+              "max_probability_error_lower_bound": 0.20886373641187345,
+              "position": 74,
+              "same_greedy_token": true,
+              "shared_tokens": 50
+            }
+          ]
+        }
+      }
+    }
+  }
+}

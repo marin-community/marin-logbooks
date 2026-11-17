@@ -572,3 +572,112 @@ Keep the initial seed/branch comparisons and all coverage requirements. Correct
 the unsupported classification after the trace; reserve exact comparisons for
 fully prepared branch prefixes with the same suffix plan. No numerical limit
 changes. The original failed report remains available.
+
+### Stronger branch control and first normal AgentX result
+
+The optional scheduler trace failed during startup. Its retained host archive
+contains hook startup records and peer-disconnect errors, but no scheduler
+split records. The original cause remains unresolved. The
+[failure observation](analysis/hero-scheduler-trace-a1-observation.json),
+[receipt](analysis/hero-scheduler-trace-a1-host3-receipt.json) and
+[cleanup](analysis/hero-scheduler-trace-a1-cleanup.json) preserve this attempt
+and its 1.214646 GB200-hours. No trace retry is planned.
+
+The pinned source counterexample establishes that equal hit counts alone are
+insufficient for the old exact comparison. It does not prove the live cause.
+[Contribution 64bfff4bc5](https://github.com/marin-community/marin/commit/64bfff4bc5612a4bf34a17719d7e7c7a14f7595e)
+keeps every original comparison and bound. It adds required exact branch
+controls at all nine boundaries after the full usable prefix is cached. A
+sibling differs inside that cached region; the original branch must still hit
+the full prefix and return identical scores. Preparation stops on coverage,
+never on a numerical pass. Initial seed/branch pairs use the existing changed
+split bound.
+
+All [44 focused CPU cases](analysis/complete-validation-cpu-44.txt) and required
+lint pass. A disposable [HTTP regression](analysis/branch-checker-regression.txt)
+shows that the old checker accepts an injected branch-state alias under a
+permissive synthetic split bound, while the new exact branch check rejects it.
+The [replay source](analysis/branch_checker_regression.py) uses the checked-in
+HTTP engine. Production numerical policies and saved goldens are unchanged.
+Hero's ordinary full pytest run now uses this published contribution without
+the private hook. Snowball's C64 tuning point will exercise the same updated
+checks through the endpoint CLI.
+
+The fresh-context agent completed its C128 baseline. Root independently read
+the native exports, commands, check report and allocation, verified archive and
+report hashes, and recomputed phase and token totals. The
+[audit](analysis/snowball-baseline-root-audit.json) confirms a valid normal-hour
+window and 11.368889 H100-hours including startup and warmup. Its 124.39607
+tokens/s/GPU counts completion tokens reported for successful profiling
+requests. The p90 TTFT is 103.33113 seconds; p90 per-request completion is
+297.61639 seconds. These are not session-tree or RL-step measurements.
+
+Keep the phase errors visible: 989 warmup requests had content and 417 had
+empty-content validation errors; profiling had 5,165 successes and one
+disconnect. Native submission validity and both duration-coverage checks pass.
+The agent chose C64 next to test whether lower cache pressure improves this
+throughput/latency tradeoff. Prepared workload reuse avoids repeated data work.
+
+### Hero completes the corrected shared suite
+
+Hero's ordinary [full pytest report](analysis/hero-qualified-a2-summary.json)
+passes all five groups on published contribution `64bfff4bc5`. It completes
+37 saved histories and 15,855 positions. Reference maxima are 0.560200 for
+short histories and 0.256977 for long histories, within the unchanged
+provisional policy. Batch overlap reaches four requests on engine 0; all four
+batch and 64 decode comparisons pass.
+
+All nine prefill, fully prepared branch and decode-created reuse boundaries
+pass. The nine branch comparisons and final repeat have exactly zero error.
+Changed prefill comparisons retain a maximum error of 0.032986. These results
+resolve the required cache coverage and exact branch checks for this deployment;
+they do not establish the cause of the earlier equal-count differences.
+
+The [execution](analysis/hero-qualified-a2-execution.json) costs 4.992222
+GB200-hours. Root verified the retained report and native archive hashes and
+[all four provider pods](analysis/hero-qualified-a2-cleanup.json) have terminated
+containers. The resource-board entry is closed. Snowball's C64 candidate is
+still queued; it will run the corrected CLI checks before its normal window.
+
+### Both corrected suites pass; C64 continues after preemption
+
+The first C64 allocation passed every updated shared check on source
+`06b9a63682`: 64 histories, 1,770 reference positions, all nine prefill,
+prepared-branch and decode-created reuse boundaries, and ten exact controls
+with zero error. Root independently verified the report and native archive
+hashes in the [audit](analysis/snowball-c64-attempt0-root-audit.json). The
+[submitted-plan audit](analysis/snowball-c64-plan-root-audit.json) confirms
+that client concurrency, 128 to 64, is the only profile difference from baseline.
+
+Kueue preempted this allocation during native warmup. No profiling window or
+final export completed. The native archive preserves the original failed
+worker record. A [derived receipt](analysis/snowball-c64-attempt0-derived-receipt.json)
+and separate [recovery record](analysis/snowball-c64-attempt0-receipt-recovery.json)
+state that the original receipt was missing and identify the verified inputs.
+This recovers evidence; it does not turn the interrupted attempt into a pass
+for measurement or recommendation. Iris queued its configured retry. No manual
+restart or scheduling change was made.
+
+The reissued goal also asks for the evidence and limits behind each numerical
+policy, using retained data without a new calibration campaign. The
+[policy explanation](numerical-policies.md) covers each comparison and the
+[observed statistics](analysis/numerical-policy-observations.json). Hero's
+reference margins have prior BF16 control evidence, with a different top-k
+comparison and launch scope. Snowball's reference cutoffs and the nonzero cache,
+batch and decode cutoffs remain initial screens. Passing checking code and
+passing those provisional limits are separate claims. RL trainer ratios
+remain unqualified.
+
+### Keep the qualification scope after selecting a point
+
+The report previously showed the RL qualification limit only when no point was
+selected. Contribution `e929e4528e` keeps it visible after selection and in the
+saved YAML comments. This is a reporting change: acceptance rules, numerical
+limits and measurement code are unchanged. The
+[20 affected report cases](analysis/report-scope-tests.txt) pass, including
+saved-profile parsing and retained runtime selection; required lint and types
+pass. A local render using the completed baseline confirmed the selected path's
+footer without writing a campaign decision. C64 keeps its submitted source
+`06b9a63682`. After the tuning agent finishes, the coordinating agent will
+refresh the final report wording without another GPU allocation or a changed
+point selection.
