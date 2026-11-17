@@ -3,18 +3,20 @@
 Both selected BF16 deployments pass the corrected shared suite under unchanged
 provisional numerical policies. The fresh-context Snowball campaign completed
 two valid one-hour windows and retained C128 for its higher throughput. The
-required review of goal completion remains pending. [PR #11320](https://github.com/marin-community/marin/pull/11320)
-is draft and unmerged.
+required High review is complete; its [findings are resolved](analysis/complete-validation-goal-review-resolution.json).
+[PR #11320](https://github.com/marin-community/marin/pull/11320) remains unmerged.
 
-Contribution [e929e4528e](https://github.com/yonromai/marin/commit/e929e4528e399e8f8d1dd6f5f4bf6909532b020f)
-contains the [82-line skill](../../.agents/skills/inference-perfmax/SKILL.md),
+Contribution [2471a015ac](https://github.com/yonromai/marin/commit/2471a015acfbb15d4915bf6b4159009cbd676452)
+contains the [84-line skill](../../.agents/skills/inference-perfmax/SKILL.md),
 [manual runner](../../experiments/evaluation/knotmeter/README.md) and
 [shared checks](../../experiments/evaluation/inference_correctness/README.md).
 Forty-four focused CPU/HTTP/CLI cases passed; the 20 affected report cases passed
 again after the reporting-only scope fix. Required lint and type checks pass.
-CI is terminal on `e929e4528e`: 17 successful checks and 20 skipped. Earlier
+Final [CI](analysis/ci-complete-validation-final.json) is terminal on `2471a015ac`:
+17 successful checks and 20 skipped. Earlier
 [review resolutions](analysis/goal-review-resolution.json) apply to unchanged
-code; they do not replace the new goal's final review.
+code. The final review's changes clarify documentation and add two skill
+sentences; checking and measurement code are unchanged.
 
 The targets are [Snowball v0.1.1](../../lib/marin/src/marin/testing/inference/resources/endpoint/snowball-v0.1.1.json)
 at HF revision `59852d6f07261722bbec1edb6ab148317156b58e`, on eight H100s,
@@ -34,10 +36,11 @@ compilation and CUDA graphs. Plans and reports retain the actual settings.
 | Decode versus recomputation | 64 generated-token comparisons passed | Same coverage, passed |
 
 The [Hero pytest report](analysis/hero-qualified-a2-summary.json) and
-[Snowball CLI audit](analysis/snowball-c64-attempt0-root-audit.json) identify the
+[Snowball CLI audit](analysis/snowball-c64-root-audit.json) identify the
 native archives and report hashes. The coordinating agent verified their bytes
 and outcomes.
-Snowball completed its checks before Kueue interrupted native warmup. Its
+Snowball's completed retry passed every check. An earlier attempt also passed
+before Kueue interrupted native warmup. Its
 [derived receipt](analysis/snowball-c64-attempt0-derived-receipt.json) and
 [recovery record](analysis/snowball-c64-attempt0-receipt-recovery.json) preserve
 the missing-receipt fact and original failed worker record. That attempt has
@@ -45,10 +48,17 @@ no completed performance window. Both interfaces call the same checking code.
 
 A cache miss can be legitimate. In the pinned runtime, retention interval zero
 keeps selected replay boundaries and shared-prefix junctions. It does not promise
-arbitrary decode-created checkpoints. The presets now retain checkpoints every
-128 tokens. For example, after a 127-token prompt generates 257 tokens and gains
+arbitrary decode-created checkpoints. The presets now set retention to
+128 tokens: periodic Mamba states for Hero, dense SWA retention for Snowball.
+The fixed 257-token decode probe makes zero or unreachable intervals diagnostic
+only. This keeps required coverage; it narrows eligible serving settings.
+The throughput effect of zero to 128 is unmeasured on both models. Both Snowball
+windows use 128; no Hero AgentX window was run.
+For example, after a 127-token prompt generates 257 tokens and gains
 a three-token suffix, Hero reuses 256 tokens and Snowball 368. Both hits reach
 generated history. Every required boundary still has to demonstrate actual reuse.
+Cache probes cover roughly 127–2,309 tokens; they do not cover the much longer
+histories present in AgentX traffic.
 
 Equal hit counts also do not prove equal prefill steps. The
 [pinned scheduler counterexample](analysis/hero-scheduler-split-reproduction.json)
@@ -60,14 +70,22 @@ changed-step bound. It also fully prepares each branch's usable prefix, runs a
 sibling that differs inside that region, then requires the original branch to
 reuse the full prefix and return identical scores. The
 [injected-state regression](analysis/branch-checker-regression.txt) fails the
-new exact check while the old checker misses it. No numerical bound was relaxed.
+new exact check while the old checker misses it under a permissive synthetic
+changed-step limit. Production limits reject that injected error in both versions.
+Policy values are unchanged. Equal-hit seed/branch comparisons now use the
+changed-step limit because their prefill steps can differ. The exact controls
+check persistence after branching; they cannot detect a wrong state that stays
+unchanged.
 
 The [numerical policy explanation](numerical-policies.md) gives each limit's
 basis, observed statistics and remaining weakness. Hero's reference margins
 have prior BF16 control evidence, with different top-k and launch settings.
 Snowball's reference cutoffs and the nonzero cache, batch and decode cutoffs
-remain initial screens. The metric bounds absolute probability error over
-returned top-50 lists; it does not establish full-vocabulary KL, acceptable
+remain initial screens. Reference checks bound probability error over saved
+top-64 and serving top-50 scores; cache and batch checks use two serving top-50
+lists. Decode checks measure only the emitted token's probability error.
+The recorded log-probability error has no acceptance limit. These checks do not
+establish full-vocabulary KL, acceptable
 trainer probability ratios or RL learning quality. Validated checking behavior
 and suitable acceptance limits are separate claims. Selected reports and saved
 configurations keep that RL scope limit visible. Goldens stayed fixed; this
@@ -107,6 +125,18 @@ latency by 48.22%. The tuning agent retained C128 for the primary throughput
 objective. Its 5% similarity band was a predeclared heuristic, not a numerical
 target supplied by Romain. Only two loads were tested; the campaign does not
 establish a global optimum or a universally acceptable latency.
+
+The [live samples](analysis/campaign-cache-telemetry.json) show C64 reduced KV
+use from 82–94% to 34–54%, while actual prefix hits rose from 8–11% to 24–28%.
+Theoretical reuse remained about 95–97%. Cache capacity therefore remains an
+incomplete explanation for poor reuse. Snowball uses eight data-parallel engines
+without the optional router; session placement is a possible next lead, not a
+demonstrated cause. [Older-runtime C128 results](analysis/snowball-historical-calibration.csv)
+reached 134.6–135.3 tokens/s/GPU
+at p90 TTFT 7.7–7.9 seconds. They motivate investigation but are not a controlled
+comparison with this runtime.
+The coordinating agent relayed current user decisions and the corrected checker
+during the campaign; the tuning agent chose C64 before those later messages.
 
 Inspection of the tuning agent's commands and exports also found one avoidable shell
 wrapper error: editing the active Bash script made it exit 127 after a successful

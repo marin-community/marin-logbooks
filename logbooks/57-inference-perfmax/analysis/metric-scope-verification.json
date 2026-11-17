@@ -1,0 +1,30 @@
+{
+  "purpose": "Verify documentation against saved reference formats; no scores regenerated.",
+  "references": [
+    {
+      "fixture": "hero-sft-step400407",
+      "manifest_sha256": "ffecfe5e324e4379933b64c64dcef8aba1cbfc1fe7ff9f9b9b030299ab18e39b",
+      "scores_uri": "s3://marin-us-east-02a/marin/inference/goldens/hero-sft-step400407-1a7886b05df2/6c8cd4e838a11be468be75e11c2a0876bfb99fa51bdd7933e9a018e4ae08fb73/scores.json",
+      "scores_sha256": "4f91a58da0be6afbbcdfa3619ab22b5a9628ab5220c92f9ecfade3587137def8",
+      "rows": 15855,
+      "stored_list_sizes": [
+        64
+      ]
+    },
+    {
+      "fixture": "snowball-v0.1.1",
+      "manifest_sha256": "f296e39eb6f4fae9f1964c92698667d5985bc9d2bfa9dcea16d22b2e0d8e8cd2",
+      "scores_uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/scores.json",
+      "scores_sha256": "3e7a4ae764f2a4ae190e02446634d05f0315032417335472904999c7ed1eb291",
+      "rows": 1770,
+      "stored_list_sizes": [
+        64
+      ]
+    }
+  ],
+  "comparison_scopes": {
+    "reference": "Conservative maximum probability-error bound over the saved top-64 and serving top-50 union.",
+    "cache_and_batch": "Conservative maximum probability-error bound over two serving top-50 lists.",
+    "decode": "Exact absolute probability difference for the emitted token only; raw absolute log-probability error is recorded but not bounded by the acceptance policy."
+  }
+}

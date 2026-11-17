@@ -711,3 +711,50 @@ qualification limit. Independent provider checks find both GPU attempts and
 the CPU coordinator terminal. The board is closed. CI on `e929e4528e` is
 terminal: 17 successful checks, 20 skipped. The final High GOAL review remains
 pending.
+
+### Final High review: correct the metric scope and retain the limits
+
+One final High GOAL batch completed with Claude, Codex and AGY. The
+[resolution](analysis/complete-validation-goal-review-resolution.json) records
+requested and observed models, native identities, action inspection, findings
+and deferred improvements. No second panel or GPU experiment was needed.
+
+The review found a material error in the current metric descriptions. Reference
+checks compare fixed top-64 scores with serving top-50 scores. Cache and batch
+checks compare two serving top-50 lists. Decode checks measure only the emitted
+token's absolute probability error, not a bound over all returned tokens. Its
+raw log-probability error has no acceptance limit. The
+[format verification](analysis/metric-scope-verification.json) confirms all saved
+score rows contain 64 entries. Contribution `2471a015ac` and the current handoff
+correct these descriptions. Earlier blanket descriptions must be read with this
+correction. No score, bound, checking code or measured pass changed.
+
+The review also exposed an important scope choice. Retention 128 enables the
+required decode-created coverage and narrows eligible settings for these fixed
+probes. Zero-to-128 throughput cost is unmeasured on both models; no Hero AgentX
+window was run. This remains a focused setting choice authorized by the goal.
+The exact cache control checks persistence after a sibling; it cannot detect a
+wrong state that remains unchanged. Policy values stayed fixed, but equal-hit
+initial branch comparisons moved to the changed-step limit. The injected fault
+escapes the old checker only under the permissive synthetic limit; production
+limits would reject it in either version.
+
+The [retained live samples](analysis/campaign-cache-telemetry.json) show C64
+reduced KV use to 34–54%, while actual prefix hits remained 24–28% against
+about 96% theoretical reuse. Cache capacity is an incomplete explanation.
+Routing across Snowball's eight data-parallel engines is an untested lead.
+Two skill sentences now ask agents to compare those rates, KV use and routing.
+Older-runtime results remain a lead rather than a controlled regression claim.
+The exact [44-case command](analysis/complete-validation-cpu-command.json) was
+recovered from this session's native record; its passing implementation inputs
+remain unchanged. Final lint, types and skill validation pass.
+
+Final [CI](analysis/ci-complete-validation-final.json) on `2471a015ac` is
+terminal: 17 successful checks and 20 skipped. No implementation inputs changed
+after the passing focused checks and live runs.
+
+A separate full-archive lint attempt hit 60 missing-import diagnostics in the
+archive's incomplete local environment and 15 older raw receipts without trailing
+newlines. Their bytes were preserved. All nine changed notes and evidence files
+pass the required entry point with explicit file arguments. Contribution lint,
+types and final CI pass; the archive-wide attempt is not a contribution failure.

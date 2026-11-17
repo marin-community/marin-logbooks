@@ -1,0 +1,135 @@
+{
+  "reviewed_contribution": "e929e4528e399e8f8d1dd6f5f4bf6909532b020f",
+  "reviewed_research": "836a793c9b777b4c45bfb6d31dbbd05d02d0e353",
+  "documentation_fix": "2471a015acfbb15d4915bf6b4159009cbd676452",
+  "batch": "One final High GOAL batch. All three native CLIs completed with exit zero. No follow-up panel or new GPU work.",
+  "goal": "Both-model shared checks, integrated normal AgentX windows, fresh-context campaign and evidence for each provisional numerical policy.",
+  "provider_evidence": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/observed-providers.json",
+  "providers": [
+    {
+      "provider": "AGY",
+      "host": "devbox",
+      "requested_model": "gemini-3.8-flash-high",
+      "requested_effort": "high model variant",
+      "pid": 1723026,
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1794956615.0112467,
+      "finished_unix": 1794956976.2329636,
+      "review": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/AGY_GOAL_REVIEW.md",
+      "raw_output": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/agy-cli.jsonl",
+      "stderr": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/agy-stderr.txt",
+      "observed_model": null,
+      "observed_effort": null,
+      "native_id": "fe206c4d-1b57-497c-aac5-a85db3e8ec3a",
+      "native_record": null,
+      "observed_from": "CLI conversation_id; actual model and effort were not emitted. Reviewer self-label is not proof.",
+      "tool_audit": "Native tool actions not exposed in retained CLI result. No source changes appeared; independent action audit unavailable.",
+      "registration": "/home/romain/data/sessions/devbox/agy/fe206c4d-1b57-497c-aac5-a85db3e8ec3a/registration.json"
+    },
+    {
+      "provider": "CODEX",
+      "host": "devbox",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "xhigh",
+      "pid": 1723028,
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1794956615.0113566,
+      "finished_unix": 1794957161.8173585,
+      "review": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/CODEX_GOAL_REVIEW.md",
+      "raw_output": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/codex-cli.jsonl",
+      "stderr": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/codex-stderr.txt",
+      "observed_model": "gpt-6.1-sol",
+      "observed_effort": "xhigh",
+      "native_id": "01a1ebc0-5f3a-7931-a49a-3d492a1bc0c1",
+      "native_record": "/home/romain/.codex-accounts/pro/sessions/2026/11/17/rollout-2026-11-17T15-03-36-01a1ebc0-5f3a-7931-a49a-3d492a1bc0c1.jsonl",
+      "observed_from": "Native turn_context",
+      "tool_audit": "Read-only Git, source, raw archive/report/hash and phase/token analysis, SQLite and GitHub reads; only the designated review authored.",
+      "registration": "/home/romain/data/sessions/devbox/codex/01a1ebc0-5f3a-7931-a49a-3d492a1bc0c1/registration.json"
+    },
+    {
+      "provider": "CLAUDE",
+      "host": "devbox",
+      "requested_model": "claude-opus-5-5",
+      "requested_effort": "xhigh",
+      "pid": 1723027,
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1794956615.0114257,
+      "finished_unix": 1794957806.3462684,
+      "review": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/CLAUDE_GOAL_REVIEW.md",
+      "raw_output": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/claude-cli.jsonl",
+      "stderr": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/GOAL-20261117T230302Z/claude-stderr.txt",
+      "observed_model": "claude-opus-5-5",
+      "observed_effort": "xhigh",
+      "native_id": "2cdb5e48-0134-4b3b-b29a-78d20dc0b28e",
+      "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-marin-agentx-tuning-guide-01a1d379/2cdb5e48-0134-4b3b-b29a-78d20dc0b28e.jsonl",
+      "observed_from": "CLI modelUsage plus native message.model and effort fields",
+      "tool_audit": "117 Bash reads, six Read calls, one Write to the designated review and one own-binding notebook annotation; no tests, source edits, GitHub writes or resources.",
+      "registration": "/home/romain/data/sessions/devbox/claude/2cdb5e48-0134-4b3b-b29a-78d20dc0b28e/registration.json"
+    }
+  ],
+  "resolutions": [
+    {
+      "finding": "Codex P2: metric descriptions overstated the decode check and misstated saved top-k.",
+      "resolution": "Corrected the shared README, numerical-policy explanation and handoff. Reference compares fixed top-64 with serving top-50; cache/batch compare two serving top-50 lists; decode checks only the emitted token probability. Raw log-probability error has no acceptance bound.",
+      "verification": "Read check_reference, response_top_distribution, check_decode and mismatch_summary; verified every saved score row has 64 entries (15,855 Hero and 1,770 Snowball). Code, policy limits, goldens and existing results are unchanged.",
+      "evidence": "metric-scope-verification.json"
+    },
+    {
+      "finding": "Claude M1: explain retention choice and its unmeasured performance cost.",
+      "resolution": "Retained interval 128 under the explicit goal allowance for focused serving-setting changes. Kept required decode-created reuse and disclosed that zero or intervals beyond the fixed probe can only produce diagnostics. Hero keeps periodic Mamba states; Snowball keeps dense SWA blocks at this interval. Zero to 128 throughput effect is unmeasured on both models; no Hero AgentX window exists.",
+      "decision_basis": "The goal explicitly requires supported decode-created coverage and allows changing focused settings. This reversible choice stays within that authority. No new permission or GPU comparison is needed to finish this goal. A general conditional-coverage API or retention search can be considered separately."
+    },
+    {
+      "finding": "Claude M2: assess the cache-pressure hypothesis using C64 telemetry.",
+      "resolution": "Retained ten live sample pairs. C64 lowers KV use but leaves a large gap between actual and theoretical prefix reuse. Cache capacity is an incomplete explanation. Routing across eight DP engines without the optional router is an untested lead. Added two skill sentences to compare hit rates, KV use and routing; no experiment was added.",
+      "evidence": "campaign-cache-telemetry.json",
+      "historical_comparison": "Older-runtime C128 results (134.6\u2013135.3 tokens/s/GPU; p90 TTFT 7.7\u20137.9s) are linked as a lead, not a controlled regression claim. Runtime, recipe and prepared-workload identities differ."
+    },
+    {
+      "finding": "Claude L1: unchanged policy values are not unchanged comparison classification.",
+      "resolution": "Handoff now says equal-hit initial branch comparisons moved to the changed-step limit; policy values stayed fixed. It also states that the injected .4 error escapes the old checker only under the synthetic 1.0 split limit. Production 0.2 would reject it in either version."
+    },
+    {
+      "finding": "Claude L2: exact control scope and sibling-hit recording.",
+      "resolution": "Documented that the exact control tests persistence after a sibling; an initially wrong state that stays unchanged can escape it. Review of raw live responses confirms sibling prefix hits on both deployments. Adding a stored alternate-hit field and making it a future gate is deferred; the current live goal has the required evidence.",
+      "remaining_limit": "The checker does not itself require or record the sibling hit. Full-vocabulary correctness and every hidden-state fault remain unproved."
+    },
+    {
+      "finding": "Claude L3: selected baseline uses the earlier checker.",
+      "resolution": "Handoff explicitly names baseline 548b9fd14d and corrected C64 source 06b9a63682. Corrected full checks passed twice on the same Snowball runtime and serving configuration. Baseline own report is not described as containing the new controls. Per-check source rendering or automatic checker-version invalidation is deferred."
+    },
+    {
+      "finding": "Claude L4: point to the completed Snowball retry and state cache history scope.",
+      "resolution": "Primary Snowball link now names the completed retry audit, while preserving the preempted attempt separately. Cache probes cover127\u20132309tokens including decode-created history, not long AgentX contexts."
+    },
+    {
+      "finding": "Claude L5 and minor suggestions: partial-stage durability, preparation retries and recovered receipt.",
+      "resolution": "Deferred incremental saves or consecutive-transport-failure stopping, explicit preparation-retry tests and automatic missing-receipt recovery. Current timeout failures still block acceptance. Failed and recovered attempts remain preserved; provider-timing cost bounds remain explicit. Added the exact native command behind the 44-case CPU artifact.",
+      "evidence": "complete-validation-cpu-command.json"
+    },
+    {
+      "finding": "Review statements need their own scope limits.",
+      "resolution": "AGY reported no material findings, but its prose used stronger causal language than the evidence. The final handoff states only that interval zero does not promise arbitrary decode-created reuse and that the optional trace produced no live split records. Claude also repeated the old blanket metric description; the Codex finding and direct source/data inspection take precedence."
+    }
+  ],
+  "validation": {
+    "required_lint": "Contribution required lint and type checks passed; final CI has 17 successful and 20 skipped checks on 2471a015ac.",
+    "skill_metadata": "quick_validate passed in existing Marin environment",
+    "existing_focused_tests": "44 passed in 7.06s;20 affected report cases passed in 3.06s. Reused for unchanged implementation.",
+    "new_gpu_runs": 0,
+    "followup_panel": false,
+    "remaining_blocking_findings": [],
+    "research_notes": "All nine changed Markdown, JSON and text files pass the required lint entry point with explicit file arguments.",
+    "full_archive_limit": "A separate whole-research-branch lint attempt failed with 60 missing-import diagnostics in its incomplete local environment and 15 historical raw receipt files without trailing newlines. Their bytes were preserved. This is not a contribution CI failure."
+  },
+  "limits": [
+    "All nonzero numerical policies remain provisional engineering screens.",
+    "Serving checks do not establish trainer probability ratios or RL learning quality.",
+    "Two loads and one window each do not establish a global optimum or universal acceptable latency.",
+    "Retention0-to128 performance cost and the routing hypothesis remain unmeasured.",
+    "AGY actual model/effort and native tool actions were not exposed; kept unknown."
+  ]
+}
