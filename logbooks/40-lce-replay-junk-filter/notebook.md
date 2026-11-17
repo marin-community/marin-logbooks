@@ -348,10 +348,42 @@ status: active
   - Run a per-position loss trace on the four breakdown documents.
   - Consider rules for the two missed junk kinds.
 
+### 2026-11-17 23:40 UTC - Needle recovery is a likelihood diagnostic, not the MRCR benchmark score
+
+- Question or hypothesis and reason for trying it: this logbook reports needle recovery near 0.93 for Snowball SFT checkpoints. Generative MRCR on evaldash scores the same family near 0.17. Are these the same quantity, and does the arm comparison carry over to the benchmark?
+- Published source revision: research branch `8294ee13d4` (MRCR model configs `model-configs/lce40-arm-{control,control-seed1,filtered}-step238-mrcr.yaml`). Evaluations launched from Marin `acb52889bb`.
+- Result, including failure or restart:
+  - The two numbers measure different things.
+    - **Needle recovery** is the four-condition likelihood probe of marin#8701 and marin#9519. Nothing is generated. The probe teacher-forces the gold answer and reports the share of the needles' loss reduction that survives the other conversation turns. marin#8701 states that this is a diagnostic of context use and should not be compared with MRCR scores.
+    - **The benchmark** (evaldash `mrcr`, `mrcr-65k`) samples a response and grades it by `SequenceMatcher` similarity to the requested answer, after checking the required prefix.
+  - The same checkpoints on both:
+
+    | Checkpoint | Needle recovery (this logbook) | Generative MRCR, 901 items of `mrcr-65k`, from evaldash |
+    | --- | ---: | ---: |
+    | Snowball base | 0.856 | 0.041 (base model on a chat task) |
+    | marin#10799 step 222 | 0.928 | 0.156 |
+    | marin#10799 step 471 | 0.949 | 0.184 |
+    | marin#10799 step 2048 | 0.923 | 0.172 |
+    | Datakit SFT 2026.09.21 (marin#9519) | 0.816 (native checkpoint, TPU) | 0.212 |
+
+    The two metrics do not order these checkpoints the same way. The marin#9519 checkpoint has the lowest recovery and the highest generative score, but its two numbers come from different pipelines: a native checkpoint on TPU and a Hugging Face export on GPU.
+  - On generative MRCR the dominant failure in this family is choosing the wrong copy. Each item repeats one request 2, 4 or 8 times and asks for the answer to a specific occurrence.
+    - Datakit SFT 2026.10.05: 309 of 901 items are a verbatim copy of another answer to the same request, 73% of them the most recent.
+    - Mochi SFT step 400407: 483 of 901 items, 65% the most recent.
+  - Teacher forcing hides this failure. The first gold tokens tell the model which copy is wanted, and copying the rest is most of the loss reduction that recovery counts.
+  - The generative benchmark has been launched on the three step-238 checkpoints, with the reproduction tokenizer's own chat template as in the evaldash runs above, H100x8, interactive priority on `cw-us-east-02a`:
+    - `20261117-233607-lce40-arm-control-step238-mrcr-483a0ac6be9b4095a0b45d42f89582ba`
+    - `20261117-233613-lce40-arm-control-seed1-step238-mrcr-3729dbe0b1f84cf688c265a37be42b8a`
+    - `20261117-233619-lce40-arm-filtered-step238-mrcr-014c3a2ff03e469fb25f94c2f958af8f`
+- Interpretation and limitations:
+  - The earlier entries' result stands as stated in its own terms: filtering raised teacher-forced needle recovery by about +0.02 against two control seeds. It is not a result on the MRCR benchmark.
+  - Entries and summaries that call this "MRCR" or "long-context retrieval" overstate it. The explanation of why teacher forcing hides the copy-choice failure follows from the two evaluators' designs; no experiment has tested it.
+- Decision and next action: record the generative scores when the three runs finish, and compare them paired by item.
+
 ## Final decision
 
-- Selected approach and evidence: adopt the filtered long replay. The long-context probe favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 needle recovery at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents filtering costs nothing on either verdict: with the 23 encoded-blob documents and four single-checkpoint breakdowns set aside, the three step-238 checkpoints are within 0.006 nats per token on flagged documents and 0.002 on kept ones.
+- Selected approach and evidence: adopt the filtered long replay. Teacher-forced needle recovery, a likelihood diagnostic distinct from the generative MRCR benchmark score, favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). The adoption rests on the absence of harm; whether filtering changes the generative MRCR score is being measured. Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents filtering costs nothing on either verdict: with the 23 encoded-blob documents and four single-checkpoint breakdowns set aside, the three step-238 checkpoints are within 0.006 nats per token on flagged documents and 0.002 on kept ones.
 - Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
 - Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
 - Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
-- Remaining uncertainty: training noise beyond one extra control seed and no extra filtered seed; whether either difference persists past step 238; whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently; why one trained checkpoint breaks down on a few damaged or rare-script documents; and two junk kinds the filter misses (spliced SEO spam and broken-font PDF extractions), on which the filtered arm is slightly worse.
+- Remaining uncertainty: the effect on the generative MRCR benchmark, on which this model family scores about 0.17 (runs in progress); training noise beyond one extra control seed and no extra filtered seed; whether either difference persists past step 238; whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently; why one trained checkpoint breaks down on a few damaged or rare-script documents; and two junk kinds the filter misses (spliced SEO spam and broken-font PDF extractions), on which the filtered arm is slightly worse.
