@@ -828,3 +828,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring state [R].
 - Interpretation and limitations: three updates do not establish throughput; the 119/120 eval being ineligible confirms the strict eligibility rule is active.
 - Decision and next action: hourly checks track the learner-dominated cadence, checkpoint/eval callbacks, and the first eligible eval.
+
+### 2026-11-17 18:45 UTC - Hourly catch-up (17:40–18:45 UTC window): exp3 RL child FAILED at update 4
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch; no recovery or production changes yet.
+- External inputs and artifact references: monitoring state (18:35 readback) [R]; exp3-recipe.md for the prior three-update history.
+- Environment and hardware when relevant: policy rank 56, context-parallel ALLTOALL (NCCL).
+- Result, including failure or restart: **exp3's RL child FAILED at update 4** — the parent succeeded, but the RL child died with a **policy rank-56 NCCL context-parallel ALLTOALL invalid-usage/message-truncation error followed by SIGABRT**. Three complete cycles (updates 1–3) had finished before the failure; native pointer 2; **no eligible best checkpoint**; terminal finalization recorded as `skipped_no_checkpoint`; **no trained HF model**. No recovery or production changes have been made yet.
+- Evidence: monitoring state [R]; prior update history in this notebook (16:40/17:40 entries).
+- Interpretation and limitations: the NCCL error is a recorded terminal condition, not a diagnosed root cause; recovery authority remains conditional on diagnosed failure (coordinator message `e040816ac0…`).
+- Decision and next action: hourly checks watch for the recovery diagnosis/decision; no secretary action beyond the record.
