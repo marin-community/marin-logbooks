@@ -45,6 +45,12 @@ def response_distribution(entries: dict) -> TokenDistribution:
     )
 
 
+def response_top_distribution(entries: dict) -> TokenDistribution:
+    """Exclude an appended prompt token below the requested top-k cutoff."""
+    scores = response_distribution(entries)
+    return TokenDistribution(scores.token_ids[:TOP_K], scores.logprobs[:TOP_K])
+
+
 def mismatch_summary(rows: list[dict], limits: ErrorLimits) -> dict:
     values = np.asarray([row["max_probability_error"] for row in rows])
     if not len(values):
@@ -167,7 +173,7 @@ class EndpointClient:
 
 
 def next_distribution(response: dict) -> TokenDistribution:
-    return response_distribution(response["choices"][0]["logprobs"]["top_logprobs"][0])
+    return response_top_distribution(response["choices"][0]["logprobs"]["top_logprobs"][0])
 
 
 def cached_tokens(response: dict) -> int:
@@ -274,29 +280,43 @@ async def check_reference(client: EndpointClient, references: ReferenceLookup, f
     expected = {(row.case_id, row.position): row for row in references.scores}
     groups: dict[str, list[dict]] = {name: [] for name in fixture.policy.reference}
     observations = []
+    completed = []
+    failure = None
     for case in references.cases:
         # A context includes its sampled output token; score the final prediction separately
         # when an existing 262K reference fills the entire configured context.
-        response = await client.complete(case.tokens, label=f"reference-{case.id}", prompt_scores=True)
-        (choice,) = response["choices"]
-        positions = [*choice["prompt_logprobs"][1:], choice["logprobs"]["top_logprobs"][0]]
-        if len(positions) != len(case.tokens):
-            raise ValueError(f"Missing prompt log probabilities: {case.id}")
-        for position in case.positions:
-            row = expected[(case.id, position)]
-            actual = response_distribution(positions[position])
-            reference = TokenDistribution(row.token_ids, row.logprobs)
-            mismatch = dataclasses.asdict(distribution_difference(reference, actual)) | {
-                "case": case.id,
-                "position": position,
-            }
-            groups[case.group].append(mismatch)
-            observations.append(mismatch | {"actual": dataclasses.asdict(actual)})
+        try:
+            response = await client.complete(case.tokens, label=f"reference-{case.id}", prompt_scores=True)
+            (choice,) = response["choices"]
+            positions = [*choice["prompt_logprobs"][1:], choice["logprobs"]["top_logprobs"][0]]
+            if len(positions) != len(case.tokens):
+                raise ValueError(f"Missing prompt log probabilities: {case.id}")
+            for position in case.positions:
+                row = expected[(case.id, position)]
+                actual = response_top_distribution(positions[position])
+                reference = TokenDistribution(row.token_ids, row.logprobs)
+                mismatch = dataclasses.asdict(distribution_difference(reference, actual)) | {
+                    "case": case.id,
+                    "position": position,
+                }
+                groups[case.group].append(mismatch)
+                observations.append(mismatch | {"actual": dataclasses.asdict(actual)})
+        except Exception as error:
+            failure = {"case": case.id, "error": f"{type(error).__name__}: {error}"}
+            break
+        completed.append(case.id)
     summaries = {name: mismatch_summary(rows, fixture.policy.reference[name]) for name, rows in groups.items()}
     return {
-        "status": "passed" if all(value["status"] == "passed" for value in summaries.values()) else "failed",
+        "status": (
+            "passed"
+            if failure is None and all(value["status"] == "passed" for value in summaries.values())
+            else "failed"
+        ),
         "groups": summaries,
         "observations": observations,
+        "completed_cases": completed,
+        "total_cases": len(references.cases),
+        "failure": failure,
     }
 
 
@@ -344,6 +364,7 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
         raise ValueError("Cache probes require varied token histories")
     same_split, different_split = [], []
     evidence = []
+    decode_reuse = []
     for length in fixture.policy.boundary_lengths:
         prefix = source[:length]
         branch = prefix + source[length : length + 17]
@@ -388,16 +409,25 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
         )
         history = prefix + tuple(decoded["choices"][0]["token_ids"]) + source[length : length + 3]
         reused = await client.complete(history, label=f"cache-{length}-decode-reuse")
-        if cached_tokens(reused) <= len(prefix):
-            raise ValueError(f"The cache hit did not reach decode-created tokens at {length}: {cached_tokens(reused)}")
+        reached_decode = cached_tokens(reused) > len(prefix)
+        evidence[-1]["decode_cached_tokens"] = cached_tokens(reused)
+        evidence[-1]["decode_generated_tokens"] = fixture.policy.cache_decode_tokens
+        decode_reuse.append(
+            {
+                "boundary": length,
+                "status": "passed" if reached_decode else "failed",
+                "cached_tokens": cached_tokens(reused),
+                "prompt_tokens": len(prefix),
+            }
+        )
+        if not reached_decode:
+            continue
         await client.reset_cache()
         recomputed = await client.complete(history, label=f"cache-{length}-decode-fresh")
         different_split.append(
             dataclasses.asdict(distribution_difference(next_distribution(reused), next_distribution(recomputed)))
             | {"boundary": length, "seed": "decode"}
         )
-        evidence[-1]["decode_cached_tokens"] = cached_tokens(reused)
-        evidence[-1]["decode_generated_tokens"] = fixture.policy.cache_decode_tokens
     # An exact repeat of a warmed history supplies a matched-split control even if prefix
     # seeding and branching fill different numbers of blocks on this model.
     await client.complete(branch, label="cache-matched-seed")
@@ -414,8 +444,14 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
         "different_split": mismatch_summary(different_split, fixture.policy.different_split),
     }
     return {
-        "status": "passed" if all(row["status"] == "passed" for row in summaries.values()) else "failed",
+        "status": (
+            "passed" if all(row["status"] == "passed" for row in (*summaries.values(), *decode_reuse)) else "failed"
+        ),
         **summaries,
+        "decode_reuse": {
+            "status": "passed" if all(row["status"] == "passed" for row in decode_reuse) else "failed",
+            "observations": decode_reuse,
+        },
         "cache_evidence": evidence,
         "observations": {"same_split": same_split, "different_split": different_split},
     }

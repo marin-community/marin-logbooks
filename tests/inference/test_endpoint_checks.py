@@ -14,7 +14,8 @@ from pathlib import Path
 import pytest
 from aiohttp import web
 from marin.external_dependencies import VLLM_GPU_RELEASE
-from marin.testing.inference.endpoint_checks import check_endpoint
+from marin.testing.inference.backend_parity import TokenDistribution, distribution_difference
+from marin.testing.inference.endpoint_checks import check_endpoint, response_distribution, response_top_distribution
 from marin.testing.inference.goldens import (
     AcceptancePolicy,
     Artifact,
@@ -37,6 +38,23 @@ from experiments.evaluation.knotmeter.run import run_checks
 
 RUNTIME = "0ac9dcb157ee86ccb447bc717259159c41ad456a"
 LOGPROBS = {token: math.log(0.5 if token == 1 else 0.3 if token == 2 else 0.2 / 14) for token in range(16)}
+
+
+def test_prompt_token_outside_top_k_does_not_understate_probability_error():
+    reference = [0.019] * 50 + [1 / 600] * 30
+    tail = [0.01] + [1 / 600] * 28 + [0.000001]
+    actual = [(1 - sum(tail)) / 50] * 50 + tail
+    wire = {str(token): {"logprob": math.log(actual[token]), "rank": token + 1} for token in range(50)}
+    wire["79"] = {"logprob": math.log(actual[79]), "rank": 80}
+    expected = TokenDistribution(tuple(range(64)), tuple(math.log(value) for value in reference[:64]))
+
+    difference = distribution_difference(expected, response_top_distribution(wire))
+    # The full normalized distributions provide an independent error oracle.
+    true_error = max(abs(a - b) for a, b in zip(reference, actual, strict=True))
+    assert difference.max_probability_error_lower_bound <= true_error <= difference.max_probability_error
+    # Decode rescoring still needs the observed prompt token outside the top k.
+    returned = response_distribution(wire)
+    assert dict(zip(returned.token_ids, returned.logprobs, strict=True))[79] == pytest.approx(math.log(actual[79]))
 
 
 def artifact(path: Path, value: object) -> Artifact:
@@ -118,6 +136,8 @@ class HttpEngine:
 
     async def complete(self, request: web.Request) -> web.Response:
         body = await request.json()
+        if self.mode == "reference-error" and request.headers["X-Request-Id"] == "reference-case-1":
+            return web.json_response({"error": "Reference request interrupted"}, status=503)
         tokens = tuple(body["prompt"])
         count = body["max_tokens"]
         assert request.headers["X-data-parallel-rank"] == "0"
@@ -135,7 +155,8 @@ class HttpEngine:
         top = {f"token_id:{token}": value for token, value in probabilities.items()}
         winner = max(probabilities, key=probabilities.get)
         generated = [winner] * count
-        self.prefixes.update(tuple((*tokens, *generated)[:length]) for length in range(4, len(tokens) + count, 4))
+        cached_length = len(tokens) if self.mode == "prefill-only" else len(tokens) + count
+        self.prefixes.update(tuple((*tokens, *generated)[:length]) for length in range(4, cached_length, 4))
         if is_batch:
             self.active_batch -= 1
         choice = {"token_ids": generated, "prompt_token_ids": list(tokens), "logprobs": {"top_logprobs": [top] * count}}
@@ -219,6 +240,8 @@ async def http_endpoint(engine: HttpEngine):
         ("correct", None),
         ("streamed-model", None),
         ("wrong-weights", "deployment"),
+        ("reference-error", "reference"),
+        ("prefill-only", "cache"),
         ("no-cache", "cache"),
         ("no-batch", "batch"),
         ("corrupt-cache", "cache"),
@@ -235,6 +258,18 @@ async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, refere
         if failed_check == "deployment":
             assert report["requests"] == []
             return
+        if mode == "reference-error":
+            reference = report["checks"]["reference"]
+            assert reference["completed_cases"] == ["case-0"]
+            assert reference["total_cases"] == 4
+            assert reference["failure"]["case"] == "case-1"
+            assert reference["groups"]["representative"]["positions"] == 1
+        if mode == "prefill-only":
+            cache = report["checks"]["cache"]
+            assert cache["decode_reuse"]["status"] == "failed"
+            assert len(cache["cache_evidence"]) == len(reference_fixture.policy.boundary_lengths)
+            assert cache["same_split"]["positions"] > 0
+            assert cache["different_split"]["positions"] >= len(reference_fixture.policy.boundary_lengths)
     else:
         assert report["checks"]["batch"]["running_peak"] >= 2
         assert report["checks"]["cache"]["cache_evidence"][0]["warm_cached_tokens"] > 0

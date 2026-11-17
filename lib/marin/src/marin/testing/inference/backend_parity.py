@@ -18,7 +18,7 @@ class TokenScore:
 
 @dataclass(frozen=True)
 class TokenDistribution:
-    """A finite top-k distribution, ordered by decreasing probability."""
+    """Finite token scores, ordered by decreasing probability."""
 
     token_ids: tuple[int, ...]
     logprobs: tuple[float, ...]
@@ -45,6 +45,7 @@ class DistributionDifference:
 def distribution_difference(first: TokenDistribution, second: TokenDistribution) -> DistributionDifference:
     """Bound top-k probability error, including tokens missing from one side.
 
+    Each input contains only its true top-k scores.
     An absent token has probability between zero and that side's kth probability.
     The upper bound is conservative. This statistic is not full-vocabulary KL.
     """
