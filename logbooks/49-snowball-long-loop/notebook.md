@@ -768,3 +768,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring state [R].
 - Interpretation and limitations: gate status only.
 - Decision and next action: hourly checks continue; admission stays untouched per the standing queue rule.
+
+### 2026-11-17 13:40 UTC - Hourly catch-up (12:40–13:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch.
+- External inputs and artifact references: monitoring state (13:34 readback) [R].
+- Environment and hardware when relevant: quota condition unchanged (232 GPU + RDMA slots).
+- Result, including failure or restart: exp3's **RL admission remains queued** — all 32 tasks building, no failures/preemptions; the quota condition still needs 232 additional GPU + RDMA slots; no job changes; SFT/handoff certified. No exp3 training change this window.
+- Evidence: monitoring state [R].
+- Interpretation and limitations: gate status only.
+- Decision and next action: hourly checks continue; admission stays untouched per the standing queue rule.
