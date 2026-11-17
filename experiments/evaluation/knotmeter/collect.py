@@ -90,7 +90,9 @@ def validate_window(point: Path, manifest: PointManifest, record: dict) -> dict:
     successful_metrics = record["worker_metrics_url"] in metrics["summary"]["endpoints_successful"] and any(
         name.startswith("vllm:") for name in metrics["metrics"]
     )
-    coverage = [row for row in export["metadata"]["metric_duration_coverage"] if row["phase_name"] == "profiling"]
+    coverage = [
+        row for row in export["metadata"].get("metric_duration_coverage", []) if row["phase_name"] == "profiling"
+    ]
     complete = len(coverage) == 1 and coverage[0]["expected_duration_seconds"] == manifest["series"]["duration"]
     if complete:
         complete = all(

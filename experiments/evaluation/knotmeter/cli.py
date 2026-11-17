@@ -109,7 +109,7 @@ def resolve_plan(
         "placement": placement or {},
         "job_id": str(job_id),
         "gpu_job_id": str(job_id.child("serve")),
-        "source": dataclasses.asdict(launch_provenance()),
+        "source": json.loads(json.dumps(dataclasses.asdict(launch_provenance()))),
         "research_logbook": logbook,
     }
 
