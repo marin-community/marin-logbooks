@@ -1249,3 +1249,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit above; landing timestamp in the local atlas-push log [R].
 - Interpretation and limitations: docs landing only.
 - Decision and next action: next hourly check watches for license-receipt documentation follow-through and further admissions.
+
+### 2026-11-17 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `69841e38a4…` (20:00:58 UTC) to head `d49ca9e53a35a3022c306cca9e4306cbd5676510`, landed 20:52:54 UTC (3 landings 20:41–20:52 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 69841e38..d49ca9e5` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: task packet buffering bounded during oracle calibration (`034d7e83b1…`); source-table responses trimmed to rendered evidence (`66040ec809…`); the source display projection contract stated (`d49ca9e53a…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for continued license-receipt/prelight follow-through.
