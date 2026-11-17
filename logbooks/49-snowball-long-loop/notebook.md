@@ -696,3 +696,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring artifacts [R].
 - Interpretation and limitations: cadence metrics from monitoring snapshots.
 - Decision and next action: continue hourly tracking.
+
+### 2026-11-17 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch; monitoring artifacts checked 02:28:50 UTC.
+- External inputs and artifact references: `production51-latest-wandb.json`, `production51-latest-checkpoint-list.json` [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **exp3 at update 277** (02:28 UTC readback): train/loss 0.78891 (oscillating around 0.79–0.83), grad norm 0.10060 (new low; trend continues down), learner ~171.24 s/update; state running. **Checkpoints continue**: steps 258 (01:31:33 UTC) and 269 (02:03:14) — 30-min cadence holding.
+- Evidence: monitoring artifacts [R].
+- Interpretation and limitations: cadence metrics from monitoring snapshots.
+- Decision and next action: continue hourly tracking.
