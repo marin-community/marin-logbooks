@@ -235,3 +235,49 @@ arrays exactly. Generate missing scores with the Snowball class and explicit
 model config recorded by that checkpoint's identity SFT. Its public HF metadata
 says `production`, while that record specifies the Snowball snapshot. Retain
 this discrepancy and use the recorded training config explicitly.
+
+### Matching references and first policy
+
+Both selected checkpoints now have durable references. Snowball's eight-H100
+job `/romain/inference-reference-snowball-20261117-a1` succeeded from published
+source `ccd2610878156b747005408b0e5f9f05a4c4470e`. It scored 1,770 positions
+across the exact 64 representative token arrays. BF16 weights and projection,
+FP32 log-softmax, JAX 0.11.1. The saved observations passed manifest, case and
+history-hash validation. Allocated cost was 14,296 GPU-seconds, or 3.971
+H100-hours, through pod container finish. Loading dominates the 1,748-second
+worker runtime; the eight scoring batches total about 33 seconds. Routine
+checks reuse these scores and do not rerun this model load.
+
+Hero reuses 15,855 positions across 37 histories. Its raw `ref-a4`, CP16 and
+CP32 files are preserved under the durable golden root. The normalized suite
+uses `ref-a4` through 65K and CP32 at 131K/262K. It omits the final 262K position
+so an output token fits the serving context. Its reference source is
+`d8a9890ceae7c1a0e6c343aaa818db2b327b7060` for the short run and
+`95e705902ae3713a51aecbb69014dce1e9133666` for context-parallel runs. Every
+retained row's original int32 token-history hash matches the frozen inputs.
+Checkpoint metadata, export request and expert placement match step400407.
+
+Initial bounds are explicitly provisional. Hero's short-reference limits
+(maximum .65, p99 .125, p90 .04, fraction above .075 at most .035) leave a margin
+around the five retained BF16 controls in #11430. Its long limits are .35, .09,
+.04 and .02. Snowball starts at .25, .125, .05 and .05. Its old step42150 gate
+provides nearby evidence; its pass and bound do not transfer. Preserve selected-
+checkpoint baseline failures and use repeatability evidence before revising bounds.
+Matched cache splits require exact agreement. Other path limits are visible in
+the two checked-in policies and await validation on the selected deployments.
+These bounds do not qualify RL trainer probability ratios.
+
+Contribution source `66e734c616a98f9417c75fe9bf42a57d515b403d` wires the same
+HTTP functions into pytest and the CLI. Perfmax retains the report and checks
+its outcome. It reads reference artifacts on CPU, runs endpoint checks before
+AgentX and resets the cache before the unchanged native warmup. Missing or
+failed required checks block ordinary measurements and accepted recommendations;
+explicit diagnostics may still run. The existing adoption gate remains intact.
+Keep this integration in draft PR #11320 so the bindings and callers can be
+reviewed together; the reference-generation evidence stays in this archive.
+
+The focused CPU checks pass: 31 cases, including nested vLLM prompt-score
+responses, cache/batch coverage failures, wrong reference identity, CLI report
+agreement, scope and recommendation checks. The independent selected-position
+oracle also passed. Remote dependency preflight and real endpoint comparisons
+are next; neither model is qualified by this entry.

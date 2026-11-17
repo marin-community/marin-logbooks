@@ -1,0 +1,76 @@
+{
+  "job_id": "/romain/inference-reference-snowball-20261117-a1",
+  "cluster": "cw-rno2a",
+  "source": "ccd2610878156b747005408b0e5f9f05a4c4470e",
+  "request": {
+    "identity": {
+      "weights": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+      "revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+      "config_sha256": "c49b753df32bb2efe438c101a2fe9d43ea1ecc081ddab7d1de62a693e3cfa4c5",
+      "tokenizer": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+      "tokenizer_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+      "eos_token_id": 128001
+    },
+    "cases_artifact": {
+      "uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/cases.json",
+      "sha256": "4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7"
+    },
+    "training_config": {
+      "type": "snowball",
+      "max_seq_len": 262144,
+      "vocab_size": 128256,
+      "hidden_dim": 2560,
+      "intermediate_dim": 1280,
+      "shared_expert_intermediate_dim": 2560,
+      "num_experts": 256,
+      "num_experts_per_token": 4,
+      "num_layers": 26,
+      "num_heads": 20,
+      "num_kv_heads": 5,
+      "head_dim": 128,
+      "sliding_window": 2048,
+      "layer_norm_eps": 1e-05,
+      "initializer_std": 0.009882117688026186,
+      "qk_mult": 1.75,
+      "rope": {
+        "theta": 10000.0,
+        "scaling_factor": null
+      },
+      "attention_implementation": null,
+      "moe_implementation": null,
+      "reference_checkpoint": null,
+      "tokenizer": null
+    },
+    "output": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7",
+    "source_commit": "ccd2610878156b747005408b0e5f9f05a4c4470e"
+  },
+  "gpus": 8,
+  "submitted_unix": 1794904061.513535,
+  "trial_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/inference-reference-snowball-20261117-a1",
+  "state": "succeeded",
+  "attempts": [
+    {
+      "task": "/romain/inference-reference-snowball-20261117-a1/0",
+      "attempt_uid": "4b23a6a4d339b4ee",
+      "state": "succeeded",
+      "pod_uid": "03e58bd4-b455-4b94-8413-f507d10a63cf",
+      "node": "gb95a00",
+      "gpu_seconds": 14296.0,
+      "allocation": {
+        "pod_uid": "03e58bd4-b455-4b94-8413-f507d10a63cf",
+        "attempt_uid": "4b23a6a4d339b4ee",
+        "pod_name": "iris-romain-inference-reference-sno-cb4dd771-0-4b23a6a4d339b4ee",
+        "node_name": "gb95a00",
+        "observed_unix": 1794905879.448316,
+        "phase": "Succeeded",
+        "scheduled_unix": 1794904078.0,
+        "finished_unix": 1794905865.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794905865.0
+      },
+      "error": ""
+    }
+  ],
+  "finished_unix": 1794905881.2222068
+}
