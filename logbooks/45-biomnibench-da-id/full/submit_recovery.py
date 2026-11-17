@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parent
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--job-name", required=True)
+    parser.add_argument("--judge-only", action="store_true")
     args = parser.parse_args()
     receipt = ROOT / f"{args.job_name}-submission.json"
     deadline = datetime(2026, 11, 18, 2, 25, 28, tzinfo=UTC)
@@ -30,9 +31,10 @@ def main():
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
     source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     secrets = {name: require_secret(name) for name in ("CW_KEY_ID", "CW_KEY_SECRET")}
-    secrets["DAYTONA_API_KEY"] = resolve_secret_spec(
-        "gcp-secret://projects/hai-gcp-models/secrets/DAYTONA_EVAL_API_KEY/versions/latest"
-    ).value
+    if not args.judge_only:
+        secrets["DAYTONA_API_KEY"] = resolve_secret_spec(
+            "gcp-secret://projects/hai-gcp-models/secrets/DAYTONA_EVAL_API_KEY/versions/latest"
+        ).value
     with open_iris_client(cluster_name="marin", workspace=ROOT.parents[2]) as client:
         job = client.submit(
             entrypoint=Entrypoint.from_command(
@@ -40,8 +42,11 @@ def main():
                 "run",
                 "--no-sync",
                 "python",
-                "logbooks/45-biomnibench-da-id/full/launch_recovery.py",
-                "--submit-in-cluster",
+                *(
+                    ["logbooks/45-biomnibench-da-id/full/recover_saved_only.py"]
+                    if args.judge_only
+                    else ["logbooks/45-biomnibench-da-id/full/launch_recovery.py", "--submit-in-cluster"]
+                ),
             ),
             name=args.job_name,
             resources=ResourceSpec(cpu=1, memory="2g", disk="16g"),

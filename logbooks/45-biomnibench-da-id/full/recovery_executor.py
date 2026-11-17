@@ -60,7 +60,7 @@ def recover_grades(judge: RemoteInferenceSession, output_dir: str) -> None:
                 if hashlib.sha256(data).hexdigest() != expected:
                     raise ValueError(f"Frozen input checksum mismatch: {task}/{name}")
                 (submission / name).write_bytes(data)
-            tests = ROOT / "tasks" / task / "tests"
+            tests = ROOT / "runtime-tasks" / task / "tests"
             result = subprocess.run(
                 [
                     sys.executable,
