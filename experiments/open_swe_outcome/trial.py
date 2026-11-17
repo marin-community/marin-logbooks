@@ -118,7 +118,12 @@ def arm_spec(
 
 @click.command(help=__doc__)
 @click.option("--arm", type=click.Choice((*ARMS, *TERMINUS_ARMS)), required=True)
-@click.option("--format", "training_format", type=click.Choice(list(TrainingFormat)), required=True)
+@click.option(
+    "--format",
+    "training_format",
+    type=click.Choice([training_format.value for training_format in TrainingFormat]),
+    required=True,
+)
 @click.option("--seed", type=int, required=True)
 @click.option("--accelerator", required=True, help="Accelerator such as '8xH100'.")
 @click.option("--smoke", is_flag=True, help=f"Train {SMOKE_STEPS} steps on one shard.")
