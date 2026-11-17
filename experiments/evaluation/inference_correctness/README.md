@@ -55,6 +55,15 @@ checks require actual hits, varied inputs, branches and reuse of decode-created
 tokens. Reusing the same number of cached tokens has a separate bound from
 changing where cached computation ends and fresh prefill begins.
 Raw responses and per-position differences remain available after a failure.
+Later reference histories and cache boundaries still run after an individual
+case fails. Coverage failures remain separate from measured probability errors.
+
+Both presets retain periodic cache checkpoints every 128 tokens. In the pinned
+runtime, interval zero keeps selected replay and shared-prefix checkpoints; a
+miss on generated history can therefore be legitimate. The positive interval
+lets the suite require and verify decode-created reuse across its boundaries.
+The report records actual hit counts and cache settings. A miss still fails the
+required coverage check; it does not establish corrupt state.
 
 The probability metric is a bound on the largest absolute error among returned
 top tokens, including missing tokens' possible probability range. It is not

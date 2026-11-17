@@ -281,7 +281,7 @@ async def check_reference(client: EndpointClient, references: ReferenceLookup, f
     groups: dict[str, list[dict]] = {name: [] for name in fixture.policy.reference}
     observations = []
     completed = []
-    failure = None
+    failures = []
     for case in references.cases:
         # A context includes its sampled output token; score the final prediction separately
         # when an existing 262K reference fills the entire configured context.
@@ -302,21 +302,19 @@ async def check_reference(client: EndpointClient, references: ReferenceLookup, f
                 groups[case.group].append(mismatch)
                 observations.append(mismatch | {"actual": dataclasses.asdict(actual)})
         except Exception as error:
-            failure = {"case": case.id, "error": f"{type(error).__name__}: {error}"}
-            break
+            failures.append({"case": case.id, "error": f"{type(error).__name__}: {error}"})
+            continue
         completed.append(case.id)
     summaries = {name: mismatch_summary(rows, fixture.policy.reference[name]) for name, rows in groups.items()}
     return {
         "status": (
-            "passed"
-            if failure is None and all(value["status"] == "passed" for value in summaries.values())
-            else "failed"
+            "passed" if not failures and all(value["status"] == "passed" for value in summaries.values()) else "failed"
         ),
         "groups": summaries,
         "observations": observations,
         "completed_cases": completed,
         "total_cases": len(references.cases),
-        "failure": failure,
+        "failures": failures,
     }
 
 
@@ -364,94 +362,118 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
         raise ValueError("Cache probes require varied token histories")
     same_split, different_split = [], []
     evidence = []
+    prefill_reuse = []
     decode_reuse = []
+    failures = []
     for length in fixture.policy.boundary_lengths:
-        prefix = source[:length]
-        branch = prefix + source[length : length + 17]
-        if len(branch) <= len(prefix):
-            raise ValueError(f"The prompt suite cannot reach cache boundary {length}")
-        await client.reset_cache()
-        fresh = await client.complete(branch, label=f"cache-{length}-fresh")
-        if cached_tokens(fresh) != 0:
-            raise ValueError("Cache reset did not produce a fresh recomputation")
-        await client.reset_cache()
-        await client.complete(prefix, label=f"cache-{length}-seed")
-        warm = await client.complete(branch, label=f"cache-{length}-warm")
-        alternate = prefix + source[length + 31 : length + 48]
-        await client.complete(alternate, label=f"cache-{length}-branch")
-        repeated = await client.complete(branch, label=f"cache-{length}-repeat")
-        hits = [cached_tokens(warm), cached_tokens(repeated)]
-        if min(hits) <= 0:
-            raise ValueError(f"No prefix cache hit occurred at boundary {length}: {hits}")
-        different_split.append(
-            dataclasses.asdict(distribution_difference(next_distribution(fresh), next_distribution(warm)))
-            | {"boundary": length}
-        )
-        # Compare equal reuse splits separately. A larger second hit changes the prefill split.
-        comparison = dataclasses.asdict(
-            distribution_difference(next_distribution(warm), next_distribution(repeated))
-        ) | {"boundary": length}
-        (same_split if hits[0] == hits[1] else different_split).append(comparison)
-        evidence.append(
-            {
-                "boundary": length,
-                "fresh_cached_tokens": cached_tokens(fresh),
-                "warm_cached_tokens": hits[0],
-                "repeat_cached_tokens": hits[1],
-            }
-        )
+        observed = {"boundary": length}
+        evidence.append(observed)
+        try:
+            prefix = source[:length]
+            branch = prefix + source[length : length + 17]
+            if len(branch) <= len(prefix):
+                raise ValueError(f"The prompt suite cannot reach cache boundary {length}")
+            await client.reset_cache()
+            fresh = await client.complete(branch, label=f"cache-{length}-fresh")
+            observed["fresh_cached_tokens"] = cached_tokens(fresh)
+            if cached_tokens(fresh) != 0:
+                raise ValueError("Cache reset did not produce a fresh recomputation")
+            await client.reset_cache()
+            await client.complete(prefix, label=f"cache-{length}-seed")
+            warm = await client.complete(branch, label=f"cache-{length}-warm")
+            alternate = prefix + source[length + 31 : length + 48]
+            await client.complete(alternate, label=f"cache-{length}-branch")
+            repeated = await client.complete(branch, label=f"cache-{length}-repeat")
+            hits = [cached_tokens(warm), cached_tokens(repeated)]
+            observed["warm_cached_tokens"], observed["repeat_cached_tokens"] = hits
+            prefill_reuse.append(
+                {"boundary": length, "status": "passed" if min(hits) > 0 else "failed", "cached_tokens": hits}
+            )
+            if min(hits) > 0:
+                different_split.append(
+                    dataclasses.asdict(distribution_difference(next_distribution(fresh), next_distribution(warm)))
+                    | {"boundary": length}
+                )
+                # A larger second hit changes the prefill split.
+                comparison = dataclasses.asdict(
+                    distribution_difference(next_distribution(warm), next_distribution(repeated))
+                ) | {"boundary": length}
+                (same_split if hits[0] == hits[1] else different_split).append(comparison)
 
-        # The seed decode crosses a block/state boundary. Reuse its exact generated history,
-        # then branch and recompute it from scratch to expose stale recurrent/conv state.
-        await client.reset_cache()
-        decoded = await client.complete(
-            prefix, label=f"cache-{length}-decode-seed", count=fixture.policy.cache_decode_tokens
-        )
-        history = prefix + tuple(decoded["choices"][0]["token_ids"]) + source[length : length + 3]
-        reused = await client.complete(history, label=f"cache-{length}-decode-reuse")
-        reached_decode = cached_tokens(reused) > len(prefix)
-        evidence[-1]["decode_cached_tokens"] = cached_tokens(reused)
-        evidence[-1]["decode_generated_tokens"] = fixture.policy.cache_decode_tokens
-        decode_reuse.append(
-            {
-                "boundary": length,
-                "status": "passed" if reached_decode else "failed",
-                "cached_tokens": cached_tokens(reused),
-                "prompt_tokens": len(prefix),
-            }
-        )
-        if not reached_decode:
+            # Cross a state boundary, reuse generated history, then recompute it freshly.
+            await client.reset_cache()
+            decoded = await client.complete(
+                prefix, label=f"cache-{length}-decode-seed", count=fixture.policy.cache_decode_tokens
+            )
+            history = prefix + tuple(decoded["choices"][0]["token_ids"]) + source[length : length + 3]
+            reused = await client.complete(history, label=f"cache-{length}-decode-reuse")
+            reached_decode = cached_tokens(reused) > len(prefix)
+            observed["decode_cached_tokens"] = cached_tokens(reused)
+            observed["decode_generated_tokens"] = fixture.policy.cache_decode_tokens
+            decode_reuse.append(
+                {
+                    "boundary": length,
+                    "status": "passed" if reached_decode else "failed",
+                    "cached_tokens": cached_tokens(reused),
+                    "prompt_tokens": len(prefix),
+                }
+            )
+            if not reached_decode:
+                continue
+            await client.reset_cache()
+            recomputed = await client.complete(history, label=f"cache-{length}-decode-fresh")
+            different_split.append(
+                dataclasses.asdict(distribution_difference(next_distribution(reused), next_distribution(recomputed)))
+                | {"boundary": length, "seed": "decode"}
+            )
+        except Exception as error:
+            failures.append({"boundary": length, "error": f"{type(error).__name__}: {error}"})
             continue
-        await client.reset_cache()
-        recomputed = await client.complete(history, label=f"cache-{length}-decode-fresh")
-        different_split.append(
-            dataclasses.asdict(distribution_difference(next_distribution(reused), next_distribution(recomputed)))
-            | {"boundary": length, "seed": "decode"}
-        )
     # An exact repeat of a warmed history supplies a matched-split control even if prefix
     # seeding and branching fill different numbers of blocks on this model.
-    await client.complete(branch, label="cache-matched-seed")
-    a = await client.complete(branch, label="cache-matched-first")
-    b = await client.complete(branch, label="cache-matched-second")
-    if cached_tokens(a) != cached_tokens(b) or cached_tokens(a) <= 0:
-        raise ValueError("No matched nonempty cache split was exercised")
-    same_split.append(
-        dataclasses.asdict(distribution_difference(next_distribution(a), next_distribution(b)))
-        | {"case": "matched-repeat"}
-    )
+    try:
+        branch = source[: max(fixture.policy.boundary_lengths) + 17]
+        await client.complete(branch, label="cache-matched-seed")
+        a = await client.complete(branch, label="cache-matched-first")
+        b = await client.complete(branch, label="cache-matched-second")
+        matched = cached_tokens(a) == cached_tokens(b) and cached_tokens(a) > 0
+        matched_repeat = {
+            "status": "passed" if matched else "failed",
+            "cached_tokens": [cached_tokens(a), cached_tokens(b)],
+        }
+        if matched:
+            same_split.append(
+                dataclasses.asdict(distribution_difference(next_distribution(a), next_distribution(b)))
+                | {"case": "matched-repeat"}
+            )
+    except Exception as error:
+        matched_repeat = {"status": "failed", "error": f"{type(error).__name__}: {error}"}
     summaries = {
         "same_split": mismatch_summary(same_split, fixture.policy.same_split),
         "different_split": mismatch_summary(different_split, fixture.policy.different_split),
     }
+    coverage = {
+        name: {
+            "status": (
+                "passed"
+                if len(rows) == len(fixture.policy.boundary_lengths) and all(row["status"] == "passed" for row in rows)
+                else "failed"
+            ),
+            "observations": rows,
+        }
+        for name, rows in (("prefill_reuse", prefill_reuse), ("decode_reuse", decode_reuse))
+    }
     return {
         "status": (
-            "passed" if all(row["status"] == "passed" for row in (*summaries.values(), *decode_reuse)) else "failed"
+            "passed"
+            if not failures
+            and all(row["status"] == "passed" for row in (*summaries.values(), *coverage.values(), matched_repeat))
+            else "failed"
         ),
         **summaries,
-        "decode_reuse": {
-            "status": "passed" if all(row["status"] == "passed" for row in decode_reuse) else "failed",
-            "observations": decode_reuse,
-        },
+        **coverage,
+        "matched_repeat": matched_repeat,
+        "failures": failures,
         "cache_evidence": evidence,
         "observations": {"same_split": same_split, "different_split": different_split},
     }
