@@ -8,6 +8,7 @@ point=${2:-baseline}
 
 case "$point" in
   baseline) point_args=() ;;
+  c64) point_args=(--session-concurrency 64) ;;
   prefill4096-diagnostic)
     point_args=(--set serving.max_num_batched_tokens=4096 --diagnostic-seconds 600)
     ;;

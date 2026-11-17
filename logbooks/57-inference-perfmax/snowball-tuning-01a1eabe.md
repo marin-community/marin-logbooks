@@ -35,7 +35,7 @@ output tokens/s/GPU, with p90 TTFT 7.69–7.95 seconds. C256 reached 109.69–11
 tokens/s/GPU with p90 TTFT 196.75–206.70 seconds. That supports starting at C128;
 these values are historical evidence, not this campaign's baseline.
 
-## Experiment ladder
+## Initial experiment ladder
 
 1. Run the unchanged `snowball-h100` preset at C128 for a normal one-hour window.
    Its 8,192-token prefill budget, 128 sequences per engine and memory fraction
@@ -87,3 +87,43 @@ The resource board shows the parent's separate eight-H100 correctness run;
 provider inventory also shows active production jobs. Those jobs remain under
 their owners. This campaign will announce its separate one-host share before
 submission and verify current admission and cleanup.
+
+2026-11-17, baseline in progress: Published source
+`548b9fd14d79db11148c7d637d32d4e9c8685f16` submitted root
+`/romain/knotmeter-20261117t182804z-6603a552927f` and its `/serve` child. The GPU
+native attempt is `fced1e4b46787c9a` on `g5ba762`. The prepared workload was a
+verified cache hit: key
+`2a67e147dfbe10a76d1f901c5a3de2539298aaf1a8fdc8e8c746aa8d14aa7b59`,
+archive SHA256 `ce86367e7a15a98e373d6483a5e72cae4f422f4b5eb3107f820201226c88f3ce`.
+The actual deployment passed the complete shared checks before native warmup.
+The check report SHA256 is
+`325d7b21f1f51b10262ed03f2e0c9296b9bdc7b84f44e8534d9e217adb193477`; the fixed
+provisional policy SHA256 is
+`9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375`.
+
+Interactive priority was requested and retained in both Iris job configurations.
+Iris assigned both tasks to batch. The GPU Workload had priority 1 and label
+`iris-accelerator-batch`; the CPU Workload had priority 0 and label
+`iris-cpu-batch`. Continuing under Iris's own priority fallback was authorized.
+No scheduling setting or shared service was changed.
+
+### Next point: reduce resident sessions
+
+The next point will be C64 with the baseline's 8,192-token budget and all other
+serving settings unchanged. Run a normal one-hour window after the baseline
+releases its GPUs. Defer the initial 4,096-token diagnostic.
+
+This choice uses a partial-window observation to choose a hypothesis. At
+19:20:14 UTC, 28:41 into profiling, AgentX had 2,507 successful requests and one
+`ServerDisconnectedError`. Its live telemetry showed 93.6% KV use, 9.1% actual
+prefix hits versus 95.2% theoretical replay reuse, and p95 TTFT 139.881 seconds.
+These are diagnostic observations during the baseline; they are not its final
+throughput or latency result.
+
+Lower load may preserve more useful cached histories and reduce the latency
+tail while keeping useful completed throughput. That mechanism is a hypothesis;
+this comparison will measure the load tradeoff, not prove a cause. A normal C64
+window gives a direct comparison and avoids repeating startup and native warmup
+for an additional short test. The earlier calibration supports C64 as a
+plausible lower-load point but uses a different runtime. Keep both final normal
+windows, failures, checks and full allocation costs regardless of which wins.
