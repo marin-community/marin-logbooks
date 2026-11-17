@@ -18,7 +18,7 @@ case "$point" in
   *) echo "Unknown point: $point" >&2; exit 1 ;;
 esac
 
-marin-env uv run --frozen --python 3.12 --package marin-core --extra cpu \
+exec marin-env uv run --frozen --python 3.12 --package marin-core --extra cpu \
   python -m experiments.evaluation.knotmeter.cli "$operation" \
   --profile snowball-h100 --campaign "$campaign" \
   --priority interactive \

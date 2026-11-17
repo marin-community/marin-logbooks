@@ -127,3 +127,39 @@ window gives a direct comparison and avoids repeating startup and native warmup
 for an additional short test. The earlier calibration supports C64 as a
 plausible lower-load point but uses a different runtime. Keep both final normal
 windows, failures, checks and full allocation costs regardless of which wins.
+
+### Completed C128 baseline
+
+The [baseline receipt](analysis/snowball-tuning-01a1eabe-baseline.json) points to
+the frozen plan, native archive, checks, processor aggregate and allocation
+timestamps. The normal AgentX result passed native submission validity, worker
+metrics, both duration-coverage checks and unchanged-gang checks. All five
+shared-check groups passed. The checker source remains the original
+`548b9fd14d79db11148c7d637d32d4e9c8685f16`.
+
+| Sessions | Output tokens/s/GPU | p90 TTFT | p90 completion | Profiling successes/errors | H100-hours |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 128 | 124.39607 | 103.33113 s | 297.61639 s | 5,165 / 1 | 11.368889 |
+
+The upstream measurement span was 3,629.77401 seconds for the normal one-hour
+recipe, including its drain convention. Profiling retained one
+`ServerDisconnectedError` and 59 native deadline cancellations. Final warmup
+exports contain 989 nonempty responses and 417 `InvalidInferenceResultError`
+records out of 1,406 requests. Those errors report empty content. Earlier
+progress counters reported zero warmup errors; the final exported records are
+the evidence used here. The upstream window remains valid under its pinned
+protocol. These warmup errors are separate from the profiling error ratio.
+
+The GPU pod finished all containers at 19:54:57 UTC. Cost uses its actual
+scheduling time through that finish: 40,928 GPU-seconds, with no unknown
+allocation time. The CPU coordinator finished at 20:06:28 UTC. It published the
+final result naturally after the processor had written its local aggregate.
+The cause of that publication delay was not established. Thread profiling was
+attempted after the coordinator had already completed; no recovery, GPU retry
+or shared-service change occurred.
+
+The local Bash wrapper returned 127 after the CLI had printed its successful
+report. Its source had been edited while the command was active, so Bash later
+read shifted file-tail bytes as a command. The helper now uses `exec` for the
+final command. The frozen GPU and coordinator jobs both succeeded. Keep that
+wrapper failure separate from their results.
