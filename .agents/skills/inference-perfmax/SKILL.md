@@ -61,8 +61,8 @@ Preserve AgentX replay, warmup, cache busting and validity. Each attempt starts
 a fresh server. Keep diagnostics distinct from comparable measurements.
 
 Run the agreed existing checks outside the timed window against the measured
-settings. Preserve their numerical bounds and known failures. Missing or failed
-required checks block an accepted recommendation. The supplied presets leave
+settings. Preserve their numerical bounds and known failures. Recommendations
+require an in-scope numerical pass and all other required checks. The presets leave
 unmatched numerical checks pending; resolve that at kickoff. Passing serving
 checks does not establish task quality or RL learning quality. New evaluations
 and trainer-mismatch investigations need a separate scope.

@@ -16,6 +16,7 @@ from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.allocation import allocation_cost
 from experiments.evaluation.knotmeter.artifacts import (
+    SERVER_METRICS_RELATIVE_PATH,
     copy_file,
     file_digest,
     read_record,
@@ -205,6 +206,11 @@ def collect_trial(client: IrisClient, plan: TrialPlan, work: Path) -> dict:
             native["worker"] = record
             attempts.append(native)
             if index == 0 and (point / "aiperf_artifacts/profile_export.jsonl").is_file():
+                final_export = point / "aiperf_artifacts/profile_export_aiperf.json"
+                metrics = point / SERVER_METRICS_RELATIVE_PATH
+                if not final_export.is_file() or not (metrics.is_file() or metrics.with_suffix(".json.zst").is_file()):
+                    native["measurement_error"] = "Incomplete AgentX exports: final aggregate or server metrics missing"
+                    continue
                 validity = validate_window(point, manifest, record)
                 aggregate = process_point(point, manifest, local / "processed")
                 aggregate_uri = prefix_join(prefix, "aggregate.json")

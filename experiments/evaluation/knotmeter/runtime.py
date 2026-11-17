@@ -11,7 +11,7 @@ from urllib.parse import quote
 
 import draccus
 import requests
-from marin.external_dependencies import VLLM_GPU_RELEASE, VllmGpuRelease
+from marin.external_dependencies import CUDA_TOOLCHAIN_VERSION_BY_BACKEND, VLLM_GPU_RELEASE, VllmGpuRelease
 from marin.inference.vllm_release import load_vllm_gpu_release
 
 from experiments.evaluation.knotmeter.artifacts import copy_file
@@ -36,7 +36,8 @@ def resolve_release(runtime: Runtime) -> dict:
             else:
                 copy_file(location, str(path))
             release = load_vllm_gpu_release(path)
-        assert release is not None
+    if release.torch_backend not in CUDA_TOOLCHAIN_VERSION_BY_BACKEND:
+        raise ValueError(f"No registered CUDA toolchain for {release.torch_backend!r}")
     if runtime.release and release.release_tag != runtime.release:
         raise ValueError("Runtime manifest does not match the requested release")
     if runtime.revision and release.source_commit != runtime.revision:

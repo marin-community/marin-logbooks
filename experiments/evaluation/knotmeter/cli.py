@@ -7,7 +7,6 @@ import argparse
 import dataclasses
 import hashlib
 import json
-import os
 import re
 import tempfile
 import uuid
@@ -85,7 +84,9 @@ def resolve_plan(
         raise ValueError("Campaign must be one path segment containing letters, numbers, underscores, dots or hyphens")
     config_path = resolve_cluster_config(profile.cluster, dirs=IRIS_CLUSTER_CONFIG_DIRS)
     config = yaml.safe_load(Path(config_path).read_text())
-    prefix = marin_prefix or os.environ.get("MARIN_PREFIX") or config["defaults"]["task_env"]["MARIN_PREFIX"]
+    prefix = marin_prefix or config["defaults"]["task_env"]["MARIN_PREFIX"]
+    if not prefix.startswith(("s3://", "gs://")):
+        raise ValueError("Iris trials require a shared s3:// or gs:// output prefix")
     if "hero-checkpoints" in prefix:
         raise ValueError("Campaign outputs must use the configured MARIN_PREFIX, outside hero-checkpoints")
     now = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
