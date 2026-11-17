@@ -1,10 +1,10 @@
 ---
 title: "Does filtering flawed documents from the SFT mix remove the behaviors they teach?"
 source_repository: "marin-community/marin"
-task_issue: "https://github.com/marin-community/marin-logbooks/issues/TASK"
+task_issue: "https://github.com/marin-community/marin-logbooks/issues/60"
 related_issues:
   - "https://github.com/marin-community/marin/issues/11188"
-research_branch: "codex/TASK-sft-mix-filtering"
+research_branch: "codex/60-sft-mix-filtering"
 marin_base_revision: "7e11f2ee6047a28ba7334f0d9db539d5ce535a5a"
 archive_template_revision: "976dc0d1ff1acd04c6f1f8e1e3ff651c55eb92e4"
 status: complete
