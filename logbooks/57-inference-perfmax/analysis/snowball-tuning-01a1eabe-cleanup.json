@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "verified_utc": "2026-11-17T22:48:16.688740+00:00",
+  "cluster": "cw-rno2a",
+  "originating_session": "devbox/codex/01a1eabe-cfa1-7f52-bd95-a69658df86e3",
+  "jobs": [
+    {
+      "job_id": "/romain/knotmeter-20261117t182804z-6603a552927f",
+      "state": "succeeded",
+      "exit_code": 0,
+      "failure_count": 0,
+      "preemption_count": 0,
+      "finished_unix": 1794946010.723
+    },
+    {
+      "job_id": "/romain/knotmeter-20261117t182804z-6603a552927f/serve",
+      "state": "succeeded",
+      "exit_code": 0,
+      "failure_count": 0,
+      "preemption_count": 0,
+      "finished_unix": 1794945317.304
+    },
+    {
+      "job_id": "/romain/knotmeter-20261117t201915z-0af609b36ad6",
+      "state": "succeeded",
+      "exit_code": 0,
+      "failure_count": 0,
+      "preemption_count": 0,
+      "finished_unix": 1794955307.565
+    },
+    {
+      "job_id": "/romain/knotmeter-20261117t201915z-0af609b36ad6/serve",
+      "state": "succeeded",
+      "exit_code": 0,
+      "failure_count": 0,
+      "preemption_count": 1,
+      "finished_unix": 1794955166.456
+    }
+  ],
+  "remaining_owned_pods": [
+    {
+      "pod_name": "iris-romain-knotmeter-20261117t2019-ed032160-0-01e00185a12a2d1c",
+      "attempt_uid": "01e00185a12a2d1c",
+      "phase": "Succeeded",
+      "node": "gb95a00",
+      "gpus_requested": 0,
+      "containers": [
+        {
+          "name": "output-uploader",
+          "terminated": {
+            "containerID": "containerd://5cfb55b22a94e7bc7c6158afdea33bc9e7bddcedc4a9c2d9e6a5c74ff5165a69",
+            "exitCode": 0,
+            "finishedAt": "2026-11-17T22:41:00Z",
+            "message": "{\"state\": \"TASK_OUTPUT_ARCHIVE_STATE_EMPTY\", \"skipped_count\": 0}",
+            "reason": "Completed",
+            "startedAt": "2026-11-17T20:19:31Z"
+          }
+        },
+        {
+          "name": "task",
+          "terminated": {
+            "containerID": "containerd://c7cbd580c9308dbcae4bd2036f238db0d187166a0f1e898dbc414f230ec32a63",
+            "exitCode": 0,
+            "finishedAt": "2026-11-17T22:40:30Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-17T20:19:31Z"
+          }
+        }
+      ]
+    },
+    {
+      "pod_name": "iris-romain-knotmeter-20261117t2019-f12ebbb8-1-b8c996746c69fdca",
+      "attempt_uid": "b8c996746c69fdca",
+      "phase": "Succeeded",
+      "node": "g1cc242",
+      "gpus_requested": 8,
+      "containers": [
+        {
+          "name": "output-uploader",
+          "terminated": {
+            "containerID": "containerd://15e223d856c80ee5bdd8518dc598de08333e759d2f0b362d554dc7ec04d6baea",
+            "exitCode": 0,
+            "finishedAt": "2026-11-17T22:38:50Z",
+            "message": "{\"state\": \"TASK_OUTPUT_ARCHIVE_STATE_UPLOADED\", \"uri\": \"s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/knotmeter-20261117t201915z-0af609b36ad6/serve/0/b8c996746c69fdca/outputs.tar.zst\", \"size_bytes\": \"455196816\", \"sha256\": \"97eba559d179738ef4ab9662632e166f1614b7d5082fef36162f92cea57594db\", \"retention\": \"TASK_OUTPUT_ARCHIVE_RETENTION_TTL\", \"ttl_days\": 7, \"skipped_count\": 0}",
+            "reason": "Completed",
+            "startedAt": "2026-11-17T21:21:11Z"
+          }
+        },
+        {
+          "name": "task",
+          "terminated": {
+            "containerID": "containerd://0c7acb9318236ab9504df2c585fcd6054ec24dab8e6eb65067038f20f1b272fb",
+            "exitCode": 0,
+            "finishedAt": "2026-11-17T22:38:13Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-17T21:21:11Z"
+          }
+        }
+      ]
+    }
+  ],
+  "remaining_owned_workloads": [
+    {
+      "name": "pod-iris-romain-knotmeter-20261117t2019-ed032160-0-01e00185a12a2d1c-8b93d",
+      "conditions": {
+        "QuotaReserved": "True",
+        "Admitted": "True",
+        "Finished": "True"
+      },
+      "admission_retained": true
+    },
+    {
+      "name": "pod-iris-romain-knotmeter-20261117t2019-f12ebbb8-1-b8c996746c69fdca-73476",
+      "conditions": {
+        "QuotaReserved": "True",
+        "Admitted": "True",
+        "Finished": "True"
+      },
+      "admission_retained": true
+    }
+  ],
+  "active_owned_gpu_allocations": 0,
+  "active_owned_containers": 0,
+  "preempted_attempt_0_pod_absent": true,
+  "note": "Baseline pods may be garbage-collected; their earlier Succeeded timing receipts remain in the baseline record. No other owner job or shared service was modified."
+}

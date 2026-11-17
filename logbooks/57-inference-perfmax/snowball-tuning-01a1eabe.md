@@ -1,8 +1,10 @@
 # Snowball serving campaign
 
-The decision is whether a smaller prefill token budget improves completed output
-throughput or latency at 128 resident AgentX sessions. Retaining the checked-in
-baseline is an acceptable result. This campaign uses the scope delegated for
+Retain the checked-in C128 preset when throughput is the priority. A normal C64
+window reached 92.302 reported completion tokens/s/GPU versus 124.396 at C128,
+with 48.2% lower p90 request latency. Both windows are valid. The initial
+4,096-token prefill-budget test was deferred in favor of this load comparison.
+This campaign uses the scope delegated for
 [issue #57](https://github.com/marin-community/marin-logbooks/issues/57).
 
 The initial source is `c07967597646fa1e0474e4982b193e36a373b647`. The execution
@@ -163,3 +165,152 @@ report. Its source had been edited while the command was active, so Bash later
 read shifted file-tail bytes as a command. The helper now uses `exec` for the
 final command. The frozen GPU and coordinator jobs both succeeded. Keep that
 wrapper failure separate from their results.
+
+### C64 interruption and completed retry
+
+The C64 trial is `20261117T201915Z-0af609b36ad6`, root
+`/romain/knotmeter-20261117t201915z-0af609b36ad6`, from published source
+`06b9a63682da6b75161172e11f9acb9ec36d19b1`. A direct comparison of its frozen
+series with the baseline found only `profile.session_concurrency: 128 → 64`.
+The prepared workload was the same verified cache hit. All serving settings,
+model, tokenizer, runtime, workload, numerical limits and policy hashes stayed
+fixed. The corrected checker adds prepared-prefix branch controls; its source
+revision differs from the baseline's earlier checker.
+
+Attempt 0, `6a769724214e39be` on `g5c0474`, passed all five shared-check groups,
+all 64 reference histories and 1,770 positions. Its nine prepared branches plus
+the final repeat were exactly zero under the unchanged zero bound. All nine
+decode-created reuse boundaries passed. It was then preempted during native
+warmup. The retained partial JSONL contains 431 successful warmup records and
+183 empty-content validation errors. No profiling window completed.
+
+The worker committed a native archive before preemption but did not publish its
+receipt. Iris retained no output archive for that attempt. A bounded listing
+found the committed archive, whose SHA256 matched its name. Its embedded
+`attempt.json` matched the frozen manifest and native attempt, and the check
+report hash matched the worker record. After rechecking that the original
+receipt was absent, a recovery receipt was derived from that worker record.
+It preserves `failed` and `InterruptedError: Attempt interrupted by signal 15`.
+The explicit `receipt_provenance` field and separate `receipt-recovery.json`
+label the derivation. The ordinary collector now retains its interrupted
+output and allocation cost. This attempt remains performance-ineligible.
+
+Iris used its one configured preemption retry. Attempt 1,
+`b8c996746c69fdca`, was admitted on `g1cc242` at 21:21:05 UTC. It started a fresh
+server, repeated every check, passed, completed native warmup and ran a normal
+one-hour window. The final result passes native submission validity, both
+duration-coverage checks, worker metrics and the unchanged-gang check.
+It retains 3,392 successful profiling records, zero profiling errors and 25
+native deadline cancellations. Its 702 warmup records comprise 510 successful
+responses and 192 empty-content validation errors. The native session counter
+reports 33 completed sessions; this is separate from request throughput.
+
+The [C64 receipt](analysis/snowball-tuning-01a1eabe-c64.json) retains both
+attempts, the derived-receipt provenance, numerical statistics, archive hashes,
+phase counts and allocation timestamps.
+
+### Comparison and selection
+
+| Sessions | Reported completion tokens/s/GPU | Change | p90 TTFT | p90 native request latency | Validity | Recorded H100-hours |
+| ---: | ---: | ---: | ---: | ---: | --- | ---: |
+| 128 | 124.39607 | baseline | 103.33113 s | 297.61639 s | normal window; checks passed | 11.368889 |
+| 64 | 92.30190 | −25.80% | 60.39601 s | 154.10088 s | normal window; checks passed | 12.738633 |
+
+C64 lowers p90 TTFT by 41.6% and p90 request latency by 48.2%, while losing
+25.8% of completed-token throughput. Retain C128 for the primary throughput
+objective. C64 is a measured option when its lower request latency is worth
+that throughput loss. The 5% similarity band was an agent-predeclared experiment
+heuristic. Romain supplied a qualitative throughput/latency preference and no
+numeric latency cap.
+
+The rate uses `usage_completion_tokens`, equal to `output_sequence_length` in
+every retained successful profiling record. C128 totals 3,612,237 such tokens
+over 3,629.77401 seconds; C64 totals 2,679,789 over 3,629.10885 seconds. The
+pinned processor divides by that span and all eight physical GPUs. The separate
+`output_token_count` field has different totals and is not the selected rate's
+numerator. The latency column is native per-request `request_latency`.
+These measurements do not report session-tree or RL-step throughput or latency.
+
+There is one normal window per point, with different physical hosts and a
+different realized replay request mix under the native concurrency change.
+The result does not identify the exact throughput/latency bend. Cache-pressure
+observations motivated the lower-load hypothesis; they do not prove a
+bottleneck. The baseline retains its original checker revision, and C64 retains
+the corrected prepared-prefix coverage. Both use the same fixed provisional
+policy. Passing these saved-history serving checks does not qualify RL learning
+or trainer probability ratios. No policy calibration or bounds change ran.
+
+The runner selected `20261117T182804Z-6603a552927f` and wrote `recommended.yaml`
+with C128, the unchanged serving settings and a frozen runtime manifest. The
+terminal Markdown was checked byte-for-byte against stored `summary.md`.
+The parent's reporting-only refresh preserves the choice and adds the explicit
+RL qualification limit to selected reports and configuration comments.
+The [current report snapshot](analysis/snowball-tuning-01a1eabe-summary.md)
+matches stored `summary.md` after that refresh from
+`e929e4528e399e8f8d1dd6f5f4bf6909532b020f`.
+[Artifact hashes](analysis/snowball-tuning-01a1eabe-artifacts.json) pin the
+reports, recommendation, runtime, results and aggregates. They also preserve
+the initial `06b9` report hashes as historical output. A CPU `plan` round-trip
+of `recommended.yaml` recovered C128, identical serving settings and the exact
+baseline runtime, without allocating GPUs.
+
+### Cost and cleanup
+
+| Allocation | Recorded H100-hours |
+| --- | ---: |
+| C128 normal attempt | 11.368889 |
+| C64 interrupted attempt | 2.371967 |
+| C64 successful retry | 10.366667 |
+| Total | 24.107522 |
+
+Cost includes setup, compilation, checks, warmup, profiling, drain, output
+capture and the interrupted attempt. Queueing is excluded. The interrupted
+pod expired before a final container timestamp was captured. Its recorded end
+is the conservative Iris terminal observation; its last observed Running time
+gives a lower bound. Total allocated cost is therefore bounded by
+23.964314–24.107522 H100-hours. All other allocation endpoints use retained
+container timestamps. There are no additional unknown allocations.
+
+The [cleanup receipt](analysis/snowball-tuning-01a1eabe-cleanup.json) confirms
+all four Iris jobs succeeded, remaining owned pods and containers are terminal,
+and remaining Workloads are Finished. The interrupted pod is absent. No live
+GPU allocation remains, and resource-board row 2203 is closed. No other owner's
+job or shared service was changed.
+
+The [comparison receipt](analysis/snowball-tuning-01a1eabe-comparison.json)
+records the choice, heuristic attribution, limits, cost bounds and execution
+identities. Native archive hashes are in the baseline and C64 receipts; large
+observations remain under the campaign URI above. The corrected checks and both
+normal windows used BF16 with compilation and CUDA graphs enabled.
+
+### Reproduce the normal points
+
+Use an isolated checkout of source `548b9fd14d79db11148c7d637d32d4e9c8685f16`
+for the recorded baseline, or `06b9a63682da6b75161172e11f9acb9ec36d19b1` for
+C64 and its corrected checker. Choose a new campaign name for fresh executions.
+The checked-in helper preserves the original commands and the deferred
+prefill-budget alternatives.
+
+```sh
+marin-env uv run --frozen --python 3.12 --package marin-core --extra cpu \
+  python -m experiments.evaluation.knotmeter.cli run \
+  --profile snowball-h100 --campaign NEW_CAMPAIGN \
+  --priority interactive --session-concurrency 128 \
+  --logbook https://github.com/marin-community/marin-logbooks/issues/57
+```
+
+Use `--session-concurrency 64` for the measured alternative. The runner prepares
+or verifies the native workload on CPU, starts a fresh server, runs required
+checks, resets caches and retains native warmup and replay.
+
+```sh
+marin-env uv run --no-sync python -m experiments.evaluation.knotmeter.cli report \
+  --campaign-uri s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe \
+  --baseline 20261117T182804Z-6603a552927f \
+  --recommend 20261117T182804Z-6603a552927f
+```
+
+Reporting and recovery allocate no GPUs. Recovery must retain the source
+revision and native attempts recorded in the frozen plan.
+Use reporter `e929e4528e399e8f8d1dd6f5f4bf6909532b020f` or later to retain the
+explicit RL qualification limit in selected-report output.
