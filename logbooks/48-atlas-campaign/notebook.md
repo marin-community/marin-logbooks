@@ -1170,3 +1170,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
 - Decision and next action: next hourly check watches for lexical-clearance-gated admissions and RST v3 downstream outcomes.
+
+### 2026-11-17 16:40 UTC - Hourly catch-up (15:40–16:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `50d2fdd6b6…` (15:30:25 UTC) to head `81a120a9130c4056caa5b70546d536a24a1591d6`, landed 16:26:11 UTC (~10 landings 16:14–16:26 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 50d2fdd6..81a120a9` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **SWE-rebench family added**: added to the protected SHARED source adapter (`d288466f87…`) with the SWE-rebench flow proved and two machinery interplays fixed (`772444d259…`); the contract workspace created in the shared-base image layer (`81a120a913…`, head).
+  - **Guide/refs synced with current curation rulings** (`9cc97d3fad…`).
+  - **Daytona sandbox identities**: owned sandbox IDs recorded through finalization (`8223f5070c…`); Harbor provider fakes given sandbox identities (`51d3654bd2…`).
+  - **Recovery/calibration machinery**: recovery fixture execution kept inside the attempt loop (`0040c907ac…`) with the current trial CLI (`532086c7af…`); calibration configs read from their named CLI option (`1971727cbc…`).
+  - **Atlas UI**: loaded review summaries reused and navigation shared (`9f35e5ac2e…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for SWE-rebench family progression and further delivered-verifier outcomes.
