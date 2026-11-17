@@ -876,3 +876,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: #11618 comment + PR #11178 metadata [P]; verified via `gh pr view`.
 - Interpretation and limitations: the fix post-dates the terminal exp3 run and does not change it; remaining recipe copies are tracked in #11618.
 - Decision and next action: hourly checks watch for the remaining `rl.yaml`/preset-lineage fixes; recovery decision stays with the coordinator/user.
+
+### 2026-11-17 22:40 UTC - Hourly catch-up (21:40–22:40 UTC window): #11618 CLOSED with full provenance; transport probe proposed
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: n/a (evidence-gathering on marin; not adopted into the terminal exp3 run).
+- External inputs and artifact references: marin issue [#11618](https://github.com/marin-community/marin/issues/11618) — now CLOSED; new issue [#11619](https://github.com/marin-community/marin/issues/11619) "[rl] Add a two-node NCCL transport probe" (OPEN) [P].
+- Environment and hardware when relevant: the original workaround targeted cw-us-east-02a's `mlx5_0`.
+- Result, including failure or restart: **marin#11618 CLOSED** ("provenance collection is complete") with the closing comment establishing the full origin: the socket override in commit `410e9c25a8…` (2026-10-20) was a **workaround for an InfiniBand `IBV_WC_RETRY_EXC_ERR(12)` failure on `mlx5_0`** in the Snowball inventory smoke on cw-us-east-02a — logbooks B200MFU-020/-028 record the same error class in the July 2026 B200 bring-up; every multi-node run before 2026-10-19 that was checked used InfiniBand. So the override had a real (single-host-smoke) origin, but its copy-forward into multi-node production recipes was never re-validated against `rdma/ib` jobs. **Follow-up proposed**: marin issue [#11619](https://github.com/marin-community/marin/issues/11619) (OPEN) proposes a two-task gang Iris job measuring which transport NCCL picks per environment variant: the full workaround, each variable alone, the production overlay with `NCCL_SOCKET_IFNAME`, and IB hints (`NCCL_IB_HCA`, `NCCL_IB_GID_INDEX`). (Also this window: one Atlas landing — source-inventory reuse guarded by input-unchanged checks.)
+- Evidence: #11618 closing comment, #11619 body [P]; Atlas landing record [R].
+- Interpretation and limitations: the probe (#11619) is a proposal, not yet run; the exp3 recovery decision remains with the coordinator/user.
+- Decision and next action: hourly checks watch for the #11619 probe execution and the recovery decision.
