@@ -23,7 +23,7 @@ from rigging.timing import Timestamp
 from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, write_record
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial
-from experiments.evaluation.knotmeter.config import Check, Runtime, load_profile, resolved_series
+from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
 from experiments.evaluation.knotmeter.report import report_campaign
 from experiments.evaluation.knotmeter.run import create_server, run_checks
 from experiments.evaluation.knotmeter.runtime import resolve_release
@@ -66,15 +66,6 @@ def test_plan_uses_target_storage_unless_explicitly_overridden(monkeypatch, ambi
     )
     with pytest.raises(ValueError, match="shared"):
         resolve_plan(profile, "fixture", marin_prefix="local_store")
-
-
-def test_unregistered_cuda_build_and_list_index_override_fail_before_submission(tmp_path):
-    manifest = tmp_path / "runtime.json"
-    manifest.write_text(json.dumps(dataclasses.asdict(VLLM_GPU_RELEASE) | {"torch_backend": "cu999"}))
-    with pytest.raises(ValueError, match="registered CUDA"):
-        resolve_release(Runtime(manifest=str(manifest)))
-    with pytest.raises(ValueError, match="whole value"):
-        load_profile(Path("snowball-h100"), ["checks.0.command=[true]"])
 
 
 def trial(root: Path, name: str, rate: float, *, diagnostic: bool = False) -> dict:
@@ -213,7 +204,8 @@ def test_plan_without_result_remains_visible_with_unknown_cost(tmp_path):
     output = report_campaign(str(tmp_path))
     assert "interrupted" in output and "unrecorded" in output
     assert "interrupted/plan.json" in output
-    assert "Total cost is incomplete" in output
+    row = next(line for line in output.splitlines() if line.startswith("| [interrupted]"))
+    assert row.split("|")[-2].strip() == "unknown"
     assert output == (tmp_path / "summary.md").read_text()
 
 

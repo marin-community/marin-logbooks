@@ -63,7 +63,7 @@ class CorrectnessEndpoint:
 
 @pytest.fixture
 def correctness_endpoint(request: pytest.FixtureRequest, tmp_path):
-    """Own server lifetime; the test calls the same checking function as the CLI."""
+    """Provide an endpoint and clean up any serving gang deployed by this fixture."""
     plan_path = request.config.getoption("--correctness-plan")
     explicit_output = request.config.getoption("--correctness-output")
     if plan_path is None:

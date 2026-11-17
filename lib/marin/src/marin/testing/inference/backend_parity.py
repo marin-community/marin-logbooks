@@ -34,7 +34,15 @@ class TokenDistribution:
         return cls(tuple(score.token_id for score in scores), tuple(score.logprob for score in scores))
 
 
-def distribution_difference(first: TokenDistribution, second: TokenDistribution) -> dict:
+@dataclass(frozen=True)
+class DistributionDifference:
+    max_probability_error_lower_bound: float
+    max_probability_error: float
+    shared_tokens: int
+    same_greedy_token: bool
+
+
+def distribution_difference(first: TokenDistribution, second: TokenDistribution) -> DistributionDifference:
     """Bound top-k probability error, including tokens missing from one side.
 
     An absent token has probability between zero and that side's kth probability.
@@ -51,12 +59,12 @@ def distribution_difference(first: TokenDistribution, second: TokenDistribution)
             known, floor = (a[token], min(b.values())) if token in a else (b[token], min(a.values()))
             lower.append(max(0.0, known - floor))
             upper.append(max(known, abs(known - floor)))
-    return {
-        "max_probability_error_lower_bound": max(lower),
-        "max_probability_error": max(upper),
-        "shared_tokens": len(a.keys() & b.keys()),
-        "same_greedy_token": first.token_ids[0] == second.token_ids[0],
-    }
+    return DistributionDifference(
+        max_probability_error_lower_bound=max(lower),
+        max_probability_error=max(upper),
+        shared_tokens=len(a.keys() & b.keys()),
+        same_greedy_token=first.token_ids[0] == second.token_ids[0],
+    )
 
 
 @dataclass(frozen=True)
