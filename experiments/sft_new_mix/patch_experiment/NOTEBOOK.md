@@ -240,3 +240,32 @@ as the control.
 Evalchemy configs. The model configs are rebuilt from the `cap32k-giveup-s100` run record and differ from
 it only in name and location. Readout: share of outputs containing U+202F or U+2011 (prompt-free), plus the
 primary and guard metrics above.
+
+**Hang and restart.** The first training job hung at step 48 (13:12 UTC) with every rank blocked in the
+train step and no error, about when the next half-hourly temporary checkpoint was due; it held the gang for
+10.5 hours before it was noticed. Cancelled and resubmitted unchanged as
+`/dml/sft-patch-11188-utf-normalize-cw-rno2a-r2`, resuming from temporary step 36.
+
+### Step 100 readout (`sft11188-utf-normalize-s100` vs `sft11188-control-s100b`)
+
+Share of outputs containing U+202F or U+2011 (no prompt contains either):
+
+| Benchmark | control | utf-normalize |
+|---|---|---|
+| MATH-500 | 12.4% | 0.2% |
+| GSM8K 0-shot | 6.7% | 0.0% |
+| IFBench | 6.0% | 0.0% |
+| OlympiadBench | 6.7% | 0.3% |
+| AIME24 | 3.3% | 0.0% |
+| HumanEval+ | 0.0% | 0.0% |
+
+The residue is one MATH-500 output (`3n‑6`, `n‑1` in a table) and one OlympiadBench output (`⟂ B`).
+
+| Step 100 | AIME24 acc / >= 100k chars / no box | OlympiadBench acc / >= 100k chars / no box | MATH-500 | GSM8K | HumanEval+ | IFBench strict prompt |
+|---|---|---|---|---|---|---|
+| control | 69.7% / 36.0% / 26.3% | 22.0% / 49.0% / 23.7% | 92.8% | 86.3% | 65.2% | 19.7% |
+| utf-normalize | 67.3% / 43.7% / 27.0% | 21.0% / 50.3% / 28.0% | 94.2% | 83.2% | 71.3% | 20.0% |
+
+Only the GSM8K drop (-3.1) clears 1.96 binomial standard errors among the accuracy and length metrics; the
+control itself moves -5.1 on GSM8K between steps 100 and 222, so a single-seed difference of this size is
+within run-to-run variation. AIME24's long-output share (+7.7) is not decisive (300 samples of 30 prompts).
