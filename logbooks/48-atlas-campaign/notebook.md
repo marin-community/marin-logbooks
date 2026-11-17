@@ -1261,3 +1261,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for continued license-receipt/prelight follow-through.
+
+### 2026-11-17 22:40 UTC - Hourly catch-up (21:40–22:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d49ca9e53a…` (20:52:54 UTC) to head `bb0fa0e90215bb9082569dbf50ab97ccc2f84e62`, landed 21:35:08 UTC (1 landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d49ca9e5..bb0fa0e9` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — source inventories reused **only while their inputs are unchanged** (`bb0fa0e902…`, head: guarding inventory reuse against stale inputs).
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: single code landing.
+- Decision and next action: next hourly check watches for continued license/prelight follow-through.
