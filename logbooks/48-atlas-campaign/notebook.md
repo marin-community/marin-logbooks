@@ -1273,3 +1273,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit above; landing timestamp in the local atlas-push log [R].
 - Interpretation and limitations: single code landing.
 - Decision and next action: next hourly check watches for continued license/prelight follow-through.
+
+### 2026-11-17 23:40 UTC - Hourly catch-up (22:40–23:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `bb0fa0e902…` (21:35:08 UTC) to head `9cbe20a66a189888feca7d63e91bc1497008a38e`, landed 23:30:35 UTC (~10 landings 22:51–23:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log bb0fa0e9..9cbe20a6` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **FACET census and lexical measurements recorded** (`9cbe20a66a…`, head).
+  - **Restriction-tier hardening**: restriction tier carried on staged plans and raw snapshots (`ba5c6ecf7a…`); erased restriction tags fail closed at publish, with overrides only strengthening the tier (`124ec82ace…`); pre-tier archived release plans tolerated while the missing tag is refused at publish (`311232abbf…`).
+  - **Private-declaration projection tightened**: content-bearing evidence fields dropped from the projection (`57d517c9dc…`); free-text QC method dropped (`3c7cf35615…`); the reviewer rubric redacted from private assessment reports (`2028e0e38e…`) with the redaction documented in the private data tier docs (`3d0fc6946e…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the FACET census/lexical measurement contents are registry-bound [M].
+- Decision and next action: next hourly check watches for FACET admission progression and the private-tier publication outcomes.
