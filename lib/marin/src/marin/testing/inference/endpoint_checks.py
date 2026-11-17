@@ -32,6 +32,7 @@ from marin.testing.inference.goldens import (
 )
 
 TOP_K = 50
+MAX_CACHE_PREPARATION_REQUESTS = 3
 HTTP_TIMEOUT = aiohttp.ClientTimeout(total=900)
 RANK_HEADER = "X-data-parallel-rank"
 
@@ -356,13 +357,42 @@ async def check_batch(client: EndpointClient, references: ReferenceLookup, fixtu
     return summary | {"engine": 0, "running_peak": running_peak, "batch_evidence": evidence, "observations": rows}
 
 
-async def check_cache(client: EndpointClient, references: ReferenceLookup, fixture: ModelFixture) -> dict:
+async def check_settled_branch(
+    client: EndpointClient, branch: tuple[int, ...], alternate: tuple[int, ...], boundary: int, block_size: int
+) -> dict:
+    """Compare a branch before and after a sibling, with the complete usable prefix cached."""
+    expected = (len(branch) - 1) // block_size * block_size
+    prepared_hits = []
+    result: dict = {"boundary": boundary, "status": "failed", "expected_cached_tokens": expected}
+    for attempt in range(MAX_CACHE_PREPARATION_REQUESTS):
+        before = await client.complete(branch, label=f"cache-{boundary}-prepare-{attempt}")
+        prepared_hits.append(cached_tokens(before))
+        if cached_tokens(before) == expected:
+            break
+    result["preparation_hits"] = prepared_hits
+    if prepared_hits[-1] != expected or expected <= boundary:
+        return result
+    await client.complete(alternate, label=f"cache-{boundary}-settled-alternate")
+    after = await client.complete(branch, label=f"cache-{boundary}-settled-repeat")
+    result["repeat_cached_tokens"] = cached_tokens(after)
+    if cached_tokens(after) == expected:
+        result["status"] = "passed"
+        result["comparison"] = dataclasses.asdict(
+            distribution_difference(next_distribution(before), next_distribution(after))
+        ) | {"boundary": boundary, "case": "settled-branch"}
+    return result
+
+
+async def check_cache(
+    client: EndpointClient, references: ReferenceLookup, fixture: ModelFixture, block_size: int
+) -> dict:
     source = max(references.cases, key=lambda case: len(case.tokens)).tokens
     if len(set(source)) < 3:
         raise ValueError("Cache probes require varied token histories")
     same_split, different_split = [], []
     evidence = []
     prefill_reuse = []
+    settled_branches = []
     decode_reuse = []
     failures = []
     for length in fixture.policy.boundary_lengths:
@@ -394,11 +424,18 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
                     dataclasses.asdict(distribution_difference(next_distribution(fresh), next_distribution(warm)))
                     | {"boundary": length}
                 )
-                # A larger second hit changes the prefill split.
-                comparison = dataclasses.asdict(
-                    distribution_difference(next_distribution(warm), next_distribution(repeated))
-                ) | {"boundary": length}
-                (same_split if hits[0] == hits[1] else different_split).append(comparison)
+                # A new hybrid-cache junction can split the suffix even when the joint hit is unchanged.
+                different_split.append(
+                    dataclasses.asdict(distribution_difference(next_distribution(warm), next_distribution(repeated)))
+                    | {"boundary": length, "case": "seed-and-branch"}
+                )
+
+            other_token = next(token for token in source if token != branch[length])
+            isolated_alternate = (*prefix, other_token, *branch[length + 1 :])
+            settled = await check_settled_branch(client, branch, isolated_alternate, length, block_size)
+            settled_branches.append(settled)
+            if settled["status"] == "passed":
+                same_split.append(settled["comparison"])
 
             # Cross a state boundary, reuse generated history, then recompute it freshly.
             await client.reset_cache()
@@ -461,7 +498,11 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
             ),
             "observations": rows,
         }
-        for name, rows in (("prefill_reuse", prefill_reuse), ("decode_reuse", decode_reuse))
+        for name, rows in (
+            ("prefill_reuse", prefill_reuse),
+            ("settled_branches", settled_branches),
+            ("decode_reuse", decode_reuse),
+        )
     }
     return {
         "status": (
@@ -549,7 +590,12 @@ async def check_endpoint(
             ("deployment", lambda: verify_deployment(client, fixture, runtime_source)),
             ("reference", lambda: check_reference(client, references, fixture)),
             ("batch", lambda: check_batch(client, references, fixture)),
-            ("cache", lambda: check_cache(client, references, fixture)),
+            (
+                "cache",
+                lambda: check_cache(
+                    client, references, fixture, report["checks"]["deployment"]["cache_config"]["block_size"]
+                ),
+            ),
             ("decode", lambda: check_decode(client, references, fixture)),
         )
         for name, stage in stages:

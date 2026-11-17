@@ -79,7 +79,7 @@ def reference_fixture(tmp_path) -> ModelFixture:
     )
     cases = [
         ReferenceCase(id=f"case-{i}", tokens=tuple((n % 13) + 3 for n in range(length)), positions=(length - 1,))
-        for i, length in enumerate([5, 7, 10, 40])
+        for i, length in enumerate([5, 7, 10, 80])
     ]
     prompts = artifact(tmp_path / "cases.json", [case.model_dump(mode="json") for case in cases])
     scores = artifact(
@@ -131,6 +131,8 @@ class HttpEngine:
     mode: str
     identity: ModelIdentity
     prefixes: set[tuple[int, ...]] = field(default_factory=set)
+    histories: set[tuple[int, ...]] = field(default_factory=set)
+    corrupted: set[tuple[int, ...]] = field(default_factory=set)
     active_batch: int = 0
     observed_batch: asyncio.Event = field(default_factory=asyncio.Event)
 
@@ -143,7 +145,21 @@ class HttpEngine:
         tokens = tuple(body["prompt"])
         count = body["max_tokens"]
         assert request.headers["X-data-parallel-rank"] == "0"
-        cached = max((len(prefix) for prefix in self.prefixes if tokens[: len(prefix)] == prefix), default=0)
+        cached = max(
+            (len(prefix) for prefix in self.prefixes if len(prefix) < len(tokens) and tokens[: len(prefix)] == prefix),
+            default=0,
+        )
+        if self.mode == "branch-corrupt" and tokens not in self.histories:
+            for previous in self.histories:
+                if len(previous) != len(tokens):
+                    continue
+                shared = next((i for i, (a, b) in enumerate(zip(previous, tokens, strict=True)) if a != b), len(tokens))
+                protected = max(
+                    (len(p) for p in self.prefixes if len(p) < len(previous) and previous[: len(p)] == p), default=0
+                )
+                if 0 < shared < protected:
+                    self.corrupted.symmetric_difference_update({previous})
+            self.histories.add(tokens)
         is_batch = request.headers["X-Request-Id"].startswith("batch-")
         if is_batch:
             self.active_batch += 1
@@ -151,7 +167,7 @@ class HttpEngine:
             # engine. This avoids a timer race in the HTTP fixture.
             await self.observed_batch.wait()
         probabilities = dict(LOGPROBS)
-        if self.mode == "corrupt-cache" and cached:
+        if cached and (self.mode == "corrupt-cache" or tokens in self.corrupted):
             probabilities[1] = math.log(0.1)
             probabilities[2] = math.log(0.7)
         top = {f"token_id:{token}": value for token, value in probabilities.items()}
@@ -182,6 +198,8 @@ class HttpEngine:
 
     async def reset(self, _request):
         self.prefixes.clear()
+        self.histories.clear()
+        self.corrupted.clear()
         return web.json_response(True)
 
 
@@ -212,7 +230,7 @@ async def http_endpoint(engine: HttpEngine):
                         "override_generation_config": {"eos_token_id": 0},
                     },
                     "scheduler_config": {},
-                    "cache_config": {"enable_prefix_caching": True, "cache_dtype": "auto"},
+                    "cache_config": {"enable_prefix_caching": True, "cache_dtype": "auto", "block_size": 4},
                     "parallel_config": {},
                     "compilation_config": {"cudagraph_mode": "PIECEWISE"},
                 },
@@ -248,9 +266,21 @@ async def http_endpoint(engine: HttpEngine):
         ("no-cache", "cache"),
         ("no-batch", "batch"),
         ("corrupt-cache", "cache"),
+        ("branch-corrupt", "cache"),
     ],
 )
 async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, reference_fixture, mode, failed_check):
+    if mode == "branch-corrupt":
+        reference_fixture = reference_fixture.model_copy(
+            update={
+                "policy": reference_fixture.policy.model_copy(
+                    update={
+                        "different_split": ErrorLimits(maximum=1, p99=1, p90=1, fraction_above_0075=1),
+                        "same_split": ErrorLimits(maximum=0, p99=0, p90=0, fraction_above_0075=0),
+                    }
+                )
+            }
+        )
     async with http_endpoint(HttpEngine(mode, reference_fixture.model)) as url:
         path = tmp_path / "report.json"
         report = await check_endpoint(url, "test-model", reference_fixture, RUNTIME, path)
@@ -284,9 +314,15 @@ async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, refere
             assert len(cache["cache_evidence"]) == len(reference_fixture.policy.boundary_lengths)
             assert cache["same_split"]["positions"] > 0
             assert cache["different_split"]["positions"] >= len(reference_fixture.policy.boundary_lengths)
+        if mode == "branch-corrupt":
+            cache = report["checks"]["cache"]
+            assert cache["different_split"]["status"] == "passed"
+            assert cache["settled_branches"]["status"] == "passed"
+            assert cache["same_split"]["status"] == "failed"
     else:
         assert report["checks"]["batch"]["running_peak"] >= 2
         assert report["checks"]["cache"]["cache_evidence"][0]["warm_cached_tokens"] > 0
+        assert report["checks"]["cache"]["settled_branches"]["status"] == "passed"
         assert report["checks"]["decode"]["positions"] == 64
     assert report["requests"]
     assert all((path.parent / "report-requests" / row["response"]).is_file() for row in report["requests"])
