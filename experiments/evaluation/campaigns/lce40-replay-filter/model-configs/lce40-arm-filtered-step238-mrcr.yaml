@@ -1,0 +1,33 @@
+name: lce40-arm-filtered-step238-mrcr
+location: s3://marin-us-east-02a/tmp/ttl=30d/lce-junk-filter/exports/lce40-arm-filtered-20261113-step238/hf/
+# MRCR variant: no chat_template override, so the tokenizer repository's own template applies, as
+# in the evaldash MRCR runs of the reproduction's checkpoints. The export has no Hugging Face repository. The tokenizer is the reproduction's step-222
+# repository, which holds the same tokenizer files the export was built with.
+tokenizer: open-athena/Grug-67B-A2B-Datakit-SFT-Repro-262K-Step222-2026.10.25
+tokenizer_revision: 4e42bfabca646c9cad64b163d9639c542c5aec5b
+apply_chat_template: true
+resource_hint:
+  gpu:
+    H100: 8
+  memory: 512g
+serve:
+  tensor_parallel_size: 1
+  data_parallel_size: 8
+  max_model_len: 73728
+  max_num_batched_tokens: 7168
+  max_num_seqs: 32
+  tool_call_parser: hermes
+  auto_overrides: false
+  vllm_extra_args:
+  - --enable-expert-parallel
+  - --model-loader-extra-config
+  - '{"distributed":true}'
+  - --override-generation-config
+  - '{"eos_token_id":[128001,128009],"bos_token_id":128000}'
+  vllm_source: marin_fork
+generation:
+  extra_gen_kwargs:
+    skip_special_tokens: "false"
+agent:
+  agent_kwargs:
+    thinking_format: chat-template
