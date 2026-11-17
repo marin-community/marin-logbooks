@@ -816,3 +816,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring state [R].
 - Interpretation and limitations: update completion ≠ learner progress; the admission-dominated first update is expected (the admission phase assembles the first sample groups).
 - Decision and next action: hourly checks now track the learner/ admission split per update, the first checkpoint, and steady-state cadence.
+
+### 2026-11-17 17:40 UTC - Hourly catch-up (16:40–17:40 UTC window): exp3 RL updates 2–3, steady cadence emerging
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch.
+- External inputs and artifact references: monitoring state (17:33 readback) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **exp3 RL updates 2 and 3 complete** with a steady cadence emerging: W&B update 3 shows learner 321.85 s, policy 240.69 s, full cycle 347.46 s (learner-dominated now, vs the admission-dominated update 1) — no eval/checkpoint callback on this cycle. **Native checkpoint 2 verified**; a prior eval scored 119/120 and is ineligible (the all-scored eligibility rule). Run unchanged; controls unchanged.
+- Evidence: monitoring state [R].
+- Interpretation and limitations: three updates do not establish throughput; the 119/120 eval being ineligible confirms the strict eligibility rule is active.
+- Decision and next action: hourly checks track the learner-dominated cadence, checkpoint/eval callbacks, and the first eligible eval.
