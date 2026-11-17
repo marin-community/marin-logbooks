@@ -983,3 +983,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the math_gym-qa retained-population admission outcome is not yet attested in this record.
 - Decision and next action: next hourly check watches for POLARIS measurements and the math_gym-qa admission.
+
+### 2026-11-17 00:40 UTC - Hourly catch-up (23:40–00:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `db12047ab8…` (23:26:40 UTC) to head `abf170f40e4d`, landed ~00:20 UTC (~8 landings 00:11–00:19 UTC incl. a main merge).
+- Command or material configuration: evidence: landings.jsonl tail; `git log db12047a..abf170f4` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Main merge into atlas-env-audit**: takes the Minerva scorer revision and taskforge test packaging for the PR merge ref (`abf170f40e…`, head).
+  - **Shared-adapter fixes**: bootstrap failures observed in the full SWE run fixed (`b290895221…`); Harbor lock refreshed for tokenizer test dependencies (`d82647917b…`); judge-probe tools drop completed in the tokenizer check (`b2c280ff4d…`); rolloutengine test group given its tool-free test dependencies (`6e4af090c2…`); tool-free completion events narrowed so the role check type-checks (`82c6f3d8e8…`).
+  - **Preservation fixes**: PDBThink training tasks and their native verifier preserved (`301a3128e6…`); approved NoP grades preserved after teardown failures (`8bd001230a…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for shared-adapter re-run outcomes and POLARIS progression.
