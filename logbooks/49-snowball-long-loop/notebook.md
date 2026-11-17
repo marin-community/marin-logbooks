@@ -792,3 +792,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring state [R].
 - Interpretation and limitations: gate status only.
 - Decision and next action: hourly checks continue; admission stays untouched per the standing queue rule.
+
+### 2026-11-17 15:40 UTC - Hourly catch-up (14:40–15:40 UTC window): exp3 RL RUNNING
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch.
+- External inputs and artifact references: monitoring state (15:34 readback) [R].
+- Environment and hardware when relevant: the quota condition (232 GPU + RDMA slots) resolved — the RL tasks scheduled.
+- Result, including failure or restart: **exp3's RL 32 tasks are RUNNING** (15:34 UTC readback) — the earlier quota gate cleared. Token generation and **one real installed-agent trial verified with grade 0 and no exception** (a harness-level sanity trial, not a learning signal). **No optimizer evidence yet** — no RL updates have completed; the run itself is unchanged. This is the first RL-phase execution after the SFT completion (388 updates, step-387 handoff).
+- Evidence: monitoring state [R].
+- Interpretation and limitations: grade-0 agent trial verifies the harness path only; optimizer evidence is the next milestone.
+- Decision and next action: hourly checks now track RL updates/optimizer evidence and the first admission decisions.
