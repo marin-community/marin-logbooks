@@ -1092,3 +1092,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
 - Decision and next action: next hourly check watches for further passing-subset admissions and judge-probe qualification.
+
+### 2026-11-17 11:40 UTC - Hourly catch-up (10:40–11:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `2ff07684cf…` (10:33:16 UTC) to head `abe5f511d461a526a2a9f20b2e77dda4887ee3bf`, landed 11:28:32 UTC (~9 landings 11:19–11:28 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 2ff07684..abe5f511` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Standing policies pinned with tests**: duplicate outcomes, artifact retention, faithful environments, and region movement documented as standing curation policies (`8a137bf9ac…`); the FULL finalization waiver bound of 1% unreviewed now enforced (`9eb2f6fb90…`); approved archived sources bound to frozen retained records (`0841333ec4…`).
+  - **Multi-SWE verification visible**: captured Multi-SWE verifiers exposed in review payload 6 (`b929737cd9…`); the revision-6 SAMPLE reviewer hash registered (`459d253da6…`); a VERIFY support level added for demands the offline survey cannot observe (`dec7e2c26c…`); declared file metadata restored in the guest after single-file uploads (`a3a26fd179…`).
+  - **Backend/infra**: docker memory limits enforced swapless so declared caps cannot be exceeded through swap (`abe5f511d4…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for policy-pinned admission outcomes.
