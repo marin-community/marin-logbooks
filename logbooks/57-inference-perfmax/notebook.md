@@ -532,3 +532,43 @@ allowed by current task steering; record it and leave shared scheduling alone.
 The child's normal Snowball baseline has passed its actual endpoint CLI checks
 and entered native warmup using a verified prepared-workload cache hit. No
 performance result or recommendation is claimed yet.
+
+
+### Equal hit counts can conceal a changed prefill split
+
+The [focused repeat report](analysis/hero-repeat-controls-a1-summary.json) shows
+exact fresh recomputations at all three failing boundaries. Initial equal-count
+cached repeats differ by up to 0.001137. Hit counts then advance from
+112/240/2032 to 128/256/2048. Once prepared, repeats remain exact, including
+after another branch. The [execution](analysis/hero-repeat-controls-a1-execution.json)
+cost 2.596667 GB200-hours. All four provider pods are absent.
+
+The checker assumed equal hit counts meant equal prefill splitting. The pinned
+scheduler can invalidate that assumption. With 112 cached tokens and a 144-token
+prompt, its first suffix can run as 32 tokens. After dense attention discovers
+coverage at 128, the same 112-token joint hit can run as 16 plus 16. The new
+junction creates a Mamba128 checkpoint. This predicts the observed hit sequence
+112,112,128; it also predicts 240,240,256 and 2032,2032,2048. The
+[CPU reproduction](analysis/hero-scheduler-split-reproduction.json) executes the
+actual pinned scheduler method and confirms these chunk choices. It does not
+observe live chunks or GPU state bytes.
+
+A read-only scheduler hook will confirm actual starts, requested/returned chunks
+and junctions on the dedicated Hero control deployment. The hook checks the
+original method's AST hash and returns its result unchanged. Fresh-process and
+spawned-child CPU smoke tests pass. The AST fingerprint uses the serving
+Python3.12 environment. The hook is private to this archived diagnostic through
+its explicit environment flag; no wheel, shared service or release changes.
+
+```sh
+uv run python -m experiments.evaluation.inference_correctness.launch \
+  --profile hero-gb200 --name hero-scheduler-trace-a1 \
+  --pytest-test tests/cluster/vllm/test_repeat_controls.py \
+  --set 'serving.environment.HERO_SCHEDULER_TRACE="1"' \
+  --output hero-scheduler-trace-execution.json
+```
+
+Keep the initial seed/branch comparisons and all coverage requirements. Correct
+the unsupported classification after the trace; reserve exact comparisons for
+fully prepared branch prefixes with the same suffix plan. No numerical limit
+changes. The original failed report remains available.

@@ -80,6 +80,12 @@ def correctness_endpoint(request: pytest.FixtureRequest, tmp_path):
         return
     plan = json.loads(Path(plan_path).read_bytes())
     profile = Profile.model_validate(plan["series"]["profile"])
+    if profile.serving.environment.get("HERO_SCHEDULER_TRACE") == "1":
+        trace = Path(__file__).resolve().parents[3] / "logbooks/57-inference-perfmax/analysis/hero_trace_hook"
+        previous = profile.serving.environment.get("PYTHONPATH", os.environ.get("PYTHONPATH", ""))
+        environment = profile.serving.environment | {"PYTHONPATH": os.pathsep.join(filter(None, (str(trace), previous)))}
+        profile = profile.model_copy(update={"serving": profile.serving.model_copy(update={"environment": environment})})
+        plan["series"]["profile"] = profile.model_dump(mode="json")
     fixture_names = [check.fixture for check in profile.checks if check.fixture]
     if len(fixture_names) != 1:
         raise ValueError("A deployment gate requires exactly one shared model fixture")
