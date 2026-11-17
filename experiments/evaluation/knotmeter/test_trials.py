@@ -24,7 +24,7 @@ from experiments.evaluation.knotmeter.artifacts import read_record, retain_artif
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial
 from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
-from experiments.evaluation.knotmeter.report import report_campaign
+from experiments.evaluation.knotmeter.report import recorded_checks, report_campaign
 from experiments.evaluation.knotmeter.run import create_server, run_checks
 from experiments.evaluation.knotmeter.runtime import resolve_release
 
@@ -247,7 +247,18 @@ def test_recovery_counts_setup_and_failed_native_attempts_without_resubmitting(t
             point = tmp_path / f"worker-{uid}"
             (point / "aiperf_artifacts").mkdir(parents=True)
             (point / "aiperf_artifacts/profile_export.jsonl").write_text('{"partial":true}\n')
-            record = {"manifest": plan["manifest"], "iris_attempt_uid": uid, "status": "failed"}
+            record = {
+                "manifest": plan["manifest"],
+                "iris_attempt_uid": uid,
+                "status": "failed",
+                "checks": [
+                    {
+                        "name": "synthetic-fixture-check",
+                        "kind": "numerical",
+                        "status": "passed" if number == 0 else "failed",
+                    }
+                ],
+            }
             write_record(str(point / "attempt.json"), record)
             prefix = f"{plan['trial_uri']}/attempts/{uid}/hosts/0"
             uri, digest = retain_artifacts(point, tmp_path / f"{uid}.tar.zst", prefix, name="native")
@@ -278,6 +289,10 @@ def test_recovery_counts_setup_and_failed_native_attempts_without_resubmitting(t
     if partial_exports:
         assert all("Incomplete AgentX exports" in row["measurement_error"] for row in recovered["attempts"])
         assert recovered["measurement"] is None
+        assert recorded_checks(recovered)[0]["status"] == "failed"
+        output = report_campaign(str(tmp_path))
+        row = next(line for line in output.splitlines() if line.startswith("| [failed]"))
+        assert row.split("|")[-3].strip() == "synthetic-fixture-check: failed"
     before = copy.deepcopy(read_record(f"{plan['trial_uri']}/result.json"))
     collect_trial(Client(), plan, tmp_path / "repeated-recovery")
     assert read_record(f"{plan['trial_uri']}/result.json") == before

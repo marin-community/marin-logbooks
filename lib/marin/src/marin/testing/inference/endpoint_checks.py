@@ -74,7 +74,11 @@ class EndpointClient:
 
     async def __aenter__(self) -> "EndpointClient":
         self.output.mkdir(parents=True, exist_ok=True)
-        self.session = aiohttp.ClientSession(timeout=HTTP_TIMEOUT, connector=aiohttp.TCPConnector(limit=0))
+        # Parsing and compressing a large prompt-score response can outlast the
+        # server's keepalive timeout. Do not reuse an idle connection afterward.
+        self.session = aiohttp.ClientSession(
+            timeout=HTTP_TIMEOUT, connector=aiohttp.TCPConnector(limit=0, force_close=True)
+        )
         return self
 
     async def __aexit__(self, *_exc) -> None:
