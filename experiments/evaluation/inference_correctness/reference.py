@@ -34,6 +34,7 @@ from marin.testing.inference.goldens import (
 from marin.testing.inference.snowball_backend_parity_jobs import _with_attention_implementation
 from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.s3_compat import configure_coreweave_s3
+from rigging.filesystem.storage_path import prefix_join
 
 logger = logging.getLogger(__name__)
 TOP_K = 64
@@ -139,7 +140,9 @@ def generate_snowball_reference(
                 {"cases": [case.id for case in batch], "padded_length": length, "seconds": time.time() - before}
             )
             logger.info("Reference batch: %s", timings[-1])
-    scores = save_immutable(f"{output}/scores.json", canonical_bytes([row.model_dump(mode="json") for row in rows]))
+    scores = save_immutable(
+        prefix_join(output, "scores.json"), canonical_bytes([row.model_dump(mode="json") for row in rows])
+    )
     manifest = ReferenceManifest(
         model=model_identity,
         suite_id=artifact.sha256,
@@ -158,5 +161,5 @@ def generate_snowball_reference(
             "elapsed_seconds": time.time() - started,
         },
     )
-    saved = save_immutable(f"{output}/manifest.json", canonical_bytes(manifest.model_dump(mode="json")))
+    saved = save_immutable(prefix_join(output, "manifest.json"), canonical_bytes(manifest.model_dump(mode="json")))
     logger.info("Reference manifest: %s", saved.model_dump_json())

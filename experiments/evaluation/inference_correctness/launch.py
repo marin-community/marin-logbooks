@@ -13,6 +13,7 @@ from iris.client.client import IrisClient
 from iris.cluster.types import CoschedulingConfig, Entrypoint, EnvironmentSpec, JobName, ResourceSpec, gpu_device
 from iris.rpc import job_pb2
 from marin.testing.inference.goldens import LookupStatus, lookup_reference, read_fixture
+from rigging.filesystem.storage_path import prefix_join
 from rigging.timing import Duration
 
 from experiments.evaluation.knotmeter.allocation import allocation_cost, track_allocations
@@ -51,7 +52,7 @@ def main() -> None:
             if found.status != LookupStatus.FOUND:
                 raise ValueError(f"Required reference is {found.status}: {found.reason}")
     plan = resolve_plan(profile, args.name)
-    plan["trial_uri"] = f"{plan['marin_prefix'].rstrip('/')}/inference/correctness/runs/{plan['trial_id']}"
+    plan["trial_uri"] = prefix_join(plan["marin_prefix"], f"inference/correctness/runs/{plan['trial_id']}")
     plan["gpu_job_id"] = plan["job_id"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(plan, indent=2))
@@ -129,7 +130,7 @@ def main() -> None:
                 existing_job_policy=job_pb2.EXISTING_JOB_POLICY_ERROR,
                 task_image=plan["series"]["task_image"],
             )
-            write_record(f"{plan['trial_uri']}/plan.json", plan)
+            write_record(prefix_join(plan["trial_uri"], "plan.json"), plan)
             with track_allocations(client, plan):
                 job.wait(timeout=14400, raise_on_failure=False, stream_logs=True)
             status = client.job_status(job.job_id)
@@ -154,7 +155,7 @@ def main() -> None:
                         }
                     )
             result = {"plan": plan, "state": status.state.value, "attempts": attempts, "observed_unix": time.time()}
-            write_record(f"{plan['trial_uri']}/execution.json", result)
+            write_record(prefix_join(plan["trial_uri"], "execution.json"), result)
             args.output.write_text(json.dumps(result, indent=2))
             print(
                 json.dumps(

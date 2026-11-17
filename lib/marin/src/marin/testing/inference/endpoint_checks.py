@@ -17,6 +17,7 @@ from pathlib import Path
 import aiohttp
 import numpy as np
 from prometheus_client.parser import text_string_to_metric_families
+from rigging.filesystem.storage_path import prefix_join
 
 from marin.testing.inference.backend_parity import TokenDistribution, distribution_difference
 from marin.testing.inference.goldens import (
@@ -186,7 +187,6 @@ async def verify_deployment(client: EndpointClient, fixture: ModelFixture, runti
     version = await client.get("version")
     identity = fixture.model
     expected = {
-        "model": identity.weights,
         "tokenizer": identity.tokenizer,
         "tokenizer_revision": identity.tokenizer_revision,
         "quantization": fixture.policy.quantization,
@@ -198,6 +198,11 @@ async def verify_deployment(client: EndpointClient, fixture: ModelFixture, runti
         for name, value in expected.items()
         if model.get(name) != value
     }
+    # RunAI replaces `model` with its local metadata directory. The runtime's
+    # `model_weights` field preserves the source actually used by its loader.
+    weights = model.get("model_weights") or model["model"]
+    if weights != identity.weights:
+        mismatches["weights"] = {"actual": weights, "expected": identity.weights}
     if runtime_source[:12] not in version["version"]:
         mismatches["runtime"] = {"actual": version["version"], "expected": runtime_source}
     if str(model["dtype"]).removeprefix("torch.") != fixture.policy.dtype:
@@ -206,11 +211,11 @@ async def verify_deployment(client: EndpointClient, fixture: ModelFixture, runti
     if not any(device in hardware for device in fixture.policy.hardware):
         mismatches["hardware"] = {"actual": hardware, "expected": fixture.policy.hardware}
     if identity.weights.startswith(("s3://", "gs://")):
-        manifest_bytes = await asyncio.to_thread(read_bytes, f"{identity.weights.rstrip('/')}/export-manifest.json")
+        manifest_bytes = await asyncio.to_thread(read_bytes, prefix_join(identity.weights, "export-manifest.json"))
         digest = hashlib.sha256(manifest_bytes).hexdigest()
         if digest != identity.revision:
             mismatches["export_manifest"] = {"actual": digest, "expected": identity.revision}
-        config_uri = f"{identity.weights.rstrip('/')}/config.json"
+        config_uri = prefix_join(identity.weights, "config.json")
     elif Path(identity.weights).is_absolute():
         config_uri = str(Path(identity.weights) / "config.json")
     else:
@@ -242,6 +247,7 @@ async def verify_deployment(client: EndpointClient, fixture: ModelFixture, runti
             if key
             in {
                 "model",
+                "model_weights",
                 "revision",
                 "tokenizer",
                 "tokenizer_revision",
@@ -276,7 +282,10 @@ async def check_reference(client: EndpointClient, references: ReferenceLookup, f
             row = expected[(case.id, position)]
             actual = response_distribution(positions[position])
             reference = TokenDistribution(row.token_ids, row.logprobs)
-            mismatch = distribution_difference(reference, actual) | {"case": case.id, "position": position}
+            mismatch = dataclasses.asdict(distribution_difference(reference, actual)) | {
+                "case": case.id,
+                "position": position,
+            }
             groups[case.group].append(mismatch)
             observations.append(mismatch | {"actual": dataclasses.asdict(actual)})
     summaries = {name: mismatch_summary(rows, fixture.policy.reference[name]) for name, rows in groups.items()}
@@ -316,7 +325,7 @@ async def check_batch(client: EndpointClient, references: ReferenceLookup, fixtu
     (client.output / "batch-before.prom").write_text(before)
     (client.output / "batch-after.prom").write_text(after)
     rows = [
-        distribution_difference(next_distribution(a), next_distribution(b)) | {"case": case.id}
+        dataclasses.asdict(distribution_difference(next_distribution(a), next_distribution(b))) | {"case": case.id}
         for case, a, b in zip(selected, alone, batched, strict=True)
     ]
     summary = mismatch_summary(rows, fixture.policy.batch)
@@ -350,10 +359,13 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
         if min(hits) <= 0:
             raise ValueError(f"No prefix cache hit occurred at boundary {length}: {hits}")
         different_split.append(
-            distribution_difference(next_distribution(fresh), next_distribution(warm)) | {"boundary": length}
+            dataclasses.asdict(distribution_difference(next_distribution(fresh), next_distribution(warm)))
+            | {"boundary": length}
         )
         # Compare equal reuse splits separately. A larger second hit changes the prefill split.
-        comparison = distribution_difference(next_distribution(warm), next_distribution(repeated)) | {"boundary": length}
+        comparison = dataclasses.asdict(
+            distribution_difference(next_distribution(warm), next_distribution(repeated))
+        ) | {"boundary": length}
         (same_split if hits[0] == hits[1] else different_split).append(comparison)
         evidence.append(
             {
@@ -377,7 +389,7 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
         await client.reset_cache()
         recomputed = await client.complete(history, label=f"cache-{length}-decode-fresh")
         different_split.append(
-            distribution_difference(next_distribution(reused), next_distribution(recomputed))
+            dataclasses.asdict(distribution_difference(next_distribution(reused), next_distribution(recomputed)))
             | {"boundary": length, "seed": "decode"}
         )
         evidence[-1]["decode_cached_tokens"] = cached_tokens(reused)
@@ -389,7 +401,10 @@ async def check_cache(client: EndpointClient, references: ReferenceLookup, fixtu
     b = await client.complete(branch, label="cache-matched-second")
     if cached_tokens(a) != cached_tokens(b) or cached_tokens(a) <= 0:
         raise ValueError("No matched nonempty cache split was exercised")
-    same_split.append(distribution_difference(next_distribution(a), next_distribution(b)) | {"case": "matched-repeat"})
+    same_split.append(
+        dataclasses.asdict(distribution_difference(next_distribution(a), next_distribution(b)))
+        | {"case": "matched-repeat"}
+    )
     summaries = {
         "same_split": mismatch_summary(same_split, fixture.policy.same_split),
         "different_split": mismatch_summary(different_split, fixture.policy.different_split),

@@ -170,12 +170,18 @@ async def http_endpoint(engine: HttpEngine):
     app.router.add_post("/reset_prefix_cache", engine.reset)
 
     async def info(_request):
+        streamed = engine.mode in ("streamed-model", "wrong-weights")
         return web.json_response(
             {
                 "system_env": {"nvidia_gpu_models": "HTTP test GPU"},
                 "vllm_config": {
                     "model_config": {
-                        "model": engine.identity.weights,
+                        "model": "/local/model-streamer/metadata" if streamed else engine.identity.weights,
+                        "model_weights": (
+                            ("/wrong-checkpoint" if engine.mode == "wrong-weights" else engine.identity.weights)
+                            if streamed
+                            else ""
+                        ),
                         "revision": "test-revision",
                         "tokenizer": "test-tokenizer",
                         "tokenizer_revision": "tokenizer-revision",
@@ -208,7 +214,15 @@ async def http_endpoint(engine: HttpEngine):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "mode,failed_check", [("correct", None), ("no-cache", "cache"), ("no-batch", "batch"), ("corrupt-cache", "cache")]
+    "mode,failed_check",
+    [
+        ("correct", None),
+        ("streamed-model", None),
+        ("wrong-weights", "deployment"),
+        ("no-cache", "cache"),
+        ("no-batch", "batch"),
+        ("corrupt-cache", "cache"),
+    ],
 )
 async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, reference_fixture, mode, failed_check):
     async with http_endpoint(HttpEngine(mode, reference_fixture.model)) as url:
@@ -218,6 +232,9 @@ async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, refere
     assert report["status"] == ("passed" if failed_check is None else "failed")
     if failed_check:
         assert report["checks"][failed_check]["status"] == "failed"
+        if failed_check == "deployment":
+            assert report["requests"] == []
+            return
     else:
         assert report["checks"]["batch"]["running_peak"] >= 2
         assert report["checks"]["cache"]["cache_evidence"][0]["warm_cached_tokens"] > 0
