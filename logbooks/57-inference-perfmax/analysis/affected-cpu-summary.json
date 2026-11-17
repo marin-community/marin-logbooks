@@ -1,0 +1,204 @@
+{
+  "summary": {
+    "passed": 1074,
+    "skipped": 1,
+    "failed": 2,
+    "total": 1077,
+    "collected": 3706
+  },
+  "failed_cases": [
+    {
+      "nodeid": "experiments/post_training/task_curation/tests/test_images.py::test_apt_packages_beyond_the_worker_image_push_an_image_and_record_its_digest",
+      "call": {
+        "duration": 1.037624690681696,
+        "outcome": "failed",
+        "crash": {
+          "path": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/experiments/post_training/task_curation/tests/test_images.py",
+          "lineno": 69,
+          "message": "AssertionError: assert 'registry.inv...mages@sha256:' == 'registry.inv...237cd5781bc72'\n  \n  - registry.invalid/fixture/images@sha256:a52ab7ff3f3f0e8c03ba454da51d6eb8ced8bbfdd35897addb8237cd5781bc72\n  + registry.invalid/fixture/images@sha256:"
+        },
+        "traceback": [
+          {
+            "path": "experiments/post_training/task_curation/tests/test_images.py",
+            "lineno": 69,
+            "message": "in test_apt_packages_beyond_the_worker_image_push_an_image_and_record_its_digest"
+          }
+        ],
+        "stderr": "I20261117 02:14:02 123722152834880 marin.execution.step_runner Step = images/env-15e426ce1daa050a_ba6fcfcc\tParams = {'fingerprint': '95183fbf', 'version': '2026.10.08', 'result_type': 'experiments.post_training.task_curation.images.build.EnvironmentArtifact', 'deps': []}\tOutput_path = /tmp/pytest-of-romain/pytest-2726/popen-gw0/test_apt_packages_beyond_the_w0/prefix/images/env-15e426ce1daa050a/2026.10.08\nI20261117 02:14:02 123708949165760 marin.execution.step_status [devbox-123708949165760] Status images/env-15e426ce1daa050a_ba6fcfcc: None\nI20261117 02:14:02 123708949165760 marin.execution.step_status [devbox-123708949165760] Attempting to acquire lock for images/env-15e426ce1daa050a_ba6fcfcc\nI20261117 02:14:02 123708949165760 marin.execution.step_status [devbox-123708949165760] Acquired lock for images/env-15e426ce1daa050a_ba6fcfcc\n/tmp/pytest-of-romain/pytest-2726/popen-gw0/test_apt_packages_beyond_the_w0/bin/uv: line 12: python3: command not found\n/tmp/pytest-of-romain/pytest-2726/popen-gw0/test_apt_packages_beyond_the_w0/bin/uv: line 12: python3: command not found\nI20261117 02:14:03 123708949165760 marin.execution.step_runner Step images/env-15e426ce1daa050a_ba6fcfcc succeeded in 0:00:00.036346\nI20261117 02:14:03 123708949165760 rigging.filesystem.distributed_lock Released lock path=/tmp/pytest-of-romain/pytest-2726/popen-gw0/test_apt_packages_beyond_the_w0/prefix/images/env-15e426ce1daa050a/2026.10.08/.executor_status.lock worker=devbox-123708949165760\n",
+        "log": [
+          {
+            "name": "marin.execution.step_runner",
+            "msg": "Step = images/env-15e426ce1daa050a_ba6fcfcc\tParams = {'fingerprint': '95183fbf', 'version': '2026.10.08', 'result_type': 'experiments.post_training.task_curation.images.build.EnvironmentArtifact', 'deps': []}\tOutput_path = /tmp/pytest-of-romain/pytest-2726/popen-gw0/test_apt_packages_beyond_the_w0/prefix/images/env-15e426ce1daa050a/2026.10.08",
+            "args": null,
+            "levelname": "INFO",
+            "levelno": 20,
+            "pathname": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/lib/marin/src/marin/execution/step_runner.py",
+            "filename": "step_runner.py",
+            "module": "step_runner",
+            "exc_info": null,
+            "exc_text": null,
+            "stack_info": null,
+            "lineno": 363,
+            "funcName": "_launch_step",
+            "created": 1794910442.9817948,
+            "msecs": 981.0,
+            "relativeCreated": 312068.8679218292,
+            "thread": 123722152834880,
+            "threadName": "MainThread",
+            "processName": "MainProcess",
+            "process": 835807,
+            "taskName": null,
+            "levelprefix": "I",
+            "asctime": "2026-11-17 02:14:02"
+          },
+          {
+            "name": "marin.execution.step_status",
+            "msg": "[devbox-123708949165760] Status images/env-15e426ce1daa050a_ba6fcfcc: None",
+            "args": null,
+            "levelname": "INFO",
+            "levelno": 20,
+            "pathname": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/lib/marin/src/marin/execution/step_status.py",
+            "filename": "step_status.py",
+            "module": "step_status",
+            "exc_info": null,
+            "exc_text": null,
+            "stack_info": null,
+            "lineno": 185,
+            "funcName": "should_run",
+            "created": 1794910442.9833233,
+            "msecs": 983.0,
+            "relativeCreated": 312070.39642333984,
+            "thread": 123708949165760,
+            "threadName": "marin-step-runner_0",
+            "processName": "MainProcess",
+            "process": 835807,
+            "taskName": null,
+            "levelprefix": "I",
+            "asctime": "2026-11-17 02:14:02"
+          },
+          {
+            "name": "marin.execution.step_status",
+            "msg": "[devbox-123708949165760] Attempting to acquire lock for images/env-15e426ce1daa050a_ba6fcfcc",
+            "args": null,
+            "levelname": "INFO",
+            "levelno": 20,
+            "pathname": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/lib/marin/src/marin/execution/step_status.py",
+            "filename": "step_status.py",
+            "module": "step_status",
+            "exc_info": null,
+            "exc_text": null,
+            "stack_info": null,
+            "lineno": 213,
+            "funcName": "should_run",
+            "created": 1794910442.9834304,
+            "msecs": 983.0,
+            "relativeCreated": 312070.50347328186,
+            "thread": 123708949165760,
+            "threadName": "marin-step-runner_0",
+            "processName": "MainProcess",
+            "process": 835807,
+            "taskName": null,
+            "levelprefix": "I",
+            "asctime": "2026-11-17 02:14:02"
+          },
+          {
+            "name": "marin.execution.step_status",
+            "msg": "[devbox-123708949165760] Acquired lock for images/env-15e426ce1daa050a_ba6fcfcc",
+            "args": null,
+            "levelname": "INFO",
+            "levelno": 20,
+            "pathname": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/lib/marin/src/marin/execution/step_status.py",
+            "filename": "step_status.py",
+            "module": "step_status",
+            "exc_info": null,
+            "exc_text": null,
+            "stack_info": null,
+            "lineno": 224,
+            "funcName": "should_run",
+            "created": 1794910442.9837198,
+            "msecs": 983.0,
+            "relativeCreated": 312070.7929134369,
+            "thread": 123708949165760,
+            "threadName": "marin-step-runner_0",
+            "processName": "MainProcess",
+            "process": 835807,
+            "taskName": null,
+            "levelprefix": "I",
+            "asctime": "2026-11-17 02:14:02"
+          },
+          {
+            "name": "marin.execution.step_runner",
+            "msg": "Step images/env-15e426ce1daa050a_ba6fcfcc succeeded in 0:00:00.036346",
+            "args": null,
+            "levelname": "INFO",
+            "levelno": 20,
+            "pathname": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/lib/marin/src/marin/execution/step_runner.py",
+            "filename": "step_runner.py",
+            "module": "step_runner",
+            "exc_info": null,
+            "exc_text": null,
+            "stack_info": null,
+            "lineno": 469,
+            "funcName": "run_step",
+            "created": 1794910443.020441,
+            "msecs": 20.0,
+            "relativeCreated": 312107.5141429901,
+            "thread": 123708949165760,
+            "threadName": "marin-step-runner_0",
+            "processName": "MainProcess",
+            "process": 835807,
+            "taskName": null,
+            "levelprefix": "I",
+            "asctime": "2026-11-17 02:14:03"
+          },
+          {
+            "name": "rigging.filesystem.distributed_lock",
+            "msg": "Released lock path=/tmp/pytest-of-romain/pytest-2726/popen-gw0/test_apt_packages_beyond_the_w0/prefix/images/env-15e426ce1daa050a/2026.10.08/.executor_status.lock worker=devbox-123708949165760",
+            "args": null,
+            "levelname": "INFO",
+            "levelno": 20,
+            "pathname": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/lib/rigging/src/rigging/filesystem/distributed_lock.py",
+            "filename": "distributed_lock.py",
+            "module": "distributed_lock",
+            "exc_info": null,
+            "exc_text": null,
+            "stack_info": null,
+            "lineno": 166,
+            "funcName": "release",
+            "created": 1794910443.020767,
+            "msecs": 20.0,
+            "relativeCreated": 312107.84006118774,
+            "thread": 123708949165760,
+            "threadName": "marin-step-runner_0",
+            "processName": "MainProcess",
+            "process": 835807,
+            "taskName": null,
+            "levelprefix": "I",
+            "asctime": "2026-11-17 02:14:03"
+          }
+        ],
+        "longrepr": "[gw0] linux -- Python 3.12.16 /home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/.venv/bin/python\nexperiments/post_training/task_curation/tests/test_images.py:69: in test_apt_packages_beyond_the_worker_image_push_an_image_and_record_its_digest\n    assert built.image == f\"{REPOSITORY}@sha256:{hashlib.sha256(tag.encode()).hexdigest()}\"\nE   AssertionError: assert 'registry.inv...mages@sha256:' == 'registry.inv...237cd5781bc72'\nE     \nE     - registry.invalid/fixture/images@sha256:a52ab7ff3f3f0e8c03ba454da51d6eb8ced8bbfdd35897addb8237cd5781bc72\nE     + registry.invalid/fixture/images@sha256:"
+      }
+    },
+    {
+      "nodeid": "experiments/post_training/task_curation/tests/test_local_lean_sandbox.py::test_a_compiling_proof_completes_with_its_output",
+      "call": {
+        "duration": 0.008744869381189346,
+        "outcome": "failed",
+        "crash": {
+          "path": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/experiments/post_training/task_curation/tests/test_local_lean_sandbox.py",
+          "lineno": 48,
+          "message": "AssertionError: assert False\n +  where False = <built-in method startswith of str object at 0x1370f38>('compiled /tmp/pytest-of-romain/pytest-2726/popen-gw1/test_a_compiling_proof_complet0/project/scratch/')\n +    where <built-in method startswith of str object at 0x1370f38> = ''.startswith"
+        },
+        "traceback": [
+          {
+            "path": "experiments/post_training/task_curation/tests/test_local_lean_sandbox.py",
+            "lineno": 48,
+            "message": "in test_a_compiling_proof_completes_with_its_output"
+          }
+        ],
+        "longrepr": "[gw1] linux -- Python 3.12.16 /home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/.venv/bin/python\nexperiments/post_training/task_curation/tests/test_local_lean_sandbox.py:48: in test_a_compiling_proof_completes_with_its_output\n    assert result[\"stdout\"].startswith(f\"compiled {sandbox.project_dir / SCRATCH_DIR_NAME}/\")\nE   AssertionError: assert False\nE    +  where False = <built-in method startswith of str object at 0x1370f38>('compiled /tmp/pytest-of-romain/pytest-2726/popen-gw1/test_a_compiling_proof_complet0/project/scratch/')\nE    +    where <built-in method startswith of str object at 0x1370f38> = ''.startswith"
+      }
+    }
+  ]
+}

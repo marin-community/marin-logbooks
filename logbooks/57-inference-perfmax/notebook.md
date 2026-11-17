@@ -336,3 +336,41 @@ retains incomplete allocation timing; no allocation was observed before
 cancellation. The local broad safe-test run recorded five failures before its
 own 4-GiB cap ended it. Identify the first failure and use CI for full coverage.
 Do not count that partial run as a pass.
+
+### Required checks block both selected profiles
+
+Snowball a2 and Hero a3 passed deployment identity, genuine four-request engine
+batching and decode versus fresh recomputation under the provisional policies.
+The batch maximum probability errors were .011999 and .011306, respectively.
+The 64 emitted-token comparisons had maxima .041100 and .045121. These limited
+passes do not qualify either profile.
+
+Both reference stages stopped with `ServerDisconnectedError`. Snowball retained
+13 completed reference responses; its last 23,113-token response took 15.96
+seconds. Raw responses remain in each durable run archive. Neither reference
+stage completed its required suite. Both cache stages stopped because a
+127-token seed followed by 257 generated tokens yielded only a 112-token cache
+hit. That hit did not reach generated tokens. The required coverage remains
+missing; no numerical bounds are changed to bypass it.
+
+The saved [Snowball report](analysis/snowball-correctness-a2-report.json) and
+[Hero report](analysis/hero-correctness-a3-report.json) preserve those failures.
+Their allocated costs were .831 H100-hours and 2.809 GB200-hours. Snowball's pod
+was Failed with every container terminated; Hero's four pods were absent.
+
+Contribution source `7db04440dcd9873c517d034a585d67e69e1e8f8c` opens fresh HTTP
+connections for checks after large prompt-score processing. This tests the
+expired-keepalive hypothesis; the cause is not yet proved. Rerun each existing
+suite once, with the same numerical settings and policies, to validate the
+transport fix. No cache or numerical investigation follows this retry.
+
+The report also reads the current leader's recorded check outcome when no
+AgentX window exists. A failed precheck must remain visible instead of being
+shown as pending. The 39 focused CPU cases pass, including recovery through
+retained archives with an earlier pass and a later failure.
+
+The broad CPU run stopped after 1,074 passes at two unchanged task-curation
+fixtures. Their hard-coded paths lack `python3` and `head` on this Nix host;
+[narrow rechecks and source identities](analysis/affected-host-limitations.json)
+confirm the local limitation. The [partial summary](analysis/affected-cpu-summary.json)
+is not a full-suite pass. Use contribution CI for broad completion.

@@ -1,0 +1,191 @@
+{
+  "plan": {
+    "schema_version": 1,
+    "trial_id": "20261117T095848Z-35ae522d1d95",
+    "trial_uri": "s3://marin-us-east-08a/marin/inference/correctness/runs/20261117T095848Z-35ae522d1d95",
+    "campaign_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/snowball-correctness-a2",
+    "controller": "cw-rno2a",
+    "cluster": "cw-rno2a",
+    "marin_prefix": "s3://marin-us-east-08a/marin",
+    "series": {
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "processor_source": "80dff120d27fd6092210f4546b8faa5e6c9723ac",
+      "duration": 3600,
+      "max_context": 262144,
+      "max_profiling_error_ratio": 0.01,
+      "random_seed": 42,
+      "warmup_grace_period": 1800,
+      "trace_idle_gap_cap_seconds": 300,
+      "prepare_timeout": 1800,
+      "ready_timeout": 4200,
+      "task_timeout": 18000,
+      "scheduling_timeout": 7200,
+      "max_retries_failure": 0,
+      "max_retries_preemption": 1,
+      "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "model": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+      "model_prefix": "marin-snowball-67b-a2b-v0.1.1",
+      "model_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+      "tokenizer": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+      "tokenizer_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+      "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+      "precision": "bfloat16",
+      "tensor_parallel": 1,
+      "profile": {
+        "model": {
+          "repo": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+          "revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+          "tokenizer": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+          "tokenizer_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+          "path": null,
+          "config_sha256": null,
+          "chat_template": null,
+          "eos_token_id": null
+        },
+        "gpus": {
+          "type": "H100",
+          "count": 8,
+          "per_host": 8
+        },
+        "cluster": "cw-rno2a",
+        "priority": "interactive",
+        "session_concurrency": 128,
+        "quantization": null,
+        "serving": {
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 1,
+          "max_model_len": 262144,
+          "max_num_seqs": 128,
+          "max_num_batched_tokens": 8192,
+          "gpu_memory_utilization": 0.94,
+          "prefix_caching": true,
+          "router": false,
+          "extra_args": [
+            "--enable-prompt-tokens-details",
+            "--max-logprobs",
+            "50",
+            "--reasoning-parser",
+            "grug",
+            "--enable-auto-tool-choice",
+            "--tool-call-parser",
+            "hermes"
+          ],
+          "environment": {
+            "VLLM_SERVER_DEV_MODE": "1"
+          }
+        },
+        "workload": {
+          "public_dataset": "semianalysis_cc_traces_weka_062126_256k"
+        },
+        "vllm": {
+          "release": null,
+          "manifest": null,
+          "repo": null,
+          "revision": null
+        },
+        "checks": [
+          {
+            "name": "model-numerics",
+            "command": [],
+            "fixture": "snowball-v0.1.1",
+            "timeout": 3600,
+            "kind": "numerical",
+            "checkpoint_revision": null,
+            "runtime_source": null,
+            "evidence": []
+          }
+        ],
+        "cpu": 32,
+        "memory": "384GB",
+        "disk": "1TB"
+      },
+      "profiles": {
+        "h100": {
+          "gpu": "H100",
+          "gpus": 8,
+          "hosts": 1
+        }
+      }
+    },
+    "vllm_release": {
+      "release_tag": "marin-vllm-gpu-20261113-0ac9dcb157ee",
+      "source_commit": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "version": "0.0.0.dev20261113+marin.0ac9dcb157ee.cu132",
+      "torch_backend": "cu132",
+      "torch_version": "2.14.1+cu132",
+      "wheels": [
+        {
+          "architecture": "aarch64",
+          "sm_targets": [
+            "10.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261113-0ac9dcb157ee/vllm-0.0.0.dev20261113%2Bmarin.0ac9dcb157ee.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "e0a2b9e2bb6b16ba6d4e1821770123cc74f04b86128536c2744e91b59c6e4b6a"
+        },
+        {
+          "architecture": "x86_64",
+          "sm_targets": [
+            "9.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261113-0ac9dcb157ee/vllm-0.0.0.dev20261113%2Bmarin.0ac9dcb157ee.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "b8897bde70bf353a08f37450fb89fca5ebf50d768d6756807a43867ef11134f4"
+        }
+      ]
+    },
+    "placement": {},
+    "job_id": "/romain/knotmeter-20261117t095848z-35ae522d1d95",
+    "gpu_job_id": "/romain/knotmeter-20261117t095848z-35ae522d1d95",
+    "source": {
+      "tree_hash": "c81a3e1b95",
+      "base_commit": "c557320571",
+      "dirty": false,
+      "branch": "codex/57-inference-perfmax",
+      "built_by": "romain",
+      "git_remote": "git@github.com:marin-community/marin.git",
+      "created_at": "2026-11-17T01:58:48.352016",
+      "command_line": [
+        "/home/romain/work/marin-community/marin/perfmax-research-57-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+        "--profile",
+        "snowball-h100",
+        "--name",
+        "snowball-correctness-a2",
+        "--set",
+        "memory=384GB",
+        "--output",
+        "/home/romain/.cache/inference-perfmax-01a1d379/correctness/snowball-correctness-a2-execution.json"
+      ]
+    },
+    "research_logbook": null
+  },
+  "state": "failed",
+  "attempts": [
+    {
+      "task_id": "/romain/knotmeter-20261117t095848z-35ae522d1d95/0",
+      "attempt_uid": "adf9cd97a3f90b5e",
+      "state": "failed",
+      "pod_uid": "3381af6c-2090-4a81-bc99-dd64e3dbfa5a",
+      "node_name": "gb95a00",
+      "gpu_seconds": 2992.0,
+      "allocation": {
+        "pod_uid": "3381af6c-2090-4a81-bc99-dd64e3dbfa5a",
+        "attempt_uid": "adf9cd97a3f90b5e",
+        "pod_name": "iris-romain-knotmeter-20261117t0958-150e471a-0-adf9cd97a3f90b5e",
+        "node_name": "gb95a00",
+        "observed_unix": 1794909964.7060492,
+        "phase": "Failed",
+        "scheduled_unix": 1794909552.0,
+        "finished_unix": 1794909926.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794909926.0
+      },
+      "error": "ere appear to be 3 leaked semaphore objects to clean up at shutdown\n  warnings.warn('resource_tracker: There appear to be %d '\n/uv/cache/python/cpython-3.12.12-linux-x86_64-gnu/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 11 leaked shared_memory objects to clean up at shutdown\n  warnings.warn('resource_tracker: There appear to be %d '\n\n\n=================================== FAILURES ===================================\n_______________ test_candidate_matches_shared_correctness_policy _______________\n\ncorrectness_endpoint = CorrectnessEndpoint(url='http://127.0.0.1:38197/v1', model='open-athena/Marin-Snowball-67B-A2B-v0.1.1', fixture=ModelF..., runtime_source='0ac9dcb157ee86ccb447bc717259159c41ad456a', output=PosixPath('/iris/outputs/correctness/report.json'))\n\n    @pytest.mark.cluster\n    @pytest.mark.timeout(10800)\n    def test_candidate_matches_shared_correctness_policy(correctness_endpoint):\n        endpoint = correctness_endpoint\n        report = asyncio.run(\n            check_endpoint(\n                endpoint.url,\n                endpoint.model,\n                endpoint.fixture,\n                endpoint.runtime_source,\n                endpoint.output,\n            )\n        )\n>       assert report[\"status\"] == \"passed\", {\n            \"report\": str(endpoint.output),\n            \"checks\": {name: result[\"status\"] for name, result in report[\"checks\"].items()},\n        }\nE       AssertionError: {'checks': {'batch': 'passed', 'cache': 'failed', 'decode': 'passed', 'deployment': 'passed', ...}, 'report': '/iris/outputs/correctness/report.json'}\nE       assert 'failed' == 'passed'\nE         \nE         - passed\nE         + failed\n\ntests/cluster/vllm/test_inference_correctness.py:25: AssertionError\n=========================== short test summary info ============================\nFAILED tests/cluster/vllm/test_inference_correctness.py::test_candidate_matches_shared_correctness_policy\n======================== 1 failed in 346.40s (0:05:46) =========================\n"
+    }
+  ],
+  "observed_unix": 1794909967.3945334
+}
