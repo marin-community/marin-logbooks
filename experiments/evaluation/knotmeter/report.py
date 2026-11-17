@@ -237,6 +237,7 @@ def report_campaign(campaign_uri: str, recommendation: str | None = None, baseli
                 ),
                 "job_state": "unrecorded",
                 "job_succeeded": False,
+                "attempts": [],
                 "measurement": None,
                 "gpu_seconds": 0.0,
                 "cost_complete": False,
