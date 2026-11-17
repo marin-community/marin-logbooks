@@ -1060,3 +1060,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; PDBThink measurement contents are registry-bound [M].
 - Decision and next action: next hourly check watches for PDBThink admission progression and puzzles-qa locator effects.
+
+### 2026-11-17 09:40 UTC - Hourly catch-up (03:40–09:40 UTC window; resumed after a session gap)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief. The session was idle from ~04:40 UTC; this entry covers the gap through the 09:34 readback.
+- Published source revision: branch `atlas-env-audit` advanced from `6089da60a9…` (03:31:03 UTC) to head `f1fc42c6a4ab58c77f522dfed7f2fb5b7c5bba2a`, landed 08:56:31 UTC (~12 landings 07:28–08:56 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 6089da60..f1fc42c6` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Cross-check budget gating**: cross-check resolved role allocations keyed against the map's calibrated budgets (`54f118c8ed…`); deadlines read from the executor-resolved shape (`cb91c30288…`); informational baseline-spec field kept out of cross-check gating (`83a5eda6f8…`).
+  - **Codeforces restoration**: configured Codeforces dedup binding and raw measurements restored (`e4fe5a842e…`, `d0d3180052…`); regenerated SWE v3 measurements bound (`cd57e6f5e1…`).
+  - **Repaired-source publication**: repaired sources published from staged lexical receipts (`a21ce68a6827…`).
+  - **RST/Multi QA + capture**: archive-verbatim packet consumption for the RST/Multi QA (`4028397450…`); QA artifact downloads keyed by row identity, not URI basename (`5526cb5d39…`); RST images quiesced without requiring guest Python (`f1fc42c6a4…`, head); Dockerfile heredocs preserved during Daytona preflight with spaced-delimiter recognition (`258abe317e…`, `2434954905…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for repaired-source admission outcomes and RST capture progression.
