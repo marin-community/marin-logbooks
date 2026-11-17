@@ -1,0 +1,199 @@
+---
+title: "Outcome-filtering Open-SWE traces for Qwen3-8B SFT"
+source_repository: "marin-community/marin"
+task_issue: "https://github.com/marin-community/marin-logbooks/issues/39"
+related_issues: ["https://github.com/marin-community/marin/pull/10813"]
+research_branch: "codex/39-open-swe-outcome"
+marin_base_revision: "9cde3e5b69871ba733ccbe6ac84cd589d25b3003"
+archive_template_revision: "ba8edcdfd730b451e18aed6245234566be5053af"
+status: completed
+---
+
+# Outcome-filtering Open-SWE traces for Qwen3-8B SFT
+
+## Question and decision criteria
+
+- Goal and why it matters: decide whether Marin should train only on
+  [Open-SWE-Traces](https://huggingface.co/datasets/nvidia/Open-SWE-Traces) trajectories whose `resolved`
+  field is 1, as [marin#10813](https://github.com/marin-community/marin/pull/10813) proposed.
+- Baseline and alternatives: a random arm matched to the solved arm in partition mix and text volume per
+  partition. Details and the full design are in issue #39.
+- Evidence needed to choose: a task-by-task difference on SWE-bench Verified larger than evaluation noise,
+  supported by measures that do not depend on the agent loop.
+- Constraints and unresolved questions: training at 131,072 tokens ran out of memory, so the first rung
+  trains at 65,536 tokens on trajectories that fit.
+
+## Baseline
+
+The noise pilot, the data stage and the training smoke are recorded in issue #39 (2026-11-12 to 2026-11-13).
+Their code (`experiments/open_swe_outcome/arms.py`, `trial.py`, and the Harbor policy) is on the local branch
+`worktree-open-swe-outcome-pilot` at commit `d97646fe35` on another machine. That branch has not been
+published here yet.
+
+## Entries
+
+### 2026-11-15 18:36 UTC - 10,000-row arms on SWE-bench Verified (200 tasks)
+
+- Question: does the solved arm beat the matched random arm on SWE-bench Verified?
+- Published source revision: training and evaluation ran from `d97646fe35` (unpublished; see Baseline).
+- Training: Qwen3-8B, full fine-tune in Levanter, 65,536-token window, assistant-token loss, seeds 0 and 1.
+  - Solved arm: 10,000 rows, all `resolved` = 1. Tokenized cache
+    `s3://marin-us-east-08a/marin/tokenized/solved-10000-chat-f60c77/2026.07.17` (412M tokens).
+  - Random arm: 9,435 rows, matched in partition mix and volume. Outcomes: 46.4% resolved, 40.4% failed,
+    13.2% unknown (measured from the index and `membership_d3c29ebe/random-10000.parquet`).
+  - Final checkpoints: step 786 (solved) and step 787 (random), under
+    `s3://marin-us-east-08a/marin/users/dml/checkpoints/open-swe-outcome/qwen3-8b-{solved,random}-10000-seed{0,1}-ctx65536/2026.11.13/`.
+    The first HF exports had wrongly sized tensors. `hf-cpu/` holds the corrected float32 re-exports.
+- Evaluation: Harbor `swebench-verified-200-c9` (200 tasks, terminus-2 agent, 9 concurrent trials,
+  50-minute agent limit), vLLM bf16 on 2×H100 TP2, `cw-rno2a`, submitted 2026-11-15 02:12 UTC.
+  Jobs: `/dml/eval-open-swe-outcome-eval-{solved-s0-4d071c3c,solved-s1-681927f2,random-s0-e2e85902,random-s1-d0e55b63}`.
+- Result: every run attempted all 200 tasks. Three runs failed at final archiving because one trial's
+  archived attempt was incomplete, so their eval records hold no metrics. The fourth (random-s1) recorded
+  `infra_failed` at 95% coverage. Per-trial grades were read from each run's FineStore `samples` table.
+
+  | Run | Solved / graded | Agent timeouts | Generated tokens |
+  |---|---|---|---|
+  | solved-s0 | 6 / 191 | 133 | 35.6M |
+  | solved-s1 | 7 / 190 | 63 | 25.4M |
+  | random-s0 | 4 / 197 | 126 | 36.2M |
+  | random-s1 | 9 / 190 | 78 | 27.5M |
+
+  On the 168 tasks graded in all four runs: solved arm 12 solves, random arm 11. Paired difference
+  +0.006 ± 0.027 solves per task (out of 2). Only 15 tasks were solved by any run.
+- Evidence: results roots `s3://marin-us-east-02a/marin/evals/open-swe-outcome-eval-*-swebench-verified-200-c9-*/results`.
+- Interpretation and limitations: the solve rate (2–5%) is too close to the floor to separate the arms. It is
+  also far below the about 40% the 131k-context pilot checkpoint scored in the noise pilot. Two suspected
+  causes, neither tested: the 65,536-token window, and the scaffold shift from OpenHands, SWE-agent and
+  mini-SWE-agent in training to terminus-2 in evaluation. Most trials hit the agent limit. Both seed-0
+  checkpoints generated about 40% more tokens than the seed-1 checkpoints at the same throughput (about
+  620 tokens/s).
+- Decision: measure the arms with held-out loss, which does not depend on the agent loop.
+
+### 2026-11-16 19:13 UTC - Held-out validation set
+
+- Question: build a fixed held-out set that neither arm saw, in the exact training format.
+- Published source revision: `experiments/open_swe_outcome/val_loss.py` on this branch. The job ran from an
+  uncommitted working tree at Marin `9cde3e5b69` (Iris bundles the working tree); the committed file is
+  that version plus the later per-turn and paired additions.
+- Command: `python experiments/open_swe_outcome/val_loss.py build --out-dir .../val-loss/v1 --design independent --per-class 300 --train-reference 100 --verify-rows 300 --seed 0`
+  (the `--design` flag was added later; v1 used the independent design). Job `/dml/open-swe-val-build-r3`,
+  `cw-us-east-08a`, CPU.
+- Construction: exclude every trajectory in either arm and every task (`instance_id`) they cover (13,534 tasks).
+  Keep `status` = kept and at most 65,536 tokens. One trajectory per task. Equal resolved and unresolved
+  counts within each partition, with partitions weighted by their share of the training arms. Add 100
+  training rows from each arm as a memorization reference.
+- Result: 299 resolved, 299 unresolved, 100 + 100 training rows, written to
+  `s3://marin-us-east-08a/marin/users/dml/open-swe-outcome/val-loss/v1/val.jsonl.gz`.
+- Conversion check: converting raw traces to the arm format reproduced 300 sampled training rows exactly in all
+  eight training partitions. Matching required two transformations the arm builder applies and the raw data
+  lacks:
+  - Tool-call IDs are renumbered `call_<message>_<call>`, and each tool result gets the next unanswered call ID.
+  - A fixed 1,222-character "Solution Originality" instruction block is inserted between `</CRITICAL>` and
+    `</instructions>` in the first user message of every v1_2 mini-SWE-agent trace. That is 6,929 of the 18,974
+    training rows.
+
+### 2026-11-16 22:50 UTC - Held-out loss
+
+- Question: does the solved arm predict held-out successful trajectories better than the random arm?
+- Command: `val_loss.py score --model <hf-cpu/step-*> --name <arm-seed> --val-dir .../val-loss/v1` for the four
+  checkpoints and `Qwen/Qwen3-8B`. One H100 each, `cw-rno2a`, production priority. Jobs
+  `/dml/open-swe-val-score-p2-{solved-s0,solved-s1,random-s0,random-s1,base}`. The loss uses Levanter's
+  `ChatProcessor` with the training chat template, so the assistant mask matches training. Inference is in bf16
+  with SDPA (cuDNN SDPA disabled; it has no execution plan at these lengths).
+- Result: mean loss per assistant token (nats).
+
+  | Model | Held-out resolved | Held-out unresolved | Train rows, random arm | Train rows, solved arm |
+  |---|---|---|---|---|
+  | base Qwen3-8B | 0.878 | 0.884 | 0.847 | 0.826 |
+  | random, s0 / s1 | 0.4362 / 0.4363 | 0.4502 / 0.4502 | 0.387 / 0.390 | 0.376 / 0.376 |
+  | solved, s0 / s1 | 0.4370 / 0.4366 | 0.4521 / 0.4526 | 0.409 / 0.409 | 0.359 / 0.359 |
+
+  Paired per-trajectory differences, solved minus random: held-out resolved +0.0005 ± 0.0002 (s0) and
+  −0.0000 ± 0.0002 (s1); held-out unresolved +0.0021 ± 0.0002 and +0.0016 ± 0.0002; each arm on its own
+  training rows about −0.017.
+- Evidence: `.../val-loss/v1/scores/*.parquet`; `val_loss.py summarize --val-dir .../val-loss/v1`.
+- Interpretation: replicated across seeds. The arms predict held-out successes equally well. The solved arm is
+  slightly worse on failures, by under 0.5% of the loss. Each arm's advantage on its own training rows is ten
+  times the held-out gap and does not transfer.
+
+### 2026-11-16 23:30 UTC - Classifying outcome with the arm likelihood ratio
+
+- Question: can the models distinguish resolved from unresolved trajectories?
+- Score: per-token log p_solved − log p_random, summed over both seeds.
+- Evidence: `logbooks/39-open-swe-outcome/classify.py` on the v1 scores.
+- Result: AUROC 0.66 [0.62, 0.70] for the ratio. Each model's own per-token loss gives 0.50 (base) to 0.52
+  (fine-tuned). Trajectory length alone gives 0.57. The ratio holds at 0.65 within partition × length-quartile
+  strata, and correlates at r = 0.76 between seeds.
+- Decision: check where in a trajectory the signal sits, then control for the task.
+
+### 2026-11-17 01:40 UTC - Per-turn prefix rescoring (exploratory)
+
+- Question: is the signal the agent reporting its own test results at the end?
+- Command: `val_loss.py score ... --scores-dir turn-scores --subset-prefix heldout` for the four checkpoints;
+  jobs `/dml/open-swe-val-turns-*`. Each assistant turn's loss is stored separately. Per-turn totals match the
+  earlier per-trajectory scores to a relative 8×10⁻⁸.
+- Evidence: `logbooks/39-open-swe-outcome/prefix.py`; `.../val-loss/v1/turn-scores/`.
+- Result: AUROC of the ratio by turns scored (median 52 assistant turns): first 10% 0.53, first 25% 0.61,
+  first 50% 0.64, all 0.66, all but the last 5 turns 0.65, last turn alone 0.53.
+- Interpretation: the signal is not the agent reporting its outcome at the end. Each task appears once, so task
+  difficulty could explain it.
+
+### 2026-11-17 04:40 UTC - Paired within-task control
+
+- Question: on the same task and teacher, does the ratio prefer the resolved attempt?
+- Command: `val_loss.py build --out-dir .../val-loss/v2-paired --design paired --per-class 300 --train-reference 0 --verify-rows 300 --seed 0`
+  (job `/dml/open-swe-val-build-paired`), then per-turn scoring (jobs `/dml/open-swe-val-paired-*`).
+- Construction: held-out tasks with at least one resolved and one unresolved trajectory in the same partition
+  (same teacher model and scaffold). One of each per task. Every partition met its quota: 299 pairs.
+- Evidence: `logbooks/39-open-swe-outcome/paired.py`; `.../val-loss/v2-paired/turn-scores/`.
+- Result: the ratio ranks the resolved trajectory higher in 0.50 of pairs, 95% CI [0.44, 0.56]. Win rates are
+  0.45–0.50 for every turn subset. The resolved trajectory is shorter in 0.47 of pairs.
+- Interpretation: the cross-task AUROC of 0.66 came from task difficulty. On a fixed task neither arm prefers the
+  successful attempt. Caveat: these tasks were both solved and failed by the same teacher, so outcomes may depend
+  partly on luck, and an effect smaller than the CI is not excluded.
+
+## Summary
+
+Training Qwen3-8B on 10,000 solved trajectories gave no measurable gain over a matched random arm that was 46%
+solved. Every measure agreed, at both seeds:
+
+- SWE-bench Verified (200 tasks): 12 against 11 solves on 168 tasks graded in all runs.
+- Held-out loss on successful trajectories: equal to within 0.0005 nats per token.
+- Same task and teacher, one resolved and one unresolved attempt: within-pair win rate 0.50 [0.44, 0.56].
+
+Caveats: one model size, one data size and the final checkpoint only. SWE-bench at 2–5% solve rates rules out
+only large effects. Loss measures imitation of the teachers, which is a different thing from solving tasks.
+
+Note on the cross-task classification signal: we measured an AUROC of 0.66 for separating resolved from
+unresolved held-out trajectories by the arm likelihood ratio, with each task appearing once. Controlling for
+length and source left 0.65. Pairing a resolved and an unresolved trajectory from the same task and teacher
+brought it to 0.50, so the signal came from task difficulty.
+
+## Next step: repeat on Qwen3.6-35B-A3B
+
+Qwen3-8B at 65,536 tokens solves too few SWE-bench Verified tasks to compare arms. Qwen3.6-35B-A3B scores
+54–59% in most of 12 full 500-task Verified runs on Marin's eval dashboard (range 50–64%), so a filtering effect
+of a few points would be measurable task by task. Plan:
+
+- Train the same two 10,000-row arms, two seeds each, from Qwen3.6-35B-A3B.
+- Read out in order of cost: held-out loss and the paired within-task test on the existing `v1` and `v2-paired`
+  sets, then the 200-task SWE-bench Verified run.
+- Open questions to settle first:
+  - Does Levanter support Qwen3.6's architecture for training? Marin serves it in vLLM with a gated-DeltaNet
+    prefill backend.
+  - What does a 35B-total, 3B-active MoE cost per billion tokens at 65,536 tokens?
+  - Do the existing sets need rebuilding with Qwen3.6's chat template?
+  - Should the training window or the evaluation scaffold change, given the 2–5% result at 65,536 tokens with
+    terminus-2?
+
+## Final decision
+
+- Selected approach and evidence: no outcome filter at Qwen3-8B. At 10,000 rows per arm, outcome filtering
+  showed no benefit on any measure. Issue #39 closed on 2026-11-17; the Qwen3.6-35B-A3B repeat is planned in
+  [next-steps.md](next-steps.md) and will run under a new issue.
+- Rejected alternatives and why: none yet.
+- Marin contribution PRs: none.
+- Reproduction instructions: see the commands in each entry. The arm-building and training code still needs to be
+  published from `worktree-open-swe-outcome-pilot`.
+- Remaining uncertainty: effects at larger models, larger data or other stopping points; effects smaller than the
+  paired test's CI.
