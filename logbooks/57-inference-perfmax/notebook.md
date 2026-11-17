@@ -572,3 +572,48 @@ Keep the initial seed/branch comparisons and all coverage requirements. Correct
 the unsupported classification after the trace; reserve exact comparisons for
 fully prepared branch prefixes with the same suffix plan. No numerical limit
 changes. The original failed report remains available.
+
+### Stronger branch control and first normal AgentX result
+
+The optional scheduler trace failed during startup. Its retained host archive
+contains hook startup records and peer-disconnect errors, but no scheduler
+split records. The original cause remains unresolved. The
+[failure observation](analysis/hero-scheduler-trace-a1-observation.json),
+[receipt](analysis/hero-scheduler-trace-a1-host3-receipt.json) and
+[cleanup](analysis/hero-scheduler-trace-a1-cleanup.json) preserve this attempt
+and its 1.214646 GB200-hours. No trace retry is planned.
+
+The pinned source counterexample establishes that equal hit counts alone are
+insufficient for the old exact comparison. It does not prove the live cause.
+[Contribution 64bfff4bc5](https://github.com/marin-community/marin/commit/64bfff4bc5612a4bf34a17719d7e7c7a14f7595e)
+keeps every original comparison and bound. It adds required exact branch
+controls at all nine boundaries after the full usable prefix is cached. A
+sibling differs inside that cached region; the original branch must still hit
+the full prefix and return identical scores. Preparation stops on coverage,
+never on a numerical pass. Initial seed/branch pairs use the existing changed
+split bound.
+
+All [44 focused CPU cases](analysis/complete-validation-cpu-44.txt) and required
+lint pass. A disposable [HTTP regression](analysis/branch-checker-regression.txt)
+shows that the old checker accepts an injected branch-state alias under a
+permissive synthetic split bound, while the new exact branch check rejects it.
+The [replay source](analysis/branch_checker_regression.py) uses the checked-in
+HTTP engine. Production numerical policies and saved goldens are unchanged.
+Hero's ordinary full pytest run now uses this published contribution without
+the private hook. Snowball's C64 tuning point will exercise the same updated
+checks through the endpoint CLI.
+
+The fresh-context agent completed its C128 baseline. Root independently read
+the native exports, commands, check report and allocation, verified archive and
+report hashes, and recomputed phase and token totals. The
+[audit](analysis/snowball-baseline-root-audit.json) confirms a valid normal-hour
+window and 11.368889 H100-hours including startup and warmup. Its 124.39607
+tokens/s/GPU counts completion tokens reported for successful profiling
+requests. The p90 TTFT is 103.33113 seconds; p90 per-request completion is
+297.61639 seconds. These are not session-tree or RL-step measurements.
+
+Keep the phase errors visible: 989 warmup requests had content and 417 had
+empty-content validation errors; profiling had 5,165 successes and one
+disconnect. Native submission validity and both duration-coverage checks pass.
+The agent chose C64 next to test whether lower cache pressure improves this
+throughput/latency tradeoff. Prepared workload reuse avoids repeated data work.

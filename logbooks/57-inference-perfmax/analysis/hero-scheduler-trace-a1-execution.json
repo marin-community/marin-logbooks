@@ -1,0 +1,280 @@
+{
+  "plan": {
+    "schema_version": 1,
+    "trial_id": "20261117T195336Z-1c57a9d1e32d",
+    "trial_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261117T195336Z-1c57a9d1e32d",
+    "campaign_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/hero-scheduler-trace-a1",
+    "controller": "cw-us-east-08a",
+    "cluster": "cw-us-east-08a",
+    "marin_prefix": "s3://marin-us-east-02a/marin",
+    "series": {
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "processor_source": "80dff120d27fd6092210f4546b8faa5e6c9723ac",
+      "duration": 3600,
+      "max_context": 262144,
+      "max_profiling_error_ratio": 0.01,
+      "random_seed": 42,
+      "warmup_grace_period": 1800,
+      "trace_idle_gap_cap_seconds": 300,
+      "prepare_timeout": 1800,
+      "ready_timeout": 4200,
+      "task_timeout": 18000,
+      "scheduling_timeout": 7200,
+      "max_retries_failure": 0,
+      "max_retries_preemption": 1,
+      "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "model": "hero-sft-step400407",
+      "model_prefix": "hero-sft-step400407",
+      "model_revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+      "tokenizer": "marin-community/marin-tokenizer-tools",
+      "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+      "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+      "precision": "bfloat16",
+      "tensor_parallel": 1,
+      "profile": {
+        "model": {
+          "repo": "hero-sft-step400407",
+          "revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+          "tokenizer": "marin-community/marin-tokenizer-tools",
+          "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+          "path": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+          "config_sha256": "1a05f3dbaddd2c1aa28064dc0d4140d53d80cf5c25a7c8418b0e013c91b1a43e",
+          "chat_template": "marin",
+          "eos_token_id": 128009
+        },
+        "gpus": {
+          "type": "GB200",
+          "count": 16,
+          "per_host": 4
+        },
+        "cluster": "cw-us-east-08a",
+        "priority": "interactive",
+        "session_concurrency": 64,
+        "quantization": null,
+        "serving": {
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 1,
+          "max_model_len": 262144,
+          "max_num_seqs": 128,
+          "max_num_batched_tokens": 2048,
+          "gpu_memory_utilization": 0.95,
+          "prefix_caching": true,
+          "router": true,
+          "extra_args": [
+            "--enable-prompt-tokens-details",
+            "--max-logprobs",
+            "50",
+            "--reasoning-parser",
+            "grug",
+            "--enable-auto-tool-choice",
+            "--tool-call-parser",
+            "hermes",
+            "--seed",
+            "42",
+            "--hf-overrides",
+            "{\"max_seq_len\":262144,\"max_position_embeddings\":262144}",
+            "--load-format",
+            "runai_streamer",
+            "--model-loader-extra-config",
+            "{\"distributed\":true,\"concurrency\":4,\"memory_limit\":17179869184}",
+            "--kernel-config",
+            "{\"moe_backend\":\"triton\",\"enable_flashinfer_autotune\":false}",
+            "--kv-cache-dtype",
+            "auto",
+            "--attention-backend",
+            "FLASHINFER",
+            "--compilation-config",
+            "{\"cudagraph_mode\":\"PIECEWISE\",\"splitting_ops\":[\"vllm::unified_attention_with_output\",\"vllm::unified_kv_cache_update\",\"vllm::grug_moe_short_conv\"],\"inductor_compile_config\":{\"enable_auto_functionalized_v2\":false,\"combo_kernels\":true,\"benchmark_combo_kernel\":true}}",
+            "--additional-config",
+            "{\"grug_logical_kv_cache\":true}",
+            "--prefix-cache-retention-interval",
+            "128"
+          ],
+          "environment": {
+            "VLLM_SERVER_DEV_MODE": "1",
+            "HERO_SCHEDULER_TRACE": "1"
+          }
+        },
+        "workload": {
+          "public_dataset": "semianalysis_cc_traces_weka_062126_256k"
+        },
+        "vllm": {
+          "release": null,
+          "manifest": null,
+          "repo": null,
+          "revision": null
+        },
+        "checks": [
+          {
+            "name": "model-numerics",
+            "command": [],
+            "fixture": "hero-sft-step400407",
+            "timeout": 3600,
+            "kind": "numerical",
+            "checkpoint_revision": null,
+            "runtime_source": null,
+            "evidence": []
+          }
+        ],
+        "cpu": 32,
+        "memory": "768GB",
+        "disk": "1TB"
+      },
+      "profiles": {
+        "gb200": {
+          "gpu": "GB200",
+          "gpus": 4,
+          "hosts": 4
+        }
+      }
+    },
+    "vllm_release": {
+      "release_tag": "marin-vllm-gpu-20261113-0ac9dcb157ee",
+      "source_commit": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "version": "0.0.0.dev20261113+marin.0ac9dcb157ee.cu132",
+      "torch_backend": "cu132",
+      "torch_version": "2.14.1+cu132",
+      "wheels": [
+        {
+          "architecture": "aarch64",
+          "sm_targets": [
+            "10.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261113-0ac9dcb157ee/vllm-0.0.0.dev20261113%2Bmarin.0ac9dcb157ee.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "e0a2b9e2bb6b16ba6d4e1821770123cc74f04b86128536c2744e91b59c6e4b6a"
+        },
+        {
+          "architecture": "x86_64",
+          "sm_targets": [
+            "9.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261113-0ac9dcb157ee/vllm-0.0.0.dev20261113%2Bmarin.0ac9dcb157ee.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "b8897bde70bf353a08f37450fb89fca5ebf50d768d6756807a43867ef11134f4"
+        }
+      ]
+    },
+    "placement": {},
+    "job_id": "/romain/knotmeter-20261117t195336z-1c57a9d1e32d",
+    "gpu_job_id": "/romain/knotmeter-20261117t195336z-1c57a9d1e32d",
+    "source": {
+      "tree_hash": "370aa41910",
+      "base_commit": "322e6a028e",
+      "dirty": false,
+      "branch": "codex/57-inference-perfmax",
+      "built_by": "romain",
+      "git_remote": "git@github.com:marin-community/marin.git",
+      "created_at": "2026-11-17T11:53:36.544735",
+      "command_line": [
+        "/home/romain/work/marin-community/marin/perfmax-research-57-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+        "--profile",
+        "hero-gb200",
+        "--name",
+        "hero-scheduler-trace-a1",
+        "--pytest-test",
+        "tests/cluster/vllm/test_repeat_controls.py",
+        "--set",
+        "serving.environment.HERO_SCHEDULER_TRACE=\"1\"",
+        "--output",
+        "/home/romain/.cache/inference-perfmax-01a1d379/complete-validation/hero-scheduler-trace-a1-execution.json"
+      ]
+    },
+    "research_logbook": null
+  },
+  "state": "failed",
+  "attempts": [
+    {
+      "task_id": "/romain/knotmeter-20261117t195336z-1c57a9d1e32d/0",
+      "attempt_uid": "b6b4938e1a7c9bd3",
+      "state": "cosched_failed",
+      "pod_uid": "0ccf4da0-c2ba-4c59-aec9-5127b221eb1c",
+      "node_name": "sbmvxs64",
+      "gpu_seconds": 1096.7239999771118,
+      "allocation": {
+        "pod_uid": "0ccf4da0-c2ba-4c59-aec9-5127b221eb1c",
+        "attempt_uid": "b6b4938e1a7c9bd3",
+        "pod_name": "iris-romain-knotmeter-20261117t1953-ba06bd5c-0-b6b4938e1a7c9bd3",
+        "node_name": "sbmvxs64",
+        "observed_unix": 1794945504.901299,
+        "phase": "Running",
+        "scheduled_unix": 1794945234.0,
+        "finished_unix": null,
+        "status": "measured",
+        "end_basis": "iris-observed-terminal",
+        "end_unix": 1794945508.181
+      },
+      "error": "Coscheduled sibling /romain/knotmeter-20261117t195336z-1c57a9d1e32d/3 failed"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261117t195336z-1c57a9d1e32d/1",
+      "attempt_uid": "04118ad89e5899f7",
+      "state": "cosched_failed",
+      "pod_uid": "9ffb9340-a600-4ad2-9e0d-1ca3e7de117e",
+      "node_name": "sgqrxs64",
+      "gpu_seconds": 1148.0,
+      "allocation": {
+        "pod_uid": "9ffb9340-a600-4ad2-9e0d-1ca3e7de117e",
+        "attempt_uid": "04118ad89e5899f7",
+        "pod_name": "iris-romain-knotmeter-20261117t1953-b9515fd7-0-04118ad89e5899f7",
+        "node_name": "sgqrxs64",
+        "observed_unix": 1794945519.8878007,
+        "phase": "Failed",
+        "scheduled_unix": 1794945229.0,
+        "finished_unix": 1794945516.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794945516.0
+      },
+      "error": "Coscheduled sibling /romain/knotmeter-20261117t195336z-1c57a9d1e32d/3 failed"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261117t195336z-1c57a9d1e32d/2",
+      "attempt_uid": "c0ee56c0aeeeec32",
+      "state": "cosched_failed",
+      "pod_uid": "39f71625-becd-46e2-afee-6846b424a202",
+      "node_name": "sgzrxs64",
+      "gpu_seconds": 1132.0,
+      "allocation": {
+        "pod_uid": "39f71625-becd-46e2-afee-6846b424a202",
+        "attempt_uid": "c0ee56c0aeeeec32",
+        "pod_name": "iris-romain-knotmeter-20261117t1953-778c1b73-0-c0ee56c0aeeeec32",
+        "node_name": "sgzrxs64",
+        "observed_unix": 1794945518.8788388,
+        "phase": "Failed",
+        "scheduled_unix": 1794945234.0,
+        "finished_unix": 1794945517.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794945517.0
+      },
+      "error": "Coscheduled sibling /romain/knotmeter-20261117t195336z-1c57a9d1e32d/3 failed"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261117t195336z-1c57a9d1e32d/3",
+      "attempt_uid": "99e69c637665ba89",
+      "state": "failed",
+      "pod_uid": "e2ce05ad-4028-4a68-a520-c5a8238dd62b",
+      "node_name": "shbrxs64",
+      "gpu_seconds": 996.0,
+      "allocation": {
+        "pod_uid": "e2ce05ad-4028-4a68-a520-c5a8238dd62b",
+        "attempt_uid": "99e69c637665ba89",
+        "pod_name": "iris-romain-knotmeter-20261117t1953-c727fae2-0-99e69c637665ba89",
+        "node_name": "shbrxs64",
+        "observed_unix": 1794945505.7860775,
+        "phase": "Failed",
+        "scheduled_unix": 1794945242.0,
+        "finished_unix": 1794945491.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794945491.0
+      },
+      "error": "  frame #4: <unknown function> + 0x7226124 (0xe467f38a6124 in /uv/cache/archive-v0/hmYrNvN-fUfClIIO/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)\nE       frame #5: <unknown function> + 0x7226298 (0xe467f38a6298 in /uv/cache/archive-v0/hmYrNvN-fUfClIIO/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)\nE       frame #6: c10d::TCPStore::check(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) + 0x23c (0xe467f38a719c in /uv/cache/archive-v0/hmYrNvN-fUfClIIO/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)\nE       frame #7: c10d::ProcessGroupNCCL::HeartbeatMonitor::runLoop() + 0x330 (0xe467d4d3a3e0 in /uv/cache/archive-v0/hmYrNvN-fUfClIIO/lib/python3.12/site-packages/torch/lib/libtorch_cuda.so)\nE       frame #8: <unknown function> + 0xdb4e0 (0xe46855e6b4e0 in /lib/aarch64-linux-gnu/libstdc++.so.6)\nE       frame #9: <unknown function> + 0x861d8 (0xe4688bab61d8 in /lib/aarch64-linux-gnu/libc.so.6)\nE       frame #10: <unknown function> + 0xee15c (0xe4688bb1e15c in /lib/aarch64-linux-gnu/libc.so.6)\nE       \nE       [rank13]:[W1117 19:57:40.062947084 ProcessGroupNCCL.cpp:1893] [PG ID 0 PG GUID 0 Rank 13] TCPStore check for dump key \"exception_dump\" failed (store unavailable, not absent key). Cannot detect remote dump signals. A rank exiting outside NCCL without broadcasting is a separate case. Error: Broken pipe\nE       /usr/local/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 4 leaked shared_memory objects to clean up at shutdown\nE         warnings.warn('resource_tracker: There appear to be %d '\n\nlib/marin/src/marin/inference/vllm_server.py:998: RuntimeError\n=========================== short test summary info ============================\nERROR tests/cluster/vllm/test_repeat_controls.py::test_measure_repeat_controls\n========================= 1 error in 213.70s (0:03:33) =========================\n"
+    }
+  ],
+  "observed_unix": 1794945528.3420649
+}
