@@ -30,6 +30,15 @@ def write_text(uri: str, content: str) -> None:
         stream.write(content)
 
 
+def recorded_checks(result: dict) -> list[dict]:
+    """Read the current leader's checks even when no AgentX window started."""
+    if result["measurement"] is not None:
+        return result["measurement"]["checks"]
+    leaders = [attempt for attempt in result["attempts"] if attempt["task_id"].endswith("/0")]
+    current = max(leaders, key=lambda attempt: attempt["attempt_number"], default=None)
+    return current.get("worker", {}).get("checks", []) if current else []
+
+
 def comparison_controls(result: dict) -> dict:
     manifest = result["manifest"]
     series = manifest["series"]
@@ -58,7 +67,7 @@ def comparison_controls(result: dict) -> dict:
         "gpu_type": series["profile"]["gpus"]["type"],
         "numerical_policies": [
             {key: check.get(key) for key in ("name", "policy", "policy_sha256", "reference")}
-            for check in (result["measurement"]["checks"] if result["measurement"] else [])
+            for check in recorded_checks(result)
             if check.get("kind") == "numerical"
         ],
     }
@@ -68,7 +77,7 @@ def accepted(result: dict) -> bool:
     measurement = result["measurement"]
     if not measurement or not result["job_succeeded"] or not result["cost_complete"]:
         return False
-    checks = measurement["checks"]
+    checks = recorded_checks(result)
     numerical = [check for check in checks if check.get("kind") == "numerical"]
     manifest = result["manifest"]
     validity = measurement["validity"]
@@ -126,14 +135,15 @@ def render_report(
         latency = metrics.get("latency", {})
         change = throughput_change(result, reference)
         change_text = f"{change * 100:+.2f}%" if change is not None else "—"
+        check_records = recorded_checks(result)
         checks = (
             ", ".join(
                 f"{check['name']}: {check['status']}"
                 + (" (provisional policy)" if check.get("provisional") else "")
                 + (f" (regression {check['regression_status']})" if "regression_status" in check else "")
-                for check in measurement["checks"]
+                for check in check_records
             )
-            if measurement
+            if check_records
             else ", ".join(f"{check['name']}: pending" for check in profile["checks"]) or "not run"
         )
         agentx = "no window"
