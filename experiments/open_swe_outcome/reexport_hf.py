@@ -29,9 +29,6 @@ BASE_MODEL = "Qwen/Qwen3-8B"
 CONTEXT_LENGTH = 65_536
 # The checkpoint's embedding uses Qwen3-8B's padded vocabulary, larger than the tokenizer's 151,669.
 PADDED_VOCAB_SIZE = 151_936
-RUN_ROOT = "s3://marin-us-east-08a/marin/users/dml/checkpoints/open-swe-outcome"
-RUN_DATE = "2026.11.13"
-FINAL_STEPS = {"solved-10000": 786, "random-10000": 787}
 COPIED_FILES = ("chat_template.jinja", "generation_config.json", "tokenizer.json", "tokenizer_config.json")
 
 
@@ -42,13 +39,17 @@ def qwen3_8b_config() -> Qwen3Config:
 
 
 @click.command()
-@click.option("--arm", type=click.Choice(sorted(FINAL_STEPS)), required=True)
-@click.option("--seed", type=int, required=True)
-def main(arm: str, seed: int) -> None:
+@click.option(
+    "--run",
+    required=True,
+    help="Training run directory holding checkpoints/ and hf/, such as "
+    "s3://marin-us-east-08a/marin/users/dml/checkpoints/open-swe-outcome/qwen3-8b-solved-10000-seed0-ctx65536/2026.11.13.",
+)
+@click.option("--step", type=int, required=True, help="Final training step, such as 786.")
+def main(run: str, step: int) -> None:
     configure_logging()
     configure_coreweave_s3()
-    step = FINAL_STEPS[arm]
-    run = f"{RUN_ROOT}/qwen3-8b-{arm}-seed{seed}-ctx{CONTEXT_LENGTH}/{RUN_DATE}"
+    run = run.rstrip("/")
     output = f"{run}/hf-cpu/step-{step}"
     export_lm_to_hf.main(
         ConvertLmConfig(
@@ -64,7 +65,7 @@ def main(arm: str, seed: int) -> None:
     fs, _ = fsspec.core.url_to_fs(output)
     for name in COPIED_FILES:
         fs.copy(f"{run}/hf/step-{step}/{name}", f"{output}/{name}")
-    logger.info("re-exported %s seed %d to %s", arm, seed, output)
+    logger.info("re-exported %s step %d to %s", run, step, output)
 
 
 if __name__ == "__main__":
