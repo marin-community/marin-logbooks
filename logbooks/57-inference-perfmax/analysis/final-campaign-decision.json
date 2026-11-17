@@ -1,0 +1,89 @@
+{
+  "recommended_trial": "20261117T182804Z-6603a552927f",
+  "baseline_trial": "20261117T182804Z-6603a552927f",
+  "throughput_change": 0.0,
+  "controls": {
+    "model": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+    "model_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+    "tokenizer": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+    "tokenizer_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+    "harness_version": "1.0.12",
+    "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+    "processor_source": "80dff120d27fd6092210f4546b8faa5e6c9723ac",
+    "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+    "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+    "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+    "duration": 3600,
+    "max_context": 262144,
+    "random_seed": 42,
+    "warmup_grace_period": 1800,
+    "trace_idle_gap_cap_seconds": 300,
+    "max_profiling_error_ratio": 0.01,
+    "preparation_recipe": {
+      "version": 1,
+      "inputs": {
+        "model": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+        "model_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+        "harness_version": "1.0.12",
+        "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+        "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+        "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+        "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+        "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+        "sessions": 393,
+        "max_context": 262144,
+        "random_seed": 42,
+        "trace_idle_gap_cap_seconds": 300,
+        "tokenizer": "open-athena/Marin-Snowball-67B-A2B-v0.1.1",
+        "tokenizer_revision": "59852d6f07261722bbec1edb6ab148317156b58e"
+      },
+      "code_sha256": {
+        "prepare.py": "15b4d2004f67ccec3dc185fba29be7c5d3d33ad31a57c6de782ee38312980634",
+        "recipe.py": "cd768443db39a9cadecfe34b424f708282abcf8eff04d47f1710d2056d287d8e"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    },
+    "gpu_type": "H100",
+    "numerical_policies": [
+      {
+        "name": "model-numerics",
+        "policy": "snowball-v0.1.1-bf16-h100-provisional-v1",
+        "policy_sha256": "9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375",
+        "reference": {
+          "sha256": "f296e39eb6f4fae9f1964c92698667d5985bc9d2bfa9dcea16d22b2e0d8e8cd2",
+          "uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/manifest.json"
+        }
+      }
+    ]
+  },
+  "provisional": true,
+  "numerical_checks": [
+    {
+      "name": "model-numerics",
+      "command": [
+        "/app/.venv/bin/python",
+        "-m",
+        "marin.testing.inference.check_endpoint",
+        "--fixture",
+        "snowball-v0.1.1"
+      ],
+      "status": "passed",
+      "kind": "numerical",
+      "checkpoint_revision": "59852d6f07261722bbec1edb6ab148317156b58e",
+      "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "evidence": [],
+      "report": "check-0.json",
+      "report_sha256": "325d7b21f1f51b10262ed03f2e0c9296b9bdc7b84f44e8534d9e217adb193477",
+      "reference": {
+        "sha256": "f296e39eb6f4fae9f1964c92698667d5985bc9d2bfa9dcea16d22b2e0d8e8cd2",
+        "uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/manifest.json"
+      },
+      "policy": "snowball-v0.1.1-bf16-h100-provisional-v1",
+      "policy_sha256": "9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375",
+      "provisional": true,
+      "started_unix": 1794940353.3525612,
+      "finished_unix": 1794940629.1902392,
+      "log": "check-0.log"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "observed_at_utc": "2026-11-17T22:46:54.460378+00:00",
+  "inspection": "Coordinating agent read final result, native exports, commands, shared check report and allocation; recomputed archive/report hashes and JSONL phase/token totals.",
+  "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6",
+  "archive_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6/attempts/b8c996746c69fdca/hosts/0/native-adcaba094fa3a0b27bb1b73f8450debd49212115a11d38e92a0d9df03c32a570.tar.zst",
+  "archive_sha256": "adcaba094fa3a0b27bb1b73f8450debd49212115a11d38e92a0d9df03c32a570",
+  "report_sha256": "3688f541c3a20b96540490f0faab9d4a4d967689df4170b050e34265ea0009f6",
+  "validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 3392,
+    "profiling_errors": 0,
+    "profiling_error_ratio": 0.0,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "record_counts": [
+    {
+      "phase": "profiling",
+      "outcome": "success",
+      "count": 3392
+    },
+    {
+      "phase": "warmup",
+      "outcome": "error",
+      "count": 192
+    },
+    {
+      "phase": "warmup",
+      "outcome": "success",
+      "count": 510
+    }
+  ],
+  "error_counts": [
+    {
+      "phase": "warmup",
+      "type": "InvalidInferenceResultError",
+      "count": 192
+    }
+  ],
+  "profiling_token_totals": {
+    "output_sequence_length": 2679789,
+    "usage_completion_tokens": 2679789,
+    "output_token_count": 2502972
+  },
+  "native_export": {
+    "was_cancelled": false,
+    "start_time": "2026-11-17T21:35:52.517278",
+    "end_time": "2026-11-17T22:36:32.518113",
+    "coverage": [
+      {
+        "phase_name": "profiling",
+        "expected_duration_seconds": 3600.0,
+        "required_ratio": 0.95,
+        "ttft_ratio": 1.0,
+        "inter_token_latency_ratio": 1.0
+      }
+    ]
+  },
+  "checks_status": "passed",
+  "source": {
+    "tree_hash": "d3c87544f4",
+    "base_commit": "06b9a63682",
+    "dirty": false,
+    "branch": "research/perfmax-snowball-01a1d379",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T12:19:15.204441",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/perfmax-snowball-campaign-01a1d379/experiments/evaluation/knotmeter/cli.py",
+      "run",
+      "--profile",
+      "snowball-h100",
+      "--campaign",
+      "perfmax-snowball-tuning-01a1eabe",
+      "--priority",
+      "interactive",
+      "--logbook",
+      "https://github.com/marin-community/marin-logbooks/issues/57",
+      "--session-concurrency",
+      "64"
+    ]
+  },
+  "policy_sha256": "9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375",
+  "gpu_hours": 12.73863333331214,
+  "cost_complete": true,
+  "attempts": [
+    {
+      "attempt_uid": "6a769724214e39be",
+      "state": "preempted",
+      "gpu_seconds": 8539.079999923706,
+      "allocation": {
+        "pod_uid": "a886f597-05ae-4811-911e-a836786884ea",
+        "attempt_uid": "6a769724214e39be",
+        "pod_name": "iris-romain-knotmeter-20261117t2019-f12ebbb8-0-6a769724214e39be",
+        "node_name": "g5c0474",
+        "observed_unix": 1794948938.941386,
+        "phase": "Running",
+        "scheduled_unix": 1794947936.0,
+        "finished_unix": null,
+        "status": "measured",
+        "end_basis": "iris-observed-terminal",
+        "end_unix": 1794949003.385
+      }
+    },
+    {
+      "attempt_uid": "b8c996746c69fdca",
+      "state": "succeeded",
+      "gpu_seconds": 37320.0,
+      "allocation": {
+        "pod_uid": "2a26e52f-f563-46fd-9bbc-61e9abf8aae3",
+        "attempt_uid": "b8c996746c69fdca",
+        "pod_name": "iris-romain-knotmeter-20261117t2019-f12ebbb8-1-b8c996746c69fdca",
+        "node_name": "g1cc242",
+        "observed_unix": 1794955319.908884,
+        "phase": "Succeeded",
+        "scheduled_unix": 1794950465.0,
+        "finished_unix": 1794955130.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794955130.0
+      }
+    }
+  ],
+  "check_coverage": {
+    "reference_histories": 64,
+    "reference_positions": 1770,
+    "prefill_boundaries": 9,
+    "settled_branches": 9,
+    "decode_reuse_boundaries": 9,
+    "exact_comparisons": 10,
+    "exact_maximum": 0,
+    "batch_positions": 4,
+    "batch_running_peak": 4.0,
+    "decode_positions": 64
+  },
+  "native_deadline": {
+    "cancelled_credits": 25,
+    "completed_sessions": 33,
+    "cancelled_sessions": 0,
+    "source": "native agentx.log profiling completion"
+  }
+}

@@ -54,17 +54,18 @@
       "source": "snowball-tuning-01a1eabe-baseline.json",
       "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T182804Z-6603a552927f",
       "cost_complete": true
+    },
+    {
+      "name": "snowball-c64-candidate",
+      "gpu": "H100",
+      "gpu_seconds": 45859.079999923706,
+      "gpu_hours": 12.73863333331214,
+      "source": "snowball-c64-result.json",
+      "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6",
+      "cost_complete": true
     }
   ],
-  "known_phase_gpu_hours_excluding_c64": {
-    "H100": 12.624444444444446,
-    "GB200": 13.576867777771419
-  },
-  "phase_cost_complete": false,
-  "pending_trial": {
-    "trial_uri": "s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T201915Z-0af609b36ad6",
-    "status": "Configured retry running after a warmup preemption; total cost must include both attempts."
-  },
+  "phase_cost_complete": true,
   "previous_phases": {
     "manual_workflow_diagnostics": {
       "H100": 1.8377777777777777,
@@ -75,10 +76,6 @@
       "GB200": 9.337551110585531
     }
   },
-  "known_program_gpu_hours_excluding_c64": {
-    "H100": 19.264444444444447,
-    "GB200": 27.947243332597942
-  },
   "historical_uncertainty": "Two earlier unadmitted Snowball attempts have incomplete allocation receipts. No allocation was observed; unknown remains visible in correctness-costs.json.",
   "basis": "PodScheduled through final container finish, with explicit Iris terminal-time fallback when the provider pod expired. Setup, checks, warmup, drain and failures count; queueing does not.",
   "concurrent_ceilings": {
@@ -88,5 +85,23 @@
   "observed_concurrent_peaks": {
     "H100": 8,
     "GB200": 16
-  }
+  },
+  "recorded_phase_gpu_hours": {
+    "H100": 25.363077777756587,
+    "GB200": 13.576867777771419
+  },
+  "known_recorded_program_gpu_hours": {
+    "H100": 32.00307777775659,
+    "GB200": 27.947243332597942
+  },
+  "campaign_cost_bound": {
+    "scope": "Two-point fresh-context campaign, including the preempted warmup",
+    "H100_hours_lower": 23.964314191076493,
+    "H100_hours_upper": 24.10752222220103,
+    "uncertain_attempt_uid": "6a769724214e39be",
+    "last_confirmed_running_unix": 1794948938.941386,
+    "iris_terminal_upper_unix": 1794949003.385,
+    "reason": "The preempted pod expired before an exact final-container time was retained. Other campaign allocations have final-container times."
+  },
+  "cleanup": "All campaign CPU/GPU pods terminal, independently checked; shared-check jobs were already terminal."
 }

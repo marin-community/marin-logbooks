@@ -1,0 +1,60 @@
+# Numerical qualification uses a provisional policy. See decision.json.
+# Serving checks do not qualify RL learning or trainer probability ratios.
+model:
+  repo: open-athena/Marin-Snowball-67B-A2B-v0.1.1
+  revision: 59852d6f07261722bbec1edb6ab148317156b58e
+  tokenizer: open-athena/Marin-Snowball-67B-A2B-v0.1.1
+  tokenizer_revision: 59852d6f07261722bbec1edb6ab148317156b58e
+  path: null
+  config_sha256: null
+  chat_template: null
+  eos_token_id: null
+gpus:
+  type: H100
+  count: 8
+  per_host: 8
+cluster: cw-rno2a
+priority: interactive
+session_concurrency: 128
+quantization: null
+serving:
+  dtype: bfloat16
+  tensor_parallel_size: 1
+  max_model_len: 262144
+  max_num_seqs: 128
+  max_num_batched_tokens: 8192
+  gpu_memory_utilization: 0.94
+  prefix_caching: true
+  router: false
+  extra_args:
+  - --enable-prompt-tokens-details
+  - --max-logprobs
+  - '50'
+  - --reasoning-parser
+  - grug
+  - --enable-auto-tool-choice
+  - --tool-call-parser
+  - hermes
+  - --prefix-cache-retention-interval
+  - '128'
+  environment:
+    VLLM_SERVER_DEV_MODE: '1'
+workload:
+  public_dataset: semianalysis_cc_traces_weka_062126_256k
+vllm:
+  release: null
+  manifest: s3://marin-us-east-08a/marin/knotmeter/campaigns/perfmax-snowball-tuning-01a1eabe/trials/20261117T182804Z-6603a552927f/runtime.json
+  repo: null
+  revision: null
+checks:
+- name: model-numerics
+  command: []
+  fixture: snowball-v0.1.1
+  timeout: 3600
+  kind: numerical
+  checkpoint_revision: null
+  runtime_source: null
+  evidence: []
+cpu: 32
+memory: 384GB
+disk: 1TB

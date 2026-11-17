@@ -681,3 +681,33 @@ footer without writing a campaign decision. C64 keeps its submitted source
 `06b9a63682`. After the tuning agent finishes, the coordinating agent will
 refresh the final report wording without another GPU allocation or a changed
 point selection.
+
+### Completed fresh-context comparison and report refresh
+
+Both normal windows pass protocol validity, duration coverage, unchanged-host
+checks and the required numerical screen. C64 measures 92.30190 reported
+completion tokens/s/GPU, versus C128's 124.39607. Its p90 TTFT falls from
+103.33113 to 60.39601 seconds and per-request completion from 297.61639 to
+154.10088 seconds. The tuning agent retains C128 for throughput. Its 5%
+similarity criterion was a predeclared heuristic, not Romain's numerical target.
+This is a useful negative result for throughput; two points do not locate a
+global optimum or settle interactivity preferences.
+
+The coordinating agent independently verified the
+[C64 native archive and report](analysis/snowball-c64-root-audit.json), phase
+counts, token totals and all shared-check coverage. The final attempt has
+3,392 successful profiling requests, zero profiling errors, 510 nonempty
+warmup responses, 192 empty-content warmup errors and 25 deadline credit
+cancellations. The interrupted attempt remains separately retained and
+performance-ineligible. The [cost ledger](analysis/complete-validation-costs.json)
+includes it; the two-point campaign costs 23.964314–24.107522 H100-hours under
+the retained end-time bounds.
+
+The final report was refreshed from contribution `e929e4528e`, preserving the
+agent's C128 selection. The [audit](analysis/report-refresh-audit.json) verifies
+that terminal and stored summary bytes match and that `recommended.yaml`
+reloads with the tested profile and exact runtime. Both outputs state the RL
+qualification limit. Independent provider checks find both GPU attempts and
+the CPU coordinator terminal. The board is closed. CI on `e929e4528e` is
+terminal: 17 successful checks, 20 skipped. The final High GOAL review remains
+pending.

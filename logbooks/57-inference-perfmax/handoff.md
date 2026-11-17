@@ -1,9 +1,9 @@
 # Inference validation and tuning
 
 Both selected BF16 deployments pass the corrected shared suite under unchanged
-provisional numerical policies. The fresh-context Snowball campaign has a valid
-one-hour C128 baseline. Its C64 retry is running after preemption. The final
-C64-versus-C128 comparison and required goal-completion review remain pending. [PR #11320](https://github.com/marin-community/marin/pull/11320)
+provisional numerical policies. The fresh-context Snowball campaign completed
+two valid one-hour windows and retained C128 for its higher throughput. The
+required review of goal completion remains pending. [PR #11320](https://github.com/marin-community/marin/pull/11320)
 is draft and unmerged.
 
 Contribution [e929e4528e](https://github.com/yonromai/marin/commit/e929e4528e399e8f8d1dd6f5f4bf6909532b020f)
@@ -12,7 +12,7 @@ contains the [82-line skill](../../.agents/skills/inference-perfmax/SKILL.md),
 [shared checks](../../experiments/evaluation/inference_correctness/README.md).
 Forty-four focused CPU/HTTP/CLI cases passed; the 20 affected report cases passed
 again after the reporting-only scope fix. Required lint and type checks pass.
-CI passed on `64bfff4bc5`; the reporting fix's new CI is pending. Earlier
+CI is terminal on `e929e4528e`: 17 successful checks and 20 skipped. Earlier
 [review resolutions](analysis/goal-review-resolution.json) apply to unchanged
 code; they do not replace the new goal's final review.
 
@@ -78,19 +78,20 @@ for another checkpoint, with its original coverage and 0.125 bound.
 | Snowball point | Reported completion tokens/s/GPU | p90 TTFT | p90 per-request completion | Profiling successes/errors | H100-hours |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | C128 baseline | 124.39607 | 103.33113 s | 297.61639 s | 5,165 / 1 | 11.368889 |
-| C64 candidate | Pending | Pending | Pending | Pending | Pending, including preemption |
+| C64 candidate | 92.30190 | 60.39601 s | 154.10088 s | 3,392 / 0 | 12.738633, including preemption |
 
-The [baseline audit](analysis/snowball-baseline-root-audit.json) verifies the
-native exports, check and archive hashes, phase counts and allocation. The
-one-hour recipe reports a 3,629.77401-second successful-request span under its
-native drain convention. Throughput counts completion tokens reported for
+The [baseline audit](analysis/snowball-baseline-root-audit.json) and
+[C64 audit](analysis/snowball-c64-root-audit.json) verify the native exports,
+check and archive hashes, phase counts and allocations. The one-hour recipe
+reports successful-request spans of 3,629.77401 and 3,629.10885 seconds under its
+native drain convention. Throughput counts reported completion tokens from
 successful profiling requests, divided by that span and eight physical GPUs.
 Completion latency is per request. These metrics do not measure a whole session
-or RL step. Warmup separately has
-989 nonempty responses and 417 empty-content validation errors; profiling has
-one disconnect and 59 native deadline credit cancellations. The runner's 1%
-error limit counts profiling requests. Warmup errors are reported separately;
-native validity and duration coverage also pass.
+or RL step. Warmup has 989 nonempty responses and 417 empty-content errors at
+C128, versus 510 and 192 at C64. Native deadline credit cancellations are 59 and
+25. The runner's 1% error limit counts profiling requests; warmup errors are
+reported separately. Native validity, duration coverage and unchanged-host
+checks pass for both windows.
 
 The [fresh-context tuning agent](snowball-tuning-01a1eabe.md) found prior results and
 upstream guidance, and kept old-runtime measurements separate from its baseline.
@@ -101,25 +102,32 @@ reused the same verified CPU-prepared workload. The
 concurrency is the only profile difference. The baseline checker source is
 `548b9fd14d`; C64 source `06b9a63682` includes the corrected branch checks.
 The runtime, serving settings, workload, numerical policy and AgentX protocol
-match. The current comparison will test the load tradeoff; it will not by itself
-establish why performance changes.
+match. C64 loses 25.80% throughput while reducing p90 TTFT by 41.55% and completion
+latency by 48.22%. The tuning agent retained C128 for the primary throughput
+objective. Its 5% similarity band was a predeclared heuristic, not a numerical
+target supplied by Romain. Only two loads were tested; the campaign does not
+establish a global optimum or a universally acceptable latency.
 
 Inspection of the tuning agent's commands and exports also found one avoidable shell
 wrapper error: editing the active Bash script made it exit 127 after a successful
-CLI and native run. Its last command now uses `exec`; C64 will exercise that fix.
+CLI and native run. Its last command now uses `exec`; C64's local wait exited zero.
 Transient port-forward errors and delayed result publication did not cause extra
 GPU runs. Reproducible [commands](analysis/snowball-tuning-01a1eabe.sh), native
-identities, frozen plans and exports remain in the campaign records. No accepted
-recommendation has been selected.
+identities, frozen plans and exports remain in the campaign records. The saved
+[decision](analysis/final-campaign-decision.json) selects C128. The
+[report refresh audit](analysis/report-refresh-audit.json) confirms that the final
+terminal report and saved summary match, the recommendation reloads with the
+tested settings and exact runtime, and the reporting update preserves that choice.
 
-The [cost ledger](analysis/complete-validation-costs.json) currently records
-12.624444 H100-hours and 13.576868 GB200-hours for this validation phase, excluding
-the unfinished C64 trial. Its final cost must include the preempted allocation
-and retry. Earlier runner diagnostics cost 1.837778 H100-hours and 5.032824
-GB200-hours; earlier references and shared checks cost 4.802222 and 9.337551,
-respectively. Two earlier unadmitted Snowball attempts retain incomplete
-allocation receipts; no allocation was observed. Setup, checks, warmup, drain
-and failed attempts count. Queueing is excluded. Observed owned peaks are eight
-H100s and sixteen GB200s, below the 48/128 ceilings. Interactive priority is
-requested; Iris's normal fallback is allowed. Hero's four pods have terminated
-and its board entry is closed. The tuning agent owns the live C64 retry and its cleanup.
+The [cost ledger](analysis/complete-validation-costs.json) records 25.363078
+H100-hours and 13.576868 GB200-hours for this validation phase, including both
+C64 attempts. The two-point campaign accounts for 23.964314–24.107522 H100-hours;
+the range reflects the preempted pod's last confirmed running time versus its
+Iris terminal time. The recorded total across earlier phases is 32.003078
+H100-hours and 27.947243 GB200-hours, using the upper estimate. Two older
+unadmitted Snowball attempts retain incomplete allocation receipts; no allocation
+was observed. Setup, checks, warmup, drain and failures count. Queueing is
+excluded. Owned peaks were eight H100s and sixteen GB200s, below the 48/128
+ceilings. Interactive priority was requested; Iris's normal fallback was allowed.
+All owned jobs and [campaign pods](analysis/snowball-c64-cleanup-root.json) are
+terminal, and all resource-board entries are closed.
