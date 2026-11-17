@@ -12,6 +12,8 @@ from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.artifacts import read_record, write_record
 
+QUALIFICATION_SCOPE = "Serving checks do not qualify RL learning or trainer probability ratios."
+
 
 def evidence_link(uri: str) -> str:
     link = f"[{uri}]({uri})"
@@ -197,10 +199,8 @@ def render_report(
             f"{evidence_link(prefix_join(campaign_uri, 'recommended.yaml'))}.",
         ]
     else:
-        lines += [
-            "",
-            "No accepted recommendation selected. Passing serving checks does not establish RL learning quality.",
-        ]
+        lines += ["", "No accepted recommendation selected."]
+    lines += ["", QUALIFICATION_SCOPE]
     return "\n".join(lines) + "\n"
 
 
@@ -261,6 +261,7 @@ def report_campaign(campaign_uri: str, recommendation: str | None = None, baseli
         policies = [check for check in selected["measurement"]["checks"] if check.get("kind") == "numerical"]
         provisional = any(check.get("provisional") for check in policies)
         prefix = "# Numerical qualification uses a provisional policy. See decision.json.\n" if provisional else ""
+        prefix += f"# {QUALIFICATION_SCOPE}\n"
         write_text(prefix_join(campaign_uri, "recommended.yaml"), prefix + yaml.safe_dump(profile, sort_keys=False))
         reference = next((row for row in results if row["trial_id"] == baseline), None)
         write_record(
