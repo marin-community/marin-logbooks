@@ -888,3 +888,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: #11618 closing comment, #11619 body [P]; Atlas landing record [R].
 - Interpretation and limitations: the probe (#11619) is a proposal, not yet run; the exp3 recovery decision remains with the coordinator/user.
 - Decision and next action: hourly checks watch for the #11619 probe execution and the recovery decision.
+
+### 2026-11-17 23:40 UTC - Hourly catch-up (22:40–23:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`.
+- Command or material configuration: as recorded at launch; no recovery/production changes.
+- External inputs and artifact references: monitoring state (23:33 readback) [R]; marin#11619 state [P].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3's terminal state is unchanged — the RL child failure at update 4 stands as verified (NCCL socket-transport truncation per marin#11618's provenance), no recovery/production changes. The #11619 two-node transport probe remains OPEN (not yet run).
+- Evidence: monitoring state [R]; #11619 [P].
+- Interpretation and limitations: gate/recovery status only.
+- Decision and next action: hourly checks watch for the #11619 probe execution and the recovery decision.
