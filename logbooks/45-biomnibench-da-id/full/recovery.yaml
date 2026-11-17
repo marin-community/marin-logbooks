@@ -1,0 +1,62 @@
+n_concurrent_trials: 16
+release_trial_payloads_in_memory: true
+retry:
+  max_retries: 0
+  include_exceptions:
+  - InternalServerError
+  - APIConnectionError
+  - APITimeoutError
+  - ArtifactUploadTimeoutError
+  - ArtifactWriterBacklogError
+  - CancelledError
+  - ContextManagementInfrastructureError
+  - LLMRequestTimeoutError
+  - SandboxBuildFailedError
+  - ContainerRegistryThrottledError
+  - AgentSetupTimeoutError
+  - DaytonaSandboxStopError
+  - DaytonaProcessError
+  - TrialTimeoutError
+  - AgentKilledBySignalError
+  - VerifierTimeoutError
+  - VerifierRuntimeError
+  - ArtifactWriteTimeoutError
+  - Tau3RuntimeInfrastructureError
+  - Tau3TargetInfrastructureError
+  wait_multiplier: 2.0
+  min_wait_sec: 1.0
+  max_wait_sec: 60.0
+  exclude_exceptions: []
+environment:
+  type: daytona
+agents:
+- name: pi
+  override_setup_timeout_sec: 360
+  override_timeout_sec: 3600
+  kwargs:
+    model_info:
+      max_input_tokens: 65536
+      max_output_tokens: 16384
+    version: 0.87.0
+datasets:
+- path: runtime-tasks
+  task_names:
+  - da-11-1
+  - da-15-2
+  - da-16-1
+  - da-17-5
+  - da-20-4
+  - da-25-1
+  - da-26-2
+  - da-26-4
+  - da-3-5
+  - da-5-3
+  - da-6-2
+  - da-6-5
+  - da-8-1
+  - da-8-2
+  - da-8-3
+  - da-9-1
+  - da-9-7
+verifier:
+  override_timeout_sec: 900
