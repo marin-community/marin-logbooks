@@ -134,7 +134,7 @@ def test_existing_check_pass_transfers_only_to_its_checkpoint_and_runtime(tmp_pa
         runtime_source="c" * 40 if scope == "other-runtime" else "b" * 40,
     )
     profile = base.model_copy(update={"checks": [check]})
-    checks = run_checks(profile, SimpleNamespace(worker_server_url="http://fixture/v1"), tmp_path, "b" * 40)
+    checks = run_checks(profile, "http://fixture/v1", tmp_path, "b" * 40)
     result = trial(tmp_path, "candidate", 120)
     result["measurement"]["checks"] = checks
     write_record(f"{result['trial_uri']}/result.json", result)

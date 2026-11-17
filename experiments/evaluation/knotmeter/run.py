@@ -11,13 +11,16 @@ import platform
 import shutil
 import signal
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
 
+import requests
 from iris.client.client import iris_ctx
 from iris.cluster.client.job_info import get_job_info
 from iris.resources.state import TaskState
+from marin.datakit.chat_template import MARIN_CHAT_TEMPLATE
 from marin.inference.config import InferenceModelConfig, VllmCompilationCacheMode, VllmRouterConfig
 from marin.inference.iris_vllm import (
     IrisVllmLaunch,
@@ -94,6 +97,10 @@ def create_server(manifest: PointManifest, output: Path, launch: IrisVllmLaunch 
     ]
     if profile.quantization:
         args += ["--quantization", profile.quantization]
+    if model.chat_template == "marin":
+        args += ["--chat-template", MARIN_CHAT_TEMPLATE]
+    if model.eos_token_id is not None:
+        args += ["--override-generation-config", json.dumps({"eos_token_id": model.eos_token_id})]
     if model.path:
         for name, expected in (("export-manifest.json", model.revision), ("config.json", model.config_sha256)):
             local = output / name
@@ -136,8 +143,8 @@ def create_server(manifest: PointManifest, output: Path, launch: IrisVllmLaunch 
     )
 
 
-def run_checks(profile: Profile, server: VllmEnvironment, output: Path, runtime_source: str) -> list[dict]:
-    """Run existing task-supplied checks after profiling, against this server."""
+def run_checks(profile: Profile, server_url: str, output: Path, runtime_source: str) -> list[dict]:
+    """Retain the shared report and require its outcome as well as the CLI exit."""
     checks = []
     for index, check in enumerate(profile.checks):
         record = {
@@ -149,15 +156,23 @@ def run_checks(profile: Profile, server: VllmEnvironment, output: Path, runtime_
             "runtime_source": check.runtime_source,
             "evidence": check.evidence,
         }
-        if check.command:
+        command = check.command
+        if check.fixture:
+            command = [sys.executable, "-m", "marin.testing.inference.check_endpoint", "--fixture", check.fixture]
+            record |= {
+                "command": command,
+                "checkpoint_revision": profile.model.revision,
+                "runtime_source": runtime_source,
+            }
+        if command:
             log = output / f"check-{index}.log"
             started = time.time()
             try:
                 run_logged(
-                    check.command,
+                    command,
                     os.environ
                     | {
-                        "KNOTMETER_SERVER_URL": server.worker_server_url,
+                        "KNOTMETER_SERVER_URL": server_url,
                         "KNOTMETER_MODEL": profile.model.repo,
                         "KNOTMETER_MODEL_REVISION": profile.model.revision,
                         "KNOTMETER_RUNTIME_SOURCE": runtime_source,
@@ -171,9 +186,32 @@ def run_checks(profile: Profile, server: VllmEnvironment, output: Path, runtime_
                 record |= {"status": "failed", "error": str(error)}
             else:
                 record["status"] = "passed"
+            if check.fixture:
+                report_path = output / f"check-{index}.json"
+                if report_path.is_file():
+                    report_bytes = report_path.read_bytes()
+                    report = json.loads(report_bytes)
+                    record |= {
+                        "report": report_path.name,
+                        "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
+                        "reference": report["manifest"],
+                        "policy": report["policy"]["id"],
+                        "provisional": report["policy"]["provisional"],
+                    }
+                    if report["status"] != "passed":
+                        record["status"] = report["status"]
+                    if (
+                        report["model"]["revision"] != profile.model.revision
+                        or report["runtime_source"] != runtime_source
+                    ):
+                        record |= {"status": "pending", "reason": "The saved check report belongs to another deployment"}
+                else:
+                    record |= {"status": "pending", "reason": "The shared checker produced no report"}
             record |= {"started_unix": started, "finished_unix": time.time(), "log": log.name}
-            if check.kind == "numerical" and (
-                check.checkpoint_revision != profile.model.revision or check.runtime_source != runtime_source
+            if (
+                not check.fixture
+                and check.kind == "numerical"
+                and (check.checkpoint_revision != profile.model.revision or check.runtime_source != runtime_source)
             ):
                 record |= {
                     "regression_status": record["status"],
@@ -252,7 +290,7 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
                 metrics_url=metrics,
             )
             record |= {
-                "status": "measuring",
+                "status": "checking",
                 "ready_unix": time.time(),
                 "benchmark_command": command,
                 "worker_metrics_url": metrics,
@@ -261,6 +299,22 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
             }
             write_record(str(output / "attempt.json"), record)
             with iris_vllm_followers(launch) if launch else contextlib.nullcontext():
+                record["checks"] = run_checks(
+                    profile, server.worker_server_url, output, manifest["vllm_release"]["source_commit"]
+                )
+                write_record(str(output / "attempt.json"), record)
+                if any(check["status"] != "passed" for check in record["checks"]) and not manifest["diagnostic"]:
+                    raise RuntimeError("Required correctness evidence did not pass; AgentX measurement was not started")
+                # The checks exercise prefix reuse. Clear those entries before native AgentX
+                # warmup; the upstream replay and cache-busting controls remain unchanged.
+                reset = requests.post(server.worker_server_url.removesuffix("/v1") + "/reset_prefix_cache", timeout=60)
+                reset.raise_for_status()
+                record |= {
+                    "status": "measuring",
+                    "checks_completed_unix": time.time(),
+                    "gang_attempts": gang_attempts(profile.gpus.count // profile.gpus.per_host),
+                }
+                write_record(str(output / "attempt.json"), record)
                 run_logged(
                     command,
                     workload_environment(bundle, series),
@@ -278,7 +332,6 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
                 server.check_alive()
                 if gang_attempts(profile.gpus.count // profile.gpus.per_host) != record["gang_attempts"]:
                     raise RuntimeError("The serving gang changed native attempts during profiling")
-                record["checks"] = run_checks(profile, server, output, manifest["vllm_release"]["source_commit"])
                 server.check_alive()
                 record["status"] = "succeeded"
     except BaseException as error:
