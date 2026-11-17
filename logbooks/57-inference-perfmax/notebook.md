@@ -120,3 +120,46 @@ crashing. Full runs still require complete coverage; diagnostics cannot pass.
 The real isolated fixture now exercises this exported format and passes in
 19.42 seconds. Snowball's recovered report records 0.996 H100-hours, nine
 successful profiling requests, pending model numerics and no recommendation.
+
+### Fresh Snowball completion
+
+A clean published source `1ba1bb209d` ran trial
+`20261117T021916Z-32b1ee916242` with the same C8 and 90-second diagnostic
+arguments. CPU preparation, eight-H100 serving, native AgentX, collection,
+reporting and release completed normally; the attached CLI exited zero.
+The serving pod reached `Succeeded`, with its final container finishing at
+02:30:20 UTC. This trial costs 0.842 H100-hours; the two Snowball trials total
+1.838 H100-hours. See [the normal completion record](analysis/snowball-normal-completion.json)
+for exact source, commands, native identities and allocation timing. The first
+trial remains a recovered diagnostic. Neither is a comparable AgentX result.
+
+Hero's retry uses published source `67ec452698`. Its launch provenance marks
+the worktree dirty because the earlier compact result summaries were generated
+before submission and committed afterward in `1ba1bb209d`. The source and
+configuration diff between those revisions is empty. Retain that dirty flag
+and the exact Iris bundle identity; do not present the launch as a clean tree.
+The fresh Snowball launch from `1ba1bb209d` is clean.
+
+### Fresh Hero completion and cleanup
+
+Hero trial `20261117T021522Z-21bf94f72725` completed CPU preparation,
+four-host/sixteen-GB200 native serving, AgentX, collection and reporting. The
+attached CLI exited zero. The same wheel and approved compiler guard loaded;
+NUMA binding was off. The four GPU pods were gone at the final provider check.
+See [the normal completion record](analysis/hero-normal-completion.json).
+
+Hero costs 4.548 GB200-hours for the completed trial plus 0.485 for the earlier
+startup failure: 5.033 GB200-hours total. Snowball totals 1.838 H100-hours.
+These costs include setup, warmup, drain and failed attempts. No GPUs remain
+allocated by this goal. Both fresh terminal tables match the retained summary
+bytes exactly. A live recommendation request for the fresh Snowball trial
+exits one, and neither campaign contains `recommended.yaml`. The unit cases
+separately prove blocking for mismatched or failed checks under a valid synthetic
+measurement. All real measurements remain explicit short diagnostics.
+
+Current CPU CI is green on contribution source
+`8f664fc5921bb12e409ba19744606bc1f2a8630d`. The 48-case targeted suite, seven
+trial/identity/check cases, seven released-router cases and corrected real
+AgentX/InferenceX fixture pass. No new numerical or RL investigation ran.
+[UX findings and proposed RFC clarifications](ux.md) preserve the remaining gaps.
+The final High GOAL review is pending; PRs remain draft and unmerged.
