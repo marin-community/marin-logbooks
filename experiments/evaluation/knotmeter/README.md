@@ -75,8 +75,8 @@ these serving checks does not qualify RL learning or trainer probability ratios.
 Outputs live at `MARIN_PREFIX/knotmeter/campaigns/CAMPAIGN/`. The selected
 cluster's configured prefix supplies the default; `--marin-prefix` is an explicit
 job override. Each invocation creates a new trial directory. Native retries
-keep distinct attempt IDs, host records, exports and logs. Native data uses a
-checksum-addressed archive; `plan.json` and `result.json` retain recovery inputs.
+keep distinct attempt IDs, host records, exports and logs. Prepared AgentX workload
+data uses a checksum-addressed archive; `plan.json` and `result.json` retain recovery inputs.
 Keep large disposable intermediates in existing TTL scratch storage.
 
 The terminal prints the CPU coordinator's Iris job ID, trial URI and recovery
@@ -87,6 +87,8 @@ Capture records contain only timing and identity fields. If a pod expires, a ret
 time plus Iris's terminal observation gives a conservative end time. Missing
 timestamps remain unknown. `--no-wait` returns after submission; detached runs
 may lack complete allocation timings. Interrupting the local wait leaves Iris running.
+Cost is allocated GPU-hours: physical GPUs times allocated seconds, divided by
+3,600, summed across hosts and attempts. It includes failed attempts.
 
 ```sh
 uv run python -m experiments.evaluation.knotmeter.cli status --trial-uri TRIAL_URI
@@ -107,6 +109,9 @@ passed checks and complete cost. Every physical host must retain the same Iris
 attempt ID throughout profiling. The command writes `recommended.yaml` with a
 frozen runtime. Add `--baseline TRIAL_ID` to show changes within a comparison
 group; diagnostics with different controls remain separate rows.
+A comparison fixes checkpoint, tokenizer, workload, AgentX protocol, GPU type,
+prepared data and numerical policy. Concurrency, GPU count, runtime and serving
+settings may vary; throughput is reported per GPU.
 Keep experimental code and discarded approaches in the
 [research archive](../../../docs/dev-guide/research-engineering.md).
 
