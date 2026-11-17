@@ -1,0 +1,572 @@
+{
+  "status": "passed",
+  "manifest": {
+    "sha256": "f296e39eb6f4fae9f1964c92698667d5985bc9d2bfa9dcea16d22b2e0d8e8cd2",
+    "uri": "s3://marin-us-east-02a/marin/inference/goldens/snowball-v0.1.1-59852d6f0726/4a5a4a2ffe883e06d73a2049fb93541ca62fd1e0dd66fe7f7484ecbcdea25fe7/manifest.json"
+  },
+  "policy_sha256": "9568a18b79e1510d6ffb405c03a640e2683cb868ed363f68612153d980938375",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "report_sha256": "8c1b74133316d16370933830c45f832d2ba6cdac1c53df87e6caa2cb9c68eff3",
+  "archive": {
+    "archive_uri": "s3://marin-us-east-08a/marin/inference/correctness/runs/20261117T182002Z-84fa26881755/attempts/d364d38b5066842e/hosts/0/native-b6aebbc47c8da46e1a5783405e30026638b70af73b6ede6b0a55804fd4b1f66b.tar.zst",
+    "archive_sha256": "b6aebbc47c8da46e1a5783405e30026638b70af73b6ede6b0a55804fd4b1f66b",
+    "source": {
+      "tree_hash": "8712bf0739",
+      "base_commit": "12055994a6",
+      "dirty": false,
+      "branch": "docs/agentx-tuning-guide",
+      "built_by": "romain",
+      "git_remote": "git@github.com:marin-community/marin.git",
+      "created_at": "2026-11-17T10:20:02.562917",
+      "command_line": [
+        "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+        "--profile",
+        "snowball-h100",
+        "--name",
+        "snowball-retention128-a1",
+        "--output",
+        "/home/romain/.cache/inference-perfmax-01a1d379/complete-validation/snowball-retention128-a1-execution.json"
+      ]
+    },
+    "task_index": 0,
+    "attempt_uid": "d364d38b5066842e"
+  },
+  "checks": {
+    "batch": {
+      "status": "passed",
+      "seconds": 1.8298182487487793,
+      "positions": 4,
+      "statistics": {
+        "fraction_above_0075": 0.25,
+        "maximum": 0.11534806868283443,
+        "p90": 0.08478764007774292,
+        "p99": 0.11229202582232525
+      },
+      "running_peak": 4.0
+    },
+    "cache": {
+      "status": "passed",
+      "seconds": 19.38654398918152,
+      "failures": [],
+      "cache_evidence": [
+        {
+          "boundary": 127,
+          "decode_cached_tokens": 368,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 128,
+          "warm_cached_tokens": 112
+        },
+        {
+          "boundary": 128,
+          "decode_cached_tokens": 384,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 144,
+          "warm_cached_tokens": 128
+        },
+        {
+          "boundary": 129,
+          "decode_cached_tokens": 384,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 144,
+          "warm_cached_tokens": 128
+        },
+        {
+          "boundary": 255,
+          "decode_cached_tokens": 496,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 256,
+          "warm_cached_tokens": 240
+        },
+        {
+          "boundary": 256,
+          "decode_cached_tokens": 512,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 272,
+          "warm_cached_tokens": 256
+        },
+        {
+          "boundary": 257,
+          "decode_cached_tokens": 512,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 272,
+          "warm_cached_tokens": 256
+        },
+        {
+          "boundary": 2047,
+          "decode_cached_tokens": 2288,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 2048,
+          "warm_cached_tokens": 2032
+        },
+        {
+          "boundary": 2048,
+          "decode_cached_tokens": 2304,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 2064,
+          "warm_cached_tokens": 2048
+        },
+        {
+          "boundary": 2049,
+          "decode_cached_tokens": 2304,
+          "decode_generated_tokens": 257,
+          "fresh_cached_tokens": 0,
+          "repeat_cached_tokens": 2064,
+          "warm_cached_tokens": 2048
+        }
+      ],
+      "same_split": {
+        "status": "passed",
+        "positions": 1,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        }
+      },
+      "different_split": {
+        "status": "passed",
+        "positions": 27,
+        "statistics": {
+          "fraction_above_0075": 0.037037037037037035,
+          "maximum": 0.08005052117310857,
+          "p90": 0.028348073015095624,
+          "p99": 0.06941233863701138
+        }
+      },
+      "prefill_reuse": {
+        "observations": [
+          {
+            "boundary": 127,
+            "cached_tokens": [
+              112,
+              128
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 128,
+            "cached_tokens": [
+              128,
+              144
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 129,
+            "cached_tokens": [
+              128,
+              144
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 255,
+            "cached_tokens": [
+              240,
+              256
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 256,
+            "cached_tokens": [
+              256,
+              272
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 257,
+            "cached_tokens": [
+              256,
+              272
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 2047,
+            "cached_tokens": [
+              2032,
+              2048
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 2048,
+            "cached_tokens": [
+              2048,
+              2064
+            ],
+            "status": "passed"
+          },
+          {
+            "boundary": 2049,
+            "cached_tokens": [
+              2048,
+              2064
+            ],
+            "status": "passed"
+          }
+        ],
+        "status": "passed"
+      },
+      "decode_reuse": {
+        "observations": [
+          {
+            "boundary": 127,
+            "cached_tokens": 368,
+            "prompt_tokens": 127,
+            "status": "passed"
+          },
+          {
+            "boundary": 128,
+            "cached_tokens": 384,
+            "prompt_tokens": 128,
+            "status": "passed"
+          },
+          {
+            "boundary": 129,
+            "cached_tokens": 384,
+            "prompt_tokens": 129,
+            "status": "passed"
+          },
+          {
+            "boundary": 255,
+            "cached_tokens": 496,
+            "prompt_tokens": 255,
+            "status": "passed"
+          },
+          {
+            "boundary": 256,
+            "cached_tokens": 512,
+            "prompt_tokens": 256,
+            "status": "passed"
+          },
+          {
+            "boundary": 257,
+            "cached_tokens": 512,
+            "prompt_tokens": 257,
+            "status": "passed"
+          },
+          {
+            "boundary": 2047,
+            "cached_tokens": 2288,
+            "prompt_tokens": 2047,
+            "status": "passed"
+          },
+          {
+            "boundary": 2048,
+            "cached_tokens": 2304,
+            "prompt_tokens": 2048,
+            "status": "passed"
+          },
+          {
+            "boundary": 2049,
+            "cached_tokens": 2304,
+            "prompt_tokens": 2049,
+            "status": "passed"
+          }
+        ],
+        "status": "passed"
+      },
+      "matched_repeat": {
+        "cached_tokens": [
+          2064,
+          2064
+        ],
+        "status": "passed"
+      }
+    },
+    "decode": {
+      "status": "passed",
+      "seconds": 3.1447415351867676,
+      "positions": 64,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.04110021832206168,
+        "p90": 0.018732870819207742,
+        "p99": 0.03860880406356601
+      }
+    },
+    "deployment": {
+      "status": "passed",
+      "seconds": 1.956648826599121,
+      "mismatches": {},
+      "cache_config": {
+        "_block_size_resolved": true,
+        "block_size": 16,
+        "cache_dtype": "auto",
+        "enable_mamba_fine_grained_prefix_cache": false,
+        "enable_prefix_caching": true,
+        "gpu_memory_utilization": 0.94,
+        "is_attention_free": false,
+        "kv_cache_dtype_skip_layers": [],
+        "kv_cache_layout": null,
+        "kv_cache_max_concurrency": 9.825933578591947,
+        "kv_cache_memory_bytes": null,
+        "kv_cache_size_tokens": 2575809,
+        "kv_offloading_backend": "native",
+        "kv_offloading_size": null,
+        "kv_sharing_fast_prefill": false,
+        "mamba_block_size": null,
+        "mamba_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "mamba_page_size_padded": null,
+        "mamba_ssm_cache_dtype": "auto",
+        "num_cpu_blocks": null,
+        "num_gpu_blocks": 1559808,
+        "num_gpu_blocks_override": null,
+        "prefix_cache_retention_interval": 128,
+        "prefix_caching_hash_algo": "sha256",
+        "prefix_match_unit": null,
+        "replayssm_buffer_len": 16,
+        "skip_page_size_padded": null,
+        "sliding_window": null,
+        "use_kda_recoverssm": false,
+        "use_replayssm": false,
+        "user_specified_block_size": false,
+        "user_specified_mamba_block_size": false
+      },
+      "compilation_config": {
+        "backend": "inductor",
+        "cache_dir": "",
+        "compilation_time": 0.0,
+        "compile_cache_save_format": "binary",
+        "compile_mm_encoder": false,
+        "compile_ranges_endpoints": [
+          8192
+        ],
+        "compile_sizes": [],
+        "cudagraph_capture_sizes": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          24,
+          32,
+          40,
+          48,
+          56,
+          64,
+          72,
+          80,
+          88,
+          96,
+          104,
+          112,
+          120,
+          128,
+          136,
+          144,
+          152,
+          160,
+          168,
+          176,
+          184,
+          192,
+          200,
+          208,
+          216,
+          224,
+          232,
+          240,
+          248,
+          256
+        ],
+        "cudagraph_copy_inputs": false,
+        "cudagraph_mm_encoder": false,
+        "cudagraph_mode": [
+          2,
+          1
+        ],
+        "cudagraph_num_of_warmups": 1,
+        "cudagraph_specialize_lora": true,
+        "custom_ops": [
+          "none"
+        ],
+        "debug_dump_path": null,
+        "disabled_custom_ops": {},
+        "dynamic_shapes_config": {
+          "assume_32_bit_indexing": false,
+          "evaluate_guards": false,
+          "type": "backed"
+        },
+        "enabled_custom_ops": {},
+        "encoder_compilation_time": 0.0,
+        "encoder_cudagraph_max_frames_per_batch": null,
+        "encoder_cudagraph_max_vision_items_per_batch": 0,
+        "encoder_cudagraph_token_budgets": [],
+        "fast_moe_cold_start": false,
+        "inductor_compile_config": {
+          "benchmark_combo_kernel": true,
+          "combo_kernels": true,
+          "enable_auto_functionalized_v2": false
+        },
+        "inductor_passes": {},
+        "ir_enable_torch_wrap": true,
+        "local_cache_dir": null,
+        "max_cudagraph_capture_size": 256,
+        "mode": 3,
+        "pass_config": {
+          "eliminate_noops": true,
+          "enable_qk_norm_rope_fusion": false,
+          "enable_sp": false,
+          "fi_allreduce_fusion_max_size_mb": null,
+          "fuse_act_padding": false,
+          "fuse_act_quant": false,
+          "fuse_allreduce_rms": false,
+          "fuse_attn_quant": false,
+          "fuse_gemm_comms": false,
+          "fuse_mla_dual_rms_norm": null,
+          "fuse_norm_quant": true,
+          "fuse_qk_norm_rope_kvcache": false,
+          "fuse_rope_kvcache": null,
+          "fuse_rope_kvcache_cat_mla": false,
+          "rope_kvcache_fusion_max_token_num": 256,
+          "sp_min_token_num": null
+        },
+        "splitting_ops": [
+          "vllm::unified_attention_with_output",
+          "vllm::unified_mla_attention_with_output",
+          "vllm::mamba_mixer2",
+          "vllm::mamba_mixer",
+          "vllm::short_conv",
+          "vllm::qwen4_exp_ple_short_conv",
+          "vllm::qwen4_exp_qsa_with_output",
+          "vllm::linear_attention",
+          "vllm::qwen_gdn_attention_core",
+          "vllm::qwen_gdn_attention_core_fused_norm_packed",
+          "vllm::gdn_attention_core_xpu",
+          "vllm::olmo_hybrid_gdn_full_forward",
+          "vllm::sparse_attn_indexer",
+          "vllm::rocm_aiter_sparse_attn_indexer",
+          "vllm::deepseek_v4_attention",
+          "vllm::hpc_rope_norm_forward",
+          "vllm::unified_kv_cache_update",
+          "vllm::unified_mla_kv_cache_update"
+        ],
+        "static_all_moe_layers": [],
+        "static_forward_context": {},
+        "traced_files": [],
+        "use_inductor_graph_partition": false
+      }
+    },
+    "reference": {
+      "status": "passed",
+      "seconds": 245.13398504257202,
+      "total_cases": 64,
+      "failures": [],
+      "completed_cases": 64,
+      "groups": {
+        "representative": {
+          "limits": {
+            "fraction_above_0075": 0.05,
+            "maximum": 0.25,
+            "p90": 0.05,
+            "p99": 0.125
+          },
+          "positions": 1770,
+          "statistics": {
+            "fraction_above_0075": 0.015254237288135594,
+            "maximum": 0.19600160846359038,
+            "p90": 0.03044609248788532,
+            "p99": 0.08875527313778746
+          },
+          "status": "passed",
+          "worst": [
+            {
+              "case": "specialized-longbench-02",
+              "max_probability_error": 0.19600160846359038,
+              "max_probability_error_lower_bound": 0.19600160846359038,
+              "position": 17919,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "long-longbench-10",
+              "max_probability_error": 0.17382142683015822,
+              "max_probability_error_lower_bound": 0.17382142683015822,
+              "position": 8191,
+              "same_greedy_token": true,
+              "shared_tokens": 47
+            },
+            {
+              "case": "math-gsm8k-03",
+              "max_probability_error": 0.17300893108186188,
+              "max_probability_error_lower_bound": 0.17300893108186188,
+              "position": 2178,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "specialized-mmmlu-05",
+              "max_probability_error": 0.16756619615822343,
+              "max_probability_error_lower_bound": 0.16756619615822343,
+              "position": 1279,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "long-longbench-05",
+              "max_probability_error": 0.15269594718395674,
+              "max_probability_error_lower_bound": 0.15269594718395674,
+              "position": 9983,
+              "same_greedy_token": true,
+              "shared_tokens": 46
+            },
+            {
+              "case": "long-longbench-02",
+              "max_probability_error": 0.1477190513359189,
+              "max_probability_error_lower_bound": 0.1477190513359189,
+              "position": 4095,
+              "same_greedy_token": true,
+              "shared_tokens": 46
+            },
+            {
+              "case": "long-longbench-04",
+              "max_probability_error": 0.12847232910363426,
+              "max_probability_error_lower_bound": 0.12847232910363426,
+              "position": 6911,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "long-longbench-10",
+              "max_probability_error": 0.12131372370314458,
+              "max_probability_error_lower_bound": 0.12131372370314458,
+              "position": 18175,
+              "same_greedy_token": true,
+              "shared_tokens": 48
+            },
+            {
+              "case": "tool-atlas-07",
+              "max_probability_error": 0.11736955134143162,
+              "max_probability_error_lower_bound": 0.11736955134143162,
+              "position": 1188,
+              "same_greedy_token": true,
+              "shared_tokens": 49
+            },
+            {
+              "case": "long-longbench-01",
+              "max_probability_error": 0.11510024150382808,
+              "max_probability_error_lower_bound": 0.11510024150382808,
+              "position": 11290,
+              "same_greedy_token": false,
+              "shared_tokens": 50
+            }
+          ]
+        }
+      }
+    }
+  }
+}

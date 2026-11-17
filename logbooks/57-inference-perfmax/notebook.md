@@ -475,3 +475,60 @@ has its own isolated research worktree and an eight-H100 share. Its dispatch
 supplies the skill, profile, objective and scope. It must choose an alternative,
 establish a baseline and produce at least one valid normal one-hour AgentX
 window. The parent will inspect its native commands and retained artifacts.
+
+
+### Full Snowball pass and Hero repeat-control failure
+
+Snowball's [live report](analysis/snowball-retention128-a1-summary.json) passes
+all five stages under the unchanged provisional policy. It covers 64/64
+histories and 1,770/1,770 reference positions. Maximum reference error is
+0.196002, p99 0.088755 and p90 0.030446. All nine prefill and decode-created
+cache boundaries were exercised. Boundary 127 reused 368 tokens after decoding,
+compared with the earlier 112-token miss. Changed-split maximum error is
+0.080051; the matched-repeat control is exact. The job succeeded, its provider
+pod is terminal with every container completed, and board row 2201 is closed.
+Its [receipt](analysis/snowball-retention128-a1-execution.json) records 1.255556
+H100-hours.
+
+Hero's [live report](analysis/hero-retention128-a1-summary.json) completes all
+37 histories and 15,855 reference positions within policy. Deployment, batch,
+decode, all nine prefill/decode-reuse boundaries and the matched-repeat coverage
+pass. Its overall result remains failed: equal cached counts at boundaries
+127/255/2047 yielded probability differences 0.000004765, 0.000189799 and
+0.002857573 against a zero bound. The final matched-repeat comparison is exact.
+Changed-split maximum error is 0.032986. Its [receipt](analysis/hero-retention128-a1-execution.json)
+records 4.773333 GB200-hours. All four provider pods are absent and board row
+2202 is closed. No limit changed to accept these observations.
+
+[CPU replay of the retained interval-zero observations](analysis/hero-retained-equal-split-replay.json)
+also finds nonzero warm-versus-repeat errors at boundary 127: 0.000019060 and
+0.000012151 in two earlier runs. The new interval is therefore not necessary
+for this symptom. This does not establish its cause or justify a pass.
+
+The next focused Hero experiment compares three fresh recomputations, immediate
+cached repeats, repeats after an alternate branch and changes in the seed's
+shape at the three failing boundaries. If uncached repeats vary, they measure a
+numerical control independent of cache reuse. If changes occur only after a
+branch at equal hit counts, investigate cached-state or checkpoint replacement
+before changing policy. Preserve both patterns and their exact cached counts.
+The experiment remains diagnostic and cannot qualify the profile.
+
+The historical [control test](../../tests/cluster/vllm/test_repeat_controls.py)
+uses the existing deployment fixture and shared HTTP client. Its test selector
+is an archive-only launcher option; the contribution's default gate is unchanged.
+A real local HTTP smoke completed all 27 control comparisons in 2.02 seconds.
+Run the focused GPU control from its published source:
+
+```sh
+uv run python -m experiments.evaluation.inference_correctness.launch \
+  --profile hero-gb200 --name hero-repeat-controls-a1 \
+  --pytest-test tests/cluster/vllm/test_repeat_controls.py \
+  --output hero-repeat-controls-execution.json
+```
+
+Contribution CI at `12055994a6` is terminal: 17 successful checks and 20 skipped.
+Interactive priority remains requested. Iris's effective Batch fallback is
+allowed by current task steering; record it and leave shared scheduling alone.
+The child's normal Snowball baseline has passed its actual endpoint CLI checks
+and entered native warmup using a verified prepared-workload cache hit. No
+performance result or recommendation is claimed yet.
