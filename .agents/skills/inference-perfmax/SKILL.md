@@ -43,6 +43,8 @@ points. Reuse prior evidence when its model, settings and runtime still apply.
 Identify a plausible bottleneck, predict what a change should affect and seek
 evidence that could reject the hypothesis. Separate a measured cause from a
 correlation. Use profiles and controlled changes when they can resolve that gap.
+When prefix reuse is poor, compare AgentX's actual and theoretical hit rates.
+Check KV use and routing across data-parallel engines before blaming cache capacity.
 
 Start near the best known throughput bend. Reject poor candidates with CPU,
 component or short diagnostic checks. Increase load and duration only when the
