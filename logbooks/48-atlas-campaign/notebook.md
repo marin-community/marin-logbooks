@@ -1123,3 +1123,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the prebuilt-asset preview deployment outcome.
+
+### 2026-11-17 13:40 UTC - Hourly catch-up (12:40–13:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `2b7ee67d96…` (12:33:26 UTC) to head `908b57e410c54161043c42e9a00283e1af9c706f`, landed 13:30:21 UTC (~10 landings 13:11–13:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 2b7ee67d..908b57e4` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **New VERIFY support level operationalized**: new VERIFY admissions materialized as Pending with zero-admitted sources excluded (`77dcb3543a…` + duplicate `77dcb3543a`-pair); VERIFY admissions gated — admitted sources keep status with a pending marker (`361761fbf1…`); the fixture waiver bound to its real denominator (`4361c02419…`); one production VERIFY cell is enough — N/A cannot negate pending qualification (`3e3b482ac7…`); the backend verification pending marker rendered on the backends page (`c8452e6585…`).
+  - **Re-admission**: the competitive-coding rebuilt cohort readmitted (`48421f3366…`); re-pinned retained sources bound to their retained grading evidence (`908b57e410…`, head).
+  - **TaskSpec hygiene**: absent execution requirements kept out of serialized TaskSpecs (`d9e801196d…`); full-review fixture bump matched to the endpoint's text ordering (`dfd6a80231…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the pending-marker semantics follow the VERIFY level defined in the previous window.
+- Decision and next action: next hourly check watches for VERIFY-pending progression to full admission.
