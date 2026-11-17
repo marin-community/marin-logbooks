@@ -1,0 +1,10 @@
+{
+  "language": "Python",
+  "dependencies": [
+    "numpy as np",
+    "collections.Counter"
+  ],
+  "source_sha256": "d3d15ee5ea9622337271cacf7f950ea47ebe0d1429cb0090654f88a2b82a98e1",
+  "source": "def measure(tokens, weights, prefix, eot, newline_ids, exact_newline):\n    assert len(tokens) == len(weights)\n    c = Counter(rows=1, tokens=len(tokens), supervised_positions=int(weights.sum()))\n    starts = np.flatnonzero(tokens == prefix[0])\n    affected = 0\n    for i, start in enumerate(starts):\n        if tokens[start + 1] != prefix[1]:\n            continue\n        c[\"assistant_turns\"] += 1\n        end = int(starts[i + 1]) if i + 1 < len(starts) else len(tokens)\n        endings = np.flatnonzero(tokens[start + 2:end] == eot) + start + 2\n        c[\"assistant_eot_count\"] += len(endings)\n        if len(endings) != 1:\n            c[\"assistant_turns_without_exactly_one_eot\"] += 1\n        for pos in endings:\n            if pos + 1 < len(tokens) and int(tokens[pos + 1]) in newline_ids:\n                c[\"assistant_eot_followed_by_newline_token\"] += 1\n                c[\"exact_198_newline_after_assistant_eot\"] += int(tokens[pos + 1] == exact_newline)\n                if weights[pos] > 0:\n                    c[\"supervised_newline_after_assistant_eot\"] += 1\n                    affected += 1\n    c[\"rows_with_supervised_post_eot_newline\"] = int(affected > 0)\n    c[\"supervised_positions_in_affected_rows\"] = int(weights.sum()) if affected else 0\n    return c",
+  "scope": "Exact frozen position counter; storage/dispatch wrappers and input data remain access-controlled."
+}

@@ -666,6 +666,25 @@ The production code commit remains `0f5721bbb4953e98898c847896110dee32a5b293`. T
 - Interpretation and limitations: cadence metrics from monitoring snapshots.
 - Decision and next action: continue hourly tracking.
 
+
+### 2026-11-17 00:55 UTC — Full V5 chat ending census
+
+The supplemental census is complete. All 703 shard-result pins were byte-verified and matched to the sealed V5 source inventory, including each shard's document, token and supervised-position totals. The position counter is unchanged from the earlier audit. Previously completed leaves were retained; no policy samples or training data were regenerated.
+
+| Cohort | Documents | Assistant EOTs followed by newline | Supervised newline positions |
+| --- | ---: | ---: | ---: |
+| V5 OpenCode | 409,021 | 3,082,928 | 3,082,928 |
+| V5 remaining chat sources | 12,132,963 | 11,021,009 | 10,991,248 |
+| V5 all chat | 12,541,984 | 14,103,937 | 14,074,176 |
+
+All counted newlines are token 198. The 29,761 positions separating the physical and supervised totals have zero loss weight in relay traces. The census found exactly one EOT per assistant turn across 32,274,249 turns. Twenty-three of the 50 chat sources contain a supervised post-EOT newline. The remaining-chat cohort includes edited and unedited rows; its aggregate does not distinguish them. The original-control census still covers OpenCode only: zero post-EOT newlines in 409,950 original rows. The earlier paired OpenCode target-array comparison remains unchanged.
+
+The 14,074,176 chat newline targets are **0.0162855869%** of all natural chat supervised positions and **0.0116891444%** of all natural supervised positions including replay. The 3,585,348 rows with at least one such supervised newline contain 8,985,072,102 supervised positions, or **7.4624478901%** of the full natural supervised population. These quantities measure different effects: the newline targets themselves and all supervised content in rows containing them. Actual sampled training-loss exposure and behavioral impact remain unmeasured.
+
+This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unchanged under the user's ruling. The separate V6 candidate must pass its full post-Atlas format and mask census before readiness sealing; no V6 training launch is authorized. Its identity-cohort reader proof covers 859,434 documents and 1,306,611 assistant turns with no post-EOT newline or mask violations. That cohort proof does not certify the whole V6 candidate.
+
+[Sanitized full-census counts and receipt checksums](evidence/exp3-eot-full-chat.json) preserve the measured denominators and limits. [The frozen position counter](evidence/exp3-eot-counter-source.json) preserves the executed measurement function without storage coordinates. Full inputs and receipts remain access-controlled, so public reproduction is incomplete.
+
 ### 2026-11-17 01:40 UTC - Hourly catch-up (00:40–01:40 UTC window)
 
 - Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
