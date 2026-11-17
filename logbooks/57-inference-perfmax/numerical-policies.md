@@ -9,8 +9,9 @@ It does not establish an acceptable error budget for RL training.
 The checker bounds the largest absolute probability difference over the union
 of two returned top-50 lists. A missing token can have probability between
 zero and that list's cutoff. The report keeps the lower bound and conservative
-upper bound. It aggregates maximum, p99, p90 and the fraction of positions whose
-upper bound exceeds 0.075. This is neither full-vocabulary KL nor a log-probability
+upper bound. All four statistics aggregate the conservative upper bound at each
+compared position: maximum, p99, p90 and the fraction exceeding 0.075.
+This is neither full-vocabulary KL nor a log-probability
 ratio. For example, probabilities 0.01 and 0.02 differ by only 0.01 but have a
 ratio of two.
 
@@ -18,6 +19,12 @@ The limits below are maximum / p99 / p90 / fraction above 0.075. Fractions are
 shown as percentages. The policy files are the authority for exact values:
 [Hero](../../lib/marin/src/marin/testing/inference/resources/endpoint/hero-sft-step400407.json)
 and [Snowball](../../lib/marin/src/marin/testing/inference/resources/endpoint/snowball-v0.1.1.json).
+
+Hero's `short` and `long` are fixed manifest labels, not request-length rules.
+The [short group](analysis/hero-reference-groups.json) has 32 histories of
+40–1,835 tokens. The five long histories have 4,096, 32,768, 65,536, 131,072 and
+262,143 tokens; the last leaves room for one output token. The manifest labels
+select the applicable reference limits.
 
 | Comparison | Limits | Evidence behind the choice | What remains weak |
 | --- | --- | --- | --- |
@@ -44,8 +51,9 @@ The [retained observations](analysis/numerical-policy-observations.json) include
 the earlier [full Snowball report](analysis/snowball-retention128-a1-summary.json).
 Hero/Snowball observed maxima are 0.032986/0.080051 for changed prefill steps and
 0.105459/0.041100 for decoding. Hero's batch maximum is 0.007571; Snowball's
-ranges from 0.042133 to 0.115348 across these passes. That variation comes from
-only four batch comparisons per run. All fully prepared branch and repeat
+ranges from 0.042133 to 0.115348 across these passes. Each run contains only four
+batch comparisons, so these observations provide limited evidence about
+repeatability. All fully prepared branch and repeat
 comparisons are zero. Raw observations, failed reports and policy hashes remain
 available. Snowball's interrupted C64 attempt completed its checks but supplies
 no completed performance window.
