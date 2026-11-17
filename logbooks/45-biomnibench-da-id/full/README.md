@@ -58,3 +58,5 @@ The shared runner's invalid-reward regression is covered by
 `tests/evaluation/test_harbor_runner.py`. The root VM resource rules apply to
 local checks. Full-project type checks need remote resources; an observed
 local run used 1.86 GiB and must not be repeated on this shared VM.
+
+To summarize one reconciled solver pass, run `python summarize_pass.py /path/to/scorecard.csv` from this directory. The CSV must include one row per public task with task, input_group, final_state, signed_score and unsigned_score columns. Leave scores blank for ungraded tasks. The reporter checks task IDs and group membership against the manifest and emits a mean only for a fully graded group. The [partial Qwen coverage](qwen-partial-coverage.json) includes three recovered grades from the original submissions.
