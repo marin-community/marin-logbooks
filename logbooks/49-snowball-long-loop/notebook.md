@@ -840,3 +840,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: monitoring state [R]; prior update history in this notebook (16:40/17:40 entries).
 - Interpretation and limitations: the NCCL error is a recorded terminal condition, not a diagnosed root cause; recovery authority remains conditional on diagnosed failure (coordinator message `e040816ac0…`).
 - Decision and next action: hourly checks watch for the recovery diagnosis/decision; no secretary action beyond the record.
+
+### 2026-11-17 19:45 UTC - Hourly catch-up (18:45–19:45 UTC window): update-4 failure verified in detail; recovery source prepared, unused
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 production source `0f5721bbb4…`, artifact `2026.11.16.51`; an unused recovery source `f1f8795a9f…` exists.
+- Command or material configuration: as recorded at launch; no recovery/cancellation/relaunch/source change performed.
+- External inputs and artifact references: exp3-recipe.md §update-4 verification (19:34 readback) and `artifacts/production51-update4-failure-owner-verification.json` (with hashes for native exceptions, worker logs, task states, checkpoint pointer, W&B and terminal receipts) [R].
+- Environment and hardware when relevant: policy rank 56 (CP group 36, local rank 1, host gb95c40, PID 13657); NCCL 2.29.7.
+- Result, including failure or restart: **read-only verification of the update-4 failure** (from the exp3 record): policy rank 56 (CP group 36, local rank 1, host gb95c40, PID 13657) logged **NCCL 2.29.7 ALLTOALL_BASE invalid usage at 18:02:24 UTC — a socket message contained 941,711,616 bytes where 32 were expected**; the watchdog raised SIGABRT at 18:03:25 UTC; the outer Ray WorkerCrashedError followed. The underlying collective/transport cause is unresolved, and no causal link to earlier proxy httpx.ReadError events has been established. Terminal manifest: state=failed, finalization=skipped_no_checkpoint, model=null; latest native pointer 2; no best_checkpoint.json or later. **All 32 RL tasks are terminal (one failed, 31 coscheduled failures)**. W&B still reports running with trainer/global_step=3 — this does not override the terminal Iris/native evidence. An **unused recovery source `f1f8795a9f…` is prepared**: it avoids repacking 427 unreserved sources while constructing the seven IID validation sources, restores Exp1 loader request geometry (4 batches, buffer 512) from `9662fdba…`, confirms identical first/resumed batches under fetch 4 and 32, and prepares a 90-minute startup-only watchdog (step/process watchdogs unchanged); population/masks/stream/optimizer/schedule/topology/20-h deadline preserved. Recovery still requires the diagnosed-failure condition.
+- Evidence: exp3-recipe.md verification section + artifacts above [R].
+- Interpretation and limitations: the socket-size discrepancy is the recorded symptom; the root cause is unresolved.
+- Decision and next action: hourly checks watch for the recovery decision; the record carries the verified failure detail.
