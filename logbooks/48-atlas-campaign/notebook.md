@@ -1204,3 +1204,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
 - Decision and next action: next hourly check watches for further decontamination-chain admissions.
+
+### 2026-11-17 18:45 UTC - Hourly catch-up (17:40–18:45 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `7de61d0b06…` (17:29:45 UTC) to head `c80683567df3d1d250ac238d00c0d3b6b1a5dfb8`, landed 18:32:50 UTC (~12 landings 18:23–18:32 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 7de61d0b..c8068356` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **aime acknowledgement superseded**: the aime acknowledgements moved to the TRAIN decontamination receipt (`f9963f6215…`) — aligning the acknowledgement with the decontamination chain from the 17:40 window.
+  - **Partial backend semantics**: Partial backend support preserved with capability evidence (`30f8b3446d…`); Partial eligibility and role counts clarified (`1ac354a1bb…`).
+  - **Rounds/driver machinery**: coverage-driven rounds launched only for the frozen sample selection (`c80683567d…`, head); operator-stopped rounds carried through the rounds driver (`79ae17cbbe…`); script-grader submissions staged before setup commands run (`1ecadd3fdb…`).
+  - **Lexical/data hygiene**: missing document-frequency filters rejected before lexical marking (`f66ca128ca…`); corpus-common filter storage keys preserved on load (`228eafb169…`); native runner inputs restored in curation tests (`46493940fc…`); only the declaration fields the coverage classifier reads are fetched (`ad863bc70e…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for coverage-driven rounds results and further aime supersessions.
