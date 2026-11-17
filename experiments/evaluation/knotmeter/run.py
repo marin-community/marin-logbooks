@@ -1,0 +1,314 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Own one fresh serving gang, native AgentX replay, checks and output capture."""
+
+import contextlib
+import hashlib
+import json
+import os
+import platform
+import shutil
+import signal
+import subprocess
+import tempfile
+import time
+from pathlib import Path
+
+from iris.client.client import iris_ctx
+from iris.cluster.client.job_info import get_job_info
+from iris.resources.state import TaskState
+from marin.inference.config import InferenceModelConfig, VllmCompilationCacheMode, VllmRouterConfig
+from marin.inference.iris_vllm import (
+    IrisVllmLaunch,
+    iris_vllm_followers,
+    iris_vllm_launch,
+    notify_iris_vllm_stopped,
+    wait_for_iris_vllm_shutdown,
+)
+from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmLauncherWithEnvironment, VllmType
+from rigging.filesystem.storage_path import prefix_join
+
+from experiments.evaluation.knotmeter.artifacts import (
+    copy_file,
+    pack_server_metrics,
+    retain_artifacts,
+    write_record,
+)
+from experiments.evaluation.knotmeter.config import Profile
+from experiments.evaluation.knotmeter.processes import run_logged
+from experiments.evaluation.knotmeter.recipe import PointManifest, benchmark_command, workload_environment
+from experiments.evaluation.knotmeter.runtime import gpu_release
+from experiments.evaluation.knotmeter.workload import check_native_cache, restore_workload
+
+
+def interrupt(signum: int, _frame: object) -> None:
+    raise InterruptedError(f"Attempt interrupted by signal {signum}")
+
+
+def gang_attempts(hosts: int) -> dict[str, str]:
+    """Fence the profiling window to the same live native attempts on every host."""
+    client = iris_ctx().client
+    info = get_job_info()
+    assert client is not None and info is not None
+    tasks = [client.task_status(task.task_id) for task in client.list_tasks(info.job_id)]
+    if len(tasks) != hosts or any(task.state != TaskState.RUNNING for task in tasks):
+        raise RuntimeError("Every serving host must be running throughout measurement")
+    return {
+        str(task.task_id): next(
+            attempt.attempt_uid for attempt in task.attempts if attempt.attempt_number == task.current_attempt_number
+        )
+        for task in tasks
+    }
+
+
+def create_server(manifest: PointManifest, output: Path, launch: IrisVllmLaunch | None) -> VllmEnvironment:
+    profile = Profile.model_validate(manifest["series"]["profile"])
+    model, serving, hardware = profile.model, profile.serving, profile.gpus
+    args = [
+        "--tokenizer",
+        model.tokenizer,
+        "--tokenizer-revision",
+        model.tokenizer_revision,
+        "--served-model-name",
+        model.repo,
+        "--dtype",
+        serving.dtype,
+        "--max-model-len",
+        str(serving.max_model_len),
+        "--max-num-seqs",
+        str(serving.max_num_seqs),
+        "--max-num-batched-tokens",
+        str(serving.max_num_batched_tokens),
+        "--gpu-memory-utilization",
+        str(serving.gpu_memory_utilization),
+        "--enable-prefix-caching" if serving.prefix_caching else "--no-enable-prefix-caching",
+        "--enable-expert-parallel",
+        *serving.extra_args,
+    ]
+    if profile.quantization:
+        args += ["--quantization", profile.quantization]
+    if model.path:
+        for name, expected in (("export-manifest.json", model.revision), ("config.json", model.config_sha256)):
+            local = output / name
+            copy_file(prefix_join(model.path, name), str(local))
+            if hashlib.sha256(local.read_bytes()).hexdigest() != expected:
+                raise ValueError(f"Checkpoint identity differs: {name}")
+        args += ["--hf-config-path", str(output)]
+    else:
+        args += ["--revision", model.revision]
+    if launch is None:
+        args += [
+            "--tensor-parallel-size",
+            str(serving.tensor_parallel_size),
+            "--data-parallel-size",
+            str(hardware.count // serving.tensor_parallel_size),
+        ]
+    else:
+        args += launch.extra_cli_args
+    launcher = VllmLauncherWithEnvironment(
+        IsolatedCudaVllm(source=VllmType.MARIN_FORK, release=gpu_release(manifest["vllm_release"])),
+        {
+            "TOKENIZERS_PARALLELISM": "false",
+            "UV_NO_CONFIG": "1",
+            "VLLM_ENGINE_READY_TIMEOUT_S": str(manifest["series"]["ready_timeout"]),
+        }
+        | serving.environment
+        | (launch.subprocess_env if launch else {}),
+    )
+    return VllmEnvironment(
+        InferenceModelConfig(name=model.repo, path=model.path, engine_kwargs={}),
+        port=38197,
+        timeout_seconds=manifest["series"]["ready_timeout"],
+        extra_args=args,
+        launcher=launcher,
+        compilation_cache_mode=VllmCompilationCacheMode.MANAGED,
+        collect_metrics=False,
+        collect_nccl=False,
+        router=VllmRouterConfig() if serving.router and (launch is None or launch.is_leader) else None,
+        wait_for_ready=False,
+    )
+
+
+def run_checks(profile: Profile, server: VllmEnvironment, output: Path, runtime_source: str) -> list[dict]:
+    """Run existing task-supplied checks after profiling, against this server."""
+    checks = []
+    for index, check in enumerate(profile.checks):
+        record = {
+            "name": check.name,
+            "command": check.command,
+            "status": "pending",
+            "kind": check.kind,
+            "checkpoint_revision": check.checkpoint_revision,
+            "runtime_source": check.runtime_source,
+            "evidence": check.evidence,
+        }
+        if check.command:
+            log = output / f"check-{index}.log"
+            started = time.time()
+            try:
+                run_logged(
+                    check.command,
+                    os.environ
+                    | {
+                        "KNOTMETER_SERVER_URL": server.worker_server_url,
+                        "KNOTMETER_MODEL": profile.model.repo,
+                        "KNOTMETER_MODEL_REVISION": profile.model.revision,
+                        "KNOTMETER_RUNTIME_SOURCE": runtime_source,
+                        "KNOTMETER_PROFILE": str(output / "profile.json"),
+                        "KNOTMETER_CHECK_OUTPUT": str(output / f"check-{index}.json"),
+                    },
+                    log,
+                    timeout=check.timeout,
+                )
+            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
+                record |= {"status": "failed", "error": str(error)}
+            else:
+                record["status"] = "passed"
+            record |= {"started_unix": started, "finished_unix": time.time(), "log": log.name}
+            if check.kind == "numerical" and (
+                check.checkpoint_revision != profile.model.revision or check.runtime_source != runtime_source
+            ):
+                record |= {
+                    "regression_status": record["status"],
+                    "status": "pending",
+                    "reason": "The check's declared checkpoint/runtime scope does not match this deployment",
+                }
+        checks.append(record)
+    return checks
+
+
+def run_point(plan: dict, output: Path, bundle: Path, launch: IrisVllmLaunch | None) -> None:
+    manifest = plan["manifest"]
+    series = manifest["series"]
+    profile = Profile.model_validate(series["profile"])
+    info = get_job_info()
+    assert info is not None
+    leader = launch is None or launch.is_leader
+    output.mkdir(parents=True, exist_ok=False)
+    record = {
+        "manifest": manifest,
+        "status": "preparing",
+        "started_unix": time.time(),
+        "iris_task_id": os.environ["IRIS_TASK_ID"],
+        "iris_attempt_uid": os.environ["IRIS_ATTEMPT_UID"],
+        "iris_bundle_id": os.environ["IRIS_BUNDLE_ID"],
+        "task_index": info.task_index,
+        "hostname": platform.node(),
+        "architecture": platform.machine(),
+        "iris_node_name": os.environ.get("IRIS_NODE_NAME"),
+    }
+    native_logs = None
+    router_logs = None
+    try:
+        record["gpu_uuids"] = subprocess.check_output(
+            ["nvidia-smi", "--query-gpu=uuid", "--format=csv,noheader"], text=True
+        ).splitlines()
+        if len(set(record["gpu_uuids"])) != profile.gpus.per_host:
+            raise ValueError("Visible physical GPUs differ from the resolved allocation")
+        nodes = manifest["placement"].get("nodes")
+        if nodes and record["iris_node_name"] not in nodes:
+            raise RuntimeError("Iris placed this host outside the verified node list")
+        with (output / "hardware.txt").open("w") as stream:
+            for command in (
+                ["nvidia-smi", "--query-gpu=name,uuid,memory.total,driver_version", "--format=csv"],
+                ["nvidia-smi", "topo", "-m"],
+                ["lscpu"],
+            ):
+                subprocess.run(command, stdout=stream, check=True)
+        (output / "profile.json").write_text(profile.model_dump_json(indent=2))
+        restore_workload(manifest["workload"], bundle)
+        path = output / "series.json"
+        path.write_text(json.dumps(series))
+        check_native_cache(bundle, path, output / "workload-check.log")
+        record["workload_restored_unix"] = time.time()
+        with create_server(manifest, output, launch) as server:
+            handle = server.vllm_server
+            assert handle is not None
+            native_logs = Path(handle.log_dir)
+            record |= {"status": "starting", "server_command": server.command}
+            write_record(str(output / "attempt.json"), record)
+            if not leader:
+                assert launch is not None
+                wait_for_iris_vllm_shutdown(launch, server.check_alive)
+                record["status"] = "succeeded"
+                return
+            server.wait_until_ready()
+            router_logs = server.router.log_dir if server.router else None
+            if server.model_id != profile.model.repo:
+                raise RuntimeError("The serving endpoint returned a different model ID")
+            metrics = server.worker_server_url.removesuffix("/v1") + "/metrics"
+            command = benchmark_command(
+                series,
+                manifest["concurrency"],
+                server.server_url.removesuffix("/v1"),
+                output / "aiperf_artifacts",
+                metrics_url=metrics,
+            )
+            record |= {
+                "status": "measuring",
+                "ready_unix": time.time(),
+                "benchmark_command": command,
+                "worker_metrics_url": metrics,
+                "router_command": server.router.command if server.router else None,
+                "gang_attempts": gang_attempts(profile.gpus.count // profile.gpus.per_host),
+            }
+            write_record(str(output / "attempt.json"), record)
+            with iris_vllm_followers(launch) if launch else contextlib.nullcontext():
+                run_logged(
+                    command,
+                    workload_environment(bundle, series),
+                    output / "agentx.log",
+                    timeout=series["warmup_grace_period"] + series["duration"] + 3600,
+                    sample=output / "client-load.jsonl",
+                )
+                record["measured_unix"] = time.time()
+                exported = json.loads((output / "aiperf_artifacts/profile_export_aiperf.json").read_text())
+                record["submission_valid"] = exported.get("metadata", {}).get(
+                    "submission_valid"
+                ) is True and not exported.get("was_cancelled")
+                if not record["submission_valid"] and not manifest["diagnostic"]:
+                    raise RuntimeError("AgentX rejected the window; retained as invalid diagnostics")
+                server.check_alive()
+                if gang_attempts(profile.gpus.count // profile.gpus.per_host) != record["gang_attempts"]:
+                    raise RuntimeError("The serving gang changed native attempts during profiling")
+                record["checks"] = run_checks(profile, server, output, manifest["vllm_release"]["source_commit"])
+                server.check_alive()
+                record["status"] = "succeeded"
+    except BaseException as error:
+        record |= {"status": "failed", "error": f"{type(error).__name__}: {error}"}
+        raise
+    finally:
+        record["finished_unix"] = time.time()
+        if native_logs:
+            shutil.copytree(native_logs, output / "server-logs")
+        if router_logs:
+            shutil.copytree(router_logs, output / "router-logs")
+        if leader:
+            pack_server_metrics(output)
+        write_record(str(output / "attempt.json"), record)
+        prefix = prefix_join(plan["trial_uri"], f"attempts/{record['iris_attempt_uid']}/hosts/{info.task_index}")
+        uri, digest = retain_artifacts(output, output.parent / "host.tar.zst", prefix, name="native")
+        write_record(prefix_join(prefix, "receipt.json"), record | {"archive_uri": uri, "archive_sha256": digest})
+        print(f"KNOTMETER_ATTEMPT {prefix}/receipt.json", flush=True)
+        if launch and not leader and record["status"] == "succeeded":
+            notify_iris_vllm_stopped(launch)
+
+
+def run(plan: dict) -> None:
+    signal.signal(signal.SIGTERM, interrupt)
+    signal.signal(signal.SIGINT, interrupt)
+    profile = Profile.model_validate(plan["manifest"]["series"]["profile"])
+    output = Path(os.environ["IRIS_OUTPUT_DIR"]) / "point"
+    with tempfile.TemporaryDirectory(prefix="knotmeter-workload-") as directory:
+        bundle = Path(directory) / "bundle"
+        if profile.gpus.count == profile.gpus.per_host:
+            run_point(plan, output, bundle, None)
+        else:
+            with iris_vllm_launch(
+                pipeline_parallel_size=1,
+                tensor_parallel_size=profile.serving.tensor_parallel_size,
+                data_parallel_size=profile.gpus.count // profile.serving.tensor_parallel_size,
+                data_parallel_size_local=profile.gpus.per_host // profile.serving.tensor_parallel_size,
+            ) as launch:
+                run_point(plan, output, bundle, launch)

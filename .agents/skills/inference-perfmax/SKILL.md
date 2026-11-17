@@ -1,0 +1,80 @@
+---
+name: inference-perfmax
+description: Improve serving throughput and GPU efficiency for RL rollouts and evaluations. Use for inference tuning campaigns, AgentX comparisons, latency tradeoffs and reusable experiment evidence.
+---
+
+# Improve inference throughput
+
+Use the manual [Knotmeter runner](../../../experiments/evaluation/knotmeter/README.md).
+Start from its Snowball/H100 or Hero/GB200 YAML preset. Hero and Mochi name the
+same model. Resolve the actual checkpoint and runtime; the presets use BF16.
+
+## Agree on the campaign
+
+Read the dispatch request and retained findings, then resolve defaults and overrides:
+
+```sh
+uv run python -m experiments.evaluation.knotmeter.cli plan \
+  --profile snowball-h100 --campaign CAMPAIGN --output /tmp/perfmax-plan.json
+```
+
+Present the model and tokenizer revisions, workload, hardware, runtime, latest
+qualified and best comparable baselines, objective, allowed changes, required
+checks and resource budget. Show consequential unknowns together. Record the
+agreed scope and baseline with the research notebook and resolved trial plans.
+
+Prioritize completed output tokens/s/GPU for RL rollouts and evaluations. Seek
+high throughput before latency rises sharply for little additional throughput.
+Prefer lower latency among similar throughput results. Agree on any numerical
+decision criteria against the baseline; there is no universal latency cap.
+
+After agreement, choose hypotheses, code changes, loads, repeats, parallelism
+and stopping autonomously. Consult for a material scope or cost change, changed
+correctness criteria, or a consequential decision that is hard to reverse.
+
+## Spend compute on evidence
+
+Consult upstream vLLM and SGLang guidance, recent relevant features and PR or
+issue discussions. Read the source and check the versions before applying an
+idea. The [measurement reference](references/measurement.md) links useful starting
+points. Reuse prior evidence when its model, settings and runtime still apply.
+
+Identify a plausible bottleneck, predict what a change should affect and seek
+evidence that could reject the hypothesis. Separate a measured cause from a
+correlation. Use profiles and controlled changes when they can resolve that gap.
+
+Start near the best known throughput bend. Reject poor candidates with CPU,
+component or short diagnostic checks. Increase load and duration only when the
+likely benefit justifies the GPU time. Confirm promising points under the pinned
+AgentX protocol; repeat when noise could change the decision. This is an adaptive
+ladder, with no fixed grid, compulsory sequence or AgentX ladder score.
+
+Use the resource board and `use-iris` before GPU work. Stay within the agreed
+concurrent ceilings across trials and retries. Prepare data on CPU before GPU
+allocation, release idle resources and count setup, compilation, warmup, drain
+and failed allocations. Prioritize GPU efficiency over elapsed time.
+
+## Measure and return the result
+
+Use the runner's shared recipe and upstream public-dataset selector names.
+Preserve AgentX replay, warmup, cache busting and validity. Each attempt starts
+a fresh server. Keep diagnostics distinct from comparable measurements.
+
+Run the agreed existing checks outside the timed window against the measured
+settings. Preserve their numerical bounds and known failures. Missing or failed
+required checks block an accepted recommendation. The supplied presets leave
+unmatched numerical checks pending; resolve that at kickoff. Passing serving
+checks does not establish task quality or RL learning quality. New evaluations
+and trainer-mismatch investigations need a separate scope.
+
+Preserve native exports, actual settings, checks, failures, repeats, Iris
+identities and allocation cost under the configured `MARIN_PREFIX` campaign.
+Use the [research-engineering workflow](../research-engineering/SKILL.md) for
+experimental code, the notebook and negative findings. Promote selected reusable
+changes into draft contribution PRs; keep the research branch.
+
+Return the comparison table, latency tradeoffs, evidence links, total GPU cost
+and material gaps. The terminal report and `summary.md` must match. Select a
+qualified point explicitly to write `recommended.yaml` with its settings and
+exact runtime. Explain why it wins against the baseline and label deferred RL
+qualification. Use `manage-pr` for publication; preserve the user's merge boundary.

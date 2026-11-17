@@ -24,6 +24,7 @@ WORKER_PYTHON_VERSION = "3.12"
 # participate in Marin's workspace dependency resolution.
 DEFAULT_CUDA_VLLM_VERSION = "0.25.1"
 VLLM_METRIC_PREFIX = "vllm:"
+VLLM_DATA_PARALLEL_SIZE_FLAGS = ("--data-parallel-size", "--data_parallel_size", "-dp")
 VLLM_TOPOLOGY_OPTIONS = frozenset(
     {
         "--tensor-parallel-size",
@@ -265,6 +266,13 @@ class InferenceModelConfig:
     name: str
     path: str | None
     engine_kwargs: dict[str, Any]
+
+
+@dataclass(frozen=True, kw_only=True)
+class VllmRouterConfig:
+    """Released consistent-hash routing with no request retries."""
+
+    request_timeout_seconds: int = 14400
 
 
 @dataclass(frozen=True)

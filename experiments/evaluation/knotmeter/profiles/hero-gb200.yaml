@@ -1,0 +1,54 @@
+model:
+  repo: marin-community/Hero-535B-step144000
+  revision: b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1
+  path: s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1
+  config_sha256: 4cf93824957296e3b36c458ab4ae598bb7616f202a74687a3a8ed64dac9a9ebf
+  tokenizer: marin-community/marin-tokenizer
+  tokenizer_revision: a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2
+gpus:
+  type: GB200
+  count: 16
+  per_host: 4
+cluster: cw-us-east-08a
+priority: interactive
+session_concurrency: 64
+serving:
+  dtype: bfloat16
+  max_model_len: 262144
+  max_num_seqs: 64
+  max_num_batched_tokens: 2048
+  gpu_memory_utilization: 0.95
+  router: true
+  extra_args:
+  - --enable-prompt-tokens-details
+  - --reasoning-parser
+  - grug
+  - --enable-auto-tool-choice
+  - --tool-call-parser
+  - hermes
+  - --seed
+  - '42'
+  - --hf-overrides
+  - '{"max_seq_len":262144,"max_position_embeddings":262144}'
+  - --load-format
+  - runai_streamer
+  - --model-loader-extra-config
+  - '{"distributed":true,"concurrency":8,"memory_limit":2147483648}'
+  - --kernel-config
+  - '{"moe_backend":"triton","enable_flashinfer_autotune":false}'
+  - --kv-cache-dtype
+  - auto
+  - --attention-backend
+  - FLASHINFER
+  - --compilation-config
+  - '{"mode":3,"cudagraph_mode":"NONE","cudagraph_capture_sizes":[1,2,4,8,16,32,2048],"splitting_ops":["vllm::unified_attention_with_output","vllm::unified_mla_attention_with_output","vllm::mamba_mixer2","vllm::mamba_mixer","vllm::short_conv","vllm::qwen4_exp_ple_short_conv","vllm::qwen4_exp_qsa_with_output","vllm::linear_attention","vllm::qwen_gdn_attention_core","vllm::qwen_gdn_attention_core_fused_norm_packed","vllm::gdn_attention_core_xpu","vllm::olmo_hybrid_gdn_full_forward","vllm::sparse_attn_indexer","vllm::rocm_aiter_sparse_attn_indexer","vllm::deepseek_v4_attention","vllm::hpc_rope_norm_forward","vllm::unified_kv_cache_update","vllm::unified_mla_kv_cache_update","vllm::grug_moe_short_conv","vllm::moe_forward","vllm::moe_forward_shared"],"inductor_compile_config":{"emulate_precision_casts":true,"max_autotune":false,"coordinate_descent_tuning":false,"deterministic":true,"dynamic_scale_rblock":false,"combo_kernels":false}}'
+  - --additional-config
+  - '{"grug_logical_kv_cache":true}'
+  - --prefix-cache-retention-interval
+  - '0'
+  - --numa-bind
+workload:
+  public_dataset: semianalysis_cc_traces_weka_062126_256k
+checks:
+- name: model-numerics
+  command: []
