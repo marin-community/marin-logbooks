@@ -269,3 +269,33 @@ The residue is one MATH-500 output (`3n‑6`, `n‑1` in a table) and one Olympi
 Only the GSM8K drop (-3.1) clears 1.96 binomial standard errors among the accuracy and length metrics; the
 control itself moves -5.1 on GSM8K between steps 100 and 222, so a single-seed difference of this size is
 within run-to-run variation. AIME24's long-output share (+7.7) is not decisive (300 samples of 30 prompts).
+
+### Step 222 readout (`sft11188-utf-normalize-s222` vs `sft11188-control-s222`)
+
+Training `-r2` committed step 222 at 07:27 UTC on 2026-11-17; export and eval followed unchanged.
+
+| Benchmark | control | utf-normalize |
+|---|---|---|
+| MATH-500 | 9.0% | 0.0% |
+| GSM8K 0-shot | 6.8% | 0.0% |
+| IFBench | 5.0% | 1.0% |
+| OlympiadBench | 3.3% | 0.0% |
+| AIME24 | 2.7% | 0.0% |
+| HumanEval+ | 0.0% | 0.0% |
+
+The IFBench residue is three outputs: two U+2011 compounds (`finite‑order`, `Nigeria‑style`) and a run of
+U+202F after emoji.
+
+| Step 222 | AIME24 acc / >= 100k chars / no box | OlympiadBench acc / >= 100k chars / no box | MATH-500 | GSM8K | HumanEval+ | IFBench strict prompt |
+|---|---|---|---|---|---|---|
+| control | 71.3% / 33.3% / 24.3% | 22.3% / 48.3% / 24.7% | 95.0% | 81.2% | 68.3% | 19.7% |
+| utf-normalize | 71.3% / 32.7% / 23.0% | 24.7% / 48.7% / 25.7% | 94.4% | 82.6% | 66.5% | 22.0% |
+
+No accuracy, long-output or no-box difference clears 1.96 binomial standard errors. The step-100 GSM8K drop
+and AIME24 long-output rise do not persist.
+
+**Conclusion.** Replacing U+202F and U+2011 in the SFT data removes the habit from outputs: incidence falls
+from 3-12% of outputs to 0-1% at both checkpoints. It costs nothing measurable on any of the six benchmarks
+and does not change runaway reasoning. The normalization is safe to adopt in the production mix; it is a
+cleanliness fix, not an accuracy lever. Limits: one seed per arm; benchmarks are English and math-heavy, so
+non-English typography (French number spacing uses U+202F legitimately) was not evaluated.
