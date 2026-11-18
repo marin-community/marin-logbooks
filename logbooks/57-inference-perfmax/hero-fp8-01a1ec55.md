@@ -1109,3 +1109,30 @@ This is protocol evidence only. Actual per-rank storage remains a required model
 gate. The paired short model screens separate native selective Triton alone
 from the additional24-layer BF16 protection. They request8+4 GB200s, within32.
 No new performance hour precedes their unchanged full shared numerical checks.
+
+## 2026-11-18 10:52 UTC — Both full-model storage gates pass
+
+Both paired jobs admitted at normal Batch with clean published25495bcceb,
+tree d346034b5f. The mixed8-GPU job is
+`/romain/knotmeter-20261118t104137z-11c4893f0329` on s96txs64/sb3txs64;
+the selective4-GPU control is
+`/romain/knotmeter-20261118t104137z-392225beb398` on s90vxs64.
+[Admission](analysis/hero-fp8-01a1ec55/triton-paired-models-admission.json)
+and both native source plans retain Interactive requests and effective Batch.
+Owned total is12 GB200s; board rows2259/2260 track these jobs.
+
+[Actual per-rank storage readback](analysis/hero-fp8-01a1ec55/triton-paired-models-live-storage.json)
+passes on all8 mixed ranks and all4 control ranks. Each mixed rank has exactly
+24 BF16 expert layers (65,229,815,808 payload bytes) and24 FP8 expert layers
+(32,614,907,904 bytes). Each control rank has48 FP8 expert layers and
+130,459,631,616 payload bytes. Native methods, scale layout, W8A8 consumer
+metadata, BF16 projections and FP32 router storage pass. Typed attention and
+ShortConv cache views are BF16 on every rank. FP32 router describes its stored
+weights/bias; Hero's unchanged forward still computes its native logits using
+BF16 operands before converting scores to float.
+
+Model loading reports116.8 GiB/GPU for the8-GPU mixture and147.17 GiB/GPU for
+the4-GPU control. These different gang sizes are targeted numerical screens,
+not a throughput comparison. Fixed shared cache/reference/batch/decode outcomes
+remain pending. The tiny component's broad absolute tolerance and missing
+output norms establish compatibility only; they do not replace these gates.
