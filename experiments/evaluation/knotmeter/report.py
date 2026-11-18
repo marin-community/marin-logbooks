@@ -81,6 +81,7 @@ def comparison_controls(result: dict) -> dict:
 
 
 def accepted(result: dict) -> bool:
+    """Return whether measurement, allocation and scoped checks qualify this trial."""
     measurement = result["measurement"]
     if not measurement or not result["job_succeeded"] or not result["cost_complete"]:
         return False

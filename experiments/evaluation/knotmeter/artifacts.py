@@ -15,6 +15,7 @@ from rigging.filesystem import atomic
 from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.storage_path import prefix_join
 
+PROFILE_EXPORT_RELATIVE_PATH = Path("aiperf_artifacts/profile_export_aiperf.json")
 SERVER_METRICS_RELATIVE_PATH = Path("aiperf_artifacts/server_metrics_export.json")
 
 
@@ -42,7 +43,7 @@ def write_record(uri: str, record: dict) -> None:
 
 
 def copy_file(source: str, destination: str) -> None:
-    """Commit a complete file before publishing a receipt that points to it."""
+    """Copy a file atomically; an existing destination changes only on success."""
     source_fs, source_path = filesystem_for(source)
     destination_fs, destination_path = filesystem_for(destination)
     if isinstance(destination_fs, LocalFileSystem):

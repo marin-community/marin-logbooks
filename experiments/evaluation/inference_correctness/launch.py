@@ -56,6 +56,7 @@ def main() -> None:
             if found.status != LookupStatus.FOUND:
                 raise ValueError(f"Required reference is {found.status}: {found.reason}")
     plan = resolve_plan(profile, args.name)
+    plan["series"] |= {"scheduling_timeout": 1800, "task_timeout": 10800}
     plan["pytest_node"] = args.pytest_node
     plan["diagnostic"] = args.pytest_node != DEFAULT_TEST_NODE
     plan["trial_uri"] = prefix_join(plan["marin_prefix"], f"inference/correctness/runs/{plan['trial_id']}")
@@ -128,8 +129,8 @@ def main() -> None:
                 priority_band={"interactive": job_pb2.PRIORITY_BAND_INTERACTIVE, "batch": job_pb2.PRIORITY_BAND_BATCH}[
                     profile.priority
                 ],
-                scheduling_timeout=Duration.from_seconds(1800),
-                timeout=Duration.from_seconds(10800),
+                scheduling_timeout=Duration.from_seconds(plan["series"]["scheduling_timeout"]),
+                timeout=Duration.from_seconds(plan["series"]["task_timeout"]),
                 max_retries_failure=0,
                 max_task_failures=0,
                 max_retries_preemption=1,

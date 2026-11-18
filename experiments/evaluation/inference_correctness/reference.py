@@ -55,7 +55,7 @@ def score_snowball_positions(model: SnowballLMHeadModel, tokens, positions):
 
 
 def save_immutable(uri: str, raw: bytes) -> Artifact:
-    """Reuse identical bytes and refuse to replace an existing reference."""
+    """Publish or reuse identical bytes; callers must use a single writer."""
     filesystem, path = filesystem_for(uri)
     if filesystem.exists(path):
         with filesystem.open(path, "rb") as stream:
