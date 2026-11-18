@@ -98,7 +98,7 @@ def correctness_endpoint(request: pytest.FixtureRequest, tmp_path):
         "profile": "h100" if profile.gpus.type == "H100" else "gb200",
         "concurrency": profile.session_concurrency,
         "recipe_fingerprint": "correctness-only",
-        "diagnostic": False,
+        "diagnostic": plan.get("diagnostic", False),
     }
     topology = (
         iris_vllm_launch(

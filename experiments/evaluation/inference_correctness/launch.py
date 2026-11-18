@@ -21,6 +21,7 @@ from experiments.evaluation.knotmeter.artifacts import write_record
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.config import Runtime, load_profile
 
+DEFAULT_TEST_NODE = "tests/cluster/vllm/test_inference_correctness.py"
 REMOTE_TEST_FILES = (
     "tests/__init__.py",
     "tests/conftest.py",
@@ -28,7 +29,7 @@ REMOTE_TEST_FILES = (
     "tests/cluster/conftest.py",
     "tests/cluster/vllm/__init__.py",
     "tests/cluster/vllm/conftest.py",
-    "tests/cluster/vllm/test_inference_correctness.py",
+    DEFAULT_TEST_NODE,
 )
 
 
@@ -42,6 +43,9 @@ def main() -> None:
         "--output", type=Path, required=True, help="Local execution receipt; includes the durable run URI"
     )
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--pytest-node", default=DEFAULT_TEST_NODE, help="Override the full gate with a focused diagnostic pytest node"
+    )
     args = parser.parse_args()
     profile = load_profile(args.profile, args.set)
     if args.runtime_manifest:
@@ -52,6 +56,8 @@ def main() -> None:
             if found.status != LookupStatus.FOUND:
                 raise ValueError(f"Required reference is {found.status}: {found.reason}")
     plan = resolve_plan(profile, args.name)
+    plan["pytest_node"] = args.pytest_node
+    plan["diagnostic"] = args.pytest_node != DEFAULT_TEST_NODE
     plan["trial_uri"] = prefix_join(plan["marin_prefix"], f"inference/correctness/runs/{plan['trial_id']}")
     plan["gpu_job_id"] = plan["job_id"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -81,7 +87,7 @@ def main() -> None:
         "--extra",
         "cpu",
         "pytest",
-        "tests/cluster/vllm/test_inference_correctness.py",
+        args.pytest_node,
         "-m",
         "cluster",
         "-o",
@@ -97,7 +103,7 @@ def main() -> None:
             endpoint.url,
             credentials=endpoint.credentials,
             workspace=Path.cwd(),
-            extra_bundle_includes=REMOTE_TEST_FILES,
+            extra_bundle_includes=tuple(dict.fromkeys((*REMOTE_TEST_FILES, args.pytest_node.partition("::")[0]))),
         ) as client:
             job = client.submit(
                 entrypoint=Entrypoint(
