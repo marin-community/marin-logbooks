@@ -1580,3 +1580,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the hosted-relay qualification outcomes and HARDMath variant results.
+
+### 2026-11-18 19:40 UTC - Hourly catch-up (18:40–19:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `781e5ffb83…` (18:19:28 UTC) to head `a09fdebbe561e315f46b9c0768c2950aa41f8d23`, landed 19:23:59 UTC (~9 landings 19:20–19:23 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 781e5ffb..a09fdebb` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Preview revision 31**: Atlas docs synced to preview revision 31 (`03bae9c771…`).
+  - **Re-pin panel carry-forward**: byte-identical re-pin panels carried through the selected-source router (`87c983f7e5…`) and bound at the current pin (`e70ec80a21…`); QC reviews carried across re-pins on exact task-contract identity (`a5375a617c…`) — the re-pinned Codeforces chain from the 10:40 window is now QC-complete.
+  - **Repaired Codeforces receipts pinned**: the repaired Codeforces release's registry receipts pinned (`eda8d327c1…`).
+  - **Difficulty report**: prints per-run added sources and per-solver active runs (`a09fdebbe5…`, head).
+  - **Typing/preservation**: typed absent-versus-null normalization with the recovered SAMPLE outcome (`1f2d457784…`); the campaign work root created before the registry authfile (`01a38cd0f0…`); a recoverable Atlas Source error shown when required scripts fail (`f205d5443c…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; rev-31 hosted verification remains preview-lane evidence [M].
+- Decision and next action: next hourly check watches for rev-31 hosted verification and the re-pinned Codeforces admission outcomes.
