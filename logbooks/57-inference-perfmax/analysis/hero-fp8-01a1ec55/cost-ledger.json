@@ -1,8 +1,8 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 362627.3840017319,
-  "gpu_hours": 100.72982888936997,
+  "gpu_seconds": 377163.6680021286,
+  "gpu_hours": 104.76768555614683,
   "cost_complete_for_listed_allocations": true,
   "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98, 77, 99 and 78 allocated seconds, respectively, and zero GPUs.",
   "rows": [
@@ -752,6 +752,106 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 93.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "24 of48 hybrid Marlin model reference rejection",
+      "receipt": "hybrid24-model-a1-execution.json",
+      "state": "failed",
+      "gpu_seconds": 10493.131999969482,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "6e2ad639cdedc734",
+          "gpu_seconds": 5269.260000228882,
+          "allocation": {
+            "pod_uid": "f8201787-4c4f-4b5b-bab3-ed65b1195ecc",
+            "attempt_uid": "6e2ad639cdedc734",
+            "pod_name": "iris-romain-knotmeter-20261118t1158-43b68dcb-0-6e2ad639cdedc734",
+            "node_name": "sbdtxs64",
+            "observed_unix": 1795003549.5459657,
+            "phase": "Running",
+            "scheduled_unix": 1795003133.0,
+            "finished_unix": null,
+            "status": "measured",
+            "end_basis": "iris-observed-terminal",
+            "end_unix": 1795004450.315
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 5269.260000228882
+          }
+        },
+        {
+          "uid": "be657c970767baba",
+          "gpu_seconds": 5223.871999740601,
+          "allocation": {
+            "pod_uid": "05c5b825-9457-4599-b72a-0dcde8732f2f",
+            "attempt_uid": "be657c970767baba",
+            "pod_name": "iris-romain-knotmeter-20261118t1158-a8b601e7-0-be657c970767baba",
+            "node_name": "sjpvxs64",
+            "observed_unix": 1795003550.4641848,
+            "phase": "Running",
+            "scheduled_unix": 1795003133.0,
+            "finished_unix": null,
+            "status": "measured",
+            "end_basis": "iris-observed-terminal",
+            "end_unix": 1795004438.968
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 5223.871999740601
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 of48 hybrid model fixture/setup failure",
+      "receipt": "hybrid16-model-a1-execution.json",
+      "state": "failed",
+      "gpu_seconds": 4043.152000427246,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "d34a074255184b9f",
+          "gpu_seconds": 2021.576000213623,
+          "allocation": {
+            "pod_uid": "f2560f91-ce33-4661-a8ab-480225ce12cc",
+            "attempt_uid": "d34a074255184b9f",
+            "pod_name": "iris-romain-knotmeter-20261118t1158-d61b9cda-0-d34a074255184b9f",
+            "node_name": "s1b62nb4",
+            "observed_unix": 1795003558.2118306,
+            "phase": "Running",
+            "scheduled_unix": 1795003135.0,
+            "finished_unix": null,
+            "status": "measured",
+            "end_basis": "iris-observed-terminal",
+            "end_unix": 1795003640.394
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 2021.576000213623
+          }
+        },
+        {
+          "uid": "7d23354848ca9dae",
+          "gpu_seconds": 2021.576000213623,
+          "allocation": {
+            "pod_uid": "31446208-9b4d-4050-a18e-2bb29e984653",
+            "attempt_uid": "7d23354848ca9dae",
+            "pod_name": "iris-romain-knotmeter-20261118t1158-e48baea5-0-7d23354848ca9dae",
+            "node_name": "sdgrxs64",
+            "observed_unix": 1795003559.5317738,
+            "phase": "Running",
+            "scheduled_unix": 1795003135.0,
+            "finished_unix": null,
+            "status": "measured",
+            "end_basis": "iris-observed-terminal",
+            "end_unix": 1795003640.394
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 2021.576000213623
           }
         }
       ]

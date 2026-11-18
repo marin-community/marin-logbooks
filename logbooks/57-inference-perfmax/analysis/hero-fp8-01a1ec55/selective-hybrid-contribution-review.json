@@ -1,0 +1,762 @@
+{
+  "kind": "Required advisory complete; root final High GOAL review still pending",
+  "frozen_source": {
+    "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55",
+    "head": "35c9e15b36e5a83c58908d5ada4bfc12c8720ce4",
+    "branch": "codex/hero-fp8-selective-hybrid-contribution-01a1ec55",
+    "clean": true
+  },
+  "requested_model": "claude-opus-5-5",
+  "requested_effort": "xhigh",
+  "observed_effort": null,
+  "initial": {
+    "requested_model": "claude-opus-5-5",
+    "requested_effort": "xhigh",
+    "source_revision": "68bbaf6ae79f9dc7bf1841ed581d62dff2faa6f4",
+    "base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+    "catalog_exit": null,
+    "interruption": "Local catalog process and temporary outputs are absent after authoritative clock resumed; recover native records. Two lanes completed, four interrupted; composer never started.",
+    "native_invocations": [
+      {
+        "lane": "interfaces",
+        "child_id": "fa453035-6863-4685-a3ad-317dbb099a2b",
+        "prompt_sha256": "9d42f65c38e7b0d355133c3170ca91c159114bbab9a9d8efad7218c8391c5e15",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/fa453035-6863-4685-a3ad-317dbb099a2b.jsonl",
+        "native_sha256": "ab90a7c9b9267849e35c4e7701eb82597291734a81ee9bcad0d7a4e890d947d3",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "completed": true,
+        "tool_calls": [
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/repos/yonromai/env/playbooks/development.md"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py",
+              "description": "Show source changes against the merge base"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- tests/models/test_grugmoe.py",
+              "description": "Show test changes against the merge base"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "\"selective,ignored\"|def test_grug_moe_online_fp8_loading_matches_vllm|if selective$|if ignored|if not ignored|None if ignored|\"triton\" if ignored",
+              "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/tests/models/test_grugmoe.py",
+              "output_mode": "content"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "^MoEBackend\\b|MoEBackend = ",
+              "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/vllm/config/kernel.py",
+              "output_mode": "content",
+              "-A": 12
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "from vllm\\.config\\.kernel import|from vllm\\.config import .*MoEBackend|^\\s+MoEBackend,",
+              "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/vllm/model_executor/layers/fused_moe",
+              "output_mode": "content",
+              "head_limit": 20
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "parametrize\\(\"configuration\"|configuration == ",
+              "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/tests/models/test_grugmoe.py",
+              "output_mode": "content"
+            }
+          }
+        ],
+        "findings": [
+          "tests/models/test_grugmoe.py:1611: ml-bool-flag-arg (0.74) selective/ignored bools encode three modes; (False, True) is invalid and the bare tuples in parametrize hide which mode each case tests"
+        ]
+      },
+      {
+        "lane": "cruft",
+        "child_id": "e4418bc3-05cf-45d8-a8e6-47d3c5dfac16",
+        "prompt_sha256": "d79b78dd60e085d13c4bbeab9c1ce29b14c9019bb077e562ae8d3437cb005fee",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/e4418bc3-05cf-45d8-a8e6-47d3c5dfac16.jsonl",
+        "native_sha256": "605ce636306c59708707f1c5008afde9fc96e932108c6cb638dc7f0b058f4941",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "completed": false,
+        "tool_calls": [
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/repos/yonromai/env/playbooks/development.md"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py",
+              "description": "Show source diff against merge base"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- tests/models/test_grugmoe.py",
+              "description": "Show test diff against merge base"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git log --format='%h %s' 47a8e415bff17b9376f02d9b92edcc67e962eaee..HEAD --stat",
+              "description": "List branch commits with changed files"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "cat vllm/model_executor/layers/quantization/online/base.py; grep -n \"def should_ignore_layer\" -A45 vllm/model_executor/layers/quantization/compressed_tensors/utils.py",
+              "description": "Read online quant config and ignore-layer helper"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "should_ignore_layer|ignored_layers|moe_backend|_is_supported_online_fp8|_raise_for_unsupported_modes",
+              "path": "vllm/model_executor/models/grugmoe.py",
+              "output_mode": "content"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "should_ignore_layer\\(",
+              "path": "vllm",
+              "output_mode": "content",
+              "-A": 5
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "moe_backend\\s*=|moe_backend:",
+              "path": "vllm/model_executor/layers/fused_moe",
+              "output_mode": "content",
+              "head_limit": 40
+            }
+          },
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/tests/models/test_grugmoe.py",
+              "offset": 1600,
+              "limit": 130
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "Fp8Config|OnlineQuantizationConfig|quant_config",
+              "path": "vllm/model_executor/models/grugmoe.py",
+              "output_mode": "content"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git grep -n \"kernel_config.moe_backend\\s*=[^=]\" -- vllm tests | head -20; git grep -n \"def get_current_vllm_config\" -A12 -- vllm/config/vllm.py; git show 68bbaf6ae7 --format=%s -- tests/models/test_grugmoe.py; git show 9042980156 --format=%s -- tests/models/test_grugmoe.py",
+              "description": "Check backend mutation, config getter, and last test commits"
+            }
+          }
+        ],
+        "findings": []
+      },
+      {
+        "lane": "complexity",
+        "child_id": "72217fba-4c37-4c49-a573-fa7bef48d1f6",
+        "prompt_sha256": "445c55dc01fca8e8bb118a2c5cc40d27554f80f026dc2b58a64db35d0670ef5b",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/72217fba-4c37-4c49-a573-fa7bef48d1f6.jsonl",
+        "native_sha256": "b40747f2c2f91fdc543b897cf0758cd1e13667f07938a6070aa624f107d9dfb8",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "completed": true,
+        "tool_calls": [
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/repos/yonromai/env/playbooks/development.md"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py",
+              "description": "Show source changes against the merge base"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- tests/models/test_grugmoe.py",
+              "description": "Show test changes against the merge base"
+            }
+          },
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/tests/models/test_grugmoe.py",
+              "offset": 1605,
+              "limit": 122
+            }
+          },
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/vllm/model_executor/models/grugmoe.py",
+              "offset": 655,
+              "limit": 95
+            }
+          },
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/vllm/model_executor/models/grugmoe.py",
+              "offset": 1365,
+              "limit": 70
+            }
+          }
+        ],
+        "findings": [
+          "tests/models/test_grugmoe.py:1611: ml-monolithic-function (0.72) selective/ignored knobs branch this test at 8 sites; ignored mode checks BF16 Triton experts under global Marlin, a different behavior from FP8 loading parity"
+        ]
+      },
+      {
+        "lane": "prose",
+        "child_id": "ad5c5f8f-6af6-455a-81f3-fa7befd75ade",
+        "prompt_sha256": "037e8dc61f4bb13384cc8fb497b407fec772784d8ee2354fa5c618a6a8b36188",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/ad5c5f8f-6af6-455a-81f3-fa7befd75ade.jsonl",
+        "native_sha256": "7b836607d671f71223cd05bb55632c600308be115f2ecb18087e37e0f140ad58",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "completed": false,
+        "tool_calls": [
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/repos/yonromai/env/playbooks/development.md"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py",
+              "description": "Show source hunks for the branch"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- tests/models/test_grugmoe.py",
+              "description": "Show test hunks for the branch"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 1,140p vllm/model_executor/layers/quantization/online/base.py; echo ------; grep -n \"class QuantizationConfigArgs\" -A70 vllm/config/quantization.py | head -130",
+              "description": "Read online quantization config and its args"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "moe_backend|kernel_config",
+              "path": "vllm/model_executor/layers/fused_moe/layer.py",
+              "output_mode": "content"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "Fp8Config|online FP8|FP8|fp8",
+              "path": "vllm/model_executor/models/grugmoe.py",
+              "output_mode": "content",
+              "-C": 2
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n \"SUPPORTED_W_A\\|kFp8Static\\|kBf16\\|def _supports_quant_scheme\\|W8A16\\|def _supports_current_device\\|bfloat16\\|BF16\\|weight_key\\|def _supports_routing\" vllm/model_executor/layers/fused_moe/experts/marlin.py vllm/model_executor/layers/fused_moe/marlin.py 2>/dev/null | head -50; git ls-files 'vllm/model_executor/layers/fused_moe/*marlin*'",
+              "description": "Check which weight types the Marlin MoE kernel accepts"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 140,290p vllm/model_executor/layers/quantization/online/base.py; echo ------; sed -n 171,200p vllm/config/quantization.py",
+              "description": "Read the rest of online config and validators"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n \"W8A16\\|bfloat16\\|BF16\\|bf16\\|float8_e4m3fn\\|supported_\\|_supports\\|kFp8\\|weight_key\\|def __init__\\|^class \" vllm/model_executor/layers/fused_moe/experts/marlin_moe.py | head -60; echo ------; grep -rn \"W8A16\\|w8a16\" vllm/model_executor/layers/fused_moe --include=*.py | head -20",
+              "description": "Check Marlin expert weight type support"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 120,135p vllm/model_executor/layers/fused_moe/experts/marlin_moe.py; echo ...; sed -n 183,200p vllm/model_executor/layers/fused_moe/experts/marlin_moe.py; echo ...; sed -n 270,300p vllm/model_executor/layers/fused_moe/experts/marlin_moe.py; echo ...; sed -n 565,632p vllm/model_executor/layers/fused_moe/experts/marlin_moe.py",
+              "description": "Read Marlin weight-type checks"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 142,215p vllm/model_executor/layers/fused_moe/layer.py; echo ------; sed -n 655,682p vllm/model_executor/models/grugmoe.py; echo ------; sed -n 1395,1420p vllm/model_executor/models/grugmoe.py",
+              "description": "Read factory docstring and nearby GrugMoE code"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 738,775p tests/models/test_grugmoe.py; echo ------; sed -n 1604,1625p tests/models/test_grugmoe.py; echo ------; git log --format='%h %s' 47a8e415bff17b9376f02d9b92edcc67e962eaee..HEAD",
+              "description": "Read test helper context and branch commits"
+            }
+          }
+        ],
+        "findings": []
+      },
+      {
+        "lane": "robustness",
+        "child_id": "3077fd49-9de7-4999-a972-d201fd2f1435",
+        "prompt_sha256": "463d59cdec2fd5f896daa9a3cd5d86615c1ebe8231437b6cd36f4f26376d5ba3",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/3077fd49-9de7-4999-a972-d201fd2f1435.jsonl",
+        "native_sha256": "7a3fdf0bcb3e82774d3edd2b947af777d723ba7d6721c5d5c6e94dcc80e8f25b",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "completed": false,
+        "tool_calls": [
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/repos/yonromai/env/playbooks/development.md"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py",
+              "description": "Show source changes against merge base"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- tests/models/test_grugmoe.py",
+              "description": "Show test changes against merge base"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "moe_backend",
+              "path": "vllm/model_executor/layers/fused_moe/layer.py",
+              "output_mode": "content"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "kernel_config\\.moe_backend|\\.moe_backend\\b",
+              "path": "vllm",
+              "output_mode": "content",
+              "head_limit": 60
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "ls vllm/model_executor/layers/quantization/online/ && sed -n 1,200p vllm/model_executor/layers/quantization/online/base.py",
+              "description": "List online quantization modules and print the base config"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n \"MoEBackend\\|ignore\\|class QuantizationConfigArgs\\|targets\\|moe:\\|linear:\" vllm/config/quantization.py vllm/config/kernel.py | head -60; grep -n \"def should_ignore_layer\" -A40 vllm/model_executor/layers/quantization/compressed_tensors/utils.py | head -90",
+              "description": "Inspect quantization args, backend type, and ignore matching"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 200,330p vllm/model_executor/layers/quantization/online/base.py; grep -n \"packed_modules_mapping\" vllm/model_executor/layers/quantization/base_config.py; sed -n 120,145p vllm/config/kernel.py; sed -n 235,300p vllm/model_executor/layers/fused_moe/oracle/unquantized.py",
+              "description": "Read online quant dispatch, backend literal, and unquantized backend selection"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n '\"marlin\"\\|\"triton\"\\|fp8_per_tensor\\|\"online:\\|routed-experts-only' vllm/model_executor/models/grugmoe.py tests/models/test_grugmoe.py; sed -n 330,375p vllm/model_executor/layers/fused_moe/layer.py",
+              "description": "Count repeated literals and read the factory config construction"
+            }
+          }
+        ],
+        "findings": []
+      },
+      {
+        "lane": "meta",
+        "child_id": "b4ff350f-3a0a-48f4-91ec-fb1169ee83e4",
+        "prompt_sha256": "68dc51a95af9fc892326b824a812c319fffda7fc444ade6af59fb72b1c6ca06f",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/b4ff350f-3a0a-48f4-91ec-fb1169ee83e4.jsonl",
+        "native_sha256": "5625aada00dc7c5cbb5646b78c2de4e669182f702869bd3f9846825ed33a6329",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "completed": false,
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": {
+              "command": "cat ~/repos/yonromai/env/playbooks/development.md | head -80; git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py",
+              "description": "Read development playbook and show source diffs"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- tests/models/test_grugmoe.py",
+              "description": "Show GrugMoE test diff"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "cat vllm/model_executor/layers/quantization/online/base.py; git grep -n \"should_ignore_layer\\|ignored_layers\" -- 'vllm/**/*.py' | head -40; git grep -n \"moe_backend\" -- 'vllm/model_executor/models/*.py' 'vllm/model_executor/layers/fused_moe/layer.py' 'vllm/model_executor/layers/quantization/online/*.py' | head -30",
+              "description": "Read online quantization base and search ignore and backend helpers"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 1,80p vllm/config/quantization.py; git grep -n \"OnlineQuantizationConfig\\|kFp8StaticTensorSym\" -- 'vllm/model_executor/models/*.py' 'vllm/model_executor/layers/quantization/online/*.py' 'vllm/model_executor/layers/quantization/__init__.py' | head -30; sed -n 640,700p vllm/model_executor/models/grugmoe.py; git grep -n \"_is_supported_online_fp8\\|isinstance(quant_config\\|isinstance(.*Fp8Config\" -- vllm/model_executor/models/grugmoe.py",
+              "description": "Read quantization args and find related config usage"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 225,420p vllm/model_executor/layers/fused_moe/layer.py; git grep -n \"kernel_config.moe_backend\\|\\.moe_backend\\b\" -- 'vllm/**/*.py' | head -40; sed -n 1,90p vllm/model_executor/layers/fused_moe/unquantized_fused_moe_method.py",
+              "description": "Read MoE factory and trace backend usage"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git grep -n \"FusedMoEFactory(\" -- 'vllm/**/*.py' | wc -l; git grep -n \"moe_backend=\" -- 'vllm/**/*.py' 'tests/models/test_grugmoe.py' | head -30; git log --format='%h %s' 47a8e415bff17b9376f02d9b92edcc67e962eaee..HEAD; sed -n 45,90p vllm/model_executor/layers/quantization/compressed_tensors/utils.py",
+              "description": "Count factory callers and list backend overrides and commits"
+            }
+          },
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/vllm/v1/spec_decode/llm_base_proposer.py",
+              "offset": 1280,
+              "limit": 45
+            }
+          },
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/vllm/v1/worker/gpu/spec_decode/eagle/utils.py",
+              "offset": 65,
+              "limit": 40
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git grep -n \"def set_current_vllm_config\" -A32 -- vllm/config/vllm.py; sed -n 2355,2395p tests/models/test_grugmoe.py; git grep -n \"set_current_vllm_config\\|with_hf_config\" -- vllm/model_executor/models/grugmoe.py tests/models/test_grugmoe.py | head; git grep -n \"get_current_vllm_config\" -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/layers/fused_moe/routed_experts.py vllm/model_executor/layers/fused_moe/runner/moe_runner.py vllm/model_executor/layers/fused_moe/oracle/unquantized.py; sed -n 150,215p vllm/model_executor/layers/fused_moe/oracle/unquantized.py",
+              "description": "Inspect config override context and unquantized backend selection"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git grep -n \"def set_current_vllm_config\" -- 'vllm/config/*.py'; f=$(git grep -l \"def set_current_vllm_config\" -- 'vllm/config/*.py' | head -1); n=$(grep -n \"def set_current_vllm_config\" \"$f\" | cut -d: -f1); sed -n \"$((n-3)),$((n+50))p\" \"$f\"; sed -n 500,525p tests/models/test_grugmoe.py; grep -n \"def register_layer_for_moe_forward_op\" -A28 vllm/model_executor/layers/fused_moe/runner/moe_runner.py; git grep -n \"set_current_vllm_config(\" -- 'vllm/model_executor/**/*.py' 'vllm/models/**/*.py' 'vllm/v1/spec_decode/*.py' 'vllm/v1/worker/gpu/spec_decode/**/*.py' | head -20; sed -n 212,224p vllm/model_executor/layers/fused_moe/layer.py",
+              "description": "Read config context manager and its in-tree uses"
+            }
+          }
+        ],
+        "findings": []
+      }
+    ]
+  },
+  "recovery": {
+    "kind": "Recovery of only interrupted required advisory lanes, then composer",
+    "requested_model": "claude-opus-5-5",
+    "requested_effort": "xhigh",
+    "source_revision": "f0a0a1add7c72c1e5921f770e5582152ee0fb062",
+    "catalog_exit": 0,
+    "native_invocations": [
+      {
+        "lane": "robustness",
+        "child_id": "0624be47-0827-4a28-88e6-b9f36085cb5d",
+        "prompt_sha256": "30a764a3367a71c1a5c0f1e509a0ba79f6cfc6c9f37db2c44782b8dbd29dd2a5",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/0624be47-0827-4a28-88e6-b9f36085cb5d.jsonl",
+        "native_sha256": "302ec99feb35981167b9ae1709ee039a62b192b5eb8fe9626fc4eadc38005f7c",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py tests/models/test_grugmoe.py",
+              "description": "Show branch diff for changed files"
+            }
+          }
+        ],
+        "findings": [
+          "I found no issues for the robustness lane in this diff."
+        ]
+      },
+      {
+        "lane": "prose",
+        "child_id": "defa5e03-9fff-4b85-be25-76973462bd77",
+        "prompt_sha256": "6dee34ed25bc5d4c78a5e7cc27ce153fa8197de88e9744ee33d8a23216234f74",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/defa5e03-9fff-4b85-be25-76973462bd77.jsonl",
+        "native_sha256": "34d98c59d77f6771016927975c8c5502cb8b40222b61c8e337c6bdc45d1e9f2b",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": {
+              "command": "cat ~/repos/yonromai/env/playbooks/development.md | head -80; cd /home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55 && git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py tests/models/test_grugmoe.py",
+              "description": "Read dev playbook and branch diff"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 1395,1425p vllm/model_executor/models/grugmoe.py; echo ----; sed -n 700,750p vllm/model_executor/models/grugmoe.py; echo ----; sed -n 735,830p tests/models/test_grugmoe.py; echo ----; sed -n 1600,1730p tests/models/test_grugmoe.py",
+              "description": "Read surrounding context of changed hunks"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 1725,1875p tests/models/test_grugmoe.py; echo ----; grep -n \"_is_supported_online_fp8\\|online FP8\\|Fp8Config\" vllm/model_executor/models/grugmoe.py",
+              "description": "Read hero FP8 test and helper usages"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n \"def test_hero_online_fp8_latent_and_shared_experts_match_bf16\\|routed-experts-only\" tests/models/test_grugmoe.py",
+              "description": "Find line numbers of hero test definition"
+            }
+          }
+        ],
+        "findings": [
+          "tests/models/test_grugmoe.py:1730: ml-misleading-name (0.72) name says latent and shared experts run in online FP8, but the new routed-experts-only case keeps them in BF16 and asserts that they stay BF16"
+        ]
+      },
+      {
+        "lane": "cruft",
+        "child_id": "4741c2af-d2fb-4a34-829a-476fed1b2007",
+        "prompt_sha256": "552af190bf93784d72b8f4ccaf7aa027b4464e1341b58442b40750c2938736f9",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/4741c2af-d2fb-4a34-829a-476fed1b2007.jsonl",
+        "native_sha256": "f9fe858bcf20fb8bd0ecb11b1517cb3dae46d7b9b2ac442116d38433e98e0610",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/model_executor/layers/fused_moe/layer.py vllm/model_executor/models/grugmoe.py tests/models/test_grugmoe.py",
+              "description": "Show branch diff for the three changed files"
+            }
+          },
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/repos/yonromai/env/playbooks/development.md"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 1,400p vllm/model_executor/layers/quantization/online/base.py | grep -n -A12 -B3 \"should_ignore_layer\\|def \\|kFp8StaticTensorSym\\|class \" | head -250",
+              "description": "Inspect online quantization config helpers"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 300,420p vllm/model_executor/layers/fused_moe/layer.py; grep -rn \"moe_backend=\" vllm/model_executor/models/grugmoe.py tests/models/test_grugmoe.py",
+              "description": "Inspect factory body and moe_backend usages"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n \"Fp8Config\\|OnlineQuantizationConfig\\|is_checkpoint_fp8_serialized\\|_is_supported_online_fp8\\|kernel_config.moe_backend\" vllm/model_executor/models/grugmoe.py; sed -n 2360,2385p tests/models/test_grugmoe.py",
+              "description": "Find related quant checks in grugmoe and test context"
+            }
+          }
+        ],
+        "findings": [
+          "The cruft lane found no problems in this change that meet the 0.70 reporting threshold."
+        ]
+      },
+      {
+        "lane": "composer",
+        "child_id": "7c6e657b-6ac7-4845-8a6e-0e6ae1dc04b0",
+        "prompt_sha256": "79d9ddc2a4c7c56e2cde17516ae80c17dfa33b2cfc8ab151674c9fed6907f8cb",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/7c6e657b-6ac7-4845-8a6e-0e6ae1dc04b0.jsonl",
+        "native_sha256": "3df6f118c824cdbd32c1f636c5f3e1fb8aaad1db6f7b463536a2a25adfa3c8a2",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "tool_calls": [
+          {
+            "name": "Read",
+            "input": {
+              "file_path": "/home/romain/repos/yonromai/env/playbooks/development.md"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "git ls-files | grep -E '(^|/)grugmoe\\.py$'; sed -n '710,728p' vllm/model_executor/models/grugmoe.py; echo ---; sed -n '1722,1740p' tests/models/test_grugmoe.py; echo ---; sed -n '280,296p' vllm/model_executor/layers/fused_moe/oracle/unquantized.py",
+              "description": "Confirm the cited lines exist in the changed files"
+            }
+          }
+        ],
+        "findings": [
+          "tests/models/test_grugmoe.py:1730: ml-misleading-name (0.72) name says latent and shared experts run in online FP8, but the new routed-experts-only case keeps them in BF16 and asserts that they stay BF16\nvllm/model_executor/models/grugmoe.py:719: ml-there-must-be-a-better-way (0.85) Unquantized MoE lets quant-only backends fall through (oracle/unquantized.py:289, \"humming\"); adding \"marlin\" there removes this guard and FusedMoEFactory's new moe_backend param (layer.py:141,351)."
+        ]
+      },
+      {
+        "lane": "meta",
+        "child_id": "94369ecd-1702-4ef7-9256-be1070f028bd",
+        "prompt_sha256": "e85b4ca503ac66fbb75dab33483f77ab7b4cb08480a82e44633d05412c67a5bb",
+        "native_record": "/home/romain/.claude/projects/-home-romain-work-marin-community-vllm-hero-fp8-selective-hybrid-contribution-01a1ec55/94369ecd-1702-4ef7-9256-be1070f028bd.jsonl",
+        "native_sha256": "8b24f62ef9c28cbd0a40d8bd660a85d4235eadb7f4fd7bf20440f49e1ab8890c",
+        "observed_models": [
+          "claude-opus-5-5"
+        ],
+        "observed_effort": null,
+        "tool_calls": [
+          {
+            "name": "Bash",
+            "input": {
+              "command": "cat ~/repos/yonromai/env/playbooks/development.md | head -80; cd /home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55 && git diff 47a8e415bff17b9376f02d9b92edcc67e962eaee -- vllm/ tests/",
+              "description": "Read dev playbook and the branch diff"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 1,200p vllm/model_executor/layers/quantization/online/base.py",
+              "description": "Read OnlineQuantizationConfig source"
+            }
+          },
+          {
+            "name": "Grep",
+            "input": {
+              "pattern": "moe_backend",
+              "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55/vllm/model_executor/layers/fused_moe",
+              "output_mode": "content",
+              "head_limit": 60
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "sed -n 200,330p vllm/model_executor/layers/quantization/online/base.py; sed -n 270,310p vllm/model_executor/layers/fused_moe/oracle/unquantized.py",
+              "description": "Read online quant get_quant_method and unquantized backend selection"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n \"def map_unquantized_backend\" -A 30 vllm/model_executor/layers/fused_moe/oracle/unquantized.py; git log --oneline -6 -- vllm/model_executor/layers/fused_moe/oracle/unquantized.py | head; grep -rn \"humming\" vllm/model_executor/layers/fused_moe/oracle/unquantized.py",
+              "description": "Check unquantized backend mapping for marlin"
+            }
+          },
+          {
+            "name": "Bash",
+            "input": {
+              "command": "grep -n \"moe_backend\" vllm/model_executor/models/grugmoe.py vllm/model_executor/layers/fused_moe/layer.py; grep -rn \"moe_backend=\" --include=*.py vllm/model_executor/models | grep -v kernel_config | head",
+              "description": "Locate moe_backend lines in changed files"
+            }
+          }
+        ],
+        "findings": [
+          "grugmoe.py:719: ml-there-must-be-a-better-way (0.85) Unquantized MoE already lets quant-only backends fall through (oracle/unquantized.py:289, \"humming\"). Adding \"marlin\" there removes this guard and the new FusedMoEFactory moe_backend param (layer.py:141,351)."
+        ]
+      }
+    ]
+  },
+  "actions_reviewed": "All observed native actions are read-only Git/source reads; no tests, linters, edits or GitHub writes by reviewers. Native child IDs registered using own actual parent binding.",
+  "findings": [
+    {
+      "code": "ml-bool-flag-arg",
+      "action": "fixed",
+      "reason": "Three explicit configuration names replace boolean pairs and exclude the invalid combination. All three selector/ignore choices match previously tested branches.",
+      "commit": "f0a0a1add7c72c1e5921f770e5582152ee0fb062"
+    },
+    {
+      "code": "ml-monolithic-function",
+      "action": "retained with rationale",
+      "reason": "The three cases exercise the same checkpoint mapping, loaded weight parity and forward oracle. Keeping the shared loader/output test avoids duplicated fixtures and parity code. Explicit mode names make the distinct ignored-BF16 path clear."
+    },
+    {
+      "code": "ml-misleading-name",
+      "action": "fixed",
+      "reason": "Rename to online quantization preserves latent and shared outputs; routed-experts-only intentionally leaves these projections BF16. No assertions or numerical bounds change.",
+      "commit": "35c9e15b36e5a83c58908d5ada4bfc12c8720ce4"
+    },
+    {
+      "code": "ml-there-must-be-a-better-way",
+      "action": "rejected with rationale",
+      "reason": "Adding Marlin to the shared unquantized-oracle fallback would alter default behavior across all models. The explicit optional factory override is restricted to supported Grug online FP8 ignored expert layers and preserves default rejection, the user-authorized narrow scope and the component control. Runtime math and global configuration stay unchanged."
+    }
+  ],
+  "ordinary_checks": "Required infra/pre-commit.py --changed-files passes; git diff --check base passes. An unnecessary extra --only marin-style-sync attempt was rejected because it is not an available check; no check was disabled. Test-only naming/parameter changes have a CPU branch-equivalence check, with GPU evidence retained from immutable746/validation3f.",
+  "qualification": "Current-main contribution has source/lint/advisory validation only. It does not inherit full-model qualification from the0ac-based wheel; that wheel itself fails the fixed-reference acceptance screen."
+}
