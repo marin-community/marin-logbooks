@@ -780,3 +780,13 @@ step to the existing CPU coordinator before allocating GPUs. Its small report
 fix compares equal numerical criteria across weight precision while preserving
 full policy identity, applicability and provisional status. No new grading
 framework or duplicate experiment was introduced.
+
+The first Hero zero-retention run found a probe error, not numerical corruption.
+All recorded exact differences were zero, and reference, batch and decode passed.
+The align mode creates snapshots only at scheduler ends; retention cannot create
+a missing lower replay point. The earlier assumption that the first cold aligned
+resend must hit was too strong. Contribution `00f539311698` now prepares K+1 tokens
+explicitly. Generated-history siblings fork beyond the original prompt, with
+required checkpoint K and protected checkpoint E. No numerical bound changed.
+The 57 focused cases and required contribution lint/types pass. Original cold
+misses remain measured limitations; corrected live cache validation is pending.

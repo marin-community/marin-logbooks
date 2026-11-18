@@ -1,9 +1,10 @@
 # Retention-aware cache checks for later extraction
 
-Source: contribution `4f38ff6b3d4403d84a9248cf63506c53e0e00bd9`.
-Its research equivalent is `33a40e6a403d92b3dcc9946a94b1031cc5cb6825`.
-Apply the three-file change to `endpoint_checks.py`, its HTTP tests and the
-shared-check README. Extraction is planned; DA5 owns this correction.
+Source: contribution `00f53931169858d0228a9415e2103b4aa12ee86b`.
+Apply `4f38ff6b3d4403d84a9248cf63506c53e0e00bd9`, then this follow-up, or
+take the final three files: `endpoint_checks.py`, its HTTP tests and the
+shared-check README. The first research equivalent is `33a40e6a403d`.
+Extraction is planned; DA5 owns this correction. No LA1 acknowledgement is needed.
 
 At pinned vLLM `0ac9dcb157ee86ccb447bc717259159c41ad456a`,
 [`get_replay_boundaries`](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/v1/core/kv_cache_coordinator.py#L314-L359)
@@ -19,10 +20,17 @@ A positive/dense probe chooses a reachable periodic endpoint. If the original
 generates enough tokens within the served context limit. Zero records initial
 recomputation without treating it as corruption or missing coverage.
 
-Every mode then processes generated history as a prompt and requires a replay
-to reuse it beyond the seed. Both ordinary branches and these replayed histories
-must retain exact scores after a sibling. The sibling must itself show a
-positive hit shorter than the protected original prefix. This checks state
+Retention preserves existing snapshots; it does not create them. The pinned
+[`align` setting](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/config/cache.py#L178-L185)
+creates snapshots at aligned scheduler ends. A cold aligned prefill can finish
+beyond the lower replay point kept at zero. Each probe now explicitly prepares
+checkpoint K with K+1 tokens and requires reuse reaching K. Strict branch
+controls also prepare the full usable checkpoint E before their baseline.
+
+Every mode processes generated history as a prompt. Its sibling forks at
+K=E−S, where S is alignment and P<K<E; P is the original prompt length. It must
+hit K, while the original branch hits E before and after. Ordinary branches use
+the same explicit preparation. Both must retain exact scores. This checks state
 persistence; it cannot detect every initially wrong state. Fresh/reused scores
 retain the separate changed-prefill-step limits.
 
@@ -32,9 +40,17 @@ hits. `not_required` applies only to direct periodic reuse when no such endpoint
 is reachable in that mode/context. It cannot waive prompt replay, branch reuse,
 non-finite scores or numerical limits. No new capability schema is needed.
 
-The [56 combined CPU/HTTP/report cases](analysis/hero-fp8-cache-validation/cpu-tests.txt)
-pass with the child's reporting fix. They cover zero, dense and positive
-retention, including interval 512 beyond the old fixed decode span. The real
-CLI/report path accepts healthy zero-retention replay and blocks missing hits
-or corrupt cached state. Required contribution lint/types pass. Live Snowball
-and Hero validation remains pending; earlier BF16 evidence is preserved.
+The first [live Hero zero run](analysis/hero-fp8-cache-validation/hero-zero-a1-summary.json)
+exposed incomplete probe preparation: three aligned cold prefills and three
+replayed sibling cases missed checkpoints. All 16 recorded strict numerical
+comparisons were zero; reference, batch and decode passed. This is a coverage
+failure, not evidence of corrupted state. Its complete cost was 5.113333 GB200-hours;
+all four pods were confirmed absent. Its source and raw archive remain fixed.
+
+The corrected 57 combined CPU/HTTP/report cases pass. The HTTP engine now models
+the cold aligned materialization limitation and rejects a sibling that reuses
+only the original prompt. Coverage includes zero, dense and positive retention,
+including interval 512 beyond the old fixed decode span. The real CLI/report
+path accepts supported zero-retention replay and blocks missing hits or corrupt
+state. Required contribution lint/types pass. Live follow-up validation of the
+corrected geometry is pending. Earlier evidence retains its original scope.
