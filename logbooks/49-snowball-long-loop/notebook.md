@@ -930,3 +930,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: artifacts above [R]; #11619 gate reference [P].
 - Interpretation and limitations: production INIT and the first CP5 step still require observation (the probe's stated limitation); the restart has not yet reached its first update.
 - Decision and next action: hourly checks track the restart's INIT/first-step observation and its own gate census.
+
+### 2026-11-18 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: exp3 IB restart (artifact `2026.11.17.55`, source `ba63397d23…`) — **root task still pending** on cw-rno2a; RL child "not_created; coordinator awaiting admission" (launch-record fields). The `.51` terminal run is unchanged.
+- Command or material configuration: as recorded in the 01:40 entry.
+- External inputs and artifact references: `restart55-launch-record.json`, `restart55-root-task-description.txt` (checked 02:33 UTC) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no exp3 progression this window — the restart's root task remains pending (awaiting cluster admission; the same capacity constraint that gated the first RL attempt).
+- Evidence: launch-record/task description [R].
+- Interpretation and limitations: gate status only.
+- Decision and next action: hourly checks watch for root-task admission and the INIT/first-CP5-step observation.
