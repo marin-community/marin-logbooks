@@ -275,7 +275,7 @@ async def http_endpoint(engine: HttpEngine):
         )
 
     async def version(_request):
-        return web.json_response({"version": "0.0.0+marin.0ac9dcb157ee"})
+        return web.json_response({"version": f"0.0.0+marin.{RUNTIME[:12]}"})
 
     app.router.add_get("/server_info", info)
     app.router.add_get("/version", version)
