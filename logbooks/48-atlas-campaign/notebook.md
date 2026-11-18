@@ -1378,3 +1378,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; rev-28/29 hosted verification remains preview-lane evidence [M].
 - Decision and next action: next hourly check watches for rev-29 hosted verification and the admission-display policy rollout.
+
+### 2026-11-18 05:40 UTC - Hourly catch-up (04:40–05:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `7ff7550193…` (04:32:43 UTC) to head `df6fe0dc3a9f084e5ea8472bfa8d02ce4132c763`, landed 05:20:16 UTC (3 landings 05:13–05:20 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 7ff75501..df6fe0dc` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **nl2bash repair-lane r4 review report pinned** (`df6fe0dc3a…`, head) — the sealed repair-lane record now includes the r4 review report.
+  - **Repair-lane UX**: short pair aliases echoed and per-pair comparative decisions persisted (`a854e4fa93…`).
+  - **Trial host capabilities resolved from the worker environment** (`bb10af1189…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the r4 report's contents are registry-bound [M].
+- Decision and next action: next hourly check watches for the nl2bash repair-lane outcomes.
