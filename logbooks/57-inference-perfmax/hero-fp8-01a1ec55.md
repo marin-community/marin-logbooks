@@ -376,3 +376,22 @@ owned receipts, including failures and the CPU build. Its current7.318286
 GB200-hours excludes the live BF16 window and queued selective screen. Native
 profile timestamps split setup, checks, warmup, profiling/native grace and
 exports/shutdown where available. Unsplit auxiliary jobs retain their full cost.
+
+## 2026-11-18 04:26 UTC — Reduce an oversized RAM reservation
+
+Kueue's exact admission reason says no node fits:69 nodes lack requested CPU,
+136 lack requested memory, and one lacks GPUs. This screen requested32 CPUs and
+768 GiB. The live BF16 task's cgroup peak is114,597,363,712 bytes (106.73 GiB),
+with68,100,161,536 bytes current use. Keep32 CPUs and reduce the next request to
+256 GiB. The parent inspected and supported this correction. Both upcoming C128
+precision points use the same32 CPU/256 GiB requests.
+
+Cancelled the screen while PodScheduled=False and nodeName was empty. The
+[native execution](analysis/hero-fp8-01a1ec55/selective-fp8-marlin-a1-execution.json)
+remains killed, with no assigned node or scheduling timestamp. The generic cost
+helper reports null for such a timestamp; the separate
+[queue-cost evidence](analysis/hero-fp8-01a1ec55/selective-fp8-marlin-a1-queue-cost.json)
+retains the admission reason, before-cancel state and zero allocated GPU time.
+This is a resource-fit correction, not a response to a log/observation timeout.
+The candidate wheel, kernel, model, CPU count, GPU count and numerical criteria
+are unchanged. Retry a2 keeps a new native identity.
