@@ -866,3 +866,44 @@ model/ID fields without rerunning review or changing `04745`. That
 [dated readback](analysis/hero-fp8-01a1ec55/selective-contribution-review-native-readback.json)
 preserves the original record. Both contributions await the parent's final High
 GOAL review; no PR is opened.
+
+## 2026-11-18 09:20 UTC — Canonical port does not resolve the model failure
+
+The [cache-first model screen](analysis/hero-fp8-01a1ec55/marlin-canonical-model-a1-summary.json)
+fails unchanged exact bounds. Five of 19 strict comparisons are nonzero:
+maximum 0.0184222980 and p99 0.0170459551. All storage checks, deployment
+identity and supported reuse/branch coverage pass. Changed-split comparisons
+pass, maximum 0.0274308726; the matched repeat is zero. The later reference,
+batch and decode suites were skipped after this rejection. This is not a
+full-suite pass or a proof of the serving failure's cause.
+
+The [raw cache report](analysis/hero-fp8-01a1ec55/marlin-canonical-model-a1-cache-screen.json)
+and [native archive receipt](analysis/hero-fp8-01a1ec55/marlin-canonical-model-a1-receipt.json)
+preserve all responses and the five failures. The archive SHA256 is
+`13d0ad6dd7dfb11c1c5b2c1de882fb6548d24adc9a9ce48e3e10e0d398eb30f2`.
+All four ranks' actual storage metadata passes. Model memory is 147.25 GiB/GPU,
+with 328,295–328,310 BF16 KV tokens/rank. Host peak before teardown/upload is
+92.26 GiB under 256 GiB. This attempt cost 2,604 allocated GPU seconds
+(0.723333 GB200 hours). Its pod is gone and board row 2247 is
+[closed](analysis/hero-fp8-01a1ec55/marlin-canonical-model-a1-cleanup.json).
+Completed owned cost is now 94.722884 GB200 hours.
+
+The next cheap hypothesis is zero-weight padding geometry. Native Grug routing
+zeros padded hidden rows and combine weights, but computes their expert IDs
+from the supplied router logits. Those IDs may still change block layout.
+The [new component](analysis/hero-fp8-01a1ec55/marlin_padding_bootstrap.py)
+uses the existing immutable wheel, actual Grug router and native forward
+context. It asserts identical real inputs/routes and zero padded inputs/weights,
+then varies only padded expert IDs. It compares exact real-row outputs,
+same-route repeats, restored A→B→A outputs and fresh raw CUDA graphs. Local
+expert counts 24 and 96 cover the selected 16-GPU and current four-GPU shapes.
+Any negative result remains limited to those weights, shapes and routes.
+The [CPU readback preflight](analysis/hero-fp8-01a1ec55/marlin-padding-a1-cpu-preflight.json)
+and required lint pass before allocation.
+
+A [post-hoc comparison](analysis/hero-fp8-01a1ec55/initial-reference-precision-comparison.json)
+also reuses the original BF16/FP8 reports. At book04 position1016, the BF16
+reference error is 0.1228700 and FP8 is 0.7197637; their direct probability
+difference is 0.5971223. This is distinct from the cache persistence failure.
+It is a comparison of the two serving configurations and their saved top-k
+probability bounds, not KL or a new numerical acceptance policy.

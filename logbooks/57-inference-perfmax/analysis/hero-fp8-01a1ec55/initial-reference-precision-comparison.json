@@ -1,0 +1,277 @@
+{
+  "scope": "Post-hoc numerical comparison of the two serving configurations; per-position top-k probability-error upper bounds, not KL or a new acceptance policy",
+  "inputs": [
+    {
+      "path": "scratch/bf16-c64-a2-native/check-0.json",
+      "sha256": "e939123dfae232208a1ebc51e44237617f1f182c1f5bc474cadf6784dfaab3c8"
+    },
+    {
+      "path": "scratch/selective-fp8-c64-a1-native/check-1.json",
+      "sha256": "cc65e1d5d9be8dfc6cfeae2010f9ea02a2434835f04aa896bcbd9f212c75b7ea"
+    }
+  ],
+  "runtime_sources": {
+    "bf16": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+    "fp8": "244247767cef50ef1670a732d416065015e12f01"
+  },
+  "groups": {
+    "short": {
+      "positions": 11370,
+      "pair_maximum": 0.5971222555093609,
+      "pair_p99": 0.11637179805238228,
+      "pair_p90": 0.029939304071782417,
+      "different_greedy_fraction": 0.020140721196130168,
+      "worst_fp8_reference": [
+        {
+          "case": "book04",
+          "position": 1016,
+          "bf16_reference_error": 0.12287001888366855,
+          "fp8_reference_error": 0.7197636556936403,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.5971222555093609,
+            "max_probability_error": 0.5971222555093609,
+            "shared_tokens": 44,
+            "same_greedy_token": false
+          }
+        },
+        {
+          "case": "book03",
+          "position": 769,
+          "bf16_reference_error": 0.4814961485774501,
+          "fp8_reference_error": 0.6965765613050325,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.215580419494099,
+            "max_probability_error": 0.215580419494099,
+            "shared_tokens": 44,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "book07",
+          "position": 754,
+          "bf16_reference_error": 0.08354527138297219,
+          "fp8_reference_error": 0.4444005441271326,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.3608552727441604,
+            "max_probability_error": 0.3608552727441604,
+            "shared_tokens": 45,
+            "same_greedy_token": false
+          }
+        },
+        {
+          "case": "chat09",
+          "position": 73,
+          "bf16_reference_error": 0.06149102420253901,
+          "fp8_reference_error": 0.38177272380226135,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.37572603790815373,
+            "max_probability_error": 0.37572603790815373,
+            "shared_tokens": 46,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "chat01",
+          "position": 14,
+          "bf16_reference_error": 0.018140629867539948,
+          "fp8_reference_error": 0.374600875946964,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.39274150581450396,
+            "max_probability_error": 0.39274150581450396,
+            "shared_tokens": 47,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "book04",
+          "position": 854,
+          "bf16_reference_error": 0.0749006279457799,
+          "fp8_reference_error": 0.3377758105468493,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.2628751826010694,
+            "max_probability_error": 0.2628751826010694,
+            "shared_tokens": 47,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "book07",
+          "position": 513,
+          "bf16_reference_error": 0.03240707460597002,
+          "fp8_reference_error": 0.2907603836255289,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.28279644791952196,
+            "max_probability_error": 0.28279644791952196,
+            "shared_tokens": 48,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "book04",
+          "position": 196,
+          "bf16_reference_error": 0.11127343101004813,
+          "fp8_reference_error": 0.2866569263981892,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.17538349538814102,
+            "max_probability_error": 0.17538349538814102,
+            "shared_tokens": 48,
+            "same_greedy_token": false
+          }
+        },
+        {
+          "case": "book05",
+          "position": 263,
+          "bf16_reference_error": 0.11391510135135899,
+          "fp8_reference_error": 0.28447339069946886,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.1937359137643282,
+            "max_probability_error": 0.1937359137643282,
+            "shared_tokens": 48,
+            "same_greedy_token": false
+          }
+        },
+        {
+          "case": "book06",
+          "position": 755,
+          "bf16_reference_error": 0.1350758655600578,
+          "fp8_reference_error": 0.256346994066718,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.12127112850666022,
+            "max_probability_error": 0.12127112850666022,
+            "shared_tokens": 46,
+            "same_greedy_token": true
+          }
+        }
+      ]
+    },
+    "long": {
+      "positions": 4485,
+      "pair_maximum": 0.1555331663504339,
+      "pair_p99": 0.050096528965928505,
+      "pair_p90": 0.022751053272972183,
+      "different_greedy_fraction": 0.021181716833890748,
+      "worst_fp8_reference": [
+        {
+          "case": "long131072",
+          "position": 130623,
+          "bf16_reference_error": 0.28639413328566304,
+          "fp8_reference_error": 0.28843578805982295,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.02090517348646842,
+            "max_probability_error": 0.02090517348646842,
+            "shared_tokens": 49,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long4096",
+          "position": 3600,
+          "bf16_reference_error": 0.061554569604955645,
+          "fp8_reference_error": 0.15315773831928658,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.09160316871433094,
+            "max_probability_error": 0.09160316871433094,
+            "shared_tokens": 48,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long32768",
+          "position": 32571,
+          "bf16_reference_error": 0.09651563574263333,
+          "fp8_reference_error": 0.14994715490241645,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.053431519159783114,
+            "max_probability_error": 0.053431519159783114,
+            "shared_tokens": 45,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long131072",
+          "position": 130833,
+          "bf16_reference_error": 0.11521828813654389,
+          "fp8_reference_error": 0.14280351003054104,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.036270094492855065,
+            "max_probability_error": 0.036270094492855065,
+            "shared_tokens": 49,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long131072",
+          "position": 130700,
+          "bf16_reference_error": 0.05715058802648021,
+          "fp8_reference_error": 0.1382555053806056,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.0811049173541254,
+            "max_probability_error": 0.0811049173541254,
+            "shared_tokens": 48,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long65536",
+          "position": 65145,
+          "bf16_reference_error": 0.04304164247890546,
+          "fp8_reference_error": 0.13570924587580185,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.09266760339689639,
+            "max_probability_error": 0.09266760339689639,
+            "shared_tokens": 47,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long131072",
+          "position": 130625,
+          "bf16_reference_error": 0.1522499135815948,
+          "fp8_reference_error": 0.1125026363611854,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.03974727722040938,
+            "max_probability_error": 0.03974727722040938,
+            "shared_tokens": 45,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long262144",
+          "position": 261933,
+          "bf16_reference_error": 0.051800913159300854,
+          "fp8_reference_error": 0.10241363396662095,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.0506127208073201,
+            "max_probability_error": 0.0506127208073201,
+            "shared_tokens": 47,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long4096",
+          "position": 3916,
+          "bf16_reference_error": 0.015626059277359217,
+          "fp8_reference_error": 0.0987635150620802,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.0862296176988051,
+            "max_probability_error": 0.0862296176988051,
+            "shared_tokens": 48,
+            "same_greedy_token": true
+          }
+        },
+        {
+          "case": "long131072",
+          "position": 130791,
+          "bf16_reference_error": 0.07383693796751023,
+          "fp8_reference_error": 0.09614487818849765,
+          "fp8_vs_bf16": {
+            "max_probability_error_lower_bound": 0.02230794022098742,
+            "max_probability_error": 0.02230794022098742,
+            "shared_tokens": 48,
+            "same_greedy_token": true
+          }
+        }
+      ]
+    }
+  }
+}

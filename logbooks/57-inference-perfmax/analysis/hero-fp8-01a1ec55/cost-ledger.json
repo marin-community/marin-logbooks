@@ -1,8 +1,8 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 338398.3840017319,
-  "gpu_hours": 93.99955111159218,
+  "gpu_seconds": 341002.3840017319,
+  "gpu_hours": 94.72288444492553,
   "cost_complete_for_listed_allocations": true,
   "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98 and 77 allocated seconds, respectively, and zero GPUs.",
   "rows": [
@@ -392,6 +392,36 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 87.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Canonical full-model cache-first rejection",
+      "receipt": "marlin-canonical-model-a1-execution.json",
+      "state": "failed",
+      "gpu_seconds": 2604.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "8b1420b8986f6649",
+          "gpu_seconds": 2604.0,
+          "allocation": {
+            "pod_uid": "0cb0e76e-7d80-4fd1-9070-80a4dd15d7ce",
+            "attempt_uid": "8b1420b8986f6649",
+            "pod_name": "iris-romain-knotmeter-20261118t0837-5552d916-0-8b1420b8986f6649",
+            "node_name": "s2zpxs64",
+            "observed_unix": 1794992574.2095692,
+            "phase": "Failed",
+            "scheduled_unix": 1794991885.0,
+            "finished_unix": 1794992536.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794992536.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 2604.0
           }
         }
       ]
