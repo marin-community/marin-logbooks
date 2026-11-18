@@ -954,3 +954,27 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: Iris job list/describe output above [R].
 - Interpretation and limitations: the INIT/first-CP5-step observation from the #11619 gate note remains the next milestone; RL update evidence will follow.
 - Decision and next action: hourly checks read Iris directly for exp3 state.
+
+### 2026-11-18 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: exp3 IB restart (source `ba63397d23…`, artifact `2026.11.17.55`) — **verified RUNNING via Iris at 02:33 UTC**: root submitted 23:43:34 UTC Nov 17; RL child `…-18817614fe9d` running, task 0 running 2 h 49 m (exit=0, failures=0, preemptions=0). This supersedes the 02:40-cycle correction cycle's snapshot (the coordinator's 01:36 UTC correction and my 02:45 UTC Iris verification agree).
+- Command or material configuration: `uv run iris --cluster=marin job describe` (direct read, per the recorded lesson).
+- External inputs and artifact references: Iris output [R: live cluster state].
+- Environment and hardware when relevant: cw-rno2a.
+- Result, including failure or restart: exp3 `.55` continues running (~2 h 49 m on task 0); no failures. The INIT/first-CP5-step observation from the #11619 gate note remains the next milestone; RL update evidence will follow.
+- Evidence: Iris job describe [R].
+- Interpretation and limitations: job state only; INIT observation pending.
+- Decision and next action: hourly checks read Iris directly and watch for the INIT observation and first update.
+
+### 2026-11-18 02:45 UTC - Correction + first-steps record: exp3 `.55` updates 1–3 complete (W&B-verified)
+
+- Question or hypothesis and reason for trying it: coordinator correction — the `.55` first-step milestone is already done (update 1 completed 00:42:18 UTC), superseding the 02:40 entry's "INIT/first-CP5-step observation pending" line. Verified against the exp3 record's own step-history artifact.
+- Published source revision: unchanged exp3 restart identities (source `ba63397d23…`, artifact `2026.11.17.55`).
+- Command or material configuration: `restart55-milestone-step-history-once.json` (checked 02:16:09 UTC) and `restart55-milestone-wandb-once.json` [R: /experiments/active/long-loop-exp3/artifacts/]; W&B https://wandb.ai/marin-community/marin-long-loop/runs/f7m70xhc [P].
+- External inputs and artifact references: as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **exp3 `.55` updates 1–3 complete** per the W&B step history: update 1 completed **00:42:18 UTC** — full step 2,269.04 s of which **2,104.16 s was rollout admission** (`wait_for_generation_buffer`), learner 152.50 s, policy 89.08 s; update 2: full step 4,004.08 s, learner 113.84 s, policy 82.51 s; update 3: full step 126.80 s, learner 112.99 s, policy 82.14 s — **the admission-dominated startup collapsed into a steady learner-dominated cadence by update 3** (matching the exp2 pattern). The W&B snapshot was taken while training was mid-run (metrics fields empty in the once-only snapshot; the step history carries the values).
+- Evidence: step-history artifact + W&B run URL [P/R].
+- Interpretation and limitations: three updates do not establish throughput; the once-only snapshot has empty live metrics fields (superseded by the step history).
+- Decision and next action: hourly checks track the steady-state cadence and the first eval/checkpoint callbacks.
