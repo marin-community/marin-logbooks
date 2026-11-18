@@ -1,8 +1,8 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 362351.3840017319,
-  "gpu_hours": 100.6531622227033,
+  "gpu_seconds": 362441.3840017319,
+  "gpu_hours": 100.67816222270329,
   "cost_complete_for_listed_allocations": true,
   "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98, 77, 99 and 78 allocated seconds, respectively, and zero GPUs.",
   "rows": [
@@ -662,6 +662,36 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 76.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hybrid ignored-layer test lifecycle failure",
+      "receipt": "hybrid-wheel-a1-execution.json",
+      "state": "failed",
+      "gpu_seconds": 90.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "12324ac6a2c19f8a",
+          "gpu_seconds": 90.0,
+          "allocation": {
+            "pod_uid": "e7582dae-e0e3-45dc-b94e-6672e952766d",
+            "attempt_uid": "12324ac6a2c19f8a",
+            "pod_name": "iris-romain-hero-fp8-hybrid-wheel-0-5115bbff-0-12324ac6a2c19f8a",
+            "node_name": "shpvxs64",
+            "observed_unix": 1795001295.1241965,
+            "phase": "Failed",
+            "scheduled_unix": 1795001165.0,
+            "finished_unix": 1795001255.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1795001255.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 90.0
           }
         }
       ]
