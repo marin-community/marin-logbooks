@@ -1,0 +1,102 @@
+{
+  "scope": "Initial comparison checkpoint, before any next overnight submissions",
+  "observed_unix": 1794987648.6527524,
+  "iris_jobs_verified_terminal": 21,
+  "job_labels": [
+    "romain.hero-fp8-marlin-history-01a1ec55-a1",
+    "romain.hero-fp8-native-build-01a1ec55-a1",
+    "romain.hero-fp8-selective-unit-01a1ec55-a1",
+    "romain.hero-fp8-selective-unit-01a1ec55-a2",
+    "romain.hero-fp8-selective-unit-01a1ec55-a3",
+    "romain.hero-fp8-wheel-unit-01a1ec55-a1",
+    "romain.knotmeter-20261118t021016z-f29854d8472b",
+    "romain.knotmeter-20261118t021016z-f29854d8472b.serve",
+    "romain.knotmeter-20261118t024359z-10b956b78c11",
+    "romain.knotmeter-20261118t024359z-10b956b78c11.serve",
+    "romain.knotmeter-20261118t024359z-dfcd039b983e",
+    "romain.knotmeter-20261118t024359z-dfcd039b983e.serve",
+    "romain.knotmeter-20261118t030036z-46000535d09e",
+    "romain.knotmeter-20261118t030036z-46000535d09e.serve",
+    "romain.knotmeter-20261118t030646z-233506554386",
+    "romain.knotmeter-20261118t041443z-65a5fdd270e2",
+    "romain.knotmeter-20261118t042720z-fe9b7e81d102",
+    "romain.knotmeter-20261118t045512z-6bd49b5d193a",
+    "romain.knotmeter-20261118t045512z-6bd49b5d193a.serve",
+    "romain.knotmeter-20261118t053943z-0eded6360d5c",
+    "romain.knotmeter-20261118t053943z-0eded6360d5c.serve"
+  ],
+  "before": [
+    {
+      "name": "iris-romain-hero-fp8-marlin-history-4a41092b-0-50a74f816d37cf45",
+      "uid": "87a94ac4-2f02-4236-b2eb-986d886bf4c3",
+      "job_id": "romain.hero-fp8-marlin-history-01a1ec55-a1",
+      "phase": "Failed",
+      "node": "shpvxs64",
+      "containers": [
+        {
+          "name": "output-uploader",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://8285e07ba7da0f1dec73e4c4ba723fde3a84a07dbca87ed6fe72db34c5737722",
+              "exitCode": 0,
+              "finishedAt": "2026-11-18T07:26:22Z",
+              "message": "{\"state\": \"TASK_OUTPUT_ARCHIVE_STATE_UPLOADED\", \"uri\": \"s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/hero-fp8-marlin-history-01a1ec55-a1/0/50a74f816d37cf45/outputs.tar.zst\", \"size_bytes\": \"1427\", \"sha256\": \"1ebae4d71bbe093a33ab2a060cda9cef755cfee807f98850a19c5ea15f7e0ceb\", \"retention\": \"TASK_OUTPUT_ARCHIVE_RETENTION_TTL\", \"ttl_days\": 7, \"skipped_count\": 0}",
+              "reason": "Completed",
+              "startedAt": "2026-11-18T07:25:27Z"
+            }
+          }
+        },
+        {
+          "name": "task",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://384558d52bfc18a858545c2b8236a28c73e78545968feaf214563fd8dc7cf2b0",
+              "exitCode": 1,
+              "finishedAt": "2026-11-18T07:26:14Z",
+              "message": "ker\n  File \"/usr/local/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['uvx', '--from', 'vllm @ file:///tmp/knotmeter-wheels/c3c2ec10f43c07606cc86a70c08885538f63480f64d5779b984947f8eb2da5a2/vllm-0.0.0.dev20261118%2Bmarin.244247767cef.cu132-cp312-cp312-linux_aarch64.whl#sha256=c3c2ec10f43c07606cc86a70c08885538f63480f64d5779b984947f8eb2da5a2', '--with', 'runai-model-streamer[s3]==0.16.1', '--with', 'torch==2.14.1+cu132', '--with', 'nvidia-cuda-nvcc==13.2.86', '--with', 'nvidia-cuda-crt==13.2.86', '--with', 'nvidia-nvvm==13.2.86', '--with', 'pytest==9.0.3', '--with', 'tblib==3.2.2', '--python', '3.12', '--index', 'https://download.pytorch.org/whl/cu132', '--index', 'https://download.pytorch.org/whl/cpu', '--index-strategy', 'unsafe-best-match', 'python', '-c', 'import importlib.metadata\\nimport os\\nfrom pathlib import Path\\nimport sys\\n\\ndistribution = importlib.metadata.distribution(\\'nvidia-cuda-nvcc\\')\\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\\ncuda_home = nvcc.parent.parent\\ncuda_lib = cuda_home / \"lib\"\\ncuda_lib64 = cuda_home / \"lib64\"\\nif cuda_lib.is_dir() and not cuda_lib64.exists():\\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\\ncudart = cuda_lib / \"libcudart.so.13\"\\ncudart_link = cuda_lib / \"libcudart.so\"\\nif cudart.is_file() and not cudart_link.exists():\\n    cudart_link.symlink_to(cudart.name)\\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\\nif nvrtc.is_file() and not nvrtc_link.exists():\\n    nvrtc_link.symlink_to(nvrtc.name)\\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\\nos.execvp(sys.argv[1], sys.argv[1:])\\n', 'python', '/app/logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/marlin_history_bootstrap.py', '/iris/outputs/component-input.json']' returned non-zero exit status 1.\n",
+              "reason": "Error",
+              "startedAt": "2026-11-18T07:25:27Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "iris-romain-knotmeter-20261118t0539-b25aca98-0-12fcaf61c2612569",
+      "uid": "ef1b4524-0b1c-49ca-99ed-3b413e0612ab",
+      "job_id": "romain.knotmeter-20261118t053943z-0eded6360d5c",
+      "phase": "Succeeded",
+      "node": "sgqtxs64",
+      "containers": [
+        {
+          "name": "output-uploader",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://7d182772e4562e7b7a7d2eed69732dea9e3906ae95a6f89419e112ec3ed238eb",
+              "exitCode": 0,
+              "finishedAt": "2026-11-18T07:33:20Z",
+              "message": "{\"state\": \"TASK_OUTPUT_ARCHIVE_STATE_EMPTY\", \"skipped_count\": 0}",
+              "reason": "Completed",
+              "startedAt": "2026-11-18T05:39:56Z"
+            }
+          }
+        },
+        {
+          "name": "task",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://4b82296531119baddd7a2a2410a3dac3f032df2e64f97c8c7ff5f89264c89566",
+              "exitCode": 0,
+              "finishedAt": "2026-11-18T07:33:11Z",
+              "reason": "Completed",
+              "startedAt": "2026-11-18T05:39:56Z"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "delete_output": "pod \"iris-romain-hero-fp8-marlin-history-4a41092b-0-50a74f816d37cf45\" deleted from iris namespace\npod \"iris-romain-knotmeter-20261118t0539-b25aca98-0-12fcaf61c2612569\" deleted from iris namespace\n",
+  "after": [],
+  "verified_unix": 1794987651.8854928
+}
