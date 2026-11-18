@@ -19,6 +19,7 @@ INPUTS = (
     ("CPU native wheel build", "selective-build-a1-execution.json", None),
     ("CPU canonical native wheel build", "marlin-canonical-build-a1-execution.json", None),
     ("CPU padding native wheel build", "padding-router-build-a1-execution.json", None),
+    ("CPU hybrid native wheel build", "hybrid-build-a1-execution.json", None),
     ("Installed canonical wrapper and graph controls", "marlin-canonical-component-a1-execution.json", None),
     ("Canonical full-model cache-first rejection", "marlin-canonical-model-a1-execution.json", None),
     ("Zero-weight padded-route component", "marlin-padding-a1-execution.json", None),
@@ -128,7 +129,7 @@ def main() -> None:
             "those activities are not separately timed. "
             "Matching follower attempts use their leader timing, verified by native gang attempt IDs. "
             "Unsplit failures and numerical/component screens retain their full allocation cost. "
-            "CPU builds each requested eight CPUs for 98, 77 and 99 allocated seconds, respectively, and zero GPUs."
+            "CPU builds each requested eight CPUs for 98, 77, 99 and 78 allocated seconds, respectively, and zero GPUs."
         ),
         "rows": rows,
     }
