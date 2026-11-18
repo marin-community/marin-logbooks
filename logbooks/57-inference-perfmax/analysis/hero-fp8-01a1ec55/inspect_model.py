@@ -25,7 +25,17 @@ def main() -> None:
         "online_fp8_linear": "Fp8PerTensorOnlineLinearMethod" in text,
         "online_fp8_experts": "Fp8PerTensorOnlineMoEMethod" in text,
     }
-    passed = all(observed.values()) if expected == "fp8" else not any(observed.values())
+    if expected == "fp8":
+        passed = all(observed.values())
+    elif expected == "online":
+        arguments = profile["serving"]["extra_args"]
+        selector = json.loads(arguments[arguments.index("--quantization-config") + 1])
+        passed = selector == {"moe": "fp8_per_tensor"} and observed == {
+            "online_fp8_linear": False,
+            "online_fp8_experts": True,
+        }
+    else:
+        passed = not any(observed.values())
     report = {
         "status": "passed" if passed else "failed",
         "runtime_source": os.environ["KNOTMETER_RUNTIME_SOURCE"],

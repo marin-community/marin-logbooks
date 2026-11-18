@@ -290,3 +290,29 @@ source bytes and the native precompiled base. The builder uses unmodified native
 `setup.py` through `python -m build --wheel --no-isolation`, then compares every
 ELF member against the pinned wheel and checks the changed Python module hash.
 No native binary is rebuilt. No release or adoption pin is changed.
+
+## 2026-11-18 04:06 UTC — Native candidate wheel built on CPU
+
+The CPU build succeeded in 98 allocated seconds on ARM host s2zpxs64, with eight
+requested CPUs and no GPU requests. The actual source is `244247767c`; the
+candidate version is `0.0.0.dev20261118+marin.244247767cef.cu132`. All 19 ELF
+payloads match the pinned `0ac9dcb` wheel exactly. The changed model module also
+matches its source hash. The wheel is 227,698,667 bytes, SHA256
+`c3c2ec10f43c07606cc86a70c08885538f63480f64d5779b984947f8eb2da5a2`.
+The native build emits a CPython3.12 `linux_aarch64` wheel; this experiment does
+not claim a new manylinux portability qualification. The
+[manifest](analysis/hero-fp8-01a1ec55/selective-build-a1-manifest.json),
+[build proof](analysis/hero-fp8-01a1ec55/selective-build-a1-build.json),
+[receipt](analysis/hero-fp8-01a1ec55/selective-build-a1-receipt.json) and
+[execution](analysis/hero-fp8-01a1ec55/selective-build-a1-execution.json) preserve
+all bytes and identities. Cold GPU installation and focused tests remain pending.
+
+The selective full-model screen keeps Marlin experts with BF16 activations and
+BF16 linear projections. Earlier all-Marlin evidence improved reference errors
+and passed decode, while quantized projections and cache persistence still
+failed. This chooses the native expert method and BF16 projections without
+inventing another quantization scheme. Its separate policy changes only identity
+and quantization applicability; all numeric criteria and fixed goldens stay the
+same. The loaded-method check now requires FP8 experts and no FP8 linears for
+this exact selector. Method inspection still does not read tensor values; the
+actual-wheel component tests directly check weight and scale tensors.
