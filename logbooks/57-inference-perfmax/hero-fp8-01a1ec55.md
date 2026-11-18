@@ -566,3 +566,52 @@ The completed BF16 C64 allocation includes 6.29349 GB200 hours of warmup and
 1.32255 hours after the accepted-request span while the harness drains/exports.
 Those two native activities are not timed separately. Completed owned cost
 remains 37.402607 GB200 hours, excluding both live normal windows.
+
+
+## 2026-11-18 06:48 UTC — Complete the lower-load BF16 comparison
+
+BF16 C32 completed a valid normal one-hour window. The native processor reports
+17.93673 output tokens/s/GPU, P90 TTFT of 166.45803 seconds and P90 completion of
+171.59327 seconds. All 1513 profiling requests succeeded, with zero profiling
+errors. Submission, duration coverage and unchanged-gang checks pass. Two warmup
+requests returned no response content and raised InvalidInferenceResultError;
+they remain preserved separately from profiling. The native window is valid.
+Client-reported cache reuse is 85.237972%, independent of the unresolved server
+counter-decrease warnings.
+
+Compared with BF16 C64, throughput is 5.3439% lower, P90 TTFT is 46.6762% lower,
+and P90 completion is about 47% lower. C32 is a defensible balanced choice, with
+C64 retained as the throughput neighbor. The earlier 5% similarity heuristic
+was an agent-chosen guide, not a user-approved acceptance cutoff. It should not
+create an artificial decision boundary at this observed 5.34% difference.
+There is only one normal window per point, so repeat variability is unmeasured.
+No repeat is needed solely to resolve that invented boundary.
+
+The [complete result](analysis/hero-fp8-01a1ec55/bf16-c32-a1-result.json),
+[export summary](analysis/hero-fp8-01a1ec55/bf16-c32-a1-window-summary.json) and
+[native receipt](analysis/hero-fp8-01a1ec55/bf16-c32-a1-native-receipt.json)
+preserve the measurements and source. The 333,918,262-byte leader archive was
+downloaded once and verified against SHA256
+`910046785d86677c01c99809ae392293693dc0296908954dc08e0834d70ed9fb`.
+Complete allocated cost is 97,348 GPU seconds (27.041111 GB200 hours).
+The [memory observations](analysis/hero-fp8-01a1ec55/bf16-c32-a1-memory-observations.json)
+retain all four hosts' observed cgroup peaks and 256 GiB limits. They are live
+high-water marks, not final shutdown measurements.
+
+The [identity comparison](analysis/hero-fp8-01a1ec55/bf16-c64-v2-evidence-reuse.json)
+compares actual retained reports and profiles. Model, tokenizer, goldens,
+policy, runtime, GPU type/count and every serving setting match exactly between
+C64 and C32. Only client concurrency and the host RAM reservation differ.
+All 19 exact cache-v2 comparisons on C32 are zero, and every supported reuse
+and branch group passes. This supplies the stronger positive-retention evidence
+for the matching C64 serving setup while retaining its original v1 report.
+
+Iris root and serve jobs are Succeeded. All five pod names are now absent; four
+GPU pods had already been removed, and the remaining terminal CPU coordinator
+was deleted after evidence retention. The
+[cleanup receipt](analysis/hero-fp8-01a1ec55/bf16-c32-a1-cleanup.json) and
+[Iris states](analysis/hero-fp8-01a1ec55/bf16-c32-a1-iris-terminal.json) retain
+proof. Row 2239 is closed. Completed owned cost is now 64.443718 GB200 hours,
+including every retained failure and setup. The only live owned GPU allocation
+is the frozen 16-GPU FP8 C64 window, which reaches its admission boundary near
+07:25 UTC.
