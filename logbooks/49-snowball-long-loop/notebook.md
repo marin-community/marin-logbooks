@@ -1218,3 +1218,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: step-history artifact [R].
 - Interpretation and limitations: artifact snapshot cadence lags the live run.
 - Decision and next action: next hourly check reads the step history again for updates 4+.
+
+### 2026-11-19 00:35 UTC - Hourly catch-up (22:40–00:35 UTC window): recovery eval launched for the exp3 step-20 checkpoint
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: the terminal exp3 `.51` (source `0f5721bbb4…`) is unchanged; **a recovery evaluation launched** for the exp3 step-20 checkpoint: eval source `655178c9374c318d5d4e90591860fce6476a34a9`, version `2026.11.18.61`, prepared 2026-11-18 15:20:35 UTC, submitted with a registered watchdog.
+- Command or material configuration: eval-launch record `artifacts/archive69/compact-evidence-v1/receipts/recovery57/eval-launch-record61.json`: Micro210 evaluation — 200 source tasks / 440 expanded attempts, **128 inference GPUs + 8 judge GPUs**, policy "frozen Exp3 recipe, data revisions, seed, sampling, masks retained", grader disk 128 GiB; export job `/benfeuer/mochi-exp3-step20-export-2026.11.18.57` succeeded (export_manifest_sha256 `66299c4c4781…`).
+- External inputs and artifact references: `archive69/compact-evidence-v1/receipts/recovery57/eval-launch-record61.json` and the compact-evidence-v1 source tars (incl. `0f5721bbb4…` and `683fae2da2…`) [R: /experiments/active/long-loop-exp3/artifacts/archive69/].
+- Environment and hardware when relevant: 128 inference + 8 judge GPUs for the eval.
+- Result, including failure or restart: **recovery57 launched a Micro210 evaluation of the exp3 step-20 checkpoint** (`2026.11.18.61`) — the failed `.51` run's step-20 checkpoint is being evaluated under the frozen Exp3 recipe; the compact-evidence-v1 archive preserves the source tars and receipts. The monitoring observer's latest_signal still shows the update-4 failure text (observer apparently stale relative to the new eval lane).
+- Evidence: eval-launch-record61.json [R]; archive69 source tars [R].
+- Interpretation and limitations: this evaluates the step-20 checkpoint under the frozen Exp3 recipe; the eval's scored outcome is not yet attested in this record; the observer staleness is noted.
+- Decision and next action: hourly checks track the recovery eval's scored outcome and the exp3 restart (V6/IB) progress.
