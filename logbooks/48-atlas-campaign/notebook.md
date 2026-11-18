@@ -1417,3 +1417,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit above; landing timestamp in the local atlas-push log [R].
 - Interpretation and limitations: single landing; the r5 report's contents are registry-bound [M].
 - Decision and next action: next hourly check watches for the nl2bash repair-lane admission progression.
+
+### 2026-11-18 08:40 UTC - Hourly catch-up (07:40–08:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `ede08d135a…` (07:09:02 UTC) to head `e7328675bdeb0eb6e6e73f88cb8fb437895e8e69`, landed 08:25:04 UTC (2 landings 07:44 / 08:25 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log ede08d13..e7328675` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **pymethods repair-lane r6 review report pinned** (`30fc5134fa…`) — the repair-lane record now carries r6, following nl2bash r5.
+  - **Winner-cohort conversion stage added to the repair lane** (`e7328675bd…`, head) — the winning repair candidates' conversion path is now a stage of its own.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the r6 report's contents are registry-bound [M].
+- Decision and next action: next hourly check watches for the winner-cohort conversion outcomes.
