@@ -16,7 +16,7 @@ This branch is the experiment branch `dml/sft-patch-11188-utf` archived as is. I
 prototype branch merged with Marin `main` at `7e11f2ee60`, plus the experiment code under
 `experiments/sft_new_mix/`. The day-by-day working record of the three-arm experiment is
 [`experiments/sft_new_mix/patch_experiment/NOTEBOOK.md`](../../experiments/sft_new_mix/patch_experiment/NOTEBOOK.md);
-this notebook summarizes it and adds the later analyses and the typography arm. Analysis scripts and their
+this notebook summarizes it and adds the later analyses and the typography arm. A standalone research note for readers outside the project is [`report.md`](report.md). Analysis scripts and their
 text outputs are in [`analysis/`](analysis/); paths to local checkouts and downloaded eval data are written as
 `$MARIN_CHECKOUT`, `$ANALYSIS_DIR` and `$DATA_DIR`.
 
