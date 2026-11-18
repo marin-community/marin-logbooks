@@ -1,8 +1,20 @@
 # Hero campaign execution inspection
 
-The initial BF16/FP8 comparison is complete. The overnight BF16 search and
-targeted FP8 investigation continue; final selection and review remain pending.
-This record covers actions inspected so far.
+Final status, November 18: retain unbound BF16 DP32/C128. FP8 is unqualified;
+its benefit at retention zero or DP32 is unmeasured. The High review is complete,
+with bounded publication corrections underway. The overnight-search requirement
+is partly unmet because recorded work stopped before the deadline and resumed
+late. The [handoff](handoff.md) states the timing and missing experiments.
+
+Fresh-context children produced useful experiments and evidence, with parent
+guidance. The parent supplied the Marlin lead and requested several controls.
+The BF16 dispatch included an audit naming retention and NUMA as leads. The
+children selected detailed experiments, interpreted results and retained costs,
+but needed help with setup boundaries and evidence scope. This supports guided
+campaign execution; independent discovery of the strongest baseline and reliable
+completion of an unattended search remain unproven.
+
+The chronological inspection below records the earlier decisions and outcomes.
 
 The child started without the parent's implementation conversation. Its native
 session is `01a1ec55-0bb6-7cf0-b8d5-f7c917b7a913`. The parent inspected actual

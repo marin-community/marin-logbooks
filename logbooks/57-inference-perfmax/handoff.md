@@ -9,6 +9,12 @@ accepts it under the provisional serving policy and pins the
 and exact runtime. Terminal output matches the saved cloud summary byte for
 byte. RL learning and trainer probability ratios remain unqualified.
 
+The goal is partly met. The cache correction, inspected campaign and real
+BF16/FP8 comparison are complete. Useful work did not continue through the
+morning deadline, and the handoff was late. DP32/C64 and FP8 at retention zero
+or DP32 remain unmeasured. No replacement experiment was launched after the
+deadline.
+
 Both BF16 model families pass supported zero and positive retention coverage;
 see the [cache extraction handoff](cache-retention-handoff.md). All seven points
 below use GB200s, TP1 and a normal one-hour window on fixed step400407.
@@ -31,8 +37,9 @@ The C64 comparison also lowers host RAM from 768 to 256 GiB; its throughput rise
 24.59% and TTFT falls 11.47%. All other points request 256 GiB. The one C64 error
 is an unexplained HTTP 500, within the native error-ratio rule.
 Warmup errors remain in the native records. One window per point does not quantify
-noise. The initial FP8 gain over retention-128 BF16 does not beat the newer BF16
-throughput result, and FP8's failed numerical checks still block acceptance.
+noise. The selected BF16 point has the highest measured rate in this campaign.
+FP8's benefit at retention zero or DP32 is unknown. Its failed numerical checks
+block acceptance at the settings it actually ran.
 
 The 32-GPU point raises throughput per GPU by 33.12% over the 16-GPU C64 point,
 with similar p90 latency. Allocation and total concurrency double; four sessions
@@ -53,7 +60,9 @@ FP8 remains unqualified. The initial hour verifies packed FP8 expert storage on
 all 16 ranks, with BF16 activations and KV. Its RAM request differs from its
 initial BF16 C64 reference, so that result compares configurations rather than
 isolating weight precision. Canonical Marlin ordering plus deterministic padded
-routing later passes all 19 exact model cache comparisons, batch and decode.
+routing later passes all 19 exact model cache comparisons, batch and decode
+at retention 128 on four and eight GPUs. These results do not qualify retention
+zero or the selected 32-GPU topology. The fixes' throughput remains unmeasured.
 The short-reference maximum remains 0.672875 against the unchanged 0.65 bound.
 Native Triton variants and a 24-of-48-layer W8A16 hybrid also fail reference
 checks. The 16-layer hybrid stops during fixture setup with no numerical report;
@@ -83,15 +92,36 @@ and no owned pod or queued job remains. The last GPU allocation ended at
 The 17:00 UTC handoff deadline was missed. Recorded work stopped near 12:06 UTC
 and the session resumed at 21:24 UTC; the reason for the gap is not established
 here. Native jobs had already ended. No new GPU work was launched afterward.
-The final High GOAL review and contribution publication are being completed
-late. All contributions remain unmerged.
+The final High GOAL review is complete; its bounded corrections and contribution
+publication are being completed late. All contributions remain unmerged.
 
-The [final ordinary checks](analysis/hero-fp8-cache-validation/ordinary-validation-final.json)
-have 144 focused CPU/HTTP/runner passes, plus passing required lint and types.
+The [final review resolution](analysis/hero-fp8-cache-validation/overnight-high-goal-review-resolution.json)
+and [ordinary checks](analysis/hero-fp8-cache-validation/ordinary-validation-final.json)
+have 145 focused CPU/HTTP/runner passes after the High-review fixes, plus passing
+required lint and types. The fixture-failure regression uses a real serialized
+entrypoint, pytest process and retained log/JUnit archive, while preserving a
+nonzero exit. The historical missing exception remains unavailable.
 The broader affected suite stopped after a worker timeout. Two failures
 reproduce in unchanged task-curation tests; the raw failure logs are retained.
 This is not a passing broad-suite result. Final review and CI state will be
 recorded before handback.
+
+For a later authorized rerun, use an isolated checkout of the research branch
+at [88e31071f564](https://github.com/marin-community/marin-logbooks/tree/88e31071f56412f5f6e8702a0644f738d0427543).
+The saved `recommended.yaml` also needs that checkout's `inspect_model.py`;
+the Marin contribution alone does not contain this research check. Prepare the
+environment as described in that checkout, then use the original selected profile:
+
+```sh
+PYTHONPATH=. marin-env uv run python -m experiments.evaluation.knotmeter.cli plan \
+  --profile logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/retention0-dp32-c128.yaml \
+  --campaign hero-bf16-replay --output /tmp/hero-bf16-plan.json
+PYTHONPATH=. marin-env uv run python -m experiments.evaluation.knotmeter.cli run \
+  --profile logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/retention0-dp32-c128.yaml \
+  --campaign hero-bf16-replay --priority interactive \
+  --logbook https://github.com/marin-community/marin-logbooks/blob/88e31071f56412f5f6e8702a0644f738d0427543/logbooks/57-inference-perfmax/hero-bf16-01a1ed83.md \
+  --output /tmp/hero-bf16-execution.json
+```
 
 ## Completed BF16 phase — 2026-11-17
 

@@ -1,10 +1,19 @@
 # Hero baseline reconciliation
 
+Final status, November 18: unbound BF16 TP1/DP32/EP32, retention zero and C128
+is selected at 31.42858 output tokens/s/GPU. The matched NUMA hour demonstrates
+no gain. Retention zero also improves the measured DP16/C32 and C64 points.
+The [final handoff](handoff.md) gives controls, limits and rerun commands. FP8 at
+retention zero or DP32 remains unmeasured. The audit below records the earlier
+starting point before these experiments.
+
+## Initial audit
+
 The earlier 50.71015 output tokens/s/GPU recipe is useful prior evidence. It is
 not a controlled regression baseline for the current 18.94936 result. It uses
 another checkpoint/tokenizer and private compact KV support absent from the
-reviewed runtime. The current C64 point is the highest-throughput qualified
-step400407 point tested so far. C32 gives up 5.34% throughput while nearly
+reviewed runtime. At the initial audit, C64 was the highest-throughput qualified
+step400407 point tested. C32 gave up 5.34% throughput while nearly
 halving p90 request latency. Neither is established as the global best.
 
 The audit reads the [earlier selection](https://github.com/marin-community/marin-logbooks/blob/d6f5660563606d7877e7f40b8a70a59703a35f52/logbooks/19-hero-agentx-throughput/owner-integration/hero-selected-recipe.json),
@@ -47,7 +56,8 @@ Contribution `4b32bbd15a` removes it from future presets. Frozen trial settings
 remain intact. The skill now requires prior winning recipes and effective
 settings to be checked before a maintained default is called the best baseline.
 
-Omitted NUMA binding and the inactive label were missed optimizations. Retention
+Omitted NUMA binding was a missed experimental lead; the inactive label supplied
+no optimization. Retention
 128 originally served the old test; the corrected checks now support zero. Its
 performance remains to be measured on this checkpoint. Graph and compiler
 choices also differ. These are testable leads, with no isolated gain assigned

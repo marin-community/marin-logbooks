@@ -1,0 +1,69 @@
+{
+  "branch": "codex/hero-fp8-selective-publication-01a1ec55",
+  "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-publication-01a1ec55",
+  "head": "906495c0cdeb562a7a7d15532f7ce1b7af431116",
+  "base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "started_from_frozen047": "0474521acd8093ea4cbf884dd435f59d5ecd7d5f",
+  "rename_from": "35c9e15b36e5a83c58908d5ada4bfc12c8720ce4",
+  "head_parent": "0474521acd8093ea4cbf884dd435f59d5ecd7d5f",
+  "publication_scope": "Existing native selective per-tensor online FP8 support and precision-neutral test name. Excludes optional per-layer backend factory API and ignored-BF16 hybrid backend selection.",
+  "checks": {
+    "model_module_bytes_identical_to_frozen047": true,
+    "factory_module_bytes_identical_to_main_base": true,
+    "new_delta_only_test_file": true,
+    "publication_changed_files_exactly_model_and_tests": true,
+    "GrugMoeMLP_ast_matches_tested244": true,
+    "_is_supported_online_fp8_ast_matches_tested244": true,
+    "quantization_rejection_guard_ast_matches_tested244": true,
+    "whole_test_module_ast_identical_after_name_normalization": true,
+    "no_optional_moe_backend_factory_parameter": true,
+    "no_hybrid_ignore_dispatch_in_grug": true
+  },
+  "preserved_sources": {
+    "frozen_selective": {
+      "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-contribution-01a1ec55",
+      "head": "0474521acd8093ea4cbf884dd435f59d5ecd7d5f",
+      "clean": true
+    },
+    "frozen_hybrid": {
+      "path": "/home/romain/work/marin-community/vllm/hero-fp8-selective-hybrid-contribution-01a1ec55",
+      "head": "35c9e15b36e5a83c58908d5ada4bfc12c8720ce4",
+      "clean": true
+    },
+    "tested_runtime": {
+      "path": "/home/romain/work/marin-community/vllm/hero-fp8-01a1ec55",
+      "head": "244247767cef50ef1670a732d416065015e12f01",
+      "clean": true
+    }
+  },
+  "patches": {
+    "selective-publication-from-main.patch": {
+      "path": "/home/romain/data/sessions/devbox/codex/01a1ec55-0bb6-7cf0-b8d5-f7c917b7a913/handoffs/selective-publication-20261118T220315Z/selective-publication-from-main.patch",
+      "sha256": "0a758dda0875734b28b0ea884959bf63ab8831ff3cd3d25b50f79bfb3535322b",
+      "bytes": 9489,
+      "from": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+      "to": "906495c0cdeb562a7a7d15532f7ce1b7af431116"
+    },
+    "hybrid35c9-from-frozen047.patch": {
+      "path": "/home/romain/data/sessions/devbox/codex/01a1ec55-0bb6-7cf0-b8d5-f7c917b7a913/handoffs/selective-publication-20261118T220315Z/hybrid35c9-from-frozen047.patch",
+      "sha256": "ccd914daeea6abdd94439fa45aae87190b5dda29f1a521be23f7dd08d973d438",
+      "bytes": 8401,
+      "from": "0474521acd8093ea4cbf884dd435f59d5ecd7d5f",
+      "to": "35c9e15b36e5a83c58908d5ada4bfc12c8720ce4"
+    },
+    "hybrid35c9-versus-publication.patch": {
+      "path": "/home/romain/data/sessions/devbox/codex/01a1ec55-0bb6-7cf0-b8d5-f7c917b7a913/handoffs/selective-publication-20261118T220315Z/hybrid35c9-versus-publication.patch",
+      "sha256": "5494b40b501ca00f29ab64d53dbcc8c35e301ab52906095d97616b3e98201ec8",
+      "bytes": 7961,
+      "from": "906495c0cdeb562a7a7d15532f7ce1b7af431116",
+      "to": "35c9e15b36e5a83c58908d5ada4bfc12c8720ce4"
+    }
+  },
+  "advisory_reused": {
+    "source": "0474521acd8093ea4cbf884dd435f59d5ecd7d5f",
+    "path": "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-contribution-review-native-readback.json",
+    "reason": "Final High reviewer-requested branch choice and test-name-only fix. Root explicitly requested reuse, no full advisory rerun. The six completed original selective review sessions and their actual model/ID/actions remain retained."
+  },
+  "validation_scope": "Required scoped lint and source/AST checks only. Existing18 GB200 tests and serving evidence apply to frozen244 wheel. No GPU build/run, new numerical investigation, current-main runtime qualification, GitHub push or PR action. Hybrid35c9 remains an unopened proposal.",
+  "clean": true
+}
