@@ -1,10 +1,10 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 338311.3840017319,
-  "gpu_hours": 93.97538444492552,
+  "gpu_seconds": 338398.3840017319,
+  "gpu_hours": 93.99955111159218,
   "cost_complete_for_listed_allocations": true,
-  "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU build used eight requested CPUs for 98 allocated seconds and zero GPUs.",
+  "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98 and 77 allocated seconds, respectively, and zero GPUs.",
   "rows": [
     {
       "name": "Triton FP8 screen",
@@ -332,6 +332,66 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "CPU canonical native wheel build",
+      "receipt": "marlin-canonical-build-a1-execution.json",
+      "state": "succeeded",
+      "gpu_seconds": 0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "bfe16754e40c3c1c",
+          "gpu_seconds": 0.0,
+          "allocation": {
+            "pod_uid": "b2fe3b7e-babf-4878-8553-ba77ab7fb7af",
+            "attempt_uid": "bfe16754e40c3c1c",
+            "pod_name": "iris-romain-hero-fp8-canonical-buil-249d88f8-0-bfe16754e40c3c1c",
+            "node_name": "s2zpxs64",
+            "observed_unix": 1794990461.0255067,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794990364.0,
+            "finished_unix": 1794990441.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794990441.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Installed canonical wrapper and graph controls",
+      "receipt": "marlin-canonical-component-a1-execution.json",
+      "state": "succeeded",
+      "gpu_seconds": 87.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "61033d01392bcac9",
+          "gpu_seconds": 87.0,
+          "allocation": {
+            "pod_uid": "6a04c619-b658-4f92-adc0-a78ef82ac225",
+            "attempt_uid": "61033d01392bcac9",
+            "pod_name": "iris-romain-hero-fp8-canonical-whee-9088c258-0-61033d01392bcac9",
+            "node_name": "shpvxs64",
+            "observed_unix": 1794990768.2552323,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794990646.0,
+            "finished_unix": 1794990733.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794990733.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 87.0
           }
         }
       ]

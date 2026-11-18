@@ -793,3 +793,38 @@ cold installation and full shared model checks precede any new normal hour.
 This component cost 80 GPU seconds. Completed owned cost is 93.975384 GB200
 hours. Both component pods are gone and resource rows 2243/2244 are
 [closed](analysis/hero-fp8-01a1ec55/marlin-order-a3-cleanup.json).
+
+## 2026-11-18 08:36 UTC — Actual canonical wheel and graph path pass
+
+Runtime `467e3fc14427012aa9114127fb41f9c8273ca80a` was packaged through
+the native precompiled path on eight requested CPUs for 77 allocated seconds,
+with zero GPUs. The [normalized manifest](analysis/hero-fp8-01a1ec55/marlin-canonical-build-a1-manifest.json)
+pins wheel SHA256 `c4da6586c454efd499b178fc03077fa5dab9747ed79fcc8c952501a8a370d1d6`.
+All 19 ELF payloads match the immutable 0ac base. The Grug module remains
+unchanged; the wheel's Marlin Python module matches the ported source hash.
+
+A separate cold-install job then exercised the actual patched fused path.
+All ten FP8 cases (1, 16, 115, 128 and 2048 rows, local/mixed EP routing)
+match separately buffered canonical lower-level contributions exactly and
+repeat exactly. Fresh CUDA graphs of this installed fused path at 128 and
+2048 rows match eager output exactly. The same current tensors still show
+the old legal-order difference when sent directly to the unchanged lower-level
+kernel. The hostile inactive-tail regression also passes on the installed
+helper. [Native outputs](analysis/hero-fp8-01a1ec55/marlin-canonical-component-a1-components.json)
+and the [archive receipt](analysis/hero-fp8-01a1ec55/marlin-canonical-component-a1-receipt.json)
+retain the evidence. No installed source overlay was used.
+
+The cold component cost 87 GPU seconds. Its pod and the CPU build pod are
+deleted; resource rows 2245/2246 are closed. Completed owned cost is now
+93.999551 GB200 hours. All earlier full-model and four component-reference
+failures remain failures.
+
+The next four-GPU deployment uses a
+[separate campaign node](../../tests/cluster/vllm/test_hero_fp8_canonical.py)
+and [profile](analysis/hero-fp8-01a1ec55/selective-fp8-canonical-4gpu.yaml).
+It reuses the native correctness deployment, checks actual loaded storage,
+then runs the unchanged shared cache functions at the known failing
+retention128/PIECEWISE/2048 geometry. A cache failure stops before the longer
+suite. A pass proceeds to the full shared suite in the same deployment.
+Only the inactive logical-KV argument is removed in this new profile;
+historical profiles stay source-pinned. CPU collection and required lint pass.
