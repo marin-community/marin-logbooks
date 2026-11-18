@@ -1,0 +1,123 @@
+{
+  "status": "passed",
+  "scope": "Native mixed-precision loader/output and CUDA-graph component, not full-model qualification",
+  "source_commit": "a399f9a0f1582897a44cb4bac690221004516125",
+  "wheel_sha256": "453138ae87b639ef7cac30069aeaaf6a8963cc9f6ae5ae7af896027e113a21ef",
+  "model_sha256": "65e35957606714c57fcc3a19b5ba104b268d3b48d3cbad4f9b849586395748ac",
+  "installed_vllm": "/uv/cache/archive-v0/fujNksCunBYFQcvM/lib/python3.12/site-packages/vllm/__init__.py",
+  "activation_precision": "Native Triton dynamic per-tensor FP8 for quantized layers; BF16 for ignored layers",
+  "kv_precision": "Not exercised by this MoE component; full-model gates must separately verify BF16 KV",
+  "independent_reference_limits": {
+    "atol": 0.05,
+    "rtol": 0.05
+  },
+  "started_unix": 1794998226.4460654,
+  "layers": [
+    {
+      "layer": 0,
+      "method": "UnquantizedFusedMoEMethod",
+      "backend": "UnquantizedMoeBackend.TRITON",
+      "weight_dtypes": [
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ],
+      "weight_bytes": 98304,
+      "scale_shapes": {},
+      "consumer_activation_dtype": "None",
+      "consumer_weight_dtype": "None",
+      "router_dtype": "torch.float32",
+      "projection_dtypes": [
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ]
+    },
+    {
+      "layer": 1,
+      "method": "Fp8PerTensorOnlineMoEMethod",
+      "backend": "Fp8MoeBackend.TRITON",
+      "weight_dtypes": [
+        "torch.float8_e4m3fn",
+        "torch.float8_e4m3fn"
+      ],
+      "weight_bytes": 49152,
+      "scale_shapes": {
+        "w13_weight_scale": [
+          4
+        ],
+        "w2_weight_scale": [
+          4
+        ]
+      },
+      "consumer_activation_dtype": "torch.float8_e4m3fn",
+      "consumer_weight_dtype": "torch.float8_e4m3fn",
+      "router_dtype": "torch.float32",
+      "projection_dtypes": [
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "tokens": 1,
+      "layer": 0,
+      "fp32_reference_max": 6.103515625e-05,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.0
+    },
+    {
+      "tokens": 1,
+      "layer": 1,
+      "fp32_reference_max": 0.001708984375,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.001708984375
+    },
+    {
+      "tokens": 7,
+      "layer": 0,
+      "fp32_reference_max": 0.000244140625,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.0
+    },
+    {
+      "tokens": 7,
+      "layer": 1,
+      "fp32_reference_max": 0.00189208984375,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.00189208984375
+    },
+    {
+      "tokens": 128,
+      "layer": 0,
+      "fp32_reference_max": 0.00025177001953125,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.0,
+      "graph_eager_max": 0.0,
+      "graph_repeat_max": 0.0
+    },
+    {
+      "tokens": 128,
+      "layer": 1,
+      "fp32_reference_max": 0.0028076171875,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.00286865234375,
+      "graph_eager_max": 0.0,
+      "graph_repeat_max": 0.0
+    },
+    {
+      "tokens": 129,
+      "layer": 0,
+      "fp32_reference_max": 0.000244140625,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.0
+    },
+    {
+      "tokens": 129,
+      "layer": 1,
+      "fp32_reference_max": 0.0032958984375,
+      "same_route_repeat_max": 0.0,
+      "bf16_native_difference_max": 0.003173828125
+    }
+  ],
+  "finished_unix": 1794998232.7587187
+}

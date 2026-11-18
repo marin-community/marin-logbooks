@@ -1078,3 +1078,34 @@ The eight-GPU model dry run resolves the explicit24/24 selector and immutable
 a399 manifest without submission. No full-model mixed result is claimed.
 The comparison label will be **24 of48 expert layers in FP8**, with native
 W8A8 activations on those layers, BF16 on the remaining expert layers and KV.
+
+## 2026-11-18 10:41 UTC — Native mixed component passes
+
+The [actual-wheel component](analysis/hero-fp8-01a1ec55/triton-mixed-a3-components.json)
+passes the native ignore-list path. The ignored layer has BF16 expert weights
+and `UnquantizedFusedMoEMethod`; the selected layer has E4M3FN weights and
+`Fp8PerTensorOnlineMoEMethod`, with native FP8 activation quantization. Both
+use Triton, BF16 projections and FP32 routers. All8 output cases pass the
+predeclared component bounds0.05/0.05; repeats are exact. Both128-token raw
+CUDA-graph controls equal eager output and repeat exactly. These tiny components
+do not qualify a full model or KV precision. Native archive SHA256 is
+`b3fb3923ffa9133c24da6f37f815d92aff1e65160d29eb2a7a6156cc9c784cec`.
+Cost76 GPU seconds, pod absent and row2258 closed. Completed owned cost is
+96.248718 GB200 hours including both setup failures.
+
+A serialization label correction is explicit in the
+[derived summary](analysis/hero-fp8-01a1ec55/triton-mixed-a3-summary.json): raw
+`fp32_reference_max` is misnamed. The native `_reference_moe` helper computes
+BF16 matmuls/einsum with FP32 router/normalization operations; it is an independent
+PyTorch BF16 reference, not a pure FP32 oracle. Maximum difference0.0032958984
+is in raw output units. Raw bytes and bounds stay unchanged. This does not
+alter the four earlier genuine FP32-reference failures from the Marlin control.
+
+The [CPU inspector protocol preflight](analysis/hero-fp8-01a1ec55/triton-inspector-cpu-preflight.json)
+executes both real profile commands against a local fake RPC boundary. It
+requires the intended24/48 and48/48 FP8 coverage, exact producer hashes and
+profile DP counts; wrong counts and hashes are rejected in all4 controls.
+This is protocol evidence only. Actual per-rank storage remains a required model
+gate. The paired short model screens separate native selective Triton alone
+from the additional24-layer BF16 protection. They request8+4 GB200s, within32.
+No new performance hour precedes their unchanged full shared numerical checks.

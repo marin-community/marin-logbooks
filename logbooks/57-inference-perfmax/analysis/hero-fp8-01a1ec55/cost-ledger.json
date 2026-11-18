@@ -1,8 +1,8 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 346419.3840017319,
-  "gpu_hours": 96.22760666714774,
+  "gpu_seconds": 346495.3840017319,
+  "gpu_hours": 96.24871777825885,
   "cost_complete_for_listed_allocations": true,
   "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98, 77 and 99 allocated seconds, respectively, and zero GPUs.",
   "rows": [
@@ -602,6 +602,36 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 64.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Native mixed Triton loader/output/graph component",
+      "receipt": "triton-mixed-a3-execution.json",
+      "state": "succeeded",
+      "gpu_seconds": 76.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "32fb22ea16927761",
+          "gpu_seconds": 76.0,
+          "allocation": {
+            "pod_uid": "1a2def4c-92ae-462f-b298-0450b3395b20",
+            "attempt_uid": "32fb22ea16927761",
+            "pod_name": "iris-romain-hero-fp8-triton-mixed-0-3578ab7d-0-32fb22ea16927761",
+            "node_name": "shpvxs64",
+            "observed_unix": 1794998263.7579546,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794998169.0,
+            "finished_unix": 1794998245.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794998245.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 76.0
           }
         }
       ]
