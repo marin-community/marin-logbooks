@@ -5,7 +5,8 @@ description: Improve serving throughput and GPU efficiency for RL rollouts and e
 
 # Improve inference throughput
 
-Use the manual [Knotmeter runner](../../../experiments/evaluation/knotmeter/README.md).
+Use the manual [Knotmeter runner](../../../experiments/evaluation/knotmeter/README.md)
+to replay AgentX's agent sessions.
 Start from its Snowball/H100 or Hero/GB200 YAML preset. Hero and Mochi name the
 same model. Resolve the actual checkpoint and runtime; the presets use BF16.
 
@@ -39,11 +40,14 @@ Consult upstream vLLM and SGLang guidance, recent relevant features and PR or
 issue discussions. Read the source and check the versions before applying an
 idea. The [measurement reference](references/measurement.md) links useful starting
 points. Reuse prior evidence when its model, settings and runtime still apply.
+Read prior winning recipes beyond the maintained preset. Verify which settings
+the installed source consumes. Explain missing optimizations before calling a
+configuration the best applicable baseline.
 
 Identify a plausible bottleneck, predict what a change should affect and seek
 evidence that could reject the hypothesis. Separate a measured cause from a
 correlation. Use profiles and controlled changes when they can resolve that gap.
-When prefix reuse is poor, compare AgentX's actual and theoretical hit rates.
+When prefix reuse is poor, compare AgentX's reported actual and theoretical hit rates.
 Check KV use and routing across data-parallel engines before blaming cache capacity.
 
 Start near the best known throughput bend. Reject poor candidates with CPU,
@@ -52,7 +56,7 @@ likely benefit justifies the GPU time. Confirm promising points under the pinned
 AgentX protocol; repeat when noise could change the decision. This is an adaptive
 ladder, with no fixed grid, compulsory sequence or AgentX ladder score.
 
-Use the resource board and `use-iris` before GPU work. Stay within the agreed
+Use the session's resource board and [use-iris](../use-iris/SKILL.md) before GPU work. Stay within the agreed
 concurrent ceilings across trials and retries. Let the runner's CPU coordinator
 prepare uncached data before GPU allocation. Release idle resources and count setup, compilation, warmup, drain
 and failed allocations. Prioritize GPU efficiency over elapsed time.
@@ -82,4 +86,4 @@ Return the comparison table, latency tradeoffs, evidence links, total GPU cost
 and material gaps. The terminal report and `summary.md` must match. Select a
 qualified point explicitly to write `recommended.yaml` with its settings and
 exact runtime. Explain why it wins against the baseline and label deferred RL
-qualification. Use `manage-pr` for publication; preserve the user's merge boundary.
+qualification. Use [manage-pr](../manage-pr/SKILL.md) for publication; preserve the user's merge boundary.

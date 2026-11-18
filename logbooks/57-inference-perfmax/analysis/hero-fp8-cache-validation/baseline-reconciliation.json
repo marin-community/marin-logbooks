@@ -1,0 +1,392 @@
+{
+  "scope": "Retained-recipe and pinned-source comparison; no reproduction of the earlier checkpoint or PR110 implementation",
+  "old_archive_commit": "d6f5660563606d7877e7f40b8a70a59703a35f52",
+  "old_selected_recipe_sha256": "22199b3fa8e3d0874434fcd585501b08c9efa17d4d6d976c0f82d98cdad3d751",
+  "old_executed_manifest_sha256": "ecb6a83d0ecfe6a491f4eb4f3704dfc6e6b58181dcbe05bfaf5c41a51327f24a",
+  "old_research_source": "76c4802e66705b7c9390207366b1acdea8964f4a",
+  "old_actual_runtime": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+  "old_private_wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+  "old_rate": 50.71015,
+  "old_capacity": {
+    "tokens_per_rank": 2095445,
+    "rank_capacity_log_lines": 16,
+    "available_cache_gib": 82.3,
+    "memory_budget_log_lines": 4,
+    "memory_budget_scope": "One worker log per host, four hosts; not sixteen independent logged budget measurements."
+  },
+  "current_trial": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T030036Z-46000535d09e",
+  "current_source": {
+    "tree_hash": "529504942e",
+    "base_commit": "1c9f39daf3",
+    "dirty": false,
+    "branch": "codex/hero-fp8-01a1ec55",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T19:00:37.166320",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/experiments/evaluation/knotmeter/cli.py",
+      "run",
+      "--profile",
+      "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/bf16-c64.yaml",
+      "--campaign",
+      "perfmax-hero-fp8-01a1ec55",
+      "--priority",
+      "interactive",
+      "--logbook",
+      "https://github.com/marin-community/marin-logbooks/blob/1c9f39daf310aa369e17864744e486089095d0fb/logbooks/57-inference-perfmax/hero-fp8-01a1ec55.md",
+      "--output",
+      "scratch/bf16-c64-a2-plan.json"
+    ]
+  },
+  "current_runtime": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "current_rate": 18.94936,
+  "input_comparison": {
+    "model": {
+      "old": "marin-community/Hero-535B-step144000",
+      "current": "hero-sft-step400407",
+      "same": false
+    },
+    "model_revision": {
+      "old": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+      "current": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+      "same": false
+    },
+    "harness_version": {
+      "old": "1.0.12",
+      "current": "1.0.12",
+      "same": true
+    },
+    "harness_source": {
+      "old": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "current": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "same": true
+    },
+    "dataset": {
+      "old": "semianalysisai/cc-traces-weka-062126-256k",
+      "current": "semianalysisai/cc-traces-weka-062126-256k",
+      "same": true
+    },
+    "dataset_loader": {
+      "old": "semianalysis_cc_traces_weka_062126_256k",
+      "current": "semianalysis_cc_traces_weka_062126_256k",
+      "same": true
+    },
+    "dataset_revision": {
+      "old": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "current": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "same": true
+    },
+    "dataset_sha256": {
+      "old": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "current": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "same": true
+    },
+    "sessions": {
+      "old": 393,
+      "current": 393,
+      "same": true
+    },
+    "max_context": {
+      "old": 262144,
+      "current": 262144,
+      "same": true
+    },
+    "random_seed": {
+      "old": 42,
+      "current": 42,
+      "same": true
+    },
+    "trace_idle_gap_cap_seconds": {
+      "old": 300,
+      "current": 300,
+      "same": true
+    },
+    "tokenizer": {
+      "old": "marin-community/marin-tokenizer",
+      "current": "marin-community/marin-tokenizer-tools",
+      "same": false
+    },
+    "tokenizer_revision": {
+      "old": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "current": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+      "same": false
+    }
+  },
+  "actual_current_cache": {
+    "_block_size_resolved": true,
+    "block_size": 16,
+    "cache_dtype": "auto",
+    "enable_mamba_fine_grained_prefix_cache": false,
+    "enable_prefix_caching": true,
+    "gpu_memory_utilization": 0.95,
+    "is_attention_free": false,
+    "kv_cache_dtype_skip_layers": [],
+    "kv_cache_layout": null,
+    "kv_cache_max_concurrency": 4.205830438991061,
+    "kv_cache_memory_bytes": null,
+    "kv_cache_size_tokens": 1102533,
+    "kv_offloading_backend": "native",
+    "kv_offloading_size": null,
+    "kv_sharing_fast_prefill": false,
+    "mamba_block_size": 16,
+    "mamba_cache_dtype": "auto",
+    "mamba_cache_mode": "align",
+    "mamba_page_size_padded": null,
+    "mamba_ssm_cache_dtype": "auto",
+    "num_cpu_blocks": null,
+    "num_gpu_blocks": 1181872,
+    "num_gpu_blocks_override": null,
+    "prefix_cache_retention_interval": 128,
+    "prefix_caching_hash_algo": "sha256",
+    "prefix_match_unit": null,
+    "replayssm_buffer_len": 16,
+    "skip_page_size_padded": null,
+    "sliding_window": null,
+    "use_kda_recoverssm": false,
+    "use_replayssm": false,
+    "user_specified_block_size": false,
+    "user_specified_mamba_block_size": false
+  },
+  "actual_current_parallel": {
+    "_allow_auto_resolve_cp_interleave_size": true,
+    "_api_process_count": 16,
+    "_api_process_rank": 9,
+    "_coord_store_port": 0,
+    "_data_parallel_master_port_list": [
+      42625,
+      58885,
+      25415,
+      13607
+    ],
+    "all2all_backend": "allgather_reducescatter",
+    "assigned_physical_gpu_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "cp_kv_cache_interleave_size": 1,
+    "cpu_distributed_timeout_seconds": null,
+    "data_parallel_backend": "mp",
+    "data_parallel_external_lb": false,
+    "data_parallel_hybrid_lb": false,
+    "data_parallel_index": 0,
+    "data_parallel_master_ip": "10.186.210.69",
+    "data_parallel_master_port": 17169,
+    "data_parallel_rank": 0,
+    "data_parallel_rank_local": null,
+    "data_parallel_rpc_port": 29501,
+    "data_parallel_size": 16,
+    "data_parallel_size_local": 4,
+    "dbo_decode_token_threshold": 32,
+    "dbo_prefill_token_threshold": 512,
+    "dcp_comm_backend": "ag_rs",
+    "dcp_kv_cache_interleave_size": 1,
+    "dcp_q_replicate": false,
+    "decode_context_parallel_size": 1,
+    "disable_custom_all_reduce": false,
+    "disable_nccl_for_dp_synchronization": true,
+    "distributed_executor_backend": "mp",
+    "distributed_timeout_seconds": null,
+    "dp_sync_interval": 16,
+    "elastic_ep_max_dp_size": 16,
+    "enable_batch_sharded_sampling": false,
+    "enable_dbo": false,
+    "enable_elastic_ep": false,
+    "enable_ep_weight_filter": false,
+    "enable_eplb": false,
+    "enable_expert_parallel": true,
+    "enable_fault_tolerance": false,
+    "eplb_config": {
+      "communicator": null,
+      "log_balancedness": false,
+      "log_balancedness_interval": 1,
+      "num_redundant_experts": 0,
+      "policy": "default",
+      "step_interval": 3000,
+      "use_async": true,
+      "window_size": 1000
+    },
+    "expert_placement_strategy": "linear",
+    "fault_tolerance_config": {
+      "engine_recovery_timeout_sec": 120
+    },
+    "is_moe_model": true,
+    "master_addr": "10.186.210.69",
+    "master_port": 29500,
+    "max_parallel_loading_workers": null,
+    "nnodes": 4,
+    "node_rank": 0,
+    "numa_bind": false,
+    "numa_bind_cpus": null,
+    "numa_bind_nodes": null,
+    "pipeline_parallel_size": 1,
+    "placement_group": null,
+    "prefill_context_parallel_size": 1,
+    "rank": 0,
+    "ray_runtime_env": null,
+    "ray_workers_use_nsight": false,
+    "sd_worker_cls": "auto",
+    "tensor_parallel_size": 1,
+    "ubatch_size": 0,
+    "worker_cls": "vllm.v1.worker.gpu_worker.Worker",
+    "worker_extension_cls": "",
+    "world_size": 1
+  },
+  "actual_current_compilation": {
+    "backend": "inductor",
+    "cache_dir": "",
+    "compilation_time": 0.0,
+    "compile_cache_save_format": "binary",
+    "compile_mm_encoder": false,
+    "compile_ranges_endpoints": [
+      2048
+    ],
+    "compile_sizes": [],
+    "cudagraph_capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56,
+      64,
+      72,
+      80,
+      88,
+      96,
+      104,
+      112,
+      120,
+      128,
+      136,
+      144,
+      152,
+      160,
+      168,
+      176,
+      184,
+      192,
+      200,
+      208,
+      216,
+      224,
+      232,
+      240,
+      248,
+      256
+    ],
+    "cudagraph_copy_inputs": false,
+    "cudagraph_mm_encoder": false,
+    "cudagraph_mode": 1,
+    "cudagraph_num_of_warmups": 1,
+    "cudagraph_specialize_lora": true,
+    "custom_ops": [
+      "none"
+    ],
+    "debug_dump_path": null,
+    "disabled_custom_ops": {},
+    "dynamic_shapes_config": {
+      "assume_32_bit_indexing": false,
+      "evaluate_guards": false,
+      "type": "backed"
+    },
+    "enabled_custom_ops": {},
+    "encoder_compilation_time": 0.0,
+    "encoder_cudagraph_max_frames_per_batch": null,
+    "encoder_cudagraph_max_vision_items_per_batch": 0,
+    "encoder_cudagraph_token_budgets": [],
+    "fast_moe_cold_start": false,
+    "inductor_compile_config": {
+      "benchmark_combo_kernel": true,
+      "combo_kernels": true,
+      "enable_auto_functionalized_v2": false
+    },
+    "inductor_passes": {},
+    "ir_enable_torch_wrap": true,
+    "local_cache_dir": null,
+    "max_cudagraph_capture_size": 256,
+    "mode": 3,
+    "pass_config": {
+      "eliminate_noops": true,
+      "enable_qk_norm_rope_fusion": false,
+      "enable_sp": false,
+      "fi_allreduce_fusion_max_size_mb": null,
+      "fuse_act_padding": false,
+      "fuse_act_quant": false,
+      "fuse_allreduce_rms": false,
+      "fuse_attn_quant": false,
+      "fuse_gemm_comms": false,
+      "fuse_mla_dual_rms_norm": null,
+      "fuse_norm_quant": false,
+      "fuse_qk_norm_rope_kvcache": false,
+      "fuse_rope_kvcache": null,
+      "fuse_rope_kvcache_cat_mla": true,
+      "rope_kvcache_fusion_max_token_num": 256,
+      "sp_min_token_num": null
+    },
+    "splitting_ops": [
+      "vllm::unified_attention_with_output",
+      "vllm::unified_kv_cache_update",
+      "vllm::grug_moe_short_conv"
+    ],
+    "static_all_moe_layers": [],
+    "static_forward_context": {},
+    "traced_files": [],
+    "use_inductor_graph_partition": false
+  },
+  "logical_kv_audit": {
+    "scan_revision": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+    "scan_exit_code": 1,
+    "matches": 0,
+    "current_model_fields": {
+      "global_kv_heads": 6,
+      "local_kv_heads": 12,
+      "num_key_value_heads": 12,
+      "num_attention_heads": 48,
+      "head_dim": 128
+    },
+    "source_contract": "GrugMoeAttention passes cfg.num_kv_heads to Attention and repeats logical global K/V to that count before cache storage. The supplied additional_config key is never read.",
+    "current_leader_host_tokens_per_rank": 1102533,
+    "current_leader_host_available_cache_gib": 81.15,
+    "old_tokens_per_rank": 2095445,
+    "capacity_comparison_caveat": "Different checkpoints and runtime configurations; no isolated throughput ratio or PR110 qualification follows."
+  },
+  "decisions": {
+    "reference": "C64 is the highest-throughput qualified current-checkpoint point tested so far. C32 is the measured lower-latency neighbor. Neither is asserted globally best.",
+    "unavailable": "Earlier private compact KV/PR110 is outside this goal; do not import or qualify it as a prerequisite.",
+    "missed": "The inactive flag and omitted NUMA binding were not deliberate performance exclusions. Retention128 followed the old probe; its optimality is unmeasured.",
+    "next": "Remove the inactive flag from future presets. Test supported NUMA/retention/compile/load changes after endpoint checks, while preserving the current FP8 hour."
+  },
+  "contribution_fix": "4b32bbd15a7359303036e78fb37484281a149b6e",
+  "pr110_status": {
+    "headRefOid": "95f67314bcdb62b0afde6c37a957ca8b6591cc97",
+    "isDraft": true,
+    "mergedAt": null,
+    "state": "OPEN",
+    "title": "Use native GQA for GrugMoE KV caches",
+    "url": "https://github.com/marin-community/vllm/pull/110"
+  },
+  "preparation_comparison": {
+    "old": {
+      "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+      "code_sha256": {
+        "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+        "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    },
+    "current": {
+      "key": "a451c72f990cb5e6cc6650dfd302532ce1799cee6543716fec2124afdfab5ffb",
+      "code_sha256": {
+        "prepare.py": "15b4d2004f67ccec3dc185fba29be7c5d3d33ad31a57c6de782ee38312980634",
+        "recipe.py": "cd768443db39a9cadecfe34b424f708282abcf8eff04d47f1710d2056d287d8e"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    }
+  }
+}

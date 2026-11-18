@@ -1,6 +1,6 @@
 # Hero campaign execution inspection
 
-The campaign is still running. The matched FP8 window, final choice and cleanup
+The campaign is still running. The FP8 window, final choice and candidate cleanup
 remain pending. This record covers actions inspected so far.
 
 The child started without the parent's implementation conversation. Its native
@@ -37,20 +37,30 @@ installed directly. The promoted fixes preserve a normal one-hour measurement
 after explicit diagnostic authorization, keep failed checks blocking acceptance,
 and verify task-local wheel bytes while retaining their durable identity.
 The native selector `online` also has a separate physical precision label.
-The corresponding HTTP/report tests and 28 latest runner cases pass.
+The 68 combined checker, serving and runner cases pass after the review fixes below.
 
 The completed BF16 C64 result has valid native measurement controls, zero
 profiling errors and one retained warmup error. Its numerical report uses cache
 probe v1. The BF16 C32 trial now supplies passing v2 coverage on the same model,
 runtime and serving settings, including all 19 exact controls. Its lower RAM
 limit and benchmark load remain explicit when reusing that evidence.
-Its rate is 18.94936 output
-tokens/s/GPU, with p90 TTFT 312.16459 seconds and completion 324.18918 seconds.
-Complete allocation cost is 28.847778 GB200-hours. The parent read the durable
+The completed C64 rate is 18.94936 output tokens/s/GPU, with p90 TTFT
+312.16459 seconds and completion 324.18918 seconds. Its complete allocation cost
+is 28.847778 GB200-hours. The parent read the durable
 result and original client export. Client cache accounting independently shows
 57.395% reuse against 95.331% theoretical reuse. Server counter decreases remain
 unexplained; they are not evidence of process restarts. The lower C32 neighbor
 tests a capacity hypothesis. It does not establish the cause of the cache gap.
+
+The [C32 neighbor](analysis/hero-fp8-cache-validation/hero-bf16-c32-parent-inspection.json)
+is now complete: 17.93673 output tokens/s/GPU, p90 TTFT 166.45803 seconds and
+completion 171.59327 seconds. It gives up 5.3439% throughput while nearly halving
+latency. Native controls pass with 1,513 profiling successes and no profiling
+errors; two warmup empty-content errors remain recorded. The parent compared
+the original native export and numerical report with the retained summary.
+The 5% similarity heuristic is not a user-approved cutoff. C32 is a defensible
+balanced choice, with C64 retained as the higher-throughput neighbor. Neither
+point has a repeat that quantifies measurement noise.
 
 Reducing the future RAM request from 768 to 256 GiB follows a measured BF16 peak
 near 107 GiB. Both primary points are configured for 16 GB200s and 32 CPUs. Preserve
@@ -69,7 +79,8 @@ Attention and short-conv cache views are BF16. The
 [all-rank summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-weight-storage-summary.json)
 retains the extension hash and rank coverage. A real-storage test rejects a BF16
 tensor reinterpreted as INT32. The short skill now explicitly requires loaded
-storage evidence and separate KV precision; it remains 85 lines.
+storage evidence and separate KV precision. A cold reader prompted an AgentX
+definition and links to operational skills; the guide remains 86 lines.
 
 A bounded source audit found no newer correctness fix for the observed failure.
 [PR130](https://github.com/marin-community/vllm/pull/130) enables an unused full-graph
@@ -85,3 +96,16 @@ because main includes newer ShortConv/full-graph support. Current-main full-mode
 qualification remains pending. The branch's required advisory catalog review
 completed once; it clarified the routed-expert-only test label. The final High
 goal review is still pending.
+
+The contribution's [advisory pass](analysis/hero-fp8-cache-validation/marin-extension-advisory.json)
+completed once. Small fixes align recorded correctness-launch limits with actual
+submission, reuse constants and correct docstrings. Existing lifecycle routines
+and JSON-boundary records remain; the disposition explains each finding.
+
+Four outstanding [PR comments](analysis/hero-fp8-cache-validation/pr-feedback-resolutions.json)
+also led to CPU-only fixes. Concrete golden bindings moved to experiment files
+with identical bytes and successful real lookups. External numerical commands
+and evidence now affect comparison identity. Rejected GPU submissions retain a
+recoverable result; uncertain admission retains unknown cost. Named runtime flags
+replace the preset selection. All 68 focused cases and required lint/types pass.
+Running trials and numerical bounds were unchanged.

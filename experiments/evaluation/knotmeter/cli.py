@@ -201,8 +201,9 @@ def main() -> None:
         command.add_argument("--session-concurrency", type=int)
         command.add_argument("--cluster")
         command.add_argument("--priority", choices=("batch", "interactive"))
-        command.add_argument("--vllm-release")
-        command.add_argument("--vllm-manifest")
+        runtime = command.add_mutually_exclusive_group()
+        runtime.add_argument("--vllm-release")
+        runtime.add_argument("--vllm-manifest")
         command.add_argument(
             "--diagnostic-seconds", type=int, help="Use a short unsafe upstream replay; always unqualified"
         )
@@ -243,11 +244,14 @@ def main() -> None:
             ("session_concurrency", args.session_concurrency),
             ("cluster", args.cluster),
             ("priority", args.priority),
-            ("vllm.release", args.vllm_release),
-            ("vllm.manifest", args.vllm_manifest),
         ):
             if value is not None:
                 overrides.append(f"{key}={json.dumps(value)}")
+        if args.vllm_release is not None or args.vllm_manifest is not None:
+            selection = (
+                {"release": args.vllm_release} if args.vllm_release is not None else {"manifest": args.vllm_manifest}
+            )
+            overrides.append(f"vllm={json.dumps(selection)}")
         profile = load_profile(args.profile, overrides)
         plan = resolve_plan(
             profile,

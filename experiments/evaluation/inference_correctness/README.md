@@ -8,11 +8,11 @@ Check a saved reference without allocating GPUs:
 
 ```sh
 uv run python -m marin.testing.inference.check_endpoint \
-  --fixture snowball-v0.1.1 --lookup
+  --fixture experiments/evaluation/inference_correctness/fixtures/snowball-v0.1.1.json --lookup
 ```
 
-Use `hero-sft-step400407` for Hero/Mochi. The
-[Git fixtures](../../../lib/marin/src/marin/testing/inference/resources/endpoint/)
+For Hero/Mochi, replace the filename with `hero-sft-step400407.json`. The
+[Git fixtures](fixtures/)
 pin checkpoint, tokenizer, manifest hash and a separate acceptance policy.
 Lookup distinguishes `found`, `missing` and `mismatched`. Routine checks read
 saved scores. They do not generate new goldens for a candidate runtime.
@@ -38,11 +38,13 @@ function and fail unless every required check passes:
 
 ```sh
 uv run python -m marin.testing.inference.check_endpoint \
-  --fixture snowball-v0.1.1 --url http://HOST:PORT/v1 --model MODEL \
+  --fixture experiments/evaluation/inference_correctness/fixtures/snowball-v0.1.1.json \
+  --url http://HOST:PORT/v1 --model MODEL \
   --runtime-source FULL_SHA --output correctness.json
 uv run pytest tests/cluster/vllm/test_inference_correctness.py \
   -m cluster -o addopts= --endpoint-url http://HOST:PORT/v1 \
-  --correctness-fixture snowball-v0.1.1 --correctness-model MODEL \
+  --correctness-fixture experiments/evaluation/inference_correctness/fixtures/snowball-v0.1.1.json \
+  --correctness-model MODEL \
   --runtime-source FULL_SHA --correctness-output correctness.json
 ```
 

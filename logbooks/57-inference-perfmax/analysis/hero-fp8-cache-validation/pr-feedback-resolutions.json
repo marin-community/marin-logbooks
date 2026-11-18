@@ -1,0 +1,37 @@
+{
+  "source": "20f15e8dae9cd8c129cd5d4e757c804262a55609",
+  "findings": [
+    {
+      "url": "https://github.com/marin-community/marin/pull/11320#discussion_r4607363707",
+      "issue": "Concrete checkpoint bindings in the reusable library",
+      "resolution": "Move both JSON bindings unchanged to experiments/evaluation/inference_correctness/fixtures. The library reader accepts an explicit file path. Update presets, CLI help and documentation. Historical frozen sources and artifacts retain their original paths. New replay commands use the explicit paths.",
+      "validation": "Byte-for-byte and SHA-256 identity; real CLI lookup found both unchanged manifests."
+    },
+    {
+      "url": "https://github.com/marin-community/marin/pull/11320#discussion_r4607363712",
+      "issue": "External numerical qualifications collapse into one comparison group",
+      "resolution": "When no recorded criteria/policy digest exists, preserve external command and evidence identities in comparison controls. Distinct commands or evidence now suppress relative throughput and reject a baseline recommendation.",
+      "validation": "Two public report regressions retain individually eligible trials but reject mismatched qualification comparisons."
+    },
+    {
+      "url": "https://github.com/marin-community/marin/pull/11320#discussion_r4607363721",
+      "issue": "GPU submission failure after manifest publication has no result/recovery path",
+      "resolution": "Track the acknowledged child handle separately from preparation. Preserve the actual prepared manifest and failure result. Charge zero only before submission or after confirmed NOT_FOUND; uncertain acknowledgement retains unknown cost. Refresh does not turn an empty unknown record into known zero. Recovery reuses the retained failure if the GPU job is absent.",
+      "validation": "Real coordinator/manifest/failure/recovery flow with fake external corpus I/O and Iris. NOT_FOUND and UNAVAILABLE cases remain reportable and cannot write an accepted recommendation."
+    },
+    {
+      "url": "https://github.com/marin-community/marin/pull/11320#discussion_r4607363724",
+      "issue": "Named runtime flags leave incompatible preset selectors",
+      "resolution": "Named mutually exclusive runtime flags replace the whole preset Runtime value, including stale opposite selector and revision.",
+      "validation": "Real plan CLI regression for both release-over-manifest and manifest-over-release, with fake HTTP/Hub I/O."
+    }
+  ],
+  "validation": {
+    "focused_cases": 68,
+    "seconds": 14.11,
+    "lint_and_types": "passed",
+    "new_gpu_allocations": 0,
+    "new_numerical_investigations": 0
+  },
+  "github_replies": "pending source publication after final High GOAL review"
+}

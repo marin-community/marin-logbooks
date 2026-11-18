@@ -21,6 +21,7 @@ from iris.client.client import iris_ctx
 from iris.cluster.client.job_info import get_job_info
 from iris.resources.state import TaskState
 from marin.datakit.chat_template import MARIN_CHAT_TEMPLATE
+from marin.inference.backend import OPENAI_API_SUFFIX
 from marin.inference.config import InferenceModelConfig, VllmCompilationCacheMode, VllmRouterConfig
 from marin.inference.iris_vllm import (
     IrisVllmLaunch,
@@ -34,6 +35,7 @@ from marin.testing.inference.goldens import canonical_bytes
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.artifacts import (
+    PROFILE_EXPORT_RELATIVE_PATH,
     copy_file,
     pack_server_metrics,
     retain_artifacts,
@@ -57,7 +59,7 @@ def interrupt(signum: int, _frame: object) -> None:
 
 
 def gang_attempts(hosts: int) -> dict[str, str]:
-    """Fence the profiling window to the same live native attempts on every host."""
+    """Snapshot the running native attempt on each host for continuity checks."""
     client = iris_ctx().client
     info = get_job_info()
     assert client is not None and info is not None
@@ -292,11 +294,11 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
             router_logs = server.router.log_dir if server.router else None
             if server.model_id != profile.model.repo:
                 raise RuntimeError("The serving endpoint returned a different model ID")
-            metrics = server.worker_server_url.removesuffix("/v1") + "/metrics"
+            metrics = server.worker_server_url.removesuffix(OPENAI_API_SUFFIX) + "/metrics"
             command = benchmark_command(
                 series,
                 manifest["concurrency"],
-                server.server_url.removesuffix("/v1"),
+                server.server_url.removesuffix(OPENAI_API_SUFFIX),
                 output / "aiperf_artifacts",
                 metrics_url=metrics,
             )
@@ -320,7 +322,9 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
                     raise RuntimeError("Required correctness evidence did not pass; AgentX measurement was not started")
                 # The checks exercise prefix reuse. Clear those entries before native AgentX
                 # warmup; the upstream replay and cache-busting controls remain unchanged.
-                reset = requests.post(server.worker_server_url.removesuffix("/v1") + "/reset_prefix_cache", timeout=60)
+                reset = requests.post(
+                    server.worker_server_url.removesuffix(OPENAI_API_SUFFIX) + "/reset_prefix_cache", timeout=60
+                )
                 reset.raise_for_status()
                 record |= {
                     "status": "measuring",
@@ -336,7 +340,7 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
                     sample=output / "client-load.jsonl",
                 )
                 record["measured_unix"] = time.time()
-                exported = json.loads((output / "aiperf_artifacts/profile_export_aiperf.json").read_text())
+                exported = json.loads((output / PROFILE_EXPORT_RELATIVE_PATH).read_text())
                 record["submission_valid"] = exported.get("metadata", {}).get(
                     "submission_valid"
                 ) is True and not exported.get("was_cancelled")

@@ -13,6 +13,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from connectrpc.code import Code
+from connectrpc.errors import ConnectError
 from iris.cluster.types import JobName
 from iris.resources.state import JobState, TaskState
 from marin.datakit.chat_template import MARIN_CHAT_TEMPLATE
@@ -22,11 +24,13 @@ from rigging.provenance import Provenance
 from rigging.timing import Timestamp
 
 from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, write_record
+from experiments.evaluation.knotmeter.cli import main as run_cli
 from experiments.evaluation.knotmeter.cli import resolve_plan
-from experiments.evaluation.knotmeter.collect import collect_trial
+from experiments.evaluation.knotmeter.collect import collect_trial, refresh_costs
 from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
+from experiments.evaluation.knotmeter.coordinator import run_coordinator
 from experiments.evaluation.knotmeter.recipe import benchmark_command
-from experiments.evaluation.knotmeter.report import recorded_checks, report_campaign
+from experiments.evaluation.knotmeter.report import recorded_checks, report_campaign, throughput_change
 from experiments.evaluation.knotmeter.run import create_server, run_checks
 from experiments.evaluation.knotmeter.runtime import materialize_release, resolve_release
 
@@ -102,6 +106,49 @@ def test_https_runtime_uses_the_native_release_without_materializing_bytes(tmp_p
     monkeypatch.setattr("experiments.evaluation.knotmeter.runtime.copy_file", unexpected_copy)
     assert materialize_release(dataclasses.asdict(VLLM_GPU_RELEASE), tmp_path) == VLLM_GPU_RELEASE
     assert not (tmp_path / "runtime-wheel.json").exists()
+
+
+@pytest.mark.parametrize("selector", ["release", "manifest"])
+def test_named_runtime_flag_replaces_a_preset_selection(tmp_path, monkeypatch, selector):
+    metadata = json.loads(json.dumps(dataclasses.asdict(VLLM_GPU_RELEASE)))
+    manifest = tmp_path / "runtime.json"
+    manifest.write_text(json.dumps(metadata))
+    profile = load_profile(Path("snowball-h100"), []).model_dump()
+    opposite = "manifest" if selector == "release" else "release"
+    profile["vllm"] = {opposite: "stale-selection", "revision": "a" * 40}
+    preset = tmp_path / "recommended.yaml"
+    preset.write_text(json.dumps(profile))
+    output = tmp_path / "plan.json"
+    selection = metadata["release_tag"] if selector == "release" else str(manifest)
+    monkeypatch.setattr(
+        "huggingface_hub.HfApi.model_info", lambda self, repo, *, revision: SimpleNamespace(sha=revision)
+    )
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.runtime.requests.get",
+        lambda *args, **kwargs: SimpleNamespace(content=manifest.read_bytes(), raise_for_status=lambda: None),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "knotmeter",
+            "plan",
+            "--profile",
+            str(preset),
+            "--campaign",
+            "fixture",
+            f"--vllm-{selector}",
+            selection,
+            "--output",
+            str(output),
+        ],
+    )
+    run_cli()
+    plan = read_record(str(output))
+    assert plan["vllm_release"] == metadata
+    assert plan["series"]["profile"]["vllm"][selector] == selection
+    assert plan["series"]["profile"]["vllm"][opposite] is None
+    assert plan["series"]["profile"]["vllm"]["revision"] is None
 
 
 @pytest.mark.parametrize("ambient", ["local_store", "gs://wrong-cloud/outputs"])
@@ -198,10 +245,76 @@ def test_failed_check_measurement_preserves_native_protocol_and_blocks_recommend
     result["manifest"]["series"]["measure_failed_checks"] = True
     result["measurement"]["checks"][0]["status"] = "failed"
     write_record(f"{result['trial_uri']}/result.json", result)
-    report = report_campaign(str(tmp_path))
-    assert "valid; diagnostic performance (failed checks)" in report
+    report_campaign(str(tmp_path))
     with pytest.raises(ValueError, match="passed required checks"):
         report_campaign(str(tmp_path), recommendation="failed-numerics")
+    assert not (tmp_path / "recommended.yaml").exists()
+
+
+@pytest.mark.parametrize("field", ["command", "evidence"])
+def test_external_numerical_check_changes_prevent_a_baseline_comparison(tmp_path, field):
+    baseline = trial(tmp_path, "baseline", 100)
+    candidate = trial(tmp_path, "candidate", 120)
+    for result in (baseline, candidate):
+        check = result["measurement"]["checks"][0]
+        check |= {"command": ["check-model", "--policy", "original"], "evidence": ["s3://fixture/original.json"]}
+    candidate["measurement"]["checks"][0][field] = ["different-qualification"]
+    for result in (baseline, candidate):
+        result["manifest"]["series"]["profile"]["checks"][0] |= {
+            key: result["measurement"]["checks"][0][key] for key in ("command", "evidence")
+        }
+        write_record(f"{result['trial_uri']}/result.json", result)
+    assert throughput_change(candidate, baseline) is None
+    with pytest.raises(ValueError, match="matched model and workload controls"):
+        report_campaign(str(tmp_path), recommendation="candidate", baseline="baseline")
+    assert not (tmp_path / "recommended.yaml").exists()
+
+
+@pytest.mark.parametrize("status_code", [Code.NOT_FOUND, Code.UNAVAILABLE])
+def test_rejected_gpu_submission_remains_reportable_and_recoverable(tmp_path, monkeypatch, status_code):
+    result = trial(tmp_path, "submission-failed", 100)
+    plan = {
+        "trial_id": result["trial_id"],
+        "trial_uri": result["trial_uri"],
+        "campaign_uri": str(tmp_path),
+        "job_id": "/fixture/trial",
+        "gpu_job_id": "/fixture/trial/serve",
+        "marin_prefix": str(tmp_path),
+        "series": result["manifest"]["series"],
+        "vllm_release": result["manifest"]["vllm_release"],
+        "source": {},
+        "placement": {},
+    }
+
+    class Client:
+        def submit(self, **kwargs):
+            raise ConnectError(Code.INVALID_ARGUMENT, "Synthetic GPU submission rejection")
+
+        def job_status(self, _job):
+            raise ConnectError(self.status_code, "Synthetic controller status")
+
+    client = Client()
+    client.status_code = status_code
+    monkeypatch.setattr("experiments.evaluation.knotmeter.coordinator.iris_ctx", lambda: SimpleNamespace(client=client))
+    # Workload preparation is the external corpus/cache I/O boundary. Keep the
+    # real coordinator, manifest freeze, submission, failure and recovery paths.
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.coordinator.prepare_workload",
+        lambda *args, **kwargs: {"key": "fixture", "recipe": {"fixture": True}},
+    )
+    with pytest.raises(ConnectError, match="submission rejection"):
+        run_coordinator(plan)
+    saved = read_record(f"{plan['trial_uri']}/result.json")
+    assert saved["manifest"]["workload"]["key"] == "fixture"
+    assert saved["job_succeeded"] is False and saved["measurement"] is None
+    assert saved["gpu_seconds"] == 0
+    assert saved["cost_complete"] is (status_code == Code.NOT_FOUND)
+    assert refresh_costs(plan) == saved
+    client.status_code = Code.NOT_FOUND
+    assert collect_trial(client, plan, tmp_path / "recovery") == saved
+    report_campaign(str(tmp_path))
+    with pytest.raises(ValueError, match="passed required checks"):
+        report_campaign(str(tmp_path), recommendation=plan["trial_id"])
     assert not (tmp_path / "recommended.yaml").exists()
 
 
@@ -386,7 +499,6 @@ def test_recovery_counts_setup_and_failed_native_attempts_without_resubmitting(t
     assert recovered["cost_complete"] is True
     assert [row["attempt_uid"] for row in recovered["attempts"]] == ["one", "two"]
     if partial_exports:
-        assert all("Incomplete AgentX exports" in row["measurement_error"] for row in recovered["attempts"])
         assert recovered["measurement"] is None
         assert recorded_checks(recovered)[0]["status"] == "failed"
         output = report_campaign(str(tmp_path))

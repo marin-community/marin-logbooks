@@ -824,3 +824,55 @@ real-storage test rejects a BF16 tensor reinterpreted as INT32. The short skill
 now asks for this evidence and remains 85 lines. All 62 focused contribution
 cases pass; the later change is documentation only. Benchmark windows and the
 final review remain pending.
+
+## 2026-11-18 — BF16 neighbor and contribution review
+
+The [completed C32 window](analysis/hero-fp8-01a1ec55/bf16-c32-a1-result.json)
+delivers 17.93673 output tokens/s/GPU, versus 18.94936 at C64. Its p90 TTFT falls
+from 312.16459 to 166.45803 seconds; completion falls from 324.18918 to 171.59327.
+Both normal windows pass native measurement validity. C32 retains two warmup
+empty-content errors and zero profiling errors. The
+[parent inspection](analysis/hero-fp8-cache-validation/hero-bf16-c32-parent-inspection.json)
+compares original exports, strict cache results and model/runtime controls.
+C32 gives up 5.34% throughput for nearly half the latency. The 5% similarity
+heuristic is not a user-approved boundary; this one-window comparison supports
+a balanced C32 choice with C64 retained as its throughput neighbor.
+
+The [contribution advisory review](analysis/hero-fp8-cache-validation/marin-extension-advisory.json)
+and four [outstanding PR comments](analysis/hero-fp8-cache-validation/pr-feedback-resolutions.json)
+are addressed in `e99c9bb2fa` and `20f15e8dae`. The latter keeps command/evidence
+identities in external-check comparisons, records failed GPU submissions for
+recovery, and makes named runtime flags replace preset selection. Unknown
+submission status retains unknown cost. Concrete checkpoint bindings moved to
+experiment JSON files with identical bytes and successful real lookups. New
+profiles use explicit paths; historical trial sources and artifacts stay fixed.
+
+All 68 focused checker, serving and runner cases pass in 14.11 seconds. Required
+lint and types pass. The skill remains 86 lines after a cold reader prompted a
+short AgentX definition and links. No extra GPU run or numerical investigation
+was needed for these fixes. The FP8 normal window and final High review remain
+pending; contribution updates are held until that review.
+
+## 2026-11-18 — Overnight amendment and baseline audit
+
+The goal now continues autonomously until 17:00 UTC, with no overnight questions.
+Healthy measurements stay frozen. Targeted numerical-failure investigations
+and further BF16/FP8 improvements are in scope; the existing exclusions remain.
+The final High review will follow the overnight evidence and ordinary validation.
+
+The [baseline audit](baseline-reconciliation.md) compares the earlier 50.71015
+Hero recipe with the actual C64 deployment and pinned source. Both use AgentX
+1.0.12 and the same raw corpus identity. Checkpoint, tokenizer, prepared inputs,
+runtime and cache layout differ. Current global KV repeats six heads to twelve;
+the supplied compact-KV flag is never read. Actual NUMA binding is false.
+Retention and compiler choices also differ. The old private compact cache is
+outside this goal; PR #110 is not a prerequisite. The earlier rate therefore
+does not establish an isolated regression.
+
+Contribution `4b32bbd15a` removes the inactive flag from future presets and adds
+three skill sentences requiring prior winning recipes and effective settings
+to be audited before declaring a baseline best. C64 remains the highest-rate
+qualified current-checkpoint point measured so far; C32 is its latency neighbor.
+Supported NUMA, retention, compiler and load choices now guide the BF16 search.
+The existing child separately prepares a cheap EP workspace/history control for
+the FP8 failure. No current run or historical source was changed.

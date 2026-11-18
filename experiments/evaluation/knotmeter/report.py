@@ -72,7 +72,11 @@ def comparison_controls(result: dict) -> dict:
             | (
                 {"criteria_sha256": check["criteria_sha256"]}
                 if check.get("criteria_sha256")
-                else {key: check.get(key) for key in ("policy", "policy_sha256")}
+                else (
+                    {key: check.get(key) for key in ("policy", "policy_sha256")}
+                    if check.get("policy_sha256")
+                    else {key: check.get(key) for key in ("command", "evidence")}
+                )
             )
             for check in recorded_checks(result)
             if check.get("kind") == "numerical"
@@ -81,6 +85,7 @@ def comparison_controls(result: dict) -> dict:
 
 
 def accepted(result: dict) -> bool:
+    """Return whether measurement, allocation and scoped checks qualify this trial."""
     measurement = result["measurement"]
     if not measurement or not result["job_succeeded"] or not result["cost_complete"]:
         return False

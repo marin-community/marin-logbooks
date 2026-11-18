@@ -6,6 +6,13 @@ take the final three files: `endpoint_checks.py`, its HTTP tests and the
 shared-check README. The first research equivalent is `33a40e6a403d`.
 Extraction is planned; DA5 owns this correction. No LA1 acknowledgement is needed.
 
+Contribution `20f15e8dae9cd8c129cd5d4e757c804262a55609` later moves concrete model
+bindings to `experiments/evaluation/inference_correctness/fixtures/` and makes
+the generic reader accept an explicit JSON path. Both fixture files are
+[byte-identical](analysis/hero-fp8-cache-validation/fixture-move-identity.json)
+to the originals. Use that revision's README and preset paths when extracting
+onto the updated contribution. Historical trial sources retain their old paths.
+
 At pinned vLLM `0ac9dcb157ee86ccb447bc717259159c41ad456a`,
 [`get_replay_boundaries`](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/v1/core/kv_cache_coordinator.py#L314-L359)
 uses the original prompt length. Retention zero therefore does not promise an
