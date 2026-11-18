@@ -1218,3 +1218,19 @@ quality. Their [CPU inspector preflight](analysis/hero-fp8-01a1ec55/hybrid-inspe
 passes intended counts and rejects wrong counts/hashes. Only a passing selected
 configuration would receive a normal32-GPU/R0/C128 hour against BF16's31.42858
 point. Native full-model gates and unchanged exact cache bounds remain required.
+
+## 2026-11-18 11:44 UTC — Native20 pass; correct manual reference context
+
+The corrected source passes all20 native focused tests, with zero failures,
+errors or skips on the actual immutable746 wheel. The later manual component
+used the Marlin forward registry for a reference module constructed under its
+separate Triton config, causing `KeyError: reference.layers.0.mlp.experts`
+before first-row serialization or graphs. Runtime source and wheel remain
+unchanged. The [failure record](analysis/hero-fp8-01a1ec55/hybrid-wheel-a2-failure.json)
+and JUnit retain93 GPU seconds; pod absent and row2264 closed.
+
+The next probe uses each module's own forward-context registry and writes loaded
+metadata before scoring. It reuses the20-pass JUnit with exact validation source,
+wheel and archive hashes instead of repeating compatible completed tests. Only
+the previously missing manual output/graph phase runs. No model gate or hour
+bypasses that compatibility requirement. All numerical bounds stay unchanged.

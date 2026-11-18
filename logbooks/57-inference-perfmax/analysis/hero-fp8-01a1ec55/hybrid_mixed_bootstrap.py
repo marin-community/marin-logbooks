@@ -48,24 +48,33 @@ def main():
     assert hashlib.sha256(Path(marlin.__file__).read_bytes()).hexdigest() == payload["marlin_sha256"]
     sys.path.insert(0, str(root / "infra/release"))
     native = runpy.run_path(str(root / "infra/release/gpu_validation.py"))
-    pytest_exit = native["run_wheel_tests"](
-        SimpleNamespace(
-            package_source_root=root,
-            validation_source_root=root,
-            exclude_test=[],
-            pytest_args=[
-                str(root / "tests/models/test_grugmoe.py"),
-                "-q",
-                "-k",
-                "online_fp8_loading_matches_vllm or hero_online_fp8_latent_and_shared "
-                "or quantization_platform_support or preserves_gpu_tensor_parallel_restriction "
-                "or router_padding_ids_ignore_stale_logits",
-                "--maxfail=1",
-                "--junitxml=" + str(output.with_suffix(".xml")),
-            ],
+    pytest_exit = (
+        native["run_wheel_tests"](
+            SimpleNamespace(
+                package_source_root=root,
+                validation_source_root=root,
+                exclude_test=[],
+                pytest_args=[
+                    str(root / "tests/models/test_grugmoe.py"),
+                    "-q",
+                    "-k",
+                    "online_fp8_loading_matches_vllm or hero_online_fp8_latent_and_shared "
+                    "or quantization_platform_support or preserves_gpu_tensor_parallel_restriction "
+                    "or router_padding_ids_ignore_stale_logits",
+                    "--maxfail=1",
+                    "--junitxml=" + str(output.with_suffix(".xml")),
+                ],
+            )
         )
+        if payload.get("run_focused_pytest", True)
+        else None
     )
-    assert pytest_exit == 0
+    assert pytest_exit in (0, None)
+    if pytest_exit is None:
+        reused = payload["reused_focused_pytest"]
+        assert reused["wheel_sha256"] == payload["candidate_manifest"]["wheels"][0]["sha256"]
+        assert reused["validation_source_commit"] == payload["validation_source_commit"]
+        assert reused["passed"] == 20 and all(reused[key] == 0 for key in ("failed", "errors", "skipped"))
     sys.path.insert(0, str(root))
     # These are the pinned source's independent BF16 reference and tiny Hero
     # configuration. The imported vllm package remains the installed wheel.
@@ -81,6 +90,7 @@ def main():
         "factory_sha256": payload["factory_sha256"],
         "marlin_sha256": payload["marlin_sha256"],
         "pytest_exit": pytest_exit,
+        "reused_focused_pytest": payload.get("reused_focused_pytest"),
         "installed_vllm": vllm.__file__,
         "activation_precision": (
             "BF16 activations: native Marlin W8A16 in FP8 layers, native BF16 Triton in ignored layers"
@@ -191,6 +201,7 @@ def main():
                 assert item["router_dtype"] == "torch.float32", item
                 assert item["projection_dtypes"] == ["torch.bfloat16", "torch.bfloat16"], item
                 record["layers"].append(item)
+                output.write_text(json.dumps(record, indent=2) + "\n")
             init_workspace_manager(torch.device("cuda"))
             for count in (1, 7, 128, 129):
                 inputs = torch.randn(count, cfg.hidden_dim, device="cuda", dtype=torch.bfloat16) / 4
@@ -199,6 +210,7 @@ def main():
                     with set_forward_context(None, config, num_tokens=count):
                         actual = module(inputs.clone()).clone()
                         repeated = module(inputs.clone()).clone()
+                    with set_forward_context(None, reference_config, num_tokens=count):
                         reference_native = reference(inputs.clone()).clone()
                     assert torch.isfinite(actual).all() and torch.count_nonzero(actual) > 0
                     torch.testing.assert_close(actual.float(), expected.float(), atol=0.05, rtol=0.05)
