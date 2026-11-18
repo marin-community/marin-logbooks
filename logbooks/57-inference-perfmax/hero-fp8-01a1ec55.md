@@ -763,3 +763,33 @@ unchanged from the completed attempt. These checks prevent a repeat of the
 serialization failure; they provide no GPU numerical evidence.
 
 Completed owned cost is now 338,231.384 GPU seconds (93.953162 GB200 hours).
+
+## 2026-11-18 08:27 UTC — Native FP8 order sensitivity reproduced
+
+The order-only component completed on one GB200 (SM100, 152 multiprocessors)
+using the installed selective wheel and unchanged native payloads. Eighteen of
+28 legal-layout comparisons change. All 14 varied-magnitude, native-quantized
+cases change at 16 through 2048 rows: maximum W13 difference 0.0009765625 and
+maximum routed contribution difference 0.000030517578125. Four of 14
+exactly representable cases also change, with contribution maximum 0.015625.
+Identical-order and canonical-order repeats are exact throughout. The
+[complete component record](analysis/hero-fp8-01a1ec55/marlin-order-a3-components.json),
+[summary](analysis/hero-fp8-01a1ec55/marlin-order-a3-summary.json) and
+[verified native archive](analysis/hero-fp8-01a1ec55/marlin-order-a3-receipt.json)
+retain the outputs and source controls. This establishes component applicability
+of the order lead to FP8/EP on GB200; full-model attribution remains open.
+
+The separate runtime branch `codex/hero-fp8-marlin-order-01a1ec55` starts from
+frozen selective source `244247767cef50ef1670a732d416065015e12f01`.
+It ports upstream PR #52532 at `e8a07dcccf8e48dd4b9b42a355fc6d5b9db59073`:
+the unchanged Python canonicalizer and call, plus its existing-file regression
+test. The [concrete patch](analysis/hero-fp8-01a1ec55/marlin-canonical-runtime.patch)
+changes no quantizer, scale layout, Grug module or native source. The
+[CPU check](analysis/hero-fp8-01a1ec55/marlin-canonical-cpu-validation.json)
+executes the hostile-tail regression and verifies that the helper AST matches
+the successful component control. Native precompiled packaging, actual-wheel
+cold installation and full shared model checks precede any new normal hour.
+
+This component cost 80 GPU seconds. Completed owned cost is 93.975384 GB200
+hours. Both component pods are gone and resource rows 2243/2244 are
+[closed](analysis/hero-fp8-01a1ec55/marlin-order-a3-cleanup.json).

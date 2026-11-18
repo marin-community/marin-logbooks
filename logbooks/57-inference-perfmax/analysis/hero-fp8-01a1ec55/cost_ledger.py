@@ -20,6 +20,7 @@ INPUTS = (
     ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),
     ("Marlin history component import failure", "marlin-history-a1-execution.json", None),
     ("Marlin order control partial writer failure", "marlin-order-a2-execution.json", None),
+    ("Marlin order-only control", "marlin-order-a3-execution.json", None),
     ("Selective screen withdrawn before scheduling", "selective-fp8-marlin-a1-queue-cost.json", None),
     ("Selective full-model screen", "selective-fp8-marlin-a2-execution.json", None),
     ("BF16 C64", "bf16-c64-a2-result.json", "bf16-c64-a2-native"),

@@ -33,6 +33,8 @@ def main() -> None:
     assert torch.__version__ == "2.14.1+cu132", torch.__version__
     source = root / "vllm/model_executor/models/grugmoe.py"
     assert hashlib.sha256(source.read_bytes()).hexdigest() == payload["model_sha256"]
+    marlin = root / "vllm/model_executor/layers/fused_moe/experts/marlin_moe.py"
+    assert hashlib.sha256(marlin.read_bytes()).hexdigest() == payload["marlin_sha256"]
     environment = os.environ | {
         "VLLM_USE_PRECOMPILED": "1",
         "VLLM_PRECOMPILED_WHEEL_LOCATION": str(base),
@@ -58,7 +60,11 @@ def main() -> None:
     }
     with zipfile.ZipFile(wheel) as archive:
         model_sha = hashlib.sha256(archive.read("vllm/model_executor/models/grugmoe.py")).hexdigest()
+        marlin_sha = hashlib.sha256(
+            archive.read("vllm/model_executor/layers/fused_moe/experts/marlin_moe.py")
+        ).hexdigest()
     assert model_sha == payload["model_sha256"]
+    assert marlin_sha == payload["marlin_sha256"]
     with wheel.open("rb") as stream:
         digest = hashlib.file_digest(stream, "sha256").hexdigest()
     record = {
@@ -71,6 +77,7 @@ def main() -> None:
         "wheel_sha256": digest,
         "wheel_bytes": wheel.stat().st_size,
         "model_sha256": model_sha,
+        "marlin_sha256": marlin_sha,
         "native_members": candidate_native,
         "native_payloads_equal_base": True,
         "command": command,
