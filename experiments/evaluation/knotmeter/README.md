@@ -99,6 +99,10 @@ The terminal prints the CPU coordinator's Iris job ID, trial URI and recovery
 commands. Its GPU child job is that ID followed by `/serve`. `run` waits
 by default. It also captures pod allocation times, including setup before
 Python starts, through the selected cluster's existing `kubectl` configuration.
+Synchronous `run` exits nonzero after retaining the report if its coordinator
+or GPU job failed. `recover` also exits nonzero for a failed GPU result, including
+rejected submission. A completed diagnostic can exit zero with failed numerical
+checks; inspect validity and check states before selecting a recommendation.
 Capture records contain only timing and identity fields. If a pod expires, a retained scheduling
 time plus Iris's terminal observation gives a conservative end time. Missing
 timestamps remain unknown. `--no-wait` returns after submission; detached runs

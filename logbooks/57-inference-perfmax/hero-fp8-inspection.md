@@ -1,7 +1,8 @@
 # Hero campaign execution inspection
 
-The campaign is still running. The FP8 window, final choice and candidate cleanup
-remain pending. This record covers actions inspected so far.
+The initial BF16/FP8 comparison is complete. The overnight BF16 search and
+targeted FP8 investigation continue; final selection and review remain pending.
+This record covers actions inspected so far.
 
 The child started without the parent's implementation conversation. Its native
 session is `01a1ec55-0bb6-7cf0-b8d5-f7c917b7a913`. The parent inspected actual
@@ -80,15 +81,17 @@ Attention and short-conv cache views are BF16. The
 retains the extension hash and rank coverage. A real-storage test rejects a BF16
 tensor reinterpreted as INT32. The short skill now explicitly requires loaded
 storage evidence and separate KV precision. A cold reader prompted an AgentX
-definition and links to operational skills; the guide remains 86 lines.
+definition and links to operational skills. The guide now has 89 lines,
+including the later requirement to audit prior baselines.
 
-A bounded source audit found no newer correctness fix for the observed failure.
+Before the overnight amendment, a bounded fork audit found no applicable newer
+correctness fix for the observed failure.
 [PR130](https://github.com/marin-community/vllm/pull/130) enables an unused full-graph
 mode and adds a BF16 Triton table. [PR107](https://github.com/marin-community/vllm/pull/107)
 changes allocation/copying, with retained output/cache equality evidence. The
 null-row correctness fix, PR126, is already in the tested base. These findings
-give little support for another GPU run on this lead while the reference failure
-also remains. No backport or additional numerical run was performed.
+gave little support for another GPU run on those changes while the reference
+failure also remained. That audit did not cover the later upstream Marlin lead.
 
 The prepared runtime contribution `0474521acd` applies the same quantization
 logic to current main `47a8e415bf`. Its whole module differs from tested `2442477`
@@ -109,3 +112,64 @@ and evidence now affect comparison identity. Rejected GPU submissions retain a
 recoverable result; uncertain admission retains unknown cost. Named runtime flags
 replace the preset selection. All 68 focused cases and required lint/types pass.
 Running trials and numerical bounds were unchanged.
+
+The [completed FP8 hour](analysis/hero-fp8-cache-validation/hero-fp8-c64-parent-inspection.json)
+measures 22.62167 output tokens/s/GPU, 19.38% above BF16 C64. Its p90 TTFT is
+263.60362 seconds and completion is 278.60459 seconds. All native validity
+checks pass, with 2,079 profiling successes and zero profiling errors. The parent
+read the original client export, JSONL and numerical report. The final JSONL
+contains one warmup empty-content error despite an earlier progress log showing
+zero. All four recorded task-memory peaks stay below the 256-GiB limit; the
+leader peaks near 112.28 GiB before final artifact upload. Total cost is
+29.472222 GB200-hours.
+
+Short-reference maximum/P99 and exact cache replay still fail. Coverage of
+reuse and branches passes. The [real-result report check](analysis/hero-fp8-cache-validation/real-fp8-rejection.json)
+uses the unchanged trial with every non-numerical acceptance condition passing.
+It renders a diagnostic report and rejects explicit selection. No accepted
+profile or decision is written. The
+[reproduction script](analysis/hero-fp8-cache-validation/check_real_recommendation_blocking.py)
+takes the retained result, a new local campaign directory and a receipt path.
+The numerical failure remains distinct from valid performance measurement.
+
+A second fresh-context child, `01a1ed83-c2a5-74b1-b98d-b48055085778`, now owns
+BF16 configuration experiments under a separate 32-GB200 ceiling. The parent
+inspected its actual guide, old-recipe and source reads, plus isolated worktree
+creation. Two historical fixture aliases failed in CPU preparation with zero
+GPU allocation. Contribution `fe89246124` now catches this during plan resolution;
+the current preset plans successfully. Its 34 affected runner cases pass.
+Both corrected retention-zero trials now run the shared checks. A zero-GPU
+NUMA dependency probe passes without changing shared packages or images.
+
+The FP8 child separately probes expert mapping, workspace history and legal
+token-order changes. Its first component attempt stopped on an import error,
+charging 59 GPU-seconds without kernel evidence. Parent research found upstream
+[issue #52525](https://github.com/vllm-project/vllm/issues/52525) and
+[PR #52532](https://github.com/vllm-project/vllm/pull/52532): Marlin can change
+results under equivalent within-expert layouts. Pinned `0ac9dcb` passes alignment
+output directly onward and already uses FP32 reduction without atomic addition.
+The upstream evidence uses other shapes and quantization formats. It is a lead
+for a cheap control, not a demonstrated cause of Hero's mismatch.
+
+The [order control](analysis/hero-fp8-01a1ec55/marlin-order-a3-summary.json)
+now finds different outputs for equivalent token layouts in 18 of 28 cases.
+All 14 varied-weight cases are sensitive; their largest final contribution
+difference is 0.000030517578125. This establishes component order sensitivity,
+not its contribution to the full-model failure. The earlier component attempt
+also retains four failed FP32-reference comparisons at 2% bounds. The next test
+does not erase those failures or change their bounds.
+
+The child ported the upstream canonicalization to a separate runtime, `467e3fc144`,
+leaving the original `244247767c` frozen. A CPU build preserved all 19 native
+payload hashes. The [cold installed-wheel check](analysis/hero-fp8-01a1ec55/marlin-canonical-component-a1-components.json)
+passes ten native FP8 cases, two CUDA-graph cases and the inactive-tail regression.
+The parent inspected these records and the full-model test node. It first checks
+loaded storage and cache replay, then runs the unchanged shared suite only after
+those pass. This avoids another setup if the cache result is promising. The
+four-GB200 screen is queued; component success does not qualify its model.
+
+The second child also exposed a misleading successful CLI exit after failed CPU
+preparation. Contribution `3a1a01b2ea` makes synchronous run and recovery preserve
+the failed report and return failure. Its regression exercises the actual recovery
+command after rejected submission; the 34 affected runner cases pass. Native
+measurement validity, numerical status and accepted selection remain separate.

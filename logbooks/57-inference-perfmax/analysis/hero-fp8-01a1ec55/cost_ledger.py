@@ -17,8 +17,12 @@ INPUTS = (
     ("Overlay import-binding failure", "selective-component-a2-failed-execution.json", None),
     ("Overlay input-hash failure", "selective-component-a3-failed-execution.json", None),
     ("CPU native wheel build", "selective-build-a1-execution.json", None),
+    ("CPU canonical native wheel build", "marlin-canonical-build-a1-execution.json", None),
+    ("Installed canonical wrapper and graph controls", "marlin-canonical-component-a1-execution.json", None),
     ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),
     ("Marlin history component import failure", "marlin-history-a1-execution.json", None),
+    ("Marlin order control partial writer failure", "marlin-order-a2-execution.json", None),
+    ("Marlin order-only control", "marlin-order-a3-execution.json", None),
     ("Selective screen withdrawn before scheduling", "selective-fp8-marlin-a1-queue-cost.json", None),
     ("Selective full-model screen", "selective-fp8-marlin-a2-execution.json", None),
     ("BF16 C64", "bf16-c64-a2-result.json", "bf16-c64-a2-native"),
@@ -114,7 +118,7 @@ def main() -> None:
             "those activities are not separately timed. "
             "Matching follower attempts use their leader timing, verified by native gang attempt IDs. "
             "Unsplit failures and numerical/component screens retain their full allocation cost. "
-            "CPU build used eight requested CPUs for 98 allocated seconds and zero GPUs."
+            "CPU builds each requested eight CPUs for 98 and 77 allocated seconds, respectively, and zero GPUs."
         ),
         "rows": rows,
     }

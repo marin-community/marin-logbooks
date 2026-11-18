@@ -1,10 +1,12 @@
 # Inference validation and tuning
 
-The Hero FP8 extension is running. Both BF16 models now pass supported zero and
+The overnight Hero campaign is running. Both BF16 models now pass supported zero and
 positive retention coverage; see the [cache handoff](cache-retention-handoff.md).
 The [Hero campaign](hero-fp8-01a1ec55.md) has completed BF16 C64 and C32 windows;
-the FP8 C64 diagnostic window is still running. C32 loses 5.34% throughput while
-nearly halving p90 latency. The [execution inspection](hero-fp8-inspection.md)
+FP8 C64 also completed a valid hour at 22.62167 output tokens/s/GPU, with failed
+numerical checks blocking acceptance. BF16 C32 loses 5.34% throughput while
+nearly halving p90 latency. The [baseline audit](baseline-reconciliation.md)
+now guides retention/NUMA tests and targeted FP8 controls. The [execution inspection](hero-fp8-inspection.md)
 records actual weight-storage proof and remaining numerical gaps. A new final
 High review is pending. All contributions remain unmerged.
 
