@@ -1300,3 +1300,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R]; #11619 comment 6964135906 [P].
 - Interpretation and limitations: quiet window.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-18 01:40 UTC - Hourly catch-up (00:35–01:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `9cbe20a66a…` (23:30:35 UTC Nov 17) to head `b9c7f2101a2f16ff7386f4cf1ec18ed9ece46456`, landed 00:06:13 UTC (4 landings 23:48–00:06 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 9cbe20a6..b9c7f210` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Rebuilt-cohort remediation completed end to end**: retained releases bound (`298a6c9b00…`); the four re-measured Evalchemy evals completed end to end (`5628db75e7…`); the serving cluster recorded in the repair review report (`9296df6d1c…`).
+  - **Census-receipt validation tightened**: census receipts refused when their own evidence contradicts them (`b9c7f2101a…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the re-measured eval outcomes are registry-bound [M].
+- Decision and next action: next hourly check watches for rebuilt-cohort admission outcomes.
