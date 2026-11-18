@@ -469,7 +469,11 @@ recorded here.
   `s3://marin-us-east-02a/tmp/ttl=30d/benfeuer/snowball-deletion-tuning/micro210-base-20261118/parent-base-full/long-loop/micro210-snowball-deletion-tuning-base-full/2026.11.18.3`
   (terminal.json `state: succeeded`, resolved-launch.yaml, dumped_evals with
   all 20 benchmark jsonl + aggregated_results.jsonl, preallocation
-  validation); local working copy at
+  validation). Durable scored-results copy (per-attempt dumps, summaries,
+  terminal.json, resolved-launch.yaml; rollouts excluded) at
+  `s3://marin-us-east-02a/marin/users/benfeuer/snowball-deletion-tuning/micro210-base/2026.11.18.3/`
+  with per-file SHA-256 in its `checksums.json` (24 files, 30,750,002 bytes);
+  local working copy at
   `experiments/active/snowball-deletion-tuning/base-row-results/`.
 - Environment and hardware when relevant: cw-us-east-02a; policy fleet 128
   H100 (16 nodes x 8), judge 8 H100.
