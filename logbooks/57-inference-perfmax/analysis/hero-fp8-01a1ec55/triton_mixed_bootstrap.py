@@ -68,8 +68,8 @@ def main():
         hidden_dim=128,
         latent_dim=64,
         intermediate_dim=64,
-        shared_expert_intermediate_dim=0,
-        num_shared_experts=0,
+        shared_expert_intermediate_dim=64,
+        num_shared_experts=2,
         head_dim=32,
     ).validate()
     quantization = OnlineQuantizationConfig(

@@ -1034,3 +1034,31 @@ Triton natively accepts both. Its FP8 path also dynamically quantizes activation
 which is a deliberate change from Marlin W8A16 and will be recorded separately
 from BF16 KV. A small actual-wheel loader/output/graph component must pass
 before a model screen. The unchanged full shared gates precede any new hour.
+
+## 2026-11-18 10:33 UTC — Mixed configuration preparation
+
+The first one-GPU mixed component stopped before constructing layers: the tiny
+Hero configuration requires `num_shared_experts > 0`. This was a setup mistake,
+not kernel or numerical evidence. It cost68 GPU seconds. Its native log/receipt,
+failed execution and [cleanup](analysis/hero-fp8-01a1ec55/triton-mixed-a1-failure.json)
+are retained; pod absent and row2256 closed. The corrected configuration uses the
+same shared-expert values as the existing native Hero regression. A
+[CPU preflight](analysis/hero-fp8-01a1ec55/triton-mixed-a2-cpu-preflight.json)
+executes the exact pinned config class, native tiny helper and actual bootstrap
+expression without CUDA imports. It reproduces the old rejection and accepts
+the corrected configuration. Required lint passes before retry.
+
+The [prepared eight-GPU model profile](analysis/hero-fp8-01a1ec55/mixed-fp8-triton-8gpu.yaml)
+keeps the same source wheel, model, goldens, bounds, graphs and retention128.
+Native Triton is the declared backend change. Exactly24 explicit ignore patterns
+keep outer expert layers BF16. New metadata requires the expected native method,
+actual float8/BF16 tensor dtypes, shape, payload/storage bytes, scales and W8A8
+consumer metadata for every layer. It separately checks BF16 projections, FP32
+routers and typed BF16 attention/ShortConv cache views. Full per-rank records
+remain native artifacts. The campaign cache-first test now takes its inspector
+from the profile's existing serving check; shared checking code is untouched.
+No model allocation or performance hour is authorized by a component setup exit.
+
+Correction to the first estimate:24 FP8 layers save about15.2 GiB/GPU at16 ranks,
+or30.4 GiB at eight, based on measured full-FP8 expert payload bytes. The earlier
+30 GiB-at16 estimate counted the whole expert saving rather than half.

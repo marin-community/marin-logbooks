@@ -1,8 +1,8 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 346287.3840017319,
-  "gpu_hours": 96.19094000048108,
+  "gpu_seconds": 346355.3840017319,
+  "gpu_hours": 96.20982888936996,
   "cost_complete_for_listed_allocations": true,
   "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98, 77 and 99 allocated seconds, respectively, and zero GPUs.",
   "rows": [
@@ -542,6 +542,36 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 5084.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mixed Triton component configuration failure",
+      "receipt": "triton-mixed-a1-execution.json",
+      "state": "failed",
+      "gpu_seconds": 68.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "ae0f312b4d46e218",
+          "gpu_seconds": 68.0,
+          "allocation": {
+            "pod_uid": "aa04341a-008d-42e8-bc45-8d41298c8317",
+            "attempt_uid": "ae0f312b4d46e218",
+            "pod_name": "iris-romain-hero-fp8-triton-mixed-0-3654ec7c-0-ae0f312b4d46e218",
+            "node_name": "shpvxs64",
+            "observed_unix": 1794997738.460305,
+            "phase": "Failed",
+            "scheduled_unix": 1794997646.0,
+            "finished_unix": 1794997714.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794997714.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 68.0
           }
         }
       ]
