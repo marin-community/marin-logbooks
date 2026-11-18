@@ -11,8 +11,6 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict, Field
 from rigging.filesystem.buckets import filesystem_for
 
-FIXTURES = Path(__file__).parent / "resources" / "endpoint"
-
 
 class Record(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
@@ -133,11 +131,8 @@ def history_digest(tokens: tuple[int, ...]) -> str:
     return hashlib.sha256(canonical_bytes(tokens)).hexdigest()
 
 
-def read_fixture(name: str) -> ModelFixture:
-    path = Path(name)
-    if not path.is_file():
-        path = FIXTURES / f"{name}.json"
-    return ModelFixture.model_validate_json(path.read_bytes())
+def read_fixture(path: str) -> ModelFixture:
+    return ModelFixture.model_validate_json(Path(path).read_bytes())
 
 
 def lookup_reference(fixture: ModelFixture) -> ReferenceLookup:
