@@ -988,4 +988,7 @@ both sides. All 145 focused cases pass with that synthetic runtime identity,
 and scoped lint passes. No production gate or numerical bound changed. No GPU
 qualification transfers from the campaign's `0ac9dcb157` runtime to the current
 main release or contribution ports. The missed overnight requirement remains
-unmet. Final CI is recorded in the contribution publication evidence.
+unmet. Final Marin CI passes on `3d04a90d36`: 17 successful checks and 20 skipped.
+The runtime drafts each pass three Marin-owned CPU checks; their retained record
+also discloses upstream skips and one cancellation. Publication evidence keeps
+these checks separate from numerical GPU qualification.

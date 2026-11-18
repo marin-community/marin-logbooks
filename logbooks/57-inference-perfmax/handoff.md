@@ -104,7 +104,8 @@ entrypoint, pytest process and retained log/JUnit archive, while preserving a
 nonzero exit. The historical missing exception remains unavailable.
 The broader affected suite stopped after a worker timeout. Two failures
 reproduce in unchanged task-curation tests; the raw failure logs are retained.
-This is not a passing broad-suite result. Final Marin CI is pending after the protocol-fixture correction below.
+This is not a passing broad-suite result. Marin CI is terminal: 17 successful checks and 20 skipped.
+The protocol-fixture correction and exact head are recorded below.
 
 For a later authorized rerun, use an isolated checkout of the research branch
 at [88e31071f564](https://github.com/marin-community/marin-logbooks/tree/88e31071f56412f5f6e8702a0644f738d0427543).
@@ -308,3 +309,10 @@ fix passes all 145 focused cases with the synthetic identity set to `47a8e415`.
 The production gate and campaign's fixed runtime are unchanged.
 The maintained preset inherits Marin's selected runtime; this campaign supplies
 no GPU or performance qualification for `47a8e415`.
+
+[Marin CI](analysis/hero-fp8-cache-validation/marin-draft-ci-terminal.json) is
+terminal on contribution `3d04a90d36e393683a25ea01c1b3528f12ec3204`: 17 checks
+succeeded and 20 were skipped. Each runtime draft has three successful
+Marin-owned CPU checks. Its [full CI record](analysis/hero-fp8-cache-validation/runtime-draft-ci-terminal.json)
+also preserves upstream skips and one cancelled upstream check on #132.
+These CPU checks do not add GPU numerical or performance qualification.
