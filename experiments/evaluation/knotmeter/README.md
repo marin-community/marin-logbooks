@@ -40,9 +40,13 @@ for longer check commands. Dotted paths address mappings; list indices are unsup
 
 The runner resolves Marin's selected serving wheel once. `--vllm-release TAG`
 uses another published release. `--vllm-manifest URI` accepts a build manifest
-without changing `config/external/vllm/gpu.toml`. For an experimental build, reuse
-the fork's [Docker wheel target and build configuration](https://github.com/marin-community/vllm/blob/main/infra/release/README.md#gpu-build-configuration),
-then supply its `VllmGpuRelease` JSON: `release_tag`, `source_commit`,
+without changing `config/external/vllm/gpu.toml`. Reuse the fork's native build
+paths. For Python-only changes, its
+[precompiled build](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/setup.py#L939-L951)
+can reuse a compatible base wheel. Verify the reused native payload hashes and
+cold-install the actual candidate wheel for validation. For native code changes,
+use the [Docker wheel target](https://github.com/marin-community/vllm/blob/main/infra/release/README.md#gpu-build-configuration).
+Supply the resulting `VllmGpuRelease` JSON: `release_tag`, `source_commit`,
 `version`, `torch_backend`, `torch_version` and architecture-specific `wheels`
 with `architecture`, `sm_targets`, `url` and `sha256`. Worker-accessible wheel
 URLs must remain available for recovery. Optional `vllm.repo` and
