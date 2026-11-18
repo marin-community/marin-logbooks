@@ -246,17 +246,57 @@ text outputs are in [`analysis/`](analysis/); paths to local checkouts and downl
   correctly, and non-English typography after normalization was not evaluated.
 - Decision and next action: see the final decision.
 
+### 2026-11-17 - Exposure and value of the typography repair
+
+- Question or hypothesis and reason for trying it: how much training data did the repair touch, and is
+  there a reason to adopt it beyond the measured incidence drop?
+- Published source revision: this branch; stored rollouts and the normalization report only.
+- Command or material configuration: exposure combines `typography/stores/catalog-report.json` with the
+  step-0 weights in `experiments/post_training/long_loop/specs/sft-train_weights.json` (unchanged for steps
+  0-249). A step is 256 sequences of 262,144 tokens, 67.1 million positions, and each sequence is drawn from
+  one mixture component in proportion to its weight. Documents seen per component are positions drawn divided
+  by the store's mean document length. Rewritten documents are estimated from each store's share of rewritten
+  rows, which undercounts if rewritten documents are longer than average.
+- Result:
+
+  | | Whole SFT stores | First 100 steps | All 222 steps |
+  |---|---|---|---|
+  | Training positions | 234.4B tokens (SFT only) | 6.71B (5.34B SFT, 79.5%) | 14.90B (11.84B SFT) |
+  | SFT documents | 21.2M | about 462k | about 1.03M |
+  | Documents rewritten | 7.14M (34%) | about 156k (34%) | about 346k (34%) |
+  | Characters replaced | 78.4M | about 1.7M | about 3.8M |
+  | Net tokens removed | 58.0M (0.025%) | about 1.3M (0.02%) | about 2.8M (0.02%) |
+
+  About 27% of all training positions fall in documents that contain at least one of the characters. The
+  most exposure comes from `math_v3` (weight 16.2%, 34% of rows rewritten), `math_v2/high` (5.5%, 76%),
+  competitive coding (9.3% combined, 22-30%), `finance_v1` (3.1%, 100%) and `math_proofs_v2` (1.9%, 94%). The
+  33 rewritten stores without their own weight hold 54 rewritten rows in total.
+
+  Tool calls: none of the 31,710 agent steps of the 10.05 model contains either character in its tool call;
+  179 steps (0.6%) contain one in message text. The characters therefore do not break commands or code in
+  these evals.
+- Interpretation and limitations: the repair touches about a third of SFT documents but changes only 0.02%
+  of tokens. Its measured benefit is the incidence drop. Untested benefits are copy-paste and parsing
+  failures in user-facing text (`1\u202f000` fails `float()`; `low\u2011data` does not match a search for
+  `low-data`) and the irregular tokenization after U+202F. It also replaces correct uses of U+202F in French
+  and SI number formatting.
+- Decision and next action: the 2026-11-17 recommendation to adopt the normalizer in the production mix is
+  revised to an optional cleanup with no measured benefit. Its value in this program was as a positive
+  control.
+
 ## Final decision
 
-- Selected approach and evidence: normalize U+202F and U+2011 in the SFT mix. It cuts their incidence in
-  outputs from 3-12% to 0-1% at steps 100 and 222 with no decisive accuracy, long-output or no-box change. It
-  is a cleanup and does not change accuracy or runaway reasoning. It also shows that a data change can remove
-  a copied habit within 222 steps, so the length arms' null reflects the length filter itself.
+- Selected approach and evidence: no data change is selected for the production mix. Typography
+  normalization cuts U+202F and U+2011 in outputs from 3-12% to 0-1% at steps 100 and 222 with no decisive
+  accuracy, long-output or no-box change, and the characters never appear in agent tool calls, so it is an
+  optional cleanup with no measured benefit. Its role here was a positive control: it shows that a data
+  change can remove a copied habit within 222 steps, so the length arms' null reflects the length filter
+  itself.
 - Rejected alternatives and why: the 32,000-token cap on three sources and the added give-up filter did not
   reduce runaway reasoning on any measure tried. Runaway follows problem difficulty (per-problem correlation
   0.91-0.95 between arms). The give-up filter targeted phrasing the model does not produce.
-- Marin contribution PRs: none yet. A PR adding the normalizer to the production SFT pipeline is the
-  candidate contribution.
+- Marin contribution PRs: none. The normalizer stays on this branch; a production PR is worth making only
+  if a downstream user needs ASCII-normalized output.
 - Reproduction instructions: build the normalized stores with `python -m
   experiments.sft_new_mix.typography_store_normalize --catalog <catalog> --output-root <dir> --part <i>
   --parts 8 --tokenizer <tokenizer.json> --workers 28` for each part, then `--catalog <catalog> --output-root

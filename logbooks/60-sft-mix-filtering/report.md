@@ -42,6 +42,8 @@ The `utf-normalize` arm replaces U+202F with a space and U+2011 with a hyphen in
 
 The source stores are opened read-only. A 900-row read-back of a written store found no mismatches. The normalizer rewrote 123 of 216 SFT stores, 7.1 million of 21.2 million rows, replacing 32.5 million U+202F and 45.9 million U+2011 characters. Total SFT tokens fell from 234.42 billion to 234.36 billion. The most affected stores were `opencode_v1/agent_skills` (100% of rows), `finance_v1` (99.6%), `math_proofs_v2` (94%), `instruction_following_chat_v3/instruction_following` (87%), `math_v2` (71-76%) and `math_v3` (34%).
 
+In the 222 training steps, about 1.03 million SFT documents were drawn, and about 346,000 of them (34%) contained at least one of the characters; 156,000 of those fell in the first 100 steps. About 27% of all 14.9 billion training positions sit in such documents, but the repair changes only 0.02% of tokens: about 3.8 million characters replaced and 2.8 million tokens removed over 222 steps. These are estimates from the step-0 mixture weights and each store's share of rewritten rows; the derivation is in the [notebook](notebook.md).
+
 ## Results
 
 ### Length and give-up arms
@@ -105,6 +107,8 @@ Accuracy did not change measurably. At step 222 no accuracy, long-output or no-b
 | utf-normalize | 71.3% | 24.7% | 94.4% | 82.6% | 66.5% | 22.0% |
 
 At step 100, GSM8K was 3.1 points lower (86.3% to 83.2%), the only decisive difference at that checkpoint, and it did not persist to step 222. The control alone moves 5.1 points on GSM8K between steps 100 and 222. The AIME24 long-output share rose 7.7 points at step 100 (36.0% to 43.7%, not decisive) and matched the control at step 222 (33.3% and 32.7%). Training losses for the first ten steps stayed within 0.003 of the control's.
+
+The repair has no measured benefit beyond the incidence drop. None of the 31,710 agent steps of the 10.05 model contains either character in a tool call, so the characters do not break commands or code in these evals. Possible benefits that our evals do not test are copy-paste and parsing failures in user-facing text, such as `1\u202f000` failing `float()`, and the irregular tokenization after U+202F. The normalizer also replaces correct uses of U+202F in French and SI number formatting. We treat it as an optional cleanup; its value in this program was as a positive control.
 
 Run pages: [control](https://wandb.ai/kailua-ventures/sft-data-patch-11188/runs/sft-patch-11188-control), [cap32k](https://wandb.ai/kailua-ventures/sft-data-patch-11188/runs/sft-patch-11188-cap32k), [cap32k-giveup](https://wandb.ai/kailua-ventures/sft-data-patch-11188/runs/sft-patch-11188-cap32k-giveup), [utf-normalize](https://wandb.ai/kailua-ventures/sft-data-patch-11188/runs/sft-patch-11188-utf-normalize). Eval run groups: `sft11188-<arm>-s100` and `sft11188-<arm>-s222` under `s3://marin-us-east-02a/marin/evals/`.
 
