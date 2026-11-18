@@ -518,6 +518,61 @@ recorded here.
   report paired deltas against this row (paired per-task deltas with
   task-clustered bootstrap).
 
+### 2026-11-18 19:40 UTC - Levanter-side V1/V3 design verified against the Trainer API; durable base-row copy
+
+- Question or hypothesis and reason for trying it: turn the corrected SFT-path
+  finding into a verified implementation plan, and make the base-row results
+  durable per the coordinator's request.
+- Published source revision: `benfeuer/snowball-deletion-tuning` @
+  `81158478b4` (Levanter `snowball.py` read); trainer API verified in
+  `lib/levanter/src/levanter/trainer.py`.
+- Command or material configuration: durable results copy created —
+  `s3://marin-us-east-02a/marin/users/benfeuer/snowball-deletion-tuning/micro210-base/2026.11.18.3/`
+  (24 files / 30,750,002 bytes: all 20 per-attempt dumps +
+  `aggregated_results.jsonl` + `terminal.json` + `resolved-launch.yaml` +
+  `preallocation-validation.json`; rollouts excluded), per-file SHA-256 in
+  `checksums.json` at the same prefix. The logbook, the index record, and the
+  plan of record now point at the durable copy.
+- External inputs and artifact references: Trainer API findings:
+  `TrainerState.init(..., is_trainable=filter)` already filters optimizer
+  state, gradients, and checkpointing to the trainable leaves (documented in
+  `_initialize_state_from_scratch`); `_train_step` is an overridable method
+  (the alpha-ramp insertion point, mirroring the validated prototype's train
+  step); the eval hook builds its own `eval_loss` so the hard-mask model wrap
+  can live in the launcher; the model's loss is the regularizer's natural
+  home (added inside the model when configured, keeping the trainer
+  untouched).
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no failures. The verified Levanter
+  implementation plan:
+  1. `SnowballConfig` gains `deletion_tuning` (scope, eta, lam, alpha ramp,
+     calibration sequences, seed); optional per-weight logit fields on
+     `SnowballMoEMLP` (`MoEExpertMlp` weights masked as
+     `stop_gradient(W) * mask(G)`, soft in training, hard for eval/export)
+     and on the shared `DenseMLP`; the regularizer
+     `-lambda * sum(||W~||^2)` joins the model's loss when configured.
+  2. A Levanter-side helper carries the validated calibration flow: per-expert
+     input norms captured from the MoE forward's `(routed_input,
+     selected_experts)`; the delete threshold from the strided host-pooled
+     score subsample (sorting sharded tensors is not expressible); logits
+     inserted via `is_leaf`-aware tree replacement before `TrainerState.init`.
+  3. A DT-aware Trainer subclass (or a `train` wrapper) overrides
+     `_train_step` to ramp alpha per step from the state step and wraps eval
+     with the hard-mask model; `TrainerState.init(is_trainable=logit filter)`
+     gives optimizer state and checkpointing for the logits only.
+  4. Launcher plumbing: the shared SFT launcher's Exp3 profile gains the
+     deletion_tuning block; the hard-mask export (deleted weights zeroed) +
+     packed mask artifact ride the existing shared-SFT export path.
+  5. Behavior tests mirror the validated prototype's tiny-MoE suite on the
+     Levanter model.
+- Evidence: this entry; the Trainer API excerpt (is_trainable docs).
+- Interpretation and limitations: the plan is API-verified but not yet
+  implemented; the calibration pass runs before `TrainerState.init`, so a
+  resumed run restores logits from the checkpoint (non-trainable frozen
+  weights are not checkpointed — the logits ARE trainable, so they are).
+- Decision and next action: implement items 1-5; redo the V1 dry-run on the
+  Levanter path; then V2 Megatron.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
