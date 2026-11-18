@@ -406,6 +406,39 @@ recorded here.
   the insertion points; build the base-row plan JSON and dry-run it locally;
   submit after EXP2's binding confirmation.
 
+### 2026-11-18 18:05 UTC - CORRECTION: the production SFT path is Levanter, not sft_runtime
+
+- Question or hypothesis and reason for trying it: while preparing the V1 SFT
+  dry-run, the launch chain showed the real production SFT path differs from
+  what the 17:30 entry recorded.
+- Published source revision: `exp3_production.py` @
+  `benfeuer/snowball-deletion-tuning-run` (`52b8411924` tree).
+- Command or material configuration: read `production_sft_recipe` and
+  `exp3_sft_spec`.
+- External inputs and artifact references: `production_sft_recipe` returns
+  `format: sft_spec`, `profile: snowball_exp3` with
+  `draccus.encode(SnowballConfig(...))` (the Levanter model) and a Levanter
+  `TrainerConfig` (`p=f32,c=bfloat16`, expert=8 × context=32 mesh);
+  `exp3_sft_spec` builds an `SFTSpec` with `model_type="snowball"`; the shared
+  launcher runs it via `levanter_train_request`.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the earlier path decision (17:30 entry,
+  also posted to the plan of record's Decision Log) said V1/V3 run on the
+  `sft_runtime` path and explicitly not on Levanter's `snowball.py`. That is
+  wrong: `sft_runtime`/`run_grug` is the LEGACY adapter behind
+  `--i-know-i-am-using-a-deprecated-config-format`. The production SFT path is
+  the **Levanter Snowball model + Levanter trainer + shared SFT launcher**.
+- Evidence: this entry; the correction comment on the plan of record.
+- Interpretation and limitations: the masking core, mask artifact, and
+  tiny-MoE tests carry over unchanged; the `sft_runtime` integration remains a
+  validated prototype on the legacy path. The V1/V3 integration must now target
+  Levanter's `MoEExpertMlp` (`w_gate`/`w_up`/`w_down`) and shared `DenseMLP`,
+  the Levanter trainer (alpha ramp, Wanda init, optimizer filtering), and the
+  shared SFT launcher plumbing.
+- Decision and next action: implement the Levanter-side Deletion Tuning; redo
+  the V1 dry-run against the Levanter path; V2 stays on Megatron/SkyRL. The
+  base row (submitted and running) is unaffected.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
