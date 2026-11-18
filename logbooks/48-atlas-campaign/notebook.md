@@ -1624,3 +1624,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the recovery queue's publication outcomes.
+
+### 2026-11-18 22:40 UTC - Hourly catch-up (21:40–22:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `f93cc722a6…` (20:58:49 UTC) to head `0b20ffc5b4bc7045b8c8530616a7c4c5a684756d`, landed 22:28:09 UTC (2 landings 22:11 / 22:28 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log f93cc722..0b20ffc5` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Quarantine capacity counting fixed**: only unresolved sandboxes count against quarantine capacity (`48b57ce326…`).
+  - **Recovered coverage counting fixed**: carried reviews counted in the recovered coverage even when the panel observed the task (`0b20ffc5b4…`, head) — completing the recovery-queue counting chain from the 21:40 window.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the recovery queue's publication outcomes.
