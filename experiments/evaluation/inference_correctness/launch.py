@@ -21,6 +21,7 @@ from experiments.evaluation.knotmeter.artifacts import write_record
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.config import Runtime, load_profile
 
+DEFAULT_TEST_NODE = "tests/cluster/vllm/test_inference_correctness.py"
 REMOTE_TEST_FILES = (
     "tests/__init__.py",
     "tests/conftest.py",
@@ -28,7 +29,7 @@ REMOTE_TEST_FILES = (
     "tests/cluster/conftest.py",
     "tests/cluster/vllm/__init__.py",
     "tests/cluster/vllm/conftest.py",
-    "tests/cluster/vllm/test_inference_correctness.py",
+    DEFAULT_TEST_NODE,
     "logbooks/57-inference-perfmax/analysis/hero_trace_hook/sitecustomize.py",
     "logbooks/57-inference-perfmax/analysis/hero_trace_hook/hero_scheduler_import_hook.py",
     "logbooks/57-inference-perfmax/analysis/hero_trace_hook/scheduler_split_trace.py",
@@ -39,13 +40,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", type=Path, required=True)
     parser.add_argument("--name", required=True)
-    parser.add_argument("--pytest-test", default="tests/cluster/vllm/test_inference_correctness.py")
     parser.add_argument("--runtime-manifest", help="Published release or normalized experimental build manifest")
     parser.add_argument("--set", action="append", default=[], help="The same YAML-valued overrides as perfmax")
     parser.add_argument(
         "--output", type=Path, required=True, help="Local execution receipt; includes the durable run URI"
     )
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--pytest-node", default=DEFAULT_TEST_NODE, help="Override the full gate with a focused diagnostic pytest node"
+    )
     args = parser.parse_args()
     profile = load_profile(args.profile, args.set)
     if args.runtime_manifest:
@@ -56,6 +59,8 @@ def main() -> None:
             if found.status != LookupStatus.FOUND:
                 raise ValueError(f"Required reference is {found.status}: {found.reason}")
     plan = resolve_plan(profile, args.name)
+    plan["pytest_node"] = args.pytest_node
+    plan["diagnostic"] = args.pytest_node != DEFAULT_TEST_NODE
     plan["trial_uri"] = prefix_join(plan["marin_prefix"], f"inference/correctness/runs/{plan['trial_id']}")
     plan["gpu_job_id"] = plan["job_id"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -85,7 +90,7 @@ def main() -> None:
         "--extra",
         "cpu",
         "pytest",
-        args.pytest_test,
+        args.pytest_node,
         "-m",
         "cluster",
         "-o",
@@ -101,7 +106,7 @@ def main() -> None:
             endpoint.url,
             credentials=endpoint.credentials,
             workspace=Path.cwd(),
-            extra_bundle_includes=(*REMOTE_TEST_FILES, args.pytest_test.split("::")[0]),
+            extra_bundle_includes=tuple(dict.fromkeys((*REMOTE_TEST_FILES, args.pytest_node.partition("::")[0]))),
         ) as client:
             job = client.submit(
                 entrypoint=Entrypoint(

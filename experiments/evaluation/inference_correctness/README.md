@@ -29,6 +29,8 @@ overrides. `--runtime-manifest URI` tests a release or experimental build withou
 adopting it. The attached launcher records every native attempt and GPU cost.
 The execution receipt names the durable run URI. Each host retains an archive
 and receipt; the leader's archive contains `report.json` and raw HTTP responses.
+`--pytest-node PATH::TEST` runs a focused diagnostic through the same deployment
+and cleanup path. Its plan is labeled diagnostic; it does not replace the full gate.
 
 For an existing dedicated test endpoint, enable `VLLM_SERVER_DEV_MODE=1` so the
 checks can read its settings and reset its cache. Both interfaces use the same
