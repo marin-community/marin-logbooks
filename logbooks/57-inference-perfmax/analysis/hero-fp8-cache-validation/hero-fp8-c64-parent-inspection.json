@@ -1,0 +1,261 @@
+{
+  "scope": "Parent inspection of the completed real FP8 hour, original client export/JSONL and numerical report; no new GPU or numerical investigation",
+  "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T053943Z-0eded6360d5c",
+  "runtime": "244247767cef50ef1670a732d416065015e12f01",
+  "result_sha256": "59115d4ecf78cfc9a346fe0c3c95f4eed46f8f44a674d2dab0df0c19eccf72df",
+  "native_export_sha256": "867a8d53633b8254f8efbbbe8901e918f5bb34d9198945de7a9a0f111dcc879e",
+  "numerical_report_sha256": "cc65e1d5d9be8dfc6cfeae2010f9ea02a2434835f04aa896bcbd9f212c75b7ea",
+  "validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 2079,
+    "profiling_errors": 0,
+    "profiling_error_ratio": 0.0,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "phase_counts": {
+    "warmup": {
+      "successes": 701,
+      "errors": 1
+    },
+    "profiling": {
+      "successes": 2079
+    }
+  },
+  "retained_errors": [
+    {
+      "phase": "warmup",
+      "request_id": null,
+      "error": {
+        "type": "InvalidInferenceResultError",
+        "message": "InvalidInferenceResultError('Invalid inference result: No responses with actual content were received from the server (only usage/metadata, null/empty data, or [DONE] markers)')",
+        "cause_chain": [
+          "InvalidInferenceResultError"
+        ]
+      }
+    }
+  ],
+  "metrics": {
+    "qps": {
+      "window_seconds": 1,
+      "samples": 3621,
+      "mean": 0.57387,
+      "p50": 0.0,
+      "p75": 1,
+      "p90": 2,
+      "p95": 2,
+      "std": 0.79724
+    },
+    "latency": {
+      "ttft": {
+        "mean": 113.28579,
+        "p50": 53.2472,
+        "p75": 116.62099,
+        "p90": 263.60362,
+        "p95": 447.65991,
+        "std": 173.98901
+      },
+      "e2el": {
+        "mean": 119.699,
+        "p50": 54.57471,
+        "p75": 123.51604,
+        "p90": 278.60459,
+        "p95": 472.82423,
+        "std": 184.7583
+      },
+      "itl": {
+        "mean": 0.11933,
+        "p50": 0.12524,
+        "p75": 0.16739,
+        "p90": 0.18613,
+        "p95": 0.18889,
+        "std": 0.0551
+      },
+      "tpot": {
+        "mean": 0.11933,
+        "p50": 0.12524,
+        "p75": 0.16739,
+        "p90": 0.18613,
+        "p95": 0.18889,
+        "std": 0.0551
+      },
+      "intvty": {
+        "mean": 8.38044,
+        "p50": 7.9849,
+        "p75": 5.97408,
+        "p90": 5.37268,
+        "p95": 5.29405,
+        "std": 223.74203
+      },
+      "e2e_norm_intvty": {
+        "mean": 4.6108,
+        "p50": 5.06869,
+        "p75": 4.47127,
+        "p90": 3.99209,
+        "p95": 3.3802,
+        "std": 1.62034
+      },
+      "full_response_itl": {
+        "mean": 0.00369,
+        "p50": 0.0,
+        "p75": 1e-05,
+        "p90": 1e-05,
+        "p95": 4e-05,
+        "std": 0.02276
+      },
+      "full_response_intvty": {
+        "mean": 271.22875,
+        "p50": 234105.48688,
+        "p75": 123277.58257,
+        "p90": 68308.41816,
+        "p95": 23559.14179,
+        "std": 755701.14989
+      }
+    },
+    "tokens": {
+      "input": {
+        "mean": 82854.44444,
+        "p50": 69296,
+        "p75": 109295,
+        "p90": 149234.4,
+        "p95": 219146.6,
+        "std": 55151.83856
+      },
+      "output_actual": {
+        "mean": 631.41174,
+        "p50": 271,
+        "p75": 652.5,
+        "p90": 1494.2,
+        "p95": 2439.7,
+        "std": 1007.18499
+      },
+      "output_expected": {}
+    },
+    "throughput": {
+      "input": {
+        "tokens_per_second": 47494.98348
+      },
+      "output": {
+        "tokens_per_second": 361.94667
+      },
+      "total": {
+        "tokens_per_second": 47856.93015
+      },
+      "duration_seconds": 3626.79124,
+      "per_gpu": {
+        "total_tput_tps": 2991.05813,
+        "output_tput_tps": 22.62167,
+        "input_tput_tps": 2968.43647
+      }
+    },
+    "cache": {
+      "theoretical_cache_hit_rate": 0.95479
+    }
+  },
+  "versus_bf16_c64": {
+    "throughput_ratio": 1.1937959909991684,
+    "p90_ttft_ratio": 0.8444379293628402
+  },
+  "numerical_outcome": {
+    "batch": "passed",
+    "cache": "failed",
+    "decode": "passed",
+    "deployment": "passed",
+    "reference": "failed"
+  },
+  "reference": {
+    "long": {
+      "status": "passed",
+      "positions": 4485,
+      "limits": {
+        "fraction_above_0075": 0.02,
+        "maximum": 0.35,
+        "p90": 0.04,
+        "p99": 0.09
+      },
+      "statistics": {
+        "fraction_above_0075": 0.003121516164994426,
+        "maximum": 0.28843578805982295,
+        "p90": 0.026193603130251698,
+        "p99": 0.05745566655900026
+      }
+    },
+    "short": {
+      "status": "failed",
+      "positions": 11370,
+      "limits": {
+        "fraction_above_0075": 0.035,
+        "maximum": 0.65,
+        "p90": 0.04,
+        "p99": 0.125
+      },
+      "statistics": {
+        "fraction_above_0075": 0.026033421284080916,
+        "maximum": 0.7197636556936403,
+        "p90": 0.03276803227017236,
+        "p99": 0.12586878688329128
+      }
+    }
+  },
+  "cache_exact": {
+    "status": "failed",
+    "positions": 19,
+    "limits": {
+      "fraction_above_0075": 0.0,
+      "maximum": 0.0,
+      "p90": 0.0,
+      "p99": 0.0
+    },
+    "statistics": {
+      "fraction_above_0075": 0.0,
+      "maximum": 0.03469046952738797,
+      "p90": 0.013072989753944957,
+      "p99": 0.032045007162382275
+    }
+  },
+  "cache_coverage": {
+    "prefill_reuse": "passed",
+    "settled_branches": "passed",
+    "decode_reuse": "passed",
+    "replayed_decode_reuse": "passed"
+  },
+  "host_memory": [
+    {
+      "task_id": "/romain/knotmeter-20261118t053943z-0eded6360d5c/serve/0",
+      "peak_bytes": 120561532928,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261118t053943z-0eded6360d5c/serve/1",
+      "peak_bytes": 101161172992,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261118t053943z-0eded6360d5c/serve/2",
+      "peak_bytes": 101172379648,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "task_id": "/romain/knotmeter-20261118t053943z-0eded6360d5c/serve/3",
+      "peak_bytes": 101763383296,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    }
+  ],
+  "gpu_hours": 29.47222222222222,
+  "cost_complete": true,
+  "scope_limits": [
+    "Configuration comparison; BF16 C64 RAM limit 768 GiB versus FP8 256 GiB remains explicit. Recorded memory observations stay below 256 GiB.",
+    "Weight-storage proof covers all 16 DP ranks; KV/state stays BF16.",
+    "Numerical reference and exact cache checks fail. Reuse coverage passes. No state-corruption cause is inferred.",
+    "One native hour per point; this does not quantify repeat noise or qualify RL learning."
+  ],
+  "native_result_sha256": "7516fcc2f3058bb126c7673d4e96b98b0b505925eb5e5a02ba795dc56ef28c8c",
+  "native_snapshot_difference": "Only three allocation observed_unix timestamps differ from the earlier child snapshot; metrics, costs, checks, identities and memory are identical."
+}
