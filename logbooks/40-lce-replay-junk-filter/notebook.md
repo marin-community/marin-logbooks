@@ -415,6 +415,12 @@ status: active
   - One sample per item at default sampling.
 - Decision and next action: the adoption stands on the absence of harm. It does not claim a retrieval benefit.
 
+### 2026-11-18 02:30 UTC - Correction: no MRCR items were dropped
+
+- Question: did the paired generative MRCR comparison use every item in all three runs?
+- Result: yes. Each run has a graded row for all 901 items, and the comparison uses all 901. The previous entry said 14 items per run had no grade and were dropped. That is wrong: the runs store 14, 18 and 12 extra rows with empty output and no grade, and each is a duplicate of an item that also has a graded row. Skipping those rows removes no item. The reported numbers do not change.
+- Decision and next action: none; the script docstring now describes this.
+
 ## Final decision
 
 - Selected approach and evidence: adopt the filtered long replay. Teacher-forced needle recovery, a likelihood diagnostic distinct from the generative MRCR benchmark score, favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). The adoption rests on the absence of harm. On the generative MRCR benchmark (`mrcr-65k`) filtering has no effect: 0.203 against 0.219 and 0.195 for the two control seeds, filtered minus the control mean −0.005 (−0.021 to +0.012), so the needle-recovery lead does not carry over to generated answers. Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents filtering costs nothing on either verdict: with the 23 encoded-blob documents and four single-checkpoint breakdowns set aside, the three step-238 checkpoints are within 0.006 nats per token on flagged documents and 0.002 on kept ones.

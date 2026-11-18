@@ -4,7 +4,7 @@
 """Paired comparison of generative MRCR-65k accuracy between the three step-238 checkpoints.
 
 Reads the per-item samples of each evaluation, keeps items graded in all three, and bootstraps the
-mean difference over items (10,000 resamples, seed 0). Items without a grade (empty output) are dropped.
+mean difference over items (10,000 resamples, seed 0). Each run stores a few extra rows with empty output and no grade, duplicates of items that also have a graded row; those rows are skipped, and every item is graded in all three runs.
 
 usage: paired_mrcr_generative.py
 """
