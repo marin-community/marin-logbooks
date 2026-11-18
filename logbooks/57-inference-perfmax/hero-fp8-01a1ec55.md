@@ -395,3 +395,30 @@ retains the admission reason, before-cancel state and zero allocated GPU time.
 This is a resource-fit correction, not a response to a log/observation timeout.
 The candidate wheel, kernel, model, CPU count, GPU count and numerical criteria
 are unchanged. Retry a2 keeps a new native identity.
+
+## 2026-11-18 04:54 UTC — Complete the BF16 window and choose a lower neighbor
+
+BF16 C64 completed a valid native one-hour window. The
+[client summary](analysis/hero-fp8-01a1ec55/bf16-c64-a2-window-summary.json)
+records submission_valid=true, no cancellation, and TTFT/ITL duration coverage
+both1.0 against the required3600 seconds. It completed1841 requests and
+1,096,749 output tokens over a3629.952-second successful-request span. P90 TTFT
+is312.165 seconds; p90 completion is324.189 seconds. Final native processor and
+allocation collection are still running on the CPU coordinator. All four GPU
+pods are Succeeded.
+
+The exporter warns about counter decreases on server metric series. The native
+gang IDs stayed fixed; sampled leader EngineCore process ages exceeded6330
+seconds. Do not infer restarts or trust counter-derived absolute rates without
+resolving this. Independently, client usage fields give57.395% cache reads,
+consistent with the observed gap to the roughly95% theoretical trace reuse.
+This supports testing less cache pressure without claiming its cause is proved.
+
+Choose BF16 C32 as the next neighboring load and selective FP8 C64 for the
+matched precision comparison. Both new points request32 CPUs and256 GiB per
+host on sixteen GB200 GPUs. BF16 C32 also supplies fresh positive128 cache-v2
+qualification. Keep the prepared C128 profiles as a possible later expansion;
+no C128 GPU job has been submitted. This change follows the completed window,
+not a latency ceiling. Numerical failures may continue to a normal one-hour FP8
+performance window through the explicit measure-failed-checks flag, while
+remaining ineligible for recommendation.
