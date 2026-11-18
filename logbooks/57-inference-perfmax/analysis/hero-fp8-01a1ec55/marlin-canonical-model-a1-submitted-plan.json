@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "trial_id": "20261118T083746Z-cc0ba58c46ea",
+  "trial_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T083746Z-cc0ba58c46ea",
+  "campaign_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/hero-fp8-canonical-4gpu-a1",
+  "controller": "cw-us-east-08a",
+  "cluster": "cw-us-east-08a",
+  "marin_prefix": "s3://marin-us-east-02a/marin",
+  "series": {
+    "harness_version": "1.0.12",
+    "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+    "processor_source": "80dff120d27fd6092210f4546b8faa5e6c9723ac",
+    "duration": 3600,
+    "max_context": 262144,
+    "max_profiling_error_ratio": 0.01,
+    "random_seed": 42,
+    "warmup_grace_period": 1800,
+    "trace_idle_gap_cap_seconds": 300,
+    "prepare_timeout": 1800,
+    "ready_timeout": 4200,
+    "task_timeout": 10800,
+    "scheduling_timeout": 1800,
+    "max_retries_failure": 0,
+    "max_retries_preemption": 1,
+    "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+    "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+    "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+    "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+    "sessions": 393,
+    "model": "hero-sft-step400407",
+    "model_prefix": "hero-sft-step400407",
+    "model_revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+    "tokenizer": "marin-community/marin-tokenizer-tools",
+    "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+    "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+    "precision": "fp8",
+    "tensor_parallel": 1,
+    "profile": {
+      "model": {
+        "repo": "hero-sft-step400407",
+        "revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+        "tokenizer": "marin-community/marin-tokenizer-tools",
+        "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+        "path": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+        "config_sha256": "1a05f3dbaddd2c1aa28064dc0d4140d53d80cf5c25a7c8418b0e013c91b1a43e",
+        "chat_template": "marin",
+        "eos_token_id": 128009
+      },
+      "gpus": {
+        "type": "GB200",
+        "count": 4,
+        "per_host": 4
+      },
+      "cluster": "cw-us-east-08a",
+      "priority": "interactive",
+      "session_concurrency": 16,
+      "quantization": "online",
+      "weight_precision": "fp8",
+      "serving": {
+        "dtype": "bfloat16",
+        "tensor_parallel_size": 1,
+        "max_model_len": 262144,
+        "max_num_seqs": 128,
+        "max_num_batched_tokens": 2048,
+        "gpu_memory_utilization": 0.95,
+        "prefix_caching": true,
+        "router": true,
+        "extra_args": [
+          "--enable-prompt-tokens-details",
+          "--max-logprobs",
+          "50",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--seed",
+          "42",
+          "--hf-overrides",
+          "{\"max_seq_len\":262144,\"max_position_embeddings\":262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\":true,\"concurrency\":4,\"memory_limit\":17179869184}",
+          "--kernel-config",
+          "{\"moe_backend\":\"marlin\",\"enable_flashinfer_autotune\":false}",
+          "--kv-cache-dtype",
+          "auto",
+          "--attention-backend",
+          "FLASHINFER",
+          "--compilation-config",
+          "{\"cudagraph_mode\":\"PIECEWISE\",\"splitting_ops\":[\"vllm::unified_attention_with_output\",\"vllm::unified_kv_cache_update\",\"vllm::grug_moe_short_conv\"],\"inductor_compile_config\":{\"enable_auto_functionalized_v2\":false,\"combo_kernels\":true,\"benchmark_combo_kernel\":true}}",
+          "--prefix-cache-retention-interval",
+          "128",
+          "--quantization-config",
+          "{\"moe\":\"fp8_per_tensor\"}",
+          "--worker-extension-cls",
+          "hero_weight_metadata.HeroWeightMetadata"
+        ],
+        "environment": {
+          "VLLM_SERVER_DEV_MODE": "1",
+          "PYTHONPATH": "/app/logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55"
+        }
+      },
+      "workload": {
+        "public_dataset": "semianalysis_cc_traces_weka_062126_256k"
+      },
+      "vllm": {
+        "release": null,
+        "manifest": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/builds/marlin-canonical-467e3fc144-a1/manifest.json",
+        "repo": "https://github.com/yonromai/vllm",
+        "revision": "467e3fc14427012aa9114127fb41f9c8273ca80a"
+      },
+      "checks": [
+        {
+          "name": "loaded-weight-storage",
+          "command": [
+            "python",
+            "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/inspect_model.py"
+          ],
+          "fixture": null,
+          "timeout": 180,
+          "kind": "serving",
+          "checkpoint_revision": null,
+          "runtime_source": null,
+          "evidence": []
+        },
+        {
+          "name": "model-numerics",
+          "command": [],
+          "fixture": "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-fp8-policy.json",
+          "timeout": 3600,
+          "kind": "numerical",
+          "checkpoint_revision": null,
+          "runtime_source": null,
+          "evidence": []
+        }
+      ],
+      "cpu": 32,
+      "memory": "256GB",
+      "disk": "1TB"
+    },
+    "profiles": {
+      "gb200": {
+        "gpu": "GB200",
+        "gpus": 4,
+        "hosts": 1
+      }
+    }
+  },
+  "vllm_release": {
+    "release_tag": "experimental-hero-fp8-canonical-467e3fc14427-01a1ec55",
+    "source_commit": "467e3fc14427012aa9114127fb41f9c8273ca80a",
+    "version": "0.0.0.dev20261118+marin.467e3fc14427.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/builds/marlin-canonical-467e3fc144-a1/vllm-0.0.0.dev20261118+marin.467e3fc14427.cu132-cp312-cp312-linux_aarch64.whl",
+        "sha256": "c4da6586c454efd499b178fc03077fa5dab9747ed79fcc8c952501a8a370d1d6"
+      }
+    ]
+  },
+  "placement": {},
+  "job_id": "/romain/knotmeter-20261118t083746z-cc0ba58c46ea",
+  "gpu_job_id": "/romain/knotmeter-20261118t083746z-cc0ba58c46ea",
+  "source": {
+    "tree_hash": "6840f68dab",
+    "base_commit": "38908a22a2",
+    "dirty": true,
+    "branch": "codex/hero-fp8-01a1ec55",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-18T00:37:47.076447",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/experiments/evaluation/inference_correctness/launch.py",
+      "--profile",
+      "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-fp8-canonical-4gpu.yaml",
+      "--name",
+      "hero-fp8-canonical-4gpu-a1",
+      "--pytest-node",
+      "tests/cluster/vllm/test_hero_fp8_canonical.py::test_hero_canonical_storage_cache_then_shared_suite",
+      "--output",
+      "scratch/marlin-canonical-model-a1-execution.json"
+    ]
+  },
+  "research_logbook": null,
+  "pytest_node": "tests/cluster/vllm/test_hero_fp8_canonical.py::test_hero_canonical_storage_cache_then_shared_suite",
+  "diagnostic": true
+}
