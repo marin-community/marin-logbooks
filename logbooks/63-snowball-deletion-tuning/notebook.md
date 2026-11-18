@@ -742,6 +742,75 @@ recorded here.
 - Decision and next action: land the hard-mask export and mask artifact on the
   Levanter path, then submit V1 after the coordinator's go.
 
+### 2026-11-18 23:35 UTC - V1 entry validated: the smoke ran the DT main end to end and caught seven landed bugs
+
+- Question or hypothesis and reason for trying it: the resolved V1 entry had
+  never executed; the behavior tests and the toy-scale CPU smoke prove the
+  entry machinery (pod dispatch, seam, calibration, init, trainer, export)
+  before any submission.
+- Published source revision: run branch `benfeuer/snowball-deletion-tuning-run`
+  through `a86401cbac` (the smoke passed at `5a7a09aab5`, the full test suite
+  at `a86401cbac`). Validation jobs
+  `/benfeuer/dt-v1-validate-20261118` .. `-19` on cw-us-east-02a (Iris CPU,
+  8 CPU / 32 GB each).
+- Command or material configuration: `pytest tests/test_deletion_tuning_v1_entry.py
+  tests/test_snowball_deletion_masking.py` (17 tests) and
+  `python -m experiments.deletion_tuning.v1_smoke` — the smoke runs the
+  production pod entrypoint `run_deletion_train_lm` over a tiny Snowball
+  config (2 layers, 4 experts, hidden 16) with the production in-region
+  tokenizer, a staged toy corpus and token cache, three optimizer steps, and
+  the end-of-run HF export.
+- External inputs and artifact references: the coordinator's CPU-load
+  instruction moved all model-touching validation onto Iris; the local dry-run
+  stayed at graph/config resolution. Smoke staging lives under
+  `s3://marin-us-east-02a/tmp/ttl=7d/benfeuer/snowball-deletion-tuning/smoke/2026.11.18.1`.
+- Environment and hardware when relevant: Iris CPU tasks on cw-us-east-02a;
+  the tokenize pipeline runs as nested zephyr tasks, so the smoke corpus and
+  cache stage in-region (workers share storage, not task-local paths).
+- Result, including failure or restart: all green — 17 behavior tests passed
+  and the smoke exited 0 (HF reload with the Deletion block preserved, Wanda
+  calibration over a training batch, threshold and gate-logit init, AdamW on
+  the gate logits only, alpha ramp over the steps, HF export produced). The
+  smoke caught seven real bugs in the landed-but-never-executed Deletion
+  code, each fixed with a behavior test where the logic was added:
+  1. `_initialize_deletion` read `config.trainer.data_seed`; the data seed is
+     a `TrainLmConfig` field.
+  2. `wanda_input_sums_local` wrapped its shard_map callable with
+     `dataclasses.partial` (typo for `functools.partial`); the capture path
+     had no test.
+  3. The capture's default validity mask was replicated where shard_map
+     requires the token spec — the calibration always forwards without a
+     mask, so the fallback path is the production path.
+  4. The init's `_layer_logits` vmap ran over the stacked layer axis instead
+     of the expert axis, the caller passed whole norm/key stacks where each
+     layer needs its slice, and the threshold pooling broadcast the stacked
+     norms against one layer's weights (shape-correct only when the
+     intermediate and hidden widths coincide — broken at production widths).
+  5. `init_gate_logits_jax` drew noise from a replicated key and selected
+     against sharded scores; the select requires matching sharding under the
+     explicit mesh.
+  6. The runtime `DeletionTrainSettings` lacked the mask-scope properties the
+     init reads.
+  7. `DeletionTrainer._train_step` ramped alpha on `result.state`;
+     `TrainStepResult` carries `new_state`.
+  The vmap was then removed entirely: `init_gate_logits_jax` draws
+  independent per-element noise from the single layer key, so the batched
+  computation needs no vmap.
+- Evidence: the job logs (dashboards for `-18` and `-19` hold the passing
+  runs); the smoke summary logged `smoke complete` with the HF export path.
+- Interpretation and limitations: the smoke proves the entry machinery, not
+  production scale; its recorded scale deviations are the toy geometry, a
+  staged toy corpus, three steps, no Snowball SFT controls (plain batches
+  carry no prediction weights), and a smoke-local Wanda eta of 1/128 (the toy
+  strided subsample is 128 samples and cannot satisfy the production 1/2048
+  quantile; the rule is unchanged and the production entry keeps eta 1/2048).
+  The Iris task bundle excludes tests by default, so the validation jobs pass
+  `--include` for the two test files.
+- Decision and next action: the hard-mask export and packed mask artifact on
+  the Levanter path remain the next landed item before the V1 submission;
+  then a production-shape smoke on one node, then submit after the
+  coordinator's go.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
