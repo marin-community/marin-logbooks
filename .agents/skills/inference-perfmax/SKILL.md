@@ -53,8 +53,8 @@ AgentX protocol; repeat when noise could change the decision. This is an adaptiv
 ladder, with no fixed grid, compulsory sequence or AgentX ladder score.
 
 Use the resource board and `use-iris` before GPU work. Stay within the agreed
-concurrent ceilings across trials and retries. Prepare data on CPU before GPU
-allocation, release idle resources and count setup, compilation, warmup, drain
+concurrent ceilings across trials and retries. Let the runner prepare data in its
+CPU coordinator before GPU allocation, release idle resources and count setup, compilation, warmup, drain
 and failed allocations. Prioritize GPU efficiency over elapsed time.
 
 ## Measure and return the result

@@ -163,3 +163,24 @@ The cached workload was reused by both new coordinators. Marlin's four-GPU
 server is healthy and checking fixed references with compilation and graphs
 active. Its initial KV capacity is 480,540 tokens per engine; precision remains
 BF16. No tolerance or checkpoint changed.
+
+## 2026-11-18 03:04 UTC — Screen the remaining activation quantization
+
+Marlin expert activations leave reference tails nearly unchanged: short p99 is
+0.31912 versus 0.32200, and long p99 is 0.22057 versus 0.22086. The smaller
+projections still quantize activations. The pinned runtime also exposes native
+`linear_backend=marlin`. The next four-GPU numerical screen uses both Marlin
+backends, leaving all activations BF16 while keeping the same per-tensor FP8
+weight method. Fixed goldens and every numerical limit stay unchanged.
+
+Use the existing shared correctness launcher for this screen. It runs the same
+endpoint checks with graphs and compilation enabled, and retains allocation
+receipts without an AgentX warmup. A candidate that passes still needs the actual
+sixteen-GPU AgentX configuration and a normal one-hour window. A numerical-only
+screen cannot replace that comparison. Its separate correctness-run URI and cost
+will be linked in the campaign ledger.
+
+The skill and runner README now say preparation runs in the runner's CPU
+coordinator. This corrects the ambiguity behind this session's failed local
+corpus preparation. The later real CLI invocations already demonstrate the
+intended CPU-first workflow; no duplicate evaluation run is needed.

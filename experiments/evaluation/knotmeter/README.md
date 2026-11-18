@@ -51,8 +51,8 @@ The `vllm_release` object in `plan --output /tmp/plan.json` is a complete exampl
 This command does not refresh a fork, publish a release or introduce a build system.
 
 [recipe.yaml](recipe.yaml) supplies the shared harness, corpus and processor
-pins. Normal runs retain upstream warmup, replay and validity. Data preparation
-runs on CPU before GPU submission. `--diagnostic-seconds N` explicitly requests
+pins. Normal runs retain upstream warmup, replay and validity. The runner prepares
+data in its CPU coordinator before GPU submission. `--diagnostic-seconds N` explicitly requests
 a short unsafe upstream replay; it cannot produce an accepted recommendation.
 
 Both presets use the [shared correctness suite](../inference_correctness/README.md).
