@@ -184,3 +184,36 @@ The skill and runner README now say preparation runs in the runner's CPU
 coordinator. This corrects the ambiguity behind this session's failed local
 corpus preparation. The later real CLI invocations already demonstrate the
 intended CPU-first workflow; no duplicate evaluation run is needed.
+
+## 2026-11-18 03:33 UTC — Prepare native selective FP8 component checks
+
+The runtime patch is published in
+[244247767c](https://github.com/yonromai/vllm/commit/244247767cef50ef1670a732d416065015e12f01),
+based on unchanged runtime `0ac9dcb`. It admits native
+`--quantization online --quantization-config '{"moe":"fp8_per_tensor"}'`.
+The native selector dispatches this static-tensor weight key to the same
+`Fp8PerTensorOnlineMoEMethod` used by legacy `Fp8Config`, with the same per-expert
+weight scales. Linear projections stay BF16. The router stays FP32 under both
+config classes. Targets, explicit activation overrides and other weight schemes
+remain rejected; TP1, TPU and KV restrictions remain intact. The
+[patch](analysis/hero-fp8-01a1ec55/runtime-selective-fp8.patch) preserves both source
+and meaningful test changes. PR115's already-merged tests are copied into this
+older baseline, then extended for selective and full native configurations.
+
+The parent inspected the narrow runtime change and authorized a one-GB200
+component diagnostic with the pinned compiled base and one explicit, hash-checked
+Python-module override. This is not candidate-wheel qualification. The
+[input](analysis/hero-fp8-01a1ec55/selective-component-input.json) pins source,
+archive, model and bootstrap hashes. It uses the native isolated runtime and
+`run-wheel-tests` helper. Tests compare exact legacy expert weights/scales and
+outputs, independent BF16 Hero math at one/seven tokens, loaded weight dtypes,
+FP32 routing, and rejection of unsupported schemes. GPU results are pending.
+A real candidate wheel and manifest remain required before full serving tests.
+
+The Marlin-experts screen fails strict cache persistence under the corrected
+checker. Replayed-decode-branch maximum is 0.0581454 despite equal prepared and
+repeat hits at 384 tokens; sibling reuse is 128. Ordinary settled branches have
+smaller nonzero differences too. Coverage and matched-repeat checks pass. These
+remain failures. No evidence currently explains them as different prefill
+geometry. The fixed-reference and decode failures also remain. Further screens
+keep all exact limits unchanged.
