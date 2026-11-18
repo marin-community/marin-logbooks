@@ -1,0 +1,31 @@
+{
+  "branch": "codex/hero-fp8-selective-contribution-01a1ec55",
+  "worktree": "/home/romain/work/marin-community/vllm/hero-fp8-selective-contribution-01a1ec55",
+  "base_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "tested_commit": "244247767cef50ef1670a732d416065015e12f01",
+  "tested_model_sha256": "13dfe88ffaeeae0443893b94533187c9d90dad840e2757774af4e5367c55e8f5",
+  "contribution_model_sha256": "e9537a419741dccff1297f7058039f6c63567750aaf9f8335050921442c4d133",
+  "whole_model_module_identical": false,
+  "quantization_ast_identical": {
+    "GrugMoeMLP": true,
+    "_is_supported_online_fp8": true
+  },
+  "focused_test_ast_identical": {
+    "_minimal_vllm_config_for_mode_check": true,
+    "test_grug_moe_online_fp8_loading_matches_vllm": true,
+    "test_hero_online_fp8_latent_and_shared_experts_match_bf16": false
+  },
+  "differences_from_tested_module": "Current main retains its ShortConv output-buffer implementation and FULL_AND_PIECEWISE guard. No such changes were added to the frozen benchmark source.",
+  "validation_scope": "Eighteen GB200 tests and serving evidence apply to frozen244 wheel. New branch receives CPU mechanical checks and static identity comparisons only; no GPU, performance or numerical run on current main.",
+  "contribution_commit": "0474521acd8093ea4cbf884dd435f59d5ecd7d5f",
+  "contribution_dirty": false,
+  "mechanical_validation": "infra/pre-commit.py --changed-files --fix: Ruff check passed; Python AST identities separately compared",
+  "test_label_only_difference": "Advisory review renamed experts-only to routed-experts-only; AST is identical after normalizing that literal.",
+  "advisory_review": {
+    "status": "completed",
+    "findings": 1,
+    "action": "Renamed routed-expert-only test mode; no runtime change",
+    "record": "/home/romain/data/sessions/devbox/codex/01a1ec55-0bb6-7cf0-b8d5-f7c917b7a913/reviews/LINT-20261118T060400Z/invocation.json",
+    "model_metadata": "Requested Claude opus5.5/xhigh; observed model/effort/child IDs unavailable in plain catalog output."
+  }
+}

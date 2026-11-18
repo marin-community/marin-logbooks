@@ -28,16 +28,31 @@ INPUTS = (
 )
 
 
-def phase_costs(attempt: dict, export: dict | None) -> dict:
-    allocation, worker = attempt.get("allocation", {}), attempt.get("worker", {})
+def phase_costs(attempt: dict, export: dict | None, timeline: dict | None = None) -> dict:
+    allocation = attempt.get("allocation", {})
+    worker = timeline or attempt.get("worker", {})
     start, end = allocation.get("scheduled_unix"), allocation.get("end_unix")
     if not export or not worker.get("ready_unix") or start is None or end is None:
         return {"unsplit_allocation_gpu_seconds": attempt.get("gpu_seconds")}
     profiling = [
         datetime.fromisoformat(export[key]).replace(tzinfo=UTC).timestamp() for key in ("start_time", "end_time")
     ]
-    boundaries = [start, worker["ready_unix"], worker["checks_completed_unix"], *profiling, end]
-    names = ("setup", "checks", "warmup_and_harness_start", "profiling_and_native_grace", "exports_and_shutdown")
+    boundaries = [
+        start,
+        worker["ready_unix"],
+        worker["checks_completed_unix"],
+        *profiling,
+        worker.get("measured_unix", end),
+        end,
+    ]
+    names = (
+        "setup",
+        "checks",
+        "warmup_and_harness_start",
+        "profiling_and_native_grace",
+        "post_request_harness_drain_and_export",
+        "shutdown_and_upload",
+    )
     rate = attempt["gpu_seconds"] / (end - start)
     return {
         name + "_gpu_seconds": max(0, min(end, right) - max(start, left)) * rate
@@ -55,6 +70,12 @@ def main() -> None:
         export_path = Path("scratch") / (cache or "unused") / "aiperf_artifacts/profile_export_aiperf.json"
         export = json.loads(export_path.read_text()) if export_path.exists() else None
         attempts = record["attempts"]
+        timelines = {
+            uid: attempt["worker"]
+            for attempt in attempts
+            if attempt.get("worker", {}).get("status") == "succeeded" and attempt["worker"].get("ready_unix")
+            for uid in attempt["worker"].get("gang_attempts", {}).values()
+        }
         costs = [attempt.get("gpu_seconds") for attempt in attempts]
         rows.append(
             {
@@ -70,7 +91,9 @@ def main() -> None:
                         "gpu_seconds": attempt.get("gpu_seconds"),
                         "allocation": attempt.get("allocation"),
                         "phases": phase_costs(
-                            attempt, export if attempt.get("worker", {}).get("status") == "succeeded" else None
+                            attempt,
+                            export if attempt.get("worker", {}).get("status") == "succeeded" else None,
+                            timelines.get(attempt.get("attempt_uid")),
                         ),
                     }
                     for attempt in attempts
@@ -85,9 +108,12 @@ def main() -> None:
         "gpu_hours": total / 3600,
         "cost_complete_for_listed_allocations": all(row["cost_complete"] for row in rows),
         "phase_note": (
-            "Profiling includes native grace. Warmup includes harness startup. "
+            "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. "
+            "Post-request harness time includes native drain/export until process exit; "
+            "those activities are not separately timed. "
+            "Matching follower attempts use their leader timing, verified by native gang attempt IDs. "
             "Unsplit failures and numerical/component screens retain their full allocation cost. "
-            "CPU build used eight requested CPUs for98 allocated seconds and zero GPUs."
+            "CPU build used eight requested CPUs for 98 allocated seconds and zero GPUs."
         ),
         "rows": rows,
     }

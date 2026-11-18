@@ -1,0 +1,173 @@
+{
+  "checks": {
+    "batch": {
+      "positions": 4,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.007718301751172496,
+        "p90": 0.006454056989107171,
+        "p99": 0.007591877274965963
+      },
+      "status": "passed"
+    },
+    "cache": {
+      "cache_alignment": 16,
+      "decode_reuse": {
+        "status": "passed"
+      },
+      "different_split": {
+        "positions": 27,
+        "statistics": {
+          "fraction_above_0075": 0.037037037037037035,
+          "maximum": 0.09955343641845121,
+          "p90": 0.010798539737570684,
+          "p99": 0.07715212117022871
+        },
+        "status": "passed"
+      },
+      "matched_repeat": {
+        "cached_tokens": [
+          2064,
+          2064
+        ],
+        "status": "passed"
+      },
+      "prefill_reuse": {
+        "status": "passed"
+      },
+      "replayed_decode_reuse": {
+        "status": "passed"
+      },
+      "retention_interval": 128,
+      "same_split": {
+        "positions": 19,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.03469046952738797,
+          "p90": 0.013072989753944957,
+          "p99": 0.032045007162382275
+        },
+        "status": "failed"
+      },
+      "settled_branches": {
+        "status": "passed"
+      },
+      "status": "failed"
+    },
+    "decode": {
+      "positions": 64,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.05000233203565929,
+        "p90": 0.007413206174028325,
+        "p99": 0.0409618456348743
+      },
+      "status": "passed"
+    },
+    "deployment": {
+      "status": "passed"
+    },
+    "reference": {
+      "groups": {
+        "long": {
+          "positions": 4485,
+          "statistics": {
+            "fraction_above_0075": 0.003121516164994426,
+            "maximum": 0.28843578805982295,
+            "p90": 0.026193603130251698,
+            "p99": 0.05745566655900026
+          },
+          "status": "passed"
+        },
+        "short": {
+          "positions": 11370,
+          "statistics": {
+            "fraction_above_0075": 0.026033421284080916,
+            "maximum": 0.7197636556936403,
+            "p90": 0.03276803227017236,
+            "p99": 0.12586878688329128
+          },
+          "status": "failed"
+        }
+      },
+      "status": "failed"
+    }
+  },
+  "reference_lookup": {
+    "status": "found"
+  },
+  "status": "failed",
+  "runtime_source": "244247767cef50ef1670a732d416065015e12f01",
+  "policy": {
+    "batch": {
+      "fraction_above_0075": 0.5,
+      "maximum": 0.2,
+      "p90": 0.15,
+      "p99": 0.18
+    },
+    "batch_size": 4,
+    "boundary_lengths": [
+      127,
+      128,
+      129,
+      255,
+      256,
+      257,
+      2047,
+      2048,
+      2049
+    ],
+    "cache_decode_tokens": 257,
+    "decode": {
+      "fraction_above_0075": 0.15,
+      "maximum": 0.25,
+      "p90": 0.075,
+      "p99": 0.15
+    },
+    "decode_tokens": 32,
+    "different_split": {
+      "fraction_above_0075": 0.15,
+      "maximum": 0.2,
+      "p90": 0.06,
+      "p99": 0.12
+    },
+    "dtype": "bfloat16",
+    "evidence": [
+      "https://github.com/marin-community/marin/issues/11430",
+      "https://github.com/marin-community/marin/issues/11430#issuecomment-6882101992",
+      "https://github.com/marin-community/vllm/pull/115",
+      "https://github.com/yonromai/vllm/commit/244247767cef50ef1670a732d416065015e12f01"
+    ],
+    "hardware": [
+      "GB200"
+    ],
+    "id": "hero-sft-step400407-selective-online-fp8-gb200-provisional-v1",
+    "kv_cache_dtypes": [
+      "auto",
+      "bfloat16"
+    ],
+    "provisional": true,
+    "quantization": "online",
+    "rationale": "Provisional full-model online-FP8 engineering screen chosen before the first FP8 run. Require FP8 to fit the same numerical envelopes used to screen this BF16 deployment; this is an independent conservative campaign choice, not an approved FP8 quality budget. No FP8 calibration or RL learning qualification is claimed. Fully prepared cache persistence stays exact; identities, non-finite scores and demonstrated state corruption remain failures. This selective configuration keeps native per-tensor FP8 experts and BF16 linear projections; every numerical bound is unchanged.",
+    "reference": {
+      "long": {
+        "fraction_above_0075": 0.02,
+        "maximum": 0.35,
+        "p90": 0.04,
+        "p99": 0.09
+      },
+      "short": {
+        "fraction_above_0075": 0.035,
+        "maximum": 0.65,
+        "p90": 0.04,
+        "p99": 0.125
+      }
+    },
+    "same_split": {
+      "fraction_above_0075": 0.0,
+      "maximum": 0.0,
+      "p90": 0.0,
+      "p99": 0.0
+    }
+  }
+}
