@@ -1,0 +1,38 @@
+{
+  "source": "3d04a90d36e393683a25ea01c1b3528f12ec3204",
+  "failed_ci_run": "https://github.com/marin-community/marin/actions/runs/44412884659",
+  "failed_job": "https://github.com/marin-community/marin/actions/runs/44412884659/job/135185599873",
+  "failed_cases": [
+    "test_perfmax_retains_real_check_report_and_blocks_unqualified_recommendations[correct-None]",
+    "test_perfmax_retains_real_check_report_and_blocks_unqualified_recommendations[correct-0]"
+  ],
+  "observed": "The real HTTP checks all pass, then recommendation correctly rejects the mismatched runtime identities.",
+  "cause": "The test fake hardcoded 0ac9dcb while CI merge 79a6404 selected release 47a8e415. Both current-main and exact-merge source readbacks show that selected release.",
+  "fix": "The expected runtime, fake endpoint version and synthetic trial manifest now use the same selected release. Production acceptance and numerical checks are unchanged.",
+  "local_validation": {
+    "cases": 145,
+    "seconds": 27.98,
+    "status": "passed",
+    "scoped_lint": "passed",
+    "selected_release_exercised": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+    "method": "A disposable Python entrypoint replaces the selected release object before pytest imports the HTTP fixture. Pytest runs in one process (-n 0), so the synthetic runtime identity survives collection; real HTTP, CLI and acceptance code execute unchanged.",
+    "test_paths": [
+      "tests/inference/test_endpoint_checks.py",
+      "tests/inference/test_serve.py",
+      "experiments/evaluation/knotmeter/test_trials.py"
+    ],
+    "log": "ci-runtime-version-47-tests.log",
+    "lint_log": "ci-runtime-version-lint.log"
+  },
+  "campaign_runtime": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "qualification": "No actual 47a8e415 GPU measurement or model qualification is claimed. The preset inherits the current selected release; old serving/performance evidence must not transfer to a changed runtime.",
+  "new_gpu_work": 0,
+  "first_fix_source": "351879c65f688fa9284eb3d0a78c282d253cd428",
+  "first_fix_incomplete": {
+    "run": "https://github.com/marin-community/marin/actions/runs/44416874939",
+    "job": "https://github.com/marin-community/marin/actions/runs/44416874939/job/135199536189",
+    "cause": "The first fix changed the expected runtime but missed the fake /version response, which still named 0ac9dcb. CI caught the remaining mismatch at deployment verification.",
+    "scope": "The failed fixture prevented the numerical HTTP probes from running. These are protocol-test failures, not numerical model findings."
+  },
+  "final_ci": "Pending on source 3d04a90d36e393683a25ea01c1b3528f12ec3204"
+}

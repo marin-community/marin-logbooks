@@ -15,7 +15,7 @@ morning deadline, and the handoff was late. DP32/C64 and FP8 at retention zero
 or DP32 remain unmeasured. No replacement experiment was launched after the
 deadline.
 
-Both BF16 model families pass supported zero and positive retention coverage;
+Hero/Mochi and Snowball in BF16 pass supported zero and positive retention coverage;
 see the [cache extraction handoff](cache-retention-handoff.md). All seven points
 below use GB200s, TP1 and a normal one-hour window on fixed step400407.
 
@@ -63,7 +63,8 @@ isolating weight precision. Canonical Marlin ordering plus deterministic padded
 routing later passes all 19 exact model cache comparisons, batch and decode
 at retention 128 on four and eight GPUs. These results do not qualify retention
 zero or the selected 32-GPU topology. The fixes' throughput remains unmeasured.
-The short-reference maximum remains 0.672875 against the unchanged 0.65 bound.
+The largest upper bound on absolute token probability error against the short
+saved references remains 0.672875; the unchanged limit is 0.65.
 Native Triton variants and a 24-of-48-layer W8A16 hybrid also fail reference
 checks. The 16-layer hybrid stops during fixture setup with no numerical report;
 its initiating exception is unavailable. No hybrid performance hour was run.
@@ -92,8 +93,8 @@ and no owned pod or queued job remains. The last GPU allocation ended at
 The 17:00 UTC handoff deadline was missed. Recorded work stopped near 12:06 UTC
 and the session resumed at 21:24 UTC; the reason for the gap is not established
 here. Native jobs had already ended. No new GPU work was launched afterward.
-The final High GOAL review is complete; its bounded corrections and contribution
-publication are being completed late. All contributions remain unmerged.
+The final High GOAL review and its bounded corrections are complete.
+Contributions were published late and remain draft and unmerged.
 
 The [final review resolution](analysis/hero-fp8-cache-validation/overnight-high-goal-review-resolution.json)
 and [ordinary checks](analysis/hero-fp8-cache-validation/ordinary-validation-final.json)
@@ -103,8 +104,7 @@ entrypoint, pytest process and retained log/JUnit archive, while preserving a
 nonzero exit. The historical missing exception remains unavailable.
 The broader affected suite stopped after a worker timeout. Two failures
 reproduce in unchanged task-curation tests; the raw failure logs are retained.
-This is not a passing broad-suite result. Final review and CI state will be
-recorded before handback.
+This is not a passing broad-suite result. Final Marin CI is pending after the protocol-fixture correction below.
 
 For a later authorized rerun, use an isolated checkout of the research branch
 at [88e31071f564](https://github.com/marin-community/marin-logbooks/tree/88e31071f56412f5f6e8702a0644f738d0427543).
@@ -286,3 +286,25 @@ excluded. Owned peaks were eight H100s and sixteen GB200s, below the 48/128
 ceilings. Interactive priority was requested; Iris's normal fallback was allowed.
 All owned jobs and [campaign pods](analysis/snowball-c64-cleanup-root.json) are
 terminal, and all resource-board entries are closed.
+
+## Contribution publication
+
+[Marin #11320](https://github.com/marin-community/marin/pull/11320) and vLLM
+[#132](https://github.com/marin-community/vllm/pull/132),
+[#133](https://github.com/marin-community/vllm/pull/133) and
+[#134](https://github.com/marin-community/vllm/pull/134) are draft and unmerged.
+The [publication record](analysis/hero-fp8-cache-validation/publication-heads.json)
+distinguishes the selective-only PR from the unopened hybrid proposal and
+preserves the tested experimental stack. All four original inline findings on
+#11320 have verified replies and resolved threads.
+
+CI exposed a stale runtime ID in the HTTP protocol test fixture. Its checks
+passed, then the production recommendation gate correctly rejected the mismatch:
+the fixture named `0ac9dcb`, while CI's merge selected `47a8e415`. The
+[bounded fix](analysis/hero-fp8-cache-validation/ci-runtime-fixture-followup.json)
+keeps the fake endpoint and synthetic manifest coherent. The first fix missed
+the fake version response; a second CI failure exposed it. The final fixture
+fix passes all 145 focused cases with the synthetic identity set to `47a8e415`.
+The production gate and campaign's fixed runtime are unchanged.
+The maintained preset inherits Marin's selected runtime; this campaign supplies
+no GPU or performance qualification for `47a8e415`.

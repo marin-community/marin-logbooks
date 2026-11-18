@@ -95,3 +95,11 @@ in the child's BF16 C32 trial on 16 GB200s: all 19 exact differences are zero.
 Its clean executed source is `33d780669d850e6b1c4166b2473973b5ff08c225`.
 Both models have now exercised zero and positive retention on the pinned runtime.
 The child's AgentX measurement remains a separate claim.
+
+Later protocol-fixture commits `351879c65f688fa9284eb3d0a78c282d253cd428` and
+`3d04a90d36e393683a25ea01c1b3528f12ec3204` keep its expected runtime, fake version
+response and synthetic recommendation manifest on the same selected release.
+They leave the production checker unchanged. Use final contribution source
+`3d04a90d36e393683a25ea01c1b3528f12ec3204` for extraction onto current Marin.
+The campaign's live evidence remains pinned to `0ac9dcb157`; it does not qualify
+the later maintained runtime.

@@ -42,7 +42,7 @@ Hybrid24 cost 10,493.132 GPU-seconds. The [16-layer attempt](hybrid16-model-a1-s
 
 ## Source and contribution state
 
-The [source-head record](final-source-heads.json) distinguishes every frozen runtime and current-main contribution. The final High review is complete. Three separate draft contributions are prepared; no runtime PR is open yet and no contribution is merged into main:
+The [source-head record](final-source-heads.json) distinguishes every frozen runtime and current-main contribution. The final High review is complete. Three separate draft contributions are open; all remain unmerged:
 
 - Selective online FP8 support: `906495c0cdeb562a7a7d15532f7ce1b7af431116`, branch `codex/hero-fp8-selective-publication-01a1ec55`. It starts from frozen `0474521` with a precision-neutral test rename. It preserves the existing factory/backend path and matches the measured `2442477` runtime functions.
 - Canonical Marlin ordering: `b0d1a26b6e365fb9fc5ee1f991ac064a477e855b`.
@@ -58,4 +58,6 @@ The [complete owned cost ledger](cost-ledger.json) totals **377,163.668 GPU-seco
 
 [Cleanup proof](final-cleanup.json) closes all 35 owned board rows and checks all 41 exact native job identities plus actual provider state. No owned job, pod, queue entry or allocation remains. Root's cache-validation share and the independent BF16 agent's ledger are separate from this total.
 
-Missing acceptance evidence is explicit: no FP8 configuration passes all fixed-reference criteria; the 16-layer hybrid has no full-model gate; no FP8 performance measurement at retention zero or DP32 exists; no throughput measurement of the canonical/padding fixes or hybrid exists; current-main contribution branches lack whole-runtime GPU qualification; no repeated performance window or RL learning qualification exists. The final High review is complete; publication and terminal CI remain pending. The overnight-search requirement is partly unmet: work stopped before the deadline and the handoff resumed late. No replacement GPU work was launched. Retain the qualified BF16 selection while preserving these fixes and failures for further authorized work.
+Missing acceptance evidence is explicit: no FP8 configuration passes all fixed-reference criteria; the 16-layer hybrid has no full-model gate; no FP8 performance measurement at retention zero or DP32 exists; no throughput measurement of the canonical/padding fixes or hybrid exists; current-main contribution branches lack whole-runtime GPU qualification; no repeated performance window or RL learning qualification exists. The final High review is complete; the three runtime drafts are published with terminal CPU CI, and final Marin CI remains pending. The overnight-search requirement is partly unmet: work stopped before the deadline and the handoff resumed late. No replacement GPU work was launched. Retain the qualified BF16 selection while preserving these fixes and failures for further authorized work.
+
+Publication: selective [#132](https://github.com/marin-community/vllm/pull/132), canonical [#133](https://github.com/marin-community/vllm/pull/133) and padding [#134](https://github.com/marin-community/vllm/pull/134). The broader hybrid API remains unopened.

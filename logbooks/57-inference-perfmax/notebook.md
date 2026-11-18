@@ -965,3 +965,27 @@ All 63 owned resource rows are closed, with no campaign pods remaining. The
 totals 262.506921 GB200-hours and 2.008889 H100-hours. The handoff preserves the
 broader CPU test failures alongside 144 focused passes. Final High review and
 contribution CI follow these ordinary checks; all changes remain unmerged.
+
+## 2026-11-18 — Contribution review and CI correction
+
+The final High GOAL panel is complete. Its
+[resolution](analysis/hero-fp8-cache-validation/overnight-high-goal-review-resolution.json)
+retains provider provenance, addressed findings and rejected completion claims.
+Bounded fixes select the measured retention-zero/256-GB Hero preset and retain
+pytest logs and JUnit after fixture failure. A real serialized entrypoint and
+failing pytest process verify the retained archive and nonzero exit.
+
+[Marin #11320](https://github.com/marin-community/marin/pull/11320) and vLLM
+[#132](https://github.com/marin-community/vllm/pull/132),
+[#133](https://github.com/marin-community/vllm/pull/133) and
+[#134](https://github.com/marin-community/vllm/pull/134) are draft and unmerged.
+The selective-only PR excludes the proposed hybrid backend API. Frozen tested
+sources and the unopened hybrid proposal remain public branches.
+
+CI's merge now selects runtime `47a8e415`, exposing a stale identity in the HTTP
+test fixture. The first fix missed its fake version response; the second fixes
+both sides. All 145 focused cases pass with that synthetic runtime identity,
+and scoped lint passes. No production gate or numerical bound changed. No GPU
+qualification transfers from the campaign's `0ac9dcb157` runtime to the current
+main release or contribution ports. The missed overnight requirement remains
+unmet. Final CI is recorded in the contribution publication evidence.
