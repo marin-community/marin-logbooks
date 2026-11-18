@@ -1,0 +1,397 @@
+{
+  "scope": "First normal-hour retention-zero BF16 configuration comparison at fixed checkpoint, tokenizer, runtime and numerical criteria. One hour per point; repeat variability unmeasured. Model/tokenizer and original exports remain fixed. C64 retention128 reserved768GiB versus256GiB here and in both C32 configurations.",
+  "rows": [
+    {
+      "concurrency": 32,
+      "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T072838Z-3cca138ac87b",
+      "status": "qualified under the unchanged provisional BF16 serving policy",
+      "rate": 19.29162,
+      "p90_ttft": 145.36914,
+      "p90_completion": 156.44444,
+      "rate_change_vs_retention128_percent": 7.553717985385311,
+      "ttft_change_vs_retention128_percent": -12.669193549869606,
+      "validity": {
+        "submission_valid": true,
+        "worker_metrics": true,
+        "coverage_complete": true,
+        "profiling_successes": 1586,
+        "profiling_errors": 0,
+        "profiling_error_ratio": 0.0,
+        "protocol_valid": true,
+        "diagnostic": false,
+        "gang_valid": true
+      },
+      "warmup_error_count": 2.0,
+      "client_cache_reuse_percent": 94.19405371761177,
+      "theoretical_cache_reuse_percent": 95.708,
+      "server_reported_peak_kv_fraction": 0.67861,
+      "gpu_seconds": 84600.0,
+      "gpu_hours": 23.5,
+      "cost_complete": true,
+      "source": {
+        "tree_hash": "0f37c469d5",
+        "base_commit": "3e7c6ca44a",
+        "dirty": false,
+        "branch": "codex/hero-bf16-01a1ed83",
+        "built_by": "romain",
+        "git_remote": "git@github.com:marin-community/marin.git",
+        "created_at": "2026-11-17T23:28:38.576375",
+        "command_line": [
+          "/home/romain/work/marin-community/marin/hero-bf16-01a1ed83/experiments/evaluation/knotmeter/cli.py",
+          "run",
+          "--profile",
+          "logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/retention0-c32.yaml",
+          "--campaign",
+          "perfmax-hero-bf16-01a1ed83",
+          "--priority",
+          "interactive",
+          "--logbook",
+          "https://github.com/marin-community/marin-logbooks/blob/0031537791/logbooks/57-inference-perfmax/hero-bf16-01a1ed83.md",
+          "--output",
+          "scratch/retention0-c32-a2-plan.json"
+        ]
+      },
+      "archive": {
+        "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T072838Z-3cca138ac87b/attempts/b2fd794cfea98371/hosts/0/native-706355e1bc63c1cd76c610863f3139de10732216cfa9f3546548e9ba1b120003.tar.zst",
+        "sha256": "706355e1bc63c1cd76c610863f3139de10732216cfa9f3546548e9ba1b120003",
+        "bytes": 334618697
+      },
+      "original_member_sha256": {
+        "aiperf_artifacts/profile_export_aiperf.json": "3388ac751f6765ed9e380f18b8926ce9da9ef0e98fc9b76a8201899b8eb9ac83",
+        "aiperf_artifacts/profile_export.jsonl": "5504b62db536f42d7a2c258663c8f787cedb335d4ecf517032100d404ec00687",
+        "check-0.json": "d0860e9b463ef5e2c750e2d2e941c899a13ae7b0d14ab1c73ab0dd43182d8897",
+        "profile.json": "2d810ec1cddd6792f834ca7816a98ffca85b530d4eed8f864a2f3dc905e85fab",
+        "hardware.txt": "29bc218015ae25258bcbf34c6726e875cc74d0c3ee74642905fa30f413b28aa3"
+      },
+      "raw_checks_in_archive": true,
+      "exact_cache_comparisons": {
+        "limits": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "positions": 19,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "status": "passed",
+        "worst": [
+          {
+            "boundary": 127,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 368,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 128,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 368,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 129,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 368,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 255,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 496,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 256,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 496,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          }
+        ]
+      },
+      "host_memory": [
+        {
+          "node": "s1wvxs64",
+          "attempt_uid": "b2fd794cfea98371",
+          "peak_bytes": 118086631424,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        },
+        {
+          "node": "s5hvxs64",
+          "attempt_uid": "e49015d1aadb4244",
+          "peak_bytes": 101893603328,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        },
+        {
+          "node": "s5wvxs64",
+          "attempt_uid": "08ab1d7cfe548b4a",
+          "peak_bytes": 99283173376,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        },
+        {
+          "node": "s8wvxs64",
+          "attempt_uid": "5858f8a71f62e19c",
+          "peak_bytes": 100100866048,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        }
+      ],
+      "comparison_controls_equal_to_retention128": true
+    },
+    {
+      "concurrency": 64,
+      "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+      "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T073018Z-33071107ec92",
+      "status": "qualified under the unchanged provisional BF16 serving policy",
+      "rate": 23.60952,
+      "p90_ttft": 276.38157,
+      "p90_completion": 282.52929,
+      "rate_change_vs_retention128_percent": 24.592703922454383,
+      "ttft_change_vs_retention128_percent": -11.462869635534245,
+      "validity": {
+        "submission_valid": true,
+        "worker_metrics": true,
+        "coverage_complete": true,
+        "profiling_successes": 2108,
+        "profiling_errors": 1,
+        "profiling_error_ratio": 0.000474158368895211,
+        "protocol_valid": true,
+        "diagnostic": false,
+        "gang_valid": true
+      },
+      "warmup_error_count": 3.0,
+      "client_cache_reuse_percent": 81.6861208722686,
+      "theoretical_cache_reuse_percent": 95.44500000000001,
+      "server_reported_peak_kv_fraction": 0.99904,
+      "gpu_seconds": 85996.0,
+      "gpu_hours": 23.887777777777778,
+      "cost_complete": true,
+      "source": {
+        "tree_hash": "0f37c469d5",
+        "base_commit": "3e7c6ca44a",
+        "dirty": false,
+        "branch": "codex/hero-bf16-01a1ed83",
+        "built_by": "romain",
+        "git_remote": "git@github.com:marin-community/marin.git",
+        "created_at": "2026-11-17T23:30:18.940424",
+        "command_line": [
+          "/home/romain/work/marin-community/marin/hero-bf16-01a1ed83/experiments/evaluation/knotmeter/cli.py",
+          "run",
+          "--profile",
+          "logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/retention0-c64.yaml",
+          "--campaign",
+          "perfmax-hero-bf16-01a1ed83",
+          "--priority",
+          "interactive",
+          "--logbook",
+          "https://github.com/marin-community/marin-logbooks/blob/3e7c6ca44a15413dcb5491aad903ef89ba23f116/logbooks/57-inference-perfmax/hero-bf16-01a1ed83.md",
+          "--output",
+          "scratch/retention0-c64-a2-plan.json"
+        ]
+      },
+      "archive": {
+        "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T073018Z-33071107ec92/attempts/87e3beb4aa82a5d6/hosts/0/native-e39902c1858b8e57c5d3e5faed4fde7c29202b3863d95244398466b4df84916a.tar.zst",
+        "sha256": "e39902c1858b8e57c5d3e5faed4fde7c29202b3863d95244398466b4df84916a",
+        "bytes": 339761559
+      },
+      "original_member_sha256": {
+        "aiperf_artifacts/profile_export_aiperf.json": "adba624497b406aa659b82d462edbd126ec8a988d0454a1a8138e2d7f4db9e90",
+        "aiperf_artifacts/profile_export.jsonl": "32e88205ce6265efdc69760e2c7ddb26b9556511ccd26fc63482d6dc88202db0",
+        "check-0.json": "4bb6fa9377b7a0aaa74ef5cc65a48a380436fd69d6358d9bedaab42ff5f0aee2",
+        "profile.json": "01c99b0d1d13480de4612c53914676a8c65e97eb061a76cfb2b143318f392467",
+        "hardware.txt": "75af4a54e0a6b07d2f59f5728bb889b2efa9fc673c74b83581a518c9ceb4a30a"
+      },
+      "raw_checks_in_archive": true,
+      "exact_cache_comparisons": {
+        "limits": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "positions": 19,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "status": "passed",
+        "worst": [
+          {
+            "boundary": 127,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 368,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 128,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 368,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 129,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 368,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 255,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 496,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 256,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          {
+            "boundary": 496,
+            "case": "replayed-decode-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          }
+        ]
+      },
+      "host_memory": [
+        {
+          "node": "s45txs64",
+          "attempt_uid": "87e3beb4aa82a5d6",
+          "peak_bytes": 119039918080,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        },
+        {
+          "node": "s6htxs64",
+          "attempt_uid": "02c8300e4b451464",
+          "peak_bytes": 99183165440,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        },
+        {
+          "node": "s6xvdgb4",
+          "attempt_uid": "b32931ffa4c3b496",
+          "peak_bytes": 99204792320,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        },
+        {
+          "node": "s76txs64",
+          "attempt_uid": "e05b5ebfb5939d9d",
+          "peak_bytes": 99603972096,
+          "limit_bytes": 274877906944,
+          "source": "Task cgroup v2, before final artifact upload"
+        }
+      ],
+      "comparison_controls_equal_to_retention128": true
+    }
+  ],
+  "gpu_seconds_total": 170596.0,
+  "gpu_hours_total": 47.38777777777778,
+  "next": "DP/EP32 with C128, same offered sessions per GPU as DP/EP16 C64. Test cache capacity versus communication cost; configuration comparison, not an isolated causal claim.",
+  "remaining": "C64 one HTTP500 profiling error and three empty-response warmup errors are retained; C32 has two empty-response warmup errors. NUMA candidate remains prepared."
+}
