@@ -1344,3 +1344,21 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the re-bound receipts' detail is registry-bound [M].
 - Decision and next action: next hourly check watches for FWeindel follow-through and the pending-user folders' decision.
+
+### 2026-11-18 03:40 UTC - Hourly catch-up (02:40–03:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `7198849d68…` (02:26:40 UTC) to head `d5d7b4ee28ff5616624fdc0b305ba7280d91f772`, landed 03:20:28 UTC (~8 landings 03:15–03:20 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 7198849d..d5d7b4ee` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **FineEnvs conversion lane added**: conversion for grouped input images (`a0082d5559…`); allocation-aware FineEnvs image grouping (`d5d7b4ee28…`, head).
+  - **Grading/verifier preservation**: nested native verifier files preserved during grading (`dda3158dde…`).
+  - **Inventory timestamp transport fix**: inventory metadata timestamps compared by instant across transports (`9113cfeeae…`).
+  - **Repair-candidate gating**: repair candidates gated on bound per-folder lineage receipts (`d4a5acbacd…`); oversized candidate SQL reads paged with the actual source projection checked (`b18ccd3621…`).
+  - **math_gym-qa finding recorded on the source**: LaTeX expected-answer finding recorded (`77f2eeea3a…`).
+  - **Infra**: the Iris lifecycle used when a watched job has no recent log line (`eff6fa5e75…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for FineEnvs conversion outcomes and repair-candidate gating effects.
