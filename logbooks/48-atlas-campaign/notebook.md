@@ -1491,3 +1491,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the held-source re-publication and HARDMath variant outcomes.
+
+### 2026-11-18 13:40 UTC - Hourly catch-up (12:40–13:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `eb3e33733b…` (12:28:12 UTC) to head `6c960dae97a70400c20126958e9289c3ccf84bae`, landed 13:26:12 UTC (1 landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log eb3e3373..6c960dae` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — a **single-workflow oracle campaign for the repair lane** (`6c960dae97…`, head): the repair lane's oracle filtering is consolidated into one workflow.
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: single code landing.
+- Decision and next action: next hourly check watches for the single-workflow oracle campaign's outcomes.
