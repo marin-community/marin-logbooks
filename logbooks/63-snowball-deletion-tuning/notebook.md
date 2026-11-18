@@ -80,8 +80,21 @@ recorded here.
 - Runtime wheels: `d5dd315d58f0f47514dd0a2208e90e2a48541328`.
 - Tokenizer: `marin-tokenizer-tools` @ `3f6879ac`.
 - Judge: MiniMaxAI/MiniMax-M3-MXFP8, 8x H100 (TP8), context 131,072.
-- Policy serving: vLLM, TP1/DP8/EP8, `max_num_seqs` 8, context 65,536,
-  16,384 tokens per turn, temperature 0.7, top-p 0.95.
+- Policy serving: the Exp3 `.61` Micro210 binding packet
+  (`s3://marin-us-east-08a/marin/users/benfeuer/long-loop-exp3/evidence/micro210-binding61.json`,
+  SHA-256 `e3078d7a11f3a11a2bbb4c42849037d29bdb51a00cb8e037580230067ad96109`,
+  verified on fetch): 128 H100 policy serving as 16 vLLM engines
+  (DP8/EP8/TP1, one engine per 8-GPU node, `max_num_seqs` 8, context 65,536,
+  16,384 tokens per turn, temperature 0.7, top-p 0.95, stop tokens
+  {128001, 128009}); judge MiniMax-M3-MXFP8 @ `c5454eb0` on 8 H100 (TP8,
+  context 131,072); selection manifest `selection.json` SHA-256 `7b2b5270...`
+  (200 tasks / 440 attempts); reusable builder
+  `experiments/post_training/long_loop/evaluation.py:configured_evaluation_step`
+  at source revision `655178c9`. The Exp3 entrypoint itself requires a
+  certified `global_step_20` RL artifact, so the base row and the variant rows
+  run through the same builder with their own model bindings (the
+  `micro_eval.py` route drives the identical graph from the standard
+  `specs/evaluation.yaml` recipe with `policy_replicas=16`).
 - Seed: `20261030`.
 - Prompt interface: the runtime's chat/tools serialization, tokenizer revision,
   thinking setting, and tool-parser settings come from the shared binding. The
