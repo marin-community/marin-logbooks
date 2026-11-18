@@ -40,6 +40,9 @@ Consult upstream vLLM and SGLang guidance, recent relevant features and PR or
 issue discussions. Read the source and check the versions before applying an
 idea. The [measurement reference](references/measurement.md) links useful starting
 points. Reuse prior evidence when its model, settings and runtime still apply.
+Read prior winning recipes beyond the maintained preset. Verify which settings
+the installed source consumes. Explain missing optimizations before calling a
+configuration the best applicable baseline.
 
 Identify a plausible bottleneck, predict what a change should affect and seek
 evidence that could reject the hypothesis. Separate a measured cause from a

@@ -47,8 +47,6 @@ serving:
   - FLASHINFER
   - --compilation-config
   - '{"cudagraph_mode":"PIECEWISE","splitting_ops":["vllm::unified_attention_with_output","vllm::unified_kv_cache_update","vllm::grug_moe_short_conv"],"inductor_compile_config":{"enable_auto_functionalized_v2":false,"combo_kernels":true,"benchmark_combo_kernel":true}}'
-  - --additional-config
-  - '{"grug_logical_kv_cache":true}'
   - --prefix-cache-retention-interval
   - '128'
 workload:
