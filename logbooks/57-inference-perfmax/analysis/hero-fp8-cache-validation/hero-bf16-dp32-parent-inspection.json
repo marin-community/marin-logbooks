@@ -1,0 +1,201 @@
+{
+  "scope": "Parent inspection of the published completed DP32 result, original native archive, client export, streamed JSONL and fixed-golden report. No new GPU measurement.",
+  "result_source_revision": "a71af3acb6ac190e6481602c6059e8f5bda0505d",
+  "result_source_path": "logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-result.json",
+  "result_sha256": "391dbd0c86efa3130e5d6b243a949f61ddb010c26ce04e101b5173af2499de7f",
+  "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T091911Z-31c846881afd",
+  "submitted_source": {
+    "tree_hash": "f651ed8a6d",
+    "base_commit": "88e31071f5",
+    "dirty": false,
+    "branch": "codex/hero-bf16-01a1ed83",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-18T01:19:11.744483",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/hero-bf16-01a1ed83/experiments/evaluation/knotmeter/cli.py",
+      "run",
+      "--profile",
+      "logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/retention0-dp32-c128.yaml",
+      "--campaign",
+      "perfmax-hero-bf16-01a1ed83",
+      "--priority",
+      "interactive",
+      "--logbook",
+      "https://github.com/marin-community/marin-logbooks/blob/88e31071f56412f5f6e8702a0644f738d0427543/logbooks/57-inference-perfmax/hero-bf16-01a1ed83.md",
+      "--output",
+      "scratch/retention0-dp32-c128-a1-plan.json"
+    ]
+  },
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "gpus": 32,
+  "hosts": 8,
+  "tensor_parallel": 1,
+  "data_parallel": 32,
+  "expert_parallel": 32,
+  "session_concurrency": 128,
+  "sessions_per_gpu": 4,
+  "retention": 0,
+  "precision": "BF16 weights and KV; FP32 router.",
+  "native_archive_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T091911Z-31c846881afd/attempts/42c879fb57ab959c/hosts/0/native-dc1d54ea6426a866be20f1cca9d51438622068b6dbe8fd6710027f116daa878f.tar.zst",
+  "native_archive_sha256": "dc1d54ea6426a866be20f1cca9d51438622068b6dbe8fd6710027f116daa878f",
+  "native_export_sha256": "6878d0cf0599c6958347e8e47e6f75468691d90f0532764e004dc6ee31fbb7d3",
+  "native_jsonl_sha256": "da71fdeb1aad25cb68a8affa8187588c0027c99fbbef9441e84f4f27dd3a8d08",
+  "raw_check_sha256": "79a02113c9395466e1c2223fce6652db6b73e7f6a109437b9787ef08c90579f4",
+  "hashes_and_raw_latencies_verified": true,
+  "validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 5245,
+    "profiling_errors": 0,
+    "profiling_error_ratio": 0.0,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "counts": {
+    "warmup_success": 1403,
+    "warmup_error": 3,
+    "profiling_success": 5245
+  },
+  "errors": [
+    {
+      "phase": "warmup",
+      "error": {
+        "type": "InvalidInferenceResultError",
+        "message": "InvalidInferenceResultError('Invalid inference result: No responses with actual content were received from the server (only usage/metadata, null/empty data, or [DONE] markers)')",
+        "cause_chain": [
+          "InvalidInferenceResultError"
+        ]
+      }
+    },
+    {
+      "phase": "warmup",
+      "error": {
+        "type": "InvalidInferenceResultError",
+        "message": "InvalidInferenceResultError('Invalid inference result: No responses with actual content were received from the server (only usage/metadata, null/empty data, or [DONE] markers)')",
+        "cause_chain": [
+          "InvalidInferenceResultError"
+        ]
+      }
+    },
+    {
+      "phase": "warmup",
+      "error": {
+        "type": "InvalidInferenceResultError",
+        "message": "InvalidInferenceResultError('Invalid inference result: No responses with actual content were received from the server (only usage/metadata, null/empty data, or [DONE] markers)')",
+        "cause_chain": [
+          "InvalidInferenceResultError"
+        ]
+      }
+    }
+  ],
+  "checks": {
+    "batch": "passed",
+    "cache": "passed",
+    "decode": "passed",
+    "deployment": "passed",
+    "reference": "passed"
+  },
+  "strict_cache_comparisons": 19,
+  "strict_cache_statistics": {
+    "fraction_above_0075": 0.0,
+    "maximum": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "output_tokens_per_second_per_gpu": 31.42858,
+  "total_output_tokens_per_second": 1005.71457,
+  "p90_ttft": 268.89855,
+  "p90_request_completion": 281.34879,
+  "client_cache_hit_pct": 87.95189166160954,
+  "theoretical_cache_hit_pct": 94.02154312361213,
+  "reported_server_cache_hit_rate": 0.87726,
+  "reported_peak_kv_usage": 0.86865,
+  "kv_peak_definition": "Pinned InferenceX vLLM adapter requests max gauge statistics and combines observed series by max. This covers retained metric observations.",
+  "kv_peak_definition_source": "https://github.com/SemiAnalysisAI/InferenceX/blob/80dff120d27fd6092210f4546b8faa5e6c9723ac/inferencex-e2e/infx/results/agentic/backends/vllm.py",
+  "gpu_hours": 50.40555555555556,
+  "cost_complete": true,
+  "host_memory": [
+    {
+      "peak_bytes": 155808366592,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "peak_bytes": 118270787584,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "peak_bytes": 120128339968,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "peak_bytes": 118855761920,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "peak_bytes": 118018605056,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "peak_bytes": 120416960512,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "peak_bytes": 117894217728,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    },
+    {
+      "peak_bytes": 121543852032,
+      "limit_bytes": 274877906944,
+      "source": "Task cgroup v2, before final artifact upload"
+    }
+  ],
+  "comparison_to_dp16_c64_retention0": {
+    "controls_equal": {
+      "model": true,
+      "serving": true,
+      "vllm": true,
+      "checks": true,
+      "cpu": true,
+      "memory": true,
+      "cluster": true,
+      "priority": true,
+      "effective_runtime_manifest": true,
+      "prepared_workload_archive": true,
+      "prepared_workload_recipe": true,
+      "numerical_identity": true
+    },
+    "explicit_changes": [
+      "GPU count 16 to 32; four GPUs per host stays fixed",
+      "Session concurrency 64 to 128; four sessions per GPU stays fixed",
+      "DP/EP group size changes with the allocation"
+    ],
+    "throughput_per_gpu_pct": 33.11825060399365,
+    "p90_ttft_pct": -2.7074960171910245,
+    "p90_completion_pct": -0.4178327846999452
+  },
+  "interpretation": "The larger allocation improves throughput per GPU by about 33.12% with similar p90 latency. Client cache reuse rises and observed peak KV use falls, consistent with lower cache pressure. Allocation, communication group and total load change together; this does not isolate cache capacity as the sole cause. One window per point does not quantify noise.",
+  "warmup_correction": "Final JSONL contains three warmup empty-content errors despite the earlier live notice reporting zero; profiling remains 5245 successes and zero errors.",
+  "qualification": "All required serving checks pass under the existing provisional policy. RL learning and trainer probability ratios remain unqualified.",
+  "numerical_identity": {
+    "checkpoint_revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+    "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+    "reference": {
+      "sha256": "ffecfe5e324e4379933b64c64dcef8aba1cbfc1fe7ff9f9b9b030299ab18e39b",
+      "uri": "s3://marin-us-east-02a/marin/inference/goldens/hero-sft-step400407-1a7886b05df2/6c8cd4e838a11be468be75e11c2a0876bfb99fa51bdd7933e9a018e4ae08fb73/manifest-ffecfe5e324e4379933b64c64dcef8aba1cbfc1fe7ff9f9b9b030299ab18e39b.json"
+    },
+    "policy": "hero-sft-step400407-bf16-gb200-provisional-v1",
+    "policy_sha256": "b247a9605ba950e9929b83eb45454817a4e6d2f88ca08934da0aa9350adfd05b",
+    "criteria_sha256": "49f8aad7d4a305b5b7d97954e0fc4eb01bebc0a28cd20a3a3d34c5bde2e0d66a",
+    "provisional": true
+  }
+}

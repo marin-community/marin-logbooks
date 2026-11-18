@@ -2,26 +2,40 @@
 
 The overnight Hero campaign is running. Both BF16 models pass supported zero and
 positive retention coverage; see the [cache handoff](cache-retention-handoff.md).
-The [retention-zero BF16 hours](analysis/hero-fp8-cache-validation/hero-bf16-retention0-parent-inspection.json)
-improve the tested baseline. All points below use 16 GB200s, TP1 and a normal
-one-hour window on fixed step400407. Passing numerical checks use a provisional
+The [32-GPU BF16 result](analysis/hero-fp8-cache-validation/hero-bf16-dp32-parent-inspection.json)
+now leads the tested configurations at 31.42858 output tokens/s/GPU.
+All points below use GB200s, TP1 and a normal one-hour window on fixed
+step400407. Passing numerical checks use a provisional
 serving policy; RL learning remains unqualified.
 
-| Hero point | Output tokens/s/GPU | p90 TTFT | p90 request completion | Profiling errors | Numerical checks |
-| --- | ---: | ---: | ---: | ---: | --- |
-| BF16, retention 128, C32 | 17.93673 | 166.45803 s | 171.59327 s | 0 | Pass |
-| BF16, retention 128, C64 | 18.94936 | 312.16459 s | 324.18918 s | 0 | Pass, with matching v2 cache evidence |
-| Selective FP8, retention 128, C64 | 22.62167 | 263.60362 s | 278.60459 s | 0 | Fail |
-| BF16, retention 0, C32 | 19.29162 | 145.36914 s | 156.44444 s | 0 | Pass |
-| BF16, retention 0, C64 | 23.60952 | 276.38157 s | 282.52929 s | 1 | Pass |
+| Hero point | GPUs | Output tokens/s/GPU | p90 TTFT | p90 request completion | Profiling errors | Numerical checks |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| BF16, retention 128, C32 | 16 | 17.93673 | 166.45803 s | 171.59327 s | 0 | Pass |
+| BF16, retention 128, C64 | 16 | 18.94936 | 312.16459 s | 324.18918 s | 0 | Pass, with matching v2 cache evidence |
+| Selective FP8, retention 128, C64 | 16 | 22.62167 | 263.60362 s | 278.60459 s | 0 | Fail |
+| BF16, retention 0, C32 | 16 | 19.29162 | 145.36914 s | 156.44444 s | 0 | Pass |
+| BF16, retention 0, C64 | 16 | 23.60952 | 276.38157 s | 282.52929 s | 1 | Pass |
+| BF16, retention 0, C128 | 32 | 31.42858 | 268.89855 s | 281.34879 s | 0 | Pass |
+
+BF16 uses reviewed runtime `0ac9dcb157`. The FP8 performance row uses original
+runtime `244247767c`; later fixes have endpoint evidence only.
 
 Retention zero raises C32 throughput by 7.55% and lowers p90 TTFT by 12.67%.
 The C64 comparison also lowers host RAM from 768 to 256 GiB; its throughput rises
 24.59% and TTFT falls 11.47%. All other points request 256 GiB. The one C64 error
-is HTTP 500, within the native error-ratio rule; its cause is under inspection.
+is an unexplained HTTP 500, within the native error-ratio rule.
 Warmup errors remain in the native records. One window per point does not quantify
 noise. The initial FP8 gain over retention-128 BF16 does not beat the newer BF16
 throughput result, and FP8's failed numerical checks still block acceptance.
+
+The 32-GPU point raises throughput per GPU by 33.12% over the 16-GPU C64 point,
+with similar p90 latency. Allocation and total concurrency double; four sessions
+per GPU stay fixed. The parent verified the native archive, exports and report
+hashes. All 5,245 profiling requests succeed. Three warmup errors remain despite
+an earlier live notice reporting zero. Client reuse rises to 87.9519% against
+94.0215% theoretical; reported peak KV use falls to 86.865%. This is consistent
+with lower cache pressure, but group size and total load also change. Complete
+cost is 50.405556 GB200-hours. NUMA and mixed-precision controls continue.
 
 The [baseline audit](baseline-reconciliation.md) guides the next allocation-size
 test and targeted FP8 controls. A combined Marlin/padding fix now passes all 19
