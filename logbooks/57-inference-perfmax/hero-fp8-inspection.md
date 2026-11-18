@@ -63,10 +63,25 @@ Parent inspection found that the existing full-model weight check reports method
 names without tensor dtypes. Earlier reports therefore establish method selection.
 The [native worker-extension query](analysis/hero-fp8-01a1ec55/hero_weight_metadata.py)
 now verifies actual storage on all 16 DP ranks before the main FP8 window.
-Each rank reports 48 FP8 expert layers with one byte per logical weight packed
+Each rank reports 48 routed expert layers with one byte per FP8 weight packed
 into INT32 words, an E4M3FN consumer, 820 BF16 projections and 48 FP32 routers.
 Attention and short-conv cache views are BF16. The
 [all-rank summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-weight-storage-summary.json)
 retains the extension hash and rank coverage. A real-storage test rejects a BF16
 tensor reinterpreted as INT32. The short skill now explicitly requires loaded
 storage evidence and separate KV precision; it remains 85 lines.
+
+A bounded source audit found no newer correctness fix for the observed failure.
+[PR130](https://github.com/marin-community/vllm/pull/130) enables an unused full-graph
+mode and adds a BF16 Triton table. [PR107](https://github.com/marin-community/vllm/pull/107)
+changes allocation/copying, with retained output/cache equality evidence. The
+null-row correctness fix, PR126, is already in the tested base. These findings
+give little support for another GPU run on this lead while the reference failure
+also remains. No backport or additional numerical run was performed.
+
+The prepared runtime contribution `0474521acd` applies the same quantization
+logic to current main `47a8e415bf`. Its whole module differs from tested `2442477`
+because main includes newer ShortConv/full-graph support. Current-main full-model
+qualification remains pending. The branch's required advisory catalog review
+completed once; it clarified the routed-expert-only test label. The final High
+goal review is still pending.

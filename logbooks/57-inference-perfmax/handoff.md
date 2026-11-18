@@ -1,6 +1,6 @@
 # Inference validation and tuning
 
-The Hero FP8 extension is running. Both models now pass supported zero and
+The Hero FP8 extension is running. Both BF16 models now pass supported zero and
 positive retention coverage; see the [cache handoff](cache-retention-handoff.md).
 The [Hero campaign](hero-fp8-01a1ec55.md) has a completed BF16 C64 window and two
 further trials in progress. The [execution inspection](hero-fp8-inspection.md)
