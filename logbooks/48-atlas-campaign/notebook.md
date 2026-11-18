@@ -1463,3 +1463,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the serialized repair-cohort TaskSpecs' intake outcomes.
+
+### 2026-11-18 11:40 UTC - Hourly catch-up (10:40–11:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `9a3c9e6bf3…` (10:32:49 UTC) to head `5e2b95d754f7ba8445abc34806233eb3e93e12a1`, landed 11:27:39 UTC (~5 landings 11:07–11:27 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 9a3c9e6b..5e2b95d7` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window — **repair-cohort runtime joins completed**: runtime bindings joined by tracked task ID (`3809b282c2…`), through the two-vintage tracked chain (`8175c8c99f…`) with strict zipping (`d339c72ba3…`) and a two-vintage runtime join (prepared id → instruction hash → runtime; `9539213d48…`); repair winners whose spec shards were lost mid-attempt reconverted (`5e2b95d754…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the rejoined repair cohorts' export outcomes.
