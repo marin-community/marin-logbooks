@@ -17,6 +17,7 @@ session_concurrency: 32
 serving:
   environment:
     VLLM_SERVER_DEV_MODE: '1'
+    PYTHONPATH: /app/logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83
   dtype: bfloat16
   max_model_len: 262144
   max_num_seqs: 128
@@ -51,9 +52,17 @@ serving:
   - --prefix-cache-retention-interval
   - '0'
   - --numa-bind
+  - --worker-extension-cls
+  - hero_numa_metadata.HeroNumaMetadata
 workload:
   public_dataset: semianalysis_cc_traces_weka_062126_256k
 checks:
+- name: actual-worker-numa
+  kind: serving
+  timeout: 180
+  command:
+  - python
+  - logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/inspect_numa.py
 - name: model-numerics
   fixture: experiments/evaluation/inference_correctness/fixtures/hero-sft-step400407.json
   timeout: 3600

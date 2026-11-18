@@ -84,13 +84,14 @@ storage evidence and separate KV precision. A cold reader prompted an AgentX
 definition and links to operational skills. The guide now has 89 lines,
 including the later requirement to audit prior baselines.
 
-A bounded source audit found no newer correctness fix for the observed failure.
+Before the overnight amendment, a bounded fork audit found no applicable newer
+correctness fix for the observed failure.
 [PR130](https://github.com/marin-community/vllm/pull/130) enables an unused full-graph
 mode and adds a BF16 Triton table. [PR107](https://github.com/marin-community/vllm/pull/107)
 changes allocation/copying, with retained output/cache equality evidence. The
 null-row correctness fix, PR126, is already in the tested base. These findings
-give little support for another GPU run on this lead while the reference failure
-also remains. No backport or additional numerical run was performed.
+gave little support for another GPU run on those changes while the reference
+failure also remained. That audit did not cover the later upstream Marlin lead.
 
 The prepared runtime contribution `0474521acd` applies the same quantization
 logic to current main `47a8e415bf`. Its whole module differs from tested `2442477`
@@ -149,3 +150,26 @@ results under equivalent within-expert layouts. Pinned `0ac9dcb` passes alignmen
 output directly onward and already uses FP32 reduction without atomic addition.
 The upstream evidence uses other shapes and quantization formats. It is a lead
 for a cheap control, not a demonstrated cause of Hero's mismatch.
+
+The [order control](analysis/hero-fp8-01a1ec55/marlin-order-a3-summary.json)
+now finds different outputs for equivalent token layouts in 18 of 28 cases.
+All 14 varied-weight cases are sensitive; their largest final contribution
+difference is 0.000030517578125. This establishes component order sensitivity,
+not its contribution to the full-model failure. The earlier component attempt
+also retains four failed FP32-reference comparisons at 2% bounds. The next test
+does not erase those failures or change their bounds.
+
+The child ported the upstream canonicalization to a separate runtime, `467e3fc144`,
+leaving the original `244247767c` frozen. A CPU build preserved all 19 native
+payload hashes. The [cold installed-wheel check](analysis/hero-fp8-01a1ec55/marlin-canonical-component-a1-components.json)
+passes ten native FP8 cases, two CUDA-graph cases and the inactive-tail regression.
+The parent inspected these records and the full-model test node. It first checks
+loaded storage and cache replay, then runs the unchanged shared suite only after
+those pass. This avoids another setup if the cache result is promising. The
+four-GB200 screen is queued; component success does not qualify its model.
+
+The second child also exposed a misleading successful CLI exit after failed CPU
+preparation. Contribution `3a1a01b2ea` makes synchronous run and recovery preserve
+the failed report and return failure. Its regression exercises the actual recovery
+command after rejected submission; the 34 affected runner cases pass. Native
+measurement validity, numerical status and accepted selection remain separate.
