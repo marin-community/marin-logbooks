@@ -53,6 +53,9 @@ def main():
     module = importlib.import_module("vllm.model_executor.layers.fused_moe.experts.marlin_moe")
     native_hash = hashlib.sha256(Path(module.__file__).read_bytes()).hexdigest()
     assert native_hash == payload["marlin_sha256"]
+    model = importlib.import_module("vllm.model_executor.models.grugmoe")
+    model_hash = hashlib.sha256(Path(model.__file__).read_bytes()).hexdigest()
+    assert model_hash == payload["model_sha256"]
     assert importlib.metadata.version("vllm") == payload["candidate_manifest"]["version"]
     assert torch.__version__ == "2.14.1+cu132"
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -64,6 +67,9 @@ def main():
         "wheel_sha256": payload["candidate_manifest"]["wheels"][0]["sha256"],
         "marlin_module": module.__file__,
         "marlin_sha256": native_hash,
+        "model_module": model.__file__,
+        "model_sha256": model_hash,
+        "research_source": payload["research_source"],
         "torch": torch.__version__,
         "device": torch.cuda.get_device_name(),
         "started_unix": time.time(),
@@ -169,6 +175,41 @@ def main():
                     row["status"] = "passed"
                     output.write_text(json.dumps(record, indent=2) + "\n")
         assert any(x["output_max_abs"] > 0.01 for x in record["cases"])
+        # Same persistent native intermediate buffers across differently sized
+        # CUDA graphs; graph-private alignment/output allocations stay separate.
+        record["cuda_graph_history"] = []
+        graphs = []
+        for count in (1, 128, 2048):
+            x, target, weights = inputs[:count], routes["mixed"][:count], probabilities[:count]
+            run(x, target, weights)
+            torch.cuda.synchronize()
+            graph = torch.cuda.CUDAGraph()
+            with torch.cuda.graph(graph):
+                result = run(x, target, weights)
+            graphs.append((count, graph, result))
+        reverse_inputs = inputs.flip(0).contiguous()
+        reverse_ids = routes["mixed"].flip(0).contiguous()
+        run(reverse_inputs, reverse_ids, probabilities)
+        torch.cuda.synchronize()
+        other = torch.cuda.CUDAGraph()
+        with torch.cuda.graph(other):
+            run(reverse_inputs, reverse_ids, probabilities)
+        for count, graph, result in graphs:
+            graph.replay()
+            torch.cuda.synchronize()
+            before = result.clone()
+            other.replay()
+            torch.cuda.synchronize()
+            cache13.fill_(16)
+            cache2.fill_(-16)
+            out.fill_(32)
+            graph.replay()
+            torch.cuda.synchronize()
+            row = {"tokens": count, "maximum": (before.float() - result.float()).abs().max().item()}
+            record["cuda_graph_history"].append(row)
+            output.write_text(json.dumps(record, indent=2) + "\n")
+            assert torch.equal(before, result), row
+            row["status"] = "passed"
     record |= {"status": "passed", "finished_unix": time.time(), "peak_gpu_bytes": torch.cuda.max_memory_allocated()}
     output.write_text(json.dumps(record, indent=2) + "\n")
     print(json.dumps({"status": record["status"], "cases": len(record["cases"])}))
