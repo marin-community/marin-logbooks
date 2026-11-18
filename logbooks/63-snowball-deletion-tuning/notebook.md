@@ -324,6 +324,75 @@ recorded here.
   deletion config on a tiny/one-node spec; design and implement the V2
   Megatron path; launch the base row when the Exp2 binding lands.
 
+### 2026-11-18 17:45 UTC - V2 Megatron design verified against megatron-core 0.18.0; base-row staging started
+
+- Question or hypothesis and reason for trying it: implement V2 (GRPO) on the
+  Megatron learner the Exp3 path uses. The vendored SkyRL strategy dispatcher
+  accepts only `strategy: megatron` (`entrypoints/main_base.py` raises
+  `Unknown strategy type` otherwise), so there is no FSDP alternative; the
+  decision to go Megatron is forced by the stack and recorded in the plan of
+  record's Decision Log.
+- Published source revision: megatron-core 0.18.0 (the pinned wheel; source
+  read from the PyPI tarball, not modified); vendored
+  `vendor/skyrl/skyrl-train/skyrl_train/models/grug_megatron.py` on
+  `benfeuer/snowball-deletion-tuning-run`.
+- Command or material configuration: staging job
+  `/benfeuer/dt-stage-base-hf-20261118` submitted on cw-us-east-02a (CPU, 4h
+  budget) — verified-copies the certified 08a base HF export
+  (`long-loop-exp3/evidence/initializer-hf/2026.11.15.32.source.json`, repo
+  `open-athena/snowball-67b-a2b-base-262k-qk175-skew8` @ `058ecaf`, 134.2 GB)
+  into `s3://marin-us-east-02a/marin/users/benfeuer/snowball-deletion-tuning/inputs/base-hf/2026.11.18.1`
+  and pins the six sidecar digests plus every safetensors shard header into
+  `model-binding-inputs.json` beside the copy. The micro-eval launcher
+  (`micro_eval.py`, fetched bundle at
+  `s3://marin-us-east-02a/marin/users/benfeuer/r1-sft-eval/launcher-reference/`,
+  local extract `/tmp/opencode/r1-sft-eval/parent-bundle`) rejects models
+  outside the eval region, so this staging is a hard prerequisite for the base
+  row under any binding.
+- External inputs and artifact references: the r1-sft746 eval plan
+  (`r1-sft746-full.json`) is the template for the base-row plan — only the
+  model binding, output prefix, and version change; judge cache, coordinator,
+  evaluation execution, and the base evaluation digest stay verbatim.
+- Environment and hardware when relevant: eval region cw-us-east-02a.
+- Result, including failure or restart: megatron-core 0.18.0 API findings for
+  the V2 implementation (all verified in the wheel source):
+  1. `MoELayer.forward` runs route → dispatch → `routed_experts_compute` →
+     combine, with optional `tensor_parallel.checkpoint` recompute around
+     `custom_forward`; the experts submodule comes from
+     `get_moe_module_spec_for_backend(backend, num_experts, moe_grouped_gemm=True)`.
+  2. With the TE backend the experts are `TEGroupedMLP`, holding grouped
+     weights as `linear_fc1` / `linear_fc2` submodule parameters (fc1 fused
+     gate+up width, fc2 down); tokens arrive permuted with
+     `tokens_per_expert` and `permuted_probs`.
+  3. The vendored `GrugMoELayer(MoELayer)` already overrides init and
+     postprocess, and `GrugModelProvider` swaps the router and shared-expert
+     submodules — the same override surface can swap in a masked-expert
+     wrapper.
+  4. Planned insertion points: (a) a vendored masked-experts wrapper whose
+     forward substitutes the effective fc1/fc2 weights
+     (`W ⊙ σ(αG)` via `torch.nn.utils.stateless.functional_call`) so gradients
+     reach the per-weight logits inside megatron's own grouped computation;
+     (b) frozen base weights get `requires_grad=False` so megatron's optimizer
+     param collection skips them; the logits register as expert parameters so
+     expert-DP gradient reduction covers them; (c) the hard mask applies at
+     the bridge's rollout-sync and HF-export conversions (vendored
+     `grug_megatron_bridge.py` / `vllm_weight_conversion.py`); (d) Wanda norms
+     reuse the SFT-side calibration approach; the delete threshold comes from
+     the same subsample rule; (e) alpha rides as a per-step scalar updated by
+     the worker between training steps; (f) `G` enters megatron checkpoints
+     through the layer's sharded_state_dict.
+  5. RL-side behavior tests run in the vendored GPU test suite at tiny MoE
+     geometry (megatron-core is linux-only; no laptop CPU import), followed by
+     a smoke through the production entry point before any variant launch.
+- Evidence: this entry; the wheel source extraction; the submitted job.
+- Interpretation and limitations: the V2 code is not written yet; the design is
+  verified only down to the API surface. The base-row submission waits for the
+  Exp2 binding answer (contract alignment), the staging job, and a local
+  dry-run of the plan.
+- Decision and next action: implement the vendored Megatron masked experts per
+  the insertion points; build the base-row plan JSON and dry-run it locally;
+  submit after EXP2's binding confirmation.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
