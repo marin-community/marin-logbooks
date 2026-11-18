@@ -1,0 +1,222 @@
+{
+  "plan": {
+    "schema_version": 1,
+    "trial_id": "20261118T104137Z-392225beb398",
+    "trial_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T104137Z-392225beb398",
+    "campaign_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/hero-fp8-selective-triton-4gpu-a1",
+    "controller": "cw-us-east-08a",
+    "cluster": "cw-us-east-08a",
+    "marin_prefix": "s3://marin-us-east-02a/marin",
+    "series": {
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "processor_source": "80dff120d27fd6092210f4546b8faa5e6c9723ac",
+      "duration": 3600,
+      "max_context": 262144,
+      "max_profiling_error_ratio": 0.01,
+      "random_seed": 42,
+      "warmup_grace_period": 1800,
+      "trace_idle_gap_cap_seconds": 300,
+      "prepare_timeout": 1800,
+      "ready_timeout": 4200,
+      "task_timeout": 10800,
+      "scheduling_timeout": 1800,
+      "max_retries_failure": 0,
+      "max_retries_preemption": 1,
+      "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "model": "hero-sft-step400407",
+      "model_prefix": "hero-sft-step400407",
+      "model_revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+      "tokenizer": "marin-community/marin-tokenizer-tools",
+      "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+      "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+      "precision": "fp8",
+      "tensor_parallel": 1,
+      "profile": {
+        "model": {
+          "repo": "hero-sft-step400407",
+          "revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+          "tokenizer": "marin-community/marin-tokenizer-tools",
+          "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+          "path": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+          "config_sha256": "1a05f3dbaddd2c1aa28064dc0d4140d53d80cf5c25a7c8418b0e013c91b1a43e",
+          "chat_template": "marin",
+          "eos_token_id": 128009
+        },
+        "gpus": {
+          "type": "GB200",
+          "count": 4,
+          "per_host": 4
+        },
+        "cluster": "cw-us-east-08a",
+        "priority": "interactive",
+        "session_concurrency": 16,
+        "quantization": "online",
+        "weight_precision": "fp8",
+        "serving": {
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 1,
+          "max_model_len": 262144,
+          "max_num_seqs": 128,
+          "max_num_batched_tokens": 2048,
+          "gpu_memory_utilization": 0.95,
+          "prefix_caching": true,
+          "router": true,
+          "extra_args": [
+            "--enable-prompt-tokens-details",
+            "--max-logprobs",
+            "50",
+            "--reasoning-parser",
+            "grug",
+            "--enable-auto-tool-choice",
+            "--tool-call-parser",
+            "hermes",
+            "--seed",
+            "42",
+            "--hf-overrides",
+            "{\"max_seq_len\":262144,\"max_position_embeddings\":262144}",
+            "--load-format",
+            "runai_streamer",
+            "--model-loader-extra-config",
+            "{\"distributed\":true,\"concurrency\":4,\"memory_limit\":17179869184}",
+            "--kernel-config",
+            "{\"moe_backend\":\"triton\",\"enable_flashinfer_autotune\":false}",
+            "--kv-cache-dtype",
+            "auto",
+            "--attention-backend",
+            "FLASHINFER",
+            "--compilation-config",
+            "{\"cudagraph_mode\":\"PIECEWISE\",\"splitting_ops\":[\"vllm::unified_attention_with_output\",\"vllm::unified_kv_cache_update\",\"vllm::grug_moe_short_conv\"],\"inductor_compile_config\":{\"enable_auto_functionalized_v2\":false,\"combo_kernels\":true,\"benchmark_combo_kernel\":true}}",
+            "--prefix-cache-retention-interval",
+            "128",
+            "--quantization-config",
+            "{\"moe\":\"fp8_per_tensor\"}",
+            "--worker-extension-cls",
+            "hero_triton_metadata.HeroTritonMetadata"
+          ],
+          "environment": {
+            "VLLM_SERVER_DEV_MODE": "1",
+            "PYTHONPATH": "/app/logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55"
+          }
+        },
+        "workload": {
+          "public_dataset": "semianalysis_cc_traces_weka_062126_256k"
+        },
+        "vllm": {
+          "release": null,
+          "manifest": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/builds/padding-router-a399f9a0f1-a1/manifest.json",
+          "repo": "https://github.com/yonromai/vllm",
+          "revision": "a399f9a0f1582897a44cb4bac690221004516125"
+        },
+        "checks": [
+          {
+            "name": "loaded-weight-storage",
+            "command": [
+              "python",
+              "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/inspect_triton_model.py"
+            ],
+            "fixture": null,
+            "timeout": 180,
+            "kind": "serving",
+            "checkpoint_revision": null,
+            "runtime_source": null,
+            "evidence": []
+          },
+          {
+            "name": "model-numerics",
+            "command": [],
+            "fixture": "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-fp8-policy.json",
+            "timeout": 3600,
+            "kind": "numerical",
+            "checkpoint_revision": null,
+            "runtime_source": null,
+            "evidence": []
+          }
+        ],
+        "cpu": 32,
+        "memory": "256GB",
+        "disk": "1TB"
+      },
+      "profiles": {
+        "gb200": {
+          "gpu": "GB200",
+          "gpus": 4,
+          "hosts": 1
+        }
+      }
+    },
+    "vllm_release": {
+      "release_tag": "experimental-hero-fp8-padding-a399f9a0f158-01a1ec55",
+      "source_commit": "a399f9a0f1582897a44cb4bac690221004516125",
+      "version": "0.0.0.dev20261118+marin.a399f9a0f158.cu132",
+      "torch_backend": "cu132",
+      "torch_version": "2.14.1+cu132",
+      "wheels": [
+        {
+          "architecture": "aarch64",
+          "sm_targets": [
+            "10.0"
+          ],
+          "url": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/builds/padding-router-a399f9a0f1-a1/vllm-0.0.0.dev20261118+marin.a399f9a0f158.cu132-cp312-cp312-linux_aarch64.whl",
+          "sha256": "453138ae87b639ef7cac30069aeaaf6a8963cc9f6ae5ae7af896027e113a21ef"
+        }
+      ]
+    },
+    "placement": {},
+    "job_id": "/romain/knotmeter-20261118t104137z-392225beb398",
+    "gpu_job_id": "/romain/knotmeter-20261118t104137z-392225beb398",
+    "source": {
+      "tree_hash": "d346034b5f",
+      "base_commit": "25495bcceb",
+      "dirty": false,
+      "branch": "codex/hero-fp8-01a1ec55",
+      "built_by": "romain",
+      "git_remote": "git@github.com:marin-community/marin.git",
+      "created_at": "2026-11-18T02:41:38.148132",
+      "command_line": [
+        "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/experiments/evaluation/inference_correctness/launch.py",
+        "--profile",
+        "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-fp8-triton-4gpu.yaml",
+        "--name",
+        "hero-fp8-selective-triton-4gpu-a1",
+        "--pytest-node",
+        "tests/cluster/vllm/test_hero_fp8_canonical.py::test_hero_canonical_storage_cache_then_shared_suite",
+        "--output",
+        "scratch/triton-selective-model-a1-execution.json"
+      ]
+    },
+    "research_logbook": null,
+    "pytest_node": "tests/cluster/vllm/test_hero_fp8_canonical.py::test_hero_canonical_storage_cache_then_shared_suite",
+    "diagnostic": true
+  },
+  "state": "failed",
+  "attempts": [
+    {
+      "task_id": "/romain/knotmeter-20261118t104137z-392225beb398/0",
+      "attempt_uid": "0f9348d3c0b8a978",
+      "state": "failed",
+      "pod_uid": "e22c0cf0-4266-4cbf-8ac0-76d3f2e4adac",
+      "node_name": "s90vxs64",
+      "gpu_seconds": 4924.0,
+      "allocation": {
+        "pod_uid": "e22c0cf0-4266-4cbf-8ac0-76d3f2e4adac",
+        "attempt_uid": "0f9348d3c0b8a978",
+        "pod_name": "iris-romain-knotmeter-20261118t1041-893977fc-0-0f9348d3c0b8a978",
+        "node_name": "s90vxs64",
+        "observed_unix": 1794999761.7354536,
+        "phase": "Failed",
+        "scheduled_unix": 1794998509.0,
+        "finished_unix": 1794999740.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794999740.0
+      },
+      "error": "())\n        profile_path = endpoint.output.with_name(\"loaded-storage-profile.json\")\n        profile_path.write_text(json.dumps(plan[\"series\"][\"profile\"]))\n        inspection = next(item[\"command\"] for item in plan[\"series\"][\"profile\"][\"checks\"] if item[\"kind\"] == \"serving\")\n        assert inspection[0] == \"python\"\n        inspector = Path(__file__).resolve().parents[3] / inspection[1]\n        subprocess.run(\n            [sys.executable, str(inspector)],\n            env=os.environ\n            | {\n                \"KNOTMETER_PROFILE\": str(profile_path),\n                \"KNOTMETER_SERVER_URL\": endpoint.url,\n                \"KNOTMETER_RUNTIME_SOURCE\": endpoint.runtime_source,\n                \"KNOTMETER_CHECK_OUTPUT\": str(endpoint.output.with_name(\"loaded-storage.json\")),\n            },\n            check=True,\n        )\n        focused = asyncio.run(cache_screen(endpoint))\n        assert focused[\"status\"] == \"passed\", {\n            \"report\": str(endpoint.output.with_name(\"cache-screen.json\")),\n            \"checks\": {name: value[\"status\"] for name, value in focused[\"checks\"].items()},\n        }\n        report = asyncio.run(\n            check_endpoint(endpoint.url, endpoint.model, endpoint.fixture, endpoint.runtime_source, endpoint.output)\n        )\n>       assert report[\"status\"] == \"passed\", {\n            \"report\": str(endpoint.output),\n            \"checks\": {name: value[\"status\"] for name, value in report[\"checks\"].items()},\n        }\nE       AssertionError: {'checks': {'batch': 'passed', 'cache': 'passed', 'decode': 'failed', 'deployment': 'passed', ...}, 'report': '/iris/outputs/correctness/report.json'}\nE       assert 'failed' == 'passed'\nE         \nE         - passed\nE         + failed\n\ntests/cluster/vllm/test_hero_fp8_canonical.py:93: AssertionError\n=========================== short test summary info ============================\nFAILED tests/cluster/vllm/test_hero_fp8_canonical.py::test_hero_canonical_storage_cache_then_shared_suite\n======================== 1 failed in 1189.68s (0:19:49) ========================\n"
+    }
+  ],
+  "observed_unix": 1794999763.0724115
+}

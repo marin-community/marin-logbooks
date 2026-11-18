@@ -1136,3 +1136,39 @@ the4-GPU control. These different gang sizes are targeted numerical screens,
 not a throughput comparison. Fixed shared cache/reference/batch/decode outcomes
 remain pending. The tiny component's broad absolute tolerance and missing
 output norms establish compatibility only; they do not replace these gates.
+
+## 2026-11-18 11:18 UTC — Triton numerical failures and narrow hybrid support
+
+Both complete Triton model reports reject unchanged bounds. The24-of48 mixture
+fails short-reference maximum0.7048335196; p99=0.1157947620 passes. Long, batch,
+cache and decode pass; full cache has19 exact zeros. The48-of48 selective
+control fails short maximum0.7627548244 and p99=0.1496307978, plus decode
+maximum0.2508695181 above0.25. Its long, batch and full cache pass, again19 exact
+zeros. [Mixed summary](analysis/hero-fp8-01a1ec55/triton-mixed-model-a1-summary.json)
+and [48-layer summary](analysis/hero-fp8-01a1ec55/triton-selective-model-a1-summary.json)
+retain every statistics map. The native archives retain full reports and responses;
+all8+4 rank storage checks passed. Costs are10,932 and4,924 GPU seconds.
+All three pods are absent and rows2259/2260 are closed. Completed owned cost is
+100.653162 GB200 hours.
+
+The [new patch](analysis/hero-fp8-01a1ec55/hybrid-backend-runtime.patch) is a separate
+runtime at746cafea89518eb33184211eef271d7bb659058f, based on frozena399.
+An optional factory backend argument leaves its default unchanged. Grug selects
+native BF16 Triton only for explicitly ignored expert layers under supported
+online FP8 with global Marlin. Other expert layers retain existing native
+Marlin W8A16 FP8. The existing loader test gains one ignored-BF16 case and
+compares actual weights/output with explicit native BF16 Triton while the global
+setting stays Marlin. Required lint and syntax pass. Guard and online FP8 weight
+implementation AST/bytes remain unchanged in [CPU/source validation](analysis/hero-fp8-01a1ec55/hybrid-runtime-cpu-validation.json).
+The parent inspected the complete52-insertion/7-deletion diff and found no
+source blocker. This tests the existing W8A16 path; kernels and scale layout
+also differ from Triton, so the preceding failures are not attributed solely
+to activation rounding.
+
+Native CPU packaging will verify model, factory and Marlin Python hashes in
+source and wheel, plus every pinned ELF payload. A cold installed-wheel loader,
+output and graph component comes before the fixed-model gate. Earlier branches,
+failures and limits remain frozen. The strongest completed BF16 point is now
+DP32/R0/C128:31.42858 output tokens/s/GPU, p90 TTFT268.89855 seconds. A selected
+FP8 hour should match that stronger point if numerical gates pass. New NUMA
+confirmation is pending; its launcher setup issue is owned by the BF16 peer.
