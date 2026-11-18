@@ -1503,3 +1503,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit above; landing timestamp in the local atlas-push log [R].
 - Interpretation and limitations: single code landing.
 - Decision and next action: next hourly check watches for the single-workflow oracle campaign's outcomes.
+
+### 2026-11-18 14:40 UTC - Hourly catch-up (13:40–14:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `6c960dae97…` (13:26:12 UTC) to head `887056f8ef64628259a5806b952ae227c095db27`, landed 14:33:12 UTC (~10 landings 14:16–14:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 6c960dae..887056f8` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Repair-lane cohort conversion completed**: the tracked production grader environment bound in cohort conversion (`2bed41a6bd…`); CoreWeave S3 credentials exported for the Harbor trial subprocess (`887056f8ef…`, head) — the winner-cohort tasks are now runnable end to end.
+  - **Receipt-audit**: every Atlas receipt family audited to bind the canonical source declarations (`08e05bdc02…`); declaration audit formatted (`8e9460e179…`).
+  - **Daytona/quarantine machinery**: shared bounded quarantine capacity across Daytona control roots (`d02ca9ca46…`); ambiguous cleanup quarantined between control trials (`a0fb43e037…`); single-shot sandbox deletion alignment (`efaa82513f…`); campaign workflow collects from the calibration root (`236b1348bf…`); the `--campaign-receipt` dispatch fall-through to the plain cohort branch fixed (`7fd50fb713…`).
+  - **Quantine contract**: the shared quarantine reserve contract clarified (`1f4b7b016a…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the runnable repair-cohort trials' outcomes.
