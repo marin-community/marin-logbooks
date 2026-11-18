@@ -1329,3 +1329,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for license-chain follow-through and status-rollout effects.
+
+### 2026-11-18 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d90e8163f9…` (01:30:57 UTC) to head `7198849d687c3c471cdb4a542c6b0157900a0832`, landed 02:26:40 UTC (~7 landings 02:05–02:26 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d90e8163..7198849d` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: the iris pull probe kept off the unenforceable storage cell (`8e8dd8b9bc…` — the runtime-probe work touching this campaign's transport verification).
+- Result, including failure or restart: material changes in the window:
+  - **FWeindel receipts completed**: the 27 PASS per-folder receipts rebound with resolved upstream pins (`7198849d68…`, head) — completing the FWeindel license-decision chain from the repackager ruling (27 lifted / 6 banned / 4 pending user).
+  - **Cohort/QC hardening**: canonical cohort summaries materialized through bounded projections (`2183ba6e48…`); deadline-bound exact review readbacks split without masking failures (`ba857afdaa…`); QC inventory coverage queries bounded with batch counts kept separate from content (`132741cbac…`); unused QA payloads excluded from cohort aggregate group keys (`76b2422ae5…`).
+  - **Transport probe**: the iris pull probe kept off the unenforceable storage cell (`8e8dd8b9bc…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the re-bound receipts' detail is registry-bound [M].
+- Decision and next action: next hourly check watches for FWeindel follow-through and the pending-user folders' decision.
