@@ -926,3 +926,24 @@ passes alignment output directly onward. Applicability to Hero's FP8/EP path
 is unproven. The child is testing mapping/history and order sensitivity before
 another full-model allocation. The first two probe attempts retain import and
 result-writer failures; no order-sensitivity result is claimed from them.
+
+## 2026-11-18 — Stronger BF16 baseline and targeted FP8 fixes
+
+The [inspected DP32/C128 BF16 hour](analysis/hero-fp8-cache-validation/hero-bf16-dp32-parent-inspection.json)
+reaches 31.42858 output tokens/s/GPU, with p90 TTFT 268.89855 seconds and all
+5,245 profiling requests successful. All required serving checks pass under the
+existing provisional policy. Compared with DP16/C64 at retention zero, rate per
+GPU rises 33.12% with similar latency. Allocation and total concurrency double;
+this does not isolate cache capacity as the cause. Complete cost is 50.405556
+GB200-hours. Three warmup errors remain in the final records. The next controlled
+hour tests actual NUMA binding on the same hosts; its timing and failed setup
+attempt are recorded in the [execution inspection](hero-fp8-inspection.md).
+
+Canonical Marlin ordering plus deterministic padded router logits now passes
+all 19 exact full-model cache comparisons. The unchanged short-reference
+maximum still fails, so this is a cache fix rather than FP8 qualification.
+Native Triton variants also fail reference checks. A hybrid keeps FP8 expert
+activations in BF16 while allowing native BF16 layers to use Triton. Component
+and graph checks pass; full-model gates precede any selected performance hour.
+The initial FP8 hour remains diagnostic and does not beat the stronger BF16
+baseline. No bounds or goldens changed.

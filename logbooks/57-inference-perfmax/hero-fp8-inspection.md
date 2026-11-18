@@ -210,3 +210,36 @@ C64 also reaches 99.904% reported peak KV use. These observations support a
 larger-capacity allocation test without proving cache capacity is the sole cause.
 The child chose DP/EP32 at C128, preserving offered sessions per GPU. NUMA remains
 prepared. It avoided spending an hour on both choices before seeing these data.
+
+The [DP32/C128 result](analysis/hero-fp8-cache-validation/hero-bf16-dp32-parent-inspection.json)
+now passes the full suite and native protocol. It reaches 31.42858 output
+tokens/s/GPU with p90 TTFT 268.89855 seconds and completion 281.34879 seconds.
+Throughput per GPU rises 33.12% over DP16/C64; total load and allocation double.
+The parent verified the original archive digest, client export, streamed JSONL
+and numerical report. Profiling has 5,245 successes and zero errors. Final
+records contain three warmup errors despite an earlier live notice showing zero.
+Cost is 50.405556 GB200-hours, with all allocations released. An initially absent
+coordinator result later appeared normally; no collection failure occurred.
+
+Client reuse rises to 87.9519% against 94.0215% theoretical, and reported peak KV
+use falls to 86.865%. The pinned processor uses maximum observed gauge values.
+These observations support the capacity hypothesis but do not isolate its
+contribution from the changed communication group and workload mix. The child
+chose native NUMA binding as the next controlled change. The FP8 child proposed
+matching its next selected hour to this stronger baseline.
+
+The first NUMA attempt failed before vLLM startup while hashing a cloudpickled
+`__main__.__file__` that still named the devbox checkout. The parent's local
+source and serialization inspection missed this remote boundary. It cost
+0.277964 GB200-hours; the failed result and cleanup receipt are retained. A real
+zero-GPU Iris run then exercised the serialized launcher setup on the target
+image, resolved source through the imported native module and passed in
+22.62 seconds. This tests the boundary that the local probe missed.
+
+The replacement uses the same eight physical hosts as unbound DP32. The parent
+checked all [32 worker records](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-live-worker-affinity.json):
+unique DP ranks, matching attempt identities,
+nonempty execution-thread CPU masks within the intended node and successful
+`MPOL_BIND` memory policy. Sixteen ranks bind to each NUMA node. Resident page
+placement is not measured. All required numerical checks pass before warmup;
+the normal hour runs from 11:55:42 to 12:55:42 UTC, followed by native drain.
