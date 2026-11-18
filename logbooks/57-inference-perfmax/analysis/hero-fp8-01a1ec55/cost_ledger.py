@@ -28,6 +28,7 @@ INPUTS = (
     ("Mixed Triton component configuration failure", "triton-mixed-a1-execution.json", None),
     ("Mixed Triton component context setup failure", "triton-mixed-a2-execution.json", None),
     ("Native mixed Triton loader/output/graph component", "triton-mixed-a3-execution.json", None),
+    ("Hybrid ignored-layer test lifecycle failure", "hybrid-wheel-a1-execution.json", None),
     ("24 of48 Triton FP8 model reference rejection", "triton-mixed-model-a1-execution.json", None),
     ("48 of48 selective Triton model numerical rejection", "triton-selective-model-a1-execution.json", None),
     ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),

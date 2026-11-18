@@ -1192,3 +1192,29 @@ claim follows from this CPU execution. The active component uses hidden256,
 latent128 and intermediate128. It retains output scale/nonzero counts in
 addition to compatibility comparisons, with all existing bounds unchanged.
 The required full fixed-model suite still decides numerical acceptance.
+
+## 2026-11-18 11:33 UTC — Correct the new regression's BF16 lifecycle
+
+The first cold hybrid run verified all three installed module hashes, then
+stopped after13 native test passes. The new ignored-BF16 case loaded matching
+weights and preserved global Marlin, but omitted the normal post-load lifecycle
+step that creates its BF16 kernel. Forward therefore stopped at `moe_kernel is
+not None`; the manual compatibility/graph component had not run. The
+[failure](analysis/hero-fp8-01a1ec55/hybrid-wheel-a1-failure.json), native JUnit,
+log and receipt retain90 GPU seconds. Its pod is absent and row2263 is closed.
+
+Validation source3f418eebea adds the existing `_process_moe_weights` helper call.
+The immutable runtime wheel remains746 with SHA1cea7d87; all three runtime Python
+modules are [byte-identical](analysis/hero-fp8-01a1ec55/hybrid-validation-source-a2.json).
+The native validator supports separate package and validation sources. The new
+source archive and component input bind that distinction explicitly. No runtime
+math, bounds or prior evidence changed.
+
+Two prepared8-GPU model profiles cover24-of48 and16-of48 FP8 expert layers,
+both with BF16 activations via native Marlin W8A16 and ignored BF16 Triton.
+The16-layer backup still cuts expert payload by16.7% (about9% of total model
+storage at32 ranks); it can avoid a further full setup cycle if24 layers miss
+quality. Their [CPU inspector preflight](analysis/hero-fp8-01a1ec55/hybrid-inspector-cpu-preflight.json)
+passes intended counts and rejects wrong counts/hashes. Only a passing selected
+configuration would receive a normal32-GPU/R0/C128 hour against BF16's31.42858
+point. Native full-model gates and unchanged exact cache bounds remain required.

@@ -75,6 +75,7 @@ def main():
         "status": "running",
         "scope": "Native BF16 Triton plus FP8 Marlin loader/output and graph compatibility; no full-model qualification",
         "source_commit": payload["source_commit"],
+        "validation_source_commit": payload["validation_source_commit"],
         "wheel_sha256": payload["candidate_manifest"]["wheels"][0]["sha256"],
         "model_sha256": payload["model_sha256"],
         "factory_sha256": payload["factory_sha256"],
