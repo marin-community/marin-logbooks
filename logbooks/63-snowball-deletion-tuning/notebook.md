@@ -439,6 +439,81 @@ recorded here.
   the V1 dry-run against the Levanter path; V2 stays on Megatron/SkyRL. The
   base row (submitted and running) is unaffected.
 
+### 2026-11-18 19:05 UTC - BASE ROW MEASURED: Micro210 scores for the unmodified base
+
+- Question or hypothesis and reason for trying it: the base row is the primary
+  comparator for every variant (the plan's step 1). No base row existed under
+  this contract.
+- Published source revision: launcher bundle copy at
+  `experiments/active/snowball-deletion-tuning/micro210-launcher` (the r1
+  micro-eval runtime, fetched bundle also at
+  `s3://marin-us-east-02a/marin/users/benfeuer/r1-sft-eval/launcher-reference/`);
+  plan `experiments/deletion_tuning/plans/base-row-full.json` on
+  `benfeuer/snowball-deletion-tuning-run` @ `81158478b4`; base HF copy staged
+  and verified at
+  `s3://marin-us-east-02a/marin/users/benfeuer/snowball-deletion-tuning/inputs/base-hf/2026.11.18.1`
+  (48/48 files SHA-verified against the certified 08a receipt;
+  `generation_config.json` synthesized per the export convention, recorded).
+- Command or material configuration: micro_eval launcher, plan
+  `runs/deletion-tuning/base-row-full.json`, version `2026.11.18.3`, policy
+  replicas 16 (128 H100, 16 engines DP8/EP8/TP1), seed 20261030, temp 0.7 /
+  top-p 0.95, judge MiniMax-M3-MXFP8@c5454eb0 8x H100 TP8, dataset
+  `Marin-Micro-Eval-210@4564ed08`, wheels `d5dd315d`, no storage overrides
+  (matches the binding61 resource correction). Two prior submissions failed
+  inside their coordinators: `.1` on an absolute local plan path; `.2` on an
+  evidence pin that hashed a canonicalized re-dump instead of the file's
+  actual bytes (all six sidecar pins verified correct; the redundant pin was
+  dropped).
+- External inputs and artifact references: binding packet
+  `micro210-binding61.json` (SHA-verified `e3078d7a...`); eval outputs at
+  `s3://marin-us-east-02a/tmp/ttl=30d/benfeuer/snowball-deletion-tuning/micro210-base-20261118/parent-base-full/long-loop/micro210-snowball-deletion-tuning-base-full/2026.11.18.3`
+  (terminal.json `state: succeeded`, resolved-launch.yaml, dumped_evals with
+  all 20 benchmark jsonl + aggregated_results.jsonl, preallocation
+  validation); local working copy at
+  `experiments/active/snowball-deletion-tuning/base-row-results/`.
+- Environment and hardware when relevant: cw-us-east-02a; policy fleet 128
+  H100 (16 nodes x 8), judge 8 H100.
+- Result, including failure or restart:
+  - Job: `/benfeuer/micro210-snowball-deletion-tuning-base-full-2026.11.18.3`
+    (coordinator, succeeded 1h01m); nested eval job
+    `.../long-loop-micro210-...-2026.11.18.3-2fc533510c76` — 16/16 tasks
+    succeeded, about 39 minutes wall; the inference broker/worker teardown
+    accounts for the "killed by user" child states.
+  - Scores (scorer validated on the 10/05 run): pooled scored-attempt mean
+    **0.1326927745**, mean of benchmark means **0.1595907707**, native
+    equal-20 **0.1595907707** (no slot-level exclusions, so the two summaries
+    coincide), native mass /440 58.3848208.
+  - Coverage: 440 scored of 442 assigned rows — all 440 pinned slots scored;
+    2 excluded rows are retry rows (1 bfcl, 1 bixbench).
+  - Per-source (score / attempted): NUPA 0/10, MATH500 2/10, gpqa 10/30,
+    MMLU-Pro 4/10, IFBench 0/10, bfcl 0/11(+1 excl), bixbench 0/11(+1 excl),
+    cruxeval 0/10, ds-1000 0/10, humanevalplus 2/10, mbppplus 7/10,
+    olympiadbench 20/100, triviaqa 6/10, gsm8k 2/10, mrcr 1.385/10,
+    ot-tblite 0/30, swebench 0/10, tb2 0/30, truthfulqa 2/10, aime24 2/100.
+  - GPU-hours: judge spans 0.29 h + 0.67 h on 8 H100 = 7.7 judge H100-h;
+    policy fleet (128 H100) up about 0.95 h = about 122 H100-h envelope;
+    total about 130 H100-h.
+  - Interpretation: the base is a completion model; under the fixed
+    chat/thinking/tool serialization it produces unusable answers on most
+    tasks (examples: gsm8k response is literally "The answer is<|eot_id|>"
+    (23 characters); bfcl emits a raw JSON completion without the agentic
+    loop; swebench emits `</think>` plus a tool-call JSON blob instead of driving the agent loop). The
+  agentic half RAN and was verified-scored at 0.00 — this is genuine model
+  behavior, NOT the .61 infra failure (which excluded attempts in
+  preparation). The recorded prompt-interface caveat applies: part of the
+  variants' measured gain may reflect instruction/tool-format ability, and
+  the serialization is held fixed across all rows, so the comparison is
+  internally consistent.
+- Evidence: the outputs above; the score summary file; this entry.
+- Interpretation and limitations: no comparable prior base row exists; the
+  low baseline is the true one under this contract. If the campaign later
+  wants a completion-style prompt variant for the base, that is a separate
+  row and a contract change to be decided explicitly.
+- Decision and next action: record the row in the plan of record; proceed to
+  the Levanter-side V1/V3 implementation and the V2 Megatron path; variants
+  report paired deltas against this row (paired per-task deltas with
+  task-clustered bootstrap).
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
