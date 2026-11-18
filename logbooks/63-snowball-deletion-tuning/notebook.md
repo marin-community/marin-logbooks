@@ -205,6 +205,50 @@ recorded here.
 - Decision and next action: continue implementation; fill pending fields at
   launch; re-run the cold read after the next milestone.
 
+### 2026-11-18 16:30 UTC - Training path decision: Exp3 SFT runtime + Megatron/SkyRL
+
+- Question or hypothesis and reason for trying it: which training path hosts
+  the Deletion Tuning implementation — the brief says "Megatron/SkyRL as Exp3
+  uses", and the repo survey raised the question because Levanter's
+  `snowball.py` snapshot is a different (main-branch) implementation of the
+  same architecture.
+- Published source revision: implementation run branch
+  `benfeuer/snowball-deletion-tuning-run` = `benfeuer/exp3-rl-ib-restart`
+  (`ba63397d23`) + the core commit `96b9e4a550` (cherry-picked from the
+  main-derived branch `benfeuer/snowball-deletion-tuning` at `c550aa612f`).
+- Command or material configuration: no experiment run yet.
+- External inputs and artifact references: Exp3 branch survey
+  (`experiments/post_training/long_loop/sft.py` imports
+  `sft_runtime.train.run_grug`; `experiments/grug/moe/optimizer.py` registers
+  the MuonH-family optimizer); base HF config
+  (256 routed experts, hidden 2560, moe_intermediate 1280, 26 layers, 67B
+  total / 2B active).
+- Environment and hardware when relevant: target clusters are the Exp3 H100
+  clusters (cw-us-east-02a / rno2a).
+- Result, including failure or restart: decision recorded (also posted to the
+  [plan of record's Decision Log](https://github.com/marin-community/marin/issues/11663)):
+  1. V1/V3 (SFT) run on the Exp3 SFT runtime
+     (`experiments/post_training/long_loop/sft_runtime/` — custom JAX/Equinox
+     Hero-MoE model), not Levanter's `snowball.py`: that is the runtime Exp3's
+     production SFT stage trains with, so the variants run on the same path
+     round-1 SFT746 used.
+  2. V2 (GRPO) runs on the Megatron/SkyRL path Exp3 uses (`specs/rl.yaml`,
+     `exp3_rl_restart.py`).
+  3. Framework-neutral core (alpha ramp, Wanda init, regularizer, packed mask
+     artifact) lands on the main-derived branch as the PR payload; the
+     sft_runtime and SkyRL integrations live on the run branch and land with
+     that lineage when it merges.
+  4. Geometry/memory check: V1 scope masks ≈ 21.8B routed gate weights; fp32
+     logits plus Adam moments ≈ 262 GB ≈ 2.1 GB/GPU on 128 H100; V3 (gate, up,
+     down of routed and shared) ≈ 65.6B masked weights ≈ 8.2 GB/GPU. Both fit.
+- Evidence: this entry; the Decision Log comment.
+- Interpretation and limitations: V2's Megatron design (logits as extra
+  Megatron parameters on the vendored Grug layer, hard-mask conversion at the
+  vLLM sync boundary) is designed but not yet implemented.
+- Decision and next action: finish the SFT-runtime integration and its tiny-MoE
+  behavior tests; then the V2 Megatron design; then the base row once the Exp2
+  binding lands.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
