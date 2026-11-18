@@ -36,7 +36,8 @@ from experiments.evaluation.knotmeter.config import Check, load_profile, resolve
 from experiments.evaluation.knotmeter.report import report_campaign
 from experiments.evaluation.knotmeter.run import run_checks
 
-RUNTIME = "0ac9dcb157ee86ccb447bc717259159c41ad456a"
+# The HTTP fixture and its synthetic trial manifest must name the same runtime.
+RUNTIME = VLLM_GPU_RELEASE.source_commit
 LOGPROBS = {token: math.log(0.5 if token == 1 else 0.3 if token == 2 else 0.2 / 14) for token in range(16)}
 
 
