@@ -1172,3 +1172,23 @@ failures and limits remain frozen. The strongest completed BF16 point is now
 DP32/R0/C128:31.42858 output tokens/s/GPU, p90 TTFT268.89855 seconds. A selected
 FP8 hour should match that stronger point if numerical gates pass. New NUMA
 confirmation is pending; its launcher setup issue is owned by the BF16 peer.
+
+## 2026-11-18 11:24 UTC — Immutable hybrid wheel and native shape preflight
+
+The native CPU build passed in78 allocated seconds on8 CPUs, with zero GPUs.
+[Manifest](analysis/hero-fp8-01a1ec55/hybrid-build-a1-manifest.json) pins wheel
+SHA256 `1cea7d874971c1dd10bd2ce44619aa0d35707a4ebb0f29617b051604e73cf941`.
+[Build proof](analysis/hero-fp8-01a1ec55/hybrid-build-a1-build.json) verifies the
+new factory module as well as Grug and Marlin, and all19 ELF payloads equal0ac.
+The CPU pod is absent and row2262 is closed. The cold component will hash all
+three installed Python modules before running native loader, output and graph
+checks; no source overlay is involved.
+
+The [native shape oracle on CPU](analysis/hero-fp8-01a1ec55/hybrid-marlin-shape-cpu-preflight.json)
+rejects the former64-wide latent extent even with tile padding. It accepts the
+new128-wide latent/intermediate component and actual3072-wide Hero extents.
+Only its non-ROCm platform condition is supplied; no GPU support or numerical
+claim follows from this CPU execution. The active component uses hidden256,
+latent128 and intermediate128. It retains output scale/nonzero counts in
+addition to compatibility comparisons, with all existing bounds unchanged.
+The required full fixed-model suite still decides numerical acceptance.

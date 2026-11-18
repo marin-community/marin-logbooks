@@ -4,7 +4,7 @@
   "gpu_seconds": 362351.3840017319,
   "gpu_hours": 100.6531622227033,
   "cost_complete_for_listed_allocations": true,
-  "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98, 77 and 99 allocated seconds, respectively, and zero GPUs.",
+  "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98, 77, 99 and 78 allocated seconds, respectively, and zero GPUs.",
   "rows": [
     {
       "name": "Triton FP8 screen",
@@ -389,6 +389,36 @@
             "status": "measured",
             "end_basis": "pod-container-finish",
             "end_unix": 1794994726.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "CPU hybrid native wheel build",
+      "receipt": "hybrid-build-a1-execution.json",
+      "state": "succeeded",
+      "gpu_seconds": 0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "1ba367dbfcbdbb2d",
+          "gpu_seconds": 0.0,
+          "allocation": {
+            "pod_uid": "e14d5c6c-d83a-491e-a015-b06440e217ad",
+            "attempt_uid": "1ba367dbfcbdbb2d",
+            "pod_name": "iris-romain-hero-fp8-hybrid-build-0-162ce873-0-1ba367dbfcbdbb2d",
+            "node_name": "s1mwxs64",
+            "observed_unix": 1795000861.8622224,
+            "phase": "Succeeded",
+            "scheduled_unix": 1795000741.0,
+            "finished_unix": 1795000819.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1795000819.0
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 0.0

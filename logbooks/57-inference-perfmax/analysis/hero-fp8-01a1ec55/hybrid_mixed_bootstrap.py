@@ -100,7 +100,7 @@ def main():
         intermediate_dim=128,
         shared_expert_intermediate_dim=128,
         num_shared_experts=2,
-        head_dim=32,
+        head_dim=64,
     ).validate()
     quantization = OnlineQuantizationConfig(
         QuantizationConfigArgs(moe="fp8_per_tensor", ignore=["model.layers.0.mlp.experts*"])
