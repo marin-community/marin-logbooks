@@ -517,3 +517,52 @@ The parent caught a summary-export error: recursive filtering removed the
 statistics fields. The selective and C32 summaries now preserve each raw
 statistics map exactly, verified against the saved full reports. No measurement
 or numerical result changed, and no GPU rerun was used for this report fix.
+
+
+## 2026-11-18 06:12 UTC — Preserve main-point failures and prepare the contribution
+
+The selected 16-GPU FP8 C64 deployment passed actual storage inspection on all
+ranks. Its full shared numerical suite then failed reference and cache checks.
+Short-reference maximum is 0.719764 and P99 is 0.125869, beyond unchanged bounds
+of 0.65 and 0.125. Long reference passes (maximum 0.288436, P99 0.057456).
+Batch and decode pass; decode maximum is 0.0500023. Exact cache comparisons
+fail at maximum 0.0346905. The
+[main-point summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-check-summary.json)
+preserves the raw statistics. Normal native warmup is running. Performance will
+remain diagnostic because these checks fail.
+
+At the parent's request, the runtime contribution now has a separate clean
+worktree and branch against current Marin main `47a8e415bff17b9376f02d9b92edcc67e962eaee`:
+`/home/romain/work/marin-community/vllm/hero-fp8-selective-contribution-01a1ec55`,
+branch `codex/hero-fp8-selective-contribution-01a1ec55`, revision
+`0474521acd8093ea4cbf884dd435f59d5ecd7d5f`. It reuses PR #115's existing tests,
+adding only the new selection/support checks. The tested `244247767c` branch,
+wheel and both live trials stay frozen. No new GPU run was used for this step.
+
+The [provenance](analysis/hero-fp8-01a1ec55/runtime-contribution-provenance.json)
+and [module diff](analysis/hero-fp8-01a1ec55/runtime-contribution-versus-tested-model.patch)
+make the validation boundary explicit. The whole model module differs because
+current main includes newer ShortConv output-buffer and graph changes. The
+quantization class/helper and focused test behavior match the tested source.
+CPU Ruff passes. A single advisory lint-catalog pass reported one naming issue;
+its follow-up calls the test mode routed-experts-only, since shared experts stay
+BF16. The review's plain output omits observed model and native child identity,
+so these remain unknown. Its records are in this session's
+`reviews/LINT-20261118T060400Z/`. Opening a draft PR awaits the final High review.
+The [draft body](analysis/hero-fp8-01a1ec55/runtime-pr-body.md) is prepared.
+
+The parent's bounded audit found no known correctness fix for this cache failure
+in the newer ShortConv changes. PR #130's full graph mode is unused here;
+PR #107's allocation/copy change has retained equality evidence; the null-row
+fix is already in the tested base. These findings do not justify another GPU
+run on that lead while the separate reference failure remains.
+
+The cost ledger now separates setup, checks, warmup, the accepted-request span,
+post-request native drain/export, and shutdown/upload. It uses the leader's
+phase timestamps for followers only when native gang IDs match. Each allocation
+is intersected with those phase times, and a conservation check confirms every
+GPU second is counted exactly once. Unsplit failures retain their entire cost.
+The completed BF16 C64 allocation includes 6.29349 GB200 hours of warmup and
+1.32255 hours after the accepted-request span while the harness drains/exports.
+Those two native activities are not timed separately. Completed owned cost
+remains 37.402607 GB200 hours, excluding both live normal windows.

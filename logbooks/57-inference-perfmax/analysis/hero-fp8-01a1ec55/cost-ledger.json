@@ -4,7 +4,7 @@
   "gpu_seconds": 134649.38400173187,
   "gpu_hours": 37.402606667147744,
   "cost_complete_for_listed_allocations": true,
-  "phase_note": "Profiling includes native grace. Warmup includes harness startup. Unsplit failures and numerical/component screens retain their full allocation cost. CPU build used eight requested CPUs for98 allocated seconds and zero GPUs.",
+  "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU build used eight requested CPUs for 98 allocated seconds and zero GPUs.",
   "rows": [
     {
       "name": "Triton FP8 screen",
@@ -55,7 +55,8 @@
             "checks_gpu_seconds": 2276.5564250946045,
             "warmup_and_harness_start_gpu_seconds": 2696.5766983032227,
             "profiling_and_native_grace_gpu_seconds": 360.0070400238037,
-            "exports_and_shutdown_gpu_seconds": 148.52021980285645
+            "post_request_harness_drain_and_export_gpu_seconds": 62.84319591522217,
+            "shutdown_and_upload_gpu_seconds": 85.67702388763428
           }
         }
       ]
@@ -179,7 +180,8 @@
             "checks_gpu_seconds": 2322.266396522522,
             "warmup_and_harness_start_gpu_seconds": 3132.215982437134,
             "profiling_and_native_grace_gpu_seconds": 360.003643989563,
-            "exports_and_shutdown_gpu_seconds": 147.90242767333984
+            "post_request_harness_drain_and_export_gpu_seconds": 66.19753646850586,
+            "shutdown_and_upload_gpu_seconds": 81.70489120483398
           }
         }
       ]
@@ -471,7 +473,8 @@
             "checks_gpu_seconds": 2606.7206535339355,
             "warmup_and_harness_start_gpu_seconds": 5664.142744064331,
             "profiling_and_native_grace_gpu_seconds": 14520.018671989441,
-            "exports_and_shutdown_gpu_seconds": 1441.6687717437744
+            "post_request_harness_drain_and_export_gpu_seconds": 1190.2910556793213,
+            "shutdown_and_upload_gpu_seconds": 251.37771606445312
           }
         },
         {
@@ -491,7 +494,12 @@
             "end_unix": 1794977387.0
           },
           "phases": {
-            "unsplit_allocation_gpu_seconds": 25932.0
+            "setup_gpu_seconds": 1803.449158668518,
+            "checks_gpu_seconds": 2606.7206535339355,
+            "warmup_and_harness_start_gpu_seconds": 5664.142744064331,
+            "profiling_and_native_grace_gpu_seconds": 14520.018671989441,
+            "post_request_harness_drain_and_export_gpu_seconds": 1190.2910556793213,
+            "shutdown_and_upload_gpu_seconds": 147.37771606445312
           }
         },
         {
@@ -511,7 +519,12 @@
             "end_unix": 1794977386.0
           },
           "phases": {
-            "unsplit_allocation_gpu_seconds": 25928.0
+            "setup_gpu_seconds": 1803.449158668518,
+            "checks_gpu_seconds": 2606.7206535339355,
+            "warmup_and_harness_start_gpu_seconds": 5664.142744064331,
+            "profiling_and_native_grace_gpu_seconds": 14520.018671989441,
+            "post_request_harness_drain_and_export_gpu_seconds": 1190.2910556793213,
+            "shutdown_and_upload_gpu_seconds": 143.37771606445312
           }
         },
         {
@@ -531,7 +544,12 @@
             "end_unix": 1794977393.0
           },
           "phases": {
-            "unsplit_allocation_gpu_seconds": 25956.0
+            "setup_gpu_seconds": 1803.449158668518,
+            "checks_gpu_seconds": 2606.7206535339355,
+            "warmup_and_harness_start_gpu_seconds": 5664.142744064331,
+            "profiling_and_native_grace_gpu_seconds": 14520.018671989441,
+            "post_request_harness_drain_and_export_gpu_seconds": 1190.2910556793213,
+            "shutdown_and_upload_gpu_seconds": 171.37771606445312
           }
         }
       ]
