@@ -99,3 +99,39 @@ The first diagnostic coordinator is
 `s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T021016Z-f29854d8472b`.
 Board row 2220 records its four-GPU share. The CPU coordinator was admitted and
 running before any GPU child was submitted.
+
+## 2026-11-18 02:37 UTC — Full online FP8 fails the fixed-reference screen
+
+The first allocation was preempted during setup. The permitted retry ran on
+`s5jtxs64`, native UID `6998c7c95448168a`; its pod priority was `iris-batch` after
+requesting interactive. Each worker loaded 136.02 GiB in about 65.3 seconds.
+Compilation and CUDA graphs stayed enabled. FlashInfer explicitly reported
+BF16 query and KV dtypes. The native loaded-model inspection passed for online
+FP8 linear and expert methods.
+
+The [numerical summary](analysis/hero-fp8-01a1ec55/diagnostic-a1-check-summary.json)
+fails the fixed-reference and decode screens. Short reference p99 is 0.32200,
+p90 0.09737 and 14.50% exceed 0.075. Long p99 is 0.22086, p90 0.09307 and 14.76%
+exceed 0.075. Maxima are 0.83593 and 0.91789. Decode/recompute maximum is 0.30268
+and p99 0.29097. Batch maximum is 0.03664. Changed-prefill cache maximum is
+0.08218. All ten exact cache controls are zero. The failure is not evidence of
+cache-state corruption. Bounds stay fixed; this configuration is unqualified.
+The short diagnostic replay can continue as labeled performance evidence.
+
+The parent supplied cache-corrected source
+`644ab8767a4426ea56e6ad435baec8dcc69824f6`; it is merged before further
+qualification runs. The [cache handoff](cache-retention-handoff.md) and its
+56-case result define that correction. The BF16 baseline remains the published
+sixteen-GPU C64 profile at retention 128, with a normal one-hour window.
+
+The next FP8 diagnostic changes only the native MoE backend from Triton W8A8 to
+Marlin W8A16. It keeps the existing online FP8 weight method, BF16 KV, numerical
+policy and four-GPU C16 load. The pinned native oracle accepts this weight scheme
+on Marlin. Its expert kernel consumes BF16 activations. This tests whether
+activation quantization explains the large decode/recompute tail, and whether
+reference disagreement falls enough to keep pursuing this candidate. The model's
+smaller linear projections still use the starting online FP8 method.
+
+PR #127's padding fix is already an ancestor of pinned runtime `0ac9dcb`. It is
+not a missing patch to reapply. Its Snowball evidence remains a useful warning,
+not Hero qualification. No runtime source override has been introduced.
