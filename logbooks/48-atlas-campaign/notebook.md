@@ -1446,3 +1446,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the exported repair-cohort tasks' intake outcomes.
+
+### 2026-11-18 10:40 UTC - Hourly catch-up (09:40–10:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `6f92f44834…` (09:27:20 UTC) to head `9a3c9e6bf398d787f84ceeb9cd8e7f011c2bdf84`, landed 10:32:49 UTC (~6 landings 10:07–10:32 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 6f92f448..9a3c9e6b` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Repair cohorts scoped by conversion identity with full TaskSpec serialization** (`9a3c9e6bf3…`, head) — completing the winner-cohort conversion lane.
+  - **FWeindel wrapper normalization**: wrapper solve.sh normalized in the pymethods cohort with prepare-args fixed (`c9c0555f62…`); candidate args bound to the modes that consume them (`5c11f7056f…`).
+  - **Publication integrity**: partial publication runs resumable, foreign content pins refused (`83cb09a5cf…`).
+  - **Grading**: math verifier deadlines tagged with their grading phase (`6f86b4eff3…`).
+  - **Docs/tests**: recovery re-read comment rewritten without the issue reference (`6226c25acf…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the serialized repair-cohort TaskSpecs' intake outcomes.
