@@ -1475,3 +1475,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the rejoined repair cohorts' export outcomes.
+
+### 2026-11-18 12:40 UTC - Hourly catch-up (11:40–12:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `5e2b95d754…` (11:27:39 UTC) to head `eb3e33733b02966c645bbaa49b511574e422299d`, landed 12:28:12 UTC (~8 landings 12:16–12:28 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 5e2b95d7..eb3e3373` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **HARDMath RHS remediation variant registered** (`58b5f199ba…` + duplicate landing; `f92a8fdf86…` defers the HARDMath rhs variant registration until its registry receipts land).
+  - **Held-source re-publications adopted**: the 2026.11.18.1-r1 retained re-publications adopted for the 3 held sources (`e064e06434…`).
+  - **Export hygiene**: empty directories preserved in the Harbor export upload (`eb3e33733b…`, head); content-identity lint fixed (`0f35ee180b…`).
+  - **Oracle calibration**: cleanup grace exposed for oracle calibration (`c251c27a03…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the held-source re-publication and HARDMath variant outcomes.
