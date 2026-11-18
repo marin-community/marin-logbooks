@@ -1,0 +1,33 @@
+{
+  "scope": "Actual helper get_mempolicy syscall in bound CPU subprocesses on the owned ARM coordinator. No fake worker or GPU used. Full worker metadata remains to be checked in a selected NUMA trial.",
+  "source_sha256": "eda2ae0b0cae835fa101005ec6af131bf2f922ccce5e4e3f2d9bf680b02daee7",
+  "source_commit": "f30d020a62",
+  "rows": [
+    {
+      "expected_node": 0,
+      "observed": {
+        "returncode": 0,
+        "errno": 0,
+        "mode": 2,
+        "nodes": [
+          0
+        ],
+        "scope": "get_mempolicy on the actual native RPC execution thread; default process allocation policy"
+      }
+    },
+    {
+      "expected_node": 1,
+      "observed": {
+        "returncode": 0,
+        "errno": 0,
+        "mode": 2,
+        "nodes": [
+          1
+        ],
+        "scope": "get_mempolicy on the actual native RPC execution thread; default process allocation policy"
+      }
+    }
+  ],
+  "status": "passed",
+  "additional_gpu_seconds": 0
+}
