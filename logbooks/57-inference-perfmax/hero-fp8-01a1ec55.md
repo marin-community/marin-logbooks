@@ -1062,3 +1062,19 @@ No model allocation or performance hour is authorized by a component setup exit.
 Correction to the first estimate:24 FP8 layers save about15.2 GiB/GPU at16 ranks,
 or30.4 GiB at eight, based on measured full-FP8 expert payload bytes. The earlier
 30 GiB-at16 estimate counted the whole expert saving rather than half.
+
+## 2026-11-18 10:37 UTC — Match native distributed initialization order
+
+The second mixed component failed during `initialize_model_parallel`, before
+layer construction: the dtype-only test model facade was assigned too early
+and lacks `is_moe`. The pinned native fixture initializes parallel groups with
+the default model config, then the native layer test assigns its dtype facade.
+The retry now follows that same order. The [failure record](analysis/hero-fp8-01a1ec55/triton-mixed-a2-failure.json)
+and native log preserve64 allocated GPU seconds, zero kernel evidence, absent
+pod and closed row2257. The previous CPU construction check covered the runtime
+config class, not distributed context initialization; its narrower claim remains.
+
+The eight-GPU model dry run resolves the explicit24/24 selector and immutable
+a399 manifest without submission. No full-model mixed result is claimed.
+The comparison label will be **24 of48 expert layers in FP8**, with native
+W8A8 activations on those layers, BF16 on the remaining expert layers and KV.

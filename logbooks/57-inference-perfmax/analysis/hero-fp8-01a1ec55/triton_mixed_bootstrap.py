@@ -62,7 +62,6 @@ def main():
     }
     output.write_text(json.dumps(record, indent=2) + "\n")
     config = VllmConfig(kernel_config=KernelConfig(moe_backend="triton"))
-    config.model_config = SimpleNamespace(dtype=torch.bfloat16)
     cfg = replace(
         _tiny_hero_config(),
         hidden_dim=128,
@@ -87,6 +86,7 @@ def main():
                 backend="gloo",
             )
             initialize_model_parallel(1, 1)
+            config.model_config = SimpleNamespace(dtype=torch.bfloat16)
             modules, references = [], []
             with torch.device("cuda"), set_default_torch_dtype(torch.bfloat16):
                 for index in range(2):
