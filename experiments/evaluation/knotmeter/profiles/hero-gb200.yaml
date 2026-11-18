@@ -14,6 +14,7 @@ gpus:
 cluster: cw-us-east-08a
 priority: interactive
 session_concurrency: 64
+memory: 256GB
 serving:
   environment: {VLLM_SERVER_DEV_MODE: '1'}
   dtype: bfloat16
@@ -48,7 +49,7 @@ serving:
   - --compilation-config
   - '{"cudagraph_mode":"PIECEWISE","splitting_ops":["vllm::unified_attention_with_output","vllm::unified_kv_cache_update","vllm::grug_moe_short_conv"],"inductor_compile_config":{"enable_auto_functionalized_v2":false,"combo_kernels":true,"benchmark_combo_kernel":true}}'
   - --prefix-cache-retention-interval
-  - '128'
+  - '0'
 workload:
   public_dataset: semianalysis_cc_traces_weka_062126_256k
 checks:

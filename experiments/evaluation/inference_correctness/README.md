@@ -30,6 +30,9 @@ overrides. `--runtime-manifest URI` tests a release or experimental build withou
 adopting it. The attached launcher records every native attempt and GPU cost.
 The execution receipt names the durable run URI. Each host retains an archive
 and receipt; the leader's archive contains `report.json` and raw HTTP responses.
+Each attempt also retains a complete pytest log and JUnit report after pytest
+exits, including fixture setup errors. `pytest-receipt.json` sits beside the
+host's native receipt and names this separate archive.
 `--pytest-node PATH::TEST` runs a focused diagnostic through the same deployment
 and cleanup path. Its plan is labeled diagnostic; it does not replace the full gate.
 
@@ -83,9 +86,9 @@ recomputation at zero is allowed; failed required reuse still blocks acceptance.
 See the pinned runtime's [replay boundaries](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/v1/core/kv_cache_coordinator.py#L314-L359)
 and [snapshot creation](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/config/cache.py#L178-L185).
 
-The presets currently use interval 128. Both zero and positive modes can qualify
-when their supported paths pass. The throughput effect of changing zero to 128
-remains an experiment question.
+Hero defaults to interval zero after its measured BF16 improvement. Snowball
+keeps interval 128; its zero-versus-positive throughput remains unmeasured. Both
+modes can qualify when their supported paths pass.
 
 Reference checks bound the largest absolute probability error over the union of
 saved top-64 and serving top-50 scores. Cache and batch checks use two serving
