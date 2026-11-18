@@ -65,16 +65,20 @@ Later reference histories and cache boundaries still run after an individual
 case fails. Coverage failures remain separate from measured probability errors.
 
 Cache coverage follows the endpoint's retention interval and block alignment.
-Zero retains prompt replay points and shared-prefix junctions. Positive intervals
-also retain periodic checkpoints; `None` keeps them densely. A direct decode
+Retention preserves existing snapshots; it does not create them. An aligned
+cold prefill can finish beyond the lower replay point retained at zero. The
+probe therefore prepares checkpoint K with a K+1-token prompt and requires reuse
+reaching K. Positive intervals also retain periodic checkpoints; `None` keeps
+them densely. A direct decode
 probe chooses a reachable periodic checkpoint, adjusting its seed or generation
 length when needed. Its last sampled token has not yet produced cache state.
 The report distinguishes this direct reuse from replay after generated history
-has itself been processed as a prompt. That later replay and its sibling must
-show actual hits and preserve scores exactly in every mode. Initial
+has itself been processed as a prompt. Its sibling forks inside generated
+history, after an explicitly prepared checkpoint. Both branches must show the
+required hits and preserve scores exactly in every mode. Initial
 recomputation at zero is allowed; failed required reuse still blocks acceptance.
 See the pinned runtime's [replay boundaries](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/v1/core/kv_cache_coordinator.py#L314-L359)
-and [retention settings](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/config/cache.py#L148-L155).
+and [snapshot creation](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/config/cache.py#L178-L185).
 
 The presets currently use interval 128. Both zero and positive modes can qualify
 when their supported paths pass. The throughput effect of changing zero to 128

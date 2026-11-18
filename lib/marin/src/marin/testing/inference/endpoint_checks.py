@@ -368,26 +368,34 @@ async def check_settled_branch(
 ) -> dict:
     """Compare a branch before and after a sibling, with the complete usable prefix cached."""
     expected = (len(branch) - 1) // block_size * block_size
+    shared_checkpoint = boundary // block_size * block_size
     prepared_hits = []
     result: dict = {
         "boundary": boundary,
         "divergence_tokens": boundary,
         "status": "failed",
         "expected_cached_tokens": expected,
+        "required_alternate_checkpoint": shared_checkpoint,
+        "shared_seed_tokens": shared_checkpoint + 1,
+        "full_seed_tokens": expected + 1,
     }
+    # Retention preserves existing snapshots. An aligned cold prefill need not
+    # create the lower replay point, so materialize the shared state explicitly.
+    await client.complete(branch[: shared_checkpoint + 1], label=f"{label}-shared-seed")
+    await client.complete(branch[: expected + 1], label=f"{label}-full-seed")
     for attempt in range(MAX_CACHE_PREPARATION_REQUESTS):
         before = await client.complete(branch, label=f"{label}-prepare-{attempt}")
         prepared_hits.append(cached_tokens(before))
         if cached_tokens(before) == expected:
             break
     result["preparation_hits"] = prepared_hits
-    if prepared_hits[-1] != expected or expected <= boundary:
+    if prepared_hits[-1] != expected or expected <= boundary or shared_checkpoint <= 0:
         return result
     sibling = await client.complete(alternate, label=f"{label}-settled-alternate")
     result["alternate_cached_tokens"] = cached_tokens(sibling)
     after = await client.complete(branch, label=f"{label}-settled-repeat")
     result["repeat_cached_tokens"] = cached_tokens(after)
-    if 0 < cached_tokens(sibling) < expected and cached_tokens(after) == expected:
+    if cached_tokens(sibling) == shared_checkpoint < expected and cached_tokens(after) == expected:
         result["status"] = "passed"
         result["comparison"] = dataclasses.asdict(
             distribution_difference(next_distribution(before), next_distribution(after))
@@ -429,7 +437,9 @@ async def check_cache(
             if cached_tokens(fresh) != 0:
                 raise ValueError("Cache reset did not produce a fresh recomputation")
             await client.reset_cache()
-            await client.complete(prefix, label=f"cache-{length}-seed")
+            checkpoint = length // block_size * block_size
+            seed = source[: checkpoint + 1]
+            await client.complete(seed, label=f"cache-{length}-seed")
             warm = await client.complete(branch, label=f"cache-{length}-warm")
             alternate = prefix + source[length + 31 : length + 48]
             await client.complete(alternate, label=f"cache-{length}-branch")
@@ -437,7 +447,13 @@ async def check_cache(
             hits = [cached_tokens(warm), cached_tokens(repeated)]
             observed["warm_cached_tokens"], observed["repeat_cached_tokens"] = hits
             prefill_reuse.append(
-                {"boundary": length, "status": "passed" if min(hits) > 0 else "failed", "cached_tokens": hits}
+                {
+                    "boundary": length,
+                    "status": "passed" if min(hits) >= checkpoint > 0 else "failed",
+                    "cached_tokens": hits,
+                    "seed_tokens": len(seed),
+                    "required_checkpoint": checkpoint,
+                }
             )
             if min(hits) > 0:
                 different_split.append(
@@ -495,9 +511,11 @@ async def check_cache(
                     ),
                 }
             )
-            # Once this history is itself a prompt, every mode promises its replay
-            # boundary. Require reuse and exact state preservation across a sibling.
-            divergence = len(decode_prefix)
+            # Fork after generated tokens, at a materialized checkpoint before the
+            # full replay boundary. Reusing only the original prompt is insufficient.
+            divergence = (len(history) - 1) // block_size * block_size - block_size
+            if divergence <= len(decode_prefix):
+                raise ValueError("The generated history cannot reach an intermediate branch checkpoint")
             other_token = next(token for token in source if token != history[divergence])
             replay_alternate = (*history[:divergence], other_token, *history[divergence + 1 :])
             replayed = await check_settled_branch(
