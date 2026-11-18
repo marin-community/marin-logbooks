@@ -1519,3 +1519,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the runnable repair-cohort trials' outcomes.
+
+### 2026-11-18 15:40 UTC - Hourly catch-up (14:40–15:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `887056f8ef…` (14:33:12 UTC) to head `7db60c9c0fcd927b4b629cbda4a27e1aaaa71f96`, landed 15:12:23 UTC (~5 landings 14:45–15:12 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 887056f8..7db60c9c` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Single-workflow oracle campaign RUN on the tracked LOCAL route with collect artifacts published** (`12c8933d9d…`); the LOCAL route's delegated cgroup resolved under both worker layouts (`7db60c9c0f…`, head) — the single-workflow oracle campaign from the 13:40 window is now executing and publishing.
+  - **Competitive-coding SAMPLE receipts bound** at the 2026.11.18.1-r1 retained pin (`61efb4dd79…`).
+  - **HARDMath rhs release bound** to its checked upstream MIT grant (`746499a202…`).
+  - **Quarantine design**: the single-slot Daytona quarantine design restored (`231ee30346…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the oracle-campaign collect artifacts' contents are registry-bound [M].
+- Decision and next action: next hourly check watches for the single-workflow oracle campaign's outcomes and the competitive-coding SAMPLE decisions.
