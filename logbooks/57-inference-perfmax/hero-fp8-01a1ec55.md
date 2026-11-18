@@ -316,3 +316,32 @@ and quantization applicability; all numeric criteria and fixed goldens stay the
 same. The loaded-method check now requires FP8 experts and no FP8 linears for
 this exact selector. Method inspection still does not read tensor values; the
 actual-wheel component tests directly check weight and scale tensors.
+
+## 2026-11-18 04:12 UTC — Actual wheel tests pass; adopt the stronger cache probe
+
+Cold installation of the immutable candidate passed all 18 native focused tests
+in 20.38 seconds on GB200, with zero skips. The imported model and package both
+come from installed `site-packages`; no module override is used. Tests directly
+verify exact expert weights/scales and outputs, BF16 projections in experts-only
+mode, FP32 router weights, the independent Hero BF16 math at one/seven tokens,
+and unsupported-scheme/platform rejection. The
+[component identity](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-components.json),
+[JUnit](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-components.xml),
+[receipt](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-receipt.json) and
+[execution](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-execution.json)
+retain the results. Complete cost is 91 GPU-seconds (0.025278 GB200-hours).
+The pod is Succeeded and resource row2234 is closed.
+
+Merged the parent's stronger cache source
+`dff1c8812335eb9047d6da0cf6ef279e588a71cb` before the next qualification. It
+explicitly creates sibling checkpoint K and original checkpoint E using K+1/E+1
+prompts, then requires sibling hit K and unchanged original hit E. The existing
+BF16 C64 window and earlier FP8 reports retain their v1 probe scope. The next
+selective screen and BF16 neighboring load use v2. A v1 pass does not establish
+coverage of this stronger generated-history fork.
+
+Use four GB200 GPUs for the selective numerical screen. Dense projections add
+roughly a dozen GiB per GPU relative to all-FP8 at EP4, while expert weights keep
+the same native per-tensor method. The prior all-FP8 deployment had 35.37 GiB of
+BF16 KV space per engine. This is the smallest plausible full-context allocation;
+record its actual capacity and retain any capacity failure before expanding.
