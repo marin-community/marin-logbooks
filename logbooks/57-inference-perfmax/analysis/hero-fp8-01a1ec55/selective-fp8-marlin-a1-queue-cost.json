@@ -1,0 +1,40 @@
+{
+  "job_id": "/romain/knotmeter-20261118t041443z-65a5fdd270e2",
+  "state": "killed",
+  "raw_execution_uri": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T041443Z-65a5fdd270e2/execution.json",
+  "cost_basis": "Never admitted or assigned a node. Immediately before cancellation PodScheduled=False and nodeName empty; terminal native attempt retains empty node. Queueing is excluded. Native allocation helper leaves null when no scheduling timestamp exists; this explicit queue evidence establishes zero allocated GPU time.",
+  "admission_reason": "couldn't assign flavors to pod set main: topology \"multinode-nvlink-ib\" doesn't allow to fit any of 1 pod(s). Total nodes: 206; excluded: resource \"cpu\": 69, resource \"memory\": 136, resource \"nvidia.com/gpu\": 1",
+  "before_cancel": "Pending\nFalse\n\n",
+  "native_cost_complete": false,
+  "attempts": [
+    {
+      "uid": "6c44448b996da846",
+      "state": "killed",
+      "allocation": {
+        "pod_uid": "2ff1a68d-fc53-4ac3-b33c-f7ff5b8449a5",
+        "attempt_uid": "6c44448b996da846",
+        "pod_name": "iris-romain-knotmeter-20261118t0414-90ca20c6-0-6c44448b996da846",
+        "node_name": "",
+        "observed_unix": 1794975864.6639388,
+        "phase": "Pending",
+        "scheduled_unix": null,
+        "finished_unix": null,
+        "status": "unknown"
+      },
+      "gpu_seconds": 0.0,
+      "native_gpu_seconds": null
+    }
+  ],
+  "memory_evidence": {
+    "source_job": "/romain/knotmeter-20261118t030036z-46000535d09e/serve/0",
+    "pod": "iris-romain-knotmeter-20261118t0300-852a45de-0-0058a4e92110a0c4",
+    "memory_peak_bytes": 114597363712,
+    "memory_current_bytes": 68100161536,
+    "memory_limit_bytes": 824633720832
+  },
+  "retry_resource_request": {
+    "cpu": 32,
+    "memory": "256GB",
+    "gpus": 4
+  }
+}

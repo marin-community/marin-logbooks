@@ -12,6 +12,7 @@
       "state": "succeeded",
       "gpu_seconds": 8295.852000236511,
       "cost_complete": true,
+      "cost_basis": "sum of pod scheduling through container finish, or Iris-observed terminal time when the pod expired; queueing excluded",
       "attempts": [
         {
           "uid": "16acf537e87453c7",
@@ -65,6 +66,7 @@
       "state": "failed",
       "gpu_seconds": 5000.976001739502,
       "cost_complete": true,
+      "cost_basis": "sum of pod scheduling through container finish, or Iris-observed terminal time when the pod expired; queueing excluded",
       "attempts": [
         {
           "uid": "62a5900d5f6273b6",
@@ -154,6 +156,7 @@
       "state": "succeeded",
       "gpu_seconds": 8380.0,
       "cost_complete": true,
+      "cost_basis": "sum of pod scheduling through container finish, or Iris-observed terminal time when the pod expired; queueing excluded",
       "attempts": [
         {
           "uid": "086fb7470c4413b0",
@@ -187,6 +190,7 @@
       "state": "failed",
       "gpu_seconds": 4348.0,
       "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
       "attempts": [
         {
           "uid": "6afc9fd0d01d092f",
@@ -216,6 +220,7 @@
       "state": "failed",
       "gpu_seconds": 84.0,
       "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
       "attempts": [
         {
           "uid": "2943a141b1784ec6",
@@ -245,6 +250,7 @@
       "state": "failed",
       "gpu_seconds": 123.0,
       "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
       "attempts": [
         {
           "uid": "a4bd74ed32825311",
@@ -274,6 +280,7 @@
       "state": "failed",
       "gpu_seconds": 23.0,
       "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
       "attempts": [
         {
           "uid": "4a89ac11a0cafa39",
@@ -303,6 +310,7 @@
       "state": "succeeded",
       "gpu_seconds": 0,
       "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
       "attempts": [
         {
           "uid": "87f5e931d656bbb1",
@@ -332,6 +340,7 @@
       "state": "succeeded",
       "gpu_seconds": 91.0,
       "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
       "attempts": [
         {
           "uid": "742c737e0d86e00b",
@@ -351,6 +360,34 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 91.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Selective screen withdrawn before scheduling",
+      "receipt": "selective-fp8-marlin-a1-queue-cost.json",
+      "state": "killed",
+      "gpu_seconds": 0,
+      "cost_complete": true,
+      "cost_basis": "Never admitted or assigned a node. Immediately before cancellation PodScheduled=False and nodeName empty; terminal native attempt retains empty node. Queueing is excluded. Native allocation helper leaves null when no scheduling timestamp exists; this explicit queue evidence establishes zero allocated GPU time.",
+      "attempts": [
+        {
+          "uid": "6c44448b996da846",
+          "gpu_seconds": 0.0,
+          "allocation": {
+            "pod_uid": "2ff1a68d-fc53-4ac3-b33c-f7ff5b8449a5",
+            "attempt_uid": "6c44448b996da846",
+            "pod_name": "iris-romain-knotmeter-20261118t0414-90ca20c6-0-6c44448b996da846",
+            "node_name": "",
+            "observed_unix": 1794975864.6639388,
+            "phase": "Pending",
+            "scheduled_unix": null,
+            "finished_unix": null,
+            "status": "unknown"
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 0.0
           }
         }
       ]

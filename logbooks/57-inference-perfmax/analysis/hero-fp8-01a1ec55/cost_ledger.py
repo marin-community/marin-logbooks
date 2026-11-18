@@ -18,7 +18,8 @@ INPUTS = (
     ("Overlay input-hash failure", "selective-component-a3-failed-execution.json", None),
     ("CPU native wheel build", "selective-build-a1-execution.json", None),
     ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),
-    ("Selective full-model screen", "selective-fp8-marlin-a1-execution.json", None),
+    ("Selective screen withdrawn before scheduling", "selective-fp8-marlin-a1-queue-cost.json", None),
+    ("Selective full-model screen", "selective-fp8-marlin-a2-execution.json", None),
     ("BF16 C64", "bf16-c64-a2-result.json", "bf16-c64-a2-native"),
     ("BF16 C128", "bf16-c128-a1-result.json", "bf16-c128-a1-native"),
     ("Selective FP8 C128", "selective-fp8-c128-a1-result.json", "selective-fp8-c128-a1-native"),
@@ -61,6 +62,7 @@ def main() -> None:
                 "state": record.get("job_state", record.get("state")),
                 "gpu_seconds": sum(cost or 0 for cost in costs),
                 "cost_complete": all(cost is not None for cost in costs),
+                "cost_basis": record.get("cost_basis", "Native allocation receipts; queueing excluded"),
                 "attempts": [
                     {
                         "uid": attempt.get("attempt_uid", attempt.get("uid")),
