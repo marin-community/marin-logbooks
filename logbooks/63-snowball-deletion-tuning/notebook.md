@@ -98,8 +98,10 @@ recorded here.
   dropped. Historical example with this contract: the round-1 SFT746 eval-only
   row ([marin #11337 comment](https://github.com/marin-community/marin/issues/11337#issuecomment-6965189889))
   scored pooled 0.4023 / mean-of-benchmark-means 0.4798 / native equal-20
-  0.4703 with 420 of 440 attempts scored — these are available-only
-  partial-credit reward means.
+  0.4703 with 420 of 440 attempts scored. The pooled 0.4023 and benchmark mean
+  0.4798 are available-only partial-credit reward means; native equal-20
+  0.4703 uses assigned-attempt denominators, including excluded assignments.
+  The 20 missing outcomes remain unknown.
 - Paired uncertainty: task-level cluster bootstrap (resample tasks, not
   attempts; repeated attempts of one task are not independent).
 
