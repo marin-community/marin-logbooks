@@ -249,6 +249,79 @@ recorded here.
   behavior tests; then the V2 Megatron design; then the base row once the Exp2
   binding lands.
 
+### 2026-11-18 17:10 UTC - SFT-runtime integration implemented and tested
+
+- Question or hypothesis and reason for trying it: implement the paper's method
+  on the Exp3 SFT runtime so V1/V3 can run on the production path.
+- Published source revision: run branch `benfeuer/snowball-deletion-tuning-run`
+  at `f621f82785` (= exp3-rl-ib-restart `ba63397d23` + core `96b9e4a550` + the
+  integration commit). Files:
+  `sft_runtime/deletion_masking.py` (new), `sft_runtime/model.py`,
+  `sft_runtime/train.py`, `sft_runtime/export_writer.py`,
+  `tests/post_training/test_sft_deletion_masking.py` (new).
+- Command or material configuration: behavior tests
+  `pytest tests/post_training/test_sft_deletion_masking.py` (7 tests) on the
+  tiny MoE (4 experts, hidden 8, 2 layers, scatter MoE, reference attention)
+  under `compact_grug_mesh(expert_axis_size=1)`; the neighboring suite
+  (`tests/rl/test_deletion_tuning.py`, `tests/grug/test_grug_moe_pipeline.py`)
+  still passes (26 passed, 1 pre-existing skip). Lint clean; pyrefly clean.
+- External inputs and artifact references: paper method (this notebook's spec
+  section); `marin.rl.deletion_tuning` core (the packed mask artifact gained an
+  in-memory `build_mask_artifact` variant for storage-layer writers).
+- Environment and hardware when relevant: single-device CPU mesh for the tests.
+- Result, including failure or restart: integration complete:
+  1. Model: optional per-weight logit fields on the routed experts
+     (`gate_logits`/`up_logits`/`down_logits` on `MoEMLP`) and shared experts
+     (`DenseMLP`); the forward reads `stop_gradient(W) * mask(G)` with the soft
+     mask `sigmoid(alpha*G)` during training and the hard mask `1[G>0]` for
+     evaluation and export; the hard/soft switch mixes arithmetically because a
+     scalar `jnp.where` broadcasts a replicated condition against sharded
+     cases, which explicit sharding rejects.
+  2. Wanda calibration: a capture mode on `MoEMLP` emits shard-local per-expert
+     sums of squared input activations (plus the all-token channel sums the
+     shared experts read) through the routing-stats path; the driver reduces
+     over the batch-shard axis and derives per-expert input norms with a
+     layer-mean fallback for unrouted experts.
+  3. Init: the global eta-quantile cannot sort a sharded tensor, so the delete
+     threshold comes from a strided host-pooled score subsample
+     (`wanda_score_samples` + `wanda_delete_threshold`, stride 64 over the
+     output axis) and the device init compares `scores <= threshold`
+     elementwise — sharding-safe, deterministic given seed, threshold, and
+     mesh. The core module's positional `init_gate_logits` stays the reference
+     implementation; the threshold rule matches it up to ties at the boundary
+     value (test asserts the count difference is bounded by the tie count).
+  4. Training: `_make_train_step` partitions gradients with a path-based filter
+     tree so Adam state exists only for the gate logits (frozen weights get
+     zero updates and no optimizer memory); the alpha ramp updates per step
+     from the step counter; `_loss_and_grads` adds
+     `-lambda * sum(||W~||^2)` after the per-token denominator and logs
+     `train/deletion_regularizer` and `train/deletion_sparsity`.
+     `deletion_hard` is a 0/1 float leaf because `jax.grad` rejects bools.
+  5. Evaluation: `with_deletion_eval_mode` flips the hard-mask bit; the eval
+     model getter and the dropless eval hook wrap it.
+  6. Export: `apply_hard_mask` zeroes deleted weights before the bf16 HF
+     state dict; the mask artifact rides the export as packed uint8 tensors
+     (`np.packbits` bit order) under `deletion-mask/` with shape tensors, and
+     the export manifest records it.
+  Behavior-test results: soft forward equals a model with the soft-masked
+  weights baked in; hard forward equals zeroed weights; a two-step train run
+  moves only the gate logits (frozen weights bit-identical) and ramps alpha
+  (1e2 -> 325 at step 1 of 4); capture + init produce the paper's expected
+  init deletion rate; the regularizer and sparsity match hand computation;
+  the exported state dict equals the manually masked weights and the packed
+  masks unpack to the same keep mask.
+- Evidence: the test file and this entry; commit `f621f82785`.
+- Interpretation and limitations: the Wanda down-projection scores reuse the
+  expert-input norms as a per-expert scale (the intermediate-width norms are
+  not captured) — a recorded deviation for the V3 scope only; the threshold
+  rule is quantile-exact up to subsampling noise and tie handling. The V2
+  Megatron path is designed but not implemented. Nothing has run at 67B scale
+  yet; a smoke through the production geometry is the next gate before any
+  variant launch.
+- Decision and next action: dry-run the SFT entry point end to end with a
+  deletion config on a tiny/one-node spec; design and implement the V2
+  Megatron path; launch the base row when the Exp2 binding lands.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
