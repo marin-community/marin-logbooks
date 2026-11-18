@@ -790,3 +790,11 @@ explicitly. Generated-history siblings fork beyond the original prompt, with
 required checkpoint K and protected checkpoint E. No numerical bound changed.
 The 57 focused cases and required contribution lint/types pass. Original cold
 misses remain measured limitations; corrected live cache validation is pending.
+
+The [Hero zero follow-up](analysis/hero-fp8-cache-validation/hero-zero-v2-summary.json)
+now passes all supported cache paths: 19 exact comparisons at zero and 27
+changed-step comparisons within the unchanged bound. The actual settings,
+runtime, goldens and policy match the first run, so its passing reference,
+batch and decode evidence is reused. Cold aligned misses remain recorded. No
+AgentX throughput claim is made for this setting. The follow-up used 3.408889
+GB200-hours; all four provider pods were confirmed absent and row 2235 is closed.

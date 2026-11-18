@@ -25,7 +25,7 @@ async def measure(endpoint):
     assert references.status == LookupStatus.FOUND
     source = max(references.cases, key=lambda case: len(case.tokens)).tokens
     report = {
-        "experiment": "zero-retention-aligned-materialization",
+        "experiment": "retention-materialization",
         "status": "diagnostic",
         "runtime_source": endpoint.runtime_source,
         "manifest": endpoint.fixture.manifest.model_dump(),
@@ -37,8 +37,10 @@ async def measure(endpoint):
     async with EndpointClient(endpoint.url, endpoint.model, endpoint.output.parent / "aligned-requests") as client:
         report["deployment"] = await verify_deployment(client, endpoint.fixture, endpoint.runtime_source)
         assert report["deployment"]["status"] == "passed"
-        assert report["deployment"]["cache_config"]["prefix_cache_retention_interval"] == 0
-        for length in (32, 127, 128, 129, 256, 2048):
+        retention = report["deployment"]["cache_config"]["prefix_cache_retention_interval"]
+        report["retention_interval"] = retention
+        cold_lengths = (32, 127, 128, 129, 256, 2048) if retention == 0 else ()
+        for length in cold_lengths:
             for kind in ("identical", "extension"):
                 await client.reset_cache()
                 prefix = source[:length]
@@ -78,5 +80,13 @@ async def measure(endpoint):
 @pytest.mark.timeout(10800)
 def test_measure_aligned_zero_retention(correctness_endpoint):
     report = asyncio.run(measure(correctness_endpoint))
+    assert report["retention_interval"] == 0
     assert len(report["cases"]) == 12
+    assert report["cache_qualification"]["status"] == "passed"
+
+
+@pytest.mark.cluster
+@pytest.mark.timeout(10800)
+def test_validate_retention_cache(correctness_endpoint):
+    report = asyncio.run(measure(correctness_endpoint))
     assert report["cache_qualification"]["status"] == "passed"

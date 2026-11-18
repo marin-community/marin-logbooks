@@ -52,5 +52,16 @@ the cold aligned materialization limitation and rejects a sibling that reuses
 only the original prompt. Coverage includes zero, dense and positive retention,
 including interval 512 beyond the old fixed decode span. The real CLI/report
 path accepts supported zero-retention replay and blocks missing hits or corrupt
-state. Required contribution lint/types pass. Live follow-up validation of the
-corrected geometry is pending. Earlier evidence retains its original scope.
+state. Required contribution lint/types pass.
+
+The corrected [live Hero zero follow-up](analysis/hero-fp8-cache-validation/hero-zero-v2-summary.json)
+passes all cache coverage, with 19 exact comparisons at zero and 27 changed-split
+comparisons within the unchanged bounds (maximum 0.0347961). Its clean source is
+`dff1c8812335eb9047d6da0cf6ef279e588a71cb`. Actual profile, runtime, fixed goldens
+and policy match the first run exactly. The
+[reuse record](analysis/hero-fp8-cache-validation/hero-zero-evidence-reuse.json)
+combines its fresh deployment/cache checks with the earlier passing reference,
+batch and decode stages. Its complete cost is 3.408889 GB200-hours; all four pods
+are absent. This establishes provisional serving coverage at zero. Throughput
+effects remain unmeasured. Snowball and the stronger Hero positive-retention
+fork coverage remain pending.
