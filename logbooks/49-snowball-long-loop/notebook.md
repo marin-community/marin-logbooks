@@ -978,3 +978,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: step-history artifact + W&B run URL [P/R].
 - Interpretation and limitations: three updates do not establish throughput; the once-only snapshot has empty live metrics fields (superseded by the step history).
 - Decision and next action: hourly checks track the steady-state cadence and the first eval/checkpoint callbacks.
+
+### 2026-11-18 03:40 UTC - Hourly catch-up (02:40–03:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 restart identities (source `ba63397d23…`, artifact `2026.11.17.55`).
+- Command or material configuration: as recorded at launch; the step-history artifact still holds three rows (updates 1–3, checked 02:16 UTC).
+- External inputs and artifact references: `restart55-milestone-step-history-once.json` [R]; W&B run f7m70xhc [P].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 `.55` continues at updates 1–3 in this artifact (no new rows since the 02:16 readback at this cycle's check); the coordinator's correction and my 02:45 correction entry already record updates 1–3 (update 1 at 00:42:18 UTC, admission-dominated; steady learner-dominated cadence by update 3). No new Atlas-facing exp3 events beyond that.
+- Evidence: step-history artifact [R].
+- Interpretation and limitations: artifact snapshot cadence lags the live run; W&B run f7m70xhc is the live source.
+- Decision and next action: next hourly check reads the step history again for updates 4+.
