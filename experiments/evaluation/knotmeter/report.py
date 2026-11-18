@@ -166,7 +166,7 @@ def render_report(
         if not result["cost_complete"] and not result["gpu_seconds"]:
             cost = "unknown"
         record_file = "plan.json" if result["job_state"] == "unrecorded" else "result.json"
-        weights = profile.get("quantization") or profile["serving"]["dtype"]
+        weights = profile.get("weight_precision") or profile.get("quantization") or profile["serving"]["dtype"]
         lines.append(
             f"| [{result['trial_id']}]({result['trial_uri']}/{record_file}) | {runtime} | {weights} | "
             f"{result['job_state']} | "

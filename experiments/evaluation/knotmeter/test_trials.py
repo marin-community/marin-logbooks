@@ -46,6 +46,15 @@ def test_chat_template_survives_native_compilation_cache_identity(tmp_path):
     assert hashlib.sha256(template.read_bytes()).hexdigest() in identity.extra_cli_args
 
 
+def test_online_configuration_keeps_native_selector_and_explicit_weight_format(tmp_path):
+    profile = load_profile(Path("snowball-h100"), ["quantization=online", "weight_precision=fp8"])
+    series = resolved_series(profile)
+    assert series["precision"] == "fp8"
+    server = create_server({"series": series, "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE)}, tmp_path, None)
+    assert server.extra_cli_args[server.extra_cli_args.index("--quantization") + 1] == "online"
+    assert series["profile"]["quantization"] == "online"
+
+
 def test_launch_plan_survives_json_delivery_without_invalidating_worker_identity(monkeypatch):
     monkeypatch.setattr("experiments.evaluation.knotmeter.cli.pin_profile", lambda profile: profile)
     monkeypatch.setattr(

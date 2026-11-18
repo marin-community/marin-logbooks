@@ -345,3 +345,34 @@ roughly a dozen GiB per GPU relative to all-FP8 at EP4, while expert weights kee
 the same native per-tensor method. The prior all-FP8 deployment had 35.37 GiB of
 BF16 KV space per engine. This is the smallest plausible full-context allocation;
 record its actual capacity and retain any capacity failure before expanding.
+
+## 2026-11-18 04:21 UTC — Keep physical precision distinct from its native selector
+
+The selective plan exposed a metadata error: native `quantization: online`
+would label the physical weights `online` in upstream exports. The optional
+`weight_precision: fp8` field now supplies that label while retaining native
+`--quantization online` and its exact selector. A boundary test verifies both;
+all 28 runner tests and scoped lint pass. Prior submitted plans stay unchanged.
+
+The full selective screen is submitted at
+`s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T041443Z-65a5fdd270e2`.
+Its four-GPU pod is still SchedulingGated, so no allocation has begun. Requested
+interactive priority became Batch as expected. Its source reports dirty because
+I prepared the three future load profiles during CPU reference lookup. The
+tracked tree hash `1777ab6ade` is the same as the clean dry run; no serving,
+checker or submitted profile bytes changed. This commit preserves those future
+profiles. The actual candidate wheel and full plan remain immutable.
+
+The planned neighboring load is C128. Compare both precisions on sixteen GB200
+GPUs with normal one-hour windows and the stronger cache probe. The existing
+BF16 C64 is the lower neighboring point. A sampled C64 interval had about85%
+KV use and67% actual versus95% theoretical cache hits, with no steady queue.
+Extra lanes could improve utilization or worsen cache pressure. These are
+hypotheses, not a measured causal explanation. Add selective C64 if its outcome
+could change the recommendation. No latency ceiling is inferred.
+
+The [cost ledger](analysis/hero-fp8-01a1ec55/cost-ledger.json) sums all completed
+owned receipts, including failures and the CPU build. Its current7.318286
+GB200-hours excludes the live BF16 window and queued selective screen. Native
+profile timestamps split setup, checks, warmup, profiling/native grace and
+exports/shutdown where available. Unsplit auxiliary jobs retain their full cost.

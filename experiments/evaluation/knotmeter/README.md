@@ -53,6 +53,10 @@ Private `s3://` and `gs://` wheel URLs are copied to task-local storage and
 verified against the manifest before installation. The native artifact retains
 a receipt with the durable URI and hash; large wheel bytes stay outside the
 trial archive.
+`quantization` is the native vLLM selector. When that selector is a configuration
+path such as `online`, set `weight_precision: fp8` to label the actual weight
+format in upstream exports and reports. Keep the exact selective configuration
+in `serving.extra_args` and verify its loaded methods with a serving check.
 
 [recipe.yaml](recipe.yaml) supplies the shared harness, corpus and processor
 pins. Normal runs retain upstream warmup, replay and validity. The runner prepares
