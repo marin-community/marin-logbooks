@@ -1314,3 +1314,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the re-measured eval outcomes are registry-bound [M].
 - Decision and next action: next hourly check watches for rebuilt-cohort admission outcomes.
+
+### 2026-11-18 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `b9c7f2101a…` (00:06:13 UTC) to head `d90e8163f9bf31e72e21fdf685549eb8e412d40b`, landed 01:30:57 UTC (~10 landings 01:12–01:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log b9c7f210..d90e8163` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: an internal image-pull probe added to the backend survey's live qualification (`ab98ca94d9…`) — extending the #11619-style transport verification work into the survey machinery.
+- Result, including failure or restart: material changes in the window:
+  - **License chain hardening**: FWeindel folder receipts bound to their checked upstream evidence (`e0b05b19ee…`); FACET receipts bound to their checked upstream evidence (`348638b904…`); the checker-verified license stated on published cards (`b25ee06adf…`); license identifiers published in the Hub card spelling (`d90e8163f9…`, head).
+  - **Census/review integrity**: census evidence audit scoped to the changed sources (`82d194e044…`); imported review rows verified with an exact keyed database join (`5726512449…`); reviewer batch storage bounded with identity-based row comparison (`7d27be7308…`); FACET lexical and grading receipt references restored (`e17ea85201…`).
+  - **Status extras refreshed** from the current queue (`c4c32731be…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for license-chain follow-through and status-rollout effects.
