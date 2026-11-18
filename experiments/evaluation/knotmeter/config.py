@@ -82,6 +82,7 @@ class Profile(Config):
     priority: Literal["batch", "interactive"]
     session_concurrency: int = Field(gt=0)
     quantization: str | None = None
+    weight_precision: str | None = None
     serving: Serving
     workload: Workload
     vllm: Runtime = Field(default_factory=Runtime)
@@ -161,7 +162,7 @@ def resolved_series(
             "tokenizer_revision": profile.model.tokenizer_revision,
             "dataset_loader": selector,
             "max_context": profile.serving.max_model_len,
-            "precision": profile.quantization or profile.serving.dtype,
+            "precision": profile.weight_precision or profile.quantization or profile.serving.dtype,
             "tensor_parallel": profile.serving.tensor_parallel_size,
             "profile": profile.model_dump(mode="json"),
             "profiles": {
