@@ -1,8 +1,8 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 231997.38400173187,
-  "gpu_hours": 64.44371777825886,
+  "gpu_seconds": 338231.3840017319,
+  "gpu_hours": 93.9531622227033,
   "cost_complete_for_listed_allocations": true,
   "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU build used eight requested CPUs for 98 allocated seconds and zero GPUs.",
   "rows": [
@@ -367,6 +367,66 @@
       ]
     },
     {
+      "name": "Marlin history component import failure",
+      "receipt": "marlin-history-a1-execution.json",
+      "state": "failed",
+      "gpu_seconds": 59.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "50a74f816d37cf45",
+          "gpu_seconds": 59.0,
+          "allocation": {
+            "pod_uid": "87a94ac4-2f02-4236-b2eb-986d886bf4c3",
+            "attempt_uid": "50a74f816d37cf45",
+            "pod_name": "iris-romain-hero-fp8-marlin-history-4a41092b-0-50a74f816d37cf45",
+            "node_name": "shpvxs64",
+            "observed_unix": 1794986821.8790815,
+            "phase": "Failed",
+            "scheduled_unix": 1794986724.0,
+            "finished_unix": 1794986783.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794986783.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 59.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Marlin order control partial writer failure",
+      "receipt": "marlin-order-a2-execution.json",
+      "state": "failed",
+      "gpu_seconds": 75.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "f6c0282f7122046b",
+          "gpu_seconds": 75.0,
+          "allocation": {
+            "pod_uid": "d2d81613-499c-4a8e-8ae3-9015f59fd970",
+            "attempt_uid": "f6c0282f7122046b",
+            "pod_name": "iris-romain-hero-fp8-marlin-order-0-ff7eddc6-0-f6c0282f7122046b",
+            "node_name": "shpvxs64",
+            "observed_unix": 1794988809.989942,
+            "phase": "Failed",
+            "scheduled_unix": 1794988716.0,
+            "finished_unix": 1794988791.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794988791.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 75.0
+          }
+        }
+      ]
+    },
+    {
       "name": "Selective screen withdrawn before scheduling",
       "receipt": "selective-fp8-marlin-a1-queue-cost.json",
       "state": "killed",
@@ -660,6 +720,116 @@
             "profiling_and_native_grace_gpu_seconds": 14520.013808250427,
             "post_request_harness_drain_and_export_gpu_seconds": 1102.8883504867554,
             "shutdown_and_upload_gpu_seconds": 133.72143745422363
+          }
+        }
+      ]
+    },
+    {
+      "name": "Selective FP8 C64",
+      "receipt": "selective-fp8-c64-a1-result.json",
+      "state": "succeeded",
+      "gpu_seconds": 106100.0,
+      "cost_complete": true,
+      "cost_basis": "sum of pod scheduling through container finish, or Iris-observed terminal time when the pod expired; queueing excluded",
+      "attempts": [
+        {
+          "uid": "ae30e46b311ea889",
+          "gpu_seconds": 26608.0,
+          "allocation": {
+            "pod_uid": "c63058a8-fca3-43d8-8cb3-8d28b454356a",
+            "attempt_uid": "ae30e46b311ea889",
+            "pod_name": "iris-romain-knotmeter-20261118t0539-16dcfada-0-ae30e46b311ea889",
+            "node_name": "sbxsxs64",
+            "observed_unix": 1794987131.9248915,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794980453.0,
+            "finished_unix": 1794987105.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794987105.0
+          },
+          "phases": {
+            "setup_gpu_seconds": 1971.8106384277344,
+            "checks_gpu_seconds": 2362.641134262085,
+            "warmup_and_harness_start_gpu_seconds": 6257.268734931946,
+            "profiling_and_native_grace_gpu_seconds": 14560.010540008545,
+            "post_request_harness_drain_and_export_gpu_seconds": 1222.0177307128906,
+            "shutdown_and_upload_gpu_seconds": 234.25122165679932
+          }
+        },
+        {
+          "uid": "cc42dde60dd4d3e6",
+          "gpu_seconds": 26496.0,
+          "allocation": {
+            "pod_uid": "66586917-aee5-4fb7-9b6e-2428deef832a",
+            "attempt_uid": "cc42dde60dd4d3e6",
+            "pod_name": "iris-romain-knotmeter-20261118t0539-0e48f559-0-cc42dde60dd4d3e6",
+            "node_name": "sgzrxs64",
+            "observed_unix": 1794987177.6630285,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794980464.0,
+            "finished_unix": 1794987088.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794987088.0
+          },
+          "phases": {
+            "setup_gpu_seconds": 1927.8106384277344,
+            "checks_gpu_seconds": 2362.641134262085,
+            "warmup_and_harness_start_gpu_seconds": 6257.268734931946,
+            "profiling_and_native_grace_gpu_seconds": 14560.010540008545,
+            "post_request_harness_drain_and_export_gpu_seconds": 1222.0177307128906,
+            "shutdown_and_upload_gpu_seconds": 166.25122165679932
+          }
+        },
+        {
+          "uid": "0c4fbb8a4a9c69e3",
+          "gpu_seconds": 26496.0,
+          "allocation": {
+            "pod_uid": "0160471c-9eba-4140-91a9-f629e48303ce",
+            "attempt_uid": "0c4fbb8a4a9c69e3",
+            "pod_name": "iris-romain-knotmeter-20261118t0539-909e8b36-0-0c4fbb8a4a9c69e3",
+            "node_name": "shbrxs64",
+            "observed_unix": 1794987179.5675707,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794980463.0,
+            "finished_unix": 1794987087.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794987087.0
+          },
+          "phases": {
+            "setup_gpu_seconds": 1931.8106384277344,
+            "checks_gpu_seconds": 2362.641134262085,
+            "warmup_and_harness_start_gpu_seconds": 6257.268734931946,
+            "profiling_and_native_grace_gpu_seconds": 14560.010540008545,
+            "post_request_harness_drain_and_export_gpu_seconds": 1222.0177307128906,
+            "shutdown_and_upload_gpu_seconds": 162.25122165679932
+          }
+        },
+        {
+          "uid": "28311833e6e84409",
+          "gpu_seconds": 26500.0,
+          "allocation": {
+            "pod_uid": "7ec23f5e-4ccd-4b50-91b8-0c6cdb220187",
+            "attempt_uid": "28311833e6e84409",
+            "pod_name": "iris-romain-knotmeter-20261118t0539-1b7cf590-0-28311833e6e84409",
+            "node_name": "sjkrxs64",
+            "observed_unix": 1794987132.8269694,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794980449.0,
+            "finished_unix": 1794987074.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794987074.0
+          },
+          "phases": {
+            "setup_gpu_seconds": 1987.8106384277344,
+            "checks_gpu_seconds": 2362.641134262085,
+            "warmup_and_harness_start_gpu_seconds": 6257.268734931946,
+            "profiling_and_native_grace_gpu_seconds": 14560.010540008545,
+            "post_request_harness_drain_and_export_gpu_seconds": 1222.0177307128906,
+            "shutdown_and_upload_gpu_seconds": 110.25122165679932
           }
         }
       ]

@@ -615,3 +615,151 @@ proof. Row 2239 is closed. Completed owned cost is now 64.443718 GB200 hours,
 including every retained failure and setup. The only live owned GPU allocation
 is the frozen 16-GPU FP8 C64 window, which reaches its admission boundary near
 07:25 UTC.
+
+
+## 2026-11-18 07:18 UTC — Continue under the overnight amendment
+
+The amended goal extends autonomous work to 17:00 UTC. The current normal FP8
+hour stays frozen. Final High review and PR opening wait for the overnight work.
+The parent owns reconciliation of the older 50.71015-token recipe and has
+assigned an independent BF16 search to another child. This child keeps its
+32-GB200 share and zero H100 share, with no overnight questions or contact to
+Romain or LA1.
+
+I read the older selected recipe and handoff. It used another checkpoint,
+tokenizer/runtime, compact KV, retention zero, C128 and explicit deterministic
+compiler settings. The current runtime does not read grug_logical_kv_cache, and
+current NUMA binding is false. The parent's baseline reconciliation records
+these distinctions; the old result is not an isolated regression or a promise
+for the fixed current checkpoint. PR #110 remains outside this campaign.
+
+The next cheap numerical control targets native Marlin EP filtering and
+intermediate-buffer history. Existing component tests cover EP1, while the
+full-model failures occurred with EP4 and EP16. The
+[component script](analysis/hero-fp8-01a1ec55/marlin_history_bootstrap.py) uses the
+actual installed candidate wheel, native per-tensor FP8 quantization/packing,
+24 local experts out of 384, hidden/intermediate size 3072 and eight routed experts per token. It
+checks both ends of the global expert map, all-local/mixed/unmapped/padding
+routes, and kernel-size boundaries through 2048 tokens. Inputs and weights are
+chosen so the weight quantization is exactly representable. An independent
+FP32 reference checks local contributions. A→B→A reuses buffers after different
+work and requires exact repeated A outputs; unmapped outputs must be zero.
+
+This one-GPU component can reject a stale-buffer hypothesis cheaply. It cannot
+qualify serving or explain cache-state failures by itself. Reference tolerances
+are fixed before this component run at 0.02 absolute/relative for BF16 outputs;
+exact history comparisons stay zero. No model policy or golden changes.
+Mechanical lint and CPU syntax checks pass before payload freezing. The native
+candidate wheel, model module and Marlin module hashes will be recorded.
+
+
+## 2026-11-18 07:42 UTC — Complete the initial FP8 hour and release its allocation
+
+The frozen selective FP8 C64 hour completed with valid native protocol,
+submission, coverage and gang controls. It scored 2079 successful requests and
+zero profiling errors. Output throughput is 22.62167 tokens/s/GPU, P90 TTFT is
+263.60362 seconds and P90 completion is 278.60459 seconds. Against BF16 C64,
+throughput is 19.3796% higher, TTFT is 15.5562% lower and completion is 14.0611%
+lower. Client cache reuse is 73.929736%. The reference and exact cache checks
+still fail, so this is diagnostic performance and blocks an accepted FP8 choice.
+
+The final export/JSONL retain one empty-content warmup request with
+InvalidInferenceResultError. This corrects the earlier progress-log report of
+zero warmup errors. The native export's profiling count remains zero errors.
+All three normal windows' empty-content warmup failures are retained separately.
+Server counter decreases remain unresolved; rates and cache read fractions here
+come from client exports.
+
+The [initial comparison](analysis/hero-fp8-01a1ec55/comparison-initial.md) and
+[machine-readable controls](analysis/hero-fp8-01a1ec55/comparison-initial.json)
+include the BF16 neighbor tradeoff, exact source-pinned commands and qualification
+limits. The [complete FP8 result](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-result.json),
+[export summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-window-summary.json) and
+[native receipt](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-native-receipt.json)
+retain raw archive URIs/hashes. The leader's 342,472,507-byte archive was read
+back against SHA256 `a759f66170444a0b43e108f4bb45b761f1286f4844c38205b809181331ef42d7`.
+Its final recorded cgroup peak is 120,561,532,928 bytes (112.28 GiB) under a
+256 GiB limit. Other hosts' recorded peaks are retained in the full result.
+The model uses 56.07 GiB/GPU and offers 1,514,130 BF16 KV tokens/rank.
+
+This window cost 106,100 GPU seconds (29.472222 GB200 hours). Completed owned
+cost, including the next component's setup failure, is now 93.932329 GB200 hours.
+The [native job census](analysis/hero-fp8-01a1ec55/initial-owned-job-census.json)
+finds all 21 owned submitted jobs terminal. The
+[provider cleanup](analysis/hero-fp8-01a1ec55/initial-cleanup.json) deletes two
+remaining terminal pods and verifies zero matching owned pods. All 15 resource
+rows are [closed at this checkpoint](analysis/hero-fp8-01a1ec55/initial-board-closed.json).
+Overnight experiments will use distinct new jobs and rows.
+
+The first Marlin component supplied no kernel evidence. A local invocation
+initially lacked repository PYTHONPATH and allocated no GPU. The corrected
+submission then stopped on an import: ensure_current_vllm_config is a test
+helper, not a public native export. Its [execution](analysis/hero-fp8-01a1ec55/marlin-history-a1-execution.json)
+and [receipt](analysis/hero-fp8-01a1ec55/marlin-history-a1-receipt.json) preserve
+59 allocated GPU seconds. The pinned native equivalent is
+set_current_vllm_config(VllmConfig()), verified from source before the retry.
+
+The parent's upstream lead, issue #52525 and Python-only PR #52532, describes
+Marlin W13 differences under equivalent within-expert token orders. Its pinned
+source audit finds no canonicalization here; both GEMMs already disable atomic
+output addition and enable FP32 reduction. Hardware and weight-format differences
+leave applicability to Hero FP8 unproven. The next cheap control will compare
+full expert-region orders with separately zeroed output/workspace, alongside
+A→B→A history, before justifying another full-model setup.
+
+
+## 2026-11-18 07:53 UTC — Separate stale-buffer and routed-order controls
+
+The corrected one-GPU probe uses verified native
+set_current_vllm_config(VllmConfig()). A CPU preflight checks every imported
+native symbol against pinned source, compiles the script, and validates the
+upstream canonicalizer's active-region ordering with hostile inactive-tail data.
+These are setup checks, not GPU numerical evidence.
+
+The independent EP/history oracle keeps exactly representable weights. Its
+A→B→A comparisons and unmapped/padding outputs stay strict. A separate order-only
+phase uses native-quantized random BF16 weights and varied column magnitudes,
+with the same per-tensor FP8 quantizer and BF16 activations. It compares ascending
+and descending legal orders across each entire expert region, with independent
+zeroed output, intermediates and workspace. W13 and final contributions are read
+back. Identical-order repeats distinguish ordinary repeat variance from order
+sensitivity. Canonicalized repeats are a paired diagnostic control.
+
+The order phase targets concentrated hot local/mixed routing at 16, 115, 128,
+129, 256, 512 and 2048 rows, with actual Hero inner dimensions 3072, local24 and
+global384. This can establish or reject applicability at those shapes, scales and
+routes. A negative synthetic result will not prove full-model determinism.
+The canonicalizer is retained from upstream PR #52532 with its exact PR identity;
+no installed runtime module is patched for this component.
+
+The initial comparison is also saved under the campaign URI as
+comparison-initial.md/json, with remote SHA readback in
+[the receipt](analysis/hero-fp8-01a1ec55/comparison-initial-receipt.json).
+
+## 2026-11-18 08:19 UTC — Retain completed controls; run order phase separately
+
+The second component completed 64 EP/history cases before a local readback
+bug stopped serialization of the first order row. The local integer `maximum`
+shadowed the readback helper. All 64 A→B→A differences are exactly zero, and
+unmapped/padding filtering passes. Four independent FP32-reference comparisons
+remain failures at the declared `atol=0.02, rtol=0.02`: both local offsets at
+2048 rows for all-local and negative-padding routing, each maximum 0.046875.
+Those failures are retained without changing the bound.
+
+Three CUDA graph controls at 1, 128 and 2048 rows each record a zero maximum
+difference. The last row lacks its final status field because the old writer
+flushed before assigning it. The [partial native JSON](analysis/hero-fp8-01a1ec55/marlin-order-a2-partial.json)
+and [summary](analysis/hero-fp8-01a1ec55/marlin-order-a2-summary.json) preserve
+that distinction. No order row survived; the order hypothesis stays pending.
+The job cost 75 allocated GPU seconds and its resource row is closed.
+
+The next one-GPU attempt reuses these completed phases by exact wheel and
+native-module identities. It runs only the pending order phase. Its
+[CPU preflight](analysis/hero-fp8-01a1ec55/marlin-order-a3-cpu-preflight.json)
+executes the actual order-row expression with the former shadowing trigger,
+round-trips its JSON, validates the canonicalizer with hostile inactive-tail
+data, and verifies that the weight/input/probability initialization AST is
+unchanged from the completed attempt. These checks prevent a repeat of the
+serialization failure; they provide no GPU numerical evidence.
+
+Completed owned cost is now 338,231.384 GPU seconds (93.953162 GB200 hours).
