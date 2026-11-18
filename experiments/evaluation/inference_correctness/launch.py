@@ -5,11 +5,13 @@
 
 import argparse
 import json
+import os
 import time
 from pathlib import Path
 
 from iris.cli.connect import connect_controller
 from iris.client.client import IrisClient
+from iris.cluster.client.job_info import get_job_info
 from iris.cluster.types import CoschedulingConfig, Entrypoint, EnvironmentSpec, JobName, ResourceSpec, gpu_device
 from iris.rpc import job_pb2
 from marin.testing.inference.goldens import LookupStatus, lookup_reference, read_fixture
@@ -17,9 +19,10 @@ from rigging.filesystem.storage_path import prefix_join
 from rigging.timing import Duration
 
 from experiments.evaluation.knotmeter.allocation import allocation_cost, track_allocations
-from experiments.evaluation.knotmeter.artifacts import write_record
+from experiments.evaluation.knotmeter.artifacts import retain_artifacts, write_record
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.config import Runtime, load_profile
+from experiments.evaluation.knotmeter.processes import run_logged
 
 DEFAULT_TEST_NODE = "tests/cluster/vllm/test_inference_correctness.py"
 REMOTE_TEST_FILES = (
@@ -31,6 +34,36 @@ REMOTE_TEST_FILES = (
     "tests/cluster/vllm/conftest.py",
     DEFAULT_TEST_NODE,
 )
+
+
+def run_pytest_gate(command: list[str], plan: dict) -> None:
+    """Retain pytest's failure details after endpoint fixture cleanup finishes."""
+    info = get_job_info()
+    if info is None:
+        raise RuntimeError("The deployment gate requires Iris job context")
+    output = Path(os.environ["IRIS_OUTPUT_DIR"]) / "pytest"
+    output.mkdir(parents=True, exist_ok=False)
+    Path("correctness-plan.json").write_text(json.dumps(plan))
+    prefix = prefix_join(plan["trial_uri"], f"attempts/{os.environ['IRIS_ATTEMPT_UID']}/hosts/{info.task_index}")
+    try:
+        run_logged(
+            [*command, "--junitxml", str(output / "pytest.xml")],
+            dict(os.environ),
+            output / "pytest.log",
+            plan["series"]["task_timeout"],
+        )
+    finally:
+        uri, digest = retain_artifacts(output, output.parent / "pytest.tar.zst", prefix, name="pytest")
+        write_record(
+            prefix_join(prefix, "pytest-receipt.json"),
+            {
+                "archive_uri": uri,
+                "archive_sha256": digest,
+                "source": plan["source"],
+                "task_index": info.task_index,
+                "attempt_uid": os.environ["IRIS_ATTEMPT_UID"],
+            },
+        )
 
 
 def main() -> None:
@@ -107,9 +140,7 @@ def main() -> None:
             extra_bundle_includes=tuple(dict.fromkeys((*REMOTE_TEST_FILES, args.pytest_node.partition("::")[0]))),
         ) as client:
             job = client.submit(
-                entrypoint=Entrypoint(
-                    command=command, workdir_files={"correctness-plan.json": json.dumps(plan).encode()}
-                ),
+                entrypoint=Entrypoint.from_callable(run_pytest_gate, command, plan),
                 name=JobName.from_string(plan["job_id"]).name,
                 resources=ResourceSpec(
                     cpu=profile.cpu,

@@ -8,7 +8,9 @@ import dataclasses
 import hashlib
 import json
 import shutil
+import subprocess
 import sys
+import xml.etree.ElementTree as ET
 from contextlib import nullcontext
 from pathlib import Path
 from types import SimpleNamespace
@@ -16,7 +18,7 @@ from types import SimpleNamespace
 import pytest
 from connectrpc.code import Code
 from connectrpc.errors import ConnectError
-from iris.cluster.types import JobName
+from iris.cluster.types import Entrypoint, JobName
 from iris.resources.state import JobState, TaskState
 from marin.datakit.chat_template import MARIN_CHAT_TEMPLATE
 from marin.external_dependencies import VLLM_GPU_RELEASE
@@ -24,7 +26,8 @@ from marin.inference.vllm_cache import VllmCompileIdentity
 from rigging.provenance import Provenance
 from rigging.timing import Timestamp
 
-from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, write_record
+from experiments.evaluation.inference_correctness.launch import run_pytest_gate
+from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, unpack, write_record
 from experiments.evaluation.knotmeter.cli import main as run_cli
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial, refresh_costs
@@ -68,6 +71,45 @@ def test_launch_plan_survives_json_delivery_without_invalidating_worker_identity
     )
     plan = resolve_plan(load_profile(Path("snowball-h100"), []), "fixture")
     assert json.loads(json.dumps(plan)) == plan
+
+
+def test_pytest_fixture_failure_retains_traceback_and_nonzero_exit(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("IRIS_OUTPUT_DIR", str(tmp_path / "outputs"))
+    monkeypatch.setenv("IRIS_ATTEMPT_UID", "local-fixture-attempt")
+    monkeypatch.setenv("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+    # Iris task metadata is the external boundary; pytest and artifact delivery are real.
+    monkeypatch.setattr(
+        "experiments.evaluation.inference_correctness.launch.get_job_info", lambda: SimpleNamespace(task_index=0)
+    )
+    case = tmp_path / "test_broken_endpoint.py"
+    case.write_text(
+        "import json\nfrom pathlib import Path\nimport pytest\n"
+        "@pytest.fixture\ndef endpoint():\n"
+        "    source = json.loads(Path('correctness-plan.json').read_text())['source']['tree_hash']\n"
+        "    raise RuntimeError(f'fixture setup failed for {source}')\n"
+        "def test_model_gate(endpoint):\n    raise AssertionError('fixture unexpectedly succeeded')\n"
+    )
+    plan = {
+        "trial_uri": str(tmp_path / "retained"),
+        "series": {"task_timeout": 30},
+        "source": {"tree_hash": "retained-source"},
+    }
+    entrypoint = Entrypoint.from_callable(
+        run_pytest_gate, [sys.executable, "-m", "pytest", str(case), "-q", "-o", "addopts="], plan
+    )
+    function, args, kwargs = entrypoint.resolve()
+    with pytest.raises(subprocess.CalledProcessError) as failure:
+        function(*args, **kwargs)
+    assert failure.value.returncode == 1
+    prefix = tmp_path / "retained/attempts/local-fixture-attempt/hosts/0"
+    receipt = read_record(str(prefix / "pytest-receipt.json"))
+    unpack(Path(receipt["archive_uri"]), tmp_path / "restored")
+    message = "fixture setup failed for retained-source"
+    assert message in (tmp_path / "restored/pytest.log").read_text()
+    error = ET.parse(tmp_path / "restored/pytest.xml").find(".//testcase/error")
+    assert error is not None and error.text is not None
+    assert message in error.text
 
 
 @pytest.mark.parametrize("corrupt", [False, True])
