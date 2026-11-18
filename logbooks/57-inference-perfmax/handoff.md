@@ -24,8 +24,9 @@ noise. The initial FP8 gain over retention-128 BF16 does not beat the newer BF16
 throughput result, and FP8's failed numerical checks still block acceptance.
 
 The [baseline audit](baseline-reconciliation.md) guides the next allocation-size
-test and targeted FP8 controls. A canonical Marlin component fix passes, but its
-four-GPU full-model screen still fails exact cache comparisons. The
+test and targeted FP8 controls. A combined Marlin/padding fix now passes all 19
+exact cache comparisons, batch and decode on four GPUs. Its short-reference
+maximum remains 0.67287, above the unchanged 0.65 limit. The
 [execution inspection](hero-fp8-inspection.md) records actual storage proof and
 remaining gaps. Final selection and a new High review are pending. All
 contributions remain unmerged.

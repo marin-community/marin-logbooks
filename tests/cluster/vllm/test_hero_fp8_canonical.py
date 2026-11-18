@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Campaign control: reject a weak Marlin port before the full shared suite."""
+"""Campaign control: require actual storage and cache checks before the full suite."""
 
 import asyncio
 import json
@@ -68,9 +68,9 @@ def test_hero_canonical_storage_cache_then_shared_suite(correctness_endpoint, re
     plan = json.loads(Path(request.config.getoption("--correctness-plan")).read_text())
     profile_path = endpoint.output.with_name("loaded-storage-profile.json")
     profile_path.write_text(json.dumps(plan["series"]["profile"]))
-    inspector = (
-        Path(__file__).resolve().parents[3] / "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/inspect_model.py"
-    )
+    inspection = next(item["command"] for item in plan["series"]["profile"]["checks"] if item["kind"] == "serving")
+    assert inspection[0] == "python"
+    inspector = Path(__file__).resolve().parents[3] / inspection[1]
     subprocess.run(
         [sys.executable, str(inspector)],
         env=os.environ

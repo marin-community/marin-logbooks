@@ -174,7 +174,26 @@ error 0.0184222980. Storage, deployment and all reuse/branch coverage pass.
 Matched repetition is exact; changed-split checks pass. The test correctly stops
 before reference, batch and decode after this rejection. Its complete cost is
 0.723333 GB200-hours. Canonicalization therefore has component evidence but does
-not resolve Hero's full-model failure. A one-GPU padded-route control is next.
+not resolve Hero's full-model failure. A one-GPU padded-route control followed.
+
+That control found real-output changes in 20 of 28 cases when only padded routes
+changed, including CUDA graphs. Same-route and restored A→B→A controls were exact.
+The child masked padded router logits while preserving real rows.
+The [follow-up](analysis/hero-fp8-cache-validation/hero-fp8-canonical-parent-inspection.json)
+uses a cold-installed `a399f9a0f1` wheel: 19 focused tests pass without skips, and
+all 28 paired cases plus 16 graphs now have stable padded IDs and zero output
+differences. The parent inspected the patch, native JSON and pytest XML.
+
+The same four-GPU model then passes deployment, storage, batch, cache and decode.
+All 19 exact cache differences are zero. Fixed-reference short maximum remains
+0.6728747848 against 0.65; P99 0.1222981 passes 0.125, and long reference passes.
+The parent read the original full report and retained its hash. Complete cost is
+1.412222 GB200-hours. This is a useful cache correction with a remaining reference
+failure; it does not qualify FP8 or provide performance evidence for the fixed
+runtime. The child next chose native ignored-layer controls with meaningful FP8
+coverage, keeping every numerical bound unchanged.
+Changing the native backend can also change activation precision. The short
+guide now requires it to be recorded alongside weight storage and KV precision.
 
 The second child also exposed a misleading successful CLI exit after failed CPU
 preparation. Contribution `3a1a01b2ea` makes synchronous run and recovery preserve
