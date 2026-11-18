@@ -14,13 +14,15 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
+from connectrpc.code import Code
+from connectrpc.errors import ConnectError
 from huggingface_hub import HfApi
 from iris.cli.connect import IRIS_CLUSTER_CONFIG_DIRS, connect_controller
 from iris.client.client import IrisClient
 from iris.cluster.client import resolve_job_user
 from iris.cluster.constraints import Constraint, ConstraintOp, preemptible_constraint
 from iris.cluster.types import Entrypoint, EnvironmentSpec, JobName, ResourceSpec
-from iris.resources.state import is_job_finished
+from iris.resources.state import JobState, is_job_finished
 from iris.rpc import job_pb2
 from marin.inference.vllm_release import vllm_gpu_wheel_for_architecture
 from marin.testing.inference.goldens import read_fixture
@@ -296,12 +298,15 @@ def main() -> None:
                             stream_logs=True,
                         )
                     plan = read_record(prefix_join(plan["trial_uri"], "plan.json"))
+                    status = client.job_status(job.job_id)
                     if "manifest" in plan:
-                        refresh_costs(plan)
+                        result = refresh_costs(plan)
                     else:
-                        status = client.job_status(job.job_id)
                         record_preparation_failure(plan, status.error_message)
+                        result = read_record(prefix_join(plan["trial_uri"], "result.json"))
                     print(report_campaign(plan["campaign_uri"]), end="")
+                    if status.state != JobState.SUCCEEDED or not result["job_succeeded"]:
+                        raise SystemExit(1)
         return
     plan = read_record(prefix_join(args.trial_uri, "plan.json"))
     with connect_controller(cluster_name=plan["controller"]) as endpoint:
@@ -330,10 +335,18 @@ def main() -> None:
                         "Preparation did not finish; no GPU trial was submitted. "
                         f"See {args.trial_uri}/coordinator-error.json"
                     )
-                capture_allocations(client, plan)
+                try:
+                    client.job_status(JobName.from_string(plan["gpu_job_id"]))
+                except ConnectError as error:
+                    if error.code != Code.NOT_FOUND:
+                        raise
+                else:
+                    capture_allocations(client, plan)
                 with tempfile.TemporaryDirectory(prefix="knotmeter-recovery-") as directory:
-                    collect_trial(client, plan, Path(directory))
+                    result = collect_trial(client, plan, Path(directory))
                 print(report_campaign(plan["campaign_uri"]), end="")
+                if not result["job_succeeded"]:
+                    raise SystemExit(1)
 
 
 if __name__ == "__main__":
