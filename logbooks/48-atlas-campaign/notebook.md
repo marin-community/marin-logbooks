@@ -1393,3 +1393,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the r4 report's contents are registry-bound [M].
 - Decision and next action: next hourly check watches for the nl2bash repair-lane outcomes.
+
+### 2026-11-18 06:40 UTC - Hourly catch-up (05:40–06:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `df6fe0dc3a…` (05:20:16 UTC) to head `f2b39492853403151fb00f0d8d45acc4d074a577`, landed 05:39:22 UTC (1 landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log df6fe0dc..f2b39492` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — the re-measured census, lexical and dedup receipts bound for the **13 non-oracle-mediated sources** (`f2b3949285…`, head) — extending the repair-lane's receipt chain to the non-oracle-mediated set.
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: single code landing; the receipt contents are registry-bound [M].
+- Decision and next action: next hourly check watches for the non-oracle-mediated sources' admission progression.
