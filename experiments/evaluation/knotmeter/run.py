@@ -358,6 +358,15 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
             shutil.copytree(router_logs, output / "router-logs")
         if leader:
             pack_server_metrics(output)
+        try:
+            memory_limit = Path("/sys/fs/cgroup/memory.max").read_text().strip()
+            record["host_memory"] = {
+                "peak_bytes": int(Path("/sys/fs/cgroup/memory.peak").read_text()),
+                "limit_bytes": None if memory_limit == "max" else int(memory_limit),
+                "source": "Task cgroup v2, before final artifact upload",
+            }
+        except (OSError, ValueError) as error:
+            record["host_memory"] = {"error": str(error)}
         write_record(str(output / "attempt.json"), record)
         prefix = prefix_join(plan["trial_uri"], f"attempts/{record['iris_attempt_uid']}/hosts/{info.task_index}")
         uri, digest = retain_artifacts(output, output.parent / "host.tar.zst", prefix, name="native")
