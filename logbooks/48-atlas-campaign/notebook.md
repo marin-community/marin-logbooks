@@ -1405,3 +1405,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit above; landing timestamp in the local atlas-push log [R].
 - Interpretation and limitations: single code landing; the receipt contents are registry-bound [M].
 - Decision and next action: next hourly check watches for the non-oracle-mediated sources' admission progression.
+
+### 2026-11-18 07:40 UTC - Hourly catch-up (06:40–07:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `f2b3949285…` (05:39:22 UTC) to head `ede08d135a26e078122a65d1cf7bc67ba68acf22`, landed 07:09:02 UTC (1 landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log f2b39492..ede08d13` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — the sealed **nl2bash repair-lane r5 review report pinned** (`ede08d135a…`, head) — the repair-lane record now carries r5 following the r4 report pinned in the 05:40 window.
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: single landing; the r5 report's contents are registry-bound [M].
+- Decision and next action: next hourly check watches for the nl2bash repair-lane admission progression.
