@@ -306,3 +306,61 @@ Checks finish at 09:38:48.684 UTC. Native warmup then completes 1,406 requests
 with zero errors in 440.4 seconds. Profiling starts at 09:46:16.250 UTC, with
 the native 3,600-second admission boundary near 10:46:16 UTC. The window stays
 frozen through export and cleanup. No throughput conclusion is available yet.
+
+## 2026-11-18 11:15 UTC — DP/EP32 improves the measured tradeoff
+
+The completed native hour passes all shared checks and native protocol,
+coverage, submission and gang rules. The coordinator and all eight GPU tasks
+succeed with no preemption. The [result](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-result.json),
+[original export summary](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-native-summary.json),
+[check summary](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-check-summary.json)
+and [comparison](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-comparison.json)
+retain the measurement and its limits.
+
+| Retention-zero configuration | Output tokens/s/GPU | p90 TTFT, s | p90 completion, s | Profiling successes/errors |
+| --- | ---: | ---: | ---: | ---: |
+| 16 GB200, DP16/EP16, C32 | 19.29162 | 145.36914 | 156.44444 | 1586/0 |
+| 16 GB200, DP16/EP16, C64 | 23.60952 | 276.38157 | 282.52929 | 2108/1 |
+| 32 GB200, DP32/EP32, C128 | 31.42858 | 268.89855 | 281.34879 | 5245/0 |
+
+The larger configuration gains 33.12% throughput per GPU with 2.71% lower
+p90 TTFT against DP16/C64. Allocation and total offered concurrency change
+together; four offered session trees per GPU stay fixed. Client reuse rises
+from 81.6861% to 87.9519%, against a theoretical 94.0220% for this completed
+mix. Reported peak KV use is 86.865%. Mean completed input length also falls
+from 83,634 to 67,705 tokens. These observations support the configuration
+choice but do not isolate its cause. Each configuration has one window;
+repeat variability and a global optimum remain unmeasured. C32 remains the
+lower-latency neighbor.
+
+Correction to the 09:48 entry: the live warmup phase notice reported zero
+errors, but the final export and [original request records](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-request-errors.json)
+show three dropped warmup requests with empty response content. The 5,245
+profiling successes and zero profiling errors are unchanged. Preserve both
+the early log-derived claim and this correction.
+
+The [leader receipt](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-leader-receipt.json)
+pins the original 380,769,889-byte archive with SHA-256
+`dc1d54ea6426a866be20f1cca9d51438622068b6dbe8fd6710027f116daa878f`.
+Its client export SHA-256 is
+`6878d0cf0599c6958347e8e47e6f75468691d90f0532764e004dc6ee31fbb7d3`.
+The normal export and collection finished successfully; there was no
+coordinator failure or recovery. Allocated cost is 181,460 GPU seconds,
+50.405556 GB200 hours, including every setup, check, warmup, native hour,
+drain, export and shutdown phase. Owned completed cost is now 352,056 GPU
+seconds, or 97.793333 GB200 hours. Host memory peaks are 145.11, 110.15,
+111.88, 110.69, 109.91, 112.15, 109.80 and 113.20 GiB, all under 256 GiB.
+The [cleanup receipt](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-cleanup.json)
+confirms all GPU tasks released and no remaining owned pods. Row 2250 is closed.
+
+The next selected comparison adds native NUMA binding to this same DP32/C128
+configuration. The [profile](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-numa.yaml)
+uses the already prepared private numactl dependency, unchanged vLLM runtime,
+and a required read-only check of actual worker CPU and memory policy. CPU
+plan resolution passes. Retain all 32 rank records across eight hosts before
+timing, rather than inferring binding from a flag. The check measures worker
+thread allocation policy; it does not claim resident page placement. The
+[inventory](analysis/hero-bf16-01a1ed83/numa-dp32-c128-inventory.json) sees 127
+available GB200s, without reserving them. Row 2261 announces 32 GB200s and
+zero H100s under this session's actual binding. Requested interactive priority
+and ordinary Batch fallback remain unchanged.
