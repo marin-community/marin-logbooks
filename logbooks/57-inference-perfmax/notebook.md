@@ -798,3 +798,19 @@ runtime, goldens and policy match the first run, so its passing reference,
 batch and decode evidence is reused. Cold aligned misses remain recorded. No
 AgentX throughput claim is made for this setting. The follow-up used 3.408889
 GB200-hours; all four provider pods were confirmed absent and row 2235 is closed.
+
+Snowball now passes the corrected full suite at retention zero and the cache-only
+follow-up at 128, with 19 exact comparisons at zero in each. Both used eight
+H100s and pinned runtime `0ac9dcb`. Matching existing positive reference, batch
+and decode evidence is reused. Placement moved to east02 after a snapshot showed
+no RNO fit. The new allocated H100 cost is 2.008889 hours. Both jobs stayed
+Succeeded after cleanup; reports, raw archives and terminal stdout are preserved,
+both provider pods are absent, and resource row 2238 is closed.
+
+The [child execution inspection](hero-fp8-inspection.md) records the completed
+BF16 C64 window, useful tool fixes and remaining qualification gaps. The parent
+found that method-name inspection did not prove actual FP8 weight storage. A
+native worker-extension query is being added before the main candidate window.
+The completed baseline is reused with its RAM-allocation difference recorded;
+the lower C32 neighbor follows independent client cache evidence. Full FP8
+comparison and final High review remain pending.
