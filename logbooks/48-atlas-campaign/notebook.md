@@ -1431,3 +1431,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the r6 report's contents are registry-bound [M].
 - Decision and next action: next hourly check watches for the winner-cohort conversion outcomes.
+
+### 2026-11-18 09:40 UTC - Hourly catch-up (08:40–09:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `e7328675bd…` (08:25:04 UTC) to head `6f92f4483426f4762ed52b93f3b9a35d65ec2f30`, landed 09:27:20 UTC (~6 landings 08:43–09:27 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log e7328675..6f92f448` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Repair-lane cohort winners lowered through the production source recipe** (`e9f953dfc7…`); tracked runtime bindings carried into repair cohorts with **native Harbor task export** (`6f92f44834…`, head) — the winner-cohort conversion stage from the previous window is now exporting runnable native tasks.
+  - **Registry hygiene**: stale receipt-shard writes rejected before upload (`f6f6c267f6…`).
+  - **OpenMDW 1.1 publications**: structure-closure releases recorded under OpenMDW 1.1 (`68cd5b3aa4…`); first-party publications resolved from their own card (`a5a063c1d0…`); recorded lineage receipts honored in the publication check (`ec4edb8b23…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the exported repair-cohort tasks' intake outcomes.
