@@ -358,24 +358,36 @@ async def check_batch(client: EndpointClient, references: ReferenceLookup, fixtu
 
 
 async def check_settled_branch(
-    client: EndpointClient, branch: tuple[int, ...], alternate: tuple[int, ...], boundary: int, block_size: int
+    client: EndpointClient,
+    branch: tuple[int, ...],
+    alternate: tuple[int, ...],
+    boundary: int,
+    block_size: int,
+    *,
+    label: str,
 ) -> dict:
     """Compare a branch before and after a sibling, with the complete usable prefix cached."""
     expected = (len(branch) - 1) // block_size * block_size
     prepared_hits = []
-    result: dict = {"boundary": boundary, "status": "failed", "expected_cached_tokens": expected}
+    result: dict = {
+        "boundary": boundary,
+        "divergence_tokens": boundary,
+        "status": "failed",
+        "expected_cached_tokens": expected,
+    }
     for attempt in range(MAX_CACHE_PREPARATION_REQUESTS):
-        before = await client.complete(branch, label=f"cache-{boundary}-prepare-{attempt}")
+        before = await client.complete(branch, label=f"{label}-prepare-{attempt}")
         prepared_hits.append(cached_tokens(before))
         if cached_tokens(before) == expected:
             break
     result["preparation_hits"] = prepared_hits
     if prepared_hits[-1] != expected or expected <= boundary:
         return result
-    await client.complete(alternate, label=f"cache-{boundary}-settled-alternate")
-    after = await client.complete(branch, label=f"cache-{boundary}-settled-repeat")
+    sibling = await client.complete(alternate, label=f"{label}-settled-alternate")
+    result["alternate_cached_tokens"] = cached_tokens(sibling)
+    after = await client.complete(branch, label=f"{label}-settled-repeat")
     result["repeat_cached_tokens"] = cached_tokens(after)
-    if cached_tokens(after) == expected:
+    if 0 < cached_tokens(sibling) < expected and cached_tokens(after) == expected:
         result["status"] = "passed"
         result["comparison"] = dataclasses.asdict(
             distribution_difference(next_distribution(before), next_distribution(after))
@@ -384,8 +396,15 @@ async def check_settled_branch(
 
 
 async def check_cache(
-    client: EndpointClient, references: ReferenceLookup, fixture: ModelFixture, block_size: int
+    client: EndpointClient,
+    references: ReferenceLookup,
+    fixture: ModelFixture,
+    cache_config: dict,
+    max_model_len: int,
 ) -> dict:
+    # The scoped TP1 fixtures use attention blocks and optional Mamba blocks.
+    block_size = math.lcm(cache_config["block_size"], cache_config.get("mamba_block_size") or 1)
+    retention = cache_config["prefix_cache_retention_interval"]
     source = max(references.cases, key=lambda case: len(case.tokens)).tokens
     if len(set(source)) < 3:
         raise ValueError("Cache probes require varied token histories")
@@ -394,6 +413,7 @@ async def check_cache(
     prefill_reuse = []
     settled_branches = []
     decode_reuse = []
+    replayed_decode_reuse = []
     failures = []
     for length in fixture.policy.boundary_lengths:
         observed = {"boundary": length}
@@ -432,31 +452,61 @@ async def check_cache(
 
             other_token = next(token for token in source if token != branch[length])
             isolated_alternate = (*prefix, other_token, *branch[length + 1 :])
-            settled = await check_settled_branch(client, branch, isolated_alternate, length, block_size)
+            settled = await check_settled_branch(
+                client, branch, isolated_alternate, length, block_size, label=f"cache-{length}"
+            )
             settled_branches.append(settled)
             if settled["status"] == "passed":
                 same_split.append(settled["comparison"])
 
-            # Cross a state boundary, reuse generated history, then recompute it freshly.
+            # Choose a reachable periodic checkpoint instead of assuming any decode
+            # length creates one. Zero retains prompt replay points, not these points.
+            decode_prefix = prefix
+            interval = block_size if retention is None else retention
+            checkpoint = (len(prefix) // interval + 1) * interval if interval else 0
+            direct_required = checkpoint > 0 and checkpoint + 5 <= max_model_len
+            count = fixture.policy.cache_decode_tokens
+            if direct_required and checkpoint > len(prefix) + count - 1:
+                decode_prefix = source[: checkpoint - 1]
+                count = max(count, checkpoint - len(decode_prefix) + 1)
+            count = min(count, max_model_len - len(decode_prefix) - 4)
             await client.reset_cache()
-            decoded = await client.complete(
-                prefix, label=f"cache-{length}-decode-seed", count=fixture.policy.cache_decode_tokens
-            )
-            history = prefix + tuple(decoded["choices"][0]["token_ids"]) + source[length : length + 3]
+            decoded = await client.complete(decode_prefix, label=f"cache-{length}-decode-seed", count=count)
+            history = decode_prefix + tuple(decoded["choices"][0]["token_ids"]) + source[length : length + 3]
             reused = await client.complete(history, label=f"cache-{length}-decode-reuse")
-            reached_decode = cached_tokens(reused) > len(prefix)
             observed["decode_cached_tokens"] = cached_tokens(reused)
-            observed["decode_generated_tokens"] = fixture.policy.cache_decode_tokens
+            observed["decode_prompt_tokens"] = len(decode_prefix)
+            observed["decode_generated_tokens"] = count
             decode_reuse.append(
                 {
                     "boundary": length,
-                    "status": "passed" if reached_decode else "failed",
+                    "status": (
+                        ("passed" if cached_tokens(reused) >= checkpoint else "failed")
+                        if direct_required
+                        else "not_required"
+                    ),
                     "cached_tokens": cached_tokens(reused),
-                    "prompt_tokens": len(prefix),
+                    "prompt_tokens": len(decode_prefix),
+                    "required_checkpoint": checkpoint if direct_required else None,
+                    "reason": (
+                        "Periodic checkpoint in generated history"
+                        if direct_required
+                        else "No periodic checkpoint reachable in this retention mode and context"
+                    ),
                 }
             )
-            if not reached_decode:
-                continue
+            # Once this history is itself a prompt, every mode promises its replay
+            # boundary. Require reuse and exact state preservation across a sibling.
+            divergence = len(decode_prefix)
+            other_token = next(token for token in source if token != history[divergence])
+            replay_alternate = (*history[:divergence], other_token, *history[divergence + 1 :])
+            replayed = await check_settled_branch(
+                client, history, replay_alternate, divergence, block_size, label=f"cache-{length}-replayed-decode"
+            )
+            replayed["requested_boundary"] = length
+            replayed_decode_reuse.append(replayed)
+            if replayed["status"] == "passed":
+                same_split.append(replayed["comparison"] | {"case": "replayed-decode-branch"})
             await client.reset_cache()
             recomputed = await client.complete(history, label=f"cache-{length}-decode-fresh")
             different_split.append(
@@ -493,7 +543,11 @@ async def check_cache(
         name: {
             "status": (
                 "passed"
-                if len(rows) == len(fixture.policy.boundary_lengths) and all(row["status"] == "passed" for row in rows)
+                if len(rows) == len(fixture.policy.boundary_lengths)
+                and all(
+                    row["status"] == "passed" or (name == "decode_reuse" and row["status"] == "not_required")
+                    for row in rows
+                )
                 else "failed"
             ),
             "observations": rows,
@@ -502,18 +556,24 @@ async def check_cache(
             ("prefill_reuse", prefill_reuse),
             ("settled_branches", settled_branches),
             ("decode_reuse", decode_reuse),
+            ("replayed_decode_reuse", replayed_decode_reuse),
         )
     }
+    if coverage["decode_reuse"]["status"] == "passed" and all(row["status"] == "not_required" for row in decode_reuse):
+        coverage["decode_reuse"]["status"] = "not_required"
     return {
         "status": (
             "passed"
             if not failures
-            and all(row["status"] == "passed" for row in (*summaries.values(), *coverage.values(), matched_repeat))
+            and all(row["status"] == "passed" for row in (*summaries.values(), matched_repeat))
+            and all(row["status"] in ("passed", "not_required") for row in coverage.values())
             else "failed"
         ),
         **summaries,
         **coverage,
         "matched_repeat": matched_repeat,
+        "retention_interval": retention,
+        "cache_alignment": block_size,
         "failures": failures,
         "cache_evidence": evidence,
         "observations": {"same_split": same_split, "different_split": different_split},
@@ -593,7 +653,11 @@ async def check_endpoint(
             (
                 "cache",
                 lambda: check_cache(
-                    client, references, fixture, report["checks"]["deployment"]["cache_config"]["block_size"]
+                    client,
+                    references,
+                    fixture,
+                    report["checks"]["deployment"]["cache_config"],
+                    report["checks"]["deployment"]["model_config"]["max_model_len"],
                 ),
             ),
             ("decode", lambda: check_decode(client, references, fixture)),

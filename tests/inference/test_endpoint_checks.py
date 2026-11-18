@@ -130,6 +130,7 @@ def reference_fixture(tmp_path) -> ModelFixture:
 class HttpEngine:
     mode: str
     identity: ModelIdentity
+    retention_interval: int | None = None
     prefixes: set[tuple[int, ...]] = field(default_factory=set)
     histories: set[tuple[int, ...]] = field(default_factory=set)
     corrupted: set[tuple[int, ...]] = field(default_factory=set)
@@ -149,7 +150,8 @@ class HttpEngine:
             (len(prefix) for prefix in self.prefixes if len(prefix) < len(tokens) and tokens[: len(prefix)] == prefix),
             default=0,
         )
-        if self.mode == "branch-corrupt" and tokens not in self.histories:
+        # Inject a sibling write after the prepared branch has been observed.
+        if self.mode == "branch-corrupt" and request.headers["X-Request-Id"].endswith("-settled-alternate"):
             for previous in self.histories:
                 if len(previous) != len(tokens):
                     continue
@@ -158,8 +160,8 @@ class HttpEngine:
                     (len(p) for p in self.prefixes if len(p) < len(previous) and previous[: len(p)] == p), default=0
                 )
                 if 0 < shared < protected:
-                    self.corrupted.symmetric_difference_update({previous})
-            self.histories.add(tokens)
+                    self.corrupted.add(previous)
+        self.histories.add(tokens)
         is_batch = request.headers["X-Request-Id"].startswith("batch-")
         if is_batch:
             self.active_batch += 1
@@ -173,8 +175,15 @@ class HttpEngine:
         top = {f"token_id:{token}": value for token, value in probabilities.items()}
         winner = max(probabilities, key=probabilities.get)
         generated = [winner] * count
-        cached_length = len(tokens) if self.mode == "prefill-only" else len(tokens) + count
-        self.prefixes.update(tuple((*tokens, *generated)[:length]) for length in range(4, cached_length, 4))
+        computed = len(tokens) - 1 if self.mode == "prefill-only" else len(tokens) + count - 1
+        if self.retention_interval is None:
+            retained = set(range(4, computed + 1, 4))
+        elif self.retention_interval:
+            retained = set(range(self.retention_interval, computed + 1, self.retention_interval))
+        else:
+            retained = set()
+        retained.add((len(tokens) - 1) // 4 * 4)
+        self.prefixes.update(tuple((*tokens, *generated)[:length]) for length in retained if length > 0)
         if is_batch:
             self.active_batch -= 1
         choice = {"token_ids": generated, "prompt_token_ids": list(tokens), "logprobs": {"top_logprobs": [top] * count}}
@@ -186,7 +195,19 @@ class HttpEngine:
         return web.json_response(
             {
                 "choices": [choice],
-                "usage": {"prompt_tokens_details": {"cached_tokens": 0 if self.mode == "no-cache" else cached}},
+                "usage": {
+                    "prompt_tokens_details": {
+                        "cached_tokens": (
+                            0
+                            if self.mode == "no-cache"
+                            or (
+                                self.mode == "no-branch-reuse"
+                                and request.headers["X-Request-Id"].endswith("-settled-alternate")
+                            )
+                            else cached
+                        )
+                    }
+                },
             }
         )
 
@@ -227,10 +248,16 @@ async def http_endpoint(engine: HttpEngine):
                         "tokenizer": "test-tokenizer",
                         "tokenizer_revision": "tokenizer-revision",
                         "dtype": "bfloat16",
+                        "max_model_len": 8192,
                         "override_generation_config": {"eos_token_id": 0},
                     },
                     "scheduler_config": {},
-                    "cache_config": {"enable_prefix_caching": True, "cache_dtype": "auto", "block_size": 4},
+                    "cache_config": {
+                        "enable_prefix_caching": True,
+                        "cache_dtype": "auto",
+                        "block_size": 4,
+                        "prefix_cache_retention_interval": engine.retention_interval,
+                    },
                     "parallel_config": {},
                     "compilation_config": {"cudagraph_mode": "PIECEWISE"},
                 },
@@ -264,6 +291,7 @@ async def http_endpoint(engine: HttpEngine):
         ("cache-error", "cache"),
         ("prefill-only", "cache"),
         ("no-cache", "cache"),
+        ("no-branch-reuse", "cache"),
         ("no-batch", "batch"),
         ("corrupt-cache", "cache"),
         ("branch-corrupt", "cache"),
@@ -307,7 +335,7 @@ async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, refere
             cache = report["checks"]["cache"]
             assert cache["prefill_reuse"]["status"] == "failed"
             assert len(cache["decode_reuse"]["observations"]) == len(reference_fixture.policy.boundary_lengths)
-            assert cache["different_split"]["positions"] == 0
+            assert cache["different_split"]["positions"] == len(reference_fixture.policy.boundary_lengths)
         if mode == "prefill-only":
             cache = report["checks"]["cache"]
             assert cache["decode_reuse"]["status"] == "failed"
@@ -326,6 +354,30 @@ async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, refere
         assert report["checks"]["decode"]["positions"] == 64
     assert report["requests"]
     assert all((path.parent / "report-requests" / row["response"]).is_file() for row in report["requests"])
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("retention", [None, 0, 128, 512])
+async def test_cache_contract_covers_retention_and_replayed_generation(tmp_path, reference_fixture, retention):
+    async with http_endpoint(HttpEngine("correct", reference_fixture.model, retention_interval=retention)) as url:
+        report = await check_endpoint(url, "test-model", reference_fixture, RUNTIME, tmp_path / "report.json")
+    assert report["status"] == "passed"
+    cache = report["checks"]["cache"]
+    direct = cache["decode_reuse"]
+    assert direct["status"] == ("not_required" if retention == 0 else "passed")
+    for row in direct["observations"]:
+        if retention == 0:
+            assert row["cached_tokens"] <= row["prompt_tokens"]
+            assert row["required_checkpoint"] is None
+        else:
+            assert row["cached_tokens"] >= row["required_checkpoint"] > row["prompt_tokens"]
+    replayed = cache["replayed_decode_reuse"]
+    assert replayed["status"] == "passed"
+    for row, initial in zip(replayed["observations"], direct["observations"], strict=True):
+        assert row["repeat_cached_tokens"] == row["expected_cached_tokens"] > initial["prompt_tokens"]
+        assert 0 < row["alternate_cached_tokens"] < row["expected_cached_tokens"]
+    assert cache["same_split"]["statistics"]["maximum"] == 0
+    assert cache["same_split"]["positions"] == 2 * len(reference_fixture.policy.boundary_lengths) + 1
 
 
 @pytest.mark.asyncio
@@ -371,9 +423,20 @@ def test_lookup_distinguishes_wrong_checkpoint_missing_and_modified_scores(tmp_p
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("mode", ["correct", "no-cache", "missing-reference"])
+@pytest.mark.parametrize(
+    "mode,retention",
+    [
+        ("correct", None),
+        ("correct", 0),
+        ("no-cache", None),
+        ("no-cache", 0),
+        ("corrupt-cache", 0),
+        ("no-branch-reuse", 0),
+        ("missing-reference", None),
+    ],
+)
 async def test_perfmax_retains_real_check_report_and_blocks_unqualified_recommendations(
-    tmp_path, reference_fixture, mode
+    tmp_path, reference_fixture, mode, retention
 ):
     fixture_path = tmp_path / "fixture.json"
     fixture_path.write_text(reference_fixture.model_dump_json())
@@ -388,7 +451,7 @@ async def test_perfmax_retains_real_check_report_and_blocks_unqualified_recommen
             "checks": [Check(name="shared-policy", fixture=str(fixture_path), timeout=60)],
         }
     )
-    async with http_endpoint(HttpEngine(mode, reference_fixture.model)) as url:
+    async with http_endpoint(HttpEngine(mode, reference_fixture.model, retention_interval=retention)) as url:
         checks = await asyncio.to_thread(run_checks, profile, url, tmp_path, RUNTIME)
     report_bytes = (tmp_path / "check-0.json").read_bytes()
     assert checks[0]["report_sha256"] == hashlib.sha256(report_bytes).hexdigest()
