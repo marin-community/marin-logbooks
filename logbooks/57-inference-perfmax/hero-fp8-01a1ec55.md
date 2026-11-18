@@ -651,3 +651,58 @@ are fixed before this component run at 0.02 absolute/relative for BF16 outputs;
 exact history comparisons stay zero. No model policy or golden changes.
 Mechanical lint and CPU syntax checks pass before payload freezing. The native
 candidate wheel, model module and Marlin module hashes will be recorded.
+
+
+## 2026-11-18 07:42 UTC — Complete the initial FP8 hour and release its allocation
+
+The frozen selective FP8 C64 hour completed with valid native protocol,
+submission, coverage and gang controls. It scored 2079 successful requests and
+zero profiling errors. Output throughput is 22.62167 tokens/s/GPU, P90 TTFT is
+263.60362 seconds and P90 completion is 278.60459 seconds. Against BF16 C64,
+throughput is 19.3796% higher, TTFT is 15.5562% lower and completion is 14.0611%
+lower. Client cache reuse is 73.929736%. The reference and exact cache checks
+still fail, so this is diagnostic performance and blocks an accepted FP8 choice.
+
+The final export/JSONL retain one empty-content warmup request with
+InvalidInferenceResultError. This corrects the earlier progress-log report of
+zero warmup errors. The native export's profiling count remains zero errors.
+All three normal windows' empty-content warmup failures are retained separately.
+Server counter decreases remain unresolved; rates and cache read fractions here
+come from client exports.
+
+The [initial comparison](analysis/hero-fp8-01a1ec55/comparison-initial.md) and
+[machine-readable controls](analysis/hero-fp8-01a1ec55/comparison-initial.json)
+include the BF16 neighbor tradeoff, exact source-pinned commands and qualification
+limits. The [complete FP8 result](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-result.json),
+[export summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-window-summary.json) and
+[native receipt](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-native-receipt.json)
+retain raw archive URIs/hashes. The leader's 342,472,507-byte archive was read
+back against SHA256 `a759f66170444a0b43e108f4bb45b761f1286f4844c38205b809181331ef42d7`.
+Its final recorded cgroup peak is 120,561,532,928 bytes (112.28 GiB) under a
+256 GiB limit. Other hosts' recorded peaks are retained in the full result.
+The model uses 56.07 GiB/GPU and offers 1,514,130 BF16 KV tokens/rank.
+
+This window cost 106,100 GPU seconds (29.472222 GB200 hours). Completed owned
+cost, including the next component's setup failure, is now 93.932329 GB200 hours.
+The [native job census](analysis/hero-fp8-01a1ec55/initial-owned-job-census.json)
+finds all 21 owned submitted jobs terminal. The
+[provider cleanup](analysis/hero-fp8-01a1ec55/initial-cleanup.json) deletes two
+remaining terminal pods and verifies zero matching owned pods. All 15 resource
+rows are [closed at this checkpoint](analysis/hero-fp8-01a1ec55/initial-board-closed.json).
+Overnight experiments will use distinct new jobs and rows.
+
+The first Marlin component supplied no kernel evidence. A local invocation
+initially lacked repository PYTHONPATH and allocated no GPU. The corrected
+submission then stopped on an import: ensure_current_vllm_config is a test
+helper, not a public native export. Its [execution](analysis/hero-fp8-01a1ec55/marlin-history-a1-execution.json)
+and [receipt](analysis/hero-fp8-01a1ec55/marlin-history-a1-receipt.json) preserve
+59 allocated GPU seconds. The pinned native equivalent is
+set_current_vllm_config(VllmConfig()), verified from source before the retry.
+
+The parent's upstream lead, issue #52525 and Python-only PR #52532, describes
+Marlin W13 differences under equivalent within-expert token orders. Its pinned
+source audit finds no canonicalization here; both GEMMs already disable atomic
+output addition and enable FP32 reduction. Hardware and weight-format differences
+leave applicability to Hero FP8 unproven. The next cheap control will compare
+full expert-region orders with separately zeroed output/workspace, alongside
+A→B→A history, before justifying another full-model setup.
