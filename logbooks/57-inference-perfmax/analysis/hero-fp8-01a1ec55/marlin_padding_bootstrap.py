@@ -8,6 +8,7 @@ import importlib
 import importlib.metadata
 import json
 import math
+import runpy
 import sys
 import time
 from functools import partial
@@ -73,6 +74,7 @@ def main():
     assert importlib.metadata.version("vllm") == payload["candidate_manifest"]["version"]
     assert torch.__version__ == "2.14.1+cu132"
     assert envs.VLLM_MOE_SKIP_PADDING
+    expect_stable = payload.get("expect_stable_padding_ids", False)
     record = {
         "scope": (
             "One-GPU component: actual Grug router, canonical Marlin FP8 and raw CUDA graphs; no full-model attribution"
@@ -86,10 +88,34 @@ def main():
         "torch": torch.__version__,
         "device": torch.cuda.get_device_name(),
         "moe_skip_padding": envs.VLLM_MOE_SKIP_PADDING,
+        "expected_stable_padding_ids": expect_stable,
         "started_unix": time.time(),
         "cases": [],
     }
     output.write_text(json.dumps(record, indent=2) + "\n")
+    if payload.get("run_focused_pytest"):
+        root = Path(payload["source_root"])
+        sys.path.insert(0, str(root / "infra/release"))
+        native = runpy.run_path(str(root / "infra/release/gpu_validation.py"))
+        record["pytest_exit"] = native["run_wheel_tests"](
+            SimpleNamespace(
+                package_source_root=root,
+                validation_source_root=root,
+                exclude_test=[],
+                pytest_args=[
+                    str(root / "tests/models/test_grugmoe.py"),
+                    "-k",
+                    "online_fp8_loading_matches_vllm or hero_online_fp8_latent_and_shared "
+                    "or quantization_platform_support or preserves_gpu_tensor_parallel_restriction "
+                    "or router_padding_ids_ignore_stale_logits",
+                    "-v",
+                    "--maxfail=1",
+                    "--junitxml=" + str(output.with_suffix(".xml")),
+                ],
+            )
+        )
+        output.write_text(json.dumps(record, indent=2) + "\n")
+        assert record["pytest_exit"] == 0
     global_experts, hidden, intermediate, topk, maximum = 384, 3072, 3072, 8, 2048
     config = VllmConfig()
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -165,13 +191,15 @@ def main():
                         assert not torch.count_nonzero(routed[real:]).item()
                         assert torch.equal(base_ids[:real], other_ids[:real])
                         assert torch.equal(base_weights, other_weights)
-                        assert not torch.equal(base_ids[real:], other_ids[real:])
+                        padded_ids_differ = not torch.equal(base_ids[real:], other_ids[real:])
+                        assert padded_ids_differ != expect_stable
                         changed, restored = fresh(alternate), fresh(logits)
                         row = {
                             "local_experts": local,
                             "physical_rows": count,
                             "real_rows": real,
                             "padded_route": name,
+                            "padded_ids_differ": padded_ids_differ,
                             "real_input_and_routes_identical": True,
                             "padded_hidden_and_weights_zero": True,
                             "same_route_max": control.maximum_difference(first[:real], same[:real]),
@@ -250,8 +278,26 @@ def main():
         "same_route_failures": sum(row["same_route_max"] > 0 for row in record["cases"]),
         "restored_route_failures": sum(row["restored_route_max"] > 0 for row in record["cases"]),
     }
+    if expect_stable:
+        failed = any(
+            row[key] != 0
+            for row in record["cases"]
+            for key in (
+                "same_route_max",
+                "changed_padded_route_real_max",
+                "restored_route_max",
+                "padded_output_max",
+                "graph_same_route_max",
+                "graph_changed_padded_route_real_max",
+                "graph_restored_route_max",
+            )
+            if key in row
+        )
+        record["status"] = "failed" if failed else "passed"
     output.write_text(json.dumps(record, indent=2) + "\n")
     print(json.dumps({k: record[k] for k in ("status", "padded_route_sensitive_cases", "same_route_failures")}))
+    if expect_stable:
+        assert record["status"] == "passed"
 
 
 if __name__ == "__main__":
