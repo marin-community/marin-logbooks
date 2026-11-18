@@ -41,7 +41,7 @@ spec = LaunchSpec(
     judge_accelerator="H100x8",
     version="biomnibench-da-recovery17-signed-v1",
     description=(
-        "Recovery of 17 tasks only, preserving 29 prior scores; saved-submission grades tracked separately; Pi 0.87.0; "
+        "Recovery of 17 tasks only, preserving prior scores; saved-submission grades tracked separately; Pi 0.87.0; "
         "3600s agent; 900s verifier; 16 concurrent; zero solver retries; "
         "at most one malformed-judge retry preserving both responses; "
         "one shared MiniMax judge; eight-hour cap; proposal evidence, not adopted ID policy"

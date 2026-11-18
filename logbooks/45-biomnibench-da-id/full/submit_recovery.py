@@ -28,6 +28,8 @@ def main():
     args = parser.parse_args()
     receipt = ROOT / f"{args.job_name}-submission.json"
     deadline = datetime(2026, 11, 18, 2, 25, 28, tzinfo=UTC)
+    if args.solver_only:
+        deadline = datetime(2026, 11, 19, 3, 51, tzinfo=UTC)
     remaining = int((deadline - datetime.now(UTC)).total_seconds())
     assert remaining > 0, "Approved recovery window has expired"
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
