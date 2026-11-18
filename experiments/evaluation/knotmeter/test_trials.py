@@ -7,6 +7,7 @@ import copy
 import dataclasses
 import hashlib
 import json
+import shutil
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -24,9 +25,10 @@ from experiments.evaluation.knotmeter.artifacts import read_record, retain_artif
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial
 from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
+from experiments.evaluation.knotmeter.recipe import benchmark_command
 from experiments.evaluation.knotmeter.report import recorded_checks, report_campaign
 from experiments.evaluation.knotmeter.run import create_server, run_checks
-from experiments.evaluation.knotmeter.runtime import resolve_release
+from experiments.evaluation.knotmeter.runtime import materialize_release, resolve_release
 
 
 def test_chat_template_survives_native_compilation_cache_identity(tmp_path):
@@ -52,6 +54,45 @@ def test_launch_plan_survives_json_delivery_without_invalidating_worker_identity
     )
     plan = resolve_plan(load_profile(Path("snowball-h100"), []), "fixture")
     assert json.loads(json.dumps(plan)) == plan
+
+
+@pytest.mark.parametrize("corrupt", [False, True])
+def test_cloud_runtime_installs_only_verified_bytes_and_keeps_durable_identity(tmp_path, monkeypatch, corrupt):
+    source = tmp_path / "candidate.whl"
+    source.write_bytes(b"immutable candidate fixture")
+    expected = hashlib.sha256(source.read_bytes()).hexdigest()
+    metadata = json.loads(json.dumps(dataclasses.asdict(VLLM_GPU_RELEASE)))
+    metadata["wheels"][0] |= {"url": "s3://fixture/runtime/candidate.whl", "sha256": expected}
+    monkeypatch.setattr("experiments.evaluation.knotmeter.runtime.tempfile.gettempdir", lambda: str(tmp_path))
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.runtime.platform.machine", lambda: metadata["wheels"][0]["architecture"]
+    )
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.runtime.copy_file", lambda uri, path: shutil.copyfile(source, path)
+    )
+    if corrupt:
+        source.write_bytes(b"corrupt candidate")
+        with pytest.raises(ValueError, match="checksum"):
+            materialize_release(metadata, tmp_path)
+        assert not (tmp_path / "runtime-wheel.json").exists()
+    else:
+        release = materialize_release(metadata, tmp_path)
+        assert materialize_release(metadata, tmp_path).wheels[0].url == release.wheels[0].url
+        assert release.wheels[0].url.startswith("file://")
+        assert release.wheels[0].sha256 == expected
+        receipt = read_record(str(tmp_path / "runtime-wheel.json"))
+        assert receipt["uri"] == metadata["wheels"][0]["url"]
+        assert receipt["sha256"] == expected
+        assert metadata["wheels"][0]["url"].startswith("s3://")
+
+
+def test_https_runtime_uses_the_native_release_without_materializing_bytes(tmp_path, monkeypatch):
+    def unexpected_copy(*args):
+        raise AssertionError("Normal HTTPS releases must use the native installer")
+
+    monkeypatch.setattr("experiments.evaluation.knotmeter.runtime.copy_file", unexpected_copy)
+    assert materialize_release(dataclasses.asdict(VLLM_GPU_RELEASE), tmp_path) == VLLM_GPU_RELEASE
+    assert not (tmp_path / "runtime-wheel.json").exists()
 
 
 @pytest.mark.parametrize("ambient", ["local_store", "gs://wrong-cloud/outputs"])
@@ -132,6 +173,27 @@ def test_report_keeps_diagnostics_separate_and_pins_selected_runtime(tmp_path, m
     assert resolve_release(recommended.vllm)["source_commit"] == "b" * 40
     with pytest.raises(ValueError):
         report_campaign(str(tmp_path), recommendation="diagnostic", baseline="baseline")
+
+
+def test_failed_check_measurement_preserves_native_protocol_and_blocks_recommendation(tmp_path):
+    profile = load_profile(Path("snowball-h100"), [])
+    normal = resolved_series(profile)
+    measured = resolved_series(profile, measure_failed_checks=True)
+    assert measured["duration"] == 3600
+    assert not measured.get("diagnostic")
+    args = (64, "http://localhost:8000", tmp_path / "exports")
+    assert benchmark_command(measured, *args) == benchmark_command(normal, *args)
+    assert "--unsafe-override" not in benchmark_command(measured, *args)
+
+    result = trial(tmp_path, "failed-numerics", 120)
+    result["manifest"]["series"]["measure_failed_checks"] = True
+    result["measurement"]["checks"][0]["status"] = "failed"
+    write_record(f"{result['trial_uri']}/result.json", result)
+    report = report_campaign(str(tmp_path))
+    assert "valid; diagnostic performance (failed checks)" in report
+    with pytest.raises(ValueError, match="passed required checks"):
+        report_campaign(str(tmp_path), recommendation="failed-numerics")
+    assert not (tmp_path / "recommended.yaml").exists()
 
 
 @pytest.mark.parametrize("criteria", ["matching", "different", "unrecorded"])

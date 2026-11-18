@@ -49,11 +49,19 @@ URLs must remain available for recovery. Optional `vllm.repo` and
 `vllm.revision` record the source override; the revision must match the manifest.
 The `vllm_release` object in `plan --output /tmp/plan.json` is a complete example.
 This command does not refresh a fork, publish a release or introduce a build system.
+Private `s3://` and `gs://` wheel URLs are copied to task-local storage and
+verified against the manifest before installation. The native artifact retains
+a receipt with the durable URI and hash; large wheel bytes stay outside the
+trial archive.
 
 [recipe.yaml](recipe.yaml) supplies the shared harness, corpus and processor
 pins. Normal runs retain upstream warmup, replay and validity. Data preparation
 runs on CPU before GPU submission. `--diagnostic-seconds N` explicitly requests
 a short unsafe upstream replay; it cannot produce an accepted recommendation.
+`--measure-failed-checks` instead retains failed checks and continues with the
+normal one-hour protocol. It preserves native warmup, cache reset and validity.
+Reports label performance with failed checks as diagnostic; those failures still
+block recommendations.
 
 Both presets use the [shared correctness suite](../inference_correctness/README.md).
 It compares saved Levanter scores, engine batches, cache states and decode versus

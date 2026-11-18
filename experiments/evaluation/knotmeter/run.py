@@ -48,7 +48,7 @@ from experiments.evaluation.knotmeter.recipe import (
     benchmark_command,
     workload_environment,
 )
-from experiments.evaluation.knotmeter.runtime import gpu_release
+from experiments.evaluation.knotmeter.runtime import materialize_release
 from experiments.evaluation.knotmeter.workload import check_native_cache, restore_workload
 
 
@@ -123,7 +123,7 @@ def create_server(manifest: PointManifest, output: Path, launch: IrisVllmLaunch 
     else:
         args += launch.extra_cli_args
     launcher = VllmLauncherWithEnvironment(
-        IsolatedCudaVllm(source=VllmType.MARIN_FORK, release=gpu_release(manifest["vllm_release"])),
+        IsolatedCudaVllm(source=VllmType.MARIN_FORK, release=materialize_release(manifest["vllm_release"], output)),
         {
             "TOKENIZERS_PARALLELISM": "false",
             "UV_NO_CONFIG": "1",
@@ -314,7 +314,9 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
                     profile, server.worker_server_url, output, manifest["vllm_release"]["source_commit"]
                 )
                 write_record(str(output / "attempt.json"), record)
-                if any(check["status"] != "passed" for check in record["checks"]) and not manifest["diagnostic"]:
+                if any(check["status"] != "passed" for check in record["checks"]) and not (
+                    manifest["diagnostic"] or series.get("measure_failed_checks")
+                ):
                     raise RuntimeError("Required correctness evidence did not pass; AgentX measurement was not started")
                 # The checks exercise prefix reuse. Clear those entries before native AgentX
                 # warmup; the upstream replay and cache-busting controls remain unchanged.
