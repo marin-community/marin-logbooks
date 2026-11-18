@@ -17,7 +17,7 @@ screens. The first tests used four GPUs. The all-Marlin numerical screen reused
 the correctness launcher and avoided another AgentX warmup.
 
 Local corpus preparation was a poor placement choice. The processor reached
-about 6.3 GB RSS while devbox had about 4.3 GiB available and full swap. The owned
+about 6 GiB RSS while devbox had about 4.3 GiB available and full swap. The owned
 process was stopped, with exit 143 and no GPU allocation. This does not establish
 an OOM kill. The guide now directs uncached preparation through the existing
 32-GB CPU coordinator before GPU allocation.
@@ -41,7 +41,9 @@ The corresponding HTTP/report tests and 28 latest runner cases pass.
 
 The completed BF16 C64 result has valid native measurement controls, zero
 profiling errors and one retained warmup error. Its numerical report uses cache
-probe v1; stronger positive-retention fork evidence is still pending.
+probe v1. The BF16 C32 trial now supplies passing v2 coverage on the same model,
+runtime and serving settings, including all 19 exact controls. Its lower RAM
+limit and benchmark load remain explicit when reusing that evidence.
 Its rate is 18.94936 output
 tokens/s/GPU, with p90 TTFT 312.16459 seconds and completion 324.18918 seconds.
 Complete allocation cost is 28.847778 GB200-hours. The parent read the durable
@@ -59,6 +61,12 @@ native PodDeleted failure after allocation; that attempt must also be charged.
 
 Parent inspection found that the existing full-model weight check reports method
 names without tensor dtypes. Earlier reports therefore establish method selection.
-The child is adding a native worker-extension query for actual loaded weight
-storage, projection/router dtypes and separate KV/state-cache precision before
-the main FP8 window. Component tests and method names cannot replace that evidence.
+The [native worker-extension query](analysis/hero-fp8-01a1ec55/hero_weight_metadata.py)
+now verifies actual storage on all 16 DP ranks before the main FP8 window.
+Each rank reports 48 FP8 expert layers with one byte per logical weight packed
+into INT32 words, an E4M3FN consumer, 820 BF16 projections and 48 FP32 routers.
+Attention and short-conv cache views are BF16. The
+[all-rank summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-weight-storage-summary.json)
+retains the extension hash and rank coverage. A real-storage test rejects a BF16
+tensor reinterpreted as INT32. The short skill now explicitly requires loaded
+storage evidence and separate KV precision; it remains 85 lines.
