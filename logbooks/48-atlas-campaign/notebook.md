@@ -1552,3 +1552,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; rev-30 hosted verification remains preview-lane evidence [M].
 - Decision and next action: next hourly check watches for rev-30 hosted verification and the difficulty self-serve report's first outputs.
+
+### 2026-11-18 17:40 UTC - Hourly catch-up (16:55–17:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `de499faa8e…` (16:48:09 UTC) to head `b21c95aa3dbb4213e05c41d3ca2c6303c40500df`, landed 17:30:01 UTC (~4 landings 17:23–17:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log de499faa..b21c95aa` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: the repair cohort's prepared actor image bound at conversion (`b21c95aa3d…`, head — completing the winner-cohort lane's image chain); marina preview Postgres reclaimed after child failures (`de43ac2f24…`) with signal cleanup clarified for main-thread owners (`a2fb435524…`); apt state trees made writable for capability-less local machines (`48930bed22…`, extending the 16:55-window LOCAL hardening).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the repair-cohort image chain's outcomes.
