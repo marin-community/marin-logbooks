@@ -14,6 +14,7 @@ uv run python -m marin.testing.inference.check_endpoint \
 For Hero/Mochi, replace the filename with `hero-sft-step400407.json`. The
 [Git fixtures](fixtures/)
 pin checkpoint, tokenizer, manifest hash and a separate acceptance policy.
+When adapting older profiles, replace fixture aliases with these JSON paths.
 Lookup distinguishes `found`, `missing` and `mismatched`. Routine checks read
 saved scores. They do not generate new goldens for a candidate runtime.
 

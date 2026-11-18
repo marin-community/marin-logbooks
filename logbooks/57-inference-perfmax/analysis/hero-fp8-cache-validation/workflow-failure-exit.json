@@ -1,0 +1,17 @@
+{
+  "source": "3a1a01b2ea464a3d9416cba3a338fcf9d0afa0c5",
+  "trigger": "Two real preparation-failed runs retained correct failed result states but the synchronous run CLI returned zero.",
+  "changes": [
+    "Synchronous run preserves the report, then exits nonzero when its coordinator or GPU result failed.",
+    "Recovery avoids allocation capture for an absent GPU job, reuses the saved failure and returns nonzero.",
+    "Successful opt-in diagnostics may still exit zero with failed numerical checks; qualification is separate."
+  ],
+  "validation": {
+    "runner_cases": 34,
+    "seconds": 4.32,
+    "lint_and_types": "passed",
+    "public_cli_regression": "The real recover CLI is exercised with failed coordinator and absent GPU job, including initially unknown submission status. External Iris/corpus I/O uses fakes.",
+    "new_gpu_allocations": 0
+  },
+  "scope_correction": "The earlier collector-only regression did not cover allocation capture in the outer recovery CLI. This follow-up tests that boundary directly."
+}

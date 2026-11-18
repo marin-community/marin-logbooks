@@ -876,3 +876,53 @@ qualified current-checkpoint point measured so far; C32 is its latency neighbor.
 Supported NUMA, retention, compiler and load choices now guide the BF16 search.
 The existing child separately prepares a cheap EP workspace/history control for
 the FP8 failure. No current run or historical source was changed.
+
+## 2026-11-18 — Initial FP8 comparison and workflow checks
+
+The [initial comparison](analysis/hero-fp8-01a1ec55/comparison-initial.md) now has
+three valid native hours on sixteen GB200s:
+
+| Point | Output tokens/s/GPU | p90 TTFT | p90 completion | Serving checks |
+| --- | ---: | ---: | ---: | --- |
+| BF16 C64, retention 128 | 18.94936 | 312.16459 s | 324.18918 s | Passed provisionally |
+| BF16 C32, retention 128 | 17.93673 | 166.45803 s | 171.59327 s | Passed provisionally |
+| Selective FP8 C64, retention 128 | 22.62167 | 263.60362 s | 278.60459 s | Reference/cache failed |
+
+The [parent inspection](analysis/hero-fp8-cache-validation/hero-fp8-c64-parent-inspection.json)
+reads the final client export, JSONL and numerical report. FP8 has 2,079 profiling
+successes, zero profiling errors and one retained warmup empty-content error.
+All task-memory observations stay below 256 GiB. Its complete allocation cost
+is 29.472222 GB200-hours. The newer S3 result readback differs from the child's
+earlier retained snapshot only in three allocation-observation timestamps.
+Metrics, costs, check outcomes and identities match.
+
+The [real-result rejection check](analysis/hero-fp8-cache-validation/real-fp8-rejection.json)
+uses an unchanged native result snapshot with complete valid measurement and
+failed numerical checks. The current contribution report renders it as diagnostic
+and rejects explicit recommendation, writing no accepted profile or decision.
+Its module path and source-byte hash are retained. No check status was edited
+to create a counterfactual pass.
+
+The fresh BF16 child `01a1ed83-c2a5-74b1-b98d-b48055085778` copied a historical
+fixture alias into its first two profiles. CPU preparation rejected both before
+GPU submission. Contribution `fe89246124` now checks local fixture paths during
+planning, and the shared README explains migration. The current preset passes
+that preflight and omits the inactive compact-KV flag. Both corrected retention-zero
+deployments pass the full v2 suite with 19 exact comparisons at zero; native
+warmup is underway. A zero-GPU NUMA dependency probe passes.
+
+Those failed runs also exposed exit-zero reporting. Contribution `3a1a01b2ea`
+now returns failure after retaining reports for failed native jobs. The earlier
+collector-only regression missed allocation capture in the outer recovery CLI;
+the [follow-up](analysis/hero-fp8-cache-validation/workflow-failure-exit.json)
+exercises the actual recover command with an absent GPU job. All 34 affected
+runner cases and required lint/types pass. Successful diagnostics and numerical
+acceptance remain separate.
+
+Targeted upstream research found [issue #52525](https://github.com/vllm-project/vllm/issues/52525)
+and [PR #52532](https://github.com/vllm-project/vllm/pull/52532), where legal
+within-expert layout changes alter Marlin reduction results. The pinned source
+passes alignment output directly onward. Applicability to Hero's FP8/EP path
+is unproven. The child is testing mapping/history and order sensitivity before
+another full-model allocation. The first two probe attempts retain import and
+result-writer failures; no order-sensitivity result is claimed from them.
