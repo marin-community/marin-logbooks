@@ -1,0 +1,50 @@
+{
+  "request_record": {
+    "line": 1872,
+    "original_line_sha256": "42c46fe4da035937f468e2385768fe831082f8592e780a7f339b9b5e29a9e2be",
+    "metadata": {
+      "session_num": 1252,
+      "x_request_id": "7e1937cf-dcd5-4bfc-bf47-e5736a7bbfde",
+      "x_correlation_id": "80c1271a-44e2-4df3-900b-bb6453f671b6",
+      "conversation_id": "2af7f718cc9974b522a7e4864aac085e5288",
+      "turn_index": 10,
+      "source_trace_id": "2af7f718cc9974b522a7e4864aac085e5288",
+      "source_outer_idx": 10,
+      "source_kind": "weka_main",
+      "credit_issued_ns": 1794990243596613356,
+      "request_start_ns": 1794990243597635948,
+      "request_end_ns": 1794990243597635948,
+      "worker_id": "worker_33ffe7c8",
+      "record_processor_id": "record_processor_4d9334bc",
+      "benchmark_phase": "profiling",
+      "phase_index": 0,
+      "profiling_index": 0,
+      "phase_name": "profiling",
+      "phase_kind": "profiling",
+      "was_cancelled": false,
+      "context_overflow_skip": false,
+      "agent_depth": 0,
+      "root_correlation_id": "80c1271a-44e2-4df3-900b-bb6453f671b6"
+    },
+    "error": {
+      "code": 500,
+      "type": "Internal Server Error",
+      "message": "Request failed: error sending request for url (http://127.0.0.1:38197/v1/chat/completions)"
+    },
+    "metrics": {}
+  },
+  "native_router_excerpt": "retention0-c64-a2-http500-router.txt",
+  "router_error_line": {
+    "line": 21979,
+    "text": "2026-11-18 08:24:03 ERROR vllm_router_rs::routers::http::router: src/routers/http/router.rs:1471: Failed to send typed request worker_url=http://127.0.0.1:38197@7 route=/v1/chat/completions error=error sending request for url (http://127.0.0.1:38197/v1/chat/completions)"
+  },
+  "nearby_server_messages": [
+    {
+      "line": 15415,
+      "text": "WARNING 11-18 08:24:07 [coordinator.py:406] Received stats for out-of-order step (30, 11690) from engine 8 (expected > (30, 11691))"
+    }
+  ],
+  "finding": "Router reports a failed send to the local vLLM HTTP endpoint. Nearby retained leader logs show an out-of-order stats warning for engine 8 but no explicit crash/restart cause. The error request has no timing or token metrics. Cause remains unresolved; no restart is inferred from counters.",
+  "scope": "Matching request plus leader router/server logs near 08:24 UTC. All original logs and request records remain in the checksum-verified native archive; no new GPU diagnostic was used.",
+  "validity": "One of 2109 profiling requests fails; native ratio 0.0004741584 remains valid under its unchanged rule."
+}
