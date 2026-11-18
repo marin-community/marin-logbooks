@@ -166,10 +166,28 @@ passes ten native FP8 cases, two CUDA-graph cases and the inactive-tail regressi
 The parent inspected these records and the full-model test node. It first checks
 loaded storage and cache replay, then runs the unchanged shared suite only after
 those pass. This avoids another setup if the cache result is promising. The
-four-GB200 screen is queued; component success does not qualify its model.
+four-GB200 screen used this sequence; component success does not qualify its model.
+
+That [screen](analysis/hero-fp8-cache-validation/hero-fp8-canonical-parent-inspection.json)
+fails five of 19 strict comparisons, with maximum probability
+error 0.0184222980. Storage, deployment and all reuse/branch coverage pass.
+Matched repetition is exact; changed-split checks pass. The test correctly stops
+before reference, batch and decode after this rejection. Its complete cost is
+0.723333 GB200-hours. Canonicalization therefore has component evidence but does
+not resolve Hero's full-model failure. A one-GPU padded-route control is next.
 
 The second child also exposed a misleading successful CLI exit after failed CPU
 preparation. Contribution `3a1a01b2ea` makes synchronous run and recovery preserve
 the failed report and return failure. Its regression exercises the actual recovery
 command after rejected submission; the 34 affected runner cases pass. Native
 measurement validity, numerical status and accepted selection remain separate.
+
+Both [retention-zero BF16 hours](analysis/hero-fp8-cache-validation/hero-bf16-retention0-parent-inspection.json)
+pass the full suite and all 19 exact cache controls. The parent streamed both
+original client JSONLs, checked report hashes and matched the exported latencies.
+C32 reaches 19.29162 output tokens/s/GPU at p90 TTFT 145.36914 seconds; C64 reaches
+23.60952 at 276.38157 seconds. Client reuse is 94.1941% and 81.6861%, respectively.
+C64 also reaches 99.904% reported peak KV use. These observations support a
+larger-capacity allocation test without proving cache capacity is the sole cause.
+The child chose DP/EP32 at C128, preserving offered sessions per GPU. NUMA remains
+prepared. It avoided spending an hour on both choices before seeing these data.
