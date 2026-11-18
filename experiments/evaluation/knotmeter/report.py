@@ -68,7 +68,12 @@ def comparison_controls(result: dict) -> dict:
         "preparation_recipe": manifest["workload"]["recipe"],
         "gpu_type": series["profile"]["gpus"]["type"],
         "numerical_policies": [
-            {key: check.get(key) for key in ("name", "policy", "policy_sha256", "reference")}
+            {"name": check["name"], "reference": check.get("reference")}
+            | (
+                {"criteria_sha256": check["criteria_sha256"]}
+                if check.get("criteria_sha256")
+                else {key: check.get(key) for key in ("policy", "policy_sha256")}
+            )
             for check in recorded_checks(result)
             if check.get("kind") == "numerical"
         ],
@@ -118,9 +123,9 @@ def render_report(
         "",
         "Throughput counts completed output tokens. Latencies are seconds. Each row is a separate trial.",
         "",
-        "| Trial | Runtime | GPU job | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
+        "| Trial | Runtime | Weights | GPU job | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
         "p90 completion | AgentX | Checks | GPU-hours |",
-        "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: |",
+        "| --- | --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: |",
     ]
     for result in results:
         profile = result["manifest"]["series"]["profile"]
@@ -157,8 +162,10 @@ def render_report(
         if not result["cost_complete"] and not result["gpu_seconds"]:
             cost = "unknown"
         record_file = "plan.json" if result["job_state"] == "unrecorded" else "result.json"
+        weights = profile.get("quantization") or profile["serving"]["dtype"]
         lines.append(
-            f"| [{result['trial_id']}]({result['trial_uri']}/{record_file}) | {runtime} | {result['job_state']} | "
+            f"| [{result['trial_id']}]({result['trial_uri']}/{record_file}) | {runtime} | {weights} | "
+            f"{result['job_state']} | "
             f"{profile['session_concurrency']} | {profile['gpus']['count']} {profile['gpus']['type']} | "
             f"{format_value(rate)} | {change_text} | "
             f"{format_value(latency.get('ttft', {}).get('p90'))} | "

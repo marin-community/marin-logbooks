@@ -30,6 +30,7 @@ from marin.inference.iris_vllm import (
     wait_for_iris_vllm_shutdown,
 )
 from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmLauncherWithEnvironment, VllmType
+from marin.testing.inference.goldens import canonical_bytes
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.artifacts import (
@@ -193,12 +194,19 @@ def run_checks(profile: Profile, server_url: str, output: Path, runtime_source: 
                 if report_path.is_file():
                     report_bytes = report_path.read_bytes()
                     report = json.loads(report_bytes)
+                    criteria = {
+                        key: value
+                        for key, value in report["policy"].items()
+                        if key
+                        not in {"id", "rationale", "evidence", "hardware", "dtype", "quantization", "kv_cache_dtypes"}
+                    }
                     record |= {
                         "report": report_path.name,
                         "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
                         "reference": report["manifest"],
                         "policy": report["policy"]["id"],
                         "policy_sha256": report["policy_sha256"],
+                        "criteria_sha256": hashlib.sha256(canonical_bytes(criteria)).hexdigest(),
                         "provisional": report["policy"]["provisional"],
                     }
                     if report["status"] != "passed":
