@@ -1564,3 +1564,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the repair-cohort image chain's outcomes.
+
+### 2026-11-18 18:40 UTC - Hourly catch-up (17:40–18:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `b21c95aa3d…` (17:30:01 UTC) to head `781e5ffb8339c60e1b9693b4c00e4967d4f3fc8f`, landed 18:19:28 UTC (~10 landings 18:00–18:19 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log b21c95aa..781e5ffb` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **HARDMath rhs variant fully registered**: the variant registered on its retained release (`f0fbb6ef9d…`) with its registry receipts pinned (`9e837e3ede…`) — completing the chain from the 12:40 window.
+  - **Hosted relay/solver lane**: the hosted relay probed before hosted campaign submissions (`6b834a3ee7…`); the hosted solver and shared judge route served from Together (`33f0edefe9…`); the hosted endpoint probed with its served model name (`26fdac0ea3…`); the Together switch imports organized with the unused relay resolution dropped (`aa0933062d…`).
+  - **Docs/repair**: the nl2bash prepared actor image recipe recorded (`781e5ffb83…`); Atlas Quality levels explained using recorded FULL review inputs (`d48e270044…`).
+  - **Task-image machinery**: the pinned kaniko executor extracted when the task image lacks one (`76f2f2ff87…`); failing Atlas audit requests reported with HTTP and body context (`43c1c2cdff…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the hosted-relay qualification outcomes and HARDMath variant results.
