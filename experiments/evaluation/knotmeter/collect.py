@@ -12,10 +12,12 @@ from iris.client.client import IrisClient
 from iris.client.workload import TaskOutputArchiveState
 from iris.cluster.types import JobName
 from iris.resources.state import JobState, is_job_finished
+from marin.inference.config import VLLM_METRIC_PREFIX
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.allocation import allocation_cost
 from experiments.evaluation.knotmeter.artifacts import (
+    PROFILE_EXPORT_RELATIVE_PATH,
     SERVER_METRICS_RELATIVE_PATH,
     copy_file,
     file_digest,
@@ -85,11 +87,11 @@ def process_point(point: Path, manifest: PointManifest, artifacts: Path) -> dict
 
 def validate_window(point: Path, manifest: PointManifest, record: dict) -> dict:
     """Preserve native validity and independently check retained window admission."""
-    export = json.loads((point / "aiperf_artifacts/profile_export_aiperf.json").read_text())
+    export = json.loads((point / PROFILE_EXPORT_RELATIVE_PATH).read_text())
     restore_server_metrics(point)
-    metrics = json.loads((point / "aiperf_artifacts/server_metrics_export.json").read_text())
+    metrics = json.loads((point / SERVER_METRICS_RELATIVE_PATH).read_text())
     successful_metrics = record["worker_metrics_url"] in metrics["summary"]["endpoints_successful"] and any(
-        name.startswith("vllm:") for name in metrics["metrics"]
+        name.startswith(VLLM_METRIC_PREFIX) for name in metrics["metrics"]
     )
     coverage = [
         row for row in export["metadata"].get("metric_duration_coverage", []) if row["phase_name"] == "profiling"
@@ -206,7 +208,7 @@ def collect_trial(client: IrisClient, plan: TrialPlan, work: Path) -> dict:
             native["worker"] = record
             attempts.append(native)
             if index == 0 and (point / "aiperf_artifacts/profile_export.jsonl").is_file():
-                final_export = point / "aiperf_artifacts/profile_export_aiperf.json"
+                final_export = point / PROFILE_EXPORT_RELATIVE_PATH
                 metrics = point / SERVER_METRICS_RELATIVE_PATH
                 if not final_export.is_file() or not (metrics.is_file() or metrics.with_suffix(".json.zst").is_file()):
                     native["measurement_error"] = "Incomplete AgentX exports: final aggregate or server metrics missing"

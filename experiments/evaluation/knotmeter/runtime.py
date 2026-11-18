@@ -52,7 +52,7 @@ def gpu_release(metadata: dict) -> VllmGpuRelease:
 
 
 def materialize_release(metadata: dict, output: Path) -> VllmGpuRelease:
-    """Install a private experimental wheel from its durable cloud URI."""
+    """Return a release whose private wheel has a verified local URI."""
     release = gpu_release(metadata)
     wheels = []
     for wheel in release.wheels:
