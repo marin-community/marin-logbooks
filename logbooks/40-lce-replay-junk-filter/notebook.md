@@ -380,10 +380,45 @@ status: active
   - Entries and summaries that call this "MRCR" or "long-context retrieval" overstate it. The explanation of why teacher forcing hides the copy-choice failure follows from the two evaluators' designs; no experiment has tested it.
 - Decision and next action: record the generative scores when the three runs finish, and compare them paired by item.
 
+### 2026-11-18 01:30 UTC - Generative MRCR-65k on the step-238 checkpoints
+
+- Hypothesis or decision under test: the filtered arm's lead in teacher-forced needle recovery carries over to the generative MRCR benchmark.
+- Published source revision: research branch, `scripts/paired_mrcr_generative.py` (this commit); model configs `8294ee13d4`; evaluations launched from Marin `acb52889bb`.
+- Run identities: the three groups listed in the previous entry. Results under `s3://marin-us-east-02a/marin/evals/<group>-mrcr-65k-<hash>/results`; the script names each path.
+- Environment and hardware: one 8xH100 node per checkpoint on `cw-us-east-02a`, interactive priority. Protocol `mrcr-65k` (items up to 65,472 prompt tokens, one sample per item, thinking off, 4,096 output tokens). Each checkpoint used the reproduction tokenizer's own chat template.
+- Result, including failure or restart:
+  - Each run graded 901 items, the same population as the Mochi run. 14 items per run returned empty output and have no grade; they are dropped.
+
+    | | Control seed 0 | Control seed 1 | Filtered |
+    | --- | ---: | ---: | ---: |
+    | Mean accuracy | 0.219 | 0.195 | 0.203 |
+    | Prefix hit rate | 0.948 | 0.933 | 0.940 |
+    | Near-exact items (accuracy at least 0.9) | 138 | 114 | 118 |
+    | 2 needles | 0.391 | 0.325 | 0.326 |
+    | 4 needles | 0.162 | 0.150 | 0.164 |
+    | 8 needles | 0.104 | 0.113 | 0.119 |
+
+  - Paired over items, 95% bootstrap intervals:
+
+    | Comparison | Difference |
+    | --- | --- |
+    | Filtered minus seed 0 | −0.016 (−0.035 to +0.003) |
+    | Filtered minus seed 1 | +0.007 (−0.011 to +0.026) |
+    | Filtered minus the control mean | −0.005 (−0.021 to +0.012) |
+    | Seed 1 minus seed 0 | −0.023 (−0.042 to −0.005) |
+
+  - Failure modes are the same in all three. Below 0.3 accuracy, most outputs either write new text or copy another answer to the same request; the copies are mostly the most recent occurrence (242, 222 and 228 items).
+- Interpretation and limitations:
+  - Filtering does not change generative MRCR at step 238. The filtered arm sits between the two control seeds, and the two seeds differ more (0.023) than filtered differs from their mean (0.005).
+  - The needle-recovery lead does not carry over to generated answers. On recovery the filtered arm ranks first; on generative MRCR it ranks second, behind control seed 0.
+  - All three are in the range of the reproduction's checkpoints (0.16 to 0.18) and below Mochi SFT (0.265) on the same items.
+  - One sample per item at default sampling.
+- Decision and next action: the adoption stands on the absence of harm. It does not claim a retrieval benefit.
+
 ## Final decision
 
-- Selected approach and evidence: adopt the filtered long replay. Teacher-forced needle recovery, a likelihood diagnostic distinct from the generative MRCR benchmark score, favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). The adoption rests on the absence of harm; whether filtering changes the generative MRCR score is being measured. Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents filtering costs nothing on either verdict: with the 23 encoded-blob documents and four single-checkpoint breakdowns set aside, the three step-238 checkpoints are within 0.006 nats per token on flagged documents and 0.002 on kept ones.
+- Selected approach and evidence: adopt the filtered long replay. Teacher-forced needle recovery, a likelihood diagnostic distinct from the generative MRCR benchmark score, favours filtering: the filtered arm beats both control seeds at both checkpoints (about +0.03 at step 119 and +0.02 at step 238 against the control mean; the seed-to-seed spread is 0.002 and 0.016). The adoption rests on the absence of harm. On the generative MRCR benchmark (`mrcr-65k`) filtering has no effect: 0.203 against 0.219 and 0.195 for the two control seeds, filtered minus the control mean −0.005 (−0.021 to +0.012), so the needle-recovery lead does not carry over to generated answers. Held-out SFT and replay loss are unchanged. The guard drop that held the decision back does not survive the seed replicate: BFCL-Parity differs by 0.11 between the two control seeds, and seed 1 (0.664) scores below the filtered arm (0.691), which meets the criterion recorded before the replicate. DS-1000 with five attempts per task is 0.230 and 0.226 for the two control seeds and 0.244 filtered (+0.016 over the control mean, -0.007 to +0.038), so the single-attempt deficit was sampling noise. On held-out long documents filtering costs nothing on either verdict: with the 23 encoded-blob documents and four single-checkpoint breakdowns set aside, the three step-238 checkpoints are within 0.006 nats per token on flagged documents and 0.002 on kept ones.
 - Rejected alternatives and why: scoring on the TPU probe (cannot load these checkpoints); backporting the probe into the archived tree (unnecessary, the parameter layout is unchanged); porting the cold-start trainer to main first (deferred, larger than the experiment).
 - Marin contribution PRs: none yet. Candidates: the filter (`dml/lce-junk-filter`), the Snowball probe launcher and importer, and the filtered replay builder.
 - Reproduction instructions: the entries above give the published revisions, commands and inputs for the importer, the probe, the filtered cache build, the arm configs and the comparison scripts.
-- Remaining uncertainty: the effect on the generative MRCR benchmark, on which this model family scores about 0.17 (runs in progress); training noise beyond one extra control seed and no extra filtered seed; whether either difference persists past step 238; whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently; why one trained checkpoint breaks down on a few damaged or rare-script documents; and two junk kinds the filter misses (spliced SEO spam and broken-font PDF extractions), on which the filtered arm is slightly worse.
+- Remaining uncertainty: why this model family scores about 0.2 on generative MRCR, mostly by reproducing the wrong occurrence or writing new text, which filtering does not change; training noise beyond one extra control seed and no extra filtered seed; whether either difference persists past step 238; whether a recipe that does lose recovery under SFT, as in marin#9519, would respond differently; why one trained checkpoint breaks down on a few damaged or rare-script documents; and two junk kinds the filter misses (spliced SEO spam and broken-font PDF extractions), on which the filtered arm is slightly worse.
