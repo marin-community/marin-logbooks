@@ -9,6 +9,7 @@ import hashlib
 import json
 import shutil
 import sys
+from contextlib import nullcontext
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -279,6 +280,7 @@ def test_rejected_gpu_submission_remains_reportable_and_recoverable(tmp_path, mo
         "campaign_uri": str(tmp_path),
         "job_id": "/fixture/trial",
         "gpu_job_id": "/fixture/trial/serve",
+        "controller": "fixture-cluster",
         "marin_prefix": str(tmp_path),
         "series": result["manifest"]["series"],
         "vllm_release": result["manifest"]["vllm_release"],
@@ -291,6 +293,8 @@ def test_rejected_gpu_submission_remains_reportable_and_recoverable(tmp_path, mo
             raise ConnectError(Code.INVALID_ARGUMENT, "Synthetic GPU submission rejection")
 
         def job_status(self, _job):
+            if str(_job) == plan["job_id"]:
+                return SimpleNamespace(state=JobState.FAILED)
             raise ConnectError(self.status_code, "Synthetic controller status")
 
     client = Client()
@@ -312,6 +316,18 @@ def test_rejected_gpu_submission_remains_reportable_and_recoverable(tmp_path, mo
     assert refresh_costs(plan) == saved
     client.status_code = Code.NOT_FOUND
     assert collect_trial(client, plan, tmp_path / "recovery") == saved
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.cli.connect_controller",
+        lambda **kwargs: nullcontext(SimpleNamespace(url="http://fixture", credentials=None)),
+    )
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.cli.IrisClient.remote", lambda *args, **kwargs: nullcontext(client)
+    )
+    monkeypatch.setattr(sys, "argv", ["knotmeter", "recover", "--trial-uri", plan["trial_uri"]])
+    with pytest.raises(SystemExit) as recovered:
+        run_cli()
+    assert recovered.value.code == 1
+    assert read_record(f"{plan['trial_uri']}/result.json") == saved
     report_campaign(str(tmp_path))
     with pytest.raises(ValueError, match="passed required checks"):
         report_campaign(str(tmp_path), recommendation=plan["trial_id"])
