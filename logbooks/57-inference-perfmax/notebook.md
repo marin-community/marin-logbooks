@@ -758,3 +758,25 @@ archive's incomplete local environment and 15 older raw receipts without trailin
 newlines. Their bytes were preserved. All nine changed notes and evidence files
 pass the required entry point with explicit file arguments. Contribution lint,
 types and final CI pass; the archive-wide attempt is not a contribution failure.
+
+## Hero FP8 campaign and retention-aware coverage — 2026-11-18 UTC
+
+The new goal pursues a real Hero BF16/online-FP8 comparison and useful targeted
+fixes. Model, tokenizer, goldens and initial runtime stay pinned. Romain removed
+the ownership prerequisite: LA1 is idle and its extraction is planned. DA5 owns
+the correction and will leave a precise source/handoff without contacting LA1.
+
+The [cache handoff](cache-retention-handoff.md) records source `4f38ff6b3d` and
+the pinned runtime contract. Zero can qualify through supported prompt replay
+and branches. Positive/dense probes target a reachable periodic endpoint.
+Exact controls now require a sibling hit and also cover replayed generated
+history. No goldens or numerical limits changed. All 56 combined focused
+CPU/HTTP/report cases pass.
+
+The [fresh-context Hero campaign](hero-fp8-01a1ec55.md) has a share of at most
+32 GB200 GPUs. DA5 retains at most 16 GB200 and eight H100 for affected checks.
+The child stopped its local preparation after memory pressure and moved that
+step to the existing CPU coordinator before allocating GPUs. Its small report
+fix compares equal numerical criteria across weight precision while preserving
+full policy identity, applicability and provisional status. No new grading
+framework or duplicate experiment was introduced.
