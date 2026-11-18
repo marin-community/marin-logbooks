@@ -76,3 +76,26 @@ adding final newlines. Those exact EOF-only edits were verified and reverted.
 Subsequent lint calls name only this campaign's files. Pyrefly's initial host
 result reports 32 missing optional imports in unrelated Marina apps; retain
 that limitation without changing the runtime lock or those files.
+
+## 2026-11-18 02:15 UTC — Compare equal criteria across weight precisions
+
+The BF16 and FP8 fixtures use equal numerical limits and probes, but their full
+policy hashes differ because applicability records the weight quantization.
+The report treated them as separate comparison groups. The runner now retains
+a second hash for numerical criteria while keeping each complete policy identity
+and hash. The report compares this criteria hash for new results; older records
+still require their full policy identity. Changing a threshold or probe still
+blocks a baseline recommendation. The table now shows weight precision.
+
+Twenty-three focused report, scope and recovery cases pass, including equal
+criteria across BF16/FP8, changed criteria, and older records without the new
+hash. The [test output](analysis/hero-fp8-01a1ec55/report-criteria-tests.txt)
+is retained. This fixes reporting from actual campaign use. It changes no
+numerical limit, serving setting, golden or checking function.
+
+The first diagnostic coordinator is
+`/romain/knotmeter-20261118t021016z-f29854d8472b`, from source
+`334cbc9147b8914b5292137cef70660c11d258b5`. Its trial is
+`s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T021016Z-f29854d8472b`.
+Board row 2220 records its four-GPU share. The CPU coordinator was admitted and
+running before any GPU child was submitted.

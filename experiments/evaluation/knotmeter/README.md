@@ -110,7 +110,10 @@ attempt ID throughout profiling. The command writes `recommended.yaml` with a
 frozen runtime. Add `--baseline TRIAL_ID` to show changes within a comparison
 group; diagnostics with different controls remain separate rows.
 A comparison fixes checkpoint, tokenizer, workload, AgentX protocol, GPU type,
-prepared data and numerical policy. Concurrency, GPU count, runtime and serving
+prepared data and numerical criteria. Each full policy identity and applicability
+remains in the check artifacts. Separate BF16 and FP8 policies can compare when
+their thresholds and probes match. Older records without a criteria hash still
+require the same full policy identity. Concurrency, GPU count, runtime and serving
 settings may vary; throughput is reported per GPU.
 Keep experimental code and discarded approaches in the
 [research archive](../../../docs/dev-guide/research-engineering.md).

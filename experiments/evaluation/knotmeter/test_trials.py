@@ -134,6 +134,34 @@ def test_report_keeps_diagnostics_separate_and_pins_selected_runtime(tmp_path, m
         report_campaign(str(tmp_path), recommendation="diagnostic", baseline="baseline")
 
 
+@pytest.mark.parametrize("criteria", ["matching", "different", "unrecorded"])
+def test_report_compares_precision_specific_policies_only_with_matching_criteria(tmp_path, criteria):
+    baseline = trial(tmp_path, "baseline", 100)
+    candidate = trial(tmp_path, "fp8", 120)
+    candidate["manifest"]["series"]["profile"]["quantization"] = "fp8"
+    for result in (baseline, candidate):
+        check = result["measurement"]["checks"][0]
+        check |= {
+            "policy": result["trial_id"],
+            "policy_sha256": hashlib.sha256(result["trial_id"].encode()).hexdigest(),
+        }
+        if criteria != "unrecorded":
+            check["criteria_sha256"] = "a" * 64
+    if criteria == "different":
+        candidate["measurement"]["checks"][0]["criteria_sha256"] = "b" * 64
+    for result in (baseline, candidate):
+        write_record(f"{result['trial_uri']}/result.json", result)
+    if criteria == "matching":
+        report_campaign(str(tmp_path), recommendation="fp8", baseline="baseline")
+        decision = read_record(str(tmp_path / "decision.json"))
+        assert decision["throughput_change"] == pytest.approx(0.2, abs=1e-12)
+        assert decision["numerical_checks"][0]["policy"] == "fp8"
+        assert load_profile(tmp_path / "recommended.yaml", []).quantization == "fp8"
+    else:
+        with pytest.raises(ValueError, match="matched model and workload controls"):
+            report_campaign(str(tmp_path), recommendation="fp8", baseline="baseline")
+
+
 @pytest.mark.parametrize("scope", ["matching", "other-checkpoint", "other-runtime", "failed"])
 def test_existing_check_pass_transfers_only_to_its_checkpoint_and_runtime(tmp_path, scope):
     base = load_profile(Path("snowball-h100"), [])
