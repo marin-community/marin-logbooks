@@ -1362,3 +1362,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for FineEnvs conversion outcomes and repair-candidate gating effects.
+
+### 2026-11-18 04:40 UTC - Hourly catch-up (03:40–04:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d5d7b4ee28…` (03:20:28 UTC) to head `7ff75501935a4e480ade9c8a22d83c23cb6eada5`, landed 04:32:43 UTC (~8 landings 03:43–04:32 UTC incl. two coordinator-session landings).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d5d7b4ee..7ff75501` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Preview revisions 28 and 29**: Atlas docs synced to preview revision 28 (`5571716aab…`), then revision 29's admission display policy recorded (`7ff7550193…`, head) — the preview cadence accelerated to two revisions in one window.
+  - **RST trial path**: `trial_attempt_timeout_sec` consumed in the TaskSpec Daytona path (`3e2f590278…`).
+  - **Curriculum/status**: curriculum sample reads kept within the SQL gateway byte budget (`f4cd29b178…`); candidate Status responses exercised during preview preflight (`1aeb5fae81…`); absent privacy tags preserved in the lightweight Status projection (`16ae44e8c0…`).
+  - **Policy note**: limit deviations need a per-source user ruling (`69d8aad755…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; rev-28/29 hosted verification remains preview-lane evidence [M].
+- Decision and next action: next hourly check watches for rev-29 hosted verification and the admission-display policy rollout.
