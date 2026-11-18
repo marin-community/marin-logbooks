@@ -578,6 +578,58 @@ recorded here.
 - Decision and next action: implement items 1-5; redo the V1 dry-run on the
   Levanter path; then V2 Megatron.
 
+### 2026-11-18 20:55 UTC - Levanter model-side Deletion Tuning implemented and tested (item 1 of 5)
+
+- Question or hypothesis and reason for trying it: carry the masking core into
+  the Levanter Snowball model — the production SFT training path — as the
+  foundation for the V1/V3 launcher integration.
+- Published source revision: `benfeuer/snowball-deletion-tuning` @
+  `054f19bb10` (cherry-picked onto the run branch @ `e70ff1eab9`). Files:
+  `lib/levanter/src/levanter/models/snowball_deletion.py` (new),
+  `lib/levanter/src/levanter/models/snowball.py`,
+  `tests/test_snowball_deletion_masking.py` (new).
+- Command or material configuration: `pytest
+  tests/test_snowball_deletion_masking.py` (6 tests) on a tiny SnowballConfig
+  (4 experts, hidden 8, 2 layers, scatter MoE, reference attention) under
+  `compact_grug_mesh(expert_axis_size=1)`; the neighboring suites
+  (`tests/rl/test_deletion_tuning.py`, `tests/test_june_snowball_model.py`)
+  still pass (34 passed). Lint and pyrefly clean.
+- External inputs and artifact references: the verified plan (18:40 entry);
+  the validated prototype's mask math; Levanter's aux-loss hook
+  (`split_activations`) discovered during implementation.
+- Environment and hardware when relevant: single-device CPU mesh.
+- Result, including failure or restart: the model-side integration is
+  complete:
+  1. `SnowballConfig.deletion_tuning` (scope, eta, lam, alpha ramp, lr,
+     calibration sequences, seed) rides the model config, so the recipe
+     enables Deletion Tuning declaratively.
+  2. `SnowballMoEMLP` and `DenseMLP` carry optional per-weight logit fields;
+     forwards read `stop_gradient(W) * mask(G)` (soft in training, hard for
+     eval/export) with the arithmetic hard/soft mixing (a scalar `jnp.where`
+     broadcasts a replicated condition against sharded cases, which explicit
+     sharding rejects). The Deletion kwargs thread through every block path
+     (token_valid and return_routes variants — the first cut missed the
+     non-token_valid path and the tiny-MoE test caught it).
+  3. The sparse-weight regularizer rides Levanter's aux-loss hook:
+     `activations` returns `(hidden, regularizer)` during training only
+     (key-gated), so validation loss stays the pure task loss and no trainer
+     change is needed.
+  4. Shard-local Wanda capture rides a new optional channel on
+     `MoeForwardOutput`; the threshold init and trainable filter come from
+     the new `snowball_deletion` module (threshold rule matches the core's
+     positional rule up to boundary ties, asserted).
+  5. Behavior tests: soft forward ≡ baked soft mask; hard forward ≡ zeroed
+     weights; the regularizer matches hand computation and is train-only;
+     the trainable filter marks exactly the logit leaves; the threshold rule
+     matches the core module; the alpha ramp matches the core module.
+- Evidence: the test file; the commits above.
+- Interpretation and limitations: items 2-5 of the plan (the DT-aware trainer
+  main, calibration call, launcher plumbing, export, V1 entry) are not yet
+  written; the model-side is the prerequisite and the PR payload. No
+  dry-run yet.
+- Decision and next action: implement the launcher-side DT main + V1 entry,
+  then the dry-run; report the planned job shape without submitting.
+
 ### 2026-11-18 20:05 UTC - CORRECTION: base-row coverage and pooled mean
 
 - Question or hypothesis and reason for trying it: the coordinator audited the
