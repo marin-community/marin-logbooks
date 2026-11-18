@@ -73,6 +73,7 @@ def resolve_plan(
     campaign: str,
     *,
     diagnostic_seconds: int | None = None,
+    measure_failed_checks: bool = False,
     marin_prefix: str | None = None,
     placement: dict | None = None,
     controller: str | None = None,
@@ -105,7 +106,7 @@ def resolve_plan(
         "controller": controller or profile.cluster,
         "cluster": profile.cluster,
         "marin_prefix": prefix,
-        "series": resolved_series(profile, diagnostic_seconds),
+        "series": resolved_series(profile, diagnostic_seconds, measure_failed_checks=measure_failed_checks),
         "vllm_release": release,
         "placement": placement or {},
         "job_id": str(job_id),
@@ -176,6 +177,8 @@ def print_plan(plan: TrialPlan) -> None:
         )
     if plan["series"].get("diagnostic"):
         print("Diagnostic replay: this duration cannot establish an AgentX comparison.")
+    elif plan["series"].get("measure_failed_checks"):
+        print("Failed checks will be retained while measuring the native protocol; they still block recommendations.")
 
 
 def main() -> None:
@@ -202,6 +205,11 @@ def main() -> None:
         command.add_argument("--vllm-manifest")
         command.add_argument(
             "--diagnostic-seconds", type=int, help="Use a short unsafe upstream replay; always unqualified"
+        )
+        command.add_argument(
+            "--measure-failed-checks",
+            action="store_true",
+            help="Continue after retained check failures using the native protocol; failures block recommendations",
         )
         command.add_argument("--placement-uri", help="Optional verified spare-node receipt for a placement guard")
         command.add_argument("--marin-prefix", help="Explicit job MARIN_PREFIX override")
@@ -245,6 +253,7 @@ def main() -> None:
             profile,
             args.campaign,
             diagnostic_seconds=args.diagnostic_seconds,
+            measure_failed_checks=args.measure_failed_checks,
             marin_prefix=args.marin_prefix,
             placement=read_record(args.placement_uri) if args.placement_uri else None,
             controller=args.controller,
