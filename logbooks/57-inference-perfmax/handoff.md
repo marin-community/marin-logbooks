@@ -1,12 +1,17 @@
 # Inference validation and tuning
 
-The overnight Hero campaign is running. Both BF16 models pass supported zero and
-positive retention coverage; see the [cache handoff](cache-retention-handoff.md).
-The [32-GPU BF16 result](analysis/hero-fp8-cache-validation/hero-bf16-dp32-parent-inspection.json)
-now leads the tested configurations at 31.42858 output tokens/s/GPU.
-All points below use GB200s, TP1 and a normal one-hour window on fixed
-step400407. Passing numerical checks use a provisional
-serving policy; RL learning remains unqualified.
+Retain Hero BF16 at TP1/DP32/EP32, retention zero and C128, without NUMA binding.
+It is the best measured throughput point: **31.42858 output tokens/s/GPU**,
+p90 TTFT **268.89855 seconds** and p90 completion **281.34879 seconds**.
+The [actual report CLI](analysis/hero-fp8-cache-validation/bf16-selected-recommendation.json)
+accepts it under the provisional serving policy and pins the
+[profile](analysis/hero-fp8-cache-validation/bf16-selected-recommended.yaml)
+and exact runtime. Terminal output matches the saved cloud summary byte for
+byte. RL learning and trainer probability ratios remain unqualified.
+
+Both BF16 model families pass supported zero and positive retention coverage;
+see the [cache extraction handoff](cache-retention-handoff.md). All seven points
+below use GB200s, TP1 and a normal one-hour window on fixed step400407.
 
 | Hero point | GPUs | Output tokens/s/GPU | p90 TTFT | p90 request completion | Profiling errors | Numerical checks |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
@@ -16,6 +21,7 @@ serving policy; RL learning remains unqualified.
 | BF16, retention 0, C32 | 16 | 19.29162 | 145.36914 s | 156.44444 s | 0 | Pass |
 | BF16, retention 0, C64 | 16 | 23.60952 | 276.38157 s | 282.52929 s | 1 | Pass |
 | BF16, retention 0, C128 | 32 | 31.42858 | 268.89855 s | 281.34879 s | 0 | Pass |
+| BF16, retention 0, C128, NUMA | 32 | 31.11883 | 276.22557 s | 289.07288 s | 2 | Pass |
 
 BF16 uses reviewed runtime `0ac9dcb157`. The FP8 performance row uses original
 runtime `244247767c`; later fixes have endpoint evidence only.
@@ -35,15 +41,57 @@ hashes. All 5,245 profiling requests succeed. Three warmup errors remain despite
 an earlier live notice reporting zero. Client reuse rises to 87.9519% against
 94.0215% theoretical; reported peak KV use falls to 86.865%. This is consistent
 with lower cache pressure, but group size and total load also change. Complete
-cost is 50.405556 GB200-hours. NUMA and mixed-precision controls continue.
+cost is 50.405556 GB200-hours. The
+[matched NUMA hour](analysis/hero-fp8-cache-validation/hero-bf16-numa-parent-inspection.json)
+does not demonstrate an improvement. All 32 workers had the intended CPU and
+memory policy on the same eight hosts. It has four warmup empty responses and
+two unexplained profiling HTTP 500s, within the native error-ratio rule.
+DP16/C32 is the measured lower-latency neighbor. DP32/C64 and repeat variability
+remain unmeasured, so neither a global optimum nor a final load knee is claimed.
 
-The [baseline audit](baseline-reconciliation.md) guides the next allocation-size
-test and targeted FP8 controls. A combined Marlin/padding fix now passes all 19
-exact cache comparisons, batch and decode on four GPUs. Its short-reference
-maximum remains 0.67287, above the unchanged 0.65 limit. The
-[execution inspection](hero-fp8-inspection.md) records actual storage proof and
-remaining gaps. Final selection and a new High review are pending. All
-contributions remain unmerged.
+FP8 remains unqualified. The initial hour verifies packed FP8 expert storage on
+all 16 ranks, with BF16 activations and KV. Its RAM request differs from its
+initial BF16 C64 reference, so that result compares configurations rather than
+isolating weight precision. Canonical Marlin ordering plus deterministic padded
+routing later passes all 19 exact model cache comparisons, batch and decode.
+The short-reference maximum remains 0.672875 against the unchanged 0.65 bound.
+Native Triton variants and a 24-of-48-layer W8A16 hybrid also fail reference
+checks. The 16-layer hybrid stops during fixture setup with no numerical report;
+its initiating exception is unavailable. No hybrid performance hour was run.
+The [final comparison](analysis/hero-fp8-01a1ec55/comparison-final.md) preserves
+the full sequence, precision evidence, commands and failures. Goldens and bounds
+were not relaxed.
+
+The [baseline audit](baseline-reconciliation.md) explains the earlier 50.71015
+recipe's different checkpoint/tokenizer, private compact KV and effective flags.
+It is not an isolated regression reference. The
+[execution inspection](hero-fp8-inspection.md) records useful controls and missed
+setup boundaries. These prompted earlier fixture validation, nonzero failure
+exits, CPU preparation, actual storage checks and an effective-baseline audit in
+the 89-line skill. The measured comparison uses runtime `0ac9dcb157` plus the
+explicit FP8 overrides; current-main runtime contribution ports have no whole
+runtime GPU qualification.
+
+The [overnight cost](analysis/hero-fp8-cache-validation/overnight-total-costs.json)
+is **262.506921 GB200-hours and 2.008889 H100-hours**, including setup, warmup,
+failed attempts and numerical screens. The earlier completed phase's
+27.947243 GB200-hours and 32.003078 H100-hours are separate. All
+[63 owned resource rows are closed](analysis/hero-fp8-cache-validation/overnight-cleanup.json),
+and no owned pod or queued job remains. The last GPU allocation ended at
+13:04:55.663 UTC.
+
+The 17:00 UTC handoff deadline was missed. Recorded work stopped near 12:06 UTC
+and the session resumed at 21:24 UTC; the reason for the gap is not established
+here. Native jobs had already ended. No new GPU work was launched afterward.
+The final High GOAL review and contribution publication are being completed
+late. All contributions remain unmerged.
+
+The [final ordinary checks](analysis/hero-fp8-cache-validation/ordinary-validation-final.json)
+have 144 focused CPU/HTTP/runner passes, plus passing required lint and types.
+The broader affected suite stopped after a worker timeout. Two failures
+reproduce in unchanged task-curation tests; the raw failure logs are retained.
+This is not a passing broad-suite result. Final review and CI state will be
+recorded before handback.
 
 ## Completed BF16 phase — 2026-11-17
 

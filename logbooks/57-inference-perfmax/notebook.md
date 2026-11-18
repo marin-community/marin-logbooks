@@ -947,3 +947,21 @@ activations in BF16 while allowing native BF16 layers to use Triton. Component
 and graph checks pass; full-model gates precede any selected performance hour.
 The initial FP8 hour remains diagnostic and does not beat the stronger BF16
 baseline. No bounds or goldens changed.
+
+## 2026-11-18 — Final measurements and late handoff
+
+The [actual report CLI](analysis/hero-fp8-cache-validation/bf16-selected-recommendation.json)
+selects unbound BF16 DP32/C128 under the provisional serving policy. Its cloud
+summary matches terminal output. The completed NUMA hour passes required checks
+but demonstrates no improvement; the lower-load DP32 neighbor remains unmeasured.
+The [final FP8 comparison](analysis/hero-fp8-01a1ec55/comparison-final.md) retains
+successful cache fixes, failed reference screens and the backup setup failure.
+No hybrid hour or current-main GPU qualification is claimed.
+
+The 17:00 UTC handoff was missed. Work records stop near 12:06 UTC and resume at
+21:24 UTC. Jobs had already ended; no new experiment was launched afterward.
+All 63 owned resource rows are closed, with no campaign pods remaining. The
+[overnight ledger](analysis/hero-fp8-cache-validation/overnight-total-costs.json)
+totals 262.506921 GB200-hours and 2.008889 H100-hours. The handoff preserves the
+broader CPU test failures alongside 144 focused passes. Final High review and
+contribution CI follow these ordinary checks; all changes remain unmerged.

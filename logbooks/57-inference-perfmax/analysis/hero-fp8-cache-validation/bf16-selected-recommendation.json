@@ -1,0 +1,39 @@
+{
+  "scope": "Actual public report CLI accepted the measured BF16 point under matching numerical and workload controls, then cloud readback verified stdout equals summary.md byte-for-byte. No GPU work.",
+  "source": "fbcb05a214458537540f50d0ab5e1c8bc48426bc",
+  "report_module_sha256": "e44a51701310350613acc70ae9d9bb97c7131998cc0be68ba18b22b590565562",
+  "exit_code": 0,
+  "recommended_trial": "20261118T091911Z-31c846881afd",
+  "baseline_trial": "20261118T073018Z-33071107ec92",
+  "throughput_change": 0.3311825060399365,
+  "provisional": true,
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "model_revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+  "artifacts": [
+    {
+      "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/summary.md",
+      "file": "bf16-selected-summary.md",
+      "sha256": "374628f2c3315b631419c3ed3699d95724a92c669339c2f47f0281936330bac8"
+    },
+    {
+      "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/recommended.yaml",
+      "file": "bf16-selected-recommended.yaml",
+      "sha256": "ceb09ffef5c1fc87dac06bcbbd5910440943c0eb026e0341f5ed26ccc2681546"
+    },
+    {
+      "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/decision.json",
+      "file": "bf16-selected-decision.json.gz",
+      "sha256": "9ab698c07a0060f44d465fc6e42c3c2d3c7df3ad888b05184baae9a2c857b54f",
+      "uncompressed_sha256": "eed48cd12984acb4ea8712ea9062a198a8dc2fe1a40b1c9770a0995fcc91a1f7"
+    },
+    {
+      "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T091911Z-31c846881afd/runtime.json",
+      "file": "bf16-selected-runtime.json.gz",
+      "sha256": "f59174ed8405f5bff1d41abd4ca189f68aada5da831840406b98019b1fe2b87c",
+      "uncompressed_sha256": "b60055842c918c5972381738c1ec48835bffd6c50e866cda7597a2682a119868"
+    }
+  ],
+  "qualification": "Passing serving policy only. RL learning, trainer probability ratios, repeat variability and the DP32 load knee remain unqualified or unmeasured.",
+  "environment": "The first direct local invocation stopped before I/O for missing credentials. The existing marin-env wrapper supplied task credentials without a job or shared configuration change.",
+  "raw_artifact_note": "Native JSON without a trailing newline is gzip-compressed to preserve exact bytes."
+}

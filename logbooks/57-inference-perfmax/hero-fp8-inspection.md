@@ -243,3 +243,28 @@ nonempty execution-thread CPU masks within the intended node and successful
 `MPOL_BIND` memory policy. Sixteen ranks bind to each NUMA node. Resident page
 placement is not measured. All required numerical checks pass before warmup;
 the normal hour runs from 11:55:42 to 12:55:42 UTC, followed by native drain.
+
+Final NUMA evidence passes every required check but gives no measured gain:
+31.11883 output tokens/s/GPU versus 31.42858 unbound, with higher p90 TTFT and
+completion latency. Four warmup errors and two profiling HTTP 500s remain in
+the raw JSONL. The parent verified the archive, export, report and phase counts.
+The child retained unbound DP32/C128 and did not invent a global optimum or use
+the earlier 5% heuristic as an approved threshold. DP32/C64 remains untested.
+
+The FP8 child narrowed two native component sensitivities and reused their
+passing controls before full-model screens. Canonical ordering and deterministic
+padded routing remove the recorded exact cache failures; they do not fix the
+reference drift. The final 24-layer hybrid passes storage, cache, batch and decode
+but fails short-reference maximum. The 16-layer backup has a fixture/setup error
+before storage; its initiating exception was not preserved in the bounded Iris
+tail or recoverable later logs. This is a collection gap, not a numerical finding.
+No unqualified hybrid hour was launched. Component setup mistakes were retained
+with their costs, rather than counted as runtime failures or hidden by retries.
+
+The missed deadline limits this execution. Work records stop near 12:06 UTC and
+resume at 21:24 UTC. Both children then checked actual native/provider state,
+found the earlier jobs terminal and closed their resource rows. The parent
+verified zero campaign pods and all 63 rows closed. No later experiment was
+launched. Further load selection and the final review were not completed by
+17:00 UTC. The final handoff states that gap rather than treating elapsed time
+as evidence of a completed overnight search.
