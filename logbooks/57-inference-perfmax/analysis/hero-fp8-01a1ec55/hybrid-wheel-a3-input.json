@@ -1,0 +1,47 @@
+{
+  "source_commit": "746cafea89518eb33184211eef271d7bb659058f",
+  "model_sha256": "d830c24fac632d129e670f19b05f3c498af73bcab488bbd3324d4b5211460a45",
+  "archive_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/components/hybrid-wheel-a2/validation-source.tar.gz",
+  "archive_sha256": "25e3cf05f99e32e0f35a41f09e443053a4cf04afc80e45007a6038cbcc5931fb",
+  "bootstrap": "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/hybrid_mixed_bootstrap.py",
+  "bootstrap_sha256": "8fe5e64b187cc622908f5f3caba96a8a24bd6c62f59653f7d36062327233c1c1",
+  "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/components/hybrid-wheel-a3",
+  "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+  "job_name": "hero-fp8-hybrid-wheel-01a1ec55-a3",
+  "mode": "component-diagnostic",
+  "marlin_sha256": "b7c5d54eb1f34edad97b2633c32db2ef1041751c3360a8615fedcea093a8735c",
+  "research_source": "published with this payload",
+  "factory_sha256": "2a64822a1ebf27f656bee4eb0fd61cf1a6d5a7f82ffdce0b8cb78df9cb642ab0",
+  "candidate_manifest": {
+    "release_tag": "experimental-hero-fp8-hybrid-746cafea8951-01a1ec55",
+    "source_commit": "746cafea89518eb33184211eef271d7bb659058f",
+    "version": "0.0.0.dev20261118+marin.746cafea8951.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/builds/hybrid-746cafea89-a1/vllm-0.0.0.dev20261118+marin.746cafea8951.cu132-cp312-cp312-linux_aarch64.whl",
+        "sha256": "1cea7d874971c1dd10bd2ce44619aa0d35707a4ebb0f29617b051604e73cf941"
+      }
+    ]
+  },
+  "hypothesis": "Actual installed hybrid wheel preserves unsupported default BF16 Marlin rejection while explicitly ignored BF16 experts execute Triton and selected native per-tensor FP8 experts execute Marlin W8A16. Native weights/outputs/graphs plus original focused guards must pass before full model checks.",
+  "validation_source_commit": "3f418eebea934e9c348a906eeeac939f18704322",
+  "run_focused_pytest": false,
+  "reused_focused_pytest": {
+    "wheel_sha256": "1cea7d874971c1dd10bd2ce44619aa0d35707a4ebb0f29617b051604e73cf941",
+    "validation_source_commit": "3f418eebea934e9c348a906eeeac939f18704322",
+    "passed": 20,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "archive_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/components/hybrid-wheel-a2/native-d93173bc8306f99629bfe128939e176449494035c96d9ec81daaa98779657651.tar.zst",
+    "archive_sha256": "d93173bc8306f99629bfe128939e176449494035c96d9ec81daaa98779657651",
+    "file": "components.xml",
+    "file_sha256": "9e9e3d48b63989b18ebf07116b9791cbcf07fa5b559d1c3e933b56785194a806"
+  }
+}

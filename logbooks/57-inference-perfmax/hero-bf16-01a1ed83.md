@@ -306,3 +306,154 @@ Checks finish at 09:38:48.684 UTC. Native warmup then completes 1,406 requests
 with zero errors in 440.4 seconds. Profiling starts at 09:46:16.250 UTC, with
 the native 3,600-second admission boundary near 10:46:16 UTC. The window stays
 frozen through export and cleanup. No throughput conclusion is available yet.
+
+## 2026-11-18 11:15 UTC — DP/EP32 improves the measured tradeoff
+
+The completed native hour passes all shared checks and native protocol,
+coverage, submission and gang rules. The coordinator and all eight GPU tasks
+succeed with no preemption. The [result](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-result.json),
+[original export summary](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-native-summary.json),
+[check summary](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-check-summary.json)
+and [comparison](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-comparison.json)
+retain the measurement and its limits.
+
+| Retention-zero configuration | Output tokens/s/GPU | p90 TTFT, s | p90 completion, s | Profiling successes/errors |
+| --- | ---: | ---: | ---: | ---: |
+| 16 GB200, DP16/EP16, C32 | 19.29162 | 145.36914 | 156.44444 | 1586/0 |
+| 16 GB200, DP16/EP16, C64 | 23.60952 | 276.38157 | 282.52929 | 2108/1 |
+| 32 GB200, DP32/EP32, C128 | 31.42858 | 268.89855 | 281.34879 | 5245/0 |
+
+The larger configuration gains 33.12% throughput per GPU with 2.71% lower
+p90 TTFT against DP16/C64. Allocation and total offered concurrency change
+together; four offered session trees per GPU stay fixed. Client reuse rises
+from 81.6861% to 87.9519%, against a theoretical 94.0220% for this completed
+mix. Reported peak KV use is 86.865%. Mean completed input length also falls
+from 83,634 to 67,705 tokens. These observations support the configuration
+choice but do not isolate its cause. Each configuration has one window;
+repeat variability and a global optimum remain unmeasured. C32 remains the
+lower-latency neighbor.
+
+Correction to the 09:48 entry: the live warmup phase notice reported zero
+errors, but the final export and [original request records](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-request-errors.json)
+show three dropped warmup requests with empty response content. The 5,245
+profiling successes and zero profiling errors are unchanged. Preserve both
+the early log-derived claim and this correction.
+
+The [leader receipt](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-leader-receipt.json)
+pins the original 380,769,889-byte archive with SHA-256
+`dc1d54ea6426a866be20f1cca9d51438622068b6dbe8fd6710027f116daa878f`.
+Its client export SHA-256 is
+`6878d0cf0599c6958347e8e47e6f75468691d90f0532764e004dc6ee31fbb7d3`.
+The normal export and collection finished successfully; there was no
+coordinator failure or recovery. Allocated cost is 181,460 GPU seconds,
+50.405556 GB200 hours, including every setup, check, warmup, native hour,
+drain, export and shutdown phase. Owned completed cost is now 352,056 GPU
+seconds, or 97.793333 GB200 hours. Host memory peaks are 145.11, 110.15,
+111.88, 110.69, 109.91, 112.15, 109.80 and 113.20 GiB, all under 256 GiB.
+The [cleanup receipt](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-cleanup.json)
+confirms all GPU tasks released and no remaining owned pods. Row 2250 is closed.
+
+The next selected comparison adds native NUMA binding to this same DP32/C128
+configuration. The [profile](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-numa.yaml)
+uses the already prepared private numactl dependency, unchanged vLLM runtime,
+and a required read-only check of actual worker CPU and memory policy. CPU
+plan resolution passes. Retain all 32 rank records across eight hosts before
+timing, rather than inferring binding from a flag. The check measures worker
+thread allocation policy; it does not claim resident page placement. The
+[inventory](analysis/hero-bf16-01a1ed83/numa-dp32-c128-inventory.json) sees 127
+available GB200s, without reserving them. Row 2261 announces 32 GB200s and
+zero H100s under this session's actual binding. Requested interactive priority
+and ordinary Batch fallback remain unchanged.
+
+## 2026-11-18 11:23 UTC — NUMA setup path failure is retained
+
+NUMA trial `/romain/knotmeter-20261118t111414z-596d12bff98c/serve` uses source
+`a71af3acb6ac190e6481602c6059e8f5bda0505d`. It stops before vLLM startup:
+the serialized `__main__` factory retains the devbox `__file__`, and its
+source-hash lookup cannot open that path inside `/app`. The
+[submitted plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-submitted-plan.json),
+[resolved plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-resolved-plan.json),
+[failed result](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-result.json) and
+[leader receipt](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-leader-receipt.json)
+retain every attempt and traceback. The archive SHA-256 is
+`89f735ed23e162f29f5a2e8ad164da5ddc40c7cb343d3111717356d29d1708a7`.
+No serving check, warmup or measurement ran. Complete failed cost is
+1,000.671997 GPU seconds, or 0.277964 GB200 hours. The
+[cleanup receipt](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-cleanup.json)
+confirms no remaining owned pods or GPUs before retry.
+
+The task-local factory now finds its source under the imported native
+runner's repository root. The [local regression](analysis/hero-bf16-01a1ed83/numa-serialized-path-cpu-validation.json)
+passes with a missing serialized `__file__`; dependency execution and server
+creation there are explicitly CPU stubs. That does not cover the remote
+boundary. Before another GPU allocation, run the published
+[zero-GPU Iris setup probe](analysis/hero-bf16-01a1ed83/probe_numa_setup.py)
+through the same by-value serialized factory, task image and CPU environment.
+It performs real ARM dependency staging, local policy probes, source hashing
+and native launcher construction without entering the server context.
+
+## 2026-11-18 11:27 UTC — Real serialized ARM setup passes
+
+The [remote setup result](analysis/hero-bf16-01a1ed83/numa-serialized-setup-a1.json)
+passes in `/romain/hero-bf16-numa-setup-20261118t112248z`, from clean source
+`2aebe6ab782dc75980c746f78682b4d75ee0cc27`. The
+[execution record](analysis/hero-bf16-01a1ed83/numa-serialized-setup-a1-execution.json)
+retains its actual zero-GPU pod resources, submission identity, native output
+archive and cleanup. It runs 22.62 seconds on aarch64 host `sbzvxs64`, using
+the same task image and CPU environment as the native coordinator.
+
+The actual by-value factory retains the devbox source path in its globals,
+then successfully finds `/app/logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/numa_launcher.py`
+through the imported runner. Its source hash is
+`37028f717f83dfcb5a3bf7d068c718336847a1d783b547d694143052b918e6d9`.
+Real private numactl staging, binary identity, both CPU-and-memory policy
+probes and native launcher construction pass. The result keeps the planned
+argv and private PATH prefix. No server context, model tensor or CUDA
+execution occurs. This covers the failed setup boundary before the GPU retry;
+it does not qualify worker affinity or performance. The refreshed backend
+snapshot sees 135 available GB200s. Row 2261 still announces the same 32-GPU
+retry and zero H100s; prior failed GPU tasks are released.
+
+## 2026-11-18 11:40 UTC — NUMA binds all 32 real DP workers
+
+Retry `/romain/knotmeter-20261118t112726z-ea23d4021e92/serve` uses clean source
+`9258300edfa848b65f118e144f6161e44db99a56`. Its
+[submitted plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-submitted-plan.json),
+[resolved plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-resolved-plan.json)
+and [admission](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-admission.json)
+retain a prepared workload cache hit and thirty-two GB200s across eight
+Running hosts at Batch. All GPU hosts share `DH1-126-US-EAST-08A`. The physical
+host set matches the completed unbound DP32 comparison.
+
+The [actual worker records](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-live-worker-affinity.json)
+cover every global DP rank 0–31, four workers per host, with all eight native
+attempt UIDs matching admission. Every worker execution thread has nonempty
+CPU affinity within its expected GPU-local node, and `get_mempolicy` returns
+`MPOL_BIND` (2) with exactly that node. Sixteen workers bind each NUMA node.
+The extension SHA-256 is
+`445881645dda1a3917042b2cf160cac2aff88c001086f474b7e68d0780fc8eb9`.
+The records retain all-thread CPU mask counts separately from the checked
+execution-thread policy. Resident page placement is not inspected.
+
+Read-only Iris task execution collects those files during the shared
+numerical suite, before native warmup. The required affinity serving check
+passes. Full reference, batch, cache and decode outcomes are still pending;
+NUMA performance remains unmeasured. Row 2261 now records the admitted
+32-GPU allocation, within this session's share and with no H100 use.
+
+## 2026-11-18 11:57 UTC — Qualified NUMA candidate enters its native hour
+
+The [before-hour snapshot](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-before-hour.json)
+records passing affinity, full model-numerics and loaded-weight checks.
+Reference, batch, cache, decode and deployment all pass under the unchanged
+policy. All 19 exact cache controls are zero. Reported KV capacity remains
+1,456,262 tokens per rank. The deployment frontend declares NUMA binding,
+while the earlier per-worker records supply its actual resolved node and
+thread policy. The leader cgroup peak at this snapshot is 145.89 GiB, under
+256 GiB; final host receipts will retain all eight peaks.
+
+Native profiling starts at 11:55:42.760 UTC after warmup. Its unchanged
+3,600-second admission boundary is 12:55:42.760 UTC, followed by normal drain
+and export. This window stays frozen. No partial throughput estimate is used
+to select or reject the setting. The final export remains authoritative for
+dropped warmup requests as well as profiling errors.

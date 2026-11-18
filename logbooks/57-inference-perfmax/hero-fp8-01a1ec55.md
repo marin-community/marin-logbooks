@@ -1034,3 +1034,223 @@ Triton natively accepts both. Its FP8 path also dynamically quantizes activation
 which is a deliberate change from Marlin W8A16 and will be recorded separately
 from BF16 KV. A small actual-wheel loader/output/graph component must pass
 before a model screen. The unchanged full shared gates precede any new hour.
+
+## 2026-11-18 10:33 UTC — Mixed configuration preparation
+
+The first one-GPU mixed component stopped before constructing layers: the tiny
+Hero configuration requires `num_shared_experts > 0`. This was a setup mistake,
+not kernel or numerical evidence. It cost68 GPU seconds. Its native log/receipt,
+failed execution and [cleanup](analysis/hero-fp8-01a1ec55/triton-mixed-a1-failure.json)
+are retained; pod absent and row2256 closed. The corrected configuration uses the
+same shared-expert values as the existing native Hero regression. A
+[CPU preflight](analysis/hero-fp8-01a1ec55/triton-mixed-a2-cpu-preflight.json)
+executes the exact pinned config class, native tiny helper and actual bootstrap
+expression without CUDA imports. It reproduces the old rejection and accepts
+the corrected configuration. Required lint passes before retry.
+
+The [prepared eight-GPU model profile](analysis/hero-fp8-01a1ec55/mixed-fp8-triton-8gpu.yaml)
+keeps the same source wheel, model, goldens, bounds, graphs and retention128.
+Native Triton is the declared backend change. Exactly24 explicit ignore patterns
+keep outer expert layers BF16. New metadata requires the expected native method,
+actual float8/BF16 tensor dtypes, shape, payload/storage bytes, scales and W8A8
+consumer metadata for every layer. It separately checks BF16 projections, FP32
+routers and typed BF16 attention/ShortConv cache views. Full per-rank records
+remain native artifacts. The campaign cache-first test now takes its inspector
+from the profile's existing serving check; shared checking code is untouched.
+No model allocation or performance hour is authorized by a component setup exit.
+
+Correction to the first estimate:24 FP8 layers save about15.2 GiB/GPU at16 ranks,
+or30.4 GiB at eight, based on measured full-FP8 expert payload bytes. The earlier
+30 GiB-at16 estimate counted the whole expert saving rather than half.
+
+## 2026-11-18 10:37 UTC — Match native distributed initialization order
+
+The second mixed component failed during `initialize_model_parallel`, before
+layer construction: the dtype-only test model facade was assigned too early
+and lacks `is_moe`. The pinned native fixture initializes parallel groups with
+the default model config, then the native layer test assigns its dtype facade.
+The retry now follows that same order. The [failure record](analysis/hero-fp8-01a1ec55/triton-mixed-a2-failure.json)
+and native log preserve64 allocated GPU seconds, zero kernel evidence, absent
+pod and closed row2257. The previous CPU construction check covered the runtime
+config class, not distributed context initialization; its narrower claim remains.
+
+The eight-GPU model dry run resolves the explicit24/24 selector and immutable
+a399 manifest without submission. No full-model mixed result is claimed.
+The comparison label will be **24 of48 expert layers in FP8**, with native
+W8A8 activations on those layers, BF16 on the remaining expert layers and KV.
+
+## 2026-11-18 10:41 UTC — Native mixed component passes
+
+The [actual-wheel component](analysis/hero-fp8-01a1ec55/triton-mixed-a3-components.json)
+passes the native ignore-list path. The ignored layer has BF16 expert weights
+and `UnquantizedFusedMoEMethod`; the selected layer has E4M3FN weights and
+`Fp8PerTensorOnlineMoEMethod`, with native FP8 activation quantization. Both
+use Triton, BF16 projections and FP32 routers. All8 output cases pass the
+predeclared component bounds0.05/0.05; repeats are exact. Both128-token raw
+CUDA-graph controls equal eager output and repeat exactly. These tiny components
+do not qualify a full model or KV precision. Native archive SHA256 is
+`b3fb3923ffa9133c24da6f37f815d92aff1e65160d29eb2a7a6156cc9c784cec`.
+Cost76 GPU seconds, pod absent and row2258 closed. Completed owned cost is
+96.248718 GB200 hours including both setup failures.
+
+A serialization label correction is explicit in the
+[derived summary](analysis/hero-fp8-01a1ec55/triton-mixed-a3-summary.json): raw
+`fp32_reference_max` is misnamed. The native `_reference_moe` helper computes
+BF16 matmuls/einsum with FP32 router/normalization operations; it is an independent
+PyTorch BF16 reference, not a pure FP32 oracle. Maximum difference0.0032958984
+is in raw output units. Raw bytes and bounds stay unchanged. This does not
+alter the four earlier genuine FP32-reference failures from the Marlin control.
+
+The [CPU inspector protocol preflight](analysis/hero-fp8-01a1ec55/triton-inspector-cpu-preflight.json)
+executes both real profile commands against a local fake RPC boundary. It
+requires the intended24/48 and48/48 FP8 coverage, exact producer hashes and
+profile DP counts; wrong counts and hashes are rejected in all4 controls.
+This is protocol evidence only. Actual per-rank storage remains a required model
+gate. The paired short model screens separate native selective Triton alone
+from the additional24-layer BF16 protection. They request8+4 GB200s, within32.
+No new performance hour precedes their unchanged full shared numerical checks.
+
+## 2026-11-18 10:52 UTC — Both full-model storage gates pass
+
+Both paired jobs admitted at normal Batch with clean published25495bcceb,
+tree d346034b5f. The mixed8-GPU job is
+`/romain/knotmeter-20261118t104137z-11c4893f0329` on s96txs64/sb3txs64;
+the selective4-GPU control is
+`/romain/knotmeter-20261118t104137z-392225beb398` on s90vxs64.
+[Admission](analysis/hero-fp8-01a1ec55/triton-paired-models-admission.json)
+and both native source plans retain Interactive requests and effective Batch.
+Owned total is12 GB200s; board rows2259/2260 track these jobs.
+
+[Actual per-rank storage readback](analysis/hero-fp8-01a1ec55/triton-paired-models-live-storage.json)
+passes on all8 mixed ranks and all4 control ranks. Each mixed rank has exactly
+24 BF16 expert layers (65,229,815,808 payload bytes) and24 FP8 expert layers
+(32,614,907,904 bytes). Each control rank has48 FP8 expert layers and
+130,459,631,616 payload bytes. Native methods, scale layout, W8A8 consumer
+metadata, BF16 projections and FP32 router storage pass. Typed attention and
+ShortConv cache views are BF16 on every rank. FP32 router describes its stored
+weights/bias; Hero's unchanged forward still computes its native logits using
+BF16 operands before converting scores to float.
+
+Model loading reports116.8 GiB/GPU for the8-GPU mixture and147.17 GiB/GPU for
+the4-GPU control. These different gang sizes are targeted numerical screens,
+not a throughput comparison. Fixed shared cache/reference/batch/decode outcomes
+remain pending. The tiny component's broad absolute tolerance and missing
+output norms establish compatibility only; they do not replace these gates.
+
+## 2026-11-18 11:18 UTC — Triton numerical failures and narrow hybrid support
+
+Both complete Triton model reports reject unchanged bounds. The24-of48 mixture
+fails short-reference maximum0.7048335196; p99=0.1157947620 passes. Long, batch,
+cache and decode pass; full cache has19 exact zeros. The48-of48 selective
+control fails short maximum0.7627548244 and p99=0.1496307978, plus decode
+maximum0.2508695181 above0.25. Its long, batch and full cache pass, again19 exact
+zeros. [Mixed summary](analysis/hero-fp8-01a1ec55/triton-mixed-model-a1-summary.json)
+and [48-layer summary](analysis/hero-fp8-01a1ec55/triton-selective-model-a1-summary.json)
+retain every statistics map. The native archives retain full reports and responses;
+all8+4 rank storage checks passed. Costs are10,932 and4,924 GPU seconds.
+All three pods are absent and rows2259/2260 are closed. Completed owned cost is
+100.653162 GB200 hours.
+
+The [new patch](analysis/hero-fp8-01a1ec55/hybrid-backend-runtime.patch) is a separate
+runtime at746cafea89518eb33184211eef271d7bb659058f, based on frozena399.
+An optional factory backend argument leaves its default unchanged. Grug selects
+native BF16 Triton only for explicitly ignored expert layers under supported
+online FP8 with global Marlin. Other expert layers retain existing native
+Marlin W8A16 FP8. The existing loader test gains one ignored-BF16 case and
+compares actual weights/output with explicit native BF16 Triton while the global
+setting stays Marlin. Required lint and syntax pass. Guard and online FP8 weight
+implementation AST/bytes remain unchanged in [CPU/source validation](analysis/hero-fp8-01a1ec55/hybrid-runtime-cpu-validation.json).
+The parent inspected the complete52-insertion/7-deletion diff and found no
+source blocker. This tests the existing W8A16 path; kernels and scale layout
+also differ from Triton, so the preceding failures are not attributed solely
+to activation rounding.
+
+Native CPU packaging will verify model, factory and Marlin Python hashes in
+source and wheel, plus every pinned ELF payload. A cold installed-wheel loader,
+output and graph component comes before the fixed-model gate. Earlier branches,
+failures and limits remain frozen. The strongest completed BF16 point is now
+DP32/R0/C128:31.42858 output tokens/s/GPU, p90 TTFT268.89855 seconds. A selected
+FP8 hour should match that stronger point if numerical gates pass. New NUMA
+confirmation is pending; its launcher setup issue is owned by the BF16 peer.
+
+## 2026-11-18 11:24 UTC — Immutable hybrid wheel and native shape preflight
+
+The native CPU build passed in78 allocated seconds on8 CPUs, with zero GPUs.
+[Manifest](analysis/hero-fp8-01a1ec55/hybrid-build-a1-manifest.json) pins wheel
+SHA256 `1cea7d874971c1dd10bd2ce44619aa0d35707a4ebb0f29617b051604e73cf941`.
+[Build proof](analysis/hero-fp8-01a1ec55/hybrid-build-a1-build.json) verifies the
+new factory module as well as Grug and Marlin, and all19 ELF payloads equal0ac.
+The CPU pod is absent and row2262 is closed. The cold component will hash all
+three installed Python modules before running native loader, output and graph
+checks; no source overlay is involved.
+
+The [native shape oracle on CPU](analysis/hero-fp8-01a1ec55/hybrid-marlin-shape-cpu-preflight.json)
+rejects the former64-wide latent extent even with tile padding. It accepts the
+new128-wide latent/intermediate component and actual3072-wide Hero extents.
+Only its non-ROCm platform condition is supplied; no GPU support or numerical
+claim follows from this CPU execution. The active component uses hidden256,
+latent128 and intermediate128. It retains output scale/nonzero counts in
+addition to compatibility comparisons, with all existing bounds unchanged.
+The required full fixed-model suite still decides numerical acceptance.
+
+## 2026-11-18 11:33 UTC — Correct the new regression's BF16 lifecycle
+
+The first cold hybrid run verified all three installed module hashes, then
+stopped after13 native test passes. The new ignored-BF16 case loaded matching
+weights and preserved global Marlin, but omitted the normal post-load lifecycle
+step that creates its BF16 kernel. Forward therefore stopped at `moe_kernel is
+not None`; the manual compatibility/graph component had not run. The
+[failure](analysis/hero-fp8-01a1ec55/hybrid-wheel-a1-failure.json), native JUnit,
+log and receipt retain90 GPU seconds. Its pod is absent and row2263 is closed.
+
+Validation source3f418eebea adds the existing `_process_moe_weights` helper call.
+The immutable runtime wheel remains746 with SHA1cea7d87; all three runtime Python
+modules are [byte-identical](analysis/hero-fp8-01a1ec55/hybrid-validation-source-a2.json).
+The native validator supports separate package and validation sources. The new
+source archive and component input bind that distinction explicitly. No runtime
+math, bounds or prior evidence changed.
+
+Two prepared8-GPU model profiles cover24-of48 and16-of48 FP8 expert layers,
+both with BF16 activations via native Marlin W8A16 and ignored BF16 Triton.
+The16-layer backup still cuts expert payload by16.7% (about9% of total model
+storage at32 ranks); it can avoid a further full setup cycle if24 layers miss
+quality. Their [CPU inspector preflight](analysis/hero-fp8-01a1ec55/hybrid-inspector-cpu-preflight.json)
+passes intended counts and rejects wrong counts/hashes. Only a passing selected
+configuration would receive a normal32-GPU/R0/C128 hour against BF16's31.42858
+point. Native full-model gates and unchanged exact cache bounds remain required.
+
+## 2026-11-18 11:44 UTC — Native20 pass; correct manual reference context
+
+The corrected source passes all20 native focused tests, with zero failures,
+errors or skips on the actual immutable746 wheel. The later manual component
+used the Marlin forward registry for a reference module constructed under its
+separate Triton config, causing `KeyError: reference.layers.0.mlp.experts`
+before first-row serialization or graphs. Runtime source and wheel remain
+unchanged. The [failure record](analysis/hero-fp8-01a1ec55/hybrid-wheel-a2-failure.json)
+and JUnit retain93 GPU seconds; pod absent and row2264 closed.
+
+The next probe uses each module's own forward-context registry and writes loaded
+metadata before scoring. It reuses the20-pass JUnit with exact validation source,
+wheel and archive hashes instead of repeating compatible completed tests. Only
+the previously missing manual output/graph phase runs. No model gate or hour
+bypasses that compatibility requirement. All numerical bounds stay unchanged.
+
+## 2026-11-18 11:54 UTC — Hybrid compatibility completes
+
+The [manual actual-wheel component](analysis/hero-fp8-01a1ec55/hybrid-wheel-a3-components.json)
+passes all8 cases, both raw CUDA-graph controls and every repeat exactly.
+Outputs are finite/nonzero. Actual absolute maxima range0.11377–0.18945, with
+independent BF16 reference maxima0.11377–0.18945 and maximum raw difference
+0.00952148. The unchanged0.05 diagnostic floor remains compatibility evidence,
+not full-model accuracy. Ignored BF16 native outputs are exact. Actual native
+Marlin FP8 packed storage and BF16 Triton storage match expected bytes/scales;
+all MoE activations are BF16. The default unsupported BF16-Marlin path still
+rejects. Exact20-pass native test evidence is reused froma2.
+
+Archive SHA256 is
+`f8a53ae28a6d58c6642b8ecbb8363dce147fe583041a3af8398205cf2ca8c185`.
+This completion cost93 GPU seconds. Its pod is absent and row2265 is closed;
+completed owned cost is100.729829 GB200 hours. The next paired8+8 model gates
+retain all original shared numerical bounds, fixed weights/tokenizer/goldens,
+retention128 and PIECEWISE geometry. A normal32-GPU/C128 comparison follows
+only if a candidate passes the full fixed-model checks.

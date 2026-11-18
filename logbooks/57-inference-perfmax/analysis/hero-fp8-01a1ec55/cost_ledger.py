@@ -19,11 +19,20 @@ INPUTS = (
     ("CPU native wheel build", "selective-build-a1-execution.json", None),
     ("CPU canonical native wheel build", "marlin-canonical-build-a1-execution.json", None),
     ("CPU padding native wheel build", "padding-router-build-a1-execution.json", None),
+    ("CPU hybrid native wheel build", "hybrid-build-a1-execution.json", None),
     ("Installed canonical wrapper and graph controls", "marlin-canonical-component-a1-execution.json", None),
     ("Canonical full-model cache-first rejection", "marlin-canonical-model-a1-execution.json", None),
     ("Zero-weight padded-route component", "marlin-padding-a1-execution.json", None),
     ("Fixed-padding actual-wheel component", "padding-fixed-a1-execution.json", None),
     ("Padding full-model reference rejection", "padding-model-a1-execution.json", None),
+    ("Mixed Triton component configuration failure", "triton-mixed-a1-execution.json", None),
+    ("Mixed Triton component context setup failure", "triton-mixed-a2-execution.json", None),
+    ("Native mixed Triton loader/output/graph component", "triton-mixed-a3-execution.json", None),
+    ("Hybrid ignored-layer test lifecycle failure", "hybrid-wheel-a1-execution.json", None),
+    ("Hybrid20-pass tests and manual reference-context failure", "hybrid-wheel-a2-execution.json", None),
+    ("Hybrid manual loader/output/graph compatibility", "hybrid-wheel-a3-execution.json", None),
+    ("24 of48 Triton FP8 model reference rejection", "triton-mixed-model-a1-execution.json", None),
+    ("48 of48 selective Triton model numerical rejection", "triton-selective-model-a1-execution.json", None),
     ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),
     ("Marlin history component import failure", "marlin-history-a1-execution.json", None),
     ("Marlin order control partial writer failure", "marlin-order-a2-execution.json", None),
@@ -123,7 +132,7 @@ def main() -> None:
             "those activities are not separately timed. "
             "Matching follower attempts use their leader timing, verified by native gang attempt IDs. "
             "Unsplit failures and numerical/component screens retain their full allocation cost. "
-            "CPU builds each requested eight CPUs for 98, 77 and 99 allocated seconds, respectively, and zero GPUs."
+            "CPU builds each requested eight CPUs for 98, 77, 99 and 78 allocated seconds, respectively, and zero GPUs."
         ),
         "rows": rows,
     }

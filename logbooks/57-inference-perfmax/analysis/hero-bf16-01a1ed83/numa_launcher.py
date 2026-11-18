@@ -30,7 +30,14 @@ def create_numa_server(manifest: PointManifest, output: Path, launch: IrisVllmLa
         "binary": str(binary),
         "binary_sha256": hashlib.sha256(binary.read_bytes()).hexdigest(),
         "runtime_source": manifest["vllm_release"]["source_commit"],
-        "setup_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "setup_source_sha256": (
+            hashlib.sha256(
+                (
+                    Path(native.__file__).resolve().parents[3]
+                    / "logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/numa_launcher.py"
+                ).read_bytes()
+            ).hexdigest()
+        ),
         "scope": "Extract a private dependency and extend this vLLM subprocess PATH. Runtime code is unchanged.",
         "policy_probes": [
             command_result([str(binary), f"--cpunodebind={node}", f"--membind={node}", str(binary), "--show"])
