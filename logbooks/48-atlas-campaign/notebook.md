@@ -1597,3 +1597,16 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; rev-31 hosted verification remains preview-lane evidence [M].
 - Decision and next action: next hourly check watches for rev-31 hosted verification and the re-pinned Codeforces admission outcomes.
+
+### 2026-11-18 20:40 UTC - Hourly catch-up (19:40–20:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `a09fdebbe5…` (19:23:59 UTC) to head `12868b01a348ee22f1a9cc5bfdd3d424e998ad23`, landed 20:17:28 UTC (3 landings 19:45–20:17 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log a09fdebb..12868b01` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Recovery survey completed**: every SAMPLE source's carried prior reviews recovered at its current pin (`e18164622e…`); blank registry shard placeholders skipped in the recovery survey (`f9bb8d4d99…`); the recovery survey flattened over the registry's per-source receipt maps (`12868b01a3…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the recovered reviews' contents are registry-bound [M].
+- Decision and next action: next hourly check watches for the recovered-review publication outcomes.
