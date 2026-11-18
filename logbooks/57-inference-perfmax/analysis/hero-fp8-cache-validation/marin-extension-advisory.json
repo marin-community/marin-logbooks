@@ -1,0 +1,244 @@
+{
+  "kind": "LINT",
+  "command": "marin-env ./infra/pre-commit.py --review --calling-agent=codex",
+  "worktree": "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379",
+  "reviewed_revision": "972dceeb162ffaac8c7708270d3a9a1d45dabfda",
+  "exit_code": 0,
+  "elapsed_seconds": 115.32,
+  "requested_model": null,
+  "observed_model": null,
+  "native_child_ids": null,
+  "metadata_note": "The catalog output records lane completion but exposes no provider/model or native child identity. Those fields remain unknown. This is separate from the required final High GOAL panel.",
+  "raw_review": "/home/romain/data/sessions/devbox/codex/01a1d379-911a-7331-b476-75ff31dca267/reviews/LINT-20261118T063053Z/catalog",
+  "findings": [
+    {
+      "path": "experiments/evaluation/inference_correctness/launch.py",
+      "line": 36,
+      "rule": "ml-overloaded-function",
+      "finding": "The CLI entry point validates golden references, submits and monitors the Iris job, and computes and publishes per-attempt GPU costs.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    },
+    {
+      "path": "experiments/evaluation/inference_correctness/launch.py",
+      "line": 131,
+      "rule": "ml-config-not-threaded",
+      "finding": "The plan carries recipe scheduling and task timeouts, but the correctness launcher submits hard-coded limits, so the recorded plan disagrees with the Iris job.",
+      "status": "fixed",
+      "response": "Record the correctness launcher scheduling/task limits in the resolved series and submit those same recorded values. A real dry run confirms 1800/10800 seconds; no GPU was allocated."
+    },
+    {
+      "path": "experiments/evaluation/inference_correctness/reference.py",
+      "line": 58,
+      "rule": "ml-docstring-contradicts-impl",
+      "finding": "The immutability promise overlooks concurrent writers. Two writers can both see an absent path, then the second write can overwrite the first.",
+      "status": "fixed",
+      "response": "State the actual caller contract: single-writer reference publication, atomic copy, current gang snapshot, trial qualification, or verified wheel materialization. The reference helper does not claim concurrent create-if-absent safety."
+    },
+    {
+      "path": "experiments/evaluation/inference_correctness/reference.py",
+      "line": 70,
+      "rule": "ml-overloaded-function",
+      "finding": "Reference generation handles checkpoint and device setup, padded batch scoring, and publication of immutable scores and lineage manifests.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/allocation.py",
+      "line": 122,
+      "rule": "ml-raw-dict-vs-dataclass",
+      "finding": "The plan parameter drops the existing TrialPlan schema, leaving the required trial_uri field unchecked.",
+      "status": "answered",
+      "response": "Retain short-lived JSON-boundary records. Allocation consumes a serialized plan; validity is immediately serialized; position mismatches add case/position to the typed DistributionDifference result for the report. A new persistent state model would widen this correction without changing its contract."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/artifacts.py",
+      "line": 45,
+      "rule": "ml-impl-narration-docstring",
+      "finding": "The docstring describes receipt publication by callers and leaves the atomic copy guarantee implicit.",
+      "status": "fixed",
+      "response": "State the actual caller contract: single-writer reference publication, atomic copy, current gang snapshot, trial qualification, or verified wheel materialization. The reference helper does not claim concurrent create-if-absent safety."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/cli.py",
+      "line": 184,
+      "rule": "ml-overloaded-function",
+      "finding": "The CLI entry point defines arguments, resolves and submits new trials, and implements status, cancellation, and recovery for existing trials.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/collect.py",
+      "line": 86,
+      "rule": "ml-raw-dict-vs-dataclass",
+      "finding": "Window validity has a fixed schema shared by collection and reporting, but its fields are passed as unchecked string keys.",
+      "status": "answered",
+      "response": "Retain short-lived JSON-boundary records. Allocation consumes a serialized plan; validity is immediately serialized; position mismatches add case/position to the typed DistributionDifference result for the report. A new persistent state model would widen this correction without changing its contract."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/collect.py",
+      "line": 88,
+      "rule": "ml-magic-constant",
+      "finding": "The final AgentX export path is repeated here, in the collector's existence check, and in the runner. A filename change can make those consumers disagree.",
+      "status": "fixed",
+      "response": "Reuse shared profile-export/server-metrics paths, VLLM_METRIC_PREFIX and OPENAI_API_SUFFIX."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/collect.py",
+      "line": 90,
+      "rule": "ml-magic-constant",
+      "finding": "The collector hard-codes the server metrics export path here while packing, restoration, and the existence check use SERVER_METRICS_RELATIVE_PATH.",
+      "status": "fixed",
+      "response": "Reuse shared profile-export/server-metrics paths, VLLM_METRIC_PREFIX and OPENAI_API_SUFFIX."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/collect.py",
+      "line": 92,
+      "rule": "ml-magic-constant",
+      "finding": "The admission check repeats the vLLM metric prefix already defined as VLLM_METRIC_PREFIX, so it can drift from the serving metric definitions.",
+      "status": "fixed",
+      "response": "Reuse shared profile-export/server-metrics paths, VLLM_METRIC_PREFIX and OPENAI_API_SUFFIX."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/collect.py",
+      "line": 132,
+      "rule": "ml-overloaded-function",
+      "finding": "Trial collection combines allocation accounting, archive recovery and verification, benchmark postprocessing, and final gang validation.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/prepare.py",
+      "line": 126,
+      "rule": "ml-bool-flag-arg",
+      "finding": "The check_only flag selects between validating an existing cache and configuring the loader to build the cache before validation.",
+      "status": "answered",
+      "response": "Keep the named check_only toggle: it decides whether an existing native cache may be created or must only be verified. Both branches then verify the same cache contract. There is no third behavior; the rule allows a clear two-state toggle."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/report.py",
+      "line": 83,
+      "rule": "ml-undocumented-return",
+      "finding": "True means the trial qualifies for a recommendation, including complete cost accounting, valid measurement, and passing checks for the recorded checkpoint and runtime.",
+      "status": "fixed",
+      "response": "State the actual caller contract: single-writer reference publication, atomic copy, current gang snapshot, trial qualification, or verified wheel materialization. The reference helper does not claim concurrent create-if-absent safety."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/requirements-processor.txt",
+      "line": 2,
+      "rule": "ml-duplicate-constant",
+      "finding": "The same uvx invocation selects InferenceX through processor_source and this hardcoded requirement. Changing the recipe pin leaves the requirements file selecting the old commit.",
+      "status": "answered",
+      "response": "The processor requirements file is a dependency-lock snapshot, intentionally retaining the reviewed Git pin and its transitive versions. It must be refreshed with the recipe rather than derived at runtime. Both current pins are 80dff120d27fd6092210f4546b8faa5e6c9723ac; no exposed override is ignored."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/run.py",
+      "line": 60,
+      "rule": "ml-docstring-contradicts-impl",
+      "finding": "The function snapshots live attempt IDs at one instant. Continuity across the profiling window depends on the caller comparing snapshots.",
+      "status": "fixed",
+      "response": "State the actual caller contract: single-writer reference publication, atomic copy, current gang snapshot, trial qualification, or verified wheel materialization. The reference helper does not claim concurrent create-if-absent safety."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/run.py",
+      "line": 149,
+      "rule": "ml-overloaded-function",
+      "finding": "The check loop builds commands, supervises subprocesses, and interprets saved numerical policies and deployment identities.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/run.py",
+      "line": 236,
+      "rule": "ml-overloaded-function",
+      "finding": "One function validates hardware and restores workloads, manages serving and replay, then packages logs, metrics, and receipts even after failure.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/run.py",
+      "line": 295,
+      "rule": "ml-magic-constant",
+      "finding": "The OpenAI API suffix is repeated across benchmark, metrics, and cache-reset URL construction, even though serving already defines OPENAI_API_SUFFIX.",
+      "status": "fixed",
+      "response": "Reuse shared profile-export/server-metrics paths, VLLM_METRIC_PREFIX and OPENAI_API_SUFFIX."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/runtime.py",
+      "line": 55,
+      "rule": "ml-docstring-contradicts-impl",
+      "finding": "The function downloads and verifies the wheel and returns its local URI. Installation happens later.",
+      "status": "fixed",
+      "response": "State the actual caller contract: single-writer reference publication, atomic copy, current gang snapshot, trial qualification, or verified wheel materialization. The reference helper does not claim concurrent create-if-absent safety."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/test_trials.py",
+      "line": 202,
+      "rule": "ml-slop-test",
+      "finding": "The assertion pins human-readable report copy. The same test already checks the behavioral outcome by verifying that the trial cannot be recommended.",
+      "status": "fixed",
+      "response": "Remove the incidental prose assertion. The public recommendation rejection, absent accepted YAML, incomplete measurement, retained failed checks and allocation accounting assertions remain."
+    },
+    {
+      "path": "experiments/evaluation/knotmeter/test_trials.py",
+      "line": 389,
+      "rule": "ml-slop-test",
+      "finding": "The assertion pins the wording of a diagnostic. The structured measurement field already verifies that recovery withheld a measurement for incomplete exports.",
+      "status": "fixed",
+      "response": "Remove the incidental prose assertion. The public recommendation rejection, absent accepted YAML, incomplete measurement, retained failed checks and allocation accounting assertions remain."
+    },
+    {
+      "path": "lib/marin/src/marin/inference/vllm_router.py",
+      "line": 28,
+      "rule": "ml-reinvents-existing-helper",
+      "finding": "available_port repeats the ephemeral-port socket bind in vllm_backend._reserve_localhost_port and the dynamic-port branch of proxy._reserve_port.",
+      "status": "answered",
+      "response": "The matching helpers are private to the backend/proxy launchers. Defer a shared socket-helper interface to a separate serving cleanup; retain the existing bind-and-release behavior here. This campaign does not require a new abstraction or another dependency between launchers."
+    },
+    {
+      "path": "lib/marin/src/marin/inference/vllm_router.py",
+      "line": 28,
+      "rule": "ml-misleading-name",
+      "finding": "The port is free at probe time. Closing the socket releases it before the router binds, so another process can claim it.",
+      "status": "answered",
+      "response": "available_port describes the observed result at bind time, not an owned reservation. All three existing launch paths release the probing socket before startup. The native router cannot consume this socket directly. No retained incident establishes a port race; changing that serving contract is outside this correction."
+    },
+    {
+      "path": "lib/marin/src/marin/testing/inference/endpoint_checks.py",
+      "line": 299,
+      "rule": "ml-raw-dict-vs-dataclass",
+      "finding": "Per-position mismatches lose their typed distribution fields before aggregation, where max_probability_error is read through an unchecked string key.",
+      "status": "answered",
+      "response": "Retain short-lived JSON-boundary records. Allocation consumes a serialized plan; validity is immediately serialized; position mismatches add case/position to the typed DistributionDifference result for the report. A new persistent state model would widen this correction without changing its contract."
+    },
+    {
+      "path": "lib/marin/src/marin/testing/inference/endpoint_checks.py",
+      "line": 406,
+      "rule": "ml-overloaded-function",
+      "finding": "The cache check interleaves cold/warm prefill comparisons, settled-branch probes, decode checkpoint selection and replay, and coverage aggregation.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    },
+    {
+      "path": "tests/cluster/vllm/conftest.py",
+      "line": 65,
+      "rule": "ml-overloaded-function",
+      "finding": "The fixture resolves an existing endpoint, provisions and coordinates an Iris serving gang, and archives per-host deployment evidence.",
+      "status": "answered",
+      "response": "Retain the linear lifecycle. This entry point performs one launch, reference generation, collection, check stage, attempt, or fixture lifetime; existing helpers own its separable work. The rule permits a single responsibility with sequential steps. Earlier collection review reached the same bounded decision."
+    }
+  ],
+  "validation": {
+    "cpu_before_constant_reuse": "62 passed in 12.92s",
+    "constants_followup": "28 passed in 3.35s on final constant-reuse changes",
+    "lint": "passed",
+    "correctness_dry_run": {
+      "scheduling_timeout": 1800,
+      "task_timeout": 10800,
+      "allocated_gpu": false
+    },
+    "skill_lines": 86
+  },
+  "prior_collection_decision": "logbooks/57-inference-perfmax/analysis/shared-checks-advisory-resolution.json",
+  "fixed_revision": "e99c9bb2fad0542d576e8dab7ccb096f801c3054"
+}
