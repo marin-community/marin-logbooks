@@ -1,0 +1,25 @@
+{
+  "source_commit": "410678977ffb3c2559b1cdeff7377320caf039d7",
+  "task_id": "/romain/knotmeter-20261118t072838z-3cca138ac87b/0",
+  "node": "sbzvxs64",
+  "cpu_pod": "iris-romain-knotmeter-20261118t0728-40f835b5-0-297a6ef881710db0",
+  "requested_gpus": 0,
+  "command": "iris task exec TASK --timeout 120 -- /app/.venv/bin/python -c PUBLISHED_SOURCE --output OUTPUT_URI",
+  "attempts": [
+    {
+      "name": "a1",
+      "interpreter": "python",
+      "status": "failed before dependency staging",
+      "reason": "task exec uses the base interpreter; zstandard is not installed there",
+      "gpu_seconds": 0
+    },
+    {
+      "name": "a2",
+      "interpreter": "/app/.venv/bin/python",
+      "status": "passed",
+      "artifact_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/diagnostics/numa-dependency-a2.json",
+      "gpu_seconds": 0
+    }
+  ],
+  "scope": "No additional Iris allocation. The existing CPU coordinator remains the native preparation/collection owner. No model or CUDA context was created by this probe."
+}

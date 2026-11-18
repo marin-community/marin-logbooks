@@ -97,6 +97,7 @@ def probe(output_uri: str) -> None:
             record["bindings"].append(
                 {"node": node["node"], "memory_binding": memory}
                 | command_result([str(binary), *flags, sys.executable, "-c", STATUS_COMMAND])
+                | {"effective_policy": command_result([str(binary), *flags, str(binary), "--show"])}
             )
     write_record(output_uri, record)
     print(json.dumps(record, indent=2))

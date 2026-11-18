@@ -101,3 +101,41 @@ inside the owned C32 CPU coordinator. That coordinator is already on a GB200
 ARM host and requests zero GPUs. Test native CPU and memory binding on each
 CPU-bearing NUMA node without creating a CUDA context or loading the model.
 The probe's exact source is published before execution.
+
+## 2026-11-18 07:40 UTC — Native dependency passes on the current image
+
+The [NUMA dependency result](analysis/hero-bf16-01a1ed83/numa-dependency-a2.json)
+comes from the owned CPU coordinator on `sbzvxs64`, an ARM64 host. The retained
+package and extracted binary hashes match. `libnuma` is available, default
+memory policy is zero and `get_mempolicy` succeeds. CPU-plus-memory binding and
+CPU-only binding both return zero on nodes 0 and 1. The child CPU masks are
+`0-71` and `72-143`. `Mems_allowed_list` describes the container's cpuset and
+does not itself prove the selected memory policy. The next probe also retains
+`numactl --show` from each bound child.
+
+The first task-exec used the base `python`, which lacked `zstandard`. The retry
+used `/app/.venv/bin/python`, the actual coordinator environment, and passed.
+The [execution record](analysis/hero-bf16-01a1ed83/numa-dependency-execution.json)
+keeps that distinction. These probes create no additional allocation, CUDA
+context or model. Their additional GPU cost is zero.
+
+The [NUMA launcher](analysis/hero-bf16-01a1ed83/numa_launcher.py) stages the
+same private binary before server startup and extends only that vLLM
+subprocess's `PATH`. The profile explicitly declares `--numa-bind`; the pinned
+runtime performs GPU-to-NUMA detection and binding. The research launcher
+substitutes the worker entrypoint and server factory, then calls the native
+coordinator and runner. It preserves preparation, checks, cache reset, fresh
+server, native warmup, timing, gang controls, exports and allocation accounting.
+The runtime wheel is unchanged. Each native host archive will include the
+dependency hash and policy probes. This is a prepared candidate; no NUMA GPU
+trial has been launched.
+
+Pinned source describes retention zero as keeping semantic replay and shared
+prefix junctions, while positive intervals also keep periodic checkpoints.
+It applies to sliding-window and Mamba cache groups. It does not compact global
+attention KV heads. The retained C64 server summary reports peak cache use
+0.99690 and client reuse 57.40%, against theoretical reuse about 95.3%.
+C32 reports peak use 0.76537 and client reuse 85.24%. These are correlated
+pressure signals, not an isolated cause. Server counter-decrease warnings
+remain; use client exports for the comparison. The retention-zero runs test
+whether sparse local retention improves that tradeoff on the fixed checkpoint.
