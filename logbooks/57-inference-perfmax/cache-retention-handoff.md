@@ -81,5 +81,10 @@ probe. Two cancelled RNO attempts had no observed node allocation and retain
 their null native cost receipts. Both east02 jobs remain Succeeded after
 [cleanup](analysis/hero-fp8-cache-validation/snowball-east02-cleanup.json).
 Their native archives and terminal stdout were preserved before ordinary
-deletion of completed pods. All parent GPUs are released. Stronger Hero
-positive-retention fork evidence remains pending in the child's BF16 C32 run.
+deletion of completed pods. All parent GPUs are released.
+
+Hero positive retention also passes the [full v2 suite](analysis/hero-fp8-01a1ec55/bf16-c32-a1-check-summary.json)
+in the child's BF16 C32 trial on 16 GB200s: all 19 exact differences are zero.
+Its clean executed source is `33d780669d850e6b1c4166b2473973b5ff08c225`.
+Both models have now exercised zero and positive retention on the pinned runtime.
+The child's AgentX measurement remains a separate claim.

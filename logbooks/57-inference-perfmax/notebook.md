@@ -814,3 +814,13 @@ native worker-extension query is being added before the main candidate window.
 The completed baseline is reused with its RAM-allocation difference recorded;
 the lower C32 neighbor follows independent client cache evidence. Full FP8
 comparison and final High review remain pending.
+
+The child's BF16 C32 deployment passes the full v2 suite, including all 19 exact
+controls. Both models have now exercised zero and positive retention. The
+[main FP8 storage summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-weight-storage-summary.json)
+also verifies all 16 DP ranks before profiling: packed E4M3FN expert storage,
+BF16 projections, FP32 routers and separate BF16 attention/state views. A
+real-storage test rejects a BF16 tensor reinterpreted as INT32. The short skill
+now asks for this evidence and remains 85 lines. All 62 focused contribution
+cases pass; the later change is documentation only. Benchmark windows and the
+final review remain pending.

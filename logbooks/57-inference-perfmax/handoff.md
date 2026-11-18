@@ -1,5 +1,14 @@
 # Inference validation and tuning
 
+The Hero FP8 extension is running. Both models now pass supported zero and
+positive retention coverage; see the [cache handoff](cache-retention-handoff.md).
+The [Hero campaign](hero-fp8-01a1ec55.md) has a completed BF16 C64 window and two
+further trials in progress. The [execution inspection](hero-fp8-inspection.md)
+records actual weight-storage proof and remaining numerical gaps. A new final
+High review is pending. All contributions remain unmerged.
+
+## Completed BF16 phase — 2026-11-17
+
 Both selected BF16 deployments pass the corrected shared suite under unchanged
 provisional numerical policies. The fresh-context Snowball campaign completed
 two valid one-hour windows and retained C128 for its higher throughput. The
