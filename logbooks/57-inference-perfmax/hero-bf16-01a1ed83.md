@@ -186,3 +186,11 @@ The [check report](analysis/hero-bf16-01a1ed83/inspect_numa.py) states that
 coverage limit explicitly. Inspect all sixteen rank records across the four
 hosts before claiming NUMA active. A setup flag or capability probe alone is
 insufficient. The current two retention-zero windows remain frozen.
+
+The new ctypes memory-policy reader itself passes a
+[native CPU component check](analysis/hero-bf16-01a1ed83/numa-memory-helper-cpu-validation.json)
+under real `numactl` bindings to nodes 0 and 1. It returns mode 2 and the
+matching one-node mask in both cases. This verifies the reader and syscall
+before another GPU launch. Actual worker proof is still pending. Memory
+policy describes allocation rules for that thread; it does not measure the
+placement of resident pages.

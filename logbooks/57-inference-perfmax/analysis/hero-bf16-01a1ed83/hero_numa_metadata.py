@@ -36,7 +36,7 @@ def memory_policy() -> dict:
         "errno": ctypes.get_errno(),
         "mode": mode.value,
         "nodes": [node for node in range(NODE_MASK_BITS) if mask[node // WORD_BITS] & (1 << (node % WORD_BITS))],
-        "scope": "get_mempolicy on the actual native RPC execution thread; default process allocation policy",
+        "scope": "get_mempolicy for the current thread; resident page placement is not inspected",
     }
 
 
