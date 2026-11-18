@@ -413,3 +413,30 @@ execution occurs. This covers the failed setup boundary before the GPU retry;
 it does not qualify worker affinity or performance. The refreshed backend
 snapshot sees 135 available GB200s. Row 2261 still announces the same 32-GPU
 retry and zero H100s; prior failed GPU tasks are released.
+
+## 2026-11-18 11:40 UTC — NUMA binds all 32 real DP workers
+
+Retry `/romain/knotmeter-20261118t112726z-ea23d4021e92/serve` uses clean source
+`9258300edfa848b65f118e144f6161e44db99a56`. Its
+[submitted plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-submitted-plan.json),
+[resolved plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-resolved-plan.json)
+and [admission](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-admission.json)
+retain a prepared workload cache hit and thirty-two GB200s across eight
+Running hosts at Batch. All GPU hosts share `DH1-126-US-EAST-08A`. The physical
+host set matches the completed unbound DP32 comparison.
+
+The [actual worker records](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-live-worker-affinity.json)
+cover every global DP rank 0–31, four workers per host, with all eight native
+attempt UIDs matching admission. Every worker execution thread has nonempty
+CPU affinity within its expected GPU-local node, and `get_mempolicy` returns
+`MPOL_BIND` (2) with exactly that node. Sixteen workers bind each NUMA node.
+The extension SHA-256 is
+`445881645dda1a3917042b2cf160cac2aff88c001086f474b7e68d0780fc8eb9`.
+The records retain all-thread CPU mask counts separately from the checked
+execution-thread policy. Resident page placement is not inspected.
+
+Read-only Iris task execution collects those files during the shared
+numerical suite, before native warmup. The required affinity serving check
+passes. Full reference, batch, cache and decode outcomes are still pending;
+NUMA performance remains unmeasured. Row 2261 now records the admitted
+32-GPU allocation, within this session's share and with no H100 use.
