@@ -664,6 +664,84 @@ recorded here.
   scored common set with task-clustered bootstrap; the missing two slots are
   reported as unscored coverage.
 
+### 2026-11-18 22:45 UTC - V1 entry resolved: the Exp3 production SFT recipe retargeted at the Deletion Tuning main
+
+- Question or hypothesis and reason for trying it: build the V1 launcher — an
+  SFTSpec from the Exp3 production SFT recipe whose pod dispatch targets the
+  Deletion Tuning main — and resolve the production job locally without
+  submitting, with the coordinator's fixed decisions applied (data = the Exp3
+  V5 mix as the Exp3 run consumed it, seed 0; length = 10 percent of the Exp3
+  SFT update count; Wanda calibration on the first 64 training batches).
+- Published source revision: run branch `benfeuer/snowball-deletion-tuning-run`
+  @ `9670422916`. Files: `experiments/deletion_tuning/v1_sft.py` (new),
+  `v1_smoke.py` (new), `tests/test_deletion_tuning_v1_entry.py` (new),
+  `levanter_train.py` (the pod dispatch plus the logit-only trainable filter),
+  `experiments/sft/launcher.py` (a keyword-only `run_fn` on the dispatch),
+  `lib/levanter/src/levanter/main/train_lm.py` (the HF reload keeps the
+  Deletion block), `experiments/post_training/long_loop/exp3_recipe.py` (a
+  null initial-eval gate is accepted).
+- Command or material configuration: the dry-run (`python -m
+  experiments.deletion_tuning.v1_sft`) resolves end to end locally: verify the
+  pinned V5 release, `production_sft_recipe` -> `v1_recipe` overrides ->
+  `deletion_sft_spec` (every Exp3 production gate: stage guard, source-loss
+  pins, verified initializer receipt, packing, FP32/BF16, H100, mesh shapes),
+  `sft_step` with fingerprint `942db825...`, and the dispatch request against a
+  local output directory (consumed-config written locally, nothing submitted).
+  Resolved job shape: 256 H100 (8 x 32), mesh expert=8 and context=32 (DCN),
+  batch mapping [replica_dcn, data, expert], position=context; 75 updates at
+  global batch 256 and sequence 262,144 (5,033,164,800 target positions); 5 h
+  deadline and task timeout; stage guard 1280 H100-h.
+- External inputs and artifact references: data = the Exp3 V5 release as the
+  Exp3 production run consumed it (the #11658 pin: `release-complete-v5.json`,
+  SHA-256 `3e216194...`, verified on read, training_ready), seed 0 (the release
+  geometry seed); the fixed decisions in
+  `BRIEF-v1-entry-20261118-1623.md`.
+- Environment and hardware when relevant: after the coordinator's CPU-load
+  instruction the local dry-run stayed at graph/config resolution (no model
+  init, no calibration, no data reads); the behavior tests and the CPU smoke
+  run as Iris job `/benfeuer/dt-v1-validate-20261118` on cw-us-east-02a.
+- Result, including failure or restart: two local-resolution failures fixed —
+  the 10 percent length was floor-divided (74) before rounding to the fixed 75,
+  and `exp3_sft_spec` decoded a null initial-eval gate unconditionally. The
+  resolved config carries: deletion_tuning = routed_gate scope, eta 1/2048,
+  lambda 1e-5, alpha 1e2 -> 1e3 over 75 steps, lr 5e-4, calibration on the
+  first 64 training batches, seed 0; optimizer AdamW, constant lr 5e-4, weight
+  decay 0, applied to the gate logits only (DeletionTrainer.initial_state
+  forces the logit-only trainable filter, so optimizer state, gradients, and
+  checkpointing cover the logits only); initial_eval_match None.
+- Decisions recorded here and in the plan of record's Decision Log (the
+  coordinator-fixed ones plus their derivations):
+  1. AdamW weight decay 0.0: the paper specifies no weight decay for the logit
+     optimizer, and the -lambda ||W~||^2 regularizer is the only weight-space
+     term.
+  2. The Exp3 initial-eval-match gate is dropped for V1: the Deletion init
+     deliberately perturbs the masked weights (the soft mask at alpha=1e2
+     scales keep-group weights to about 0.95), so a 0.5-nat identity gate
+     against the unmodified base would reject a correct initialization; the
+     checkpoint identity is certified upstream by the verified initializer
+     receipt.
+  3. Deadline 5 h, guard 1280 H100-h (the Exp3 convention: guard = devices x
+     deadline; 5120 = 256 x 20 h) over a point estimate of about 969 H100-h:
+     startup+compile about 1 h, calibration 64 forward passes about 0.6 h, 75
+     updates about 1.9 h at the Exp3 per-update rate (91.4 s, from the 20 h
+     production row), final export about 0.3 h.
+  4. steps_per_eval inherits the Exp3 value (1000), so no in-run validation
+     fires within 75 steps — identical semantics to the Exp3 production run
+     (746 % 1000 != 0); the measured evaluation is Micro210 after export.
+- Evidence: `experiments/deletion_tuning/plans/v1-sft-dry-run.json` on the run
+  branch; the resolved summary (fingerprint, dispatch entrypoint
+  `experiments.deletion_tuning.levanter_train:run_deletion_train_lm`, job name
+  `sft-v1-sft-2026.11.18.1-7f2c80860163`, output prefix
+  `s3://marin-us-east-02a/marin/users/benfeuer/snowball-deletion-tuning`).
+- Interpretation and limitations: the hard-mask export (deleted weights zeroed)
+  and the packed mask artifact are not yet wired on the Levanter path — the
+  resolved run would export the standard HF checkpoint of the frozen weights;
+  that export must land before the Micro210 row and is the next block. The
+  smoke (three steps, toy geometry, local tokenizer fixture, no Snowball SFT
+  controls) validates the entry machinery, not the production scale.
+- Decision and next action: land the hard-mask export and mask artifact on the
+  Levanter path, then submit V1 after the coordinator's go.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
@@ -677,7 +755,7 @@ rollouts; mask artifact + standard checkpoint export per variant.
 | Run | Regime | Mask scope | Data | Resolved | Pending |
 | --- | --- | --- | --- | --- | --- |
 | V0 base | none | none | none | checkpoint revision; eval contract | serving binding confirmation |
-| V1 | SFT | routed-expert gate_proj (256 experts, all layers) | fixed sample of Exp3 V5 release | paper SFT recipe: AdamW on gate logits only, lr 5e-4 constant, alpha 1e2→1e3 | sample size + selection seed/manifest; step/token budget (the paper's 400 steps is per single task, not a mixture); packing/context policy; checkpoint selection rule |
+| V1 | SFT | routed-expert gate_proj (256 experts, all layers) | the Exp3 V5 release as the Exp3 run consumed it (#11658 pin), seed 0; 75 updates (10 percent of 746), batch 256, context 262,144, the Exp3 packing policy | paper SFT recipe: AdamW on gate logits only, lr 5e-4 constant, weight decay 0, alpha 1e2→1e3; Wanda calibration on the first 64 training batches; 5 h deadline, guard 1280 H100-h; entry resolved (fingerprint 942db825) | hard-mask export + mask artifact wiring before submission; checkpoint selection rule |
 | V2 | RL | routed-expert gate_proj | Exp3 RL curriculum | paper GRPO recipe: lr 3e-4 constant, alpha 1e3→1e4, KL 1e-4, hard-mask rollouts | curriculum pin; GRPO vs explicit RLOO-N adaptation label (the existing Snowball RL recipe is RLOO-N); batch/rollout geometry alignment |
 | V3 | SFT (V1 regime) | gate, up, down of routed + shared experts | V1's sample | same recipe as V1 | same as V1 |
 | V4a | none (no training) | Wanda-only mask at V1's learned sparsity | none | paper-derived ablation | V1's learned sparsity |
