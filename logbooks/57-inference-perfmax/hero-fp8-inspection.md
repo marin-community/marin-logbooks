@@ -1,6 +1,6 @@
 # Hero campaign execution inspection
 
-The campaign is still running. The matched FP8 window, final choice and cleanup
+The campaign is still running. The FP8 window, final choice and candidate cleanup
 remain pending. This record covers actions inspected so far.
 
 The child started without the parent's implementation conversation. Its native
@@ -51,6 +51,16 @@ result and original client export. Client cache accounting independently shows
 57.395% reuse against 95.331% theoretical reuse. Server counter decreases remain
 unexplained; they are not evidence of process restarts. The lower C32 neighbor
 tests a capacity hypothesis. It does not establish the cause of the cache gap.
+
+The [C32 neighbor](analysis/hero-fp8-cache-validation/hero-bf16-c32-parent-inspection.json)
+is now complete: 17.93673 output tokens/s/GPU, p90 TTFT 166.45803 seconds and
+completion 171.59327 seconds. It gives up 5.3439% throughput while nearly halving
+latency. Native controls pass with 1,513 profiling successes and no profiling
+errors; two warmup empty-content errors remain recorded. The parent compared
+the original native export and numerical report with the retained summary.
+The 5% similarity heuristic is not a user-approved cutoff. C32 is a defensible
+balanced choice, with C64 retained as the higher-throughput neighbor. Neither
+point has a repeat that quantifies measurement noise.
 
 Reducing the future RAM request from 768 to 256 GiB follows a measured BF16 peak
 near 107 GiB. Both primary points are configured for 16 GB200s and 32 CPUs. Preserve

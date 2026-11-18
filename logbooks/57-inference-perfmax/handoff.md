@@ -2,8 +2,9 @@
 
 The Hero FP8 extension is running. Both BF16 models now pass supported zero and
 positive retention coverage; see the [cache handoff](cache-retention-handoff.md).
-The [Hero campaign](hero-fp8-01a1ec55.md) has a completed BF16 C64 window and two
-further trials in progress. The [execution inspection](hero-fp8-inspection.md)
+The [Hero campaign](hero-fp8-01a1ec55.md) has completed BF16 C64 and C32 windows;
+the FP8 C64 diagnostic window is still running. C32 loses 5.34% throughput while
+nearly halving p90 latency. The [execution inspection](hero-fp8-inspection.md)
 records actual weight-storage proof and remaining numerical gaps. A new final
 High review is pending. All contributions remain unmerged.
 
@@ -16,7 +17,7 @@ required High review is complete; its [findings are resolved](analysis/complete-
 [PR #11320](https://github.com/marin-community/marin/pull/11320) remains unmerged.
 
 Contribution [2471a015ac](https://github.com/yonromai/marin/commit/2471a015acfbb15d4915bf6b4159009cbd676452)
-contains the [84-line skill](../../.agents/skills/inference-perfmax/SKILL.md),
+contains the [84-line skill](https://github.com/yonromai/marin/blob/2471a015acfbb15d4915bf6b4159009cbd676452/.agents/skills/inference-perfmax/SKILL.md),
 [manual runner](../../experiments/evaluation/knotmeter/README.md) and
 [shared checks](../../experiments/evaluation/inference_correctness/README.md).
 Forty-four focused CPU/HTTP/CLI cases passed; the 20 affected report cases passed
@@ -27,9 +28,9 @@ Final [CI](analysis/ci-complete-validation-final.json) is terminal on `2471a015a
 code. The final review's changes clarify documentation and add two skill
 sentences; checking and measurement code are unchanged.
 
-The targets are [Snowball v0.1.1](../../lib/marin/src/marin/testing/inference/resources/endpoint/snowball-v0.1.1.json)
+The targets are [Snowball v0.1.1](https://github.com/marin-community/marin-logbooks/blob/3f0c06de9f02d1778a9ef7d64119bd7885094501/lib/marin/src/marin/testing/inference/resources/endpoint/snowball-v0.1.1.json)
 at HF revision `59852d6f07261722bbec1edb6ab148317156b58e`, on eight H100s,
-and [Hero/Mochi SFT step400407](../../lib/marin/src/marin/testing/inference/resources/endpoint/hero-sft-step400407.json),
+and [Hero/Mochi SFT step400407](https://github.com/marin-community/marin-logbooks/blob/3f0c06de9f02d1778a9ef7d64119bd7885094501/lib/marin/src/marin/testing/inference/resources/endpoint/hero-sft-step400407.json),
 on sixteen GB200s. Hero and Mochi name the same model. The fixtures pin the
 weights, export/config hashes, tokenizer, EOS, reference manifests and policies.
 Both use reviewed vLLM source `0ac9dcb157ee86ccb447bc717259159c41ad456a`, BF16,

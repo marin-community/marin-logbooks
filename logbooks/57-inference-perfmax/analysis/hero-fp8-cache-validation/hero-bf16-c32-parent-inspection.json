@@ -1,0 +1,153 @@
+{
+  "scope": "Parent inspection of the completed C32 result, original local native export and report; no new measurement or numerical investigation",
+  "source": "33d780669d850e6b1c4166b2473973b5ff08c225",
+  "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T045512Z-6bd49b5d193a",
+  "result": "../hero-fp8-01a1ec55/bf16-c32-a1-result.json",
+  "profile_fields_equal_to_c64": {
+    "model": true,
+    "serving": true,
+    "gpus": true,
+    "vllm": true
+  },
+  "explicit_differences": [
+    "session_concurrency 64 -> 32",
+    "host RAM limit 768 -> 256 GiB"
+  ],
+  "native_export_sha256": "f2d986e131f1d75b19ff1506367ae1ad2c268141f277270cd587d6128d550943",
+  "raw_check_sha256": "842a00cfd6b054ee8cbd847b722f36edccb2e6692a1bf85a748c2b17d4c3df26",
+  "native_export_summary_matches_raw": true,
+  "validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 1513,
+    "profiling_errors": 0,
+    "profiling_error_ratio": 0.0,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "cache_exact_positions": 19,
+  "cache_exact_maximum": 0.0,
+  "warmup_errors": 2,
+  "gpu_hours": 27.04111111111111,
+  "metrics": {
+    "qps": {
+      "window_seconds": 1,
+      "samples": 3622,
+      "mean": 0.41745,
+      "p50": 0.0,
+      "p75": 1,
+      "p90": 1,
+      "p95": 2,
+      "std": 0.69922
+    },
+    "latency": {
+      "ttft": {
+        "mean": 72.4251,
+        "p50": 27.97705,
+        "p75": 67.11867,
+        "p90": 166.45803,
+        "p95": 318.41604,
+        "std": 132.67405
+      },
+      "e2el": {
+        "mean": 74.97522,
+        "p50": 28.2191,
+        "p75": 67.56464,
+        "p90": 171.59327,
+        "p95": 325.68449,
+        "std": 140.05859
+      },
+      "itl": {
+        "mean": 0.05525,
+        "p50": 0.04963,
+        "p75": 0.08481,
+        "p90": 0.10545,
+        "p95": 0.11138,
+        "std": 0.03406
+      },
+      "tpot": {
+        "mean": 0.05525,
+        "p50": 0.04963,
+        "p75": 0.08481,
+        "p90": 0.10545,
+        "p95": 0.11138,
+        "std": 0.03406
+      },
+      "intvty": {
+        "mean": 18.09814,
+        "p50": 20.14838,
+        "p75": 11.79147,
+        "p90": 9.48352,
+        "p95": 8.97816,
+        "std": 9124.24344
+      },
+      "e2e_norm_intvty": {
+        "mean": 7.86543,
+        "p50": 9.20914,
+        "p75": 7.45567,
+        "p90": 5.95564,
+        "p95": 4.98037,
+        "std": 2.60647
+      },
+      "full_response_itl": {
+        "mean": 0.00111,
+        "p50": 0.0,
+        "p75": 1e-05,
+        "p90": 1e-05,
+        "p95": 2e-05,
+        "std": 0.00908
+      },
+      "full_response_intvty": {
+        "mean": 904.46016,
+        "p50": 206934.99457,
+        "p75": 120868.32142,
+        "p90": 74232.79292,
+        "p95": 46431.1717,
+        "std": 786492.88412
+      }
+    },
+    "tokens": {
+      "input": {
+        "mean": 87892.98348,
+        "p50": 77213,
+        "p75": 118744,
+        "p90": 163380,
+        "p95": 181502.8,
+        "std": 49312.54156
+      },
+      "output_actual": {
+        "mean": 687.90284,
+        "p50": 239,
+        "p75": 585,
+        "p90": 1579.6,
+        "p95": 3276.8,
+        "std": 1338.18574
+      },
+      "output_expected": {}
+    },
+    "throughput": {
+      "input": {
+        "tokens_per_second": 36668.25915
+      },
+      "output": {
+        "tokens_per_second": 286.98764
+      },
+      "total": {
+        "tokens_per_second": 36955.24679
+      },
+      "duration_seconds": 3626.6266,
+      "per_gpu": {
+        "total_tput_tps": 2309.70292,
+        "output_tput_tps": 17.93673,
+        "input_tput_tps": 2291.7662
+      }
+    },
+    "cache": {
+      "theoretical_cache_hit_rate": 0.95421
+    }
+  },
+  "latency_scope": "p90 request latency, not full RL rollout completion time",
+  "interpretation": "C32 loses 5.3439% of C64 throughput and lowers p90 TTFT about 46.7% and completion about 47.1%. The 5% similarity heuristic is not a user-approved acceptance threshold. One window per point does not quantify noise or locate a global optimum."
+}
