@@ -62,17 +62,21 @@ Raw responses and per-position differences remain available after a failure.
 Later reference histories and cache boundaries still run after an individual
 case fails. Coverage failures remain separate from measured probability errors.
 
-Both presets set the retention interval to 128 tokens. Hero retains periodic
-Mamba states; Snowball's shorter-than-window interval retains all SWA blocks.
-In the pinned runtime, interval zero keeps selected replay and shared-prefix checkpoints; a
-miss on generated history can therefore be legitimate. The positive interval
-lets the suite require and verify decode-created reuse across its boundaries.
-The report records actual hit counts and cache settings. A miss still fails the
-required coverage check; it does not establish corrupt state.
-The fixed probe generates 257 tokens. Interval zero, or an interval too large
-for the probe to reach, therefore permits diagnostics only. The throughput effect
-of changing zero to 128 is unmeasured on both models. Both Snowball measurement
-windows use 128; no Hero AgentX window was run.
+Cache coverage follows the endpoint's retention interval and block alignment.
+Zero retains prompt replay points and shared-prefix junctions. Positive intervals
+also retain periodic checkpoints; `None` keeps them densely. A direct decode
+probe chooses a reachable periodic checkpoint, adjusting its seed or generation
+length when needed. Its last sampled token has not yet produced cache state.
+The report distinguishes this direct reuse from replay after generated history
+has itself been processed as a prompt. That later replay and its sibling must
+show actual hits and preserve scores exactly in every mode. Initial
+recomputation at zero is allowed; failed required reuse still blocks acceptance.
+See the pinned runtime's [replay boundaries](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/v1/core/kv_cache_coordinator.py#L314-L359)
+and [retention settings](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/vllm/config/cache.py#L148-L155).
+
+The presets currently use interval 128. Both zero and positive modes can qualify
+when their supported paths pass. The throughput effect of changing zero to 128
+remains an experiment question.
 
 Reference checks bound the largest absolute probability error over the union of
 saved top-64 and serving top-50 scores. Cache and batch checks use two serving
