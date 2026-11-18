@@ -136,8 +136,15 @@ def main():
                     ids, block, global_experts, expert_map, ignore_invalid_experts=True
                 )
                 canonical = _canonicalize_marlin_moe_token_order(original, experts, padded, block, ids.numel())
-                _, contributions = control.layout_outputs(
+                ascending, descending, used, _ = control.equivalent_layouts(
+                    original, experts, padded, block, ids.numel()
+                )
+                assert torch.equal(canonical[:used], ascending[:used])
+                w13_result, contributions = control.layout_outputs(
                     x, ids, weights, expert_map, q13, q2, s13, s2, layer, canonical, experts, padded, block
+                )
+                reversed_w13, reversed_contributions = control.layout_outputs(
+                    x, ids, weights, expert_map, q13, q2, s13, s2, layer, descending, experts, padded, block
                 )
                 expected = torch.zeros_like(x)
                 ops.moe_sum(contributions.view(count, topk, hidden), expected, ids, expert_map)
@@ -148,6 +155,10 @@ def main():
                     "routing": route,
                     "canonical_reference_max": control.maximum_difference(actual, expected),
                     "repeat_max": control.maximum_difference(actual, repeated),
+                    "uncanonicalized_w13_order_max": control.maximum_difference(w13_result, reversed_w13),
+                    "uncanonicalized_contribution_order_max": control.maximum_difference(
+                        contributions, reversed_contributions
+                    ),
                     "nonzero_output": bool(torch.count_nonzero(actual).item()),
                 }
                 row["passed"] = row["canonical_reference_max"] == row["repeat_max"] == 0 and row["nonzero_output"]
