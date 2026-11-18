@@ -1218,3 +1218,39 @@ quality. Their [CPU inspector preflight](analysis/hero-fp8-01a1ec55/hybrid-inspe
 passes intended counts and rejects wrong counts/hashes. Only a passing selected
 configuration would receive a normal32-GPU/R0/C128 hour against BF16's31.42858
 point. Native full-model gates and unchanged exact cache bounds remain required.
+
+## 2026-11-18 11:44 UTC — Native20 pass; correct manual reference context
+
+The corrected source passes all20 native focused tests, with zero failures,
+errors or skips on the actual immutable746 wheel. The later manual component
+used the Marlin forward registry for a reference module constructed under its
+separate Triton config, causing `KeyError: reference.layers.0.mlp.experts`
+before first-row serialization or graphs. Runtime source and wheel remain
+unchanged. The [failure record](analysis/hero-fp8-01a1ec55/hybrid-wheel-a2-failure.json)
+and JUnit retain93 GPU seconds; pod absent and row2264 closed.
+
+The next probe uses each module's own forward-context registry and writes loaded
+metadata before scoring. It reuses the20-pass JUnit with exact validation source,
+wheel and archive hashes instead of repeating compatible completed tests. Only
+the previously missing manual output/graph phase runs. No model gate or hour
+bypasses that compatibility requirement. All numerical bounds stay unchanged.
+
+## 2026-11-18 11:54 UTC — Hybrid compatibility completes
+
+The [manual actual-wheel component](analysis/hero-fp8-01a1ec55/hybrid-wheel-a3-components.json)
+passes all8 cases, both raw CUDA-graph controls and every repeat exactly.
+Outputs are finite/nonzero. Actual absolute maxima range0.11377–0.18945, with
+independent BF16 reference maxima0.11377–0.18945 and maximum raw difference
+0.00952148. The unchanged0.05 diagnostic floor remains compatibility evidence,
+not full-model accuracy. Ignored BF16 native outputs are exact. Actual native
+Marlin FP8 packed storage and BF16 Triton storage match expected bytes/scales;
+all MoE activations are BF16. The default unsupported BF16-Marlin path still
+rejects. Exact20-pass native test evidence is reused froma2.
+
+Archive SHA256 is
+`f8a53ae28a6d58c6642b8ecbb8363dce147fe583041a3af8398205cf2ca8c185`.
+This completion cost93 GPU seconds. Its pod is absent and row2265 is closed;
+completed owned cost is100.729829 GB200 hours. The next paired8+8 model gates
+retain all original shared numerical bounds, fixed weights/tokenizer/goldens,
+retention128 and PIECEWISE geometry. A normal32-GPU/C128 comparison follows
+only if a candidate passes the full fixed-model checks.

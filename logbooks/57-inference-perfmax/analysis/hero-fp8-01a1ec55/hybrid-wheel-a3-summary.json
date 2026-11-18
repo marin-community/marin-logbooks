@@ -1,0 +1,91 @@
+{
+  "status": "passed",
+  "source_commit": "746cafea89518eb33184211eef271d7bb659058f",
+  "validation_source_commit": "3f418eebea934e9c348a906eeeac939f18704322",
+  "wheel_sha256": "1cea7d874971c1dd10bd2ce44619aa0d35707a4ebb0f29617b051604e73cf941",
+  "model_sha256": "d830c24fac632d129e670f19b05f3c498af73bcab488bbd3324d4b5211460a45",
+  "factory_sha256": "2a64822a1ebf27f656bee4eb0fd61cf1a6d5a7f82ffdce0b8cb78df9cb642ab0",
+  "marlin_sha256": "b7c5d54eb1f34edad97b2633c32db2ef1041751c3360a8615fedcea093a8735c",
+  "reused_focused_pytest": {
+    "wheel_sha256": "1cea7d874971c1dd10bd2ce44619aa0d35707a4ebb0f29617b051604e73cf941",
+    "validation_source_commit": "3f418eebea934e9c348a906eeeac939f18704322",
+    "passed": 20,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "archive_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/components/hybrid-wheel-a2/native-d93173bc8306f99629bfe128939e176449494035c96d9ec81daaa98779657651.tar.zst",
+    "archive_sha256": "d93173bc8306f99629bfe128939e176449494035c96d9ec81daaa98779657651",
+    "file": "components.xml",
+    "file_sha256": "9e9e3d48b63989b18ebf07116b9791cbcf07fa5b559d1c3e933b56785194a806"
+  },
+  "activation_precision": "BF16 activations: native Marlin W8A16 in FP8 layers, native BF16 Triton in ignored layers",
+  "kv_precision": "Not exercised by this MoE component; full-model gates must separately verify BF16 KV",
+  "independent_reference_limits": {
+    "atol": 0.05,
+    "rtol": 0.05
+  },
+  "layers": [
+    {
+      "layer": 0,
+      "method": "UnquantizedFusedMoEMethod",
+      "backend": "UnquantizedMoeBackend.TRITON",
+      "weight_dtypes": [
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ],
+      "weight_bytes": 393216,
+      "scale_shapes": {},
+      "consumer_activation_dtype": "None",
+      "consumer_weight_dtype": "None",
+      "router_dtype": "torch.float32",
+      "projection_dtypes": [
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ]
+    },
+    {
+      "layer": 1,
+      "method": "Fp8PerTensorOnlineMoEMethod",
+      "backend": "Fp8MoeBackend.MARLIN",
+      "weight_dtypes": [
+        "torch.int32",
+        "torch.int32"
+      ],
+      "weight_bytes": 196608,
+      "scale_shapes": {
+        "w13_weight_scale": [
+          4,
+          1,
+          256
+        ],
+        "w2_weight_scale": [
+          4,
+          1,
+          128
+        ]
+      },
+      "consumer_activation_dtype": "None",
+      "consumer_weight_dtype": "torch.float8_e4m3fn",
+      "router_dtype": "torch.float32",
+      "projection_dtypes": [
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ]
+    }
+  ],
+  "scope": "Compatibility only; fixed full-model gates decide numerical acceptance",
+  "cases": 8,
+  "independent_bf16_reference_max": 0.009521484375,
+  "actual_output_abs_max_range": [
+    0.11376953125,
+    0.189453125
+  ],
+  "reference_abs_max_range": [
+    0.11376953125,
+    0.189453125
+  ],
+  "all_outputs_nonzero": true,
+  "repeat_max": 0.0,
+  "graph_eager_max": 0,
+  "graph_repeat_max": 0
+}
