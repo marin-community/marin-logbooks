@@ -21,6 +21,7 @@ INPUTS = (
     ("Selective screen withdrawn before scheduling", "selective-fp8-marlin-a1-queue-cost.json", None),
     ("Selective full-model screen", "selective-fp8-marlin-a2-execution.json", None),
     ("BF16 C64", "bf16-c64-a2-result.json", "bf16-c64-a2-native"),
+    ("BF16 C32", "bf16-c32-a1-result.json", "bf16-c32-a1-native"),
     ("BF16 C128", "bf16-c128-a1-result.json", "bf16-c128-a1-native"),
     ("Selective FP8 C128", "selective-fp8-c128-a1-result.json", "selective-fp8-c128-a1-native"),
     ("Selective FP8 C64", "selective-fp8-c64-a1-result.json", "selective-fp8-c64-a1-native"),
