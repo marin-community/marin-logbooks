@@ -5,6 +5,7 @@
 
 import argparse
 import hashlib
+import importlib
 import importlib.metadata
 import importlib.util
 import json
@@ -36,6 +37,7 @@ def main() -> int:
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
+    importlib.import_module("vllm.model_executor.models").grugmoe = module
     record = {
         "scope": "Component diagnostics; compiled base plus one explicit Python-module override",
         "compiled_base": "0ac9dcb157ee86ccb447bc717259159c41ad456a",

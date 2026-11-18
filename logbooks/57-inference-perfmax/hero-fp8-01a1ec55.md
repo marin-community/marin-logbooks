@@ -233,7 +233,7 @@ reference and strict cache checks still fail. The
 [receipt](analysis/hero-fp8-01a1ec55/marlin-all-a1-receipt.json) and
 [execution](analysis/hero-fp8-01a1ec55/marlin-all-a1-execution.json) retain the
 native report and command. Its complete allocation cost is 1.207778 GB200-hours.
-The Marlin-experts AgentX screen also completed: 6.48378 output tokens/s/GPU,
+The Marlin-experts AgentX screen also completed: 6.48384 output tokens/s/GPU,
 short diagnostic protocol invalid, reference/decode/cache failures retained,
 complete cost 2.327778 GB200-hours. Its
 [result](analysis/hero-fp8-01a1ec55/marlin-experts-a1-result.json) preserves native
@@ -248,3 +248,15 @@ native tests tree from the same runtime commit, rather than trimming helper
 imports one by one. The runner now archives component outputs on failure as
 well as success. This corrects test packaging, not runtime behavior. The runtime
 source and model-module hash are unchanged.
+
+## 2026-11-18 03:54 UTC — Correct the explicit module override
+
+Component a2 reached pytest, then failed the first CPU guard test because my
+explicit import placed `grugmoe` in `sys.modules` without attaching it to the
+parent package. Native string-based monkeypatch lookup therefore could not find
+the module. The bootstrap now reproduces normal import binding on the parent.
+No runtime code or test assertion changed. Retry a3 keeps the same source and
+archive, with the corrected bootstrap hash. Both failed attempts remain in the
+cost ledger. The parent confirmed the documented native precompiled build path
+for this Python-only patch; a CPU builder and hash comparison will precede cold
+installation of the actual candidate wheel.
