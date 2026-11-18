@@ -182,7 +182,10 @@ class HttpEngine:
             retained = set(range(self.retention_interval, computed + 1, self.retention_interval))
         else:
             retained = set()
-        retained.add((len(tokens) - 1) // 4 * 4)
+        # Align snapshots occur at scheduler ends. A cold aligned prompt can
+        # finish beyond the replay point retained by interval zero.
+        if self.retention_interval != 0 or len(tokens) % 4:
+            retained.add((len(tokens) - 1) // 4 * 4)
         self.prefixes.update(tuple((*tokens, *generated)[:length]) for length in retained if length > 0)
         if is_batch:
             self.active_batch -= 1
@@ -204,7 +207,13 @@ class HttpEngine:
                                 self.mode == "no-branch-reuse"
                                 and request.headers["X-Request-Id"].endswith("-settled-alternate")
                             )
-                            else cached
+                            else (
+                                min(cached, tokens.index(1) // 4 * 4)
+                                if self.mode == "no-generated-branch-reuse"
+                                and 1 in tokens
+                                and request.headers["X-Request-Id"].endswith("-settled-alternate")
+                                else cached
+                            )
                         )
                     }
                 },
@@ -292,6 +301,7 @@ async def http_endpoint(engine: HttpEngine):
         ("prefill-only", "cache"),
         ("no-cache", "cache"),
         ("no-branch-reuse", "cache"),
+        ("no-generated-branch-reuse", "cache"),
         ("no-batch", "batch"),
         ("corrupt-cache", "cache"),
         ("branch-corrupt", "cache"),
@@ -342,6 +352,12 @@ async def test_http_suite_requires_numerics_and_exercised_paths(tmp_path, refere
             assert len(cache["cache_evidence"]) == len(reference_fixture.policy.boundary_lengths)
             assert cache["same_split"]["positions"] > 0
             assert cache["different_split"]["positions"] >= len(reference_fixture.policy.boundary_lengths)
+        if mode == "no-generated-branch-reuse":
+            cache = report["checks"]["cache"]
+            assert cache["settled_branches"]["status"] == "passed"
+            assert cache["replayed_decode_reuse"]["status"] == "failed"
+            for row in cache["replayed_decode_reuse"]["observations"]:
+                assert 0 < row["alternate_cached_tokens"] < row["required_alternate_checkpoint"]
         if mode == "branch-corrupt":
             cache = report["checks"]["cache"]
             assert cache["different_split"]["status"] == "passed"
@@ -375,7 +391,11 @@ async def test_cache_contract_covers_retention_and_replayed_generation(tmp_path,
     assert replayed["status"] == "passed"
     for row, initial in zip(replayed["observations"], direct["observations"], strict=True):
         assert row["repeat_cached_tokens"] == row["expected_cached_tokens"] > initial["prompt_tokens"]
-        assert 0 < row["alternate_cached_tokens"] < row["expected_cached_tokens"]
+        assert initial["prompt_tokens"] < row["required_alternate_checkpoint"] < row["expected_cached_tokens"]
+        assert row["alternate_cached_tokens"] == row["required_alternate_checkpoint"]
+    for row in cache["prefill_reuse"]["observations"]:
+        assert min(row["cached_tokens"]) >= row["required_checkpoint"] > 0
+        assert row["seed_tokens"] == row["required_checkpoint"] + 1
     assert cache["same_split"]["statistics"]["maximum"] == 0
     assert cache["same_split"]["positions"] == 2 * len(reference_fixture.policy.boundary_lengths) + 1
 
