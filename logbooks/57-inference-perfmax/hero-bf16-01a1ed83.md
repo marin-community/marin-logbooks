@@ -166,3 +166,23 @@ their failed result rows. Their result receipts correctly show
 job/result state and validity checks as the outcome, rather than inferring
 measurement success from the local CLI exit alone. The parent owns any shared
 runner change prompted by this observation.
+
+## 2026-11-18 08:47 UTC — Require actual worker affinity for the NUMA candidate
+
+The parent reviewed the private dependency approach and required actual worker
+affinity on every host before labeling a result NUMA active. The candidate now
+loads a read-only [native worker extension](analysis/hero-bf16-01a1ed83/hero_numa_metadata.py).
+Before numerical checks or warmup, its serving check calls the native collective
+RPC path. Each actual worker records its PID, native RPC thread, local GPU and
+DP identities, CPU mask, memory policy mode and node mask. It requires CPU
+execution within the GPU-local NUMA node and strict `MPOL_BIND` to that node.
+All thread CPU-mask counts are retained separately. These reads change no
+model, tensor or cache state.
+
+The native DP utility broadcasts to every engine and propagates any worker
+failure, but returns only the first engine result. Each rank therefore also
+writes its full metadata under `point/numa-affinity` in its own host archive.
+The [check report](analysis/hero-bf16-01a1ed83/inspect_numa.py) states that
+coverage limit explicitly. Inspect all sixteen rank records across the four
+hosts before claiming NUMA active. A setup flag or capability probe alone is
+insufficient. The current two retention-zero windows remain frozen.
