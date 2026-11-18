@@ -977,7 +977,26 @@ and full-shared gates run before any normal hour.
 
 The padding contribution is separate from the canonical and selective branches.
 Its current-main revision `139b7521151c580f2e524691b53be00127992e64` adds only
-the two model lines and regression. Its router/test ASTs match candidatea399;
+the two model lines and regression. Its router/test ASTs match candidate `a399`;
 broader current-main GPU behavior is not claimed. The required advisory catalog
 completed once with no findings. The parent's final High GOAL review remains
 pending, and no PR is opened.
+
+## 2026-11-18 09:59 UTC — Matching padding model gate is live
+
+The new job is `/romain/knotmeter-20261118t095444z-639ba7d4875a`, with native
+artifacts under `s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T095444Z-639ba7d4875a`.
+It admitted four GB200s at Batch on `s3jtxs64`, attempt
+`b34b842f195d7635`. The [actual source plan](analysis/hero-fp8-01a1ec55/padding-model-a1-submitted-plan.json)
+is clean published `03d1f1a63e`, tree `a5f4e8e023`; before-state observations
+stayed in ignored scratch until after source capture. Source/code controls and
+all numerical bounds match the preceding screen except the declared runtime
+padding change. The [before-record](analysis/hero-fp8-01a1ec55/padding-model-a1-before.json)
+retains the padding flag's source/default inference. Numerical outcomes remain
+pending; no AgentX hour is running.
+
+The standalone padding [advisory record](analysis/hero-fp8-01a1ec55/padding-contribution-review.json)
+retains six exact native sessions. Every observed main model is
+`claude-opus-5-5`; requested effort is xhigh and observed effort is absent.
+The inspected actions are source/Git reads, with no tests or source changes.
+No findings were reported. The broader final High GOAL review remains separate.
