@@ -488,3 +488,32 @@ The CPU regression distinguishes real one-byte FP8 packing from BF16 storage
 reinterpreted as int32. It and 28 runner tests pass. Scoped lint passes. Actual
 full-model storage proof will come from the new deployment, not these CPU tests
 or earlier method-name records.
+
+
+## 2026-11-18 05:52 UTC — Verify all loaded ranks before profiling
+
+The primary selective FP8 C64 comparison is
+`/romain/knotmeter-20261118t053943z-0eded6360d5c/serve`, with
+[trial artifacts](s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T053943Z-0eded6360d5c).
+It uses clean research source `bd82567837`, native runtime `244247767c`,
+the immutable candidate manifest and the normal 3600-second protocol. Only
+--measure-failed-checks is set; no short diagnostic override is used. Failed
+checks remain recommendation blockers. The four GPU hosts are Running at
+Batch priority, as allowed. Together with BF16 C32 this uses the assigned
+32 GB200 GPUs. Resource row 2240 retains the job identities.
+
+The new native storage check passed before profiling. A separate read of every
+host's saved metadata confirms all 16 DP ranks, with the identical extension
+hash. Each rank holds 48 FP8 expert modules with 24 local experts each and
+32,614,907,904 expert weight bytes. Their int32 packed storage occupies exactly
+one byte per logical FP8 weight, and native consumers declare E4M3FN. All 820
+linear projections per rank are BF16. All 48 routers per rank have FP32 weights
+and biases. Actual attention KV and short-convolution state views are BF16.
+The [all-rank summary](analysis/hero-fp8-01a1ec55/selective-fp8-c64-a1-weight-storage-summary.json)
+records these observations. Full metadata files stay in each native host archive.
+The shared numerical suite is running before warmup.
+
+The parent caught a summary-export error: recursive filtering removed the
+statistics fields. The selective and C32 summaries now preserve each raw
+statistics map exactly, verified against the saved full reports. No measurement
+or numerical result changed, and no GPU rerun was used for this report fix.
