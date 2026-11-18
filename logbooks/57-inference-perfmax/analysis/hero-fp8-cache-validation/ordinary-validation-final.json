@@ -1,0 +1,56 @@
+{
+  "source": "fbcb05a214458537540f50d0ab5e1c8bc48426bc",
+  "focused": {
+    "command": "uv run pytest -q tests/inference/test_endpoint_checks.py tests/inference/test_serve.py experiments/evaluation/knotmeter/test_trials.py",
+    "status": "passed",
+    "cases": 144,
+    "seconds": 31.34
+  },
+  "lint": {
+    "command": "./infra/pre-commit.py --changed-files",
+    "status": "passed",
+    "includes": "Pyrefly types, formatting, file checks and skill metadata"
+  },
+  "affected": {
+    "command": "uv run --no-project infra/ci/run_tests.py",
+    "status": "incomplete_with_failures",
+    "selected_test_files": 307,
+    "collected_cases": 3735,
+    "terminal_summary": "missing",
+    "exit_code": null,
+    "last_log_utc": "2026-11-18T12:06:45Z",
+    "process_absent_at": "2026-11-18T21:24:02Z",
+    "observation": "The log records two failures and a pytest worker hard timeout before stopping. No live process or original exec handle remains. This is not a passing broad-suite result."
+  },
+  "failure_triage": {
+    "status": "two_failures_reproduced",
+    "seconds": 6.36,
+    "source_difference_in_task_curation_from_base": "none",
+    "findings": [
+      "The image-build fake emits python3: command not found and returns an empty digest.",
+      "The Lean sandbox case returns completed with empty stdout, violating its expected compiled message."
+    ],
+    "scope": "Existing task-curation tests. Their cause is not attributed to inference changes; no unrelated source fix or shared environment change was made."
+  },
+  "artifacts": [
+    {
+      "file": "final-focused-tests.log",
+      "sha256": "def5ac3e0792d9b24f168a08398baab489b4f639b7f7c25db192c9783ba2546b"
+    },
+    {
+      "file": "final-contribution-lint.log",
+      "sha256": "fac73ce0f29e4f50802ded64575bd57946be2641229dd9c1ecf4ce825c9fcc7b"
+    },
+    {
+      "file": "final-affected-tests.log.gz",
+      "sha256": "f0020e8e0107044ed6ddda5fcc56a8b451e1986595e79816ea09e30a3d408c35",
+      "uncompressed_sha256": "fcbc0f5b24c565e9b1a4c726292d19783ce99aa6718d9ca478cf80501368bad4"
+    },
+    {
+      "file": "affected-failure-triage.log.gz",
+      "sha256": "e21f740f3c7390d43c8258d3deb2de9bb531d057258ce4d1c1d7cc5464836229",
+      "uncompressed_sha256": "010aa91f418377873d548d252dcc04f1b56d75469266787628026b37e36195d0"
+    }
+  ],
+  "artifact_note": "Failing or interrupted raw logs are gzip-compressed to preserve their bytes, including trailing whitespace and the interrupted final line."
+}
