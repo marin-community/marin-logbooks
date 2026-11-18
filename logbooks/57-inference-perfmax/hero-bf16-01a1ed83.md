@@ -62,3 +62,22 @@ This snapshot is not a reservation. Recheck admission and actual allocation.
 Prepared workload key `a451c72f990cb5e6cc6650dfd302532ce1799cee6543716fec2124afdfab5ffb`
 is already available in the shared cache. Any miss is handled by the runner's
 CPU coordinator. Do not prepare the corpus on devbox.
+
+## 2026-11-18 07:26 UTC — Resolve the current fixture path before retrying
+
+Both initial coordinators stopped before GPU submission. Historical copied
+profiles used `fixture: hero-sft-step400407`. Revision `9b93fb2d3f` had moved
+the fixture and removed shortcut resolution. The maintained preset already
+uses `experiments/evaluation/inference_correctness/fixtures/hero-sft-step400407.json`.
+Update the two owned profiles to that path. The fixed fixture has identical
+bytes, SHA256 `0ad43045025f31097472694724631adebe63b7c04120af36feb0ef38ede52380`.
+Run the actual CPU reference lookup before retrying. No numerical criterion,
+golden, serving flag or runtime changed.
+
+The failed source was `c1743e44b55cf6c74f6713c7c971b782762a8aff`. Coordinators
+`/romain/knotmeter-20261118t072255z-4698a9d73b3e` and
+`/romain/knotmeter-20261118t072255z-b78aac7ff367` retain original submitted
+plans, coordinator errors and result receipts in this leaf's analysis directory.
+Both results report complete cost of zero GPU seconds and no serving attempts.
+This demonstrates a profile-migration trap when copying prior evidence. Inspect
+the current preset's check command as well as the historical serving settings.
