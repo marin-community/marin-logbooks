@@ -260,3 +260,33 @@ archive, with the corrected bootstrap hash. Both failed attempts remain in the
 cost ledger. The parent confirmed the documented native precompiled build path
 for this Python-only patch; a CPU builder and hash comparison will precede cold
 installation of the actual candidate wheel.
+
+## 2026-11-18 04:03 UTC — Preserve native measurement after a numerical failure
+
+The runner previously allowed continuation only through `--diagnostic-seconds`,
+which also adds AgentX's unsafe override. That cannot supply the goal's normal
+one-hour comparison when numerical checks remain unqualified. The new explicit
+`--measure-failed-checks` option retains those failures while keeping the native
+command, 3600-second window, count-driven warmup, cache reset and validity. Its
+report says `diagnostic performance (failed checks)` separately from AgentX's
+validity. Existing all-checks-passed acceptance rules still block recommendation.
+The command-equivalence and recommendation regression test passes.
+
+Experimental wheels can now live at a private durable cloud URI. The worker
+materializes the current architecture once under a stable hash-based task-local
+path, checks its SHA256, and records the source URI/hash without changing the
+saved manifest. Normal HTTPS releases still use the native installer. Tests
+cover stable identity, corrupted bytes and HTTPS. All 27 runner tests pass;
+scoped required lint passes. The parent requested these exact controls.
+
+Component a3 stopped before installation on a bootstrap hash mismatch: lint had
+reordered imports after I froze that input. It cost 23 GPU-seconds. The runner
+now checks the local bootstrap hash before submitting a job. All three failed
+overlay preparations are retained and supply no runtime-test qualification.
+Rather than allocate another overlay retry, build the actual wheel on a CPU
+job and cold-install it for the focused GPU tests. The
+[build input](analysis/hero-fp8-01a1ec55/selective-build-a1-input.json) pins all
+source bytes and the native precompiled base. The builder uses unmodified native
+`setup.py` through `python -m build --wheel --no-isolation`, then compares every
+ELF member against the pinned wheel and checks the changed Python module hash.
+No native binary is rebuilt. No release or adoption pin is changed.

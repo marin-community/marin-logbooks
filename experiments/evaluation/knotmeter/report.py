@@ -158,6 +158,10 @@ def render_report(
             agentx = "valid" if measurement["validity"]["submission_valid"] else "invalid"
         if result["manifest"]["diagnostic"]:
             agentx += "; diagnostic"
+        elif result["manifest"]["series"].get("measure_failed_checks") and any(
+            check["status"] != "passed" for check in check_records
+        ):
+            agentx += "; diagnostic performance (failed checks)"
         cost = format_value(result["gpu_seconds"] / 3600) + (" + unknown" if not result["cost_complete"] else "")
         if not result["cost_complete"] and not result["gpu_seconds"]:
             cost = "unknown"

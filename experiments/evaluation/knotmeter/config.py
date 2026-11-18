@@ -140,7 +140,9 @@ def load_profile(path: Path, overrides: list[str]) -> Profile:
     return Profile.model_validate(values)
 
 
-def resolved_series(profile: Profile, diagnostic_seconds: int | None = None) -> dict:
+def resolved_series(
+    profile: Profile, diagnostic_seconds: int | None = None, *, measure_failed_checks: bool = False
+) -> dict:
     recipe = load_series()
     datasets = recipe.pop("datasets")
     selector = profile.workload.public_dataset
@@ -171,4 +173,6 @@ def resolved_series(profile: Profile, diagnostic_seconds: int | None = None) -> 
         if diagnostic_seconds <= 0:
             raise ValueError("Diagnostic duration must be positive")
         series |= {"duration": diagnostic_seconds, "diagnostic": True}
+    if measure_failed_checks:
+        series["measure_failed_checks"] = True
     return series

@@ -24,22 +24,35 @@ def main() -> int:
     args = parser.parse_args()
     payload = json.loads(args.payload.read_text())
     root = Path(payload["source_root"])
-    model = root / "vllm/model_executor/models/grugmoe.py"
+    candidate = payload.get("candidate_manifest")
+    model = (
+        Path(importlib.import_module("vllm.model_executor.models.grugmoe").__file__)
+        if candidate
+        else root / "vllm/model_executor/models/grugmoe.py"
+    )
     actual_hash = hashlib.sha256(model.read_bytes()).hexdigest()
     if actual_hash != payload["model_sha256"]:
         raise RuntimeError("The component model source differs from the published input")
-    if "0ac9dcb157ee" not in importlib.metadata.version("vllm"):
+    expected_version = candidate["version"] if candidate else "0ac9dcb157ee"
+    if expected_version not in importlib.metadata.version("vllm"):
         raise RuntimeError("The compiled base is not the pinned serving wheel")
     if torch.__version__ != "2.14.1+cu132":
         raise RuntimeError("Torch differs from the pinned compiled base")
-    spec = importlib.util.spec_from_file_location("vllm.model_executor.models.grugmoe", model)
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    importlib.import_module("vllm.model_executor.models").grugmoe = module
+    if candidate:
+        module = importlib.import_module("vllm.model_executor.models.grugmoe")
+    else:
+        spec = importlib.util.spec_from_file_location("vllm.model_executor.models.grugmoe", model)
+        assert spec is not None and spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        importlib.import_module("vllm.model_executor.models").grugmoe = module
     record = {
-        "scope": "Component diagnostics; compiled base plus one explicit Python-module override",
+        "scope": (
+            "Actual installed candidate wheel"
+            if candidate
+            else "Component diagnostics; compiled base plus one explicit Python-module override"
+        ),
         "compiled_base": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
         "source_commit": payload["source_commit"],
         "vllm_package": vllm.__file__,
