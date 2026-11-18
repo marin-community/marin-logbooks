@@ -1,0 +1,21 @@
+# Qwen3-8B fine-tuned on the Terminus-2 rendering of the solved arm, seed 0 (marin-community/marin-logbooks#39).
+# Serving matches the native-format arms' evaluations except for the qwen3 reasoning parser, which
+# keeps the <think> span out of the reply Terminus-2 parses and out of the conversation history.
+name: open-swe-outcome-qwen3-8b-terminus-solved-10000-seed0
+location: s3://marin-us-east-08a/marin/users/dml/checkpoints/open-swe-outcome/qwen3-8b-terminus-solved-10000-seed0-ctx65536/2026.11.13/hf-cpu/step-812/
+tokenizer: Qwen/Qwen3-8B
+apply_chat_template: true
+resource_hint:
+  gpu:
+    H100: 2
+serve:
+  tensor_parallel_size: 2
+  max_model_len: 65536
+  auto_overrides: false
+  reasoning_parser: qwen3
+  vllm_extra_args:
+    - --enable-prefix-caching
+    - --dtype
+    - bfloat16
+generation:
+  max_gen_toks: 8192
