@@ -364,3 +364,30 @@ thread allocation policy; it does not claim resident page placement. The
 available GB200s, without reserving them. Row 2261 announces 32 GB200s and
 zero H100s under this session's actual binding. Requested interactive priority
 and ordinary Batch fallback remain unchanged.
+
+## 2026-11-18 11:23 UTC — NUMA setup path failure is retained
+
+NUMA trial `/romain/knotmeter-20261118t111414z-596d12bff98c/serve` uses source
+`a71af3acb6ac190e6481602c6059e8f5bda0505d`. It stops before vLLM startup:
+the serialized `__main__` factory retains the devbox `__file__`, and its
+source-hash lookup cannot open that path inside `/app`. The
+[submitted plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-submitted-plan.json),
+[resolved plan](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-resolved-plan.json),
+[failed result](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-result.json) and
+[leader receipt](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-leader-receipt.json)
+retain every attempt and traceback. The archive SHA-256 is
+`89f735ed23e162f29f5a2e8ad164da5ddc40c7cb343d3111717356d29d1708a7`.
+No serving check, warmup or measurement ran. Complete failed cost is
+1,000.671997 GPU seconds, or 0.277964 GB200 hours. The
+[cleanup receipt](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a1-cleanup.json)
+confirms no remaining owned pods or GPUs before retry.
+
+The task-local factory now finds its source under the imported native
+runner's repository root. The [local regression](analysis/hero-bf16-01a1ed83/numa-serialized-path-cpu-validation.json)
+passes with a missing serialized `__file__`; dependency execution and server
+creation there are explicitly CPU stubs. That does not cover the remote
+boundary. Before another GPU allocation, run the published
+[zero-GPU Iris setup probe](analysis/hero-bf16-01a1ed83/probe_numa_setup.py)
+through the same by-value serialized factory, task image and CPU environment.
+It performs real ARM dependency staging, local policy probes, source hashing
+and native launcher construction without entering the server context.
