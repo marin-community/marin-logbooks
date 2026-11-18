@@ -1,0 +1,71 @@
+{
+  "observed_unix": 1794995935.185188,
+  "pods": [
+    {
+      "name": "iris-romain-knotmeter-20261118t0954-6f5ab47e-0-b34b842f195d7635",
+      "uid": "9c85c917-e0cd-45a6-b84b-b4e1d9c01007",
+      "phase": "Running",
+      "node": "s3jtxs64",
+      "priority_class": "iris-batch",
+      "gpu_requests": 4,
+      "conditions": [
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-18T09:54:53Z",
+          "observedGeneration": 3,
+          "status": "True",
+          "type": "PodReadyToStartContainers"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-18T09:54:55Z",
+          "observedGeneration": 3,
+          "status": "True",
+          "type": "Initialized"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-18T09:54:56Z",
+          "observedGeneration": 3,
+          "status": "True",
+          "type": "Ready"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-18T09:54:56Z",
+          "observedGeneration": 3,
+          "status": "True",
+          "type": "ContainersReady"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-18T09:54:52Z",
+          "observedGeneration": 3,
+          "status": "True",
+          "type": "PodScheduled"
+        }
+      ]
+    }
+  ],
+  "requested_gpus": 4,
+  "source": {
+    "tree_hash": "a5f4e8e023",
+    "base_commit": "03d1f1a63e",
+    "dirty": false,
+    "branch": "codex/hero-fp8-01a1ec55",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-18T01:54:44.234995",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/experiments/evaluation/inference_correctness/launch.py",
+      "--profile",
+      "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-fp8-padding-4gpu.yaml",
+      "--name",
+      "hero-fp8-padding-4gpu-a1",
+      "--pytest-node",
+      "tests/cluster/vllm/test_hero_fp8_canonical.py::test_hero_canonical_storage_cache_then_shared_suite",
+      "--output",
+      "scratch/padding-model-a1-execution.json"
+    ]
+  }
+}

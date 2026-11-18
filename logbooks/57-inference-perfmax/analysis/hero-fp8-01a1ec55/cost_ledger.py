@@ -23,6 +23,7 @@ INPUTS = (
     ("Canonical full-model cache-first rejection", "marlin-canonical-model-a1-execution.json", None),
     ("Zero-weight padded-route component", "marlin-padding-a1-execution.json", None),
     ("Fixed-padding actual-wheel component", "padding-fixed-a1-execution.json", None),
+    ("Padding full-model reference rejection", "padding-model-a1-execution.json", None),
     ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),
     ("Marlin history component import failure", "marlin-history-a1-execution.json", None),
     ("Marlin order control partial writer failure", "marlin-order-a2-execution.json", None),
