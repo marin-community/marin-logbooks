@@ -15,7 +15,7 @@ from marin.testing.inference.goldens import LookupStatus, lookup_reference, read
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--fixture", required=True, help="Checked-in fixture name or JSON path")
+    parser.add_argument("--fixture", required=True, help="Path to a JSON fixture")
     parser.add_argument("--lookup", action="store_true", help="Verify saved artifacts without contacting a server")
     parser.add_argument("--url", default=os.environ.get("KNOTMETER_SERVER_URL"))
     parser.add_argument("--model", default=os.environ.get("KNOTMETER_MODEL"))

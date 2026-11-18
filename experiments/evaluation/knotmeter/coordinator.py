@@ -9,8 +9,10 @@ import logging
 import tempfile
 from pathlib import Path
 
+from connectrpc.code import Code
+from connectrpc.errors import ConnectError
 from iris.client.client import IrisClient, iris_ctx
-from iris.cluster.types import CoschedulingConfig, Entrypoint, EnvironmentSpec, ResourceSpec, gpu_device
+from iris.cluster.types import CoschedulingConfig, Entrypoint, EnvironmentSpec, JobName, ResourceSpec, gpu_device
 from iris.rpc import job_pb2
 from marin.testing.inference.goldens import LookupStatus, lookup_reference, read_fixture
 from rigging.filesystem.storage_path import prefix_join
@@ -96,6 +98,7 @@ def run_coordinator(plan: TrialPlan) -> None:
     assert client is not None
     with tempfile.TemporaryDirectory(prefix="knotmeter-trial-") as directory:
         work = Path(directory)
+        job = None
         try:
             plan = prepare_plan(plan, work)
             write_record(prefix_join(plan["trial_uri"], "plan.json"), plan)
@@ -110,8 +113,6 @@ def run_coordinator(plan: TrialPlan) -> None:
             report_campaign(plan["campaign_uri"])
             logger.info("Campaign report: %s/summary.md", plan["campaign_uri"])
         except BaseException as error:
-            if "manifest" not in plan:
-                record_preparation_failure(plan, f"{type(error).__name__}: {error}")
             write_record(
                 prefix_join(plan["trial_uri"], "coordinator-error.json"),
                 {
@@ -121,4 +122,14 @@ def run_coordinator(plan: TrialPlan) -> None:
                     "plan_uri": prefix_join(plan["trial_uri"], "plan.json"),
                 },
             )
+            if job is None:
+                absent = "manifest" not in plan
+                if not absent:
+                    try:
+                        client.job_status(JobName.from_string(plan["gpu_job_id"]))
+                    except ConnectError as status_error:
+                        absent = status_error.code == Code.NOT_FOUND
+                        if not absent:
+                            logger.warning("GPU submission status remains unknown: %s", status_error)
+                record_preparation_failure(plan, f"{type(error).__name__}: {error}", gpu_job_absent=absent)
             raise

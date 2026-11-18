@@ -8,6 +8,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from connectrpc.code import Code
+from connectrpc.errors import ConnectError
 from iris.client.client import IrisClient
 from iris.client.workload import TaskOutputArchiveState
 from iris.cluster.types import JobName
@@ -133,7 +135,12 @@ def validate_window(point: Path, manifest: PointManifest, record: dict) -> dict:
 
 def collect_trial(client: IrisClient, plan: TrialPlan, work: Path) -> dict:
     """Read terminal work only. Recovery cannot submit another allocation."""
-    status = client.job_status(JobName.from_string(plan["gpu_job_id"]))
+    try:
+        status = client.job_status(JobName.from_string(plan["gpu_job_id"]))
+    except ConnectError as error:
+        if error.code != Code.NOT_FOUND:
+            raise
+        return read_record(prefix_join(plan["trial_uri"], "result.json"))
     if not is_job_finished(status.state):
         raise ValueError(f"GPU work is still live: {status.job_id}. Reattach or cancel it before collecting.")
     manifest = plan["manifest"]
@@ -270,6 +277,8 @@ def refresh_costs(plan: TrialPlan) -> dict:
     """Apply later allocation snapshots without reprocessing unchanged exports."""
     uri = prefix_join(plan["trial_uri"], "result.json")
     result = read_record(uri)
+    if not result["attempts"]:
+        return result
     gpus = result["manifest"]["series"]["profile"]["gpus"]["per_host"]
     attempts = []
     for attempt in result["attempts"]:
@@ -286,24 +295,31 @@ def refresh_costs(plan: TrialPlan) -> dict:
     return result
 
 
-def record_preparation_failure(plan: TrialPlan, error: str) -> None:
-    """Preserve failures before the durable-before-GPU-submit boundary."""
+def record_preparation_failure(plan: TrialPlan, error: str, *, gpu_job_absent: bool = True) -> None:
+    """Preserve preparation/submission failures, including uncertain GPU admission."""
     result = {
         "trial_id": plan["trial_id"],
         "trial_uri": plan["trial_uri"],
-        "manifest": {
-            "series": plan["series"],
-            "diagnostic": bool(plan["series"].get("diagnostic")),
-            "vllm_release": plan["vllm_release"],
-            "workload": {"recipe": None},
-        },
+        "manifest": (
+            plan.get("manifest")
+            or {
+                "series": plan["series"],
+                "diagnostic": bool(plan["series"].get("diagnostic")),
+                "vllm_release": plan["vllm_release"],
+                "workload": {"recipe": None},
+            }
+        ),
         "job_state": "preparation-failed",
         "job_succeeded": False,
         "attempts": [],
         "measurement": None,
         "gpu_seconds": 0.0,
-        "cost_complete": True,
+        "cost_complete": gpu_job_absent,
         "error": error,
-        "cost_basis": "Preparation failed before a GPU child could be submitted",
+        "cost_basis": (
+            "GPU child was not submitted or the controller confirmed it absent"
+            if gpu_job_absent
+            else "GPU submission was not acknowledged; allocation cost remains unknown"
+        ),
     }
     write_record(prefix_join(plan["trial_uri"], "result.json"), result)

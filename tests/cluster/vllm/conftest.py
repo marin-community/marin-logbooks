@@ -41,7 +41,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     )
     parser.addoption("--correctness-plan", type=Path, help="Pinned deployment plan supplied by the Iris launcher")
     parser.addoption("--endpoint-url", help="Check an existing endpoint without deploying")
-    parser.addoption("--correctness-fixture", help="Shared model fixture for an existing endpoint")
+    parser.addoption("--correctness-fixture", help="JSON fixture path for an existing endpoint")
     parser.addoption("--correctness-model", help="Served model name for an existing endpoint")
     parser.addoption("--runtime-source", help="Expected vLLM source SHA for an existing endpoint")
     parser.addoption("--correctness-output", type=Path, help="Retained JSON report path")
