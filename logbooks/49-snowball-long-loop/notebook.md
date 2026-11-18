@@ -1002,3 +1002,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: step-history artifact [R].
 - Interpretation and limitations: artifact snapshot cadence lags the live run.
 - Decision and next action: next hourly check reads the step history again for updates 4+.
+
+### 2026-11-18 05:40 UTC - Hourly catch-up (04:40–05:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 restart identities (source `ba63397d23…`, artifact `2026.11.17.55`).
+- Command or material configuration: as recorded at launch; the step-history artifact still holds three rows (checked this cycle).
+- External inputs and artifact references: `restart55-milestone-step-history-once.json` [R]; W&B run f7m70xhc [P].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 `.55` continues at updates 1–3 in the artifact snapshot (no new rows at this cycle's check); the live W&B run is the authoritative source. No exp3 anomalies visible in this record.
+- Evidence: step-history artifact [R].
+- Interpretation and limitations: artifact snapshot cadence lags the live run.
+- Decision and next action: next hourly check reads the step history again for updates 4+.
