@@ -706,3 +706,32 @@ output addition and enable FP32 reduction. Hardware and weight-format difference
 leave applicability to Hero FP8 unproven. The next cheap control will compare
 full expert-region orders with separately zeroed output/workspace, alongside
 A→B→A history, before justifying another full-model setup.
+
+
+## 2026-11-18 07:53 UTC — Separate stale-buffer and routed-order controls
+
+The corrected one-GPU probe uses verified native
+set_current_vllm_config(VllmConfig()). A CPU preflight checks every imported
+native symbol against pinned source, compiles the script, and validates the
+upstream canonicalizer's active-region ordering with hostile inactive-tail data.
+These are setup checks, not GPU numerical evidence.
+
+The independent EP/history oracle keeps exactly representable weights. Its
+A→B→A comparisons and unmapped/padding outputs stay strict. A separate order-only
+phase uses native-quantized random BF16 weights and varied column magnitudes,
+with the same per-tensor FP8 quantizer and BF16 activations. It compares ascending
+and descending legal orders across each entire expert region, with independent
+zeroed output, intermediates and workspace. W13 and final contributions are read
+back. Identical-order repeats distinguish ordinary repeat variance from order
+sensitivity. Canonicalized repeats are a paired diagnostic control.
+
+The order phase targets concentrated hot local/mixed routing at 16, 115, 128,
+129, 256, 512 and 2048 rows, with actual Hero inner dimensions 3072, local24 and
+global384. This can establish or reject applicability at those shapes, scales and
+routes. A negative synthetic result will not prove full-model determinism.
+The canonicalizer is retained from upstream PR #52532 with its exact PR identity;
+no installed runtime module is patched for this component.
+
+The initial comparison is also saved under the campaign URI as
+comparison-initial.md/json, with remote SHA readback in
+[the receipt](analysis/hero-fp8-01a1ec55/comparison-initial-receipt.json).

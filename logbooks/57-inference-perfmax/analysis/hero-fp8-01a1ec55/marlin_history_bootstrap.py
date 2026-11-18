@@ -7,6 +7,7 @@ import hashlib
 import importlib
 import importlib.metadata
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -15,19 +16,86 @@ from types import SimpleNamespace
 import torch
 import torch.nn.functional as F
 import vllm._custom_ops as ops
-from vllm.config import ensure_current_vllm_config
-from vllm.model_executor.layers.fused_moe.experts.marlin_moe import fused_marlin_moe
+from vllm.config import VllmConfig, set_current_vllm_config
+from vllm.model_executor.layers.fused_moe.experts.marlin_moe import _fused_marlin_moe, fused_marlin_moe
+from vllm.model_executor.layers.fused_moe.moe_align_block_size import moe_align_block_size
 from vllm.model_executor.layers.quantization.online.fp8 import _fp8_scale
 from vllm.model_executor.layers.quantization.utils.marlin_utils_fp8 import prepare_fp8_moe_layer_for_marlin
 from vllm.scalar_type import scalar_types
 
 
-def quantize(weight):
+# Canonical layout control from vllm-project/vllm PR #52532 (Apache-2.0).
+def _canonicalize_marlin_moe_token_order(
+    sorted_token_ids: torch.Tensor,
+    expert_ids: torch.Tensor,
+    num_tokens_post_padded: torch.Tensor,
+    block_size_m: int,
+    num_valid_tokens: int,
+) -> torch.Tensor:
+    """Canonicalize routed token IDs within contiguous expert regions.
+
+    moe_align_block_size guarantees expert grouping but does not guarantee
+    token ordering within an expert. Marlin's multi-threadblock split-K
+    reduction can depend on physical block position, so equivalent routed
+    layouts need a common ordering before entering the kernel.
+
+    Alignment buffers may contain unspecified data after
+    num_tokens_post_padded. Keep that inactive tail strictly after the active
+    prefix so its contents cannot affect canonicalization.
+    """
+    block_experts = expert_ids.to(dtype=torch.int64)
+    block_positions = torch.arange(
+        expert_ids.numel(),
+        device=expert_ids.device,
+        dtype=torch.int64,
+    )
+    active_blocks = block_positions * block_size_m < num_tokens_post_padded
+
+    region_starts = torch.cat(
+        (
+            torch.ones_like(block_experts[:1], dtype=torch.bool),
+            (block_experts[1:] != block_experts[:-1]) | (active_blocks[1:] != active_blocks[:-1]),
+        ),
+        dim=0,
+    )
+    block_regions = torch.cumsum(region_starts.to(dtype=torch.int64), dim=0) - 1
+
+    slot_regions = torch.repeat_interleave(
+        block_regions,
+        block_size_m,
+    )[: sorted_token_ids.numel()]
+
+    slot_positions = torch.arange(
+        sorted_token_ids.numel(),
+        device=sorted_token_ids.device,
+        dtype=torch.int64,
+    )
+    active_slots = slot_positions < num_tokens_post_padded
+
+    token_ids = sorted_token_ids.to(dtype=torch.int64)
+    key_stride = num_valid_tokens + 1
+
+    # Valid token IDs are in [0, num_valid_tokens), with the padding sentinel
+    # at num_valid_tokens. Values in the inactive tail are unspecified, so do
+    # not let them contribute to the sort key.
+    token_key = torch.where(
+        active_slots,
+        token_ids,
+        torch.zeros_like(token_ids),
+    )
+    sort_key = slot_regions * key_stride + token_key
+
+    order = torch.argsort(sort_key)
+    return sorted_token_ids.index_select(0, order)
+
+
+def quantize(weight, exact=True):
     scales = _fp8_scale(weight.float().abs().flatten(1).amax(dim=1))
     packed = torch.empty_like(weight, dtype=torch.float8_e4m3fn)
     for expert in range(weight.shape[0]):
         packed[expert] = ops.scaled_fp8_quant(weight[expert], scale=scales[expert])[0]
-    assert torch.equal(packed.to(weight.dtype) * scales[:, None, None], weight)
+    if exact:
+        assert torch.equal(packed.to(weight.dtype) * scales[:, None, None], weight)
     return packed, scales
 
 
@@ -45,6 +113,67 @@ def reference(x, ids, probabilities, expert_map, w13, w2):
         weighted = (down * probabilities[rows, slots, None]).bfloat16().float()
         result.index_add_(0, rows, weighted)
     return result.bfloat16()
+
+
+def equivalent_layouts(sorted_ids, experts, post_padded, block, num_valid):
+    used = int(post_padded.item())
+    ids = sorted_ids[:used].cpu()
+    groups = experts[: used // block].cpu().tolist()
+    first, second = sorted_ids.clone(), sorted_ids.clone()
+    begin = 0
+    regions = 0
+    while begin < len(groups):
+        end = begin + 1
+        while end < len(groups) and groups[end] == groups[begin]:
+            end += 1
+        lower, upper = begin * block, end * block
+        tokens = ids[lower:upper]
+        valid = tokens[tokens < num_valid].sort().values
+        assert (valid >= 0).all()
+        padding = torch.full((upper - lower - len(valid),), num_valid, dtype=torch.int32)
+        first[lower:upper] = torch.cat((valid, padding)).to(sorted_ids.device)
+        second[lower:upper] = torch.cat((valid.flip(0), padding)).to(sorted_ids.device)
+        begin = end
+        regions += 1
+    return first, second, used, regions
+
+
+def layout_outputs(x, ids, probabilities, expert_map, q13, q2, s13, s2, layer, order, experts, padded, block):
+    count, hidden = x.shape
+    topk = ids.shape[1]
+    intermediate = layer.intermediate_size_per_partition
+    c13 = torch.zeros(count * topk * 2 * intermediate, dtype=torch.bfloat16, device=x.device)
+    c2 = torch.zeros(count * topk * intermediate, dtype=torch.bfloat16, device=x.device)
+    output = torch.zeros((count * topk, hidden), dtype=torch.bfloat16, device=x.device)
+    result = _fused_marlin_moe(
+        hidden_states=x,
+        w1=q13,
+        w2=q2,
+        bias1=None,
+        bias2=None,
+        w1_scale=s13,
+        w2_scale=s2,
+        topk_weights=probabilities,
+        num_topk=topk,
+        quant_type=scalar_types.float8_e4m3fn,
+        apply_router_weight_on_input=False,
+        expert_map=expert_map,
+        block_size_m=block,
+        sorted_token_ids=order,
+        expert_ids=experts,
+        num_tokens_post_padded=padded,
+        topk_ids=ids,
+        workspace=torch.zeros_like(layer.workspace),
+        intermediate_cache13=c13,
+        intermediate_cache2=c2,
+        output=output,
+    )
+    torch.cuda.synchronize()
+    return c13.clone(), result.clone()
+
+
+def maximum(first, second):
+    return (first.float() - second.float()).abs().max().item()
 
 
 def main():
@@ -74,10 +203,12 @@ def main():
         "device": torch.cuda.get_device_name(),
         "started_unix": time.time(),
         "cases": [],
+        "layout_order": [],
+        "upstream_candidate": payload["upstream_candidate"],
     }
     output.write_text(json.dumps(record, indent=2) + "\n")
     local, global_experts, hidden, intermediate, topk, maximum = 24, 384, 3072, 3072, 8, 2048
-    with torch.inference_mode(), ensure_current_vllm_config():
+    with torch.inference_mode(), set_current_vllm_config(VllmConfig()):
         levels = torch.tensor([0.21875, 0.4375, 0.875, 1.75], device="cuda")
         expert = torch.arange(local, device="cuda")[:, None, None]
         rows = torch.arange(2 * intermediate, device="cuda")[None, :, None]
@@ -163,16 +294,23 @@ def main():
                     }
                     record["cases"].append(row)
                     output.write_text(json.dumps(record, indent=2) + "\n")
-                    torch.testing.assert_close(before.float(), expected.float(), atol=0.02, rtol=0.02)
+                    row["reference_passed"] = torch.allclose(before.float(), expected.float(), atol=0.02, rtol=0.02)
                     run(inputs.flip(0).contiguous(), routes["mixed"].flip(0).contiguous(), probabilities)
                     after = run(x, target, weights)
                     row["history_max_abs"] = (before.float() - after.float()).abs().max().item()
-                    assert torch.equal(before, after), row
+                    row["history_passed"] = torch.equal(before, after)
+                    row["filtering_passed"] = True
                     if name == "no-local":
-                        assert not torch.count_nonzero(before), row
+                        row["filtering_passed"] = not torch.count_nonzero(before).item()
                     if name == "negative-padding":
-                        assert not torch.count_nonzero(before[torch.arange(count, device="cuda") % 3 == 0]), row
-                    row["status"] = "passed"
+                        row["filtering_passed"] = not torch.count_nonzero(
+                            before[torch.arange(count, device="cuda") % 3 == 0]
+                        ).item()
+                    row["status"] = (
+                        "passed"
+                        if row["reference_passed"] and row["history_passed"] and row["filtering_passed"]
+                        else "failed"
+                    )
                     output.write_text(json.dumps(record, indent=2) + "\n")
         assert any(x["output_max_abs"] > 0.01 for x in record["cases"])
         # Same persistent native intermediate buffers across differently sized
@@ -208,9 +346,76 @@ def main():
             row = {"tokens": count, "maximum": (before.float() - result.float()).abs().max().item()}
             record["cuda_graph_history"].append(row)
             output.write_text(json.dumps(record, indent=2) + "\n")
-            assert torch.equal(before, result), row
-            row["status"] = "passed"
-    record |= {"status": "passed", "finished_unix": time.time(), "peak_gpu_bytes": torch.cuda.max_memory_allocated()}
+            row["status"] = "passed" if torch.equal(before, result) else "failed"
+        # Two legal full-region orders isolate physical routed-token layout.
+        # Repeated identical orders and canonical orders get fresh zeroed
+        # output/intermediates/workspace to separate history from layout.
+        for mode in ("exact-representable", "random-bf16-source"):
+            if mode == "random-bf16-source":
+                magnitude = 2.0 ** (torch.arange(hidden, device="cuda") % 9 - 4)
+                w13 = (torch.randn_like(w13) * magnitude / math.sqrt(hidden)).bfloat16()
+                w2 = (torch.randn_like(w2) * magnitude / math.sqrt(intermediate)).bfloat16()
+                q13, s13 = quantize(w13, exact=False)
+                q2, s2 = quantize(w2, exact=False)
+                layer.w13_weight = w13
+                q13, q2, s13, s2 = prepare_fp8_moe_layer_for_marlin(layer, q13, q2, s13, s2)
+            expert_map = torch.full((global_experts,), -1, dtype=torch.int32, device="cuda")
+            expert_map[:local] = torch.arange(local, dtype=torch.int32, device="cuda")
+            for count in (16, 115, 128, 129, 256, 512, 2048):
+                for route in ("hot-local-eight", "hot-local-four-mixed"):
+                    ids = torch.arange(topk, device="cuda").expand(count, -1).contiguous()
+                    if route == "hot-local-four-mixed":
+                        ids[:, 4:] += local
+                    x = (inputs[:count] * (2.0 ** (torch.arange(hidden, device="cuda") % 9 - 4))).bfloat16()
+                    weights = probabilities[:count]
+                    estimated = math.ceil(count * local / global_experts)
+                    for block in (8, 16, 32, 48, 64):
+                        if estimated * topk / local / block < 0.9:
+                            break
+                    original, experts, padded = moe_align_block_size(
+                        ids, block, global_experts, expert_map, ignore_invalid_experts=True
+                    )
+                    ascending, descending, used, regions = equivalent_layouts(
+                        original, experts, padded, block, ids.numel()
+                    )
+                    canonical_a = _canonicalize_marlin_moe_token_order(ascending, experts, padded, block, ids.numel())
+                    canonical_b = _canonicalize_marlin_moe_token_order(descending, experts, padded, block, ids.numel())
+                    assert torch.equal(canonical_a[:used], canonical_b[:used])
+                    assert torch.equal(canonical_a[:used], ascending[:used])
+                    args = (x, ids, weights, expert_map, q13, q2, s13, s2, layer)
+                    first = layout_outputs(*args, ascending, experts, padded, block)
+                    same = layout_outputs(*args, ascending, experts, padded, block)
+                    different = layout_outputs(*args, descending, experts, padded, block)
+                    canonical_first = layout_outputs(*args, canonical_a, experts, padded, block)
+                    canonical_second = layout_outputs(*args, canonical_a, experts, padded, block)
+                    row = {
+                        "weight_mode": mode,
+                        "routing": route,
+                        "tokens": count,
+                        "block_size": block,
+                        "used_slots": used,
+                        "expert_regions": regions,
+                        "layouts_differ": not torch.equal(ascending[:used], descending[:used]),
+                        "canonical_active_layouts_identical": True,
+                        "same_order_w13_max": maximum(first[0], same[0]),
+                        "same_order_output_max": maximum(first[1], same[1]),
+                        "reversed_order_w13_max": maximum(first[0], different[0]),
+                        "reversed_order_output_max": maximum(first[1], different[1]),
+                        "canonical_repeat_w13_max": maximum(canonical_first[0], canonical_second[0]),
+                        "canonical_repeat_output_max": maximum(canonical_first[1], canonical_second[1]),
+                    }
+                    record["layout_order"].append(row)
+                    output.write_text(json.dumps(record, indent=2) + "\n")
+    record |= {
+        "status": "completed-diagnostic",
+        "finished_unix": time.time(),
+        "peak_gpu_bytes": torch.cuda.max_memory_allocated(),
+        "history_failures": sum(x["status"] != "passed" for x in record["cases"]),
+        "graph_history_failures": sum(x["status"] != "passed" for x in record["cuda_graph_history"]),
+        "order_sensitive_cases": sum(
+            x["reversed_order_w13_max"] > 0 or x["reversed_order_output_max"] > 0 for x in record["layout_order"]
+        ),
+    }
     output.write_text(json.dumps(record, indent=2) + "\n")
     print(json.dumps({"status": record["status"], "cases": len(record["cases"])}))
 
