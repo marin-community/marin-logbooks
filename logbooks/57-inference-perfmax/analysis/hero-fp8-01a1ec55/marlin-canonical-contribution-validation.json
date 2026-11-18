@@ -1,0 +1,27 @@
+{
+  "scope": "Current-main CPU regression, full test-byte and executable-AST comparison; no current-main wheel or whole-model GPU qualification",
+  "base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "base_marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+  "base_already_canonicalized": false,
+  "tested_runtime": "467e3fc14427012aa9114127fb41f9c8273ca80a",
+  "files": [
+    {
+      "path": "vllm/model_executor/layers/fused_moe/experts/marlin_moe.py",
+      "sha256": "b2b14344784239fb9d9ea55e136eff8dfc16615ce149b42e3edece7588905203",
+      "tested_sha256": "b7c5d54eb1f34edad97b2633c32db2ef1041751c3360a8615fedcea093a8735c",
+      "full_bytes_match": false,
+      "executable_ast_matches_tested467": true
+    },
+    {
+      "path": "tests/kernels/moe/test_moe.py",
+      "sha256": "8f0495264608941655bfb57762d6aff5bcb8f3a86b5d7f651d19921d10217499",
+      "tested_sha256": "8f0495264608941655bfb57762d6aff5bcb8f3a86b5d7f651d19921d10217499",
+      "full_bytes_match": true,
+      "executable_ast_matches_tested467": true
+    }
+  ],
+  "cpu_regression": "passed after comment clarification",
+  "unchanged_selective_contribution": "0474521acd8093ea4cbf884dd435f59d5ecd7d5f",
+  "contribution_revision": "b0d1a26b6e365fb9fc5ee1f991ac064a477e855b",
+  "post_advisory_delta": "Docstring and inline-comment clarification only; native aligners currently sentinel-fill the inactive tail. No executable change and no GPU rerun."
+}
