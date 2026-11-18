@@ -135,3 +135,31 @@ smaller linear projections still use the starting online FP8 method.
 PR #127's padding fix is already an ancestor of pinned runtime `0ac9dcb`. It is
 not a missing patch to reapply. Its Snowball evidence remains a useful warning,
 not Hero qualification. No runtime source override has been introduced.
+
+## 2026-11-18 02:59 UTC — Retain the short screen and a setup failure
+
+The Triton FP8 diagnostic completed six successful profiling requests with zero
+errors. Its reported output throughput is 5.87152 tokens/s/GPU over an 86.47681-
+second successful-request span. The requested screen was 60 seconds. Native
+protocol validity is false for this short diagnostic, and numerical acceptance
+fails separately. This is not the required one-hour comparison. Its
+[result](analysis/hero-fp8-01a1ec55/diagnostic-a1-result.json) retains exports,
+checks, attempt archives and allocation evidence. Total cost is 2.304403 GB200-
+hours, including 0.162181 for the preempted setup. The successful attempt used
+2.142222 GB200-hours. Both GPU attempts are terminal; the final pod was observed
+Succeeded before collection completed.
+
+The first sixteen-GPU BF16 C64 baseline failed before numerical checks or
+measurement. One host timed out fetching pinned `tokenspeed_mla==0.1.9` ARM wheel
+metadata from PyPI after three retries in 130.5 seconds. Its siblings stopped as
+coscheduling failures. The
+[failure result](analysis/hero-fp8-01a1ec55/bf16-c64-a1-failed-result.json) retains
+all four attempts and complete cost: 1.389160 GB200-hours. All four GPU pods were
+gone in the provider projection. Retry the unchanged profile after another live
+inventory read. No numerical or performance conclusion follows from this
+package-fetch failure.
+
+The cached workload was reused by both new coordinators. Marlin's four-GPU
+server is healthy and checking fixed references with compilation and graphs
+active. Its initial KV capacity is 480,540 tokens per engine; precision remains
+BF16. No tolerance or checkpoint changed.
