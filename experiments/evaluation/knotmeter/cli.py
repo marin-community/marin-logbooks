@@ -23,6 +23,7 @@ from iris.cluster.types import Entrypoint, EnvironmentSpec, JobName, ResourceSpe
 from iris.resources.state import is_job_finished
 from iris.rpc import job_pb2
 from marin.inference.vllm_release import vllm_gpu_wheel_for_architecture
+from marin.testing.inference.goldens import read_fixture
 from rigging.config_discovery import resolve_cluster_config
 from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.storage_path import prefix_join
@@ -80,6 +81,12 @@ def resolve_plan(
     logbook: str | None = None,
 ) -> TrialPlan:
     """Resolve a self-contained trial before submission; this function allocates no compute."""
+    for check in profile.checks:
+        if check.fixture:
+            try:
+                read_fixture(check.fixture)
+            except FileNotFoundError as error:
+                raise ValueError("Use an existing fixture JSON path; update historical fixture names") from error
     profile = pin_profile(profile)
     if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", campaign) is None:
         raise ValueError("Campaign must be one path segment containing letters, numbers, underscores, dots or hyphens")
