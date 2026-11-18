@@ -391,3 +391,25 @@ boundary. Before another GPU allocation, run the published
 through the same by-value serialized factory, task image and CPU environment.
 It performs real ARM dependency staging, local policy probes, source hashing
 and native launcher construction without entering the server context.
+
+## 2026-11-18 11:27 UTC — Real serialized ARM setup passes
+
+The [remote setup result](analysis/hero-bf16-01a1ed83/numa-serialized-setup-a1.json)
+passes in `/romain/hero-bf16-numa-setup-20261118t112248z`, from clean source
+`2aebe6ab782dc75980c746f78682b4d75ee0cc27`. The
+[execution record](analysis/hero-bf16-01a1ed83/numa-serialized-setup-a1-execution.json)
+retains its actual zero-GPU pod resources, submission identity, native output
+archive and cleanup. It runs 22.62 seconds on aarch64 host `sbzvxs64`, using
+the same task image and CPU environment as the native coordinator.
+
+The actual by-value factory retains the devbox source path in its globals,
+then successfully finds `/app/logbooks/57-inference-perfmax/analysis/hero-bf16-01a1ed83/numa_launcher.py`
+through the imported runner. Its source hash is
+`37028f717f83dfcb5a3bf7d068c718336847a1d783b547d694143052b918e6d9`.
+Real private numactl staging, binary identity, both CPU-and-memory policy
+probes and native launcher construction pass. The result keeps the planned
+argv and private PATH prefix. No server context, model tensor or CUDA
+execution occurs. This covers the failed setup boundary before the GPU retry;
+it does not qualify worker affinity or performance. The refreshed backend
+snapshot sees 135 available GB200s. Row 2261 still announces the same 32-GPU
+retry and zero H100s; prior failed GPU tasks are released.
