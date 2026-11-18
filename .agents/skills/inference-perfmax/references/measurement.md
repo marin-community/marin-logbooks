@@ -35,6 +35,13 @@ Earlier [native GQA evidence](https://github.com/marin-community/vllm/pull/110)
 also retains FP8 failures against BF16 references. Do not turn matching old/new
 inference paths into proof of alignment with the trainer.
 
+Verify quantization with actual tensor metadata. FP8 kernels can pack weight
+bytes into INT32 words, so inspect the consumer format and packing contract.
+Method names establish method selection. This
+[Hero example](https://github.com/marin-community/marin-logbooks/blob/6acea60db03ab0a2c782e10dc9972c579866ddf7/logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/hero_weight_metadata.py)
+uses a native worker extension to check weight storage and separate KV/state
+views without reading tensor values.
+
 For an RL claim, use evidence for the actual trainer and rollout path: the same
 weights, token IDs, masks and sampling transformations. Means alone can hide
 tails in log-probability differences, importance ratios and clipping. Any new

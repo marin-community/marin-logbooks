@@ -65,6 +65,7 @@ a fresh server. Keep diagnostics distinct from comparable measurements.
 
 Use the preset's [shared checks](../../../experiments/evaluation/inference_correctness/README.md)
 against the actual settings. Reuse its immutable goldens across runtime changes.
+For quantization, verify loaded weight storage and record KV precision separately.
 The runner checks before AgentX and resets caches before native warmup. Retain
 failed observations; missing evidence and failed checks block recommendations.
 Use the agreed policy, including its provisional status. Change bounds only with
