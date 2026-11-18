@@ -13,15 +13,10 @@ serve:
   max_model_len: 65536
   # Keep 65,536: automatic overrides would cap the length at the checkpoint's declared 40,960.
   auto_overrides: false
-  # Keep 65,536: automatic overrides would cap the length at the checkpoint's declared 40,960.
-  auto_overrides: false
   reasoning_parser: qwen3
-  hf_overrides:
-    rope_parameters:
-      rope_type: yarn
-      factor: 2.0
-      original_max_position_embeddings: 32768
-      rope_theta: 1000000.0
+  # ServeConfig.hf_overrides is the JSON string vLLM's --hf-overrides takes. vLLM checks max_model_len
+  # against max_position_embeddings without the YaRN factor, so that is raised to 65,536 too.
+  hf_overrides: '{"max_position_embeddings": 65536, "rope_parameters": {"rope_type": "yarn", "factor": 2.0, "original_max_position_embeddings": 32768, "rope_theta": 1000000.0}}'
   vllm_extra_args:
     - --enable-prefix-caching
     - --dtype

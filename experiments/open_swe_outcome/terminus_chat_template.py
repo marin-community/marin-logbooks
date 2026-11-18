@@ -8,8 +8,11 @@
 # Qwen3 chat format for Terminus-2 conversations, which carry no tool definitions and return every
 # observation as a user message. Qwen3's own template drops reasoning from assistant turns before the
 # last user message, which here is every turn but the last. This template renders a think block on
-# every assistant turn, so each turn is trained as the model generates it after the
-# ``<think>\n`` generation prompt. Generation markers supervise reasoning, reply and terminator.
+# every assistant turn. The generation prompt ends at ``<think>`` because training tokenizes the
+# newline after it together with what follows: ``\n\n`` before ``</think>`` when a turn has no
+# reasoning, ``\n`` before reasoning text. A prompt ending in ``<think>\n`` leaves the model no
+# trained path to ``</think>`` on a turn without reasoning. Generation markers supervise reasoning,
+# reply and terminator.
 TERMINUS_CHAT_TEMPLATE: str = r"""{%- for message in messages %}
     {%- if message.content is string %}
         {%- set content = message.content %}
@@ -30,6 +33,6 @@ TERMINUS_CHAT_TEMPLATE: str = r"""{%- for message in messages %}
     {%- endif %}
 {%- endfor %}
 {%- if add_generation_prompt %}
-    {{- '<|im_start|>assistant\n<think>\n' }}
+    {{- '<|im_start|>assistant\n<think>' }}
 {%- endif %}
 """
