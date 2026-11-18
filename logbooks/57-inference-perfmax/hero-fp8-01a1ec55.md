@@ -422,3 +422,69 @@ no C128 GPU job has been submitted. This change follows the completed window,
 not a latency ceiling. Numerical failures may continue to a normal one-hour FP8
 performance window through the explicit measure-failed-checks flag, while
 remaining ineligible for recommendation.
+
+
+## 2026-11-18 05:38 UTC — Completed baseline and selective failures
+
+BF16 C64 completed a valid native one-hour window. The processor reports
+18.94936 output tokens/s/GPU, 1841 profiling successes, zero profiling errors,
+P90 TTFT of 312.16459 seconds and P90 completion of 324.18918 seconds. Protocol,
+submission, duration coverage and gang checks all pass. Its server completion
+usage totals 1,100,564 tokens. The separate harness output-token counter totals
+1,096,749; the earlier notebook entry quoted that counter. Keep both meanings
+distinct. One warmup request returned an empty response and failed. The window
+still passes the native validity rules. The counter-decrease warning remains
+unresolved; use the client export for this comparison. The
+[full receipt](analysis/hero-fp8-01a1ec55/bf16-c64-a2-result.json) gives 103,852
+GPU seconds including setup, checks, warmup, profiling, drain and shutdown.
+All four GPU pods are Succeeded and resource row 2226 is closed.
+
+The selective actual-wheel screen finished on cache v2. Long reference,
+batch and decode pass. Short reference fails only maximum: 0.696609 exceeds
+0.65, while P99 of 0.122859, P90 of 0.0330411 and fraction of 0.0259455 pass.
+Exact cache comparisons fail with maximum 0.0134047 despite all reuse/branch
+coverage groups passing; matched repeats are exact. These remain numerical
+failures. No bound changed, and no causal explanation is established. The
+[summary](analysis/hero-fp8-01a1ec55/selective-fp8-marlin-a2-check-summary.json),
+[receipt](analysis/hero-fp8-01a1ec55/selective-fp8-marlin-a2-receipt.json) and
+[execution](analysis/hero-fp8-01a1ec55/selective-fp8-marlin-a2-execution.json)
+retain the source, wheel, raw archive and both attempts. One allocated attempt
+was deleted after 49.889 seconds; its native automatic retry completed checks.
+Complete cost is 4451.5559998 GPU seconds (1.23654333 GB200 hours). Both pods
+are terminal and row 2237 is closed.
+
+BF16 C32 passes the entire stronger v2 suite at retention 128, including all
+19 exact comparisons equal to zero. Its normal one-hour profiling window began
+at 05:32:08 UTC after native warmup. The sampled leader cgroup peak is
+118,896,197,632 bytes (110.73 GiB). Its 32 CPU/256 GiB request differs from the
+completed C64 baseline's 32 CPU/768 GiB request; the latter's observed peak was
+106.73 GiB. This comparison covers two serving configurations, with this request
+difference recorded. The FP8 C64 candidate also requests 32 CPUs/256 GiB.
+New runner receipts retain each host's cgroup peak before final artifact upload.
+
+## 2026-11-18 05:40 UTC — Actual storage check before the FP8 window
+
+The parent identified a qualification gap: get_model_inspection reports module
+and quantization-method names, without tensor dtypes. Existing inspection
+records prove method selection only. The new
+[worker extension](analysis/hero-fp8-01a1ec55/hero_weight_metadata.py) uses the
+pinned native worker-extension/collective_rpc path. It reads metadata and never
+replaces a runtime model module or copies tensor values.
+
+Native Marlin repacks E4M3FN FP8 weights as int32 words. The check requires the
+actual packed tensors to occupy one byte per logical expert weight, with the
+native FP8 consumer, exact scale shapes and all 48 expert modules covered. It
+also checks every dense linear projection is CUDA BF16 and every router weight
+and bias is FP32. Actual typed attention KV and short-convolution state views
+are checked separately as CUDA BF16; their shared backing storage sizes are
+not added. Every DP rank writes metadata into its native host archive. The
+pinned DP utility broadcasts to all engines, propagates any worker failure and
+returns only its first result. The inspector records that precise scope.
+
+All three future selective profiles load the extension through native
+--worker-extension-cls with a campaign-only PYTHONPATH. Storage inspection
+runs before numerical checks. The wheel and numerical criteria are unchanged.
+The CPU regression distinguishes real one-byte FP8 packing from BF16 storage
+reinterpreted as int32. It and 28 runner tests pass. Scoped lint passes. Actual
+full-model storage proof will come from the new deployment, not these CPU tests
+or earlier method-name records.

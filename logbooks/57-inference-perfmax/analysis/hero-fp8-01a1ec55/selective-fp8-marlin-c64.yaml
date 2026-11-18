@@ -17,6 +17,7 @@ session_concurrency: 64
 serving:
   environment:
     VLLM_SERVER_DEV_MODE: '1'
+    PYTHONPATH: /app/logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55
   dtype: bfloat16
   max_model_len: 262144
   max_num_seqs: 128
@@ -54,18 +55,20 @@ serving:
   - '128'
   - --quantization-config
   - '{"moe":"fp8_per_tensor"}'
+  - --worker-extension-cls
+  - hero_weight_metadata.HeroWeightMetadata
 workload:
   public_dataset: semianalysis_cc_traces_weka_062126_256k
 checks:
-- name: model-numerics
-  fixture: logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-fp8-policy.json
-  timeout: 3600
-- name: loaded-weight-methods
+- name: loaded-weight-storage
   kind: serving
   timeout: 180
   command:
   - python
   - logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/inspect_model.py
+- name: model-numerics
+  fixture: logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/selective-fp8-policy.json
+  timeout: 3600
 quantization: online
 vllm:
   repo: https://github.com/yonromai/vllm

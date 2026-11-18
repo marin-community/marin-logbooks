@@ -1,0 +1,141 @@
+{
+  "checks": {
+    "batch": {
+      "positions": 4,
+      "statistics": {},
+      "status": "passed"
+    },
+    "cache": {
+      "cache_alignment": 16,
+      "decode_reuse": {
+        "status": "passed"
+      },
+      "different_split": {
+        "positions": 27,
+        "statistics": {},
+        "status": "passed"
+      },
+      "matched_repeat": {
+        "cached_tokens": [
+          2064,
+          2064
+        ],
+        "status": "passed"
+      },
+      "prefill_reuse": {
+        "status": "passed"
+      },
+      "replayed_decode_reuse": {
+        "status": "passed"
+      },
+      "retention_interval": 128,
+      "same_split": {
+        "positions": 19,
+        "statistics": {},
+        "status": "passed"
+      },
+      "settled_branches": {
+        "status": "passed"
+      },
+      "status": "passed"
+    },
+    "decode": {
+      "positions": 64,
+      "statistics": {},
+      "status": "passed"
+    },
+    "deployment": {
+      "status": "passed"
+    },
+    "reference": {
+      "groups": {
+        "long": {
+          "positions": 4485,
+          "statistics": {},
+          "status": "passed"
+        },
+        "short": {
+          "positions": 11370,
+          "statistics": {},
+          "status": "passed"
+        }
+      },
+      "status": "passed"
+    }
+  },
+  "reference_lookup": {
+    "status": "found"
+  },
+  "status": "passed",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "policy": {
+    "batch": {
+      "fraction_above_0075": 0.5,
+      "maximum": 0.2,
+      "p90": 0.15,
+      "p99": 0.18
+    },
+    "batch_size": 4,
+    "boundary_lengths": [
+      127,
+      128,
+      129,
+      255,
+      256,
+      257,
+      2047,
+      2048,
+      2049
+    ],
+    "cache_decode_tokens": 257,
+    "decode": {
+      "fraction_above_0075": 0.15,
+      "maximum": 0.25,
+      "p90": 0.075,
+      "p99": 0.15
+    },
+    "decode_tokens": 32,
+    "different_split": {
+      "fraction_above_0075": 0.15,
+      "maximum": 0.2,
+      "p90": 0.06,
+      "p99": 0.12
+    },
+    "dtype": "bfloat16",
+    "evidence": [
+      "https://github.com/marin-community/marin/issues/11430",
+      "https://github.com/marin-community/marin/issues/11430#issuecomment-6882101992"
+    ],
+    "hardware": [
+      "GB200"
+    ],
+    "id": "hero-sft-step400407-bf16-gb200-provisional-v1",
+    "kv_cache_dtypes": [
+      "auto",
+      "bfloat16"
+    ],
+    "provisional": true,
+    "quantization": null,
+    "rationale": "Initial margins around the retained #11430 BF16 controls. Matched cache splits must agree exactly. These serving limits do not qualify RL trainer ratios. Cache-enabled settings are a new validation scope.",
+    "reference": {
+      "long": {
+        "fraction_above_0075": 0.02,
+        "maximum": 0.35,
+        "p90": 0.04,
+        "p99": 0.09
+      },
+      "short": {
+        "fraction_above_0075": 0.035,
+        "maximum": 0.65,
+        "p90": 0.04,
+        "p99": 0.125
+      }
+    },
+    "same_split": {
+      "fraction_above_0075": 0.0,
+      "maximum": 0.0,
+      "p90": 0.0,
+      "p99": 0.0
+    }
+  }
+}

@@ -1,8 +1,8 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 26345.828001976013,
-  "gpu_hours": 7.318285556104448,
+  "gpu_seconds": 134649.38400173187,
+  "gpu_hours": 37.402606667147744,
   "cost_complete_for_listed_allocations": true,
   "phase_note": "Profiling includes native grace. Warmup includes harness startup. Unsplit failures and numerical/component screens retain their full allocation cost. CPU build used eight requested CPUs for98 allocated seconds and zero GPUs.",
   "rows": [
@@ -388,6 +388,150 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Selective full-model screen",
+      "receipt": "selective-fp8-marlin-a2-execution.json",
+      "state": "failed",
+      "gpu_seconds": 4451.555999755859,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "685886e0ceda73f9",
+          "gpu_seconds": 199.55599975585938,
+          "allocation": {
+            "pod_uid": "cba0d849-b4a3-41bd-8441-f07295a9d19a",
+            "attempt_uid": "685886e0ceda73f9",
+            "pod_name": "iris-romain-knotmeter-20261118t0427-65a7c948-0-685886e0ceda73f9",
+            "node_name": "s64vxs64",
+            "observed_unix": 1794977769.0679853,
+            "phase": "Running",
+            "scheduled_unix": 1794977743.0,
+            "finished_unix": null,
+            "status": "measured",
+            "end_basis": "iris-observed-terminal",
+            "end_unix": 1794977792.889
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 199.55599975585938
+          }
+        },
+        {
+          "uid": "8dd85e483c92d60b",
+          "gpu_seconds": 4252.0,
+          "allocation": {
+            "pod_uid": "61e3bb3a-9641-4193-ad45-df755464a5e5",
+            "attempt_uid": "8dd85e483c92d60b",
+            "pod_name": "iris-romain-knotmeter-20261118t0427-65a7c948-1-8dd85e483c92d60b",
+            "node_name": "sjx52nb4",
+            "observed_unix": 1794978960.5018253,
+            "phase": "Failed",
+            "scheduled_unix": 1794977883.0,
+            "finished_unix": 1794978946.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794978946.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 4252.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "BF16 C64",
+      "receipt": "bf16-c64-a2-result.json",
+      "state": "succeeded",
+      "gpu_seconds": 103852.0,
+      "cost_complete": true,
+      "cost_basis": "sum of pod scheduling through container finish, or Iris-observed terminal time when the pod expired; queueing excluded",
+      "attempts": [
+        {
+          "uid": "0058a4e92110a0c4",
+          "gpu_seconds": 26036.0,
+          "allocation": {
+            "pod_uid": "835d5957-93da-4273-97b8-58a9d9b38667",
+            "attempt_uid": "0058a4e92110a0c4",
+            "pod_name": "iris-romain-knotmeter-20261118t0300-852a45de-0-0058a4e92110a0c4",
+            "node_name": "s2lrxs64",
+            "observed_unix": 1794977470.775692,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794970904.0,
+            "finished_unix": 1794977413.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794977413.0
+          },
+          "phases": {
+            "setup_gpu_seconds": 1803.449158668518,
+            "checks_gpu_seconds": 2606.7206535339355,
+            "warmup_and_harness_start_gpu_seconds": 5664.142744064331,
+            "profiling_and_native_grace_gpu_seconds": 14520.018671989441,
+            "exports_and_shutdown_gpu_seconds": 1441.6687717437744
+          }
+        },
+        {
+          "uid": "0a2a003a69d02de9",
+          "gpu_seconds": 25932.0,
+          "allocation": {
+            "pod_uid": "8ddd1221-3784-4c19-bb60-57da0f32437a",
+            "attempt_uid": "0a2a003a69d02de9",
+            "pod_name": "iris-romain-knotmeter-20261118t0300-e7804f1f-0-0a2a003a69d02de9",
+            "node_name": "s45txs64",
+            "observed_unix": 1794977471.7000663,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794970904.0,
+            "finished_unix": 1794977387.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794977387.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 25932.0
+          }
+        },
+        {
+          "uid": "abedcfcb68c3da72",
+          "gpu_seconds": 25928.0,
+          "allocation": {
+            "pod_uid": "971fdb0c-0b2c-4ece-a230-be6740813c75",
+            "attempt_uid": "abedcfcb68c3da72",
+            "pod_name": "iris-romain-knotmeter-20261118t0300-3ac61ce8-0-abedcfcb68c3da72",
+            "node_name": "s6htxs64",
+            "observed_unix": 1794977469.0201356,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794970904.0,
+            "finished_unix": 1794977386.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794977386.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 25928.0
+          }
+        },
+        {
+          "uid": "3ef282accaba8565",
+          "gpu_seconds": 25956.0,
+          "allocation": {
+            "pod_uid": "635c06c4-facd-4096-8526-4e4e0caa2614",
+            "attempt_uid": "3ef282accaba8565",
+            "pod_name": "iris-romain-knotmeter-20261118t0300-6496aba8-0-3ef282accaba8565",
+            "node_name": "s76txs64",
+            "observed_unix": 1794977469.8833575,
+            "phase": "Succeeded",
+            "scheduled_unix": 1794970904.0,
+            "finished_unix": 1794977393.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794977393.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 25956.0
           }
         }
       ]
