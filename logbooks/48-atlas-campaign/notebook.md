@@ -1610,3 +1610,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the recovered reviews' contents are registry-bound [M].
 - Decision and next action: next hourly check watches for the recovered-review publication outcomes.
+
+### 2026-11-18 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `12868b01a3…` (20:17:28 UTC) to head `f93cc722a6b4c21e4b68dac626e531e4559d66bb`, landed 20:58:49 UTC (2 landings 20:46 / 20:58 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 12868b01..f93cc722` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Recovery queue hardened**: the recovery queue's receipt references pinned to the registry part bytes (`c0cb85d488…`).
+  - **NoP verdicts preserved**: nop verdicts recorded before post-grade machine cleanup failures are bound (`f93cc722a6…`, head) — controls graded before a cleanup failure no longer count as missing.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the recovery queue's publication outcomes.
