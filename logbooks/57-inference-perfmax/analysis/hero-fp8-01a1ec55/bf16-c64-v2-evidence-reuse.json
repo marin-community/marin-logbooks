@@ -1,0 +1,1398 @@
+{
+  "status": "supported",
+  "scope": "Compose the retained BF16 C64 normal window with fresh positive128 cache-v2 qualification from matching C32 serving settings. The original v1 report is unchanged.",
+  "baseline_trial": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T030036Z-46000535d09e",
+  "supplement_trial": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T045512Z-6bd49b5d193a",
+  "baseline_source": {
+    "tree_hash": "529504942e",
+    "base_commit": "1c9f39daf3",
+    "dirty": false,
+    "branch": "codex/hero-fp8-01a1ec55",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T19:00:37.166320",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/experiments/evaluation/knotmeter/cli.py",
+      "run",
+      "--profile",
+      "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/bf16-c64.yaml",
+      "--campaign",
+      "perfmax-hero-fp8-01a1ec55",
+      "--priority",
+      "interactive",
+      "--logbook",
+      "https://github.com/marin-community/marin-logbooks/blob/1c9f39daf310aa369e17864744e486089095d0fb/logbooks/57-inference-perfmax/hero-fp8-01a1ec55.md",
+      "--output",
+      "scratch/bf16-c64-a2-plan.json"
+    ]
+  },
+  "supplement_source": {
+    "tree_hash": "e9a88c1e5e",
+    "base_commit": "33d780669d",
+    "dirty": false,
+    "branch": "codex/hero-fp8-01a1ec55",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T20:55:12.623679",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/experiments/evaluation/knotmeter/cli.py",
+      "run",
+      "--profile",
+      "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/bf16-c32.yaml",
+      "--campaign",
+      "perfmax-hero-fp8-01a1ec55",
+      "--output",
+      "scratch/bf16-c32-a1-plan.json"
+    ]
+  },
+  "profile_fields_exactly_equal": {
+    "model": {
+      "repo": "hero-sft-step400407",
+      "revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+      "tokenizer": "marin-community/marin-tokenizer-tools",
+      "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+      "path": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+      "config_sha256": "1a05f3dbaddd2c1aa28064dc0d4140d53d80cf5c25a7c8418b0e013c91b1a43e",
+      "chat_template": "marin",
+      "eos_token_id": 128009
+    },
+    "serving": {
+      "dtype": "bfloat16",
+      "tensor_parallel_size": 1,
+      "max_model_len": 262144,
+      "max_num_seqs": 128,
+      "max_num_batched_tokens": 2048,
+      "gpu_memory_utilization": 0.95,
+      "prefix_caching": true,
+      "router": true,
+      "extra_args": [
+        "--enable-prompt-tokens-details",
+        "--max-logprobs",
+        "50",
+        "--reasoning-parser",
+        "grug",
+        "--enable-auto-tool-choice",
+        "--tool-call-parser",
+        "hermes",
+        "--seed",
+        "42",
+        "--hf-overrides",
+        "{\"max_seq_len\":262144,\"max_position_embeddings\":262144}",
+        "--load-format",
+        "runai_streamer",
+        "--model-loader-extra-config",
+        "{\"distributed\":true,\"concurrency\":4,\"memory_limit\":17179869184}",
+        "--kernel-config",
+        "{\"moe_backend\":\"triton\",\"enable_flashinfer_autotune\":false}",
+        "--kv-cache-dtype",
+        "auto",
+        "--attention-backend",
+        "FLASHINFER",
+        "--compilation-config",
+        "{\"cudagraph_mode\":\"PIECEWISE\",\"splitting_ops\":[\"vllm::unified_attention_with_output\",\"vllm::unified_kv_cache_update\",\"vllm::grug_moe_short_conv\"],\"inductor_compile_config\":{\"enable_auto_functionalized_v2\":false,\"combo_kernels\":true,\"benchmark_combo_kernel\":true}}",
+        "--additional-config",
+        "{\"grug_logical_kv_cache\":true}",
+        "--prefix-cache-retention-interval",
+        "128"
+      ],
+      "environment": {
+        "VLLM_SERVER_DEV_MODE": "1"
+      }
+    },
+    "gpus": {
+      "type": "GB200",
+      "count": 16,
+      "per_host": 4
+    },
+    "vllm": {
+      "release": null,
+      "manifest": null,
+      "repo": null,
+      "revision": null
+    }
+  },
+  "reported_identities": {
+    "model": {
+      "equal": true,
+      "value": {
+        "config_sha256": "1a05f3dbaddd2c1aa28064dc0d4140d53d80cf5c25a7c8418b0e013c91b1a43e",
+        "eos_token_id": 128009,
+        "revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+        "tokenizer": "marin-community/marin-tokenizer-tools",
+        "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+        "weights": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1"
+      }
+    },
+    "manifest": {
+      "equal": true,
+      "value": {
+        "sha256": "ffecfe5e324e4379933b64c64dcef8aba1cbfc1fe7ff9f9b9b030299ab18e39b",
+        "uri": "s3://marin-us-east-02a/marin/inference/goldens/hero-sft-step400407-1a7886b05df2/6c8cd4e838a11be468be75e11c2a0876bfb99fa51bdd7933e9a018e4ae08fb73/manifest-ffecfe5e324e4379933b64c64dcef8aba1cbfc1fe7ff9f9b9b030299ab18e39b.json"
+      }
+    },
+    "policy_sha256": {
+      "equal": true,
+      "value": "b247a9605ba950e9929b83eb45454817a4e6d2f88ca08934da0aa9350adfd05b"
+    },
+    "runtime_source": {
+      "equal": true,
+      "value": "0ac9dcb157ee86ccb447bc717259159c41ad456a"
+    }
+  },
+  "profile_differences": {
+    "session_concurrency": {
+      "C64": 64,
+      "C32": 32
+    },
+    "memory": {
+      "C64": "768GB",
+      "C32": "256GB"
+    }
+  },
+  "difference_scope": "Concurrency changes the client benchmark after all checks. RAM is a host reservation; GPU serving settings are identical. Both observed peaks fit256GiB. No cache check ran inside timed profiling.",
+  "baseline_check_report_sha256": "e939123dfae232208a1ebc51e44237617f1f182c1f5bc474cadf6784dfaab3c8",
+  "supplement_check_report_sha256": "842a00cfd6b054ee8cbd847b722f36edccb2e6692a1bf85a748c2b17d4c3df26",
+  "baseline_raw_archive": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T030036Z-46000535d09e/attempts/0058a4e92110a0c4/hosts/0/native-36e1fbe4910ef56b6143e68117f72da7312d9c2ab55b8a760e9d90a0b2c24c14.tar.zst",
+  "supplement_raw_archive": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T045512Z-6bd49b5d193a/attempts/30ccd01f2f7092c6/hosts/0/native-910046785d86677c01c99809ae392293693dc0296908954dc08e0834d70ed9fb.tar.zst",
+  "fresh_cache": {
+    "cache_alignment": 16,
+    "cache_evidence": [
+      {
+        "boundary": 127,
+        "decode_cached_tokens": 256,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 127,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 112,
+        "warm_cached_tokens": 112
+      },
+      {
+        "boundary": 128,
+        "decode_cached_tokens": 384,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 128,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 144,
+        "warm_cached_tokens": 128
+      },
+      {
+        "boundary": 129,
+        "decode_cached_tokens": 384,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 129,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 144,
+        "warm_cached_tokens": 128
+      },
+      {
+        "boundary": 255,
+        "decode_cached_tokens": 384,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 255,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 240,
+        "warm_cached_tokens": 240
+      },
+      {
+        "boundary": 256,
+        "decode_cached_tokens": 512,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 256,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 272,
+        "warm_cached_tokens": 256
+      },
+      {
+        "boundary": 257,
+        "decode_cached_tokens": 512,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 257,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 272,
+        "warm_cached_tokens": 256
+      },
+      {
+        "boundary": 2047,
+        "decode_cached_tokens": 2176,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 2047,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 2032,
+        "warm_cached_tokens": 2032
+      },
+      {
+        "boundary": 2048,
+        "decode_cached_tokens": 2304,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 2048,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 2064,
+        "warm_cached_tokens": 2048
+      },
+      {
+        "boundary": 2049,
+        "decode_cached_tokens": 2304,
+        "decode_generated_tokens": 257,
+        "decode_prompt_tokens": 2049,
+        "fresh_cached_tokens": 0,
+        "repeat_cached_tokens": 2064,
+        "warm_cached_tokens": 2048
+      }
+    ],
+    "decode_reuse": {
+      "observations": [
+        {
+          "boundary": 127,
+          "cached_tokens": 256,
+          "prompt_tokens": 127,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 128,
+          "status": "passed"
+        },
+        {
+          "boundary": 128,
+          "cached_tokens": 384,
+          "prompt_tokens": 128,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 256,
+          "status": "passed"
+        },
+        {
+          "boundary": 129,
+          "cached_tokens": 384,
+          "prompt_tokens": 129,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 256,
+          "status": "passed"
+        },
+        {
+          "boundary": 255,
+          "cached_tokens": 384,
+          "prompt_tokens": 255,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 256,
+          "status": "passed"
+        },
+        {
+          "boundary": 256,
+          "cached_tokens": 512,
+          "prompt_tokens": 256,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 384,
+          "status": "passed"
+        },
+        {
+          "boundary": 257,
+          "cached_tokens": 512,
+          "prompt_tokens": 257,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 384,
+          "status": "passed"
+        },
+        {
+          "boundary": 2047,
+          "cached_tokens": 2176,
+          "prompt_tokens": 2047,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 2048,
+          "status": "passed"
+        },
+        {
+          "boundary": 2048,
+          "cached_tokens": 2304,
+          "prompt_tokens": 2048,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 2176,
+          "status": "passed"
+        },
+        {
+          "boundary": 2049,
+          "cached_tokens": 2304,
+          "prompt_tokens": 2049,
+          "reason": "Periodic checkpoint in generated history",
+          "required_checkpoint": 2176,
+          "status": "passed"
+        }
+      ],
+      "status": "passed"
+    },
+    "different_split": {
+      "limits": {
+        "fraction_above_0075": 0.15,
+        "maximum": 0.2,
+        "p90": 0.06,
+        "p99": 0.12
+      },
+      "positions": 27,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.024964247393670536,
+        "p90": 0.015279637801268498,
+        "p99": 0.024400471910899765
+      },
+      "status": "passed",
+      "worst": [
+        {
+          "boundary": 129,
+          "max_probability_error": 0.024964247393670536,
+          "max_probability_error_lower_bound": 0.024964247393670536,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 48
+        },
+        {
+          "boundary": 256,
+          "max_probability_error": 0.022795880152244513,
+          "max_probability_error_lower_bound": 0.022795880152244513,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 127,
+          "max_probability_error": 0.015548551190690402,
+          "max_probability_error_lower_bound": 0.015548551190690402,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 257,
+          "max_probability_error": 0.015100362208320561,
+          "max_probability_error_lower_bound": 0.015100362208320561,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 47
+        },
+        {
+          "boundary": 2047,
+          "max_probability_error": 0.0075430951600825025,
+          "max_probability_error_lower_bound": 0.0075430951600825025,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 47
+        },
+        {
+          "boundary": 128,
+          "max_probability_error": 0.005419447457446935,
+          "max_probability_error_lower_bound": 0.005419447457446935,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 129,
+          "max_probability_error": 0.004472939579695148,
+          "max_probability_error_lower_bound": 0.004472939579695148,
+          "same_greedy_token": true,
+          "shared_tokens": 48
+        },
+        {
+          "boundary": 257,
+          "max_probability_error": 0.0034032285578109167,
+          "max_probability_error_lower_bound": 0.0034032285578109167,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2049,
+          "max_probability_error": 0.002459407716454587,
+          "max_probability_error_lower_bound": 0.002459407716454587,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 2047,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0011372293778399989,
+          "max_probability_error_lower_bound": 0.0011372293778399989,
+          "same_greedy_token": true,
+          "shared_tokens": 49
+        }
+      ]
+    },
+    "failures": [],
+    "matched_repeat": {
+      "cached_tokens": [
+        2064,
+        2064
+      ],
+      "status": "passed"
+    },
+    "observations": {
+      "different_split": [
+        {
+          "boundary": 127,
+          "max_probability_error": 7.862349908793753e-06,
+          "max_probability_error_lower_bound": 7.862349908793753e-06,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 127,
+          "case": "seed-and-branch",
+          "max_probability_error": 1.906046180799592e-05,
+          "max_probability_error_lower_bound": 1.906046180799592e-05,
+          "same_greedy_token": true,
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 127,
+          "max_probability_error": 0.015548551190690402,
+          "max_probability_error_lower_bound": 0.015548551190690402,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 128,
+          "max_probability_error": 4.481566114201632e-06,
+          "max_probability_error_lower_bound": 4.481566114201632e-06,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 128,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 128,
+          "max_probability_error": 0.005419447457446935,
+          "max_probability_error_lower_bound": 0.005419447457446935,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 129,
+          "max_probability_error": 0.004472939579695148,
+          "max_probability_error_lower_bound": 0.004472939579695148,
+          "same_greedy_token": true,
+          "shared_tokens": 48
+        },
+        {
+          "boundary": 129,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 129,
+          "max_probability_error": 0.024964247393670536,
+          "max_probability_error_lower_bound": 0.024964247393670536,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 48
+        },
+        {
+          "boundary": 255,
+          "max_probability_error": 0.00048430346101391297,
+          "max_probability_error_lower_bound": 0.00048430346101391297,
+          "same_greedy_token": true,
+          "shared_tokens": 48
+        },
+        {
+          "boundary": 255,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.00013043744590004536,
+          "max_probability_error_lower_bound": 0.00013043744590004536,
+          "same_greedy_token": true,
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 255,
+          "max_probability_error": 1.1919900987367171e-06,
+          "max_probability_error_lower_bound": 1.1919900987367171e-06,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 46
+        },
+        {
+          "boundary": 256,
+          "max_probability_error": 0.022795880152244513,
+          "max_probability_error_lower_bound": 0.022795880152244513,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 256,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 256,
+          "max_probability_error": 0.000760678317565322,
+          "max_probability_error_lower_bound": 0.000760678317565322,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 47
+        },
+        {
+          "boundary": 257,
+          "max_probability_error": 0.0034032285578109167,
+          "max_probability_error_lower_bound": 0.0034032285578109167,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 257,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 257,
+          "max_probability_error": 0.015100362208320561,
+          "max_probability_error_lower_bound": 0.015100362208320561,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 47
+        },
+        {
+          "boundary": 2047,
+          "max_probability_error": 0.0010994492781910559,
+          "max_probability_error_lower_bound": 0.0010994492781910559,
+          "same_greedy_token": true,
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 2047,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0011372293778399989,
+          "max_probability_error_lower_bound": 0.0011372293778399989,
+          "same_greedy_token": true,
+          "shared_tokens": 49
+        },
+        {
+          "boundary": 2047,
+          "max_probability_error": 0.0075430951600825025,
+          "max_probability_error_lower_bound": 0.0075430951600825025,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 47
+        },
+        {
+          "boundary": 2048,
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2048,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2048,
+          "max_probability_error": 0.0007221790616114276,
+          "max_probability_error_lower_bound": 0.0007221790616114276,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2049,
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2049,
+          "case": "seed-and-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2049,
+          "max_probability_error": 0.002459407716454587,
+          "max_probability_error_lower_bound": 0.002459407716454587,
+          "same_greedy_token": true,
+          "seed": "decode",
+          "shared_tokens": 49
+        }
+      ],
+      "same_split": [
+        {
+          "boundary": 127,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 368,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 128,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 368,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 129,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 368,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 255,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 496,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 256,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 496,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 257,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 496,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2047,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2288,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2048,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2288,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2049,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 2288,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "case": "matched-repeat",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        }
+      ]
+    },
+    "prefill_reuse": {
+      "observations": [
+        {
+          "boundary": 127,
+          "cached_tokens": [
+            112,
+            112
+          ],
+          "required_checkpoint": 112,
+          "seed_tokens": 113,
+          "status": "passed"
+        },
+        {
+          "boundary": 128,
+          "cached_tokens": [
+            128,
+            144
+          ],
+          "required_checkpoint": 128,
+          "seed_tokens": 129,
+          "status": "passed"
+        },
+        {
+          "boundary": 129,
+          "cached_tokens": [
+            128,
+            144
+          ],
+          "required_checkpoint": 128,
+          "seed_tokens": 129,
+          "status": "passed"
+        },
+        {
+          "boundary": 255,
+          "cached_tokens": [
+            240,
+            240
+          ],
+          "required_checkpoint": 240,
+          "seed_tokens": 241,
+          "status": "passed"
+        },
+        {
+          "boundary": 256,
+          "cached_tokens": [
+            256,
+            272
+          ],
+          "required_checkpoint": 256,
+          "seed_tokens": 257,
+          "status": "passed"
+        },
+        {
+          "boundary": 257,
+          "cached_tokens": [
+            256,
+            272
+          ],
+          "required_checkpoint": 256,
+          "seed_tokens": 257,
+          "status": "passed"
+        },
+        {
+          "boundary": 2047,
+          "cached_tokens": [
+            2032,
+            2032
+          ],
+          "required_checkpoint": 2032,
+          "seed_tokens": 2033,
+          "status": "passed"
+        },
+        {
+          "boundary": 2048,
+          "cached_tokens": [
+            2048,
+            2064
+          ],
+          "required_checkpoint": 2048,
+          "seed_tokens": 2049,
+          "status": "passed"
+        },
+        {
+          "boundary": 2049,
+          "cached_tokens": [
+            2048,
+            2064
+          ],
+          "required_checkpoint": 2048,
+          "seed_tokens": 2049,
+          "status": "passed"
+        }
+      ],
+      "status": "passed"
+    },
+    "replayed_decode_reuse": {
+      "observations": [
+        {
+          "alternate_cached_tokens": 368,
+          "boundary": 368,
+          "comparison": {
+            "boundary": 368,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 368,
+          "expected_cached_tokens": 384,
+          "full_seed_tokens": 385,
+          "preparation_hits": [
+            384
+          ],
+          "repeat_cached_tokens": 384,
+          "requested_boundary": 127,
+          "required_alternate_checkpoint": 368,
+          "shared_seed_tokens": 369,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 368,
+          "boundary": 368,
+          "comparison": {
+            "boundary": 368,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 368,
+          "expected_cached_tokens": 384,
+          "full_seed_tokens": 385,
+          "preparation_hits": [
+            384
+          ],
+          "repeat_cached_tokens": 384,
+          "requested_boundary": 128,
+          "required_alternate_checkpoint": 368,
+          "shared_seed_tokens": 369,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 368,
+          "boundary": 368,
+          "comparison": {
+            "boundary": 368,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 368,
+          "expected_cached_tokens": 384,
+          "full_seed_tokens": 385,
+          "preparation_hits": [
+            384
+          ],
+          "repeat_cached_tokens": 384,
+          "requested_boundary": 129,
+          "required_alternate_checkpoint": 368,
+          "shared_seed_tokens": 369,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 496,
+          "boundary": 496,
+          "comparison": {
+            "boundary": 496,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 496,
+          "expected_cached_tokens": 512,
+          "full_seed_tokens": 513,
+          "preparation_hits": [
+            512
+          ],
+          "repeat_cached_tokens": 512,
+          "requested_boundary": 255,
+          "required_alternate_checkpoint": 496,
+          "shared_seed_tokens": 497,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 496,
+          "boundary": 496,
+          "comparison": {
+            "boundary": 496,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 496,
+          "expected_cached_tokens": 512,
+          "full_seed_tokens": 513,
+          "preparation_hits": [
+            512
+          ],
+          "repeat_cached_tokens": 512,
+          "requested_boundary": 256,
+          "required_alternate_checkpoint": 496,
+          "shared_seed_tokens": 497,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 496,
+          "boundary": 496,
+          "comparison": {
+            "boundary": 496,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 496,
+          "expected_cached_tokens": 512,
+          "full_seed_tokens": 513,
+          "preparation_hits": [
+            512
+          ],
+          "repeat_cached_tokens": 512,
+          "requested_boundary": 257,
+          "required_alternate_checkpoint": 496,
+          "shared_seed_tokens": 497,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 2288,
+          "boundary": 2288,
+          "comparison": {
+            "boundary": 2288,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 2288,
+          "expected_cached_tokens": 2304,
+          "full_seed_tokens": 2305,
+          "preparation_hits": [
+            2304
+          ],
+          "repeat_cached_tokens": 2304,
+          "requested_boundary": 2047,
+          "required_alternate_checkpoint": 2288,
+          "shared_seed_tokens": 2289,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 2288,
+          "boundary": 2288,
+          "comparison": {
+            "boundary": 2288,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 2288,
+          "expected_cached_tokens": 2304,
+          "full_seed_tokens": 2305,
+          "preparation_hits": [
+            2304
+          ],
+          "repeat_cached_tokens": 2304,
+          "requested_boundary": 2048,
+          "required_alternate_checkpoint": 2288,
+          "shared_seed_tokens": 2289,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 2288,
+          "boundary": 2288,
+          "comparison": {
+            "boundary": 2288,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 2288,
+          "expected_cached_tokens": 2304,
+          "full_seed_tokens": 2305,
+          "preparation_hits": [
+            2304
+          ],
+          "repeat_cached_tokens": 2304,
+          "requested_boundary": 2049,
+          "required_alternate_checkpoint": 2288,
+          "shared_seed_tokens": 2289,
+          "status": "passed"
+        }
+      ],
+      "status": "passed"
+    },
+    "retention_interval": 128,
+    "same_split": {
+      "limits": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      },
+      "positions": 19,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      },
+      "status": "passed",
+      "worst": [
+        {
+          "boundary": 127,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 368,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 128,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 368,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 129,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 368,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 255,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 496,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 256,
+          "case": "settled-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        },
+        {
+          "boundary": 496,
+          "case": "replayed-decode-branch",
+          "max_probability_error": 0.0,
+          "max_probability_error_lower_bound": 0.0,
+          "same_greedy_token": true,
+          "shared_tokens": 50
+        }
+      ]
+    },
+    "seconds": 170.33044385910034,
+    "settled_branches": {
+      "observations": [
+        {
+          "alternate_cached_tokens": 112,
+          "boundary": 127,
+          "comparison": {
+            "boundary": 127,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 127,
+          "expected_cached_tokens": 128,
+          "full_seed_tokens": 129,
+          "preparation_hits": [
+            128
+          ],
+          "repeat_cached_tokens": 128,
+          "required_alternate_checkpoint": 112,
+          "shared_seed_tokens": 113,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 128,
+          "boundary": 128,
+          "comparison": {
+            "boundary": 128,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 128,
+          "expected_cached_tokens": 144,
+          "full_seed_tokens": 145,
+          "preparation_hits": [
+            144
+          ],
+          "repeat_cached_tokens": 144,
+          "required_alternate_checkpoint": 128,
+          "shared_seed_tokens": 129,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 128,
+          "boundary": 129,
+          "comparison": {
+            "boundary": 129,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 129,
+          "expected_cached_tokens": 144,
+          "full_seed_tokens": 145,
+          "preparation_hits": [
+            144
+          ],
+          "repeat_cached_tokens": 144,
+          "required_alternate_checkpoint": 128,
+          "shared_seed_tokens": 129,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 240,
+          "boundary": 255,
+          "comparison": {
+            "boundary": 255,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 255,
+          "expected_cached_tokens": 256,
+          "full_seed_tokens": 257,
+          "preparation_hits": [
+            256
+          ],
+          "repeat_cached_tokens": 256,
+          "required_alternate_checkpoint": 240,
+          "shared_seed_tokens": 241,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 256,
+          "boundary": 256,
+          "comparison": {
+            "boundary": 256,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 256,
+          "expected_cached_tokens": 272,
+          "full_seed_tokens": 273,
+          "preparation_hits": [
+            272
+          ],
+          "repeat_cached_tokens": 272,
+          "required_alternate_checkpoint": 256,
+          "shared_seed_tokens": 257,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 256,
+          "boundary": 257,
+          "comparison": {
+            "boundary": 257,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 257,
+          "expected_cached_tokens": 272,
+          "full_seed_tokens": 273,
+          "preparation_hits": [
+            272
+          ],
+          "repeat_cached_tokens": 272,
+          "required_alternate_checkpoint": 256,
+          "shared_seed_tokens": 257,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 2032,
+          "boundary": 2047,
+          "comparison": {
+            "boundary": 2047,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 2047,
+          "expected_cached_tokens": 2048,
+          "full_seed_tokens": 2049,
+          "preparation_hits": [
+            2048
+          ],
+          "repeat_cached_tokens": 2048,
+          "required_alternate_checkpoint": 2032,
+          "shared_seed_tokens": 2033,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 2048,
+          "boundary": 2048,
+          "comparison": {
+            "boundary": 2048,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 2048,
+          "expected_cached_tokens": 2064,
+          "full_seed_tokens": 2065,
+          "preparation_hits": [
+            2064
+          ],
+          "repeat_cached_tokens": 2064,
+          "required_alternate_checkpoint": 2048,
+          "shared_seed_tokens": 2049,
+          "status": "passed"
+        },
+        {
+          "alternate_cached_tokens": 2048,
+          "boundary": 2049,
+          "comparison": {
+            "boundary": 2049,
+            "case": "settled-branch",
+            "max_probability_error": 0.0,
+            "max_probability_error_lower_bound": 0.0,
+            "same_greedy_token": true,
+            "shared_tokens": 50
+          },
+          "divergence_tokens": 2049,
+          "expected_cached_tokens": 2064,
+          "full_seed_tokens": 2065,
+          "preparation_hits": [
+            2064
+          ],
+          "repeat_cached_tokens": 2064,
+          "required_alternate_checkpoint": 2048,
+          "shared_seed_tokens": 2049,
+          "status": "passed"
+        }
+      ],
+      "status": "passed"
+    },
+    "status": "passed"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "observed_unix": 1794984265.8529322,
+  "scope": "Owned C32 pods only, after Iris root/serve succeeded and complete native artifacts/costs were retained",
+  "result_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/trials/20261118T045512Z-6bd49b5d193a/result.json",
+  "before": [
+    {
+      "name": "iris-romain-knotmeter-20261118t0455-7b1a3680-0-1874e7a4661f8e3c",
+      "uid": "dfc1321f-7d65-4950-b0fe-39836cc39747",
+      "iris_job": "romain.knotmeter-20261118t045512z-6bd49b5d193a",
+      "iris_task": "romain.knotmeter-20261118t045512z-6bd49b5d193a.0",
+      "phase": "Succeeded",
+      "node": "sbzvxs64",
+      "scheduled": [
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-18T04:55:21Z",
+          "observedGeneration": 3,
+          "status": "True",
+          "type": "PodScheduled"
+        }
+      ],
+      "containers": [
+        {
+          "name": "output-uploader",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://8a06505bcb51e214e7d3d7bd6524936e0ffef3adc89638916f267ec4bee41677",
+              "exitCode": 0,
+              "finishedAt": "2026-11-18T06:39:20Z",
+              "message": "{\"state\": \"TASK_OUTPUT_ARCHIVE_STATE_EMPTY\", \"skipped_count\": 0}",
+              "reason": "Completed",
+              "startedAt": "2026-11-18T04:55:24Z"
+            }
+          }
+        },
+        {
+          "name": "task",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://d2f62b0b8d59a1491a686959635dcd321e2fdc4ce7eab12d02ad666ceba04048",
+              "exitCode": 0,
+              "finishedAt": "2026-11-18T06:39:09Z",
+              "reason": "Completed",
+              "startedAt": "2026-11-18T04:55:24Z"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "after": [],
+  "verified_unix": 1794984409.849034,
+  "verification_query": [
+    "kubectl",
+    "--kubeconfig",
+    "/home/romain/.kube/coreweave-iris",
+    "--context",
+    "marin-us-east-08a_US-EAST-08A",
+    "-n",
+    "iris",
+    "get",
+    "pods",
+    "-o",
+    "custom-columns=NAME:.metadata.name",
+    "--no-headers",
+    "--request-timeout=20s"
+  ],
+  "delete_action": "Requested deletion of the five exact terminal job pod names with ignore-not-found. Four GPU pods were already absent; the remaining Succeeded CPU coordinator pod was deleted.",
+  "observation_failure": "The first exact-name get after deletion returned empty stdout; JSON parsing failed. A separate namespace-name query now confirms no owned names remain.",
+  "namespace_pod_count": 541,
+  "target_pods": [
+    "iris-romain-knotmeter-20261118t0455-69f2a98d-0-30ccd01f2f7092c6",
+    "iris-romain-knotmeter-20261118t0455-7b1a3680-0-1874e7a4661f8e3c",
+    "iris-romain-knotmeter-20261118t0455-854c36c1-0-234383d0366d0eaa",
+    "iris-romain-knotmeter-20261118t0455-988dcf1c-0-dda0ee044818c217",
+    "iris-romain-knotmeter-20261118t0455-a62feeb6-0-506d42788cf4eb59"
+  ],
+  "already_absent_before_delete": [
+    "iris-romain-knotmeter-20261118t0455-69f2a98d-0-30ccd01f2f7092c6",
+    "iris-romain-knotmeter-20261118t0455-854c36c1-0-234383d0366d0eaa",
+    "iris-romain-knotmeter-20261118t0455-988dcf1c-0-dda0ee044818c217",
+    "iris-romain-knotmeter-20261118t0455-a62feeb6-0-506d42788cf4eb59"
+  ]
+}
