@@ -638,16 +638,16 @@ intermediate-buffer history. Existing component tests cover EP1, while the
 full-model failures occurred with EP4 and EP16. The
 [component script](analysis/hero-fp8-01a1ec55/marlin_history_bootstrap.py) uses the
 actual installed candidate wheel, native per-tensor FP8 quantization/packing,
-24 local experts out of384, hidden/intermediate size3072 and top8 routing. It
+24 local experts out of 384, hidden/intermediate size 3072 and eight routed experts per token. It
 checks both ends of the global expert map, all-local/mixed/unmapped/padding
-routes, and kernel-size boundaries through2048 tokens. Inputs and weights are
+routes, and kernel-size boundaries through 2048 tokens. Inputs and weights are
 chosen so the weight quantization is exactly representable. An independent
 FP32 reference checks local contributions. A→B→A reuses buffers after different
 work and requires exact repeated A outputs; unmapped outputs must be zero.
 
 This one-GPU component can reject a stale-buffer hypothesis cheaply. It cannot
 qualify serving or explain cache-state failures by itself. Reference tolerances
-are fixed before this component run at0.02 absolute/relative for BF16 outputs;
+are fixed before this component run at 0.02 absolute/relative for BF16 outputs;
 exact history comparisons stay zero. No model policy or golden changes.
 Mechanical lint and CPU syntax checks pass before payload freezing. The native
 candidate wheel, model module and Marlin module hashes will be recorded.
