@@ -222,6 +222,8 @@ def main():
                         "layer": index,
                         "independent_bf16_reference_max": maximum(actual, expected),
                         "output_abs_max": float(actual.float().abs().max()),
+                        "independent_bf16_reference_abs_max": float(expected.float().abs().max()),
+                        "native_bf16_reference_abs_max": float(reference_native.float().abs().max()),
                         "output_nonzero_elements": int(torch.count_nonzero(actual)),
                         "same_route_repeat_max": maximum(actual, repeated),
                         "bf16_native_difference_max": maximum(actual, reference_native),
