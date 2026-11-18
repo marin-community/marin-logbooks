@@ -290,3 +290,19 @@ native summaries include both full client-export values, all host memory peaks,
 allocation times and separate setup, checks, warmup, profiling, drain/export and
 shutdown costs. Large raw requests and numerical reports remain in the native
 archives. The two R0 summaries conserve 84,600 and 85,996 GPU seconds exactly.
+
+## 2026-11-18 09:48 UTC — DP/EP32 passes and enters the native hour
+
+The full shared reference, batch, cache, decode and deployment checks pass.
+The live [gate snapshot](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-before-warmup-checks.json)
+reports actual TP1/DP32 across eight hosts with expert parallelism enabled.
+Its reported KV capacity is 1,456,262 tokens per rank, compared with 1,102,533
+in the retained sixteen-GPU deployment report, an increase of 32.08%. These
+are deployment-report capacity values, not a measurement of aggregate reuse.
+The sampled leader cgroup peak is 155,808,366,592 bytes (145.1 GiB), below its
+256 GiB limit. Final receipts will cover all eight hosts.
+
+Checks finish at 09:38:48.684 UTC. Native warmup then completes 1,406 requests
+with zero errors in 440.4 seconds. Profiling starts at 09:46:16.250 UTC, with
+the native 3,600-second admission boundary near 10:46:16 UTC. The window stays
+frozen through export and cleanup. No throughput conclusion is available yet.
