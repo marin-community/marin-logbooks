@@ -35,6 +35,8 @@ def main() -> None:
     assert hashlib.sha256(source.read_bytes()).hexdigest() == payload["model_sha256"]
     marlin = root / "vllm/model_executor/layers/fused_moe/experts/marlin_moe.py"
     assert hashlib.sha256(marlin.read_bytes()).hexdigest() == payload["marlin_sha256"]
+    factory = root / "vllm/model_executor/layers/fused_moe/layer.py"
+    assert hashlib.sha256(factory.read_bytes()).hexdigest() == payload["factory_sha256"]
     environment = os.environ | {
         "VLLM_USE_PRECOMPILED": "1",
         "VLLM_PRECOMPILED_WHEEL_LOCATION": str(base),
@@ -63,8 +65,10 @@ def main() -> None:
         marlin_sha = hashlib.sha256(
             archive.read("vllm/model_executor/layers/fused_moe/experts/marlin_moe.py")
         ).hexdigest()
+        factory_sha = hashlib.sha256(archive.read("vllm/model_executor/layers/fused_moe/layer.py")).hexdigest()
     assert model_sha == payload["model_sha256"]
     assert marlin_sha == payload["marlin_sha256"]
+    assert factory_sha == payload["factory_sha256"]
     with wheel.open("rb") as stream:
         digest = hashlib.file_digest(stream, "sha256").hexdigest()
     record = {
@@ -78,6 +82,7 @@ def main() -> None:
         "wheel_bytes": wheel.stat().st_size,
         "model_sha256": model_sha,
         "marlin_sha256": marlin_sha,
+        "factory_sha256": factory_sha,
         "native_members": candidate_native,
         "native_payloads_equal_base": True,
         "command": command,
