@@ -457,3 +457,68 @@ Native profiling starts at 11:55:42.760 UTC after warmup. Its unchanged
 and export. This window stays frozen. No partial throughput estimate is used
 to select or reject the setting. The final export remains authoritative for
 dropped warmup requests as well as profiling errors.
+
+## 2026-11-18 21:31 UTC — Final NUMA export and deadline handoff
+
+The native NUMA hour and all eight GPU tasks succeed without preemption.
+All required checks pass, including the unchanged full numerical suite and
+19 exact-zero cache controls. Native protocol, coverage, submission and gang
+rules pass. The [final result](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-result.json),
+[native export summary](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-native-summary.json),
+[check summary](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-check-summary.json)
+and [comparison](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-comparison.json)
+retain the completed point.
+
+| Retention-zero configuration | Output tokens/s/GPU | p90 TTFT, s | p90 completion, s | Profiling successes/errors |
+| --- | ---: | ---: | ---: | ---: |
+| 16 GB200, DP16/EP16, C32 | 19.29162 | 145.36914 | 156.44444 | 1586/0 |
+| 16 GB200, DP16/EP16, C64 | 23.60952 | 276.38157 | 282.52929 | 2108/1 |
+| 32 GB200, DP32/EP32, C128 | 31.42858 | 268.89855 | 281.34879 | 5245/0 |
+| Same DP32/C128, native NUMA | 31.11883 | 276.22557 | 289.07288 | 5172/2 |
+
+NUMA shows 0.99% lower throughput per GPU and 2.72% higher p90 TTFT in this
+window, with the same physical host set and unchanged capacity. Client reuse
+is 85.9813%, versus 87.9519% without binding; reported peak KV use is 97.463%.
+This does not demonstrate an improvement, so the selected BF16 configuration
+keeps the unbound DP32/C128 recipe from source
+`88e31071f56412f5f6e8702a0644f738d0427543`. One window per setting leaves
+repeat variability unmeasured; these results do not prove that NUMA binding
+is intrinsically harmful. The earlier all-rank affinity proof remains valid,
+and all four leader records match the final archive bytes exactly. Resident
+page placement remains unmeasured.
+
+The [original error records](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-request-errors.json)
+show four dropped warmup requests with empty response content, plus two
+profiling HTTP 500 failures. The latter end at 12:14:45.966 and 12:33:28.020
+UTC. The [bounded router analysis](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-http500-analysis.json)
+and [excerpt](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-http500-router.txt)
+retain matching local-URL send failures without establishing a cause or a
+worker restart. The unchanged native rule accepts the 2/5174 profiling error
+ratio, 0.000386548. No error is removed from the evidence.
+
+The [leader receipt](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-leader-receipt.json)
+pins the 384,356,552-byte native archive with SHA-256
+`b7847c3f3532bcf199861ad48f8a1a5daecc8823ec844f86f5a7108a4b08112c`.
+The original client export hash is
+`72578f4d281155aa597dc84d59a8eeb12365de898388dda7ad2f5abfa2cd58de`.
+Final worker cgroup peaks before artifact upload are 145.89, 110.21, 109.56,
+110.26, 110.17, 110.13, 109.69 and 109.69 GiB, each under its 256 GiB limit.
+NUMA allocated cost is 184,124.576002 GPU seconds, or 51.145716 GB200 hours.
+The [complete ledger](analysis/hero-bf16-01a1ed83/final-cost-ledger.json) includes
+both zero-GPU preparation failures, all successful hours and the failed NUMA
+setup: 537,181.247999 GPU seconds, or 149.217013 GB200 hours. No H100s are used.
+
+When the passive wait resumes, the authoritative clock is 21:24 UTC, past the
+17:00 deadline. No further experiment is launched. The
+[actual cleanup audit](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-cleanup.json)
+finds zero owned active or queued pods and no work to cancel. The last GPU
+allocation already ended at 13:04:55.663 UTC. Resource rows 2241, 2250 and
+2261 are closed. This final export and handoff use CPU and storage reads only.
+
+The [selection record](analysis/hero-bf16-01a1ed83/final-selection.json) retains
+the full selected profile, source and proof hashes, plus the neighboring
+tradeoffs. C32 on sixteen GPUs remains the measured lower-latency option.
+The intended lower-load DP32/C64 neighbor was not launched, so the knee
+within DP32 is still unmeasured. The selection makes no global-best claim
+and uses no invented 5% user threshold. Shared root handoff and final review
+remain the parent campaign's responsibility; all contributions stay unmerged.

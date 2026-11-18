@@ -1,0 +1,268 @@
+{
+  "status": "best_measured_BF16_configuration_with_stated_limits",
+  "selected_trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T091911Z-31c846881afd",
+  "selected_source_commit": "88e31071f56412f5f6e8702a0644f738d0427543",
+  "selected_profile_file": "retention0-dp32-c128.yaml",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "selected_profile": {
+    "model": {
+      "repo": "hero-sft-step400407",
+      "revision": "1a7886b05df25338a12642b25f25525c0eb6c5551384934a2f089d7ec5b4a88d",
+      "tokenizer": "marin-community/marin-tokenizer-tools",
+      "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09",
+      "path": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+      "config_sha256": "1a05f3dbaddd2c1aa28064dc0d4140d53d80cf5c25a7c8418b0e013c91b1a43e",
+      "chat_template": "marin",
+      "eos_token_id": 128009
+    },
+    "gpus": {
+      "type": "GB200",
+      "count": 32,
+      "per_host": 4
+    },
+    "cluster": "cw-us-east-08a",
+    "priority": "interactive",
+    "session_concurrency": 128,
+    "quantization": null,
+    "weight_precision": null,
+    "serving": {
+      "dtype": "bfloat16",
+      "tensor_parallel_size": 1,
+      "max_model_len": 262144,
+      "max_num_seqs": 128,
+      "max_num_batched_tokens": 2048,
+      "gpu_memory_utilization": 0.95,
+      "prefix_caching": true,
+      "router": true,
+      "extra_args": [
+        "--enable-prompt-tokens-details",
+        "--max-logprobs",
+        "50",
+        "--reasoning-parser",
+        "grug",
+        "--enable-auto-tool-choice",
+        "--tool-call-parser",
+        "hermes",
+        "--seed",
+        "42",
+        "--hf-overrides",
+        "{\"max_seq_len\":262144,\"max_position_embeddings\":262144}",
+        "--load-format",
+        "runai_streamer",
+        "--model-loader-extra-config",
+        "{\"distributed\":true,\"concurrency\":4,\"memory_limit\":17179869184}",
+        "--kernel-config",
+        "{\"moe_backend\":\"triton\",\"enable_flashinfer_autotune\":false}",
+        "--kv-cache-dtype",
+        "auto",
+        "--attention-backend",
+        "FLASHINFER",
+        "--compilation-config",
+        "{\"cudagraph_mode\":\"PIECEWISE\",\"splitting_ops\":[\"vllm::unified_attention_with_output\",\"vllm::unified_kv_cache_update\",\"vllm::grug_moe_short_conv\"],\"inductor_compile_config\":{\"enable_auto_functionalized_v2\":false,\"combo_kernels\":true,\"benchmark_combo_kernel\":true}}",
+        "--prefix-cache-retention-interval",
+        "0"
+      ],
+      "environment": {
+        "VLLM_SERVER_DEV_MODE": "1"
+      }
+    },
+    "workload": {
+      "public_dataset": "semianalysis_cc_traces_weka_062126_256k"
+    },
+    "vllm": {
+      "release": "marin-vllm-gpu-20261113-0ac9dcb157ee",
+      "manifest": null,
+      "repo": null,
+      "revision": null
+    },
+    "checks": [
+      {
+        "name": "model-numerics",
+        "command": [],
+        "fixture": "experiments/evaluation/inference_correctness/fixtures/hero-sft-step400407.json",
+        "timeout": 3600,
+        "kind": "numerical",
+        "checkpoint_revision": null,
+        "runtime_source": null,
+        "evidence": []
+      },
+      {
+        "name": "loaded-weight-methods",
+        "command": [
+          "python",
+          "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/inspect_model.py"
+        ],
+        "fixture": null,
+        "timeout": 180,
+        "kind": "serving",
+        "checkpoint_revision": null,
+        "runtime_source": null,
+        "evidence": []
+      }
+    ],
+    "cpu": 32,
+    "memory": "256GB",
+    "disk": "1TB"
+  },
+  "points": [
+    {
+      "name": "retention0-c32-a2",
+      "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T072838Z-3cca138ac87b",
+      "source_commit": "3e7c6ca44a",
+      "gpus": 16,
+      "hosts": 4,
+      "tp": 1,
+      "dp": 16,
+      "ep": 16,
+      "concurrency": 32,
+      "numa_bind": false,
+      "rate_tokens_per_second_per_gpu": 19.29162,
+      "p90_ttft_seconds": 145.36914,
+      "p90_completion_seconds": 156.44444,
+      "profiling_successes": 1586,
+      "profiling_errors": 0,
+      "native_validity": {
+        "submission_valid": true,
+        "worker_metrics": true,
+        "coverage_complete": true,
+        "profiling_successes": 1586,
+        "profiling_errors": 0,
+        "profiling_error_ratio": 0.0,
+        "protocol_valid": true,
+        "diagnostic": false,
+        "gang_valid": true
+      },
+      "numerical_raw_report_sha256": "d0860e9b463ef5e2c750e2d2e941c899a13ae7b0d14ab1c73ab0dd43182d8897",
+      "cache_exact_statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      },
+      "cost_gpu_seconds": 84600.0
+    },
+    {
+      "name": "retention0-c64-a2",
+      "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T073018Z-33071107ec92",
+      "source_commit": "3e7c6ca44a",
+      "gpus": 16,
+      "hosts": 4,
+      "tp": 1,
+      "dp": 16,
+      "ep": 16,
+      "concurrency": 64,
+      "numa_bind": false,
+      "rate_tokens_per_second_per_gpu": 23.60952,
+      "p90_ttft_seconds": 276.38157,
+      "p90_completion_seconds": 282.52929,
+      "profiling_successes": 2108,
+      "profiling_errors": 1,
+      "native_validity": {
+        "submission_valid": true,
+        "worker_metrics": true,
+        "coverage_complete": true,
+        "profiling_successes": 2108,
+        "profiling_errors": 1,
+        "profiling_error_ratio": 0.000474158368895211,
+        "protocol_valid": true,
+        "diagnostic": false,
+        "gang_valid": true
+      },
+      "numerical_raw_report_sha256": "4bb6fa9377b7a0aaa74ef5cc65a48a380436fd69d6358d9bedaab42ff5f0aee2",
+      "cache_exact_statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      },
+      "cost_gpu_seconds": 85996.0
+    },
+    {
+      "name": "retention0-dp32-c128-a1",
+      "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T091911Z-31c846881afd",
+      "source_commit": "88e31071f5",
+      "gpus": 32,
+      "hosts": 8,
+      "tp": 1,
+      "dp": 32,
+      "ep": 32,
+      "concurrency": 128,
+      "numa_bind": false,
+      "rate_tokens_per_second_per_gpu": 31.42858,
+      "p90_ttft_seconds": 268.89855,
+      "p90_completion_seconds": 281.34879,
+      "profiling_successes": 5245,
+      "profiling_errors": 0,
+      "native_validity": {
+        "submission_valid": true,
+        "worker_metrics": true,
+        "coverage_complete": true,
+        "profiling_successes": 5245,
+        "profiling_errors": 0,
+        "profiling_error_ratio": 0.0,
+        "protocol_valid": true,
+        "diagnostic": false,
+        "gang_valid": true
+      },
+      "numerical_raw_report_sha256": "79a02113c9395466e1c2223fce6652db6b73e7f6a109437b9787ef08c90579f4",
+      "cache_exact_statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      },
+      "cost_gpu_seconds": 181460.0
+    },
+    {
+      "name": "numa-dp32-c128-a2",
+      "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T112726Z-ea23d4021e92",
+      "source_commit": "9258300edf",
+      "gpus": 32,
+      "hosts": 8,
+      "tp": 1,
+      "dp": 32,
+      "ep": 32,
+      "concurrency": 128,
+      "numa_bind": true,
+      "rate_tokens_per_second_per_gpu": 31.11883,
+      "p90_ttft_seconds": 276.22557,
+      "p90_completion_seconds": 289.07288,
+      "profiling_successes": 5172,
+      "profiling_errors": 2,
+      "native_validity": {
+        "submission_valid": true,
+        "worker_metrics": true,
+        "coverage_complete": true,
+        "profiling_successes": 5172,
+        "profiling_errors": 2,
+        "profiling_error_ratio": 0.00038654812524159255,
+        "protocol_valid": true,
+        "diagnostic": false,
+        "gang_valid": true
+      },
+      "numerical_raw_report_sha256": "6525949dd58912431ba59031353f56a037df3081628026171cba20b047a81eaa",
+      "cache_exact_statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.0,
+        "p90": 0.0,
+        "p99": 0.0
+      },
+      "cost_gpu_seconds": 184124.57600212097
+    }
+  ],
+  "selection_reason": "Retention zero and DP32/C128 improve measured throughput per GPU over the completed fixed-checkpoint references. The matched NUMA32/C128 hour shows no improvement, so binding is not retained. DP16/C32 remains a measured lower-latency neighbor.",
+  "limits": [
+    "One normal native hour per configuration; repeat variability is unmeasured.",
+    "DP16/C64 to DP32/C128 changes allocation and total offered concurrency together while keeping four offered session trees per GPU.",
+    "Native replay changes the completed-request mix; the observed gain does not isolate a single cause.",
+    "A lower-load DP32/C64 neighbor was not launched before the deadline, so the knee within DP32 remains unmeasured.",
+    "The 5% similarity heuristic is not used as a user-approved acceptance threshold.",
+    "The old50.71015 recipe has another checkpoint/tokenizer and private compact KV; it is not this configuration\u2019s matched reference.",
+    "Passing serving checks do not qualify RL trainer probability ratios or learning."
+  ],
+  "complete_owned_gpu_seconds": 537181.2479991913,
+  "complete_owned_gpu_hours": 149.2170133331087,
+  "cleanup_record": "numa-dp32-c128-a2-cleanup.json",
+  "remaining_active_gpus": 0,
+  "remaining_queued_gpu_jobs": 0
+}

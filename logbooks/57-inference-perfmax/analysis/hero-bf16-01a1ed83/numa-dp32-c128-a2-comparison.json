@@ -1,0 +1,63 @@
+{
+  "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T112726Z-ea23d4021e92",
+  "source_commit": "9258300edfa848b65f118e144f6161e44db99a56",
+  "baseline_trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-bf16-01a1ed83/trials/20261118T091911Z-31c846881afd",
+  "baseline_source_commit": "88e31071f56412f5f6e8702a0644f738d0427543",
+  "actual_geometry": {
+    "tp": 1,
+    "dp": 32,
+    "ep": 32,
+    "gpus": 32,
+    "hosts": 8,
+    "concurrency": 128
+  },
+  "same_native_host_set": true,
+  "native_validity": {
+    "submission_valid": true,
+    "worker_metrics": true,
+    "coverage_complete": true,
+    "profiling_successes": 5172,
+    "profiling_errors": 2,
+    "profiling_error_ratio": 0.00038654812524159255,
+    "protocol_valid": true,
+    "diagnostic": false,
+    "gang_valid": true
+  },
+  "all_required_checks_pass": true,
+  "rate": 31.11883,
+  "p90_ttft_seconds": 276.22557,
+  "p90_completion_seconds": 289.07288,
+  "rate_change_vs_unbound_percent": -0.9855679130269412,
+  "ttft_change_vs_unbound_percent": 2.724826891033816,
+  "completion_change_vs_unbound_percent": 2.7453787876606794,
+  "client_cache_reuse_percent": 85.98131880920532,
+  "baseline_client_cache_reuse_percent": 87.95189166160954,
+  "theoretical_cache_reuse_percent": 94.004,
+  "server_peak_kv_fraction": 0.97463,
+  "warmup_error_count": 4,
+  "profiling_successes": 5172,
+  "profiling_errors": 2,
+  "native_export_sha256": "72578f4d281155aa597dc84d59a8eeb12365de898388dda7ad2f5abfa2cd58de",
+  "host_memory_peak_gib": [
+    145.88812255859375,
+    110.21417236328125,
+    109.55828857421875,
+    110.25872802734375,
+    110.17279052734375,
+    110.13323974609375,
+    109.686279296875,
+    109.68707275390625
+  ],
+  "host_memory_limit_gib": [
+    256.0,
+    256.0,
+    256.0,
+    256.0,
+    256.0,
+    256.0,
+    256.0,
+    256.0
+  ],
+  "decision": "Do not retain NUMA in the selected configuration: this valid matched native window demonstrates no throughput or p90 latency improvement. The unbound DP32/C128 result remains the strongest measured BF16 point.",
+  "limitation": "One window per configuration leaves repeat variability unmeasured. Native replay produces a different completed-request mix. This does not establish that NUMA binding is intrinsically harmful or that the selected offered load is globally best. Resident page placement remains unmeasured."
+}
