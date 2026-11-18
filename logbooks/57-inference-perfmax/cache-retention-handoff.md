@@ -63,5 +63,23 @@ and policy match the first run exactly. The
 combines its fresh deployment/cache checks with the earlier passing reference,
 batch and decode stages. Its complete cost is 3.408889 GB200-hours; all four pods
 are absent. This establishes provisional serving coverage at zero. Throughput
-effects remain unmeasured. Snowball and the stronger Hero positive-retention
-fork coverage remain pending.
+effects remain unmeasured.
+
+Snowball also passes the [full retention-zero suite](analysis/hero-fp8-cache-validation/snowball-zero-v2-summary.json)
+on eight H100s, including 19 exact comparisons at zero. Its
+[retention-128 cache follow-up](analysis/hero-fp8-cache-validation/snowball-positive-v2-summary.json)
+passes the same 19 controls and all required hits. Each has 27 changed-split
+comparisons within unchanged bounds. Existing positive reference, batch and
+decode evidence is [reused](analysis/hero-fp8-cache-validation/snowball-positive-evidence-reuse.json):
+model, GPU type/count, CPU/RAM, serving settings, runtime, reported hardware,
+policy and goldens match. Placement moved from RNO to east02 after a resource
+snapshot. Both clean follow-up sources are `9d7b0cfd6be15aab3a23aa0cd2d906208fe85f80`.
+
+The [allocated validation cost](analysis/hero-fp8-cache-validation/allocated-validation-costs.json)
+is 8.522222 GB200-hours and 2.008889 H100-hours, including the first failed Hero
+probe. Two cancelled RNO attempts had no observed node allocation and retain
+their null native cost receipts. Both east02 jobs remain Succeeded after
+[cleanup](analysis/hero-fp8-cache-validation/snowball-east02-cleanup.json).
+Their native archives and terminal stdout were preserved before ordinary
+deletion of completed pods. All parent GPUs are released. Stronger Hero
+positive-retention fork evidence remains pending in the child's BF16 C32 run.

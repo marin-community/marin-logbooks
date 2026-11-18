@@ -1,0 +1,79 @@
+{
+  "scope": "Snowball BF16 retention-128 provisional serving checks, composed from matching existing reference/batch/decode and fresh cache evidence.",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "matching_controls": {
+    "model": true,
+    "gpus": true,
+    "cpu": true,
+    "memory": true,
+    "quantization": true,
+    "serving": true,
+    "vllm": true
+  },
+  "old_placement": "cw-rno2a",
+  "new_placement": "cw-us-east-02a",
+  "old_run": "s3://marin-us-east-08a/marin/inference/correctness/runs/20261117T182002Z-84fa26881755",
+  "old_source": {
+    "tree_hash": "8712bf0739",
+    "base_commit": "12055994a6",
+    "dirty": false,
+    "branch": "docs/agentx-tuning-guide",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T10:20:02.562917",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/agentx-tuning-guide-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+      "--profile",
+      "snowball-h100",
+      "--name",
+      "snowball-retention128-a1",
+      "--output",
+      "/home/romain/.cache/inference-perfmax-01a1d379/complete-validation/snowball-retention128-a1-execution.json"
+    ]
+  },
+  "old_report_sha256": "8c1b74133316d16370933830c45f832d2ba6cdac1c53df87e6caa2cb9c68eff3",
+  "reused_stages": [
+    "reference",
+    "batch",
+    "decode"
+  ],
+  "fresh_run": "s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T050229Z-337e7f3095ce",
+  "fresh_source": {
+    "tree_hash": "9997b2b6f8",
+    "base_commit": "9d7b0cfd6b",
+    "dirty": false,
+    "branch": "codex/57-inference-perfmax",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-17T21:02:29.756557",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/perfmax-research-57-01a1d379/experiments/evaluation/inference_correctness/launch.py",
+      "--profile",
+      "snowball-h100",
+      "--set",
+      "cluster=cw-us-east-02a",
+      "--set",
+      "cpu=32",
+      "--set",
+      "memory=384GB",
+      "--pytest-node",
+      "tests/cluster/vllm/test_retention_materialization.py::test_validate_retention_cache",
+      "--name",
+      "snowball-retention-positive-east02",
+      "--output",
+      "/home/romain/.cache/inference-perfmax-01a1d379/hero-fp8/snowball-positive-east02-execution.json"
+    ]
+  },
+  "fresh_report_sha256": "5900ab88d8e2892515300357112bd8a32095f30736bf1bfc82244dd01e8827a9",
+  "fresh_stages": [
+    "deployment",
+    "cache"
+  ],
+  "hardware_same": true,
+  "old_hardware": "GPU 0: NVIDIA H100 80GB HBM3\nGPU 1: NVIDIA H100 80GB HBM3\nGPU 2: NVIDIA H100 80GB HBM3\nGPU 3: NVIDIA H100 80GB HBM3\nGPU 4: NVIDIA H100 80GB HBM3\nGPU 5: NVIDIA H100 80GB HBM3\nGPU 6: NVIDIA H100 80GB HBM3\nGPU 7: NVIDIA H100 80GB HBM3",
+  "fresh_hardware": "GPU 0: NVIDIA H100 80GB HBM3\nGPU 1: NVIDIA H100 80GB HBM3\nGPU 2: NVIDIA H100 80GB HBM3\nGPU 3: NVIDIA H100 80GB HBM3\nGPU 4: NVIDIA H100 80GB HBM3\nGPU 5: NVIDIA H100 80GB HBM3\nGPU 6: NVIDIA H100 80GB HBM3\nGPU 7: NVIDIA H100 80GB HBM3",
+  "policy_and_goldens_identical": true,
+  "numerical_limits_changed": false,
+  "cache_exact_positions": 19,
+  "cache_maximum_error": 0.0
+}
