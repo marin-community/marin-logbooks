@@ -615,3 +615,39 @@ proof. Row 2239 is closed. Completed owned cost is now 64.443718 GB200 hours,
 including every retained failure and setup. The only live owned GPU allocation
 is the frozen 16-GPU FP8 C64 window, which reaches its admission boundary near
 07:25 UTC.
+
+
+## 2026-11-18 07:18 UTC — Continue under the overnight amendment
+
+The amended goal extends autonomous work to 17:00 UTC. The current normal FP8
+hour stays frozen. Final High review and PR opening wait for the overnight work.
+The parent owns reconciliation of the older 50.71015-token recipe and has
+assigned an independent BF16 search to another child. This child keeps its
+32-GB200 share and zero H100 share, with no overnight questions or contact to
+Romain or LA1.
+
+I read the older selected recipe and handoff. It used another checkpoint,
+tokenizer/runtime, compact KV, retention zero, C128 and explicit deterministic
+compiler settings. The current runtime does not read grug_logical_kv_cache, and
+current NUMA binding is false. The parent's baseline reconciliation records
+these distinctions; the old result is not an isolated regression or a promise
+for the fixed current checkpoint. PR #110 remains outside this campaign.
+
+The next cheap numerical control targets native Marlin EP filtering and
+intermediate-buffer history. Existing component tests cover EP1, while the
+full-model failures occurred with EP4 and EP16. The
+[component script](analysis/hero-fp8-01a1ec55/marlin_history_bootstrap.py) uses the
+actual installed candidate wheel, native per-tensor FP8 quantization/packing,
+24 local experts out of 384, hidden/intermediate size 3072 and eight routed experts per token. It
+checks both ends of the global expert map, all-local/mixed/unmapped/padding
+routes, and kernel-size boundaries through 2048 tokens. Inputs and weights are
+chosen so the weight quantization is exactly representable. An independent
+FP32 reference checks local contributions. A→B→A reuses buffers after different
+work and requires exact repeated A outputs; unmapped outputs must be zero.
+
+This one-GPU component can reject a stale-buffer hypothesis cheaply. It cannot
+qualify serving or explain cache-state failures by itself. Reference tolerances
+are fixed before this component run at 0.02 absolute/relative for BF16 outputs;
+exact history comparisons stay zero. No model policy or golden changes.
+Mechanical lint and CPU syntax checks pass before payload freezing. The native
+candidate wheel, model module and Marlin module hashes will be recorded.
