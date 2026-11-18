@@ -62,3 +62,88 @@ This snapshot is not a reservation. Recheck admission and actual allocation.
 Prepared workload key `a451c72f990cb5e6cc6650dfd302532ce1799cee6543716fec2124afdfab5ffb`
 is already available in the shared cache. Any miss is handled by the runner's
 CPU coordinator. Do not prepare the corpus on devbox.
+
+## 2026-11-18 07:26 UTC — Resolve the current fixture path before retrying
+
+Both initial coordinators stopped before GPU submission. Historical copied
+profiles used `fixture: hero-sft-step400407`. Revision `9b93fb2d3f` had moved
+the fixture and removed shortcut resolution. The maintained preset already
+uses `experiments/evaluation/inference_correctness/fixtures/hero-sft-step400407.json`.
+Update the two owned profiles to that path. The fixed fixture has identical
+bytes, SHA256 `0ad43045025f31097472694724631adebe63b7c04120af36feb0ef38ede52380`.
+Run the actual CPU reference lookup before retrying. No numerical criterion,
+golden, serving flag or runtime changed.
+
+The failed source was `c1743e44b55cf6c74f6713c7c971b782762a8aff`. Coordinators
+`/romain/knotmeter-20261118t072255z-4698a9d73b3e` and
+`/romain/knotmeter-20261118t072255z-b78aac7ff367` retain original submitted
+plans, coordinator errors and result receipts in this leaf's analysis directory.
+Both results report complete cost of zero GPU seconds and no serving attempts.
+This demonstrates a profile-migration trap when copying prior evidence. Inspect
+the current preset's check command as well as the historical serving settings.
+
+## 2026-11-18 07:32 UTC — Shared preparation passes and native NUMA setup is reusable
+
+The CPU reference lookup passes all 37 histories and 15,855 scored positions.
+The C32 retry's coordinator finds the existing prepared workload with its exact
+checksum and submits sixteen GPUs. Its four host allocations are at Batch,
+following the requested interactive priority. The C64 retry uses the same clean
+source `3e7c6ca44a15413dcb5491aad903ef89ba23f116` and controls. The new identities
+are `/romain/knotmeter-20261118t072838z-3cca138ac87b/serve` and
+`/romain/knotmeter-20261118t073018z-33071107ec92/serve`. Both original plans
+are retained beside this notebook. No benchmark result is available yet.
+
+The earlier winning recipe retains a 37,936-byte ARM64 `numactl` package at a
+checksum-pinned shared URI. Its binary hash is also pinned. Reuse those bytes
+instead of installing packages or changing the task image. The
+[CPU probe](analysis/hero-bf16-01a1ed83/numa_probe.py) extracts it under `/tmp`
+inside the owned C32 CPU coordinator. That coordinator is already on a GB200
+ARM host and requests zero GPUs. Test native CPU and memory binding on each
+CPU-bearing NUMA node without creating a CUDA context or loading the model.
+The probe's exact source is published before execution.
+
+## 2026-11-18 07:40 UTC — Native dependency passes on the current image
+
+The [NUMA dependency result](analysis/hero-bf16-01a1ed83/numa-dependency-a2.json)
+comes from the owned CPU coordinator on `sbzvxs64`, an ARM64 host. The retained
+package and extracted binary hashes match. `libnuma` is available, default
+memory policy is zero and `get_mempolicy` succeeds. CPU-plus-memory binding and
+CPU-only binding both return zero on nodes 0 and 1. The child CPU masks are
+`0-71` and `72-143`. `Mems_allowed_list` describes the container's cpuset and
+does not itself prove the selected memory policy. The next probe also retains
+`numactl --show` from each bound child.
+
+The first task-exec used the base `python`, which lacked `zstandard`. The retry
+used `/app/.venv/bin/python`, the actual coordinator environment, and passed.
+The [execution record](analysis/hero-bf16-01a1ed83/numa-dependency-execution.json)
+keeps that distinction. These probes create no additional allocation, CUDA
+context or model. Their additional GPU cost is zero.
+
+The [NUMA launcher](analysis/hero-bf16-01a1ed83/numa_launcher.py) stages the
+same private binary before server startup and extends only that vLLM
+subprocess's `PATH`. The profile explicitly declares `--numa-bind`; the pinned
+runtime performs GPU-to-NUMA detection and binding. The research launcher
+substitutes the worker entrypoint and server factory, then calls the native
+coordinator and runner. It preserves preparation, checks, cache reset, fresh
+server, native warmup, timing, gang controls, exports and allocation accounting.
+The runtime wheel is unchanged. Each native host archive will include the
+dependency hash and policy probes. This is a prepared candidate; no NUMA GPU
+trial has been launched.
+
+Pinned source describes retention zero as keeping semantic replay and shared
+prefix junctions, while positive intervals also keep periodic checkpoints.
+It applies to sliding-window and Mamba cache groups. It does not compact global
+attention KV heads. The retained C64 server summary reports peak cache use
+0.99690 and client reuse 57.40%, against theoretical reuse about 95.3%.
+C32 reports peak use 0.76537 and client reuse 85.24%. These are correlated
+pressure signals, not an isolated cause. Server counter-decrease warnings
+remain; use client exports for the comparison. The retention-zero runs test
+whether sparse local retention improves that tradeoff on the fixed checkpoint.
+
+The [effective-policy probe](analysis/hero-bf16-01a1ed83/numa-dependency-a3.json)
+confirms `policy: bind` with `membind: 0` and `membind: 1` for the two
+CPU-plus-memory cases. The CPU-only controls retain the default memory policy.
+The native plan CLI and Iris callable serialization both pass in the
+[CPU validation](analysis/hero-bf16-01a1ed83/numa-launcher-cpu-validation.json).
+Both live retention-zero deployments have passed their deployment identity
+checks and are still running the remaining numerical probes.
