@@ -147,3 +147,22 @@ The native plan CLI and Iris callable serialization both pass in the
 [CPU validation](analysis/hero-bf16-01a1ed83/numa-launcher-cpu-validation.json).
 Both live retention-zero deployments have passed their deployment identity
 checks and are still running the remaining numerical probes.
+
+## 2026-11-18 07:54 UTC — Retention zero passes both full shared suites
+
+Both actual sixteen-GPU deployments pass reference, batch, cache, decode and
+deployment checks before native warmup. Each has 19 exact cache comparisons;
+maximum, P99 and P90 differences are all zero. C32 finishes checks at
+07:48:07.929 UTC and C64 at 07:50:00.088 UTC. The
+[live gate snapshots](analysis/hero-bf16-01a1ed83/retention0-a2-before-warmup-checks.json)
+retain that scope and the current leader memory peaks: 118,086,631,424 bytes
+(109.98 GiB) and 119,039,918,080 bytes (110.86 GiB). These are live high-water
+marks; final host receipts will retain every host's peak and memory limit.
+The native `measuring` status includes warmup. No AgentX result is claimed yet.
+
+The first two CPU preparation failures returned CLI exit zero after printing
+their failed result rows. Their result receipts correctly show
+`job_succeeded: false`, no GPU attempts and zero GPU cost. Treat the retained
+job/result state and validity checks as the outcome, rather than inferring
+measurement success from the local CLI exit alone. The parent owns any shared
+runner change prompted by this observation.
