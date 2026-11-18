@@ -172,7 +172,7 @@ def layout_outputs(x, ids, probabilities, expert_map, q13, q2, s13, s2, layer, o
     return c13.clone(), result.clone()
 
 
-def maximum(first, second):
+def maximum_difference(first, second):
     return (first.float() - second.float()).abs().max().item()
 
 
@@ -201,8 +201,12 @@ def main():
         "research_source": payload["research_source"],
         "torch": torch.__version__,
         "device": torch.cuda.get_device_name(),
+        "multiprocessors": torch.cuda.get_device_properties(0).multi_processor_count,
+        "capability": list(torch.cuda.get_device_capability()),
         "started_unix": time.time(),
         "cases": [],
+        "cuda_graph_history": [],
+        "completed_phases": [],
         "layout_order": [],
         "upstream_candidate": payload["upstream_candidate"],
     }
@@ -244,109 +248,127 @@ def main():
         probabilities = probabilities.expand(maximum, -1).contiguous()
         all_rows = torch.arange(maximum, device="cuda")[:, None]
         slots = torch.arange(topk, device="cuda")[None, :]
-        for offset in (0, global_experts - local):
-            expert_map = torch.full((global_experts,), -1, dtype=torch.int32, device="cuda")
-            expert_map[offset : offset + local] = torch.arange(local, dtype=torch.int32, device="cuda")
-            outside = local if offset == 0 else 0
-            routes = {
-                "all-local": (all_rows + slots) % local + offset,
-                "mixed": torch.where(slots < 4, (all_rows + slots) % local + offset, (all_rows + slots) % 24 + outside),
-                "no-local": (all_rows + slots) % 24 + outside,
-                "negative-padding": torch.where(all_rows % 3 == 0, -1, (all_rows + slots) % local + offset),
-            }
-
-            def run(x, ids, weights, expert_map=expert_map):
-                return fused_marlin_moe(
-                    x,
-                    q13,
-                    q2,
-                    None,
-                    None,
-                    s13,
-                    s2,
-                    weights,
-                    ids.contiguous(),
-                    scalar_types.float8_e4m3fn.id,
-                    global_num_experts=global_experts,
-                    expert_map=expert_map,
-                    workspace=layer.workspace,
-                    intermediate_cache13=cache13,
-                    intermediate_cache2=cache2,
-                    output=out[: len(x)],
-                ).clone()
-
-            for name, ids in routes.items():
-                for count in (1, 7, 8, 127, 128, 129, 512, 2048):
-                    x, target, weights = inputs[:count], ids[:count], probabilities[:count]
-                    cache13.fill_(16)
-                    cache2.fill_(-16)
-                    out.fill_(32)
-                    before = run(x, target, weights)
-                    expected = reference(x, target, weights, expert_map, w13, w2)
-                    error = (before.float() - expected.float()).abs()
-                    row = {
-                        "local_offset": offset,
-                        "routing": name,
-                        "tokens": count,
-                        "reference_max_abs": error.max().item(),
-                        "reference_rms": error.square().mean().sqrt().item(),
-                        "output_max_abs": before.float().abs().max().item(),
-                    }
-                    record["cases"].append(row)
-                    output.write_text(json.dumps(record, indent=2) + "\n")
-                    row["reference_passed"] = torch.allclose(before.float(), expected.float(), atol=0.02, rtol=0.02)
-                    run(inputs.flip(0).contiguous(), routes["mixed"].flip(0).contiguous(), probabilities)
-                    after = run(x, target, weights)
-                    row["history_max_abs"] = (before.float() - after.float()).abs().max().item()
-                    row["history_passed"] = torch.equal(before, after)
-                    row["filtering_passed"] = True
-                    if name == "no-local":
-                        row["filtering_passed"] = not torch.count_nonzero(before).item()
-                    if name == "negative-padding":
-                        row["filtering_passed"] = not torch.count_nonzero(
-                            before[torch.arange(count, device="cuda") % 3 == 0]
-                        ).item()
-                    row["status"] = (
-                        "passed"
-                        if row["reference_passed"] and row["history_passed"] and row["filtering_passed"]
-                        else "failed"
-                    )
-                    output.write_text(json.dumps(record, indent=2) + "\n")
-        assert any(x["output_max_abs"] > 0.01 for x in record["cases"])
-        # Same persistent native intermediate buffers across differently sized
-        # CUDA graphs; graph-private alignment/output allocations stay separate.
-        record["cuda_graph_history"] = []
-        graphs = []
-        for count in (1, 128, 2048):
-            x, target, weights = inputs[:count], routes["mixed"][:count], probabilities[:count]
-            run(x, target, weights)
-            torch.cuda.synchronize()
-            graph = torch.cuda.CUDAGraph()
-            with torch.cuda.graph(graph):
-                result = run(x, target, weights)
-            graphs.append((count, graph, result))
-        reverse_inputs = inputs.flip(0).contiguous()
-        reverse_ids = routes["mixed"].flip(0).contiguous()
-        run(reverse_inputs, reverse_ids, probabilities)
-        torch.cuda.synchronize()
-        other = torch.cuda.CUDAGraph()
-        with torch.cuda.graph(other):
-            run(reverse_inputs, reverse_ids, probabilities)
-        for count, graph, result in graphs:
-            graph.replay()
-            torch.cuda.synchronize()
-            before = result.clone()
-            other.replay()
-            torch.cuda.synchronize()
-            cache13.fill_(16)
-            cache2.fill_(-16)
-            out.fill_(32)
-            graph.replay()
-            torch.cuda.synchronize()
-            row = {"tokens": count, "maximum": (before.float() - result.float()).abs().max().item()}
-            record["cuda_graph_history"].append(row)
+        reused = payload.get("reuse_history")
+        if reused:
+            assert reused["source_commit"] == record["source_commit"]
+            assert reused["wheel_sha256"] == record["wheel_sha256"]
+            assert reused["marlin_sha256"] == record["marlin_sha256"]
+            assert reused["torch"] == record["torch"]
+            assert reused["device"] == record["device"]
+            record["reused_history_evidence"] = reused
+            record["completed_phases"].append("history-reused-from-a2")
             output.write_text(json.dumps(record, indent=2) + "\n")
-            row["status"] = "passed" if torch.equal(before, result) else "failed"
+        else:
+            for offset in (0, global_experts - local):
+                expert_map = torch.full((global_experts,), -1, dtype=torch.int32, device="cuda")
+                expert_map[offset : offset + local] = torch.arange(local, dtype=torch.int32, device="cuda")
+                outside = local if offset == 0 else 0
+                routes = {
+                    "all-local": (all_rows + slots) % local + offset,
+                    "mixed": torch.where(
+                        slots < 4, (all_rows + slots) % local + offset, (all_rows + slots) % 24 + outside
+                    ),
+                    "no-local": (all_rows + slots) % 24 + outside,
+                    "negative-padding": torch.where(all_rows % 3 == 0, -1, (all_rows + slots) % local + offset),
+                }
+
+                def run(x, ids, weights, expert_map=expert_map):
+                    return fused_marlin_moe(
+                        x,
+                        q13,
+                        q2,
+                        None,
+                        None,
+                        s13,
+                        s2,
+                        weights,
+                        ids.contiguous(),
+                        scalar_types.float8_e4m3fn.id,
+                        global_num_experts=global_experts,
+                        expert_map=expert_map,
+                        workspace=layer.workspace,
+                        intermediate_cache13=cache13,
+                        intermediate_cache2=cache2,
+                        output=out[: len(x)],
+                    ).clone()
+
+                for name, ids in routes.items():
+                    for count in (1, 7, 8, 127, 128, 129, 512, 2048):
+                        x, target, weights = inputs[:count], ids[:count], probabilities[:count]
+                        cache13.fill_(16)
+                        cache2.fill_(-16)
+                        out.fill_(32)
+                        before = run(x, target, weights)
+                        expected = reference(x, target, weights, expert_map, w13, w2)
+                        error = (before.float() - expected.float()).abs()
+                        row = {
+                            "local_offset": offset,
+                            "routing": name,
+                            "tokens": count,
+                            "reference_max_abs": error.max().item(),
+                            "reference_rms": error.square().mean().sqrt().item(),
+                            "output_max_abs": before.float().abs().max().item(),
+                        }
+                        record["cases"].append(row)
+                        output.write_text(json.dumps(record, indent=2) + "\n")
+                        row["reference_passed"] = torch.allclose(before.float(), expected.float(), atol=0.02, rtol=0.02)
+                        run(inputs.flip(0).contiguous(), routes["mixed"].flip(0).contiguous(), probabilities)
+                        after = run(x, target, weights)
+                        row["history_max_abs"] = (before.float() - after.float()).abs().max().item()
+                        row["history_passed"] = torch.equal(before, after)
+                        row["filtering_passed"] = True
+                        if name == "no-local":
+                            row["filtering_passed"] = not torch.count_nonzero(before).item()
+                        if name == "negative-padding":
+                            row["filtering_passed"] = not torch.count_nonzero(
+                                before[torch.arange(count, device="cuda") % 3 == 0]
+                            ).item()
+                        row["status"] = (
+                            "passed"
+                            if row["reference_passed"] and row["history_passed"] and row["filtering_passed"]
+                            else "failed"
+                        )
+                        output.write_text(json.dumps(record, indent=2) + "\n")
+            assert any(x["output_max_abs"] > 0.01 for x in record["cases"])
+            record["completed_phases"] = ["ep-history"]
+            output.write_text(json.dumps(record, indent=2) + "\n")
+            # Same persistent native intermediate buffers across differently sized
+            # CUDA graphs; graph-private alignment/output allocations stay separate.
+            record["cuda_graph_history"] = []
+            graphs = []
+            for count in (1, 128, 2048):
+                x, target, weights = inputs[:count], routes["mixed"][:count], probabilities[:count]
+                run(x, target, weights)
+                torch.cuda.synchronize()
+                graph = torch.cuda.CUDAGraph()
+                with torch.cuda.graph(graph):
+                    result = run(x, target, weights)
+                graphs.append((count, graph, result))
+            reverse_inputs = inputs.flip(0).contiguous()
+            reverse_ids = routes["mixed"].flip(0).contiguous()
+            run(reverse_inputs, reverse_ids, probabilities)
+            torch.cuda.synchronize()
+            other = torch.cuda.CUDAGraph()
+            with torch.cuda.graph(other):
+                run(reverse_inputs, reverse_ids, probabilities)
+            for count, graph, result in graphs:
+                graph.replay()
+                torch.cuda.synchronize()
+                before = result.clone()
+                other.replay()
+                torch.cuda.synchronize()
+                cache13.fill_(16)
+                cache2.fill_(-16)
+                out.fill_(32)
+                graph.replay()
+                torch.cuda.synchronize()
+                row = {"tokens": count, "maximum": (before.float() - result.float()).abs().max().item()}
+                record["cuda_graph_history"].append(row)
+                output.write_text(json.dumps(record, indent=2) + "\n")
+                row["status"] = "passed" if torch.equal(before, result) else "failed"
+                output.write_text(json.dumps(record, indent=2) + "\n")
+            record["completed_phases"].append("cuda-graph-history")
+            output.write_text(json.dumps(record, indent=2) + "\n")
         # Two legal full-region orders isolate physical routed-token layout.
         # Repeated identical orders and canonical orders get fresh zeroed
         # output/intermediates/workspace to separate history from layout.
@@ -397,12 +419,12 @@ def main():
                         "expert_regions": regions,
                         "layouts_differ": not torch.equal(ascending[:used], descending[:used]),
                         "canonical_active_layouts_identical": True,
-                        "same_order_w13_max": maximum(first[0], same[0]),
-                        "same_order_output_max": maximum(first[1], same[1]),
-                        "reversed_order_w13_max": maximum(first[0], different[0]),
-                        "reversed_order_output_max": maximum(first[1], different[1]),
-                        "canonical_repeat_w13_max": maximum(canonical_first[0], canonical_second[0]),
-                        "canonical_repeat_output_max": maximum(canonical_first[1], canonical_second[1]),
+                        "same_order_w13_max": maximum_difference(first[0], same[0]),
+                        "same_order_output_max": maximum_difference(first[1], same[1]),
+                        "reversed_order_w13_max": maximum_difference(first[0], different[0]),
+                        "reversed_order_output_max": maximum_difference(first[1], different[1]),
+                        "canonical_repeat_w13_max": maximum_difference(canonical_first[0], canonical_second[0]),
+                        "canonical_repeat_output_max": maximum_difference(canonical_first[1], canonical_second[1]),
                     }
                     record["layout_order"].append(row)
                     output.write_text(json.dumps(record, indent=2) + "\n")
@@ -410,14 +432,23 @@ def main():
         "status": "completed-diagnostic",
         "finished_unix": time.time(),
         "peak_gpu_bytes": torch.cuda.max_memory_allocated(),
-        "history_failures": sum(x["status"] != "passed" for x in record["cases"]),
-        "graph_history_failures": sum(x["status"] != "passed" for x in record["cuda_graph_history"]),
+        "history_failures": None if reused else sum(x["status"] != "passed" for x in record["cases"]),
+        "graph_history_failures": None if reused else sum(x["status"] != "passed" for x in record["cuda_graph_history"]),
         "order_sensitive_cases": sum(
             x["reversed_order_w13_max"] > 0 or x["reversed_order_output_max"] > 0 for x in record["layout_order"]
         ),
     }
     output.write_text(json.dumps(record, indent=2) + "\n")
-    print(json.dumps({"status": record["status"], "cases": len(record["cases"])}))
+    print(
+        json.dumps(
+            {
+                "status": record["status"],
+                "history_cases": len(record["cases"]),
+                "order_cases": len(record["layout_order"]),
+                "history_reused": bool(reused),
+            }
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -735,3 +735,31 @@ no installed runtime module is patched for this component.
 The initial comparison is also saved under the campaign URI as
 comparison-initial.md/json, with remote SHA readback in
 [the receipt](analysis/hero-fp8-01a1ec55/comparison-initial-receipt.json).
+
+## 2026-11-18 08:19 UTC — Retain completed controls; run order phase separately
+
+The second component completed 64 EP/history cases before a local readback
+bug stopped serialization of the first order row. The local integer `maximum`
+shadowed the readback helper. All 64 A→B→A differences are exactly zero, and
+unmapped/padding filtering passes. Four independent FP32-reference comparisons
+remain failures at the declared `atol=0.02, rtol=0.02`: both local offsets at
+2048 rows for all-local and negative-padding routing, each maximum 0.046875.
+Those failures are retained without changing the bound.
+
+Three CUDA graph controls at 1, 128 and 2048 rows each record a zero maximum
+difference. The last row lacks its final status field because the old writer
+flushed before assigning it. The [partial native JSON](analysis/hero-fp8-01a1ec55/marlin-order-a2-partial.json)
+and [summary](analysis/hero-fp8-01a1ec55/marlin-order-a2-summary.json) preserve
+that distinction. No order row survived; the order hypothesis stays pending.
+The job cost 75 allocated GPU seconds and its resource row is closed.
+
+The next one-GPU attempt reuses these completed phases by exact wheel and
+native-module identities. It runs only the pending order phase. Its
+[CPU preflight](analysis/hero-fp8-01a1ec55/marlin-order-a3-cpu-preflight.json)
+executes the actual order-row expression with the former shadowing trigger,
+round-trips its JSON, validates the canonicalizer with hostile inactive-tail
+data, and verifies that the weight/input/probability initialization AST is
+unchanged from the completed attempt. These checks prevent a repeat of the
+serialization failure; they provide no GPU numerical evidence.
+
+Completed owned cost is now 338,231.384 GPU seconds (93.953162 GB200 hours).
