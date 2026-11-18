@@ -1535,3 +1535,20 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the oracle-campaign collect artifacts' contents are registry-bound [M].
 - Decision and next action: next hourly check watches for the single-workflow oracle campaign's outcomes and the competitive-coding SAMPLE decisions.
+
+### 2026-11-18 16:55 UTC - Hourly catch-up (15:40–16:55 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `7db60c9c0f…` (15:12:23 UTC) to head `de499faa8e94b35d5a10c0662bcf303bddd3b7ce`, landed 16:48:09 UTC (~9 landings 16:35–16:48 UTC incl. one coordinator landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 7db60c9c..de499faa` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Preview revision 30**: Atlas docs synced to preview revision 30 (`42e5398817…`).
+  - **Difficulty self-serve report landed**: difficulty self-serve report, continuation preflight, and frozen-contract vintages (`447800a249…`); report wording: aggregated-by-run with own-status breakdown (`de499faa8e…`, head).
+  - **HARDMath rhs receipt rebound** to the retained-schema revision (`3158253ef4…`) with the retained tasks.parquet schema pinned in the publisher test (`f2218395bb…`).
+  - **LOCAL worker hardening**: fail fast on unprivileged LOCAL workers with full disk tooling installed (`3455edec52…`); campaign worker prep creates its root before writing the evidence file (`deb19ccd21…`); apt configured to run as root inside capability-less local image machines (`e2535d31c7…`).
+  - **Status/source evidence**: source evidence kept responsive with difficulty rollouts linked (`98cd489361…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; rev-30 hosted verification remains preview-lane evidence [M].
+- Decision and next action: next hourly check watches for rev-30 hosted verification and the difficulty self-serve report's first outputs.
