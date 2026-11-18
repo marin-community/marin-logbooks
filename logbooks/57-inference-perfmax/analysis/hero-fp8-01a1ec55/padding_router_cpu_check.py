@@ -87,7 +87,8 @@ def main():
     report = {
         "scope": (
             "Disposable CPU execution of actual old/new routing methods and checked-in regression; "
-            "forward-context mask supplied by a small facade. Native helper and installed-wheel integration still require GPU."
+            "forward-context mask supplied by a small facade. "
+            "Native helper and installed-wheel integration still require GPU."
         ),
         "base": BASE,
         "results": results,
