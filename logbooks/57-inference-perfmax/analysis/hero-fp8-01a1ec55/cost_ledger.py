@@ -1,0 +1,96 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Sum retained campaign receipts, including rejected and failed allocations."""
+
+import json
+from datetime import UTC, datetime
+from pathlib import Path
+
+DIRECTORY = Path(__file__).parent
+INPUTS = (
+    ("Triton FP8 screen", "diagnostic-a1-result.json", "triton-a1-native"),
+    ("BF16 C64 failed setup", "bf16-c64-a1-failed-result.json", None),
+    ("Marlin-experts FP8 screen", "marlin-experts-a1-result.json", "marlin-experts-a1-native"),
+    ("Marlin-all numerical screen", "marlin-all-a1-execution.json", None),
+    ("Overlay collection failure", "selective-component-a1-failed-execution.json", None),
+    ("Overlay import-binding failure", "selective-component-a2-failed-execution.json", None),
+    ("Overlay input-hash failure", "selective-component-a3-failed-execution.json", None),
+    ("CPU native wheel build", "selective-build-a1-execution.json", None),
+    ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),
+    ("Selective full-model screen", "selective-fp8-marlin-a1-execution.json", None),
+    ("BF16 C64", "bf16-c64-a2-result.json", "bf16-c64-a2-native"),
+    ("BF16 C128", "bf16-c128-a1-result.json", "bf16-c128-a1-native"),
+    ("Selective FP8 C128", "selective-fp8-c128-a1-result.json", "selective-fp8-c128-a1-native"),
+    ("Selective FP8 C64", "selective-fp8-c64-a1-result.json", "selective-fp8-c64-a1-native"),
+)
+
+
+def phase_costs(attempt: dict, export: dict | None) -> dict:
+    allocation, worker = attempt.get("allocation", {}), attempt.get("worker", {})
+    start, end = allocation.get("scheduled_unix"), allocation.get("end_unix")
+    if not export or not worker.get("ready_unix") or start is None or end is None:
+        return {"unsplit_allocation_gpu_seconds": attempt.get("gpu_seconds")}
+    profiling = [
+        datetime.fromisoformat(export[key]).replace(tzinfo=UTC).timestamp() for key in ("start_time", "end_time")
+    ]
+    boundaries = [start, worker["ready_unix"], worker["checks_completed_unix"], *profiling, end]
+    names = ("setup", "checks", "warmup_and_harness_start", "profiling_and_native_grace", "exports_and_shutdown")
+    rate = attempt["gpu_seconds"] / (end - start)
+    return {
+        name + "_gpu_seconds": max(0, min(end, right) - max(start, left)) * rate
+        for name, left, right in zip(names, boundaries[:-1], boundaries[1:], strict=True)
+    }
+
+
+def main() -> None:
+    rows = []
+    for name, filename, cache in INPUTS:
+        path = DIRECTORY / filename
+        if not path.exists():
+            continue
+        record = json.loads(path.read_text())
+        export_path = Path("scratch") / (cache or "unused") / "aiperf_artifacts/profile_export_aiperf.json"
+        export = json.loads(export_path.read_text()) if export_path.exists() else None
+        attempts = record["attempts"]
+        costs = [attempt.get("gpu_seconds") for attempt in attempts]
+        rows.append(
+            {
+                "name": name,
+                "receipt": filename,
+                "state": record.get("job_state", record.get("state")),
+                "gpu_seconds": sum(cost or 0 for cost in costs),
+                "cost_complete": all(cost is not None for cost in costs),
+                "attempts": [
+                    {
+                        "uid": attempt.get("attempt_uid", attempt.get("uid")),
+                        "gpu_seconds": attempt.get("gpu_seconds"),
+                        "allocation": attempt.get("allocation"),
+                        "phases": phase_costs(
+                            attempt, export if attempt.get("worker", {}).get("status") == "succeeded" else None
+                        ),
+                    }
+                    for attempt in attempts
+                ],
+            }
+        )
+    total = sum(row["gpu_seconds"] for row in rows)
+    output = {
+        "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
+        "gpu_type": "GB200",
+        "gpu_seconds": total,
+        "gpu_hours": total / 3600,
+        "cost_complete_for_listed_allocations": all(row["cost_complete"] for row in rows),
+        "phase_note": (
+            "Profiling includes native grace. Warmup includes harness startup. "
+            "Unsplit failures and numerical/component screens retain their full allocation cost. "
+            "CPU build used eight requested CPUs for98 allocated seconds and zero GPUs."
+        ),
+        "rows": rows,
+    }
+    (DIRECTORY / "cost-ledger.json").write_text(json.dumps(output, indent=2) + "\n")
+    print(json.dumps({key: output[key] for key in ("gpu_seconds", "gpu_hours", "cost_complete_for_listed_allocations")}))
+
+
+if __name__ == "__main__":
+    main()

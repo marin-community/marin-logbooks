@@ -316,3 +316,63 @@ and quantization applicability; all numeric criteria and fixed goldens stay the
 same. The loaded-method check now requires FP8 experts and no FP8 linears for
 this exact selector. Method inspection still does not read tensor values; the
 actual-wheel component tests directly check weight and scale tensors.
+
+## 2026-11-18 04:12 UTC — Actual wheel tests pass; adopt the stronger cache probe
+
+Cold installation of the immutable candidate passed all 18 native focused tests
+in 20.38 seconds on GB200, with zero skips. The imported model and package both
+come from installed `site-packages`; no module override is used. Tests directly
+verify exact expert weights/scales and outputs, BF16 projections in experts-only
+mode, FP32 router weights, the independent Hero BF16 math at one/seven tokens,
+and unsupported-scheme/platform rejection. The
+[component identity](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-components.json),
+[JUnit](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-components.xml),
+[receipt](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-receipt.json) and
+[execution](analysis/hero-fp8-01a1ec55/selective-wheel-tests-a1-execution.json)
+retain the results. Complete cost is 91 GPU-seconds (0.025278 GB200-hours).
+The pod is Succeeded and resource row2234 is closed.
+
+Merged the parent's stronger cache source
+`dff1c8812335eb9047d6da0cf6ef279e588a71cb` before the next qualification. It
+explicitly creates sibling checkpoint K and original checkpoint E using K+1/E+1
+prompts, then requires sibling hit K and unchanged original hit E. The existing
+BF16 C64 window and earlier FP8 reports retain their v1 probe scope. The next
+selective screen and BF16 neighboring load use v2. A v1 pass does not establish
+coverage of this stronger generated-history fork.
+
+Use four GB200 GPUs for the selective numerical screen. Dense projections add
+roughly a dozen GiB per GPU relative to all-FP8 at EP4, while expert weights keep
+the same native per-tensor method. The prior all-FP8 deployment had 35.37 GiB of
+BF16 KV space per engine. This is the smallest plausible full-context allocation;
+record its actual capacity and retain any capacity failure before expanding.
+
+## 2026-11-18 04:21 UTC — Keep physical precision distinct from its native selector
+
+The selective plan exposed a metadata error: native `quantization: online`
+would label the physical weights `online` in upstream exports. The optional
+`weight_precision: fp8` field now supplies that label while retaining native
+`--quantization online` and its exact selector. A boundary test verifies both;
+all 28 runner tests and scoped lint pass. Prior submitted plans stay unchanged.
+
+The full selective screen is submitted at
+`s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T041443Z-65a5fdd270e2`.
+Its four-GPU pod is still SchedulingGated, so no allocation has begun. Requested
+interactive priority became Batch as expected. Its source reports dirty because
+I prepared the three future load profiles during CPU reference lookup. The
+tracked tree hash `1777ab6ade` is the same as the clean dry run; no serving,
+checker or submitted profile bytes changed. This commit preserves those future
+profiles. The actual candidate wheel and full plan remain immutable.
+
+The planned neighboring load is C128. Compare both precisions on sixteen GB200
+GPUs with normal one-hour windows and the stronger cache probe. The existing
+BF16 C64 is the lower neighboring point. A sampled C64 interval had about85%
+KV use and67% actual versus95% theoretical cache hits, with no steady queue.
+Extra lanes could improve utilization or worsen cache pressure. These are
+hypotheses, not a measured causal explanation. Add selective C64 if its outcome
+could change the recommendation. No latency ceiling is inferred.
+
+The [cost ledger](analysis/hero-fp8-01a1ec55/cost-ledger.json) sums all completed
+owned receipts, including failures and the CPU build. Its current7.318286
+GB200-hours excludes the live BF16 window and queued selective screen. Native
+profile timestamps split setup, checks, warmup, profiling/native grace and
+exports/shutdown where available. Unsplit auxiliary jobs retain their full cost.
