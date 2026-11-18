@@ -1,10 +1,10 @@
 {
   "scope": "Finished owned allocations only; pending/live work is excluded until its terminal receipt is retained",
   "gpu_type": "GB200",
-  "gpu_seconds": 341203.3840017319,
-  "gpu_hours": 94.77871777825885,
+  "gpu_seconds": 346287.3840017319,
+  "gpu_hours": 96.19094000048108,
   "cost_complete_for_listed_allocations": true,
-  "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98,77 and99 allocated seconds, respectively, and zero GPUs.",
+  "phase_note": "Profiling includes the accepted-request span and native grace. Warmup includes harness startup. Post-request harness time includes native drain/export until process exit; those activities are not separately timed. Matching follower attempts use their leader timing, verified by native gang attempt IDs. Unsplit failures and numerical/component screens retain their full allocation cost. CPU builds each requested eight CPUs for 98, 77 and 99 allocated seconds, respectively, and zero GPUs.",
   "rows": [
     {
       "name": "Triton FP8 screen",
@@ -512,6 +512,36 @@
           },
           "phases": {
             "unsplit_allocation_gpu_seconds": 117.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Padding full-model reference rejection",
+      "receipt": "padding-model-a1-execution.json",
+      "state": "failed",
+      "gpu_seconds": 5084.0,
+      "cost_complete": true,
+      "cost_basis": "Native allocation receipts; queueing excluded",
+      "attempts": [
+        {
+          "uid": "b34b842f195d7635",
+          "gpu_seconds": 5084.0,
+          "allocation": {
+            "pod_uid": "9c85c917-e0cd-45a6-b84b-b4e1d9c01007",
+            "attempt_uid": "b34b842f195d7635",
+            "pod_name": "iris-romain-knotmeter-20261118t0954-6f5ab47e-0-b34b842f195d7635",
+            "node_name": "s3jtxs64",
+            "observed_unix": 1794996996.928238,
+            "phase": "Failed",
+            "scheduled_unix": 1794995692.0,
+            "finished_unix": 1794996963.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1794996963.0
+          },
+          "phases": {
+            "unsplit_allocation_gpu_seconds": 5084.0
           }
         }
       ]

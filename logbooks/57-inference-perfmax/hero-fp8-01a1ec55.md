@@ -1000,3 +1000,37 @@ retains six exact native sessions. Every observed main model is
 `claude-opus-5-5`; requested effort is xhigh and observed effort is absent.
 The inspected actions are source/Git reads, with no tests or source changes.
 No findings were reported. The broader final High GOAL review remains separate.
+
+## 2026-11-18 10:22 UTC — Persistence passes; reference still rejects FP8
+
+The actual a399 wheel passes both the focused and full-suite cache screens:
+all 19 exact comparisons are zero in each. All supported reuse and branch
+coverage passes. Full-suite changed-split maximum is 0.0452303596. Batch
+(maximum 0.0035133274) and decode (0.0728239648) pass. The fixed reference still
+rejects short histories: maximum 0.6728747848 exceeds the unchanged provisional
+0.65, while p99 0.1222981009 passes 0.125. The worst position is book03/769.
+Long histories pass, maximum 0.2777403530. No acceptance bound is changed.
+This resolves the previously measured cache failure in this deployment, not
+all FP8 numerical differences or RL qualification.
+
+[Summary with statistics](analysis/hero-fp8-01a1ec55/padding-model-a1-summary.json),
+[raw first cache report](analysis/hero-fp8-01a1ec55/padding-model-a1-cache-screen.json)
+and [native receipt](analysis/hero-fp8-01a1ec55/padding-model-a1-receipt.json)
+retain both outcomes. Archive SHA256 is
+`85ae22048fa6a64ae92791e96059a2f76bf7493d2bdabbabe5abd425d7552cf1`;
+its full `report.json`, every response and server logs remain native evidence.
+All four actual storage records pass. Host peak before teardown is 94.13 GiB
+under 256 GiB. This attempt cost 5,084 allocated GPU seconds (1.412222 hours).
+Its pod is absent and board row2254 is closed. Earlier canonical and original
+failures remain unchanged.
+
+The next hypothesis uses native online quantization's ignore list. Keep the
+first12 and last12 routed-expert layers BF16; quantize the middle24 with the
+same per-tensor FP8 weight method. Half the expert layers gives meaningful
+memory savings (about15.2 GiB/GPU at16 GPUs, or30.4 GiB at eight, before scales), unlike a token FP8
+fraction. This is a provisional layer choice protecting early routing and late
+scores, not a demonstrated optimum. Global Marlin rejects unquantized MoE;
+Triton natively accepts both. Its FP8 path also dynamically quantizes activations,
+which is a deliberate change from Marlin W8A16 and will be recorded separately
+from BF16 KV. A small actual-wheel loader/output/graph component must pass
+before a model screen. The unchanged full shared gates precede any new hour.
