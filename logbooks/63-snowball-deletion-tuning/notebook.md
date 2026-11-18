@@ -483,12 +483,17 @@ recorded here.
     `.../long-loop-micro210-...-2026.11.18.3-2fc533510c76` — 16/16 tasks
     succeeded, about 39 minutes wall; the inference broker/worker teardown
     accounts for the "killed by user" child states.
-  - Scores (scorer validated on the 10/05 run): pooled scored-attempt mean
-    **0.1326927745**, mean of benchmark means **0.1595907707**, native
-    equal-20 **0.1595907707** (no slot-level exclusions, so the two summaries
-    coincide), native mass /440 58.3848208.
-  - Coverage: 440 scored of 442 assigned rows — all 440 pinned slots scored;
-    2 excluded rows are retry rows (1 bfcl, 1 bixbench).
+  - Scores (scorer validated on the 10/05 run; corrected after the
+    coordinator's audit of the result files — see the correction entry):
+    pooled scored-attempt mean **0.1332986776** (58.3848208 / 438), mean of
+    benchmark means **0.1595907707**, native equal-20 0.1595907707, native
+    mass /440 58.3848208.
+  - Coverage: **438 scored of 440 slots** — BFCL UID 232 and BixBench UID 89
+    failed with 'Execution has no final grade' during verifier preparation
+    (verified status 'error' in the per-attempt dumps), zero retries. The
+    initial '440/442' reading came from the aggregator's per-benchmark
+    sequence counts, which do not match the per-attempt verification
+    statuses.
   - Per-source (score / attempted): NUPA 0/10, MATH500 2/10, gpqa 10/30,
     MMLU-Pro 4/10, IFBench 0/10, bfcl 0/11(+1 excl), bixbench 0/11(+1 excl),
     cruxeval 0/10, ds-1000 0/10, humanevalplus 2/10, mbppplus 7/10,
@@ -572,6 +577,40 @@ recorded here.
   weights are not checkpointed — the logits ARE trainable, so they are).
 - Decision and next action: implement items 1-5; redo the V1 dry-run on the
   Levanter path; then V2 Megatron.
+
+### 2026-11-18 20:05 UTC - CORRECTION: base-row coverage and pooled mean
+
+- Question or hypothesis and reason for trying it: the coordinator audited the
+  result files against the base-row comment and found two number errors.
+- Published source revision: unchanged; the durable results copy and its
+  checksums are unchanged.
+- Command or material configuration: re-derived from the per-attempt dumps
+  (`bfclparity-pi.jsonl` UID 232 and `bixbench-pi.jsonl` UID 89 carry
+  verification status `error` with reason 'Execution has no final grade').
+- External inputs and artifact references: the durable results copy
+  (`micro210-base/2026.11.18.3/`, checksums.json); the coordinator's audit;
+  the row as posted on [marin #11337](https://github.com/marin-community/marin/issues/11337#issuecomment-6988511341).
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: two numbers in the 19:05 entry were
+  wrong and are corrected there (and here):
+  1. Coverage is **438 scored of 440 slots**, not 440/440 — BFCL UID 232 and
+     BixBench UID 89 failed during verifier preparation with no final grade,
+     zero retries. The '440/442' reading came from the aggregator's
+     per-benchmark sequence counts, which disagree with the per-attempt
+     verification statuses.
+  2. The pooled scored-attempt mean is **0.1332986776** (mass 58.3848208
+     divided by 438 scored attempts), not 0.1326927745 (which divided by
+     440). The mean of benchmark means 0.1595907707 is unchanged.
+  The base comparator is **0.1333 / 0.1596**.
+- Evidence: the per-attempt dumps' verification statuses; this entry.
+- Interpretation and limitations: the two unscored agentic slots are the same
+  'Execution has no final grade' class the .61 run hit in preparation; here
+  they are isolated to two slots rather than the whole agentic half. Paired
+  per-task deltas must treat these two slots as missing (not zero) and align
+  on the scored common set.
+- Decision and next action: variants compute paired deltas on the 438-slot
+  scored common set with task-clustered bootstrap; the missing two slots are
+  reported as unscored coverage.
 
 ## Planned runs (resolved vs pending)
 
