@@ -440,3 +440,20 @@ numerical suite, before native warmup. The required affinity serving check
 passes. Full reference, batch, cache and decode outcomes are still pending;
 NUMA performance remains unmeasured. Row 2261 now records the admitted
 32-GPU allocation, within this session's share and with no H100 use.
+
+## 2026-11-18 11:57 UTC — Qualified NUMA candidate enters its native hour
+
+The [before-hour snapshot](analysis/hero-bf16-01a1ed83/numa-dp32-c128-a2-before-hour.json)
+records passing affinity, full model-numerics and loaded-weight checks.
+Reference, batch, cache, decode and deployment all pass under the unchanged
+policy. All 19 exact cache controls are zero. Reported KV capacity remains
+1,456,262 tokens per rank. The deployment frontend declares NUMA binding,
+while the earlier per-worker records supply its actual resolved node and
+thread policy. The leader cgroup peak at this snapshot is 145.89 GiB, under
+256 GiB; final host receipts will retain all eight peaks.
+
+Native profiling starts at 11:55:42.760 UTC after warmup. Its unchanged
+3,600-second admission boundary is 12:55:42.760 UTC, followed by normal drain
+and export. This window stays frozen. No partial throughput estimate is used
+to select or reject the setting. The final export remains authoritative for
+dropped warmup requests as well as profiling errors.
