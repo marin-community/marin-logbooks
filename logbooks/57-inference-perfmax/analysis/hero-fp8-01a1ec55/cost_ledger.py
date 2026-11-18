@@ -20,6 +20,7 @@ INPUTS = (
     ("CPU canonical native wheel build", "marlin-canonical-build-a1-execution.json", None),
     ("Installed canonical wrapper and graph controls", "marlin-canonical-component-a1-execution.json", None),
     ("Canonical full-model cache-first rejection", "marlin-canonical-model-a1-execution.json", None),
+    ("Zero-weight padded-route component", "marlin-padding-a1-execution.json", None),
     ("Actual-wheel focused tests", "selective-wheel-tests-a1-execution.json", None),
     ("Marlin history component import failure", "marlin-history-a1-execution.json", None),
     ("Marlin order control partial writer failure", "marlin-order-a2-execution.json", None),

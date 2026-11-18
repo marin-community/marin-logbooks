@@ -907,3 +907,38 @@ reference error is 0.1228700 and FP8 is 0.7197637; their direct probability
 difference is 0.5971223. This is distinct from the cache persistence failure.
 It is a comparison of the two serving configurations and their saved top-k
 probability bounds, not KL or a new numerical acceptance policy.
+
+## 2026-11-18 09:35 UTC — Zero-weight padding routes affect real outputs
+
+The [actual-router padding component](analysis/hero-fp8-01a1ec55/marlin-padding-a1-components.json)
+completed in 84 allocated GPU seconds. Twenty of 28 cases change real-row MoE
+outputs when only padded expert IDs change, despite exactly zero hidden rows
+and combine weights for padding. The maximum raw MoE output change is
+0.00006103515625. All same-route and restored A→B→A comparisons are zero.
+Sixteen fresh CUDA graph cases retain that sensitivity, with exact same-route
+and restored controls. Separately zeroed lower-level buffers reproduce W13
+and routed-contribution differences. This isolates a component layout effect;
+it does not establish the full-model failure's cause. [Summary](analysis/hero-fp8-01a1ec55/marlin-padding-a1-summary.json)
+and [native receipt](analysis/hero-fp8-01a1ec55/marlin-padding-a1-receipt.json)
+retain both local-expert geometries (24 and 96). The pod is deleted and board
+row 2251 is closed. Completed owned cost is 94.746218 GB200 hours.
+
+The [PR127 source check](analysis/hero-fp8-01a1ec55/grug-fp8-pr127-identity.json)
+confirms that its hidden-row/weight masking is already merged into both the
+tested base and current main. The new source therefore extends that existing
+path. Runtime `a399f9a0f1582897a44cb4bac690221004516125` is a separate
+467-based experiment: two model lines clear padded router logits out of place
+before top-k. Real-row logits and the caller's tensor are preserved. The
+regression requires stable valid padded IDs, unchanged real routes/weights,
+and zero padded weights; it does not prescribe a particular padding expert set.
+The [patch](analysis/hero-fp8-01a1ec55/padding-router-runtime.patch) and
+[CPU old-fail/new-pass check](analysis/hero-fp8-01a1ec55/padding-router-cpu-validation.json)
+are retained. This CPU check supplies the context mask through a small facade;
+actual native helper, wheel and graph integration remain pending.
+
+The model module SHA256 is now
+`65e35957606714c57fcc3a19b5ba104b268d3b48d3cbad4f9b849586395748ac`;
+the canonical Marlin module stays byte-identical. No weight method, scale layout,
+router storage precision or KV precision changes. Native CPU packaging will
+verify both Python modules and all 19 pinned native payload hashes before
+cold component and cache-first model checks. No new hour is launched.
