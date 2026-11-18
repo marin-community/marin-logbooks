@@ -14,11 +14,13 @@ uv run python -m experiments.evaluation.knotmeter.cli run \
 
 `--profile` accepts a preset name or YAML path. Use `hero-gb200` for Hero/Mochi.
 The presets request eight H100s on one host or sixteen GB200s on four hosts.
-Hero starts from the tested DP16/C64 point with retention zero and 256 GB per
-host. A matched DP32 trial found no NUMA gain; binding stays off by default.
+Hero uses retention zero and 256 GB per host from the tested DP16/C64 point.
+A matched DP32 trial found no NUMA gain; binding stays off by default.
 The pinned task image also lacks `numactl`. The campaign's higher-throughput
 DP32/C128 point doubles the allocation and remains an explicit campaign choice.
 See the [measured tradeoffs](https://github.com/marin-community/marin-logbooks/issues/57).
+The preset uses Marin's selected runtime. These measurements used `0ac9dcb157`;
+rerun the checks when that runtime changes.
 Inspect live capacity through `use-iris` and coordinate resources before running.
 For an additional allowed-host check, pass `--placement-uri` with a JSON document
 such as `{"nodes":["NODE1","NODE2","NODE3","NODE4"]}`. Choose spare nodes from live
