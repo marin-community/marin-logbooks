@@ -81,3 +81,23 @@ plans, coordinator errors and result receipts in this leaf's analysis directory.
 Both results report complete cost of zero GPU seconds and no serving attempts.
 This demonstrates a profile-migration trap when copying prior evidence. Inspect
 the current preset's check command as well as the historical serving settings.
+
+## 2026-11-18 07:32 UTC — Shared preparation passes and native NUMA setup is reusable
+
+The CPU reference lookup passes all 37 histories and 15,855 scored positions.
+The C32 retry's coordinator finds the existing prepared workload with its exact
+checksum and submits sixteen GPUs. Its four host allocations are at Batch,
+following the requested interactive priority. The C64 retry uses the same clean
+source `3e7c6ca44a15413dcb5491aad903ef89ba23f116` and controls. The new identities
+are `/romain/knotmeter-20261118t072838z-3cca138ac87b/serve` and
+`/romain/knotmeter-20261118t073018z-33071107ec92/serve`. Both original plans
+are retained beside this notebook. No benchmark result is available yet.
+
+The earlier winning recipe retains a 37,936-byte ARM64 `numactl` package at a
+checksum-pinned shared URI. Its binary hash is also pinned. Reuse those bytes
+instead of installing packages or changing the task image. The
+[CPU probe](analysis/hero-bf16-01a1ed83/numa_probe.py) extracts it under `/tmp`
+inside the owned C32 CPU coordinator. That coordinator is already on a GB200
+ARM host and requests zero GPUs. Test native CPU and memory binding on each
+CPU-bearing NUMA node without creating a CUDA context or loading the model.
+The probe's exact source is published before execution.
