@@ -135,6 +135,10 @@ remains in the check artifacts. Separate BF16 and FP8 policies can compare when
 their thresholds and probes match. Older records without a criteria hash still
 require the same full policy identity. Concurrency, GPU count, runtime and serving
 settings may vary; throughput is reported per GPU.
+The pinned processor uses `tp` as the total GPU count for normalization.
+Its `is_multinode=false` selects a single serving pool even when it spans hosts.
+Read the resolved profile and deployment checks for actual vLLM topology:
+For example, the Hero preset's `tp=16` aggregate comes from TP1/DP16 across four hosts.
 Keep experimental code and discarded approaches in the
 [research archive](../../../docs/dev-guide/research-engineering.md).
 

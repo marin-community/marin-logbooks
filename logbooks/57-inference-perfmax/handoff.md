@@ -1,14 +1,34 @@
 # Inference validation and tuning
 
-The overnight Hero campaign is running. Both BF16 models now pass supported zero and
+The overnight Hero campaign is running. Both BF16 models pass supported zero and
 positive retention coverage; see the [cache handoff](cache-retention-handoff.md).
-The [Hero campaign](hero-fp8-01a1ec55.md) has completed BF16 C64 and C32 windows;
-FP8 C64 also completed a valid hour at 22.62167 output tokens/s/GPU, with failed
-numerical checks blocking acceptance. BF16 C32 loses 5.34% throughput while
-nearly halving p90 latency. The [baseline audit](baseline-reconciliation.md)
-now guides retention/NUMA tests and targeted FP8 controls. The [execution inspection](hero-fp8-inspection.md)
-records actual weight-storage proof and remaining numerical gaps. A new final
-High review is pending. All contributions remain unmerged.
+The [retention-zero BF16 hours](analysis/hero-fp8-cache-validation/hero-bf16-retention0-parent-inspection.json)
+improve the tested baseline. All points below use 16 GB200s, TP1 and a normal
+one-hour window on fixed step400407. Passing numerical checks use a provisional
+serving policy; RL learning remains unqualified.
+
+| Hero point | Output tokens/s/GPU | p90 TTFT | p90 request completion | Profiling errors | Numerical checks |
+| --- | ---: | ---: | ---: | ---: | --- |
+| BF16, retention 128, C32 | 17.93673 | 166.45803 s | 171.59327 s | 0 | Pass |
+| BF16, retention 128, C64 | 18.94936 | 312.16459 s | 324.18918 s | 0 | Pass, with matching v2 cache evidence |
+| Selective FP8, retention 128, C64 | 22.62167 | 263.60362 s | 278.60459 s | 0 | Fail |
+| BF16, retention 0, C32 | 19.29162 | 145.36914 s | 156.44444 s | 0 | Pass |
+| BF16, retention 0, C64 | 23.60952 | 276.38157 s | 282.52929 s | 1 | Pass |
+
+Retention zero raises C32 throughput by 7.55% and lowers p90 TTFT by 12.67%.
+The C64 comparison also lowers host RAM from 768 to 256 GiB; its throughput rises
+24.59% and TTFT falls 11.47%. All other points request 256 GiB. The one C64 error
+is HTTP 500, within the native error-ratio rule; its cause is under inspection.
+Warmup errors remain in the native records. One window per point does not quantify
+noise. The initial FP8 gain over retention-128 BF16 does not beat the newer BF16
+throughput result, and FP8's failed numerical checks still block acceptance.
+
+The [baseline audit](baseline-reconciliation.md) guides the next allocation-size
+test and targeted FP8 controls. A canonical Marlin component fix passes, but its
+four-GPU full-model screen still fails exact cache comparisons. The
+[execution inspection](hero-fp8-inspection.md) records actual storage proof and
+remaining gaps. Final selection and a new High review are pending. All
+contributions remain unmerged.
 
 ## Completed BF16 phase — 2026-11-17
 

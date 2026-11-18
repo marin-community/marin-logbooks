@@ -828,3 +828,41 @@ retention128/PIECEWISE/2048 geometry. A cache failure stops before the longer
 suite. A pass proceeds to the full shared suite in the same deployment.
 Only the inactive logical-KV argument is removed in this new profile;
 historical profiles stay source-pinned. CPU collection and required lint pass.
+
+## 2026-11-18 08:56 UTC — Full-model admission and separate contribution
+
+The cache-first model diagnostic is
+`/romain/knotmeter-20261118t083746z-cc0ba58c46ea`, with durable native evidence
+under `s3://marin-us-east-02a/marin/inference/correctness/runs/20261118T083746Z-cc0ba58c46ea`.
+It queued with no assigned node, then admitted four GB200s on `s2zpxs64`
+at normal Batch priority. The original Interactive request is preserved.
+Model loading is healthy; the cache and full-suite outcomes remain pending.
+
+The [native plan](analysis/hero-fp8-01a1ec55/marlin-canonical-model-a1-submitted-plan.json)
+keeps `dirty=true`. The sole untracked file at source capture was the new
+provider-before observation JSON. The [source audit](analysis/hero-fp8-01a1ec55/marlin-canonical-model-a1-source-audit.json)
+proves every tracked source, test, profile and policy matched published
+`38908a22a2`; its file blobs are retained. This metadata flag is not rewritten.
+Future before-state snapshots will stay in ignored scratch until source capture.
+
+During the genuine queue wait, a separate current-main contribution was
+prepared on `codex/hero-fp8-marlin-canonical-contribution-01a1ec55` at
+`b0d1a26b6e365fb9fc5ee1f991ac064a477e855b`, based on freshly fetched
+`47a8e415bff17b9376f02d9b92edcc67e962eaee`. That base lacks canonicalization.
+The required read-only advisory catalog completed once and found one prose
+issue: native aligners currently sentinel-fill the inactive tail. Only the added
+docstring and comment were clarified. The test file remains byte-identical to
+tested runtime `467e3fc`; the entire Marlin executable AST matches after excluding
+docstrings. CPU regression and required lint pass. [Validation](analysis/hero-fp8-01a1ec55/marlin-canonical-contribution-validation.json)
+keeps whole-current-main GPU qualification explicitly absent.
+
+[Review evidence](analysis/hero-fp8-01a1ec55/marlin-canonical-contribution-review.json)
+identifies all seven exact native sessions by user-prompt hashes. Each observed
+model is `claude-opus-5-5`; requested effort was xhigh, while observed effort is
+not recorded. Tool actions were inspected for reads and source state remained
+unchanged apart from the author's prose fix. The earlier selective contribution's
+six native sessions were recovered the same way, correcting its prior unknown
+model/ID fields without rerunning review or changing `04745`. That
+[dated readback](analysis/hero-fp8-01a1ec55/selective-contribution-review-native-readback.json)
+preserves the original record. Both contributions await the parent's final High
+GOAL review; no PR is opened.

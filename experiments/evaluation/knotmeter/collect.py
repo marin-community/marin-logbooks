@@ -39,6 +39,8 @@ def process_point(point: Path, manifest: PointManifest, artifacts: Path) -> dict
     profile = Profile.model_validate(series["profile"])
     count = profile.gpus.count
     dp = count // profile.serving.tensor_parallel_size
+    # The pinned processor counts a single serving pool through TP, ignoring DP_SIZE.
+    # Actual vLLM topology remains in the resolved profile and deployment checks.
     environment = os.environ | {
         "RESULT_DIR": str(point.resolve()),
         "AGENTIC_OUTPUT_DIR": str(artifacts.resolve()),
