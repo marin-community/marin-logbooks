@@ -942,3 +942,42 @@ the canonical Marlin module stays byte-identical. No weight method, scale layout
 router storage precision or KV precision changes. Native CPU packaging will
 verify both Python modules and all 19 pinned native payload hashes before
 cold component and cache-first model checks. No new hour is launched.
+
+## 2026-11-18 09:50 UTC — Actual padding wheel closes the component failure
+
+The native CPU build succeeded in 99 allocated seconds on eight requested CPUs,
+with zero GPUs. Its [manifest](analysis/hero-fp8-01a1ec55/padding-router-build-a1-manifest.json)
+pins actual wheel SHA256
+`453138ae87b639ef7cac30069aeaaf6a8963cc9f6ae5ae7af896027e113a21ef`.
+All 19 ELF payloads equal the original 0ac base, and the built Python model and
+Marlin hashes match source.
+
+The separate cold-installed-wheel job then passed all 19 focused native tests,
+with no failures, errors or skips. All 28 paired padding cases and 16 raw CUDA
+graph controls are now exact zero; padded IDs are stable, and same/restored
+routes remain exact. [Raw component outputs](analysis/hero-fp8-01a1ec55/padding-fixed-a1-components.json),
+[native JUnit](analysis/hero-fp8-01a1ec55/padding-fixed-a1-components.xml) and
+[summary](analysis/hero-fp8-01a1ec55/padding-fixed-a1-summary.json) retain the
+proof. This fixes the measured component behavior. Full-model attribution
+and numerical qualification remain open.
+
+The component cost 117 allocated GPU seconds at Batch priority. Its pod and
+the CPU build pod are released; board rows 2252/2253 are closed. Completed
+owned cost is 94.778718 GB200 hours. All previous failures remain retained.
+
+The next model screen uses
+[the new profile](analysis/hero-fp8-01a1ec55/selective-fp8-padding-4gpu.yaml),
+changing only the tested runtime from the preceding canonical screen. The
+padding flag's effective-setting basis is explicit: pinned
+`VLLM_MOE_SKIP_PADDING` defaults to true, and neither the profile nor Marin
+launchers override it. The component observed true before its native pytest;
+that test also sets it explicitly. For serving this is a source/default
+inference, not a separately sampled per-worker value. The same cache-first
+and full-shared gates run before any normal hour.
+
+The padding contribution is separate from the canonical and selective branches.
+Its current-main revision `139b7521151c580f2e524691b53be00127992e64` adds only
+the two model lines and regression. Its router/test ASTs match candidatea399;
+broader current-main GPU behavior is not claimed. The required advisory catalog
+completed once with no findings. The parent's final High GOAL review remains
+pending, and no PR is opened.

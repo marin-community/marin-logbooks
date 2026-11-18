@@ -1,0 +1,30 @@
+{
+  "scope": "Standalone current-main padding contribution CPU regression and exact router/test AST comparison; no current-main wheel or whole-model GPU claim",
+  "base": "467e3fc14427012aa9114127fb41f9c8273ca80a",
+  "results": {
+    "old": {
+      "status": "failed",
+      "assertion": "Tensor-likes are not equal!\n\nMismatched elements: 2 / 4 (50.0%)\nGreatest absolute difference: 3 at index (1, 0)\nGreatest relative difference: inf at index (1, 0)"
+    },
+    "new": {
+      "status": "passed"
+    }
+  },
+  "model_sha256": "9f75e3243d4e2b8b1a8ed92631481b4ba07a05553ff2819fc0e9872a0eb2095e",
+  "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+  "native_methods_and_weight_schemes_unchanged": true,
+  "main_base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "matching_subjects": [
+    {
+      "path": "vllm/model_executor/models/grugmoe.py",
+      "subject": "GrugMoeRouter",
+      "ast_matches_candidate_a399": true
+    },
+    {
+      "path": "tests/models/test_grugmoe.py",
+      "subject": "test_grug_moe_router_padding_ids_ignore_stale_logits",
+      "ast_matches_candidate_a399": true
+    }
+  ],
+  "combined_candidate": "a399f9a0f1582897a44cb4bac690221004516125"
+}
