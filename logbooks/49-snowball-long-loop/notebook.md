@@ -942,3 +942,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: launch-record/task description [R].
 - Interpretation and limitations: gate status only.
 - Decision and next action: hourly checks watch for root-task admission and the INIT/first-CP5-step observation.
+
+### 2026-11-18 02:45 UTC - Correction to the 02:40 entry (exp3 .55 is RUNNING, verified via Iris)
+
+- Question or hypothesis and reason for trying it: coordinator correction — the 02:40 entry said the exp3 `.55` root task was pending; Iris state shows otherwise. The secretary's stale source was the 6:43 PM EST (23:43 UTC) launch-note snapshot; Iris state is primary.
+- Published source revision: unchanged exp3 restart identities (source `ba63397d23…`, artifact `2026.11.17.55`).
+- Command or material configuration: `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp3-rl-ib` and `job describe /benfeuer/mochi-exp3-rl-ib-2026.11.17.55` (run at 02:44 UTC).
+- External inputs and artifact references: Iris job list/describe output [R: live cluster state].
+- Environment and hardware when relevant: cw-rno2a.
+- Result, including failure or restart: **CORRECTION — exp3 `.55` is RUNNING, not pending.** Iris reports: root `/benfeuer/mochi-exp3-rl-ib-2026.11.17.55` state **running** (submitted 2026-11-17 23:43:34 UTC); RL child `…-18817614fe9d` state **running** (submitted 23:45:15 UTC), task 0 running for 1 h 52 m with exit=0, failures=0, preemptions=0 (8×H100 task per the coordinator). The 02:40 entry's "pending / awaiting admission" line is withdrawn — my source was the stale launch-note snapshot rather than live Iris state. Lesson recorded: read Iris directly before logging job status.
+- Evidence: Iris job list/describe output above [R].
+- Interpretation and limitations: the INIT/first-CP5-step observation from the #11619 gate note remains the next milestone; RL update evidence will follow.
+- Decision and next action: hourly checks read Iris directly for exp3 state.
