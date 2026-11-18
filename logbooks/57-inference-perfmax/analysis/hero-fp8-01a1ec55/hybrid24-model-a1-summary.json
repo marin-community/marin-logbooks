@@ -1,0 +1,332 @@
+{
+  "status": "failed",
+  "runtime_source": "746cafea89518eb33184211eef271d7bb659058f",
+  "source": {
+    "tree_hash": "b816424c98",
+    "base_commit": "faeebbdb63",
+    "dirty": false,
+    "branch": "codex/hero-fp8-01a1ec55",
+    "built_by": "romain",
+    "git_remote": "git@github.com:marin-community/marin.git",
+    "created_at": "2026-11-18T03:58:46.124616",
+    "command_line": [
+      "/home/romain/work/marin-community/marin/hero-fp8-01a1ec55/experiments/evaluation/inference_correctness/launch.py",
+      "--profile",
+      "logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/hybrid-fp8-24of48-8gpu.yaml",
+      "--name",
+      "hero-fp8-hybrid24-8gpu-a1",
+      "--pytest-node",
+      "tests/cluster/vllm/test_hero_fp8_canonical.py::test_hero_canonical_storage_cache_then_shared_suite",
+      "--output",
+      "scratch/hybrid24-model-a1-execution.json"
+    ]
+  },
+  "scope": "24 of48 expert layers use existing online per-tensor FP8 via native Marlin W8A16. Other24 expert layers use BF16 Triton; all activations, projections and KV/state are BF16, router storage FP32. Eight-rank full-model screen; no performance window.",
+  "checks": {
+    "deployment": {
+      "seconds": 1.4499657154083252,
+      "status": "passed"
+    },
+    "reference": {
+      "completed_cases": [
+        "chat17",
+        "chat20",
+        "chat06",
+        "chat19",
+        "chat16",
+        "chat04",
+        "chat22",
+        "chat05",
+        "chat00",
+        "chat03",
+        "chat15",
+        "chat10",
+        "chat08",
+        "chat21",
+        "chat07",
+        "chat11",
+        "chat02",
+        "chat14",
+        "chat01",
+        "chat09",
+        "chat13",
+        "chat23",
+        "chat18",
+        "chat12",
+        "book05",
+        "book00",
+        "book06",
+        "book07",
+        "book01",
+        "book04",
+        "book02",
+        "book03",
+        "long4096",
+        "long32768",
+        "long65536",
+        "long131072",
+        "long262144"
+      ],
+      "failures": [],
+      "seconds": 368.204886674881,
+      "status": "failed",
+      "total_cases": 37,
+      "groups": {
+        "long": {
+          "limits": {
+            "fraction_above_0075": 0.02,
+            "maximum": 0.35,
+            "p90": 0.04,
+            "p99": 0.09
+          },
+          "positions": 4485,
+          "statistics": {
+            "fraction_above_0075": 0.00379041248606466,
+            "maximum": 0.23057725758757408,
+            "p90": 0.024695341095265416,
+            "p99": 0.05629262942692774
+          },
+          "status": "passed"
+        },
+        "short": {
+          "limits": {
+            "fraction_above_0075": 0.035,
+            "maximum": 0.65,
+            "p90": 0.04,
+            "p99": 0.125
+          },
+          "positions": 11370,
+          "statistics": {
+            "fraction_above_0075": 0.02172383465259455,
+            "maximum": 0.708934838240884,
+            "p90": 0.030529495140576308,
+            "p99": 0.10696621821656303
+          },
+          "status": "failed"
+        }
+      }
+    },
+    "batch": {
+      "limits": {
+        "fraction_above_0075": 0.5,
+        "maximum": 0.2,
+        "p90": 0.15,
+        "p99": 0.18
+      },
+      "positions": 4,
+      "seconds": 12.007854700088501,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.005343614495653043,
+        "p90": 0.005152415969365257,
+        "p99": 0.005324494643024264
+      },
+      "status": "passed"
+    },
+    "decode": {
+      "limits": {
+        "fraction_above_0075": 0.15,
+        "maximum": 0.25,
+        "p90": 0.075,
+        "p99": 0.15
+      },
+      "positions": 64,
+      "seconds": 5.8816468715667725,
+      "statistics": {
+        "fraction_above_0075": 0.015625,
+        "maximum": 0.09956559233534612,
+        "p90": 0.02112102503876047,
+        "p99": 0.06295161908226928
+      },
+      "status": "passed"
+    },
+    "cache": {
+      "cache_alignment": 16,
+      "failures": [],
+      "retention_interval": 128,
+      "seconds": 158.6839349269867,
+      "status": "passed",
+      "same_split": {
+        "limits": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "positions": 19,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "status": "passed"
+      },
+      "different_split": {
+        "limits": {
+          "fraction_above_0075": 0.15,
+          "maximum": 0.2,
+          "p90": 0.06,
+          "p99": 0.12
+        },
+        "positions": 27,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.07260046960272076,
+          "p90": 0.014251377683549503,
+          "p99": 0.059349151948881504
+        },
+        "status": "passed"
+      },
+      "prefill_reuse": {
+        "status": "passed"
+      },
+      "decode_reuse": {
+        "status": "passed"
+      },
+      "replayed_decode_reuse": {
+        "status": "passed"
+      },
+      "settled_branches": {
+        "status": "passed"
+      },
+      "matched_repeat": {
+        "status": "passed"
+      }
+    }
+  },
+  "raw_report_sha256": "45b69fe3457436f3f6efc207c345e2c4ad67647ecf4eb9cb1b618c24ef31d300",
+  "raw_report_bytes": 22800519,
+  "raw_receipts": "hybrid24-model-a1-receipts.json",
+  "loaded_rank_metadata": [
+    {
+      "host": 0,
+      "path": "scratch/hybrid24-model-a1-native/host0/weight-storage/dp-1.json",
+      "sha256": "2398f3a02096ee3a8d634fd4b900f4f027fc1a853fa8a3044e8b7bd1b55e23f2",
+      "dp_rank": 1,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    },
+    {
+      "host": 0,
+      "path": "scratch/hybrid24-model-a1-native/host0/weight-storage/dp-0.json",
+      "sha256": "874ec91b2bab0d3e1af427fe13b9b9401c3f51ab669fd098d0e2a2ae36c1b5e0",
+      "dp_rank": 0,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    },
+    {
+      "host": 0,
+      "path": "scratch/hybrid24-model-a1-native/host0/weight-storage/dp-2.json",
+      "sha256": "ad4bce6c5a0233102a37b4283d77ec551c3c3e8e90ea1d1d2afad504e30981ad",
+      "dp_rank": 2,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    },
+    {
+      "host": 0,
+      "path": "scratch/hybrid24-model-a1-native/host0/weight-storage/dp-3.json",
+      "sha256": "e7cfab73785f6a1ee58a68495e29f1d1b0358011bbf3655e4a24aef000c18fb1",
+      "dp_rank": 3,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    },
+    {
+      "host": 1,
+      "path": "scratch/hybrid24-model-a1-native/host1/weight-storage/dp-5.json",
+      "sha256": "622ac5604deba9a1fba97cb6b5f296d6d18aac40ab0d15b6a656ffeaa70930eb",
+      "dp_rank": 5,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    },
+    {
+      "host": 1,
+      "path": "scratch/hybrid24-model-a1-native/host1/weight-storage/dp-4.json",
+      "sha256": "22f8c7db9fba5a27ca2d07a3de01f3edd1599c5f8851393651e374d500518805",
+      "dp_rank": 4,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    },
+    {
+      "host": 1,
+      "path": "scratch/hybrid24-model-a1-native/host1/weight-storage/dp-6.json",
+      "sha256": "9026e8163bf34c70941d1aa0242802f5faf877079c4a8badf7d20a60878683ee",
+      "dp_rank": 6,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    },
+    {
+      "host": 1,
+      "path": "scratch/hybrid24-model-a1-native/host1/weight-storage/dp-7.json",
+      "sha256": "526d972c56105477740d226affce9079461b19406414e5562700faa13e9437bb",
+      "dp_rank": 7,
+      "dp_size": 8,
+      "tp_size": 1,
+      "status": "passed",
+      "bf16_expert_layers": 24,
+      "fp8_expert_layers": 24,
+      "expert_payload_bytes": {
+        "bf16": 65229815808,
+        "fp8": 32614907904
+      }
+    }
+  ],
+  "memory": {
+    "scope": "Task cgroup v2 at the end of numerical checks, before serving teardown and artifact upload",
+    "peak_bytes": 111857893376,
+    "limit_bytes": 274877906944,
+    "observed_unix": 1795004387.4275827
+  },
+  "acceptance": "Blocked: short reference maximum0.708934838240884 exceeds unchanged0.65. Cache persistence and storage pass; no bound relaxed. All37 fixed references completed.",
+  "gpu_seconds": 10493.131999969482,
+  "gpu_hours": 2.914758888880412
+}

@@ -1,0 +1,38 @@
+{
+  "scope": "Retained native leader router archive only. Request and router errors agree in timestamp and local URL, but the router does not record these x_request_ids. No underlying cause or worker restart is established.",
+  "source_member": "router-logs/vllm-router.2026-11-18",
+  "source_sha256": "6069a270f6c155b1193cb698b79b873772330fe8c3c24c80f22aa8a918e90117",
+  "profiling_requests": [
+    {
+      "request_id": "6c8ac725-c3a4-4fe8-8e68-aba0e27ae421",
+      "request_end_utc": "2026-11-18T12:14:45.965836+00:00",
+      "jsonl_line": 2990,
+      "error": {
+        "code": 500,
+        "type": "Internal Server Error",
+        "message": "Request failed: error sending request for url (http://127.0.0.1:38197/v1/chat/completions)"
+      }
+    },
+    {
+      "request_id": "50c9b9c9-23bc-4e78-aa22-019b42fb0c23",
+      "request_end_utc": "2026-11-18T12:33:28.020390+00:00",
+      "jsonl_line": 4799,
+      "error": {
+        "code": 500,
+        "type": "Internal Server Error",
+        "message": "Request failed: error sending request for url (http://127.0.0.1:38197/v1/chat/completions)"
+      }
+    }
+  ],
+  "router_send_failures": [
+    {
+      "line": 20527,
+      "text": "2026-11-18 12:14:46 ERROR vllm_router_rs::routers::http::router: src/routers/http/router.rs:1471: Failed to send typed request worker_url=http://127.0.0.1:38197@17 route=/v1/chat/completions error=error sending request for url (http://127.0.0.1:38197/v1/chat/completions)"
+    },
+    {
+      "line": 32951,
+      "text": "2026-11-18 12:33:28 ERROR vllm_router_rs::routers::http::router: src/routers/http/router.rs:1471: Failed to send typed request worker_url=http://127.0.0.1:38197@4 route=/v1/chat/completions error=error sending request for url (http://127.0.0.1:38197/v1/chat/completions)"
+    }
+  ],
+  "cause": "Unexplained local vLLM send failures; native error ratio remains within the unchanged protocol rule."
+}

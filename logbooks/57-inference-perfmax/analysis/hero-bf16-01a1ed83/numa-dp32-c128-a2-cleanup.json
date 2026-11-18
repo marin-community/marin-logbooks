@@ -1,0 +1,44 @@
+{
+  "observed_utc": "2026-11-18T21:26:36.531515+00:00",
+  "authoritative_deadline_utc": "2026-11-18T17:00:00Z",
+  "gpu_job": "/romain/knotmeter-20261118t112726z-ea23d4021e92/serve",
+  "coordinator_state": "succeeded",
+  "gpu_job_state": "succeeded",
+  "gpu_tasks_succeeded": 8,
+  "last_gpu_allocation_end_utc": "2026-11-18T13:04:55.663000+00:00",
+  "remaining_owned_pods": [],
+  "active_owned_gpus": 0,
+  "queued_owned_gpu_jobs": 0,
+  "cancelled_jobs": [],
+  "scope": "Every owned trial and the zero-GPU setup job were checked against actual Kubernetes pod labels. All were terminal, with no unallocated work to cancel. No lower-load neighbor was launched. CPU-only final export and handoff after deadline.",
+  "gpu_seconds": 184124.57600212097,
+  "cost_complete": true,
+  "resource_rows": [
+    {
+      "id": 2241,
+      "phase": "closed",
+      "origin_session": "devbox/codex/01a1ed83-c2a5-74b1-b98d-b48055085778",
+      "job_refs": "/romain/knotmeter-20261118t072838z-3cca138ac87b/serve; /romain/knotmeter-20261118t073018z-33071107ec92/serve",
+      "note": "Completed BF16 retention-zero C32 and C64 valid normal-hour windows. Full shared v2 checks pass. All GPU pods gone; two remaining Succeeded CPU pods deleted after artifacts were saved. Complete total47.387778 GB200 hours, including setup, checks, warmup, profiling, export and shutdown. Two initial CPU preparation failures used zero GPUs. New DP/EP32 hypothesis uses a separate entry.",
+      "closed_at": 1794993365
+    },
+    {
+      "id": 2250,
+      "phase": "closed",
+      "origin_session": "devbox/codex/01a1ed83-c2a5-74b1-b98d-b48055085778",
+      "job_refs": "/romain/knotmeter-20261118t091911z-31c846881afd/serve",
+      "note": "DP32/C128 BF16 normal hour succeeded. All shared checks and native validity pass:31.42858 output tokens/s/GPU, P90 TTFT268.89855s,0 profiling errors. Complete181460 GPU seconds=50.405556 GB200 hours. All GPU pods gone; sole remaining Succeeded CPU pod deleted after retaining results/archives. No collection failure. Previous completed R0 points add47.387778 hours. Native NUMA confirmation uses a new entry.",
+      "closed_at": 1795000113
+    },
+    {
+      "id": 2261,
+      "phase": "closed",
+      "origin_session": "devbox/codex/01a1ed83-c2a5-74b1-b98d-b48055085778",
+      "job_refs": "/romain/knotmeter-20261118t111414z-596d12bff98c\n/romain/hero-bf16-numa-setup-20261118t112248z\n/romain/knotmeter-20261118t112726z-ea23d4021e92/serve",
+      "note": "Deadline audit21:24UTC: no owned active/queued pods or allocations. NUMA retry coordinator and all8GPUtasks Succeeded,0failures/preemptions; no load neighbor launched. Earlier failed setup full cost1000.672GPU seconds retained. CPU-only final export/cost handoff continues; no new launches.",
+      "closed_at": 1795037140
+    }
+  ],
+  "native_coordinator_description": "Job: /romain/knotmeter-20261118t112726z-ea23d4021e92 (/romain/knotmeter-20261118t112726z-ea23d4021e92)\nState: succeeded  exit=0  failures=0  preemptions=0\nTasks: 1/1 completed  succeeded=1\n\n  TASK  STATE        EXIT  DURATION                              PEAK MEM    CUR MEM    DIAGNOSTIC\n     0  succeeded       0  1 hour, 38 minutes and 41.64 seconds  -           -\n",
+  "native_gpu_description": "Job: /romain/knotmeter-20261118t112726z-ea23d4021e92/serve (/romain/knotmeter-20261118t112726z-ea23d4021e92/serve)\nState: succeeded  exit=0  failures=0  preemptions=0\nTasks: 8/8 completed  succeeded=8\n\n  TASK  STATE        EXIT  DURATION                              PEAK MEM    CUR MEM    DIAGNOSTIC\n     0  succeeded       0  1 hour, 36 minutes and 13.94 seconds  -           -\n     1  succeeded       0  1 hour, 35 minutes and 29.39 seconds  -           -\n     2  succeeded       0  1 hour, 35 minutes and 45.8 seconds   -           -\n     3  succeeded       0  1 hour, 35 minutes and 40.36 seconds  -           -\n     4  succeeded       0  1 hour, 35 minutes and 45.8 seconds   -           -\n     5  succeeded       0  1 hour, 35 minutes and 51.27 seconds  -           -\n     6  succeeded       0  1 hour, 35 minutes and 29.39 seconds  -           -\n     7  succeeded       0  1 hour, 35 minutes and 29.39 seconds  -           -\n"
+}

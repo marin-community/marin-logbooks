@@ -1254,3 +1254,41 @@ completed owned cost is100.729829 GB200 hours. The next paired8+8 model gates
 retain all original shared numerical bounds, fixed weights/tokenizer/goldens,
 retention128 and PIECEWISE geometry. A normal32-GPU/C128 comparison follows
 only if a candidate passes the full fixed-model checks.
+
+
+## 2026-11-18 21:24 UTC — Deadline stop, terminal screens and cleanup
+
+The authoritative clock is past17:00UTC. New experiments stopped immediately;
+only CPU recovery, review and handoff continue. Both final8-GPU jobs were already
+terminal, with their four provider pods absent. They ended by12:20:50UTC, so
+there was no overnight held allocation. No hybrid main hour was launched.
+
+[Hybrid24](analysis/hero-fp8-01a1ec55/hybrid24-model-a1-summary.json) passes
+actual8-rank storage, focused and full cache suites with all19 exact differences
+zero, batch and decode. The unchanged short-reference maximum fails at0.7089348
+versus0.65; short P990.106966 and long max0.230577 pass. All37 goldens complete.
+[Hybrid16](analysis/hero-fp8-01a1ec55/hybrid16-model-a1-summary.json) fails fixture
+setup before storage/numerics. Preserve that distinction: its initiating exception
+is not present in the bounded native tail or archived server logs. A single
+Finelog recovery read returned zero lines. Both native host archives are
+SHA-verified and retained for each configuration. Costs are10,493.132 and4,043.152
+GPU seconds, including both hosts and explicit Iris terminal-time fallback.
+
+The combined current-main feature is frozen at35c9e15b36e5a83c58908d5ada4bfc12c8720ce4.
+Two original advisory lanes completed and four were interrupted. Recovered exact
+native prompts/IDs/actions; reran only those four plus composer in a fresh CPU
+pass. Two test-name/configuration findings are fixed; common parity-test structure
+and narrow explicit backend override are retained with recorded reasons. All
+native reviewer actions are read-only, required lint/source checks pass, and all
+prior runtime/contribution branches remain frozen. No current-main GPU
+qualification or new PR is claimed. Root owns the final High review.
+
+The [final comparison](analysis/hero-fp8-01a1ec55/comparison-final.md) recommends
+qualified BF16, preserves the real earlier hour comparison and later load
+neighbors, and separates repaired cache behavior from failed reference quality.
+All35 owned resource rows are closed. [Final cleanup](analysis/hero-fp8-01a1ec55/final-cleanup.json)
+records native terminal jobs and provider absence. Total owned cost is
+104.767686GB200-hours, zeroH100, with every failure retained. The stronger
+qualified BF16 point is peer's unbound32-rank/R0/C12831.42858; NUMA's completed
+31.11883 does not improve it in its single window. Full acceptance for FP8,
+the16-layer gate and a hybrid normal hour remain absent.
