@@ -1,0 +1,30 @@
+{
+  "plan": {
+    "gpu_job_id": "/romain/hero-fp8-selective-unit-01a1ec55-a1",
+    "cluster": "cw-us-east-08a",
+    "trial_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/perfmax-hero-fp8-01a1ec55/components/selective-244247767c-a1"
+  },
+  "state": "failed",
+  "attempts": [
+    {
+      "uid": "2943a141b1784ec6",
+      "state": "failed",
+      "gpu_seconds": 84.0,
+      "allocation": {
+        "pod_uid": "1d876a5b-677e-404e-974a-2ca66c148d93",
+        "attempt_uid": "2943a141b1784ec6",
+        "pod_name": "iris-romain-hero-fp8-selective-unit-d6342341-0-2943a141b1784ec6",
+        "node_name": "s1wvxs64",
+        "observed_unix": 1794973130.8952308,
+        "phase": "Failed",
+        "scheduled_unix": 1794973031.0,
+        "finished_unix": 1794973115.0,
+        "status": "measured",
+        "end_basis": "pod-container-finish",
+        "end_unix": 1794973115.0
+      },
+      "error": "\n  File \"/usr/local/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['uvx', '--from', 'vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261113-0ac9dcb157ee/vllm-0.0.0.dev20261113%2Bmarin.0ac9dcb157ee.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e0a2b9e2bb6b16ba6d4e1821770123cc74f04b86128536c2744e91b59c6e4b6a', '--with', 'runai-model-streamer[s3]==0.16.1', '--with', 'torch==2.14.1+cu132', '--with', 'nvidia-cuda-nvcc==13.2.86', '--with', 'nvidia-cuda-crt==13.2.86', '--with', 'nvidia-nvvm==13.2.86', '--with', 'pytest==9.0.3', '--with', 'tblib==3.2.2', '--python', '3.12', '--index', 'https://download.pytorch.org/whl/cu132', '--index', 'https://download.pytorch.org/whl/cpu', '--index-strategy', 'unsafe-best-match', 'python', '-c', 'import importlib.metadata\\nimport os\\nfrom pathlib import Path\\nimport sys\\n\\ndistribution = importlib.metadata.distribution(\\'nvidia-cuda-nvcc\\')\\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\\ncuda_home = nvcc.parent.parent\\ncuda_lib = cuda_home / \"lib\"\\ncuda_lib64 = cuda_home / \"lib64\"\\nif cuda_lib.is_dir() and not cuda_lib64.exists():\\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\\ncudart = cuda_lib / \"libcudart.so.13\"\\ncudart_link = cuda_lib / \"libcudart.so\"\\nif cudart.is_file() and not cudart_link.exists():\\n    cudart_link.symlink_to(cudart.name)\\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\\nif nvrtc.is_file() and not nvrtc_link.exists():\\n    nvrtc_link.symlink_to(nvrtc.name)\\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\\nos.execvp(sys.argv[1], sys.argv[1:])\\n', 'python', '/app/logbooks/57-inference-perfmax/analysis/hero-fp8-01a1ec55/component_bootstrap.py', '/iris/outputs/component-input.json']' returned non-zero exit status 4.\n"
+    }
+  ],
+  "observed_unix": 1794973132.6482894
+}

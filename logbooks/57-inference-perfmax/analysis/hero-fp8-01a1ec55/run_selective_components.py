@@ -20,7 +20,7 @@ from marin.inference.vllm_server import IsolatedCudaVllm, VllmType
 from rigging.timing import Duration
 
 from experiments.evaluation.knotmeter.allocation import allocation_cost, track_allocations
-from experiments.evaluation.knotmeter.artifacts import copy_file, write_record
+from experiments.evaluation.knotmeter.artifacts import copy_file, retain_artifacts, write_record
 
 
 def component_worker(payload: dict) -> None:
@@ -49,7 +49,11 @@ def component_worker(payload: dict) -> None:
     # Keep the native isolated environment and CUDA bootstrap; replace its CLI payload.
     boundary = command.index("python")
     command = [*command[: boundary + 3], "python", str(bootstrap), str(config)]
-    subprocess.run(command, cwd=output, env=environment, check=True)
+    try:
+        subprocess.run(command, cwd=output, env=environment, check=True)
+    finally:
+        uri, digest = retain_artifacts(output, output.parent / "component.tar.zst", payload["uri"], name="native")
+        write_record(payload["uri"] + "/receipt.json", {"archive_uri": uri, "archive_sha256": digest})
 
 
 def main() -> None:
@@ -62,7 +66,7 @@ def main() -> None:
         with IrisClient.remote(endpoint.url, credentials=endpoint.credentials, workspace=Path.cwd()) as client:
             job = client.submit(
                 entrypoint=Entrypoint.from_callable(component_worker, payload),
-                name="hero-fp8-selective-unit-01a1ec55-a1",
+                name=payload["job_name"],
                 resources=ResourceSpec(cpu=4, memory="32GB", disk="128GB", device=gpu_device("GB200", 1)),
                 environment=EnvironmentSpec(sync_packages=["marin-core"], extras=["cpu"]),
                 priority_band=job_pb2.PRIORITY_BAND_INTERACTIVE,

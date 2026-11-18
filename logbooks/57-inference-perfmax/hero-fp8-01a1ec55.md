@@ -217,3 +217,34 @@ smaller nonzero differences too. Coverage and matched-repeat checks pass. These
 remain failures. No evidence currently explains them as different prefill
 geometry. The fixed-reference and decode failures also remain. Further screens
 keep all exact limits unchanged.
+
+## 2026-11-18 03:49 UTC — Keep the completed screens and fix component packaging
+
+The sixteen-GPU BF16 C64 run passed the corrected complete suite. Every one of
+its 19 exact cache comparisons is zero. Reference short/long p99 are
+0.0889078/0.0557193; decode maximum is 0.0686349. Its normal one-hour AgentX
+measurement is running. These numerical results do not yet establish completed
+performance evidence.
+
+The all-Marlin FP8 screen improves fixed-reference errors, but does not qualify.
+Short/long p99 fall to 0.247622/0.153125. Decode passes, with BF16 activations;
+reference and strict cache checks still fail. The
+[summary](analysis/hero-fp8-01a1ec55/marlin-all-a1-check-summary.json),
+[receipt](analysis/hero-fp8-01a1ec55/marlin-all-a1-receipt.json) and
+[execution](analysis/hero-fp8-01a1ec55/marlin-all-a1-execution.json) retain the
+native report and command. Its complete allocation cost is 1.207778 GB200-hours.
+The Marlin-experts AgentX screen also completed: 6.48378 output tokens/s/GPU,
+short diagnostic protocol invalid, reference/decode/cache failures retained,
+complete cost 2.327778 GB200-hours. Its
+[result](analysis/hero-fp8-01a1ec55/marlin-experts-a1-result.json) preserves native
+exports and allocation evidence. Both GPU tasks were observed terminal.
+
+Selective component attempt a1 did not run a test. My minimal source archive
+omitted `tests/ci_envs.py`, imported during native pytest collection. The pinned
+compiled wheel and overridden model hashes verified before collection failed.
+The [failed execution](analysis/hero-fp8-01a1ec55/selective-component-a1-failed-execution.json)
+retains its 84 GPU-seconds (0.023333 GB200-hours). Retry a2 includes the complete
+native tests tree from the same runtime commit, rather than trimming helper
+imports one by one. The runner now archives component outputs on failure as
+well as success. This corrects test packaging, not runtime behavior. The runtime
+source and model-module hash are unchanged.
