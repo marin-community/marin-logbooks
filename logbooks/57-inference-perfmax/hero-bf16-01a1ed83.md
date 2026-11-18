@@ -139,3 +139,11 @@ C32 reports peak use 0.76537 and client reuse 85.24%. These are correlated
 pressure signals, not an isolated cause. Server counter-decrease warnings
 remain; use client exports for the comparison. The retention-zero runs test
 whether sparse local retention improves that tradeoff on the fixed checkpoint.
+
+The [effective-policy probe](analysis/hero-bf16-01a1ed83/numa-dependency-a3.json)
+confirms `policy: bind` with `membind: 0` and `membind: 1` for the two
+CPU-plus-memory cases. The CPU-only controls retain the default memory policy.
+The native plan CLI and Iris callable serialization both pass in the
+[CPU validation](analysis/hero-bf16-01a1ed83/numa-launcher-cpu-validation.json).
+Both live retention-zero deployments have passed their deployment identity
+checks and are still running the remaining numerical probes.
