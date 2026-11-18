@@ -266,3 +266,27 @@ a reservation. Native Kueue supplies eight-host NVLink colocation. Row 2250
 announces the 32-GPU share at requested interactive priority with normal Batch
 fallback. NUMA remains prepared; its likely value will be reconsidered after
 this capacity/communication result.
+
+## 2026-11-18 09:25 UTC — Eight-host DP/EP32 candidate is admitted
+
+The new trial is `/romain/knotmeter-20261118t091911z-31c846881afd/serve`, from
+clean published source `88e31071f56412f5f6e8702a0644f738d0427543`. The original
+[submitted plan](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-submitted-plan.json)
+and [resolved plan](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-resolved-plan.json)
+pin every input. The
+[admission](analysis/hero-bf16-01a1ed83/retention0-dp32-c128-a1-admission.json)
+shows all eight GPU hosts Running at Batch in `DH1-126-US-EAST-08A`, totaling
+32 GB200s. Shared prepared-workload cache is a hit. The final prelaunch Iris
+read saw 166 available GPUs. This uses the entire owned 32-GPU share, with no
+other owned allocation or H100 work.
+
+The [summary script](analysis/hero-bf16-01a1ed83/summarize_trial.py) reads the
+unchanged native exports and reuses the earlier campaign's phase accounting.
+Run it from the repository root as
+`python -m logbooks.57-inference-perfmax.analysis.hero-bf16-01a1ed83.summarize_trial retention0-c32-a2 retention0-c64-a2`.
+It checks original report hashes, keeps each selected statistics map intact and
+verifies conservation of allocated GPU seconds across phases. The retained
+native summaries include both full client-export values, all host memory peaks,
+allocation times and separate setup, checks, warmup, profiling, drain/export and
+shutdown costs. Large raw requests and numerical reports remain in the native
+archives. The two R0 summaries conserve 84,600 and 85,996 GPU seconds exactly.

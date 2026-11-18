@@ -1,0 +1,205 @@
+{
+  "status": "passed",
+  "runtime_source": "0ac9dcb157ee86ccb447bc717259159c41ad456a",
+  "policy": {
+    "batch": {
+      "fraction_above_0075": 0.5,
+      "maximum": 0.2,
+      "p90": 0.15,
+      "p99": 0.18
+    },
+    "batch_size": 4,
+    "boundary_lengths": [
+      127,
+      128,
+      129,
+      255,
+      256,
+      257,
+      2047,
+      2048,
+      2049
+    ],
+    "cache_decode_tokens": 257,
+    "decode": {
+      "fraction_above_0075": 0.15,
+      "maximum": 0.25,
+      "p90": 0.075,
+      "p99": 0.15
+    },
+    "decode_tokens": 32,
+    "different_split": {
+      "fraction_above_0075": 0.15,
+      "maximum": 0.2,
+      "p90": 0.06,
+      "p99": 0.12
+    },
+    "dtype": "bfloat16",
+    "evidence": [
+      "https://github.com/marin-community/marin/issues/11430",
+      "https://github.com/marin-community/marin/issues/11430#issuecomment-6882101992"
+    ],
+    "hardware": [
+      "GB200"
+    ],
+    "id": "hero-sft-step400407-bf16-gb200-provisional-v1",
+    "kv_cache_dtypes": [
+      "auto",
+      "bfloat16"
+    ],
+    "provisional": true,
+    "quantization": null,
+    "rationale": "Initial margins around the retained #11430 BF16 controls. Matched cache splits must agree exactly. These serving limits do not qualify RL trainer ratios. Cache-enabled settings are a new validation scope.",
+    "reference": {
+      "long": {
+        "fraction_above_0075": 0.02,
+        "maximum": 0.35,
+        "p90": 0.04,
+        "p99": 0.09
+      },
+      "short": {
+        "fraction_above_0075": 0.035,
+        "maximum": 0.65,
+        "p90": 0.04,
+        "p99": 0.125
+      }
+    },
+    "same_split": {
+      "fraction_above_0075": 0.0,
+      "maximum": 0.0,
+      "p90": 0.0,
+      "p99": 0.0
+    }
+  },
+  "raw_report_sha256": "d0860e9b463ef5e2c750e2d2e941c899a13ae7b0d14ab1c73ab0dd43182d8897",
+  "checks": {
+    "batch": {
+      "limits": {
+        "fraction_above_0075": 0.5,
+        "maximum": 0.2,
+        "p90": 0.15,
+        "p99": 0.18
+      },
+      "positions": 4,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.01130643486409776,
+        "p90": 0.008826897968503354,
+        "p99": 0.011058481174538316
+      },
+      "status": "passed"
+    },
+    "cache": {
+      "cache_alignment": 16,
+      "decode_reuse": {
+        "status": "not_required"
+      },
+      "different_split": {
+        "limits": {
+          "fraction_above_0075": 0.15,
+          "maximum": 0.2,
+          "p90": 0.06,
+          "p99": 0.12
+        },
+        "positions": 27,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.025683697676427863,
+          "p90": 0.014446103716263283,
+          "p99": 0.024932865120140188
+        },
+        "status": "passed"
+      },
+      "matched_repeat": {
+        "cached_tokens": [
+          2064,
+          2064
+        ],
+        "status": "passed"
+      },
+      "prefill_reuse": {
+        "status": "passed"
+      },
+      "replayed_decode_reuse": {
+        "status": "passed"
+      },
+      "retention_interval": 0,
+      "same_split": {
+        "limits": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "positions": 19,
+        "statistics": {
+          "fraction_above_0075": 0.0,
+          "maximum": 0.0,
+          "p90": 0.0,
+          "p99": 0.0
+        },
+        "status": "passed"
+      },
+      "settled_branches": {
+        "status": "passed"
+      },
+      "status": "passed"
+    },
+    "decode": {
+      "limits": {
+        "fraction_above_0075": 0.15,
+        "maximum": 0.25,
+        "p90": 0.075,
+        "p99": 0.15
+      },
+      "positions": 64,
+      "statistics": {
+        "fraction_above_0075": 0.0,
+        "maximum": 0.04512137707269109,
+        "p90": 0.013759745547837187,
+        "p99": 0.041540917985329454
+      },
+      "status": "passed"
+    },
+    "deployment": {
+      "status": "passed"
+    },
+    "reference": {
+      "groups": {
+        "long": {
+          "limits": {
+            "fraction_above_0075": 0.02,
+            "maximum": 0.35,
+            "p90": 0.04,
+            "p99": 0.09
+          },
+          "positions": 4485,
+          "statistics": {
+            "fraction_above_0075": 0.004459308807134894,
+            "maximum": 0.2885998853800861,
+            "p90": 0.025159301348939393,
+            "p99": 0.05431329892748357
+          },
+          "status": "passed"
+        },
+        "short": {
+          "limits": {
+            "fraction_above_0075": 0.035,
+            "maximum": 0.65,
+            "p90": 0.04,
+            "p99": 0.125
+          },
+          "positions": 11370,
+          "statistics": {
+            "fraction_above_0075": 0.015567282321899736,
+            "maximum": 0.5645672478484305,
+            "p90": 0.027235768612622474,
+            "p99": 0.08850096043807573
+          },
+          "status": "passed"
+        }
+      },
+      "status": "passed"
+    }
+  }
+}
