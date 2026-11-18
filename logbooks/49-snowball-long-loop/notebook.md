@@ -918,3 +918,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: #11619 probe comment [P]; coordinator correction [R].
 - Interpretation and limitations: the probe used NCCL 2.30.7 (the terminal `.51` run used 2.29.7 — same symptom class, different patch version); the restart's own identity evidence is pending.
 - Decision and next action: hourly checks now track the from-scratch IB restart (new source/artifact, gate census assert, launch) and the V6 data candidate.
+
+### 2026-11-18 01:40 UTC - Hourly catch-up (00:35–01:40 UTC window): exp3 IB restart prepared and submitted
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: **new exp3 restart identities** — runtime source `ba63397d23249bbbf8bf297a48c4017bc4c63fff` (base `0f5721bbb4…`), artifact `2026.11.17.55`, root task `/benfeuer/mochi-exp3-rl-ib-2026.11.17.55/0`.
+- Command or material configuration: launch record `restart55-launch-record.json` (prepared 2026-11-17 23:42:56 UTC): state submitted_root_pending; the gate references the #11619 probe job `/benfeuer/ib-audit-nccl-probe-rno2a-6` (baseline NET/IB GDRDMA, 87.4 GB/s allreduce / 62.0 GB/s all-to-all; NCCL 2.30.7; limitation: production INIT and the first CP5 step still require observation). Semantic diffs vs `.51`: fresh RL lineage from the same adopted SFT export (no native resume/no SFT rerun); **socket/IB-disable/AF_INET overrides REMOVED, no HCA pin**; periodic checkpoint every 7,200 s + orderly final, rolling 3 + best; evaluation-only sandbox disk 128 GiB (live ENOSPC fix verdict pending); HF fallback to the committed final native checkpoint labeled `final_not_best`; new source SHA with mochi-prefixed root/child and fresh storage/tracker identities.
+- External inputs and artifact references: `restart55-launch-record.json`, `restart55-root-task-description.txt` (task pending on cw-rno2a, 4 CPU/17.18 GB/68.72 GB), `restart55-jobs-admission.txt` [R: /experiments/active/long-loop-exp3/artifacts/].
+- Environment and hardware when relevant: same 256-H100/32-node target as `.51`.
+- Result, including failure or restart: the **exp3 IB restart is prepared and submitted** (root task pending on cw-rno2a) — fresh RL lineage reusing the adopted SFT export, with the #11619 socket overrides removed and the storage/tracker identities reset. The `.51` terminal run remains the recorded failure evidence.
+- Evidence: artifacts above [R]; #11619 gate reference [P].
+- Interpretation and limitations: production INIT and the first CP5 step still require observation (the probe's stated limitation); the restart has not yet reached its first update.
+- Decision and next action: hourly checks track the restart's INIT/first-step observation and its own gate census.
