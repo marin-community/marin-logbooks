@@ -811,6 +811,59 @@ recorded here.
   then a production-shape smoke on one node, then submit after the
   coordinator's go.
 
+### 2026-11-19 09:45 UTC - The 64-GPU V1 plan: user efficiency decision, approved and proven
+
+- Question or hypothesis and reason for trying it: the user decided Deletion
+  Tuning runs at interactive priority (not production) and that the long
+  loop's 256 H100 is not required — redesign V1 for 64 H100s while keeping
+  the token budget and LR-schedule semantics.
+- Published source revision: run branch `benfeuer/snowball-deletion-tuning-run`
+  @ `e7d2e0f0f8`-lineage (the plan commit chain through "Pin the token budget
+  to the original 75 x 256 plan"). The plan is approved by the coordinator
+  (fingerprint `a221ea88`).
+- Command or material configuration: the resolved V1 recipe overlays on the
+  Exp3 production recipe: 8 nodes x 8 H100, EP=8 within a node, CP=8 across
+  nodes (dcn context=8), batch 64 with per_device_parallelism=1 (one sequence
+  per device-slot — the production per-device token load, so the per-step wall
+  stays at the Exp3 rate), 300 steps x 64 x 262,144 = 5,033,164,800 positions —
+  exactly the original 75 x 256 x 262,144 budget. AdamW stays constant 5e-4;
+  the alpha ramp 1e2 -> 1e3 spans the actual run (horizon == 300 steps,
+  derived from the trainer step count). Deadline 12 h, guard 768 H100-h
+  (devices x deadline), interactive priority, direct submission to
+  cw-us-east-02a.
+- External inputs and artifact references: the user decision (coordinator
+  2026-11-19 05:00 EST) and the plan approval (06:05 EST); the resolved plan
+  JSON at `experiments/deletion_tuning/plans/v1-sft-dry-run.json` @
+  fingerprint `a221ea88`; the 10 entry tests pass on Iris
+  (`dt-v1-plan-proof-4`).
+- Environment and hardware when relevant: 64 H100 across 8 nodes on
+  cw-us-east-02a; the submission is direct to the CoreWeave controller at
+  interactive priority.
+- Result, including failure or restart: the local dry-run resolves end to end
+  through every Exp3 gate; two recorded data-order notes for this plan:
+  1. The phase-1 crossing: the original 75-step plan at batch 256 stayed
+     inside phase 0 of the V5 schedule; the 300-step plan at batch 64 crosses
+     into phase 1 at step 250 (the rescaled phase boundary, 16,000 sequences)
+     and finishes inside phase 1. The schedule boundaries rescale with the
+     batch, and `mixture_block_size` follows the rescaled phase length
+     (16,000) — a recorded override of the shuffle granularity only.
+  2. The reduced calibration-token count: the fixed decision calibrates Wanda
+     on the first 64 training batches; at batch 64 that is 1.07B calibration
+     tokens versus 4.29B under the 256-sequence plan.
+  The estimated wall is 10.1 h (startup+load ~1.5 h, calibration ~0.5 h, 300
+  steps ~7.6 h, export ~0.4 h), so the new H100-hour estimate is ~645 point
+  (guard 768), down from ~969 at 256 GPUs.
+- Evidence: this entry; the plan JSON; the plan-proof test job.
+- Interpretation and limitations: the optimization semantics differ from the
+  256-GPU plan (300 AdamW steps at batch 64 versus 75 at batch 256 — same
+  tokens, same constant LR, per the decision); the per-step wall assumption
+  (91 s) carries over from the Exp3 production row since the per-device work
+  is unchanged, with the CP degree coarser (32,768 vs 8,192 positions per
+  slice).
+- Decision and next action: submit the full V1 run as soon as the
+  production-shape smoke (`dt-v1-production-smoke-v7`, interactive priority)
+  passes; no further check-in required.
+
 ## Planned runs (resolved vs pending)
 
 Common settings for every row: the evaluation contract above; base checkpoint
