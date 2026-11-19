@@ -1281,3 +1281,17 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: items above [P]/[R].
 - Interpretation and limitations: the 41.07% equal-benchmark mean is not comparable to exp2's round-1/round-2 headlines (different coverage/interval conventions); the Exp4 SFT is in progress.
 - Decision and next action: the mochi-long-loop STATUS and #11337 comments are added to the hourly source set; hourly checks track Exp4 SFT progression.
+
+### 2026-11-19 03:40 UTC - Hourly catch-up (02:40–03:40 UTC window): Exp3 eval seal details completed; Exp4 SFT running
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; the #11337 seal comment and mochi-long-loop STATUS are now in the hourly source set.
+- Published source revision: terminal `.51`; recovery eval `2026.11.18.61` (sealed); Exp4 `/benfeuer/mochi-exp4-2026.11.18.75` (SFT child running).
+- Command or material configuration: Exp4 verified via `uv run iris --cluster=marin job describe /benfeuer/mochi-exp4-2026.11.18.75` at 03:33 UTC: root running (task 0 at 1 h 54 m 50 s; exit=0, failures=0, preemptions=0).
+- External inputs and artifact references: #11337 comment 6996529804 tail (seal details) [P]; seal manifest SHA256 `16894a758dccf6010e49fdb957b91c693014b43fe379e0332e52529d7b9c0a9c` (225 objects / 58,733,257 bytes, all read back and hash-verified) [P]; EvalDash/FineStore record `s3://marin-us-east-02a/marin/evals/long-loop-exp3-step20-micro210-sealed-20261118/record.json` SHA `832f871c5f74…` [P]; export manifest SHA `66299c4c4781…`; frozen policy `e0faa32c6899…` [P]; mochi-long-loop STATUS (updated 2026-11-17 17:01 UTC) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart:
+  1. **Exp3 seal details completed** (from the #11337 comment tail): absences were 4×VerifierTimeoutError + 1×EnvironmentStartTimeoutError; all 27 raw Harbor model-error outcomes retain verifier grades (20 AgentTimeoutError → 16 zeros + 4 verifier-confirmed successes, all included per #10197's Harbor rule); the 100 `.61` preparation failures were replaced by the 100 `.68` outcomes, not added to the denominator. The only exactly-zero benchmark is **SWE-bench** (all 10 traces reviewed: verifiers executed and reported task failures; zero-score audit accepts all 10 with raw receipts retained). **Reference rows**: round-1 SFT 746 = 47.98% available equal-20 (420/440); pretrained base = 15.96% (438/440) — exp3 is **6.91 points below the SFT 746 reference and 25.11 above base** on this descriptive aggregate (not a paired/significance claim). Seal manifest SHA `16894a758dcc…` hash-verified (225 objects/58.7 MB); EvalDash/FineStore record published (SHA `832f871c5f74…`). The eval seal does not certify the training archive or a new public HF upload.
+  2. **Exp4**: root task 0 at 1 h 54 m 50 s running, failures=0, preemptions=0 — SFT child progressing.
+- Evidence: #11337 comment tail [P]; Iris describe [R]; mochi-long-loop STATUS [R].
+- Interpretation and limitations: the 6.91-point-below-SFT-746 figure is descriptive (different serving geometry/budget/coverage documented in the references); Exp4 SFT is in progress.
+- Decision and next action: hourly checks track Exp4 SFT progression and the sealed-record follow-through.
