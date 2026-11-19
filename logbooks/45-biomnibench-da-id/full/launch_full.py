@@ -26,11 +26,18 @@ root = Path(__file__).resolve().parent
 os.environ["DAYTONA_TARGET"] = "us"
 assert len(list((root / "runtime-tasks").glob("*/task.toml"))) == 50
 assert (root / "runtime-tasks/da-4-6").exists()
+gpt_oss = "--gpt-oss" in sys.argv
+candidate = "gpt-oss-20b" if gpt_oss else "qwen"
+model_path = (
+    root.parents[2] / "experiments/evaluation/campaigns/eval-campaign-09-25-unlabeled/model-configs/openai-gpt-oss-20b.yaml"
+    if gpt_oss else root.parent / "pilot/qwen.yaml"
+)
+policy_path = root / ("gpt-oss-20b.yaml" if gpt_oss else "full.yaml")
 spec = LaunchSpec(
-    model=load_model_config(root.parent / "pilot/qwen.yaml"),
-    evals=(HarborDefinition(name="biomnibench-public50-qwen", config_path=root / "full.yaml"),),
+    model=load_model_config(model_path),
+    evals=(HarborDefinition(name=f"biomnibench-public50-{candidate}", config_path=policy_path),),
     platform=Platform.GPU,
-    accelerator="H100x4",
+    accelerator="H100x1" if gpt_oss else "H100x4",
     limit=None,
     records_prefix=None,
     submission_cluster="marin",
@@ -40,7 +47,7 @@ spec = LaunchSpec(
     judge_accelerator="H100x8",
     version="biomnibench-da-public50-signed-v2",
     description=(
-        "One fresh public-50 Qwen pass; five disclosed input variants; Pi 0.87.0; "
+        f"One fresh public-50 {candidate} pass; five disclosed input variants; Pi 0.87.0; "
         "3600s agent; 900s verifier; 16 concurrent; zero solver retries; "
         "at most one malformed-judge retry preserving both responses; "
         "one shared MiniMax judge; eight-hour cap; proposal evidence, not adopted ID policy"
