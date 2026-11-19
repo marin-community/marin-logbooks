@@ -1230,3 +1230,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: eval-launch-record61.json [R]; archive69 source tars [R].
 - Interpretation and limitations: this evaluates the step-20 checkpoint under the frozen Exp3 recipe; the eval's scored outcome is not yet attested in this record; the observer staleness is noted.
 - Decision and next action: hourly checks track the recovery eval's scored outcome and the exp3 restart (V6/IB) progress.
+
+### 2026-11-19 01:35 UTC - Hourly catch-up (00:35–01:35 UTC window): recovery eval-61 scored outcome — partial, agentic preparation failed
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 identities — terminal `.51` (source `0f5721bbb4…`), recovery eval `2026.11.18.61` (source `655178c9374c…`, step-20 checkpoint).
+- Command or material configuration: as recorded in the 00:35 entry (128 inference + 8 judge GPUs, frozen Exp3 recipe).
+- External inputs and artifact references: `archive69/compact-evidence-v1/receipts/recovery57/eval-results61/coverage-audit.json`, `archive69/eval61-verified-manifest.json`, `archive69/eval61-archive-certification.json` [R: /experiments/active/long-loop-exp3/artifacts/archive69/].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **the recovery eval-61 scored outcome is in, and it is partial with a major infrastructure failure**: coverage audit for `2026.11.18.61` (model step 20) — attempted 440, **scored 340, unscored 100**; identity/source coverage match; unique tasks 200; full_suite_score null. **All 100 agentic attempts failed in preparation — "missing outcomes cannot be interpreted as zero."** Scored-only pooled reward mean **0.3859407**; available-only macro-14 **0.5282371**; unknown-outcome bounds assigned pooled [0.29823, 0.52550] (bounds, not confidence intervals). The archived raw evidence: 27,997 files / 1,446,711,971 bytes archived to permanent-archive/2026.11.18/eval-61/attempts-and-logs (manifest SHA `9c0ea10dff21…`, destination size coverage 27,997/27,997); archive certification: complete=true, **production_seal_complete=false**. The archived attempts carry ray logs dated 2026-11-18 16:38 UTC (mid-eval).
+- Evidence: coverage-audit.json, eval61-verified-manifest.json, eval61-archive-certification.json [R].
+- Interpretation and limitations: the step-20 checkpoint's scored-only mean 0.3859 is NOT comparable to the round-1 0.4526 headline (different scoring coverage: 340/440 with all agentic attempts unscored); the bounds are not confidence intervals; production seal incomplete.
+- Decision and next action: hourly checks watch for the agentic-preparation failure diagnosis and whether a corrected eval re-run is authorized.
