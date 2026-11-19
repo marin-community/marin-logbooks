@@ -1784,3 +1784,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the kaniko-push outcomes.
+
+### 2026-11-19 10:40 UTC - Hourly catch-up (09:40–10:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `900cb18689…` (09:28:51 UTC) to head `91ebdc65fe2f369d9f1109164038ad2cece7ed70`, landed 10:12:28 UTC (3 landings 09:53–10:12 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 900cb186..91ebdc65` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: reviews carried across **grading-environment-only re-conversions** (`01b7bda1c0…`); verifyit bracket-scanning fixes (a sequence's brackets scanned once for its enclosing layer and members, `91ebdc65fe…`; a list's outer brackets stripped only when they enclose the whole text, `fd11caddf0…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the re-conversion carry-forward outcomes.
