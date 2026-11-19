@@ -1903,3 +1903,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the ruling-62 receipts' contents are registry-bound [M].
 - Decision and next action: next hourly check watches for the ruling-62 receipt outcomes.
+
+### 2026-11-19 20:40 UTC - Hourly catch-up (19:40–20:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `6dfad51a3f…` (19:29:58 UTC) to head `bc7ea126771aa8fcd3742d370e2d73fc8f657d6b`, landed 20:28:59 UTC (~11 landings 20:28 UTC incl. one landing by session ses_e1bc3… = the exp3/exp4 runtime agent).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 6dfad51a..bc7ea126` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **atlas-push merge-preserving mode** for merge-carrying branches (`37d9e17bd7…`) — the landing tooling now preserves merges on this branch.
+  - **Curriculum projection through canonical IDs** (`6d2090b8c2…`); the live alias projection regression clarified (`761ca7a2ce…`).
+  - **Attribution/attribution-journeys**: public-display grants recorded and upstream attribution shown (`13b8806c7b…`); publication attribution and guide targets kept consistent (`b93c76f36a…`); the complete source inventory opened in attribution journeys (`260c57de9c…`).
+  - **Curriculum releases read qualified source contracts** (`8337814030…`); qualified fixtures named with a shared converter pin (`821b4d9b08…`); actorless fixture counts recorded explicitly (`3d1f99a410…`); measured browser fixtures parsed with the qualified contract (`bc7ea12677…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the curriculum-release contract outcomes.
