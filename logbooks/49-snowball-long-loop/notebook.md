@@ -1518,3 +1518,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris [R]; `git ls-remote` [R].
 - Interpretation and limitations: progression-only status.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-19 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 `.76` — **running, task 0 at 17 h 47 m 00 s** (exit=0, failures=0, preemptions=0; Iris at 21:33 UTC).
+- Command or material configuration: Iris describe at 21:33 UTC [R].
+- External inputs and artifact references: Iris output [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; no new `atlas-env-audit` landings — head unchanged at `bc7ea12677…`).
+- Evidence: Iris [R]; `git ls-remote` [R].
+- Interpretation and limitations: progression-only status.
+- Decision and next action: hourly checks continue.
