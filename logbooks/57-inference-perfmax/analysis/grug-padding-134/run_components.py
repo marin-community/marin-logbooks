@@ -28,7 +28,16 @@ from experiments.evaluation.knotmeter.runtime import materialize_release
 
 
 def component_worker(payload: dict) -> None:
+    if payload.get("mode") == "compare":
+        for label, variant in payload["variants"].items():
+            component_worker(
+                payload | variant | {"mode": "component", "label": label, "uri": payload["uri"] + "/" + label}
+            )
+        return
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
+    if payload.get("label"):
+        output /= payload["label"]
+        output.mkdir()
     bootstrap = Path(payload["bootstrap"]).resolve()
     if hashlib.sha256(bootstrap.read_bytes()).hexdigest() != payload["bootstrap_sha256"]:
         raise RuntimeError("The component bootstrap differs from the published input")
