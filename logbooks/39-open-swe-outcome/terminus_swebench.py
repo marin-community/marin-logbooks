@@ -60,14 +60,15 @@ def main() -> None:
         name: {t["task"]: t["reward"] == 1 for t in rows if t["reward"] is not None} for name, rows in trials.items()
     }
     for name, rows in trials.items():
-        exceptions = collections.Counter(t["exception"] for t in rows if t["exception"])
-        timeouts = exceptions.pop(AGENT_TIMEOUT, 0)
         graded = solved[name]
+        timeouts = sum(t["exception"] == AGENT_TIMEOUT and t["reward"] is not None for t in rows)
+        ungraded = collections.Counter(t["exception"] for t in rows if t["reward"] is None)
         print(
-            f"{name:<10} trials {len(rows)}  graded {len(graded)}  solved {sum(graded.values())}"
-            f" ({sum(graded.values()) / len(graded):.1%})  agent timeouts {timeouts}"
-            f"  other exceptions {sum(exceptions.values())}"
+            f"{name:<10} trials {len(rows)}: solved {sum(graded.values())}, graded not solved"
+            f" {len(graded) - sum(graded.values())} (agent timeouts among graded {timeouts}),"
+            f" ungraded {len(rows) - len(graded)}; solve rate {sum(graded.values()) / len(graded):.1%} of graded"
         )
+        print(f"{'':<10} ungraded by exception: {dict(ungraded.most_common())}")
     common = set.intersection(*(set(s) for s in solved.values()))
     print(f"graded in all runs: {len(common)} tasks;", {n: sum(s[t] for t in common) for n, s in solved.items()})
     for a, b in (("solved-s0", "random-s0"), ("solved-s0", "base"), ("random-s0", "base")):

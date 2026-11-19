@@ -341,11 +341,15 @@ mini-SWE-agent) and evaluated with Harbor's Terminus-2 agent.
   All three attempted every task. Each run record failed at Harbor's final archiving step, so grades come from
   per-trial `result.json` files: [terminus_swebench.py](terminus_swebench.py).
 
-  | Model | Graded | Solved | Agent timeouts | Other exceptions |
-  |---|---|---|---|---|
-  | base Qwen3-8B | 182 | 5 (2.7%) | 16 | 18 |
-  | Terminus solved arm, seed 0 | 162 | 27 (16.7%) | 63 | 39 |
-  | Terminus random arm, seed 0 | 154 | 19 (12.3%) | 67 | 46 |
+  | Model | Solved | Graded, not solved | Agent timeouts (graded) | Ungraded | Solve rate of graded |
+  |---|---|---|---|---|---|
+  | base Qwen3-8B | 5 | 177 | 16 | 18 | 2.7% |
+  | Terminus solved arm, seed 0 | 27 | 135 | 63 | 38 | 16.7% |
+  | Terminus random arm, seed 0 | 19 | 135 | 67 | 46 | 12.3% |
+
+  Each row sums to 200 trials (solved + graded not solved + ungraded). A trial that hits the agent limit is still
+  graded on the state it left. Ungraded trials ended in infrastructure errors before grading; most fine-tune ones are
+  `AgentSetupTimeoutError` (solved arm 18, random arm 28, base 2), then Daytona connection and sandbox errors.
 
   On the 126 tasks graded in all three runs: base 4, solved arm 21, random arm 17.
 
@@ -361,8 +365,8 @@ mini-SWE-agent) and evaluated with Harbor's Terminus-2 agent.
   - The solved arm leads the random arm by 4 tasks on common tasks. That is about one standard deviation of the
     discordant count alone, before evaluation noise, and is consistent with no effect.
   - The decision rule needs `s`, the spread between two evaluations of one checkpoint, which is not yet measured.
-  - Limits: one seed per arm. Other exceptions (mostly Daytona connection errors) left 154–162 tasks graded per
-    fine-tune. A third of fine-tune trials hit the agent limit and were graded on the state they left.
+  - Limits: one seed per arm. Infrastructure errors, mostly agent-setup timeouts, left 154–162 tasks graded per
+    fine-tune, unevenly between arms. A third of fine-tune trials hit the agent limit and were graded on the state they left.
 
 ### 2026-11-19 17:30 UTC - Held-out loss and outcome discrimination, Terminus checkpoints
 
