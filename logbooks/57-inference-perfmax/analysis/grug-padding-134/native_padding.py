@@ -266,6 +266,24 @@ def main():
                             "restored_route_max": maximum_difference(first[:real], restored[:real]),
                             "padded_output_max": changed[real:].float().abs().max().item(),
                         }
+                        repeat_case = (local, count, real, name) in (
+                            (24, 4, 1, "other-local"),
+                            (24, 128, 1, "non-local"),
+                            (96, 16, 1, "other-local"),
+                        )
+                        if repeat_case:
+                            row["repeat_trials"] = []
+                            for index in range(payload.get("repeats", 0)):
+                                a, b = (logits, alternate) if index % 2 == 0 else (alternate, logits)
+                                reference, repeated, different, restored = fresh(a), fresh(a), fresh(b), fresh(a)
+                                row["repeat_trials"].append(
+                                    {
+                                        "direction": "A-to-B" if index % 2 == 0 else "B-to-A",
+                                        "same": maximum_difference(reference[:real], repeated[:real]),
+                                        "changed": maximum_difference(reference[:real], different[:real]),
+                                        "restored": maximum_difference(reference[:real], restored[:real]),
+                                    }
+                                )
                         record["cases"].append(row)
                         output.write_text(json.dumps(record, indent=2) + "\n")
                         if (count, real) in ((16, 1), (128, 1), (128, 115), (512, 129)):
@@ -291,6 +309,32 @@ def main():
                             graph.replay()
                             torch.cuda.synchronize()
                             row["graph_restored_route_max"] = maximum_difference(graph_first[:real], captured[:real])
+                            if repeat_case:
+                                row["graph_repeat_trials"] = []
+                                for index in range(payload.get("repeats", 0)):
+                                    a, b = (logits, alternate) if index % 2 == 0 else (alternate, logits)
+                                    active_logits.copy_(a)
+                                    graph.replay()
+                                    torch.cuda.synchronize()
+                                    reference = captured[:real].clone()
+                                    graph.replay()
+                                    torch.cuda.synchronize()
+                                    repeated = maximum_difference(reference, captured[:real])
+                                    active_logits.copy_(b)
+                                    graph.replay()
+                                    torch.cuda.synchronize()
+                                    different = maximum_difference(reference, captured[:real])
+                                    active_logits.copy_(a)
+                                    graph.replay()
+                                    torch.cuda.synchronize()
+                                    row["graph_repeat_trials"].append(
+                                        {
+                                            "direction": "A-to-B" if index % 2 == 0 else "B-to-A",
+                                            "same": repeated,
+                                            "changed": different,
+                                            "restored": maximum_difference(reference, captured[:real]),
+                                        }
+                                    )
                         output.write_text(json.dumps(record, indent=2) + "\n")
         record["router_timing"] = router_timings(config)
     record |= {

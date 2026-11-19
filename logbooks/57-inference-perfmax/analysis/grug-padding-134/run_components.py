@@ -28,22 +28,30 @@ from experiments.evaluation.knotmeter.runtime import materialize_release
 
 def component_worker(payload: dict) -> None:
     if payload.get("mode") == "compare":
-        build = payload["build_payload"]
-        component_worker(build | {"label": "build"})
-        manifest = read_record(build["uri"] + "/manifest.json")
-        binary_hashes = read_record(build["uri"] + "/build.json")["native_members"]
-        payload["variants"]["candidate"]["candidate_manifest"] = manifest
+        binary_hashes = payload.get("native_members")
+        if "build_payload" in payload:
+            build = payload["build_payload"]
+            component_worker(build | {"label": "build"})
+            manifest = read_record(build["uri"] + "/manifest.json")
+            binary_hashes = read_record(build["uri"] + "/build.json")["native_members"]
+            payload["variants"]["candidate"]["candidate_manifest"] = manifest
+        failures = []
         for label, variant in payload["variants"].items():
-            component_worker(
-                payload
-                | variant
-                | {
-                    "mode": "component",
-                    "label": label,
-                    "uri": payload["uri"] + "/" + label,
-                    "native_members": binary_hashes,
-                }
-            )
+            try:
+                component_worker(
+                    payload
+                    | variant
+                    | {
+                        "mode": "component",
+                        "label": label,
+                        "uri": payload["uri"] + "/" + label,
+                        "native_members": binary_hashes,
+                    }
+                )
+            except subprocess.CalledProcessError:
+                failures.append(label)
+        if failures:
+            raise RuntimeError(f"Native checks failed: {failures}")
         return
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
     if payload.get("label"):
