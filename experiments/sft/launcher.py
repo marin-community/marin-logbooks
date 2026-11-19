@@ -68,7 +68,7 @@ import hashlib
 import math
 import re
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import timedelta
 from typing import Protocol, runtime_checkable
 
@@ -291,6 +291,8 @@ class HFModel:
     tokenizer_path: str | None = None  # defaults to model_ref
     model_type: str = "qwen3"
     eos_token_ids: Sequence[int] = LLAMA3_CHAT_EOS_TOKEN_IDS
+    # Train with this window instead of the checkpoint's declared one (rotary-position models only).
+    max_seq_len: int | None = None
 
     def tokenizer_cache_key(self) -> str:
         return self.tokenizer_path or self.model_ref
@@ -313,7 +315,7 @@ class HFModel:
         resources: ResourceConfig,
         num_train_steps: int,
     ) -> TrainLmOnPodConfig:
-        return _levanter_pod_config(
+        pod_config = _levanter_pod_config(
             ctx,
             spec,
             data_config,
@@ -326,6 +328,10 @@ class HFModel:
             use_hf_model_config=True,
             eos_token_ids=self.eos_token_ids,
         )
+        if self.max_seq_len is None:
+            return pod_config
+        train_config = replace(pod_config.train_config, hf_max_seq_len=self.max_seq_len)
+        return replace(pod_config, train_config=train_config)
 
 
 @dataclass(frozen=True)
@@ -541,6 +547,7 @@ class SFTSpec:
     num_train_epochs: int | None = None
     hf_save_dtype: str | None = None
     wandb_project: str = "marin-sft-launcher"
+    seed: int = 0  # trainer PRNG seed; vary it for seed repeats of one recipe
     checkpointer: CheckpointerConfig = field(
         default_factory=lambda: CheckpointerConfig(
             save_interval=timedelta(minutes=30), keep=None, keep_last_temporary_checkpoints=1
@@ -679,6 +686,7 @@ def _trainer(
         jax_config["jax_pjrt_client_create_options"] = "allocator:cuda_async"
     return TrainerConfig(
         id=sft_run_id(spec),
+        seed=spec.seed,
         train_batch_size=spec.batch_size,
         num_train_steps=num_train_steps,
         steps_per_eval=500,

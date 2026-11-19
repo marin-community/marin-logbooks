@@ -1,0 +1,28 @@
+# Base Qwen3-8B reference for the Open-SWE outcome ablation (marin-community/marin-logbooks#39).
+# Serving matches the fine-tuned arms' evaluations (2xH100, 65,536 tokens) except that the base
+# model reaches 65,536 tokens through YaRN over its 32,768-token native window, as Qwen recommends.
+name: open-swe-outcome-qwen3-8b-base
+location: Qwen/Qwen3-8B
+tokenizer: Qwen/Qwen3-8B
+apply_chat_template: true
+resource_hint:
+  gpu:
+    H100: 2
+serve:
+  tensor_parallel_size: 2
+  max_model_len: 65536
+  # Keep 65,536: automatic overrides would cap the length at the checkpoint's declared 40,960.
+  auto_overrides: false
+  reasoning_parser: qwen3
+  # ServeConfig.hf_overrides is the JSON string vLLM's --hf-overrides takes. vLLM checks max_model_len
+  # against max_position_embeddings without the YaRN factor, so that is raised to 65,536 too.
+  hf_overrides: '{"max_position_embeddings": 65536, "rope_parameters": {"rope_type": "yarn", "factor": 2.0, "original_max_position_embeddings": 32768, "rope_theta": 1000000.0}}'
+  vllm_extra_args:
+    - --enable-prefix-caching
+    - --dtype
+    - bfloat16
+generation:
+  max_gen_toks: 8192
+agent:
+  agent_kwargs:
+    extra_body: '{"chat_template_kwargs":{"enable_thinking":true}}'

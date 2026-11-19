@@ -1,0 +1,17 @@
+name: glm-4_7-r2egym-131k-lc-noise-pilot
+location: laion/GLM-4_7-r2egym_sandboxes-maxeps-131k-lc
+revision: d0b41990a24e3055daa192a6cdc8b43c63c090af
+apply_chat_template: true
+resource_hint:
+  gpu:
+    H100: 1
+serve:
+  tensor_parallel_size: 1
+  max_model_len: 131072
+  vllm_extra_args:
+  - --enable-prefix-caching
+generation:
+  max_gen_toks: 8192
+agent:
+  agent_kwargs:
+    extra_body: '{"chat_template_kwargs":{"enable_thinking":true}}'

@@ -57,6 +57,11 @@ class TrainLmConfig:
     initialize_from_hf: bool | str = False
     """if provided, this will override the model config in the config. if true, use the default hf checkpoint for this model class"""
     use_hf_model_config: bool = False  # if true, replace the model config with the hf config from the checkpoint
+    hf_max_seq_len: int | None = None
+    """With ``use_hf_model_config``, train with this window instead of the checkpoint's declared one.
+
+    For rotary-position models, whose weights do not depend on the declared window.
+    """
     pad_tokenizer_to_match_model: bool = False
     """If True, pad the tokenizer's vocab to match the model's vocab size by adding dummy tokens.
     Useful when the model checkpoint has a larger vocab than the tokenizer (e.g., Qwen models
@@ -223,6 +228,8 @@ def main(config: TrainLmConfig):
                 converter.config_from_hf_config(converter.default_hf_config),
                 config.model,
             )
+            if config.hf_max_seq_len is not None:
+                config.model = replace(config.model, max_seq_len=config.hf_max_seq_len)
     elif isinstance(config.model, HFCompatConfig):
         converter = config.model.hf_checkpoint_converter()
         converter = converter.replaced(tokenizer=tokenizer)

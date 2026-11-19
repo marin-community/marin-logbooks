@@ -1,0 +1,46 @@
+# Qwen3-8B fine-tuned on the Terminus-2 rendering of the random arm, seed 0 (marin-community/marin-logbooks#39).
+# Serving matches the native-format arms' evaluations except for the qwen3 reasoning parser, which
+# keeps the <think> span out of the reply Terminus-2 parses and out of the conversation history.
+name: open-swe-outcome-qwen3-8b-terminus-random-10000-seed0
+location: s3://marin-us-east-08a/marin/users/dml/checkpoints/open-swe-outcome/qwen3-8b-terminus-random-10000-seed0-ctx65536/2026.11.13/hf-cpu/step-812/
+tokenizer: Qwen/Qwen3-8B
+apply_chat_template: true
+resource_hint:
+  gpu:
+    H100: 2
+serve:
+  tensor_parallel_size: 2
+  max_model_len: 65536
+  auto_overrides: false
+  reasoning_parser: qwen3
+  # The training template with its generation prompt ending at <think> (terminus_chat_template.py);
+  # the checkpoint's exported copy ends at <think>\n, which training never continues to </think>.
+  chat_template: |
+    {%- for message in messages %}
+        {%- if message.content is string %}
+            {%- set content = message.content %}
+        {%- else %}
+            {%- set content = '' %}
+        {%- endif %}
+        {%- if message.role == 'system' or message.role == 'user' %}
+            {{- '<|im_start|>' + message.role + '\n' + content + '<|im_end|>\n' }}
+        {%- elif message.role == 'assistant' %}
+            {%- set reasoning_content = '' %}
+            {%- if message.reasoning_content is string %}
+                {%- set reasoning_content = message.reasoning_content %}
+            {%- elif '</think>' in content %}
+                {%- set reasoning_content = content.split('</think>')[0].rstrip('\n').split('<think>')[-1].lstrip('\n') %}
+                {%- set content = content.split('</think>')[-1].lstrip('\n') %}
+            {%- endif %}
+            {{- '<|im_start|>assistant\n<think>' }}{% generation %}{{- '\n' + reasoning_content.strip('\n') + '\n</think>\n\n' + content.lstrip('\n') + '<|im_end|>' }}{% endgeneration %}{{- '\n' }}
+        {%- endif %}
+    {%- endfor %}
+    {%- if add_generation_prompt %}
+        {{- '<|im_start|>assistant\n<think>' }}
+    {%- endif %}
+  vllm_extra_args:
+    - --enable-prefix-caching
+    - --dtype
+    - bfloat16
+generation:
+  max_gen_toks: 8192

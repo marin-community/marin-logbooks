@@ -141,14 +141,12 @@ def excluded_trajectory_ids(exclusion_path: str) -> frozenset[str]:
         return frozenset(pq.read_table(source, columns=["trajectory_id"]).column("trajectory_id").to_pylist())
 
 
-def row_to_chat_doc(row: dict) -> list[dict]:
-    messages = row.get("messages")
-    if not messages:
-        counters.pipeline.update_counter("open_swe_traces/empty_messages_filtered", 1)
-        return []
-    tools = [json.loads(tool) for tool in row["tools"]]
-    # The export omits tool_call_id on observations, including parallel calls.
-    # Observations follow their calls in order, so restore IDs before conversion.
+def link_tool_call_ids(messages: list[dict]) -> list[dict]:
+    """Return the messages with each tool observation tied to the call it answers.
+
+    The export omits tool_call_id on observations, including parallel calls.
+    Observations follow their calls in order, so IDs are assigned in that order.
+    """
     pending: deque[str] = deque()
     linked_messages: list[dict] = []
     for index, message in enumerate(messages):
@@ -163,8 +161,17 @@ def row_to_chat_doc(row: dict) -> list[dict]:
         elif message.get("role") == "tool" and pending:
             linked["tool_call_id"] = pending.popleft()
         linked_messages.append(linked)
+    return linked_messages
+
+
+def row_to_chat_doc(row: dict) -> list[dict]:
+    messages = row.get("messages")
+    if not messages:
+        counters.pipeline.update_counter("open_swe_traces/empty_messages_filtered", 1)
+        return []
+    tools = [json.loads(tool) for tool in row["tools"]]
     return checked_openai_chat_document(
-        linked_messages,
+        link_tool_call_ids(messages),
         HF_DATASET_ID,
         counter_prefix="open_swe_traces/chat",
         source_id=row["trajectory_id"],

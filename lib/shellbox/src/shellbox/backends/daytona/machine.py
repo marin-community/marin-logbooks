@@ -615,7 +615,14 @@ class DaytonaMachineFactory:
                 request = snapshot_request_for_spec(spec)
                 name = f"shellbox-{uuid.uuid4().hex}"
                 sandbox_fields = dict(
-                    name=name, os_user="root", env_vars=spec.env, **network, ttl_minutes=self.ttl_minutes
+                    name=name,
+                    os_user="root",
+                    env_vars=spec.env,
+                    **network,
+                    ttl_minutes=self.ttl_minutes,
+                    # Daytona's default 15-minute idle auto-stop kills sandboxes while an agent
+                    # waits on a slow model turn; teardown and the TTL bound the lifetime instead.
+                    auto_stop_interval=0,
                 )
                 if self.image_build == DaytonaImageBuild.SNAPSHOT:
                     params = CreateSandboxFromSnapshotParams(
