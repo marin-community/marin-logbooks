@@ -1760,3 +1760,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R], cross-checked.
 - Interpretation and limitations: quiet window on the branch.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-18 09:40 UTC - Hourly catch-up (07:40–08:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `a7a5e9deba…` (05:56:10 UTC) to head `561e2c8c091190f47535a54d8bdba70d0bc4db64`, landed 08:02:00 UTC (1 landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log a7a5e9de..561e2c8c` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — the kaniko sandbox kept writable for apt and the build's own certificates (`561e2c8c0911…`, head), extending the 05:40-window ephemeral-kaniko actor-image work.
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: single code landing.
+- Decision and next action: next hourly check watches for the kaniko-built image outcomes.
