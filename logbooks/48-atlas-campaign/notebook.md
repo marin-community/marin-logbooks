@@ -1810,3 +1810,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the V4-default rollout outcomes.
+
+### 2026-11-19 12:40 UTC - Hourly catch-up (11:40–12:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `179314c6d1…` (11:14:30 UTC) to head `af480c32e5fa`, landed 12:33 UTC (~10 landings 12:16–12:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 179314c6..af480c32` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window — **retained-copy/staging resumability hardening**: the staged catalog load made resumable (`5d70349494…`) with idempotent resume and retained copy (`0598322457…`), staged-prefix counting in resumed insert totals (`87f351bb60…`), upsert of the load row on resume (`7bf42e1ecd…`), resume by skipping each table's staged prefix (`af480c32e5…`, head); retained-copy buckets raised to 128 (`b33881f13b…`); per-task staging batches capped at five rows (`6f52eabb96…`); backend import verified against the database's staged rows (`3cab636545…`); byte-identity branch order modeled in the retained-panel tests (`8532a5562a…`); status-extras output directories created when absent (`074441963d…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the resumability hardening's rollout effects.
