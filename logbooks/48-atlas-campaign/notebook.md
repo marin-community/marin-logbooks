@@ -1796,3 +1796,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the re-conversion carry-forward outcomes.
+
+### 2026-11-19 11:40 UTC - Hourly catch-up (10:40–11:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `91ebdc65fe…` (10:12:28 UTC) to head `179314c6d12a2fd9cd280d96f11c7e332ca75033`, landed 11:14:30 UTC (2 landings 10:58 / 11:14 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 91ebdc65..179314c6` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **V4 pinned as the default SAMPLE reviewer profile for new campaigns** (`179314c6d1…`, head) — formalizing the reviewer-profile decision for new campaigns.
+  - **Equivalence allowances typed** for calibration, actor setup pinning, and lock resources (`6df109b5a5…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the V4-default rollout outcomes.
