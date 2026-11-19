@@ -1772,3 +1772,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commit above; landing timestamp in the local atlas-push log [R].
 - Interpretation and limitations: single code landing.
 - Decision and next action: next hourly check watches for the kaniko-built image outcomes.
+
+### 2026-11-19 09:40 UTC - Hourly catch-up (08:40–09:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `561e2c8c09…` (08:02:00 UTC) to head `900cb18689180a5b41747594a8de534518855ea7`, landed 09:28:51 UTC (2 landings 08:40 / 09:28 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 561e2c8c..900cb186` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: the dead tar push after kaniko's own registry push removed (`f8fd6798ea…`); DCAgent python-test installs pinned with hashed requirement locks (`900cb18689…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the kaniko-push outcomes.
