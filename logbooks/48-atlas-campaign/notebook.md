@@ -1888,3 +1888,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the license-evidence-change outcomes.
+
+### 2026-11-19 19:40 UTC - Hourly catch-up (18:40–19:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d7cc5109b8…` (18:22:00 UTC) to head `6dfad51a3f9869e3bb94ac3e2758a35e9441d395`, landed 19:29:58 UTC (~11 landings 19:04–19:29 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d7cc5109..6dfad51a` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Ruling-62 landing chain**: the ruling-62-era atlas landings (waiver seal state, corrected derived-contract receipts, catalog publication hardening) merged into the r31 maintenance merge (`73f5093501…`); ruling-60 projection waivers extended for the ruling-62 landing and the current preview load (`cda2d4c8b6…`); the fingerprint index rebound for the ruling-62 re-measured populations (`024c381d27…`); the ruling-62 re-measured census, lexical, grading and dedup receipts bound for the 26 drifted sources (`b5568f300e…`); withheld-content refusal expectations updated to the unified staging guards (`6dfad51a3f…`, head).
+  - **Pristine image graph shared** across source families (`4fd02b192c…`); the pinned EndlessTerminals runtime images preserved (`eacbc9fa99…`).
+  - **Audit-seal discipline**: observed refresh seal state required in audit selections (`6e729696b9…`); preview projection waivers expire on the strict refresh seal event (`40b7e6589d…`); the duplicate-review Wilson interval pointed at the moved evalrecords module (`50fa4c0d57…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the ruling-62 receipts' contents are registry-bound [M].
+- Decision and next action: next hourly check watches for the ruling-62 receipt outcomes.
