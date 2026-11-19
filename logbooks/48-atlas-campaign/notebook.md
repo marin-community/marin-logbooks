@@ -1948,3 +1948,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: the fail-closed gate applies to future multi-node RL launches; the exp3 `.55` restart predates it.
 - Decision and next action: next hourly check watches for the fail-closed guard's first gate interactions and further maintenance merges.
+
+### 2026-11-19 23:40 UTC - Hourly catch-up (22:40–23:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `235296be11…` (21:56:24 UTC) to head `22fe092c6f657ccd39b5daaf58e07f64be55e1ac`, landed 23:02:27 UTC (~7 landings 22:59–23:02 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 235296be..22fe092c` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Curriculum lineage preserved across verified task identity changes** (`d14d4d4246…`); verified curriculum task correspondence documented (`8edcbe3a4e…`); correspondence checks separated with typed mapping references preserved (`6ec2479953…`); qualified declarations preserved in frozen curriculum inputs (`c5910e2e34…`); qualified curriculum input preservation tested (`055853c447…`).
+  - **Legacy retained grading**: the read-only legacy retained grading shape added and the audit's applet reads bounded (`6b99e42ca9…`); concurrent curriculum landings merged into the legacy retained grading fix (`22fe092c6f…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the legacy-retained-grading fix's rollout outcomes.
