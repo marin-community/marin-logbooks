@@ -1506,3 +1506,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: links above; report path above [R].
 - Interpretation and limitations: the round-1 mask ambiguity is now explicit rather than resolved; the close-out linkage reflects public state as of 2026-11-19; the IID explanation is sanitized prose without the private test detail.
 - Decision and next action: the PR #66 reader conversation continues separately; this entry addresses the coordinator-directed items.
+
+### 2026-11-19 20:40 UTC - Hourly catch-up (19:40–20:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 `.76` — **running, task 0 at 16 h 47 m 00 s** (exit=0, failures=0, preemptions=0; Iris at 20:33 UTC).
+- Command or material configuration: Iris describe at 20:33 UTC [R].
+- External inputs and artifact references: Iris output [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; no new `atlas-env-audit` landings — head unchanged at `6dfad51a3f…`).
+- Evidence: Iris [R]; `git ls-remote` [R].
+- Interpretation and limitations: progression-only status.
+- Decision and next action: hourly checks continue.
