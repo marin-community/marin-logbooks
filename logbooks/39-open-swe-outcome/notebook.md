@@ -396,3 +396,32 @@ mini-SWE-agent) and evaluated with Harbor's Terminus-2 agent.
   arm is slightly worse on failures, and the cross-task signal does not survive pairing within a task (both win-rate
   intervals include 0.5). The native win rate is 0.548 on these 210 shorter pairs, against 0.50 on all 299 pairs
   with both seeds. The format change did not change what the arms learned about outcomes.
+
+### 2026-11-19 22:30 UTC - Retry of ungraded trials
+
+- Question: do the trials lost to infrastructure errors change the comparison? Most fine-tune ungraded trials were
+  `AgentSetupTimeoutError` (solved arm 18, random arm 28, base 2).
+- Command: the evaluation launch of each run with `--resume-results-path <run>/results --retry-unscored-harbor-trials`,
+  run ids `open-swe-terminus-eval-{solved-s0-r2,random-s0-r2,base-r3}-retry`. The CLI validates the resume path
+  before configuring CoreWeave S3, so it was started through a wrapper that calls `configure_coreweave_s3()` first.
+  Retries re-run only trials Harbor classifies as infrastructure failures and keep every graded result.
+- A retried trial is re-run in place under a new attempt directory. [terminus_swebench.py](terminus_swebench.py) now
+  reads each trial's highest-numbered attempt (it previously read `attempts/000`, which would miss retries).
+- Result: every run has a final outcome for all 200 tasks. Run records again failed at Harbor's archiving step.
+
+  | Model | Solved | Graded, not solved | Agent timeouts (graded) | Ungraded | Solve rate of graded |
+  |---|---|---|---|---|---|
+  | base Qwen3-8B | 5 | 187 | 18 | 8 | 2.6% |
+  | Terminus solved arm, seed 0 | 28 | 157 | 71 | 15 | 15.1% |
+  | Terminus random arm, seed 0 | 24 | 160 | 77 | 16 | 13.0% |
+
+  On the 163 tasks graded in all three runs: base 5, solved arm 25, random arm 21.
+
+  | Comparison | Common tasks | First only | Second only | Both | Sign test p |
+  |---|---|---|---|---|---|
+  | solved arm vs random arm | 170 | 15 | 11 | 11 | 0.56 |
+  | solved arm vs base | 177 | 24 | 2 | 3 | 1e-05 |
+  | random arm vs base | 177 | 22 | 4 | 1 | 0.00053 |
+
+- Interpretation: unchanged. Both arms beat the base model clearly; the solved arm's lead over the random arm is 4
+  tasks on 170 common tasks, within noise. Remaining ungraded trials are Daytona connection errors and similar.

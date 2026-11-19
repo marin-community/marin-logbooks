@@ -43,7 +43,11 @@ def trial_grades(fs, run: str) -> list[dict]:
         }
 
     with ThreadPoolExecutor(32) as pool:
-        return list(pool.map(read, fs.glob(f"{job}/*/attempts/000/result.json")))
+        # A retried trial gets a new attempt directory; its highest-numbered attempt is the final outcome.
+        latest: dict[str, str] = {}
+        for path in sorted(fs.glob(f"{job}/*/attempts/*/result.json")):
+            latest[path.split("/attempts/")[0]] = path
+        return list(pool.map(read, latest.values()))
 
 
 def sign_test(a: int, b: int) -> float:
