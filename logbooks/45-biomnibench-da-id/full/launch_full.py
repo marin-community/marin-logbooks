@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Public-50 Qwen pass with one shared judge and an eight-hour parent cap."""
+"""Run a public-50 candidate with the shared MiniMax judge."""
 
 import json
 import os
@@ -27,14 +27,21 @@ os.environ["DAYTONA_TARGET"] = "us"
 assert len(list((root / "runtime-tasks").glob("*/task.toml"))) == 50
 assert (root / "runtime-tasks/da-4-6").exists()
 gpt_oss = "--gpt-oss" in sys.argv
-candidate = "gpt-oss-20b" if gpt_oss else "qwen"
-model_path = (
-    root.parents[2]
-    / "experiments/evaluation/campaigns/eval-campaign-09-25-unlabeled/model-configs/openai-gpt-oss-20b.yaml"
-    if gpt_oss
-    else root.parent / "pilot/qwen.yaml"
-)
-policy_path = root / ("gpt-oss-20b.yaml" if gpt_oss else "full.yaml")
+gemma = "--gemma" in sys.argv
+assert not (gpt_oss and gemma)
+candidate, accelerator = "qwen", "H100x4"
+model_path = root.parent / "pilot/qwen.yaml"
+policy_path = root / "full.yaml"
+if gpt_oss or gemma:
+    candidate, accelerator, filename = (
+        ("gemma-4-26b-a4b-it", "H100x2", "google-gemma-4-26B-A4B-it.yaml")
+        if gemma
+        else ("gpt-oss-20b", "H100x1", "openai-gpt-oss-20b.yaml")
+    )
+    model_path = (
+        root.parents[2] / "experiments/evaluation/campaigns/eval-campaign-09-25-unlabeled/model-configs" / filename
+    )
+    policy_path = root / "gpt-oss-20b.yaml"
 final_task = "--final-task" in sys.argv
 benchmark = f"biomnibench-public50-{candidate}"
 if final_task:
@@ -46,7 +53,7 @@ spec = LaunchSpec(
     model=load_model_config(model_path),
     evals=(HarborDefinition(name=benchmark, config_path=policy_path),),
     platform=Platform.GPU,
-    accelerator="H100x1" if gpt_oss else "H100x4",
+    accelerator=accelerator,
     limit=None,
     records_prefix=None,
     submission_cluster="marin",
@@ -62,7 +69,7 @@ spec = LaunchSpec(
             else f"One fresh public-50 {candidate} pass; five disclosed input variants; Pi 0.87.0; "
         )
         + "3600s agent; 900s verifier; 16 concurrent; zero solver retries; "
-        + ("two inline attempts and up to two frozen retries; " if gpt_oss else "one malformed-judge retry; ")
+        + ("two inline attempts and up to two frozen retries; " if gpt_oss or gemma else "one malformed-judge retry; ")
         + "one shared MiniMax judge; bounded parent; proposal evidence, not adopted ID policy"
     ),
 )

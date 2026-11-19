@@ -22,7 +22,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--validation", type=Path, required=True)
     parser.add_argument("--job-name", required=True)
-    parser.add_argument("--gpt-oss", action="store_true")
+    candidates = parser.add_mutually_exclusive_group()
+    candidates.add_argument("--gemma", action="store_true")
+    candidates.add_argument("--gpt-oss", action="store_true")
     parser.add_argument("--final-task", action="store_true")
     args = parser.parse_args()
     if args.final_task and not args.gpt_oss:
@@ -36,6 +38,8 @@ def main():
         "all_closed": True,
     }
     receipt = ROOT / ("gpt-oss-launcher-submission.json" if args.gpt_oss else "launcher-submission.json")
+    if args.gemma:
+        receipt = ROOT / "gemma-launcher-submission.json"
     if args.final_task:
         receipt = ROOT / "gpt-oss-final-submission.json"
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
@@ -54,6 +58,7 @@ def main():
                 "logbooks/45-biomnibench-da-id/full/launch_full.py",
                 "--submit-in-cluster",
                 *(["--final-task"] if args.final_task else []),
+                *(["--gemma"] if args.gemma else []),
                 *(["--gpt-oss"] if args.gpt_oss else []),
             ),
             name=args.job_name,
