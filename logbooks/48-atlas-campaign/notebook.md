@@ -1662,3 +1662,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R].
 - Interpretation and limitations: quiet window on the branch.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-19 01:40 UTC - Correction to the 00:35 entry: one landing DID land (branch head moved)
+
+- Question or hypothesis and reason for trying it: the 00:35 entry claimed the branch head was unchanged at `0b20ffc5b4…`; the fetch in the same cycle had in fact brought `87056e29e64c9e…` ("Bind prior panels to their population content and record refused priors", landed ~00:33 UTC Nov 18 by session ses_e105) — I misread ls-remote vs the fetched ref. The current head at this cycle's check remains `87056e29e64c9e…` (no further landings).
+- Published source revision: branch head `87056e29e64c9e…`.
+- Command or material configuration: evidence: `git ls-remote` + fetched log.
+- External inputs and artifact references: landing record in the local atlas-push log [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **Correction** — one landing landed in the 00:35 window (`87056e29e64c9e…`: prior panels bound to their population content, refused priors recorded); the "quiet window" claim is withdrawn. Lesson: cross-check `git ls-remote` against the fetched ref before declaring a window quiet.
+- Evidence: landing record [R].
+- Interpretation and limitations: corrected entry.
+- Decision and next action: apply the cross-check going forward.
