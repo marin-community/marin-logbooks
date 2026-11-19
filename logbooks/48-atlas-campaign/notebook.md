@@ -1846,3 +1846,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R], cross-checked.
 - Interpretation and limitations: quiet window on the branch.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-19 16:40 UTC - Hourly catch-up (15:45–16:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `af480c32e5…` (12:33 UTC) to head `75a0797a6df736f7607eac1c43b9841a7a5899bf`, landed 16:20:24 UTC (7 landings 16:09–16:20 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log af480c32..75a0797a` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Task replacement acceptance gates stated** (`75a0797a6d…`, head) and **source workflows/evidence reuse defined** (`f0a5d22ccf…`) — the repair-lane's replacement semantics formalized.
+  - **Reviewer-version cache separation**: separate cache entries verified for all qualified reviewer versions (`8d66de1f45…`).
+  - **Declaration actor binding typed** (`ac9908e558…`); scoped projection waivers allowed until the preview refresh seals (`15646ec7de…`); the codeforces contract census bound to the selected release (`d060a6a4a4…`); serving projections checked against the active catalog (`620773ccb4…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the task-replacement gate outcomes.
