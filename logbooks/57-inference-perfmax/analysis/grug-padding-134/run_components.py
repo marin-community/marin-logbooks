@@ -157,7 +157,9 @@ def main() -> None:
                     disk="128GB",
                     device=gpu_device("GB200", gpus) if gpus else None,
                 ),
-                environment=EnvironmentSpec(sync_packages=["marin-core"], extras=["cpu"]),
+                environment=EnvironmentSpec(
+                    sync_packages=["marin-core"], extras=["cpu"], env_vars={"MAX_JOBS": "2", "NVCC_THREADS": "1"}
+                ),
                 priority_band=job_pb2.PRIORITY_BAND_INTERACTIVE,
                 scheduling_timeout=Duration.from_seconds(1800),
                 timeout=Duration.from_seconds(1800),
