@@ -1,0 +1,765 @@
+{
+  "decision": "Standalone padding-routing benefit is reproduced. Recommend review of #134 with a narrow claim; leave it draft and unmerged.",
+  "base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "candidate": "139b7521151c580f2e524691b53be00127992e64",
+  "research_source": "204cf26bb6bf287442cc41236c202838b8a16ab7",
+  "artifact_root": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379",
+  "scope": "One GB200; Grug router plus native precompiled FP8 Marlin; no #133, #132, hybrid backend selection, full model or serving benchmark.",
+  "method": "Hold real inputs, weights and routes fixed; vary only dummy logits. Use A-A-B-A controls and 20 trials alternating A-to-B and B-to-A. Three controls were selected after the first 28-case sweep. Graph replays keep physical shape and addresses fixed.",
+  "input_and_packed_weight_fingerprints_equal": true,
+  "dependency_changes": {
+    "vllm": [
+      "0.0.0.dev20261118+marin.47a8e415bff1.cu132",
+      "0.0.0.dev20261119+marin.139b7521151c.cu132"
+    ]
+  },
+  "runtime": {
+    "base": {
+      "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+      "research_source": "204cf26bb6bf287442cc41236c202838b8a16ab7",
+      "wheel_sha256": "d013b4815e17d0e642ec5965c09f73fc8703f068010240c9e0457d989768db17",
+      "model_sha256": "ba4187fa9a29ef7cc06d7b395eef07d59fedbdbfdd09c43b46e9defb7734ee42",
+      "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+      "native_binary_sha256": {
+        "vllm/_C_stable_libtorch.abi3.so": "9c1021677276716f71a0d7db5cae807b43c2272a70fb025c9b8fa94ecb1d4201",
+        "vllm/_moe_C_stable_libtorch.abi3.so": "57230913bfa7767b35e8516812467b5ab61d9b1a4e909cfc3d099761658f857e"
+      },
+      "device": "NVIDIA GB200",
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "cases": 28,
+      "graphs": 16,
+      "changed_dummy_ids": 28,
+      "maximum_dummy_output": 0.0,
+      "eager_nonzero_differences": {
+        "same": 16,
+        "changed": 23,
+        "restored": 17
+      },
+      "repeated_controls": [
+        {
+          "case": {
+            "local_experts": 24,
+            "physical_rows": 4,
+            "real_rows": 1,
+            "padded_route": "other-local"
+          },
+          "eager": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 0,
+                "median": 0.0,
+                "maximum": 0.0
+              },
+              "changed": {
+                "nonzero": 20,
+                "median": 3.0517578125e-05,
+                "maximum": 3.0517578125e-05
+              },
+              "restored": {
+                "nonzero": 0,
+                "median": 0.0,
+                "maximum": 0.0
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 20
+          }
+        },
+        {
+          "case": {
+            "local_experts": 24,
+            "physical_rows": 128,
+            "real_rows": 1,
+            "padded_route": "non-local"
+          },
+          "eager": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 8,
+                "median": 0.0,
+                "maximum": 1.52587890625e-05
+              },
+              "changed": {
+                "nonzero": 20,
+                "median": 3.0517578125e-05,
+                "maximum": 3.0517578125e-05
+              },
+              "restored": {
+                "nonzero": 6,
+                "median": 0.0,
+                "maximum": 1.52587890625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 11
+          },
+          "graph": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 6,
+                "median": 0.0,
+                "maximum": 1.52587890625e-05
+              },
+              "changed": {
+                "nonzero": 20,
+                "median": 3.0517578125e-05,
+                "maximum": 3.0517578125e-05
+              },
+              "restored": {
+                "nonzero": 5,
+                "median": 0.0,
+                "maximum": 1.52587890625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 12
+          }
+        },
+        {
+          "case": {
+            "local_experts": 96,
+            "physical_rows": 16,
+            "real_rows": 1,
+            "padded_route": "other-local"
+          },
+          "eager": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 4,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              },
+              "changed": {
+                "nonzero": 20,
+                "median": 6.103515625e-05,
+                "maximum": 6.103515625e-05
+              },
+              "restored": {
+                "nonzero": 3,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 14
+          },
+          "graph": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 4,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              },
+              "changed": {
+                "nonzero": 20,
+                "median": 6.103515625e-05,
+                "maximum": 6.103515625e-05
+              },
+              "restored": {
+                "nonzero": 4,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 13
+          }
+        }
+      ],
+      "router_timing_median_microseconds": [
+        {
+          "physical_rows": 4,
+          "median": 137.41408348083496
+        },
+        {
+          "physical_rows": 128,
+          "median": 134.23711776733398
+        },
+        {
+          "physical_rows": 2048,
+          "median": 132.6905632019043
+        }
+      ]
+    },
+    "candidate": {
+      "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+      "research_source": "204cf26bb6bf287442cc41236c202838b8a16ab7",
+      "wheel_sha256": "b78f1b61151522745dd7eb1272f039a197255495bc5ff3b9ce875c27703dc66a",
+      "model_sha256": "9f75e3243d4e2b8b1a8ed92631481b4ba07a05553ff2819fc0e9872a0eb2095e",
+      "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+      "native_binary_sha256": {
+        "vllm/_C_stable_libtorch.abi3.so": "9c1021677276716f71a0d7db5cae807b43c2272a70fb025c9b8fa94ecb1d4201",
+        "vllm/_moe_C_stable_libtorch.abi3.so": "57230913bfa7767b35e8516812467b5ab61d9b1a4e909cfc3d099761658f857e"
+      },
+      "device": "NVIDIA GB200",
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "cases": 28,
+      "graphs": 16,
+      "changed_dummy_ids": 0,
+      "maximum_dummy_output": 0.0,
+      "eager_nonzero_differences": {
+        "same": 14,
+        "changed": 17,
+        "restored": 19
+      },
+      "repeated_controls": [
+        {
+          "case": {
+            "local_experts": 24,
+            "physical_rows": 4,
+            "real_rows": 1,
+            "padded_route": "other-local"
+          },
+          "eager": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 0,
+                "median": 0.0,
+                "maximum": 0.0
+              },
+              "changed": {
+                "nonzero": 0,
+                "median": 0.0,
+                "maximum": 0.0
+              },
+              "restored": {
+                "nonzero": 0,
+                "median": 0.0,
+                "maximum": 0.0
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 0
+          }
+        },
+        {
+          "case": {
+            "local_experts": 24,
+            "physical_rows": 128,
+            "real_rows": 1,
+            "padded_route": "non-local"
+          },
+          "eager": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 16,
+                "median": 1.52587890625e-05,
+                "maximum": 1.52587890625e-05
+              },
+              "changed": {
+                "nonzero": 14,
+                "median": 1.52587890625e-05,
+                "maximum": 1.52587890625e-05
+              },
+              "restored": {
+                "nonzero": 16,
+                "median": 1.52587890625e-05,
+                "maximum": 1.52587890625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 0
+          },
+          "graph": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 18,
+                "median": 1.52587890625e-05,
+                "maximum": 1.52587890625e-05
+              },
+              "changed": {
+                "nonzero": 20,
+                "median": 1.52587890625e-05,
+                "maximum": 1.52587890625e-05
+              },
+              "restored": {
+                "nonzero": 20,
+                "median": 1.52587890625e-05,
+                "maximum": 1.52587890625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 0
+          }
+        },
+        {
+          "case": {
+            "local_experts": 96,
+            "physical_rows": 16,
+            "real_rows": 1,
+            "padded_route": "other-local"
+          },
+          "eager": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 4,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              },
+              "changed": {
+                "nonzero": 5,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              },
+              "restored": {
+                "nonzero": 6,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 3
+          },
+          "graph": {
+            "trials": 20,
+            "by_measure": {
+              "same": {
+                "nonzero": 6,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              },
+              "changed": {
+                "nonzero": 12,
+                "median": 6.103515625e-05,
+                "maximum": 6.103515625e-05
+              },
+              "restored": {
+                "nonzero": 5,
+                "median": 0.0,
+                "maximum": 6.103515625e-05
+              }
+            },
+            "changed_with_exact_repeat_and_restore": 9
+          }
+        }
+      ],
+      "router_timing_median_microseconds": [
+        {
+          "physical_rows": 4,
+          "median": 162.13855743408203
+        },
+        {
+          "physical_rows": 128,
+          "median": 162.40991592407227
+        },
+        {
+          "physical_rows": 2048,
+          "median": 157.55680084228516
+        }
+      ]
+    }
+  },
+  "initial_sweep": {
+    "base": {
+      "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+      "research_source": "7843054b7f32d165712256c71fa110030a276a8f",
+      "wheel_sha256": "d013b4815e17d0e642ec5965c09f73fc8703f068010240c9e0457d989768db17",
+      "model_sha256": "ba4187fa9a29ef7cc06d7b395eef07d59fedbdbfdd09c43b46e9defb7734ee42",
+      "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+      "native_binary_sha256": {
+        "vllm/_C_stable_libtorch.abi3.so": "9c1021677276716f71a0d7db5cae807b43c2272a70fb025c9b8fa94ecb1d4201",
+        "vllm/_moe_C_stable_libtorch.abi3.so": "57230913bfa7767b35e8516812467b5ab61d9b1a4e909cfc3d099761658f857e"
+      },
+      "device": "NVIDIA GB200",
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "cases": 28,
+      "graphs": 16,
+      "changed_dummy_ids": 28,
+      "maximum_dummy_output": 0.0,
+      "eager_nonzero_differences": {
+        "same": 14,
+        "changed": 22,
+        "restored": 15
+      },
+      "repeated_controls": [],
+      "router_timing_median_microseconds": [
+        {
+          "physical_rows": 4,
+          "median": 136.50208473205566
+        },
+        {
+          "physical_rows": 128,
+          "median": 134.87584114074707
+        },
+        {
+          "physical_rows": 2048,
+          "median": 132.6963233947754
+        }
+      ]
+    },
+    "candidate": {
+      "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+      "research_source": "7843054b7f32d165712256c71fa110030a276a8f",
+      "wheel_sha256": "b78f1b61151522745dd7eb1272f039a197255495bc5ff3b9ce875c27703dc66a",
+      "model_sha256": "9f75e3243d4e2b8b1a8ed92631481b4ba07a05553ff2819fc0e9872a0eb2095e",
+      "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+      "native_binary_sha256": {
+        "vllm/_C_stable_libtorch.abi3.so": "9c1021677276716f71a0d7db5cae807b43c2272a70fb025c9b8fa94ecb1d4201",
+        "vllm/_moe_C_stable_libtorch.abi3.so": "57230913bfa7767b35e8516812467b5ab61d9b1a4e909cfc3d099761658f857e"
+      },
+      "device": "NVIDIA GB200",
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "cases": 28,
+      "graphs": 16,
+      "changed_dummy_ids": 0,
+      "maximum_dummy_output": 0.0,
+      "eager_nonzero_differences": {
+        "same": 16,
+        "changed": 15,
+        "restored": 19
+      },
+      "repeated_controls": [],
+      "router_timing_median_microseconds": [
+        {
+          "physical_rows": 4,
+          "median": 148.16224098205566
+        },
+        {
+          "physical_rows": 128,
+          "median": 146.10207557678223
+        },
+        {
+          "physical_rows": 2048,
+          "median": 143.3516788482666
+        }
+      ]
+    }
+  },
+  "ordinary_checks": {
+    "base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+    "candidate": "139b7521151c580f2e524691b53be00127992e64",
+    "lint": {
+      "command": "infra/pre-commit.py --all-files",
+      "status": "passed",
+      "log_sha256": "512bc5baef75381a0fe3c7d0272a20acfa128e11efb4b0bd123377d494b49938"
+    },
+    "types": {
+      "command": "uv run --no-project --python 3.12 --with mypy==1.20.2 --with regex --with types-cachetools --with types-setuptools --with types-PyYAML --with types-requests --with types-torch --with pydantic python tools/pre_commit/mypy.py 3.12 vllm/model_executor/models/grugmoe.py tests/models/test_grugmoe.py",
+      "status": "same_existing_errors_on_both",
+      "base_errors": 7,
+      "candidate_errors": 7,
+      "new_diagnostics": [],
+      "normalized_diagnostics": [
+        "tests/models/test_grugmoe.py: error: Incompatible types in assignment (expression has type \"tuple[tuple[str, Any]]\", variable has type \"Generator[tuple[str, Any], None, None]\")  [assignment]",
+        "tests/models/test_grugmoe.py: error: Need type annotation for \"profiling_metadata\"  [var-annotated]",
+        "vllm/model_executor/models/grugmoe.py: error: \"FusedMoERouter\" has no attribute \"bias\"  [attr-defined]",
+        "vllm/model_executor/models/grugmoe.py: error: Incompatible types in assignment (expression has type \"enumerate[Any]\", variable has type \"tuple[tuple[int, Any]]\")  [assignment]",
+        "vllm/model_executor/models/grugmoe.py: error: Incompatible types in assignment (expression has type \"int\", variable has type \"str\")  [assignment]",
+        "vllm/model_executor/models/grugmoe.py: error: Unsupported operand types for >= (\"int\" and \"None\")  [operator]",
+        "vllm/model_executor/models/grugmoe.py: error: Value of type variable \"SupportsRichComparisonT\" of \"min\" cannot be \"float | None\"  [type-var]"
+      ],
+      "logs": {
+        "base-types.log": "7473382c9f8d47dbeea58e8e3a94fa5df1c0a9bd3d1c0d53f7932807b9f8dc3c",
+        "changed-file-types.log": "4f27b6118555373171517ab8ece6b775a13e80ba8a73649235672e82bb860ae4"
+      }
+    },
+    "source": {
+      "changed_paths": [
+        "tests/models/test_grugmoe.py",
+        "vllm/model_executor/models/grugmoe.py"
+      ],
+      "diff_sha256": "aff73b9490193ea57094fb8e0bae2082436ab2cdd29c876a8947947be1a85f07",
+      "native_marlin_and_factory_equal_main": true
+    },
+    "advisory_reused": "../hero-fp8-01a1ec55/padding-contribution-review.json",
+    "advisory_scope": "Unchanged source139b752; six native catalog reviews had no findings. The new final High GOAL panel is separate."
+  },
+  "tests": {
+    "base-tests": {
+      "result": {
+        "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+        "pytest_exit": 0,
+        "fresh_process": true
+      },
+      "junit": [
+        {
+          "tests": "11",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "16.926"
+        }
+      ],
+      "selection": "(router or uses_qb_bias_for_selection_and_normalized_unbiased_weights or latent_experts_match_reference_math or sconv) and not padding_ids_ignore_stale_logits"
+    },
+    "candidate-tests": {
+      "result": {
+        "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+        "pytest_exit": 0,
+        "fresh_process": true
+      },
+      "junit": [
+        {
+          "tests": "12",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "16.226"
+        }
+      ],
+      "selection": "router or uses_qb_bias_for_selection_and_normalized_unbiased_weights or latent_experts_match_reference_math or sconv"
+    }
+  },
+  "attempts": [
+    {
+      "job": "/romain/grug-padding-build-139b752-01a1d379-a1",
+      "state": "killed",
+      "reason": "CPU-only request cancelled before placement due to unsupported pool constraint; no GPU assigned. Native cost is unknown, not a measured zero.",
+      "attempts": [
+        {
+          "uid": "6cd22fc7f060217d",
+          "state": "killed",
+          "gpu_seconds": null,
+          "allocation": {
+            "pod_uid": "234e4218-f171-4a81-a48c-e6cb58ca5323",
+            "attempt_uid": "6cd22fc7f060217d",
+            "pod_name": "iris-romain-grug-padding-build-139b-d15efd31-0-6cd22fc7f060217d",
+            "node_name": "",
+            "observed_unix": 1795059923.7499511,
+            "phase": "Pending",
+            "scheduled_unix": null,
+            "finished_unix": null,
+            "status": "unknown"
+          }
+        }
+      ],
+      "execution_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/build-139b752-a1/execution.json"
+    },
+    {
+      "job": "/romain/grug-padding-build-139b752-01a1d379-a2",
+      "state": "failed",
+      "reason": "CPU-only request landed on x86; ARM-only wheel rejected before packaging.",
+      "attempts": [
+        {
+          "uid": "2cb0c5f9a7e5fb39",
+          "state": "failed",
+          "gpu_seconds": 0.0,
+          "allocation": {
+            "pod_uid": "d3b55382-52f5-404a-acfc-349ba1c971aa",
+            "attempt_uid": "2cb0c5f9a7e5fb39",
+            "pod_name": "iris-romain-grug-padding-build-139b-94c75600-0-2cb0c5f9a7e5fb39",
+            "node_name": "g8fc280",
+            "observed_unix": 1795060157.218428,
+            "phase": "Failed",
+            "scheduled_unix": 1795060094.0,
+            "finished_unix": 1795060148.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1795060148.0
+          }
+        }
+      ],
+      "execution_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/build-139b752-a2/execution.json"
+    },
+    {
+      "job": "/romain/grug-padding-standalone-01a1d379-a1",
+      "state": "failed",
+      "reason": "Built candidate wheel and completed both native sweeps. Same-process pytest hit a default-stream capture error; fresh-process final checks pass.",
+      "attempts": [
+        {
+          "uid": "eab41c95f2b8f8fa",
+          "state": "failed",
+          "gpu_seconds": 272.0,
+          "allocation": {
+            "pod_uid": "f801434e-3945-42ff-8517-2a028de227e0",
+            "attempt_uid": "eab41c95f2b8f8fa",
+            "pod_name": "iris-romain-grug-padding-standalone-c2980683-0-eab41c95f2b8f8fa",
+            "node_name": "sdysxs64",
+            "observed_unix": 1795060656.5319488,
+            "phase": "Failed",
+            "scheduled_unix": 1795060344.0,
+            "finished_unix": 1795060616.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1795060616.0
+          }
+        }
+      ],
+      "execution_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a1/execution.json"
+    },
+    {
+      "job": "/romain/grug-padding-standalone-01a1d379-a2",
+      "state": "failed",
+      "reason": "Baseline full-file run OOM-killed during cold BF16 backend compilation at 32 GB.",
+      "attempts": [
+        {
+          "uid": "23e6c5049e52cb5c",
+          "state": "failed",
+          "gpu_seconds": 165.0,
+          "allocation": {
+            "pod_uid": "f8ba3738-218f-488b-8d13-c1b632ab69df",
+            "attempt_uid": "23e6c5049e52cb5c",
+            "pod_name": "iris-romain-grug-padding-standalone-dd4e7b25-0-23e6c5049e52cb5c",
+            "node_name": "sfdqxs64",
+            "observed_unix": 1795061389.1448581,
+            "phase": "Failed",
+            "scheduled_unix": 1795061198.0,
+            "finished_unix": 1795061363.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1795061363.0
+          }
+        }
+      ],
+      "execution_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a2/execution.json"
+    },
+    {
+      "job": "/romain/grug-padding-standalone-01a1d379-a3",
+      "state": "killed",
+      "reason": "Stopped unrelated cold BF16 backend compilation at 24/267 units after 47 prior tests passed. Partial log retained.",
+      "attempts": [
+        {
+          "uid": "6e7638dfa4bd85cc",
+          "state": "killed",
+          "gpu_seconds": 1279.0,
+          "allocation": {
+            "pod_uid": "7f0fe674-241a-43b4-b364-8090e80d0038",
+            "attempt_uid": "6e7638dfa4bd85cc",
+            "pod_name": "iris-romain-grug-padding-standalone-b2aae9b3-0-6e7638dfa4bd85cc",
+            "node_name": "sfdqxs64",
+            "observed_unix": 1795063453.3034117,
+            "phase": "Failed",
+            "scheduled_unix": 1795062171.0,
+            "finished_unix": 1795063450.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1795063450.0
+          }
+        }
+      ],
+      "execution_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a3/execution.json"
+    },
+    {
+      "job": "/romain/grug-padding-standalone-01a1d379-a4",
+      "state": "succeeded",
+      "reason": "Final focused comparison succeeded; both native sweeps, repeats, graph controls and fresh-process tests complete.",
+      "attempts": [
+        {
+          "uid": "3a610820e7bb4048",
+          "state": "succeeded",
+          "gpu_seconds": 203.0,
+          "allocation": {
+            "pod_uid": "8692dda6-8b7e-4b73-acfa-e93ed9d69574",
+            "attempt_uid": "3a610820e7bb4048",
+            "pod_name": "iris-romain-grug-padding-standalone-5caa9cfd-0-3a610820e7bb4048",
+            "node_name": "sfdqxs64",
+            "observed_unix": 1795063771.327333,
+            "phase": "Succeeded",
+            "scheduled_unix": 1795063530.0,
+            "finished_unix": 1795063733.0,
+            "status": "measured",
+            "end_basis": "pod-container-finish",
+            "end_unix": 1795063733.0
+          }
+        }
+      ],
+      "execution_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a4/execution.json"
+    }
+  ],
+  "artifacts": {
+    "a4-base": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a4/base/native-f38a96d3a9f76ac0ac1f4f1b983b50628ad8a65f83a589300ef268b4a6d8b6f0.tar.zst",
+      "archive_sha256": "f38a96d3a9f76ac0ac1f4f1b983b50628ad8a65f83a589300ef268b4a6d8b6f0"
+    },
+    "a4-candidate": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a4/candidate/native-829b564ed760aab1e50dc8cf071d7414f0b1979d2cc28dcf970918188563f4e5.tar.zst",
+      "archive_sha256": "829b564ed760aab1e50dc8cf071d7414f0b1979d2cc28dcf970918188563f4e5"
+    },
+    "a4-base-tests": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a4/base-tests/native-6cc3a883b67ca1f52beb7279a6eeb6a9d1c778f97eebf2f8196715e5928ec4d0.tar.zst",
+      "archive_sha256": "6cc3a883b67ca1f52beb7279a6eeb6a9d1c778f97eebf2f8196715e5928ec4d0"
+    },
+    "a4-candidate-tests": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a4/candidate-tests/native-23d60bd1eb42d2a84de813add5885e1bfe18f3c1fc29bd6b22ffb69828f8c154.tar.zst",
+      "archive_sha256": "23d60bd1eb42d2a84de813add5885e1bfe18f3c1fc29bd6b22ffb69828f8c154"
+    },
+    "a1-base": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a1/base/native-9dce071c3bff58984f049f15b5f9048de96790b7bcd5f91f43449b2bc9aed596.tar.zst",
+      "archive_sha256": "9dce071c3bff58984f049f15b5f9048de96790b7bcd5f91f43449b2bc9aed596"
+    },
+    "a1-candidate": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a1/candidate/native-bc1b12d8013e84cc2b6442a5c416c74cef88b1d58a2c23e4730dc60fb23a0eb2.tar.zst",
+      "archive_sha256": "bc1b12d8013e84cc2b6442a5c416c74cef88b1d58a2c23e4730dc60fb23a0eb2"
+    },
+    "a2-oom": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a2/iris-outputs-2d637d653f42c752ea9a698f12ebe139328b4652891cd0cdaa43d4f5ac863211.tar.zst",
+      "archive_sha256": "2d637d653f42c752ea9a698f12ebe139328b4652891cd0cdaa43d4f5ac863211",
+      "bytes": 4059
+    },
+    "a3-partial": {
+      "kind": "partial-log-preserved-before-cancellation",
+      "log_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a3/partial-baseline-tests-01c4b47895c5fe7bddcc06721be5cb7e1e2e8265c7d26550ada19c0f22990e4f.log",
+      "sha256": "01c4b47895c5fe7bddcc06721be5cb7e1e2e8265c7d26550ada19c0f22990e4f",
+      "bytes": 8198,
+      "passed_test_lines": 47,
+      "reason": "Stopped unrelated cold BF16 FlashInfer build at24/267 Ninja units; it does not supply is_padding, so it does not exercise the changed branch. The allocated pod is gone. No20-repeat controls were reached.",
+      "execution_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a3/execution.json",
+      "source_commit": "2acaafd985ba148937f4e74a398f343d60679097"
+    },
+    "ordinary-checks": {
+      "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/ordinary-checks/checks-034dbf4646805eec860ce02d0db97d69b2fb8a192a2c2ff341d4e56e32393f4c.tar.zst",
+      "archive_sha256": "034dbf4646805eec860ce02d0db97d69b2fb8a192a2c2ff341d4e56e32393f4c"
+    },
+    "final-high-goal-review": {
+      "uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/review/high-goal-9e7b0d8b70c2281d8ae1f0db2f54fcaa4c6e0c811cbb1f80fd98eafa865dfd7a.tar.zst",
+      "sha256": "9e7b0d8b70c2281d8ae1f0db2f54fcaa4c6e0c811cbb1f80fd98eafa865dfd7a"
+    }
+  },
+  "limits": [
+    "Small floating-point differences do not establish corrupted outputs or improved model quality.",
+    "Identical-input variation remains in the native component, including CUDA graphs. Its cause was not isolated; full-model logprob equality is unestablished.",
+    "Full BF16/FP8 backend loading/reference tests were not completed. Existing focused tests and native Marlin controls supply the stated evidence.",
+    "Timing uses eager router calls with width 64 and includes host dispatch gaps. It does not measure serving throughput, compiled production overhead or RL logprob alignment."
+  ],
+  "allocated_gb200_seconds": 1919.0,
+  "allocated_gb200_hours": 0.5330555555555555,
+  "native_payload_sha256": {
+    "vllm/_C_stable_libtorch.abi3.so": "9c1021677276716f71a0d7db5cae807b43c2272a70fb025c9b8fa94ecb1d4201",
+    "vllm/_deepselect_C.abi3.so": "14900a5a0964e434504d6e6416eb139e7f21afd8b3e82083c2e32a47ddb99cfd",
+    "vllm/_flashkda_C.abi3.so": "994aa1f9c697f4ac4c8e41239392c5bfed29f26d375f9582c9ec5c41df6bcc3b",
+    "vllm/_flashmla_C.abi3.so": "da6982aff2d252899279b8e17774f4571a377ac00bf0031d7d4e6f0cb79322dc",
+    "vllm/_flashmla_extension_C.abi3.so": "c162a66b1bb43a1d5206753ab65f575a37ed3fd97f49adf97270c891752529c6",
+    "vllm/_moe_C_stable_libtorch.abi3.so": "57230913bfa7767b35e8516812467b5ab61d9b1a4e909cfc3d099761658f857e",
+    "vllm/_qutlass_C.abi3.so": "3776f0d5dedf5694609be7e3d8dcb6b4dd5ac6d35485affb008122a91e9451d1",
+    "vllm/_rust_tool_parser.abi3.so": "01f736a3c98c689a9a91475561994ba4656e7310d1576952d8d7a6d778a3f6d1",
+    "vllm/cumem_allocator.abi3.so": "1f7e9a6a7ad6f8be6a8e37df9693661277b41c6697cea33d1509232e82c2a074",
+    "vllm/fs_io_C.abi3.so": "4862fd714e07d3cbe3a8d379f048519a37af08a7747ab0242389b96c351f535b",
+    "vllm/spinloop.abi3.so": "26b3a4454e602a1b57f05a5bf8b8d86f995e396d3eea28d65de6db823919b849",
+    "vllm/vllm-rs": "18f741a78c60ffc8c50890c08a6f858a8c9b859d258108e0df84fc947ba3273e",
+    "vllm/third_party/deep_gemm/_C.cpython-310-aarch64-linux-gnu.so": "d1a296e8c022fa72875f0bdfeae33a11e028833a2304798f6a7b88b3320a47a8",
+    "vllm/third_party/deep_gemm/_C.cpython-311-aarch64-linux-gnu.so": "04c3af4319a3a14a3cf74d40745f7018d113472b2e20cca7c8fca88fe2adb4ce",
+    "vllm/third_party/deep_gemm/_C.cpython-312-aarch64-linux-gnu.so": "a0dd834fe6ba7fec8371075bd64353c7936e49c866ae32dcb5412015a1ce3216",
+    "vllm/third_party/deep_gemm/_C.cpython-313-aarch64-linux-gnu.so": "5feea2a6342c191c46b0885cab2262db6b83c46d213f45eb33ae6d2d96727fbe",
+    "vllm/third_party/deep_gemm/_C.cpython-314-aarch64-linux-gnu.so": "ef395f59eb0392d7b91a308a3367d05a96407ff1e57bdb31c092446bfc114daa",
+    "vllm/vllm_flash_attn/_vllm_fa2_C.abi3.so": "42b041ccb5292f240393929d4ef414bfa58ee54003c7019988d6c140c4881443",
+    "vllm/vllm_flash_attn/_vllm_fa3_C.abi3.so": "cc366decb7add1fce75cb2c11b9cd52cac8d7f1b26f1336c80043a04d86a9700"
+  },
+  "native_payloads_equal": true,
+  "resources": {
+    "board_row": 2283,
+    "phase": "closed",
+    "all_owned_jobs_terminal": true,
+    "owned_terminal_pods_deleted": true,
+    "h100_seconds": 0,
+    "max_simultaneous_gb200": 1
+  },
+  "pre_merge_pending": [
+    {
+      "test": "tests/models/test_grugmoe.py::test_grug_moe_online_fp8_loading_matches_vllm",
+      "status": "not_run",
+      "reason": "Existing default-backend FP8 layer/padding check was not reached during the cold backend build. CPU PR CI does not cover it.",
+      "existing_route": "One-H100 nightly covers this model file. No new H100 work was launched in this task."
+    }
+  ],
+  "recommendation_scope": "Draft code review of stable dummy routing, with a measured small-batch FP8 Marlin benefit. Default backend and full-model qualification remain open.",
+  "local_launch_failures": [
+    {
+      "stage": "local driver import",
+      "result": "Failed before RPC or allocation because PYTHONPATH did not include the checkout. Corrected with PYTHONPATH=.; no job was submitted."
+    }
+  ]
+}
