@@ -6,7 +6,7 @@ related_issues: ["https://github.com/marin-community/marin/pull/10813"]
 research_branch: "codex/39-open-swe-outcome"
 marin_base_revision: "9cde3e5b69871ba733ccbe6ac84cd589d25b3003"
 archive_template_revision: "ba8edcdfd730b451e18aed6245234566be5053af"
-status: completed
+status: active
 ---
 
 # Outcome-filtering Open-SWE traces for Qwen3-8B SFT
@@ -26,9 +26,9 @@ status: completed
 ## Baseline
 
 The noise pilot, the data stage and the training smoke are recorded in issue #39 (2026-11-12 to 2026-11-13).
-Their code (`experiments/open_swe_outcome/arms.py`, `trial.py`, and the Harbor policy) is on the local branch
-`worktree-open-swe-outcome-pilot` at commit `d97646fe35` on another machine. That branch has not been
-published here yet.
+Their code (`experiments/open_swe_outcome/arms.py`, `trial.py`, the Harbor policies and the pilot scripts) was
+published on this branch on 2026-11-19 with the Terminus-2 round (merge `a064ecebdc`); the first round ran from
+commit `d97646fe35` of the same history.
 
 ## Entries
 
@@ -191,10 +191,13 @@ of a few points would be measurable task by task. Plan:
 - Selected approach and evidence: no outcome filter at Qwen3-8B. At 10,000 rows per arm, outcome filtering
   showed no benefit on any measure. Issue #39 closed on 2026-11-17; the Qwen3.6-35B-A3B repeat is planned in
   [next-steps.md](next-steps.md) and will run under a new issue.
+- Update 2026-11-19: the first round's 2–5% solve rate came largely from the training format. Trained in the
+  Terminus-2 format, Qwen3-8B solves 12–17%, enough to compare arms task by task; see
+  [Qwen3-8B trained in the Terminus-2 format](#qwen3-8b-trained-in-the-terminus-2-format).
 - Rejected alternatives and why: none yet.
 - Marin contribution PRs: none.
-- Reproduction instructions: see the commands in each entry. The arm-building and training code still needs to be
-  published from `worktree-open-swe-outcome-pilot`.
+- Reproduction instructions: see the commands in each entry. The arm-building and training code is on this
+  branch (see Baseline).
 - Remaining uncertainty: effects at larger models, larger data or other stopping points; effects smaller than the
   paired test's CI.
 
@@ -243,3 +246,120 @@ of a few points would be measurable task by task. Plan:
 - Interpretation: there is now a training path in Levanter, so the decision between Levanter and another trainer is
   settled in Levanter's favour unless cost (step 2) rules it out. Remaining Phase 0 work is in
   [next-steps.md](next-steps.md).
+
+## Qwen3-8B trained in the Terminus-2 format
+
+The first Qwen3-8B round solved 2–5% of the 200 tasks, too few to separate the arms. This round tests the
+suspected cause: the arms were trained in their source scaffolds' native tool-call formats (OpenHands, SWE-agent,
+mini-SWE-agent) and evaluated with Harbor's Terminus-2 agent.
+
+### 2026-11-17 23:00 UTC - The native-format checkpoints write malformed Terminus-2 replies
+
+- Question: is the 2–5% solve rate a scaffold mismatch?
+- Evidence: trial `django__django-10914` of the solved-s1 evaluation
+  (`s3://marin-us-east-02a/marin/evals/open-swe-outcome-eval-solved-s1-swebench-verified-200-c9-05aa6e7228235e508a13732f455a484d`).
+  8 of 30 agent steps had JSON parse errors and 9 had parser warnings ("Extra text detected before JSON
+  object"). Keystrokes often lacked a trailing newline.
+- The four evaluations served the checkpoints with no vLLM reasoning parser, so each reply's reasoning reached
+  Terminus-2's parser and stayed in the conversation history.
+- No usable base-model reference existed. The only base Qwen3-8B run on this setup
+  (`open-swe-noise-pilot-base`) lost 94 of 100 trials to `DaytonaValidationError`.
+- Decision: rewrite the training trajectories into the Terminus-2 protocol, retrain both arms, and evaluate base
+  Qwen3-8B on the same 200 tasks.
+
+### 2026-11-17 23:35 UTC - Terminus-2-format arms
+
+- Source: [`experiments/open_swe_outcome/terminus.py`](../../experiments/open_swe_outcome/terminus.py),
+  `terminus_arms.py` and `terminus_chat_template.py`, commit `8295b2ac4c` (merged into this branch at
+  `a064ecebdc`). Tests: `experiments/open_swe_outcome/test_terminus.py`, 12 passed with `test_arms.py`.
+- Conversion of one arm row into the conversation Terminus-2 would have produced from the same shell actions:
+  - The task message becomes Terminus-2's prompt (read from the vendored Harbor template) around the issue text,
+    which is all a SWE-bench Verified task gives the agent.
+  - Shell calls become keystrokes. Editor calls become `cat -n`, `find`, a heredoc or a Python replacement script.
+  - Observations become the echoed command and its output, truncated to 10,000 bytes as Terminus-2 truncates.
+  - `submit`, `finish` and mini-SWE-agent's submission command become `task_complete`, followed by Terminus-2's
+    confirmation question and a confirming reply.
+  - OpenHands `think` calls join the next turn's reasoning. `/workspace/<repo>` paths become `/testbed`.
+  - Rows with operations that have no faithful shell equivalent (`undo_edit`, `insert`, failed `create`, commands
+    sent while another runs) are rejected.
+- Check on the 798-row held-out set `v1`: 778 rows convert, and all 42,725 converted replies parse with no error or
+  warning under Harbor's own `TerminusJSONPlainParser`.
+- Conversion lengthens rows by 13%, because each edit appears in both the reply and the echoed output. 22% of
+  converted rows exceed 65,536 tokens (40% of SWE-agent rows), so the arms were re-selected by Terminus-2 token
+  count rather than reused.
+- Candidates: the 31,600-row arms built at `arms.py` version `2026.11.13.1` (131,072-token window), which are the
+  leading rows of each hash order. Taking the first eligible rows in the same order selects what a rebuild from
+  every trajectory would select. Command: `python -m experiments.open_swe_outcome.build_terminus_arms`, job
+  `/dml/open-swe-terminus-arms`, `cw-us-east-08a`.
+- Result (`s3://marin-us-east-08a/marin/open-swe-outcome/terminus/membership_954793f1/summary.json`):
+
+  | Arm | Rows | Tokens | Resolved / failed / unknown |
+  |---|---|---|---|
+  | `terminus-solved-10000` | 10,000 | 425.8M | 100% resolved |
+  | `terminus-random-10000` | 9,504 | 426.0M | 47.9% / 39.0% / 13.1% |
+
+  Per-partition token volumes agree within 0.1%. 2,754 of 58,000 pool rows (4.7%) did not convert, mostly
+  failed editor `create` calls (1,102) and failed `str_replace` results (740).
+- Chat template: Qwen3's own template drops reasoning from assistant turns before the last user message, which in
+  Terminus-2 is every turn but the last. `TERMINUS_CHAT_TEMPLATE` renders a think block on every assistant turn.
+
+### 2026-11-18 00:15 UTC - Training, seed 0
+
+- Command: `python -m experiments.open_swe_outcome.trial --arm terminus-{solved,random}-10000 --format terminus
+  --seed 0 --accelerator 8xH100`, jobs `/dml/open-swe-terminus-train-{solved,random}-10000-s0`, `cw-rno2a`,
+  production priority. Optimizer, batch size, window and one-epoch schedule match the native-format runs.
+- Smoke (20 steps): 63.5 s per step, about 8,260 tokens/s, the same as the native-format smoke. Loss fell from
+  0.69 to 0.39.
+- Both runs finished at step 812 after 15 h 38 min. Checkpoints:
+  `s3://marin-us-east-08a/marin/users/dml/checkpoints/open-swe-outcome/qwen3-8b-terminus-{solved,random}-10000-seed0-ctx65536/2026.11.13/`.
+  The 8-GPU HF exports were redone on CPU (`reexport_hf.py --run ... --step 812`) to `hf-cpu/step-812`; hidden size
+  4096 and 65,536 positions checked.
+
+### 2026-11-18 18:45 UTC - First evaluation attempt: generation-prompt mismatch
+
+- The first evaluations served the checkpoints with the `qwen3` reasoning parser. In-progress trials had parse
+  errors on 20 of 30 steps (solved arm) and 9 of 24 (random arm). In most failures the reply was valid
+  Terminus-2 JSON that the reasoning parser had filed as reasoning, leaving empty content.
+- Cause: the template's generation prompt ended in `<think>\n`. With the Qwen3 tokenizer, a turn without reasoning
+  trains as `<think>`, `\n\n`, `</think>`, and a turn with reasoning as `<think>`, `\n`, text. A prompt already
+  ending in a lone `\n` token leaves no trained path to `</think>` on a turn without reasoning, so the model wrote
+  the JSON inside the think span. The native-format arms used the same generation prompt.
+- Fix (`e06b464dd3`): the generation prompt ends at `<think>`, which is a token prefix of training for both kinds
+  of turn. Training rendering is unchanged; the evaluation configs serve the corrected template.
+- The base configuration also needed two fixes: `hf_overrides` must be a JSON string, and vLLM 0.25 checks
+  `max_model_len` against `max_position_embeddings` without the YaRN factor, so the override raises both.
+- The two fine-tune evaluations were cancelled and relaunched; the failed base attempts had ended on their own.
+
+### 2026-11-19 - SWE-bench Verified, 200 tasks
+
+- Policy: [`swebench-verified-200-c9-declarative.yaml`](../../experiments/open_swe_outcome/harbor/swebench-verified-200-c9-declarative.yaml),
+  the same 200 tasks and concurrency as the first round with Daytona declarative image builds, which create no
+  account snapshots. Terminus-2, 65,536-token input, 50-minute agent limit, 2×H100, `cw-rno2a`.
+- Model configs: [`eval/`](../../experiments/open_swe_outcome/eval/). Fine-tunes serve the corrected template with
+  the `qwen3` reasoning parser. Base Qwen3-8B serves its own template with YaRN (factor 2 over 32,768 tokens).
+- Runs: `open-swe-terminus-eval-{base-r3,solved-s0-r2,random-s0-r2}` under `s3://marin-us-east-02a/marin/evals/`.
+  All three attempted every task. Each run record failed at Harbor's final archiving step, so grades come from
+  per-trial `result.json` files: [terminus_swebench.py](terminus_swebench.py).
+
+  | Model | Graded | Solved | Agent timeouts | Other exceptions |
+  |---|---|---|---|---|
+  | base Qwen3-8B | 182 | 5 (2.7%) | 16 | 18 |
+  | Terminus solved arm, seed 0 | 162 | 27 (16.7%) | 63 | 39 |
+  | Terminus random arm, seed 0 | 154 | 19 (12.3%) | 67 | 46 |
+
+  On the 126 tasks graded in all three runs: base 4, solved arm 21, random arm 17.
+
+  | Comparison | Common tasks | First only | Second only | Both | Sign test p |
+  |---|---|---|---|---|---|
+  | solved arm vs random arm | 134 | 14 | 10 | 9 | 0.54 |
+  | solved arm vs base | 150 | 22 | 2 | 2 | 3.6e-05 |
+  | random arm vs base | 144 | 17 | 4 | 0 | 0.0072 |
+
+- Interpretation:
+  - The format was the bottleneck. Terminus-format training lifts Qwen3-8B from 2–5% to 12–17%, and both arms beat
+    the base model significantly.
+  - The solved arm leads the random arm by 4 tasks on common tasks. That is about one standard deviation of the
+    discordant count alone, before evaluation noise, and is consistent with no effect.
+  - The decision rule needs `s`, the spread between two evaluations of one checkpoint, which is not yet measured.
+  - Limits: one seed per arm. Other exceptions (mostly Daytona connection errors) left 154–162 tasks graded per
+    fine-tune. A third of fine-tune trials hit the agent limit and were graded on the state they left.
