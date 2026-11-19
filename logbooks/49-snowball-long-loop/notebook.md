@@ -1358,3 +1358,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: mochi-long-loop STATUS [R]; HF model [P]; Atlas landings [R].
 - Interpretation and limitations: the Round-3 HF model is the certified exp3 IB-restart export; the archive close-out covers the bulk copies (not deduplicated).
 - Decision and next action: hourly checks watch for Exp4 SFT progression and any Round-3 model usage.
+
+### 2026-11-19 09:40 UTC - Hourly catch-up (08:40–09:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 `.76` — **running, task 0 at 5 h 47 m 06 s** (exit=0, failures=0, preemptions=0; Iris at 09:33 UTC).
+- Command or material configuration: Iris describe at 09:33 UTC [R].
+- External inputs and artifact references: Iris output [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence beyond the 08:40 milestones; no new `atlas-env-audit` landings — head unchanged at `561e2c8c09…`).
+- Evidence: Iris [R]; `git ls-remote` [R].
+- Interpretation and limitations: progression-only status.
+- Decision and next action: hourly checks continue.
