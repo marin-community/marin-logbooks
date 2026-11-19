@@ -1544,3 +1544,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: #11619 fix commit [P]; landing records [R].
 - Interpretation and limitations: the fail-closed guard applies to future launches; `.55` was launched before it.
 - Decision and next action: hourly checks track Exp4 SFT progression and any guard interactions.
+
+### 2026-11-19 23:40 UTC - Hourly catch-up (22:40–23:40 UTC window): Exp4 .76 SFT child SUCCEEDED
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: **Exp4 `.76` (source `09ac3d5afd…`, artifact `2026.11.18.76`)** — the **SFT child `…-6b8636112c90` SUCCEEDED** (Iris at 23:33 UTC: state succeeded, exit=0, failures=0, preemptions=0; task duration 19 h 23 m 5.43 s). The planned run was 20 h including graceful finalization — the child completed within that envelope. Root state at this readback: running (the coordinator may now be in the handoff/finalization stage).
+- Command or material configuration: as recorded at launch; Iris describe at 23:33 UTC.
+- External inputs and artifact references: Iris job describe [R]; mochi-long-loop STATUS (next entries expected to record the selection/handoff) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the **LR-corrected Exp4 `.76` SFT child completed successfully** — no failures, no preemptions, within the 20-h envelope. The completion receipt/selection/handoff steps (native checkpoint selection, HF handoff verification) are the next milestones; the earlier `.75` run was the LR-incorrect predecessor.
+- Evidence: Iris describe [R].
+- Interpretation and limitations: child success does not yet certify the selection/handoff outputs (those stages verify committed metadata before completion, per the exp3 pattern).
+- Decision and next action: hourly checks track the selection/handoff completion and the RL-child submission.
