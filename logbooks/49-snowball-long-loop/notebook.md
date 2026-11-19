@@ -1295,3 +1295,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: #11337 comment tail [P]; Iris describe [R]; mochi-long-loop STATUS [R].
 - Interpretation and limitations: the 6.91-point-below-SFT-746 figure is descriptive (different serving geometry/budget/coverage documented in the references); Exp4 SFT is in progress.
 - Decision and next action: hourly checks track Exp4 SFT progression and the sealed-record follow-through.
+
+### 2026-11-19 04:40 UTC - Hourly catch-up (03:40–04:40 UTC window): Exp4 .75 killed, LR-corrected .76 submitted
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: **Exp4 production changed runs** — `.75` KILLED; **`.76` submitted** (root `/benfeuer/mochi-exp4-2026.11.18.76`, source `09ac3d5afdf42d9126c0ece08b2f18f4991b1c9f`, through the same artifact main).
+- Command or material configuration: verified via `uv run iris --cluster=marin job describe/list` at 04:33 UTC.
+- External inputs and artifact references: mochi-long-loop STATUS entry `2026-11-19T03:46:59.117121+00:00` ("LR-corrected Exp4 .76 submitted") [R]; Iris outputs [R].
+- Environment and hardware when relevant: cw-rno2a; the same artifact main; clean source.
+- Result, including failure or restart: **Exp4 `.75` was killed** — Iris: state killed, exit=0, failures=0, **preemptions=1**, task 0 killed after 1 h 57 m 41 s ("Terminated by user"). The mochi-long-loop STATUS records the replacement: **LR-corrected Exp4 `.76` submitted at 03:46:59 UTC** from clean source `09ac3d5afdf42d9126c0ece08b2f18f4991b1c9f` through the same artifact main; one initial admission read: task `/0` PENDING on RNO2A. Iris at 04:33 UTC: `.76` root **running** (submitted 03:46:08 UTC), verify_inputs **succeeded** (03:47:40 UTC), **SFT child `…-6b8636112c90` RUNNING** (submitted 03:49:27 UTC). The "Terminated by user" on `.75` is the LR-correction stop recorded by the run's own STATUS, not an external preemption (the Iris preemptions=1 counter reflects the kill).
+- Evidence: Iris outputs + STATUS entry [R].
+- Interpretation and limitations: the LR correction's exact content is recorded by the run's own STATUS; my entry reports the run change, not the LR details' derivation.
+- Decision and next action: hourly checks track `.76` SFT progression.
