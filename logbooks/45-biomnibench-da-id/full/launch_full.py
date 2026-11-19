@@ -35,9 +35,16 @@ model_path = (
     else root.parent / "pilot/qwen.yaml"
 )
 policy_path = root / ("gpt-oss-20b.yaml" if gpt_oss else "full.yaml")
+final_task = "--final-task" in sys.argv
+benchmark = f"biomnibench-public50-{candidate}"
+if final_task:
+    assert gpt_oss
+    policy_path = root / "gpt-oss-final.yaml"
+    benchmark = "biomnibench-final-da-13-1-gpt-oss-20b"
+cap = 7200 if final_task else 28800
 spec = LaunchSpec(
     model=load_model_config(model_path),
-    evals=(HarborDefinition(name=f"biomnibench-public50-{candidate}", config_path=policy_path),),
+    evals=(HarborDefinition(name=benchmark, config_path=policy_path),),
     platform=Platform.GPU,
     accelerator="H100x1" if gpt_oss else "H100x4",
     limit=None,
@@ -49,10 +56,14 @@ spec = LaunchSpec(
     judge_accelerator="H100x8",
     version="biomnibench-da-public50-signed-v2",
     description=(
-        f"One fresh public-50 {candidate} pass; five disclosed input variants; Pi 0.87.0; "
-        "3600s agent; 900s verifier; 16 concurrent; zero solver retries; "
+        (
+            "Replacement trial for da-13-1; Pi 0.87.0; "
+            if final_task
+            else f"One fresh public-50 {candidate} pass; five disclosed input variants; Pi 0.87.0; "
+        )
+        + "3600s agent; 900s verifier; 16 concurrent; zero solver retries; "
         + ("two inline attempts and up to two frozen retries; " if gpt_oss else "one malformed-judge retry; ")
-        + "one shared MiniMax judge; eight-hour cap; proposal evidence, not adopted ID policy"
+        + "one shared MiniMax judge; bounded parent; proposal evidence, not adopted ID policy"
     ),
 )
 batch = prepare_evaluation_batch(spec)
@@ -62,7 +73,7 @@ if "--submit" not in sys.argv and not remote:
         json.dumps(
             {
                 "status": "preflight passed; no submission",
-                "tasks": sorted(p.name for p in (root / "runtime-tasks").iterdir()),
+                "tasks": ["da-13-1"] if final_task else sorted(p.name for p in (root / "runtime-tasks").iterdir()),
                 "group_id": batch.group_id,
             },
             indent=2,
@@ -81,7 +92,7 @@ with connection as client:
     # Bound this standard launch_group submission without changing evaluator behavior.
     client.submit = partial(
         client.submit,
-        timeout=Duration.from_seconds(28800),
+        timeout=Duration.from_seconds(cap),
         scheduling_timeout=Duration.from_seconds(1800),
         max_retries_preemption=0,
     )
@@ -91,9 +102,9 @@ with connection as client:
         "group_id": group.group_id,
         "run_ids": [x.run_id for x in group.evaluations],
         "records_prefix": group.records_prefix,
-        "parent_timeout_seconds": 28800,
+        "parent_timeout_seconds": cap,
         "scheduling_timeout_seconds": 1800,
-        "task_count": 50,
+        "task_count": 1 if final_task else 50,
     }
     (root / "full-evaluation-submission.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
@@ -102,4 +113,4 @@ with connection as client:
             json.dumps(result, indent=2) + "\n"
         )
         sys.stdout.flush()
-        group.job.wait(timeout=28800, poll_interval=60)
+        group.job.wait(timeout=cap, poll_interval=60)

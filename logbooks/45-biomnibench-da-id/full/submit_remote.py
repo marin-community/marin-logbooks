@@ -23,7 +23,11 @@ def main():
     parser.add_argument("--validation", type=Path, required=True)
     parser.add_argument("--job-name", required=True)
     parser.add_argument("--gpt-oss", action="store_true")
+    parser.add_argument("--final-task", action="store_true")
     args = parser.parse_args()
+    if args.final_task and not args.gpt_oss:
+        parser.error("--final-task requires --gpt-oss")
+    cap = 7200 if args.final_task else 28800
     validation = json.loads(args.validation.read_text())
     assert {key: validation[key] for key in ("status", "snapshots", "runtime_checks", "all_closed")} == {
         "status": "passed",
@@ -32,6 +36,8 @@ def main():
         "all_closed": True,
     }
     receipt = ROOT / ("gpt-oss-launcher-submission.json" if args.gpt_oss else "launcher-submission.json")
+    if args.final_task:
+        receipt = ROOT / "gpt-oss-final-submission.json"
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
     source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     secrets = {name: require_secret(name) for name in ("CW_KEY_ID", "CW_KEY_SECRET")}
@@ -47,6 +53,7 @@ def main():
                 "python",
                 "logbooks/45-biomnibench-da-id/full/launch_full.py",
                 "--submit-in-cluster",
+                *(["--final-task"] if args.final_task else []),
                 *(["--gpt-oss"] if args.gpt_oss else []),
             ),
             name=args.job_name,
@@ -65,12 +72,12 @@ def main():
                 Constraint.create(key=CLUSTER_CONSTRAINT_KEY, op=ConstraintOp.EQ, value="cw-us-east-02a"),
                 preemptible_constraint(False),
             ],
-            timeout=Duration.from_seconds(28800),
+            timeout=Duration.from_seconds(cap),
             scheduling_timeout=Duration.from_seconds(1800),
             max_retries_failure=0,
             max_retries_preemption=0,
         )
-        result = {"job_id": str(job.job_id), "source_commit": source, "parent_timeout_seconds": 28800}
+        result = {"job_id": str(job.job_id), "source_commit": source, "parent_timeout_seconds": cap}
         receipt.write_text(json.dumps(result, indent=2) + "\n")
         print(json.dumps(result, indent=2))
 
