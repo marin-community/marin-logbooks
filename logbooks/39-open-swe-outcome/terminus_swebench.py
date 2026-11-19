@@ -65,7 +65,8 @@ def main() -> None:
         graded = solved[name]
         print(
             f"{name:<10} trials {len(rows)}  graded {len(graded)}  solved {sum(graded.values())}"
-            f" ({sum(graded.values()) / len(graded):.1%})  agent timeouts {timeouts}  other exceptions {sum(exceptions.values())}"
+            f" ({sum(graded.values()) / len(graded):.1%})  agent timeouts {timeouts}"
+            f"  other exceptions {sum(exceptions.values())}"
         )
     common = set.intersection(*(set(s) for s in solved.values()))
     print(f"graded in all runs: {len(common)} tasks;", {n: sum(s[t] for t in common) for n, s in solved.items()})
