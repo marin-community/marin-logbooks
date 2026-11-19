@@ -363,3 +363,32 @@ mini-SWE-agent) and evaluated with Harbor's Terminus-2 agent.
   - The decision rule needs `s`, the spread between two evaluations of one checkpoint, which is not yet measured.
   - Limits: one seed per arm. Other exceptions (mostly Daytona connection errors) left 154–162 tasks graded per
     fine-tune. A third of fine-tune trials hit the agent limit and were graded on the state they left.
+
+### 2026-11-19 17:30 UTC - Held-out loss and outcome discrimination, Terminus checkpoints
+
+- Question: do the Terminus-format arms differ in what they learned about successful trajectories? The readouts
+  score fixed trajectories by teacher-forced likelihood, so they do not depend on the agent; this is a consistency
+  check on the new checkpoints, not a decision input.
+- Source: `val_loss.py score --format terminus` at `9a76e12540` converts each held-out row with `terminus_row` and
+  scores it with the Terminus template, skipping rows that do not convert or exceed 65,536 tokens. Jobs
+  `/dml/open-swe-val-{v1,v2}-terminus-{solved-s0,random-s0,base}`, one H100 each, `cw-rno2a`. Scores:
+  `.../val-loss/{v1,v2-paired}/terminus-scores/`.
+- Coverage: `v1` keeps 446 of 598 held-out rows (234 resolved, 212 unresolved); `v2-paired` keeps 210 of 299
+  complete pairs. Long rows drop out, more of them unresolved, so the native seed-0 scores are restricted to the
+  same trajectories for comparison.
+- Analysis: [terminus_discrimination.py](terminus_discrimination.py).
+
+  | Readout | Terminus seed 0 | Native seed 0 |
+  |---|---|---|
+  | Held-out loss, solved minus random, resolved (nats per token) | +0.0005 ± 0.0002 | +0.0004 ± 0.0002 |
+  | Same, unresolved | +0.0025 ± 0.0002 | +0.0022 ± 0.0002 |
+  | Cross-task AUROC of the per-token arm likelihood ratio | 0.693 [0.643, 0.740] | 0.672 [0.623, 0.720] |
+  | Same, within partition × length quartile | 0.685 | 0.653 |
+  | Within-pair win rate (210 pairs) | 0.557 [0.486, 0.629] | 0.548 [0.481, 0.614] |
+
+  Loss per assistant token on the kept rows: Terminus base 0.844 / 0.875, solved 0.432 / 0.464, random 0.431 /
+  0.462 (resolved / unresolved).
+- Interpretation: the Terminus result matches the native one. The arms fit held-out successes equally, the solved
+  arm is slightly worse on failures, and the cross-task signal does not survive pairing within a task (both win-rate
+  intervals include 0.5). The native win rate is 0.548 on these 210 shorter pairs, against 0.50 on all 299 pairs
+  with both seeds. The format change did not change what the arms learned about outcomes.
