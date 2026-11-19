@@ -1876,3 +1876,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the corrected derived-contract receipts' outcomes.
+
+### 2026-11-19 18:40 UTC - Hourly catch-up (17:40–18:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `2dcc46a223…` (17:23:42 UTC) to head `d7cc5109b85b4b4e36a87496fdf4b0a73cbb3ebd`, landed 18:22:00 UTC (~6 landings 18:03–18:22 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 2dcc46a2..d7cc5109` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: root execution respected in delivery-contract backend fits (`d7cc5109b8…`, head); curriculum imports exercised through the bounded query interface (`b3cc38c9c9…`); curriculum privacy checks kept within the query response limit (`f92f3b48ec…`); archive selection and its historical-input regression clarified (`ef80b356db…`); archived receipt corrections applied before audit parsing (`739aec91d1…`); curriculum scores preserved when license evidence changes (`5ee6baa4a3…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the license-evidence-change outcomes.
