@@ -12,6 +12,9 @@ that conversion does not reproduce the arm rows exactly.
 
 ``score`` computes per-trajectory assistant-token negative log-likelihood for one model, using
 Levanter's ``ChatProcessor`` with the training chat template so the loss mask matches training.
+``--format terminus`` scores the Terminus-2 rendering of each row (``terminus.terminus_row``) with
+the Terminus training template, for checkpoints trained on the Terminus-format arms. Rows that do
+not convert, or whose rendering exceeds the training window, are skipped and counted.
 
 ``summarize`` prints per-model, per-subset token-weighted loss and paired arm differences.
 """
@@ -32,6 +35,9 @@ import numpy as np
 import pyarrow as pa
 import pyarrow.parquet as pq
 from rigging.filesystem.s3_compat import configure_coreweave_s3
+
+from experiments.open_swe_outcome.terminus import Unconvertible, terminus_row
+from experiments.open_swe_outcome.terminus_chat_template import TERMINUS_CHAT_TEMPLATE
 
 logger = logging.getLogger(__name__)
 
@@ -369,13 +375,18 @@ def _local_model_dir(model: str, scratch: str) -> str:
     return local
 
 
+class ScoreFormat(StrEnum):
+    NATIVE = "native"
+    TERMINUS = "terminus"
+
+
 def _mask_runs(mask: np.ndarray) -> list[tuple[int, int]]:
     """Half-open ``[start, end)`` spans of consecutive nonzero mask positions."""
     edges = np.diff(np.concatenate([[0], (mask > 0).astype(np.int8), [0]]))
     return list(zip(np.flatnonzero(edges == 1).tolist(), np.flatnonzero(edges == -1).tolist(), strict=True))
 
 
-def score(model: str, name: str, val_dir: str, scores_dir: str, subset_prefix: str) -> None:
+def score(model: str, name: str, val_dir: str, scores_dir: str, subset_prefix: str, score_format: ScoreFormat) -> None:
     # Imported here so `build` and `summarize` run without the GPU extra.
     import torch  # noqa: PLC0415
     import torch.nn.functional as F  # noqa: PLC0415
@@ -383,7 +394,10 @@ def score(model: str, name: str, val_dir: str, scores_dir: str, subset_prefix: s
     from levanter.tokenizers import load_tokenizer  # noqa: PLC0415
     from transformers import AutoModelForCausalLM  # noqa: PLC0415
 
-    template = json.load(fsspec.open(TOKENIZED_ARTIFACT).open())["config"]["format"]["chat_template"]
+    if score_format is ScoreFormat.TERMINUS:
+        template = TERMINUS_CHAT_TEMPLATE
+    else:
+        template = json.load(fsspec.open(TOKENIZED_ARTIFACT).open())["config"]["format"]["chat_template"]
     processor = ChatProcessor(
         load_tokenizer(TOKENIZER),
         chat_template=template,
@@ -403,12 +417,22 @@ def score(model: str, name: str, val_dir: str, scores_dir: str, subset_prefix: s
     torch.backends.cuda.enable_cudnn_sdp(False)
 
     results = []
+    skipped: Counter[str] = Counter()
     with torch.inference_mode():
         for i, row in enumerate(rows):
+            if score_format is ScoreFormat.TERMINUS:
+                try:
+                    row = {**terminus_row(row), "subset": row["subset"]}
+                except Unconvertible as error:
+                    skipped[str(error)] += 1
+                    continue
             encoded = processor([row])[0]
             ids, mask = encoded["input_ids"], encoded["assistant_masks"]
             if len(ids) > MAX_TOKENS:
-                raise ValueError(f"{row['trajectory_id']} has {len(ids)} tokens, above {MAX_TOKENS}")
+                if score_format is ScoreFormat.NATIVE:
+                    raise ValueError(f"{row['trajectory_id']} has {len(ids)} tokens, above {MAX_TOKENS}")
+                skipped[f"over {MAX_TOKENS} tokens"] += 1
+                continue
             input_ids = torch.from_numpy(ids.astype(np.int64)).cuda()[None]
             hidden = lm.model(input_ids=input_ids).last_hidden_state[0, :-1]
             targets = input_ids[0, 1:]
@@ -440,7 +464,7 @@ def score(model: str, name: str, val_dir: str, scores_dir: str, subset_prefix: s
 
     with fsspec.open(f"{val_dir}/{scores_dir}/{name}.parquet", "wb").open() as f:
         pq.write_table(pa.Table.from_pylist(results), f)
-    logger.info("%s: wrote %d scores", name, len(results))
+    logger.info("%s: wrote %d scores; skipped %s", name, len(results), dict(skipped))
 
 
 def summarize(val_dir: str) -> None:
@@ -492,13 +516,14 @@ def main() -> None:
     s.add_argument("--val-dir", required=True)
     s.add_argument("--scores-dir", required=True)
     s.add_argument("--subset-prefix", required=True)
+    s.add_argument("--format", dest="score_format", type=ScoreFormat, choices=list(ScoreFormat), required=True)
     m = commands.add_parser("summarize")
     m.add_argument("--val-dir", required=True)
     args = parser.parse_args()
     if args.command == "build":
         build(args.out_dir, args.design, args.per_class, args.train_reference, args.verify_rows, args.seed)
     elif args.command == "score":
-        score(args.model, args.name, args.val_dir, args.scores_dir, args.subset_prefix)
+        score(args.model, args.name, args.val_dir, args.scores_dir, args.subset_prefix, args.score_format)
     else:
         summarize(args.val_dir)
 
