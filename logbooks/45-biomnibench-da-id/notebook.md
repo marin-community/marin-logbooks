@@ -308,3 +308,9 @@ The GPT-OSS option in launch_full.py uses the cohort's pinned GPT-OSS-20B config
 ### November 19 — GPT-OSS public-50 submission protocol
 
 GPT-OSS and Gemma use at most four judge calls per submission after malformed output. The verifier makes up to two inline calls, then up to two calls on the first attempt’s saved report files while the judge is warm. The first valid response ends grading. Four malformed responses leave the task unscored. The GPT-OSS launcher requests one H100 for the candidate, eight for MiniMax and an eight-hour parent limit. Only GPT-OSS is authorized for this launch. Before submission, all 50 instruction and rubric hashes and the cohort model config digest matched. Seven offline controls passed, including a valid fourth reply and four malformed replies.
+
+### November 19 — GPT-OSS public-50 complete
+
+The [GPT-OSS scorecard](full/gpt-oss-reconciled-50.csv) contains all 50 public tasks. Mean signed score was 14.74/100 and mean unsigned score was 17.40/100. MiniMax graded 23 submissions. The verifier recorded 27 missing submissions as zero.
+
+The first da-13-1 attempt lost the sandbox HTTP service before verification. A [single replacement trial](full/gpt-oss-final-submission.json) used the same solver, rubric, pinned judge configuration and resource limits. The verifier successfully inspected the submission directory and found only data and sandbox metadata. The missing-submission rule assigned zero without a judge call. The replacement canonical record succeeded. All 49 prior scores were preserved and reconciled against their verifier evaluations. Both serving workers stopped.
