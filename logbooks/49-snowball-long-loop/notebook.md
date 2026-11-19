@@ -1343,3 +1343,18 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: Iris [R]; `git ls-remote` [R].
 - Interpretation and limitations: progression-only status.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-18 08:40 UTC window / 2026-11-19 08:40 UTC - Hourly catch-up (07:40–08:40 UTC window): Exp3 archives certified; Round-3 public HF model published
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 `.76` — **running, task 0 at 4 h 46 m 59 s** (exit=0, failures=0, preemptions=0; Iris at 08:33 UTC). Exp3 side — two major archival/publication milestones (mochi-long-loop STATUS entries `2026-11-19T07:57:20…` and `2026-11-19T08:16:57…`):
+- Command or material configuration: Iris describe at 08:33 UTC; mochi-long-loop STATUS [R].
+- External inputs and artifact references: STATUS entries [R]; public HF model `open-athena/Snowball-LongLoop-Round3-2026.11.17.55` @ `8e787c61ebe21600f9821a9dd507b79f0c133de1` [P].
+- Environment and hardware when relevant: approved archive publication `/benfeuer/mochi-exp3-hf-final20-20261119-1` on 08a (16 CPU/64 GB/256 GB disk/6 h, no GPU).
+- Result, including failure or restart:
+  1. **All Exp3 temporary-prefix archives certified** (07:57:20 UTC): the primary `.55` archive — **285,984 objects / 2,882,507,691,703 bytes**, every expected path/size matching manifest SHA256 `960ea54a023871c0f88d66097e57be08d595661613aa7cc6d9884af35b06fe49`; consumed config included. No Exp3 public Hub receipt existed, so the approved archive publication was submitted (`/benfeuer/mochi-exp3-hf-final20-20261119-1`, 08a, 16 CPU/64 GB/256 GB disk/6 h/no GPU) for the exact certified 134,175,098,137-byte export.
+  2. **Exp3 archive close-out sealed** (08:16:57 UTC): all six bulk native/raw copies certified — **489,090 objects / 3,829,461,299,847 bytes** (not deduplicated); the closure bundle (25 files / 49,371,808 bytes) has full-content SHA readback including the final receipts. **Public HF model `open-athena/Snowball-LongLoop-Round3-2026.11.17.55` @ `8e787c61ebe21600f9821a9dd507b79f0c133de1` published** — 49 verified files / 134,175,118,063 bytes; all 39 weight shards match the certified export.
+  3. Atlas: one landing — the kaniko sandbox kept writable for apt and the build's own certificates (`561e2c8c0911…`, following the 05:40 kaniko work).
+- Evidence: mochi-long-loop STATUS [R]; HF model [P]; Atlas landings [R].
+- Interpretation and limitations: the Round-3 HF model is the certified exp3 IB-restart export; the archive close-out covers the bulk copies (not deduplicated).
+- Decision and next action: hourly checks watch for Exp4 SFT progression and any Round-3 model usage.
