@@ -1674,3 +1674,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: landing record [R].
 - Interpretation and limitations: corrected entry.
 - Decision and next action: apply the cross-check going forward.
+
+### 2026-11-19 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `87056e29e6…` (~00:33 UTC Nov 18) to head `fdd6471490b820574045150037e2f71803eb5ab2`, landed 00:38:32 UTC (1 landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 87056e29..fdd64714` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing in the window — **exact top-up reviews reported that complete each source's panel coverage** (`fdd6471490…`, head) — following the recovery-queue counting fixes from the 21:40/22:40 windows; the top-up reviews needed to complete each panel's coverage are now itemized.
+- Evidence: commit above; landing timestamp in the local atlas-push log [R].
+- Interpretation and limitations: single landing.
+- Decision and next action: next hourly check watches for the top-up reviews' execution outcomes.
