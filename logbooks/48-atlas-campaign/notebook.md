@@ -1933,3 +1933,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the lossless-storage rollout outcomes.
+
+### 2026-11-19 22:40 UTC - Hourly catch-up (21:40–22:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `b5e169718e…` (21:10:35 UTC) to head `235296be114c8cc5f9b571115f935b04555578b8`, landed 21:56:24 UTC (~10 landings 21:47–21:56 UTC incl. an r33 main merge).
+- Command or material configuration: evidence: landings.jsonl tail; `git log b5e16971..235296be` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Fail-closed InfiniBand gate for multi-node RL launches merged from main** (`84f4b534ac…`, #11619) — the #11619 probe summary's recommended gate check is now implemented on this branch via the main merge.
+  - **r32 maintenance merge** of the concurrent atlas landings (`13825bdb8b…`); ruling-62 (r32) re-measured census/lexical/grading/dedup receipts bound for **22 drifted sources** (`29e073b5e1…`); the atlas-difficulty-v2-65k16k legacy protocol registered as read-only (`c830c8dc94…`).
+  - **r33 main merge** (`235296be11…`, head) bringing #11689 (Daytona log-stream boundary workaround), #11745 (Daytona quota/usage CLI for sizing concurrency), #11686 (Micro210 policy frozen at the model-binding boundary), #11666 (Daytona process bridge on Python 3.8 guests), #11288 (expert RNG sharded at initialization).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: the fail-closed gate applies to future multi-node RL launches; the exp3 `.55` restart predates it.
+- Decision and next action: next hourly check watches for the fail-closed guard's first gate interactions and further maintenance merges.
