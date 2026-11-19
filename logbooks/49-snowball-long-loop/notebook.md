@@ -1266,3 +1266,18 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: archive69 re-check [R].
 - Interpretation and limitations: unchanged.
 - Decision and next action: hourly checks watch for the recovery decision and the restart's progression.
+
+### 2026-11-18 21:50 UTC - CORRECTION + Exp3 eval SEALED, archives certified, Exp4 LAUNCHED (per coordinator correction; all items verified from primary evidence)
+
+- Question or hypothesis and reason for trying it: coordinator correction (9:45 PM EST = 02:45 UTC) — the 19:45 "no new exp3 evidence" entry was wrong; the evidence sources were missing the long-loop agent's newer artifacts. All three items below are verified from primary evidence (the #11337 comment, the seal manifest, and Iris).
+- Published source revision: terminal `.51` (source `0f5721bbb4…`); recovery eval `2026.11.18.61` (source `655178c9374c…`, step-20 checkpoint); **new Exp4 production run `/benfeuer/mochi-exp4-2026.11.18.75`**.
+- Command or material configuration: Exp4 verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4` at 03:20 UTC: root **running** (submitted 01:38:25 UTC); verify_inputs **succeeded** (01:39:57 UTC); **SFT child `…-1353effcb804` RUNNING** (submitted 01:42:14 UTC). Data: V7 qualified seal release `release-complete-v7.json` SHA `9ad02072…`; curriculum `cde16ecb…`; mix reported swesmith 35% / nemotron_if 15%.
+- External inputs and artifact references: seal manifest `s3://marin-us-east-08a/marin/users/benfeuer/long-loop-exp3/permanent-archive/2026.11.18/micro210-step20-seal73/manifest.json` (local copy in seal73/: immutable_seal=true; 340 preserved nonagentic rows byte-exact; 100 recovered agentic rows match source except UID); #11337 comment 6996529804 [P]; /experiments/active/mochi-long-loop/STATUS.md [R]; archive certification artifacts [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: three corrections/additions:
+  1. **Exp3 step-20 Micro210 eval SEALED** (superseding the 01:40 "scored outcome partial" entry's open state): **440 attempted / 435 graded / 5 infra-absent (98.86% valid)**; **equal-benchmark mean 41.07%**, conservative 95% sampling/attrition interval **34.10–48.69%**; pooled scored-attempt mean 32.92% (identified bounds 32.55–33.69%); missing trials not imputed; intervals use the task-level SEM bound 0.5/sqrt(10) expanded by 1/sqrt(0.9) per policy #10197; repeated attempts not counted as independent tasks. **TB2 (tb2-recovery) 26/30 = 86.67% coverage — below 90% independently; its complete-case cell (11.54%) is descriptive, not an admission assertion**; the declared 440-trial suite clears 90%. Seal contains 340 unchanged `.61` nonagentic rows + 100 `.68` recovery rows; `.70` excluded. Posted at [#11337 comment 6996529804](https://github.com/marin-community/marin/issues/11337#issuecomment-6996529804) [P].
+  2. **Archives `.57`/`.51`/`.68` certified** (certification.json under the permanent-archive/2026.11.18/ prefix); `.55` still copying.
+  3. **Exp4 LAUNCHED**: `/benfeuer/mochi-exp4-2026.11.18.75` on cw-rno2a, **SFT child running** on data release V7 (per the mochi-long-loop STATUS policies: production priority; own-job cancellation authority; `/benfeuer/mochi-` prefix rule).
+- Evidence: items above [P]/[R].
+- Interpretation and limitations: the 41.07% equal-benchmark mean is not comparable to exp2's round-1/round-2 headlines (different coverage/interval conventions); the Exp4 SFT is in progress.
+- Decision and next action: the mochi-long-loop STATUS and #11337 comments are added to the hourly source set; hourly checks track Exp4 SFT progression.
