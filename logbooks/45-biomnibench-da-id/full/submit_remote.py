@@ -22,10 +22,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--validation", type=Path, required=True)
     parser.add_argument("--job-name", required=True)
+    parser.add_argument("--gpt-oss", action="store_true")
     args = parser.parse_args()
     validation = json.loads(args.validation.read_text())
-    assert validation == {"status": "passed", "snapshots": 45, "runtime_checks": 7, "all_closed": True}
-    receipt = ROOT / "launcher-submission.json"
+    assert {key: validation[key] for key in ("status", "snapshots", "runtime_checks", "all_closed")} == {
+        "status": "passed",
+        "snapshots": 45,
+        "runtime_checks": 7,
+        "all_closed": True,
+    }
+    receipt = ROOT / ("gpt-oss-launcher-submission.json" if args.gpt_oss else "launcher-submission.json")
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
     source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     secrets = {name: require_secret(name) for name in ("CW_KEY_ID", "CW_KEY_SECRET")}
@@ -41,6 +47,7 @@ def main():
                 "python",
                 "logbooks/45-biomnibench-da-id/full/launch_full.py",
                 "--submit-in-cluster",
+                *(["--gpt-oss"] if args.gpt_oss else []),
             ),
             name=args.job_name,
             resources=ResourceSpec(cpu=1, memory="2g", disk="16g"),

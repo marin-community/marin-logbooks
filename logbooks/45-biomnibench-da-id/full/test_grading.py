@@ -15,7 +15,9 @@ from openai import OpenAI
 RUBRIC = Path(__file__).resolve().parent.parent / "pilot/remaining-tasks/da-20-3/tests/rubric.txt"
 
 
-@pytest.mark.parametrize("replies", ["valid", "retry", "invalid", "empty", "missing_directory"])
+@pytest.mark.parametrize(
+    "replies", ["valid", "retry", "invalid", "empty", "missing_directory", "fourth_valid", "four_invalid"]
+)
 def test_grading_recovery_preserves_reports_and_missing_grades(tmp_path, replies):
     submission = tmp_path / "submission"
     if replies != "missing_directory":
@@ -33,7 +35,13 @@ def test_grading_recovery_preserves_reports_and_missing_grades(tmp_path, replies
 
     def respond(request):
         calls.append(json.loads(request.content))
-        content = "{}" if replies == "invalid" or (replies == "retry" and len(calls) == 1) else complete
+        content = (
+            "{}"
+            if replies in ("invalid", "four_invalid")
+            or (replies == "retry" and len(calls) == 1)
+            or (replies == "fourth_valid" and len(calls) < 4)
+            else complete
+        )
         return httpx.Response(
             200,
             json={
@@ -53,24 +61,25 @@ def test_grading_recovery_preserves_reports_and_missing_grades(tmp_path, replies
         http_client=httpx.Client(transport=httpx.MockTransport(respond)),
     ) as client:
         config = JudgeConfig(model="fixture", base_url="https://judge.example/v1")
-        if replies == "invalid":
+        frozen_retries = 2 if replies in ("fourth_valid", "four_invalid") else 0
+        if replies in ("invalid", "four_invalid"):
             with pytest.raises(JudgeResponseError):
-                grade(RUBRIC, submission, output, config, client)
-            assert len(calls) == 2
+                grade(RUBRIC, submission, output, config, client, frozen_retries=frozen_retries)
+            assert len(calls) == 2 + frozen_retries
             assert not (output / "reward.json").exists()
             assert (output / "judge-attempts/1/error.json").exists()
         elif replies == "missing_directory":
             with pytest.raises(FileNotFoundError):
-                grade(RUBRIC, submission, output, config, client)
+                grade(RUBRIC, submission, output, config, client, frozen_retries=frozen_retries)
             assert not calls
             assert not (output / "reward.json").exists()
         else:
-            grade(RUBRIC, submission, output, config, client)
-            assert len(calls) == {"valid": 1, "retry": 2, "empty": 0}[replies]
+            grade(RUBRIC, submission, output, config, client, frozen_retries=frozen_retries)
+            assert len(calls) == {"valid": 1, "retry": 2, "empty": 0, "fourth_valid": 4}[replies]
             evaluation = json.loads((output / "evaluation.json").read_text())
             assert evaluation["total_score"] == (0 if replies == "empty" else 100)
-            if replies == "retry":
+            if replies in ("retry", "fourth_valid"):
                 assert (output / "judge-attempts/0/error.json").exists()
-                assert calls[0] == calls[1]
+                assert all(call == calls[0] for call in calls)
         if replies not in ("empty", "missing_directory"):
             assert (output / "answer.txt").read_bytes() == (submission / "answer.txt").read_bytes()

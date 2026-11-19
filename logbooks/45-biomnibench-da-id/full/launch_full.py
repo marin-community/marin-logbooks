@@ -29,8 +29,10 @@ assert (root / "runtime-tasks/da-4-6").exists()
 gpt_oss = "--gpt-oss" in sys.argv
 candidate = "gpt-oss-20b" if gpt_oss else "qwen"
 model_path = (
-    root.parents[2] / "experiments/evaluation/campaigns/eval-campaign-09-25-unlabeled/model-configs/openai-gpt-oss-20b.yaml"
-    if gpt_oss else root.parent / "pilot/qwen.yaml"
+    root.parents[2]
+    / "experiments/evaluation/campaigns/eval-campaign-09-25-unlabeled/model-configs/openai-gpt-oss-20b.yaml"
+    if gpt_oss
+    else root.parent / "pilot/qwen.yaml"
 )
 policy_path = root / ("gpt-oss-20b.yaml" if gpt_oss else "full.yaml")
 spec = LaunchSpec(
@@ -49,8 +51,8 @@ spec = LaunchSpec(
     description=(
         f"One fresh public-50 {candidate} pass; five disclosed input variants; Pi 0.87.0; "
         "3600s agent; 900s verifier; 16 concurrent; zero solver retries; "
-        "at most one malformed-judge retry preserving both responses; "
-        "one shared MiniMax judge; eight-hour cap; proposal evidence, not adopted ID policy"
+        + ("two inline attempts and up to two frozen retries; " if gpt_oss else "one malformed-judge retry; ")
+        + "one shared MiniMax judge; eight-hour cap; proposal evidence, not adopted ID policy"
     ),
 )
 batch = prepare_evaluation_batch(spec)
