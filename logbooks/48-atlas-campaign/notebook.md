@@ -1919,3 +1919,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the curriculum-release contract outcomes.
+
+### 2026-11-19 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `bc7ea12677…` (20:28:59 UTC) to head `b5e169718e5211f1a3cf79716cd1441a481a03d6`, landed 21:10:35 UTC (3 landings 21:10 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log bc7ea126..b5e16971` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Binary curriculum text preserved losslessly** through catalog storage encoding (`ebd770732b…`) and kept when resuming catalog loads (`d2e168fc1f…`) — the catalog now stores and resumes binary text without loss.
+  - **Text preflights validated before curriculum selection** (`b5e169718e…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the lossless-storage rollout outcomes.
