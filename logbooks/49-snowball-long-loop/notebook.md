@@ -1307,3 +1307,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: Iris outputs + STATUS entry [R].
 - Interpretation and limitations: the LR correction's exact content is recorded by the run's own STATUS; my entry reports the run change, not the LR details' derivation.
 - Decision and next action: hourly checks track `.76` SFT progression.
+
+### 2026-11-19 05:40 UTC - Hourly catch-up (04:40–05:40 UTC window): Exp4 .76 progressing; post-seal PGN retry recorded
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 `.76` (root `/benfeuer/mochi-exp4-2026.11.18.76`, source `09ac3d5afd…`) — **running, task 0 at 1 h 46 m 58 s** (exit=0, failures=0, preemptions=0; Iris at 05:33 UTC). The exp3 side: **post-seal `.70` PGN retry terminal-succeeded but is a scored failure** (native verification 0; raw Harbor ContextLengthExceededError/reward 0) — resolving the prior environment-start absence for that row. An **archive job `/benfeuer/mochi-exp3-archive70-20261119-1` submitted** (08a, 4 CPU/8 GB/16 GB disk/4-h cap, no GPUs, verified copy preserving original raw attempt/log evidence).
+- Command or material configuration: Iris describe at 05:33 UTC; mochi-long-loop STATUS entries `2026-11-19T03:46:19…` (Exp4 whole-run annealing preflight passed), `03:46:59…` (LR-corrected .76 submitted), `05:04:07…` (post-seal PGN retry result) [R].
+- External inputs and artifact references: Iris output; mochi-long-loop STATUS [R].
+- Environment and hardware when relevant: archive job in 08a, CPU-only.
+- Result, including failure or restart: three items this window: (1) Exp4 `.76` root at 1 h 46 m 58 s running, failures=0, preemptions=0 — SFT progressing. (2) The exp3 whole-run annealing preflight passed (03:46:19 UTC STATUS entry) before the `.76` submission. (3) The post-seal `.70` PGN retry terminal-succeeded as a scored failure (native verification 0), resolving the earlier environment-start absence; an archive job for `.70` evidence was submitted (CPU-only verified copy).
+- Evidence: Iris [R]; mochi-long-loop STATUS [R].
+- Interpretation and limitations: the `.70` scored failure is a single-trial outcome recorded post-seal (the seal is immutable; this is a post-seal note per the seal's stated convention).
+- Decision and next action: hourly checks track `.76` SFT progression and the archive job.
