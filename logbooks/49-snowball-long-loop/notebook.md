@@ -1530,3 +1530,17 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris [R]; `git ls-remote` [R].
 - Interpretation and limitations: progression-only status.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-19 22:40 UTC - Hourly catch-up (21:40–22:40 UTC window): #11619 follow-up fix merged to main
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 `.76` — **running, task 0 at 18 h 46 m 59 s** (exit=0, failures=0, preemptions=0; Iris at 22:33 UTC).
+- Command or material configuration: Iris describe at 22:33 UTC [R].
+- External inputs and artifact references: #11619 follow-up [P]; r32/r33 maintenance merges [R: landing records].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **#11619 follow-up landed on main**: `[rl] Fail closed when a multi-node RL launch cannot use InfiniBand (#11619)` (`84f4b534ac…` via the main merge) — the launch gate now fails closed when InfiniBand cannot be used, implementing the gate-check the #11619 probe summary recommended. The exp3 `.55` restart predates this guard; future multi-node RL launches are covered.
+  - **r32/r33 maintenance merges into atlas-env-audit**: concurrent atlas landings merged into the r32 maintenance merge (`13825bdb8b…`); main merged for the r33 maintenance merge (`235296be11…`, head) bringing #11689 (Daytona log-stream boundary workaround), #11745 (Daytona quota/usage CLI), #11686 (Micro210 policy frozen at the model-binding boundary), #11666 (Daytona process bridge on Python 3.8 guests), #11288 (expert RNG sharded at initialization); ruling-62 (r32) re-measured census/lexical/grading/dedup receipts bound for **22 drifted sources** (`29e073b5e1…`); the atlas-difficulty-v2-65k16k legacy protocol registered as read-only (`c830c8dc94…`).
+- Evidence: #11619 fix commit [P]; landing records [R].
+- Interpretation and limitations: the fail-closed guard applies to future launches; `.55` was launched before it.
+- Decision and next action: hourly checks track Exp4 SFT progression and any guard interactions.
