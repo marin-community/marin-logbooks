@@ -44,12 +44,13 @@ def prepare_snapshots(api_key: str) -> None:
     )
 
 
-def recover_grades(judge: RemoteInferenceSession, output_dir: str) -> None:
+def recover_grades(judge: RemoteInferenceSession, output_dir: str, *, selected_task: str | None = None) -> None:
     manifest = json.loads((ROOT / "recovery-inputs.json").read_text())
     endpoint = judge.model.endpoint
     destination = StoragePath(output_dir) / "judge-only-recovery"
     with TemporaryDirectory(prefix="biomnibench-recovery-") as temporary:
-        for task, files in manifest["tasks"].items():
+        for task in ([selected_task] if selected_task else manifest["tasks"]):
+            files = manifest["tasks"][task]
             if (destination / task / "recovery.json").exists():
                 continue
             submission = Path(temporary) / task / "submission"

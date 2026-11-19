@@ -3,6 +3,7 @@
 
 """Grade the four frozen submissions independently of Daytona capacity."""
 
+import argparse
 import os
 from pathlib import Path
 
@@ -18,6 +19,9 @@ ROOT = Path(__file__).resolve().parent
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--final-grade", action="store_true")
+    args = parser.parse_args()
     configure_coreweave_s3()
     judge = load_model_config(ROOT.parent / "pilot/judge.yaml")
     config = inference_config_for_model(
@@ -28,7 +32,12 @@ def main() -> None:
         api_model=judge.name,
     )
     with remote_inference(config) as session:
-        recover_grades(session, "s3://marin-us-east-02a/marin/evals/biomnibench-four-frozen-" + os.environ["MARIN_GIT_SHA"])
+        campaign = "biomnibench-final-da-13-5" if args.final_grade else "biomnibench-four-frozen"
+        recover_grades(
+            session,
+            f"s3://marin-us-east-02a/marin/evals/{campaign}-" + os.environ["MARIN_GIT_SHA"],
+            selected_task="da-13-5" if args.final_grade else None,
+        )
 
 
 if __name__ == "__main__":

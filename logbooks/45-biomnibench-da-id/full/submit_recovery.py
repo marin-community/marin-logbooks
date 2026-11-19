@@ -25,17 +25,21 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--judge-only", action="store_true")
     mode.add_argument("--solver-only", action="store_true")
+    mode.add_argument("--final-grade", action="store_true")
     args = parser.parse_args()
+    judge_only = args.judge_only or args.final_grade
     receipt = ROOT / f"{args.job_name}-submission.json"
     deadline = datetime(2026, 11, 18, 2, 25, 28, tzinfo=UTC)
     if args.solver_only:
         deadline = datetime(2026, 11, 19, 3, 51, tzinfo=UTC)
+    if args.final_grade:
+        deadline = datetime(2026, 11, 19, 18, 34, tzinfo=UTC)
     remaining = int((deadline - datetime.now(UTC)).total_seconds())
     assert remaining > 0, "Approved recovery window has expired"
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
     source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     secrets = {name: require_secret(name) for name in ("CW_KEY_ID", "CW_KEY_SECRET")}
-    if not args.judge_only:
+    if not judge_only:
         secrets["DAYTONA_API_KEY"] = resolve_secret_spec(
             "gcp-secret://projects/hai-gcp-models/secrets/DAYTONA_EVAL_API_KEY/versions/latest"
         ).value
@@ -48,9 +52,10 @@ def main():
                 "python",
                 *(
                     ["logbooks/45-biomnibench-da-id/full/recover_saved_only.py"]
-                    if args.judge_only
+                    if judge_only
                     else ["logbooks/45-biomnibench-da-id/full/launch_recovery.py", "--submit-in-cluster"]
                 ),
+                *(["--final-grade"] if args.final_grade else []),
                 *(["--solver-only"] if args.solver_only else []),
             ),
             name=args.job_name,
