@@ -1319,3 +1319,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: Iris [R]; mochi-long-loop STATUS [R].
 - Interpretation and limitations: the `.70` scored failure is a single-trial outcome recorded post-seal (the seal is immutable; this is a post-seal note per the seal's stated convention).
 - Decision and next action: hourly checks track `.76` SFT progression and the archive job.
+
+### 2026-11-19 06:40 UTC - Hourly catch-up (05:40–06:40 UTC window): PGN70 archive certified
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 `.76` — **running, task 0 at 2 h 47 m 02 s** (exit=0, failures=0, preemptions=0; Iris at 06:33 UTC). The exp3 side: the **post-seal PGN70 archive job completed and certified** (`/benfeuer/mochi-exp3-archive70-20261119-1`, immutable verified-copy manifest SHA256 `60e41a01cfd97e6b28369d3382b9f4f55e34aba112ea85c6b3c0a4fc97df76ea`; all 25,662 expected paths verified, per the mochi-long-loop STATUS entry `2026-11-19T06:01:33.508368+00:00`).
+- Command or material configuration: Iris describe at 06:33 UTC; mochi-long-loop STATUS [R].
+- External inputs and artifact references: Iris output; STATUS entry [R].
+- Environment and hardware when relevant: archive job in 08a, CPU-only (completed).
+- Result, including failure or restart: two items this window: (1) Exp4 `.76` root at 2 h 47 m 02 s running, failures=0, preemptions=0 — SFT progressing. (2) The exp3 `.70` post-seal PGN archive **certified** (immutable verified-copy manifest `60e41a01cfd9…`; 25,662 paths verified).
+- Evidence: Iris [R]; mochi-long-loop STATUS [R].
+- Interpretation and limitations: the certified archive covers the `.70` PGN retry evidence only.
+- Decision and next action: hourly checks track `.76` SFT progression.
