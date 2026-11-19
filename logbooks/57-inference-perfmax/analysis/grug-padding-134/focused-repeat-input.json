@@ -1,0 +1,135 @@
+{
+  "mode": "compare",
+  "job_name": "grug-padding-standalone-01a1d379-a4",
+  "uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/paired-a4",
+  "task_image": "ghcr.io/marin-community/iris-task@sha256:28a807a676b0b0ae155a80b1c6de75ae1b2932e25cef9bb8462b9ed7582c6990",
+  "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/source-139b752.tar.gz",
+  "archive_sha256": "77c71b76e4173a5782d5dd198140a5df5ae58b97e750278ede1b032d80dad320",
+  "bootstrap": "logbooks/57-inference-perfmax/analysis/grug-padding-134/native_padding.py",
+  "bootstrap_sha256": "b5b4d5fcf382a6d624f7f0f337c981cc673427aec15d9482ed5eb01450eeccaa",
+  "compiled_base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+  "run_focused_pytest": false,
+  "variants": {
+    "base": {
+      "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+      "candidate_manifest": {
+        "release_tag": "marin-vllm-gpu-20261118-47a8e415bff1",
+        "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+        "version": "0.0.0.dev20261118+marin.47a8e415bff1.cu132",
+        "torch_backend": "cu132",
+        "torch_version": "2.14.1+cu132",
+        "wheels": [
+          {
+            "architecture": "aarch64",
+            "sm_targets": [
+              "10.0"
+            ],
+            "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261118-47a8e415bff1/vllm-0.0.0.dev20261118+marin.47a8e415bff1.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+            "sha256": "d013b4815e17d0e642ec5965c09f73fc8703f068010240c9e0457d989768db17"
+          }
+        ]
+      },
+      "model_sha256": "ba4187fa9a29ef7cc06d7b395eef07d59fedbdbfdd09c43b46e9defb7734ee42",
+      "expect_stable_padding_ids": false,
+      "pytest_selection": "router and not padding_ids_ignore_stale_logits"
+    },
+    "candidate": {
+      "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+      "model_sha256": "9f75e3243d4e2b8b1a8ed92631481b4ba07a05553ff2819fc0e9872a0eb2095e",
+      "expect_stable_padding_ids": true,
+      "pytest_selection": "not parallel_config_allows_tpu_heads_but_preserves_gpu_checks and not log_scaling_is_identical_across_prefill_chunking_prefix_cache_and_decode",
+      "candidate_manifest": {
+        "release_tag": "experimental-grug-padding-139b7521151c-01a1d379",
+        "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+        "version": "0.0.0.dev20261119+marin.139b7521151c.cu132",
+        "torch_backend": "cu132",
+        "torch_version": "2.14.1+cu132",
+        "wheels": [
+          {
+            "architecture": "aarch64",
+            "sm_targets": [
+              "10.0"
+            ],
+            "url": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/build-139b752-a3/vllm-0.0.0.dev20261119+marin.139b7521151c.cu132-cp312-cp312-linux_aarch64.whl",
+            "sha256": "b78f1b61151522745dd7eb1272f039a197255495bc5ff3b9ce875c27703dc66a"
+          }
+        ]
+      }
+    },
+    "base-tests": {
+      "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+      "candidate_manifest": {
+        "release_tag": "marin-vllm-gpu-20261118-47a8e415bff1",
+        "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+        "version": "0.0.0.dev20261118+marin.47a8e415bff1.cu132",
+        "torch_backend": "cu132",
+        "torch_version": "2.14.1+cu132",
+        "wheels": [
+          {
+            "architecture": "aarch64",
+            "sm_targets": [
+              "10.0"
+            ],
+            "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261118-47a8e415bff1/vllm-0.0.0.dev20261118+marin.47a8e415bff1.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+            "sha256": "d013b4815e17d0e642ec5965c09f73fc8703f068010240c9e0457d989768db17"
+          }
+        ]
+      },
+      "model_sha256": "ba4187fa9a29ef7cc06d7b395eef07d59fedbdbfdd09c43b46e9defb7734ee42",
+      "expect_stable_padding_ids": false,
+      "pytest_selection": "(router or uses_qb_bias_for_selection_and_normalized_unbiased_weights or latent_experts_match_reference_math or sconv) and not padding_ids_ignore_stale_logits",
+      "bootstrap": "logbooks/57-inference-perfmax/analysis/grug-padding-134/wheel_pytest.py",
+      "bootstrap_sha256": "ef6ac1f3489382601888cf19653fec78547253f01feb3cf4e13540fea4ad66aa"
+    },
+    "candidate-tests": {
+      "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+      "model_sha256": "9f75e3243d4e2b8b1a8ed92631481b4ba07a05553ff2819fc0e9872a0eb2095e",
+      "expect_stable_padding_ids": true,
+      "pytest_selection": "router or uses_qb_bias_for_selection_and_normalized_unbiased_weights or latent_experts_match_reference_math or sconv",
+      "candidate_manifest": {
+        "release_tag": "experimental-grug-padding-139b7521151c-01a1d379",
+        "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+        "version": "0.0.0.dev20261119+marin.139b7521151c.cu132",
+        "torch_backend": "cu132",
+        "torch_version": "2.14.1+cu132",
+        "wheels": [
+          {
+            "architecture": "aarch64",
+            "sm_targets": [
+              "10.0"
+            ],
+            "url": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/build-139b752-a3/vllm-0.0.0.dev20261119+marin.139b7521151c.cu132-cp312-cp312-linux_aarch64.whl",
+            "sha256": "b78f1b61151522745dd7eb1272f039a197255495bc5ff3b9ce875c27703dc66a"
+          }
+        ]
+      },
+      "bootstrap": "logbooks/57-inference-perfmax/analysis/grug-padding-134/wheel_pytest.py",
+      "bootstrap_sha256": "ef6ac1f3489382601888cf19653fec78547253f01feb3cf4e13540fea4ad66aa"
+    }
+  },
+  "selection_scope": "Run native padding/repeat/graph controls first, then existing shared-router, bias/normalization, Hero latent-expert math and ShortConv tests in fresh processes. Do not compile unrelated cold FlashInfer BF16/FP8 backends. Full backend loading/reference tests remain unrun; this does not qualify a full model.",
+  "repeats": 20,
+  "native_members": {
+    "vllm/_C_stable_libtorch.abi3.so": "9c1021677276716f71a0d7db5cae807b43c2272a70fb025c9b8fa94ecb1d4201",
+    "vllm/_deepselect_C.abi3.so": "14900a5a0964e434504d6e6416eb139e7f21afd8b3e82083c2e32a47ddb99cfd",
+    "vllm/_flashkda_C.abi3.so": "994aa1f9c697f4ac4c8e41239392c5bfed29f26d375f9582c9ec5c41df6bcc3b",
+    "vllm/_flashmla_C.abi3.so": "da6982aff2d252899279b8e17774f4571a377ac00bf0031d7d4e6f0cb79322dc",
+    "vllm/_flashmla_extension_C.abi3.so": "c162a66b1bb43a1d5206753ab65f575a37ed3fd97f49adf97270c891752529c6",
+    "vllm/_moe_C_stable_libtorch.abi3.so": "57230913bfa7767b35e8516812467b5ab61d9b1a4e909cfc3d099761658f857e",
+    "vllm/_qutlass_C.abi3.so": "3776f0d5dedf5694609be7e3d8dcb6b4dd5ac6d35485affb008122a91e9451d1",
+    "vllm/_rust_tool_parser.abi3.so": "01f736a3c98c689a9a91475561994ba4656e7310d1576952d8d7a6d778a3f6d1",
+    "vllm/cumem_allocator.abi3.so": "1f7e9a6a7ad6f8be6a8e37df9693661277b41c6697cea33d1509232e82c2a074",
+    "vllm/fs_io_C.abi3.so": "4862fd714e07d3cbe3a8d379f048519a37af08a7747ab0242389b96c351f535b",
+    "vllm/spinloop.abi3.so": "26b3a4454e602a1b57f05a5bf8b8d86f995e396d3eea28d65de6db823919b849",
+    "vllm/vllm-rs": "18f741a78c60ffc8c50890c08a6f858a8c9b859d258108e0df84fc947ba3273e",
+    "vllm/third_party/deep_gemm/_C.cpython-310-aarch64-linux-gnu.so": "d1a296e8c022fa72875f0bdfeae33a11e028833a2304798f6a7b88b3320a47a8",
+    "vllm/third_party/deep_gemm/_C.cpython-311-aarch64-linux-gnu.so": "04c3af4319a3a14a3cf74d40745f7018d113472b2e20cca7c8fca88fe2adb4ce",
+    "vllm/third_party/deep_gemm/_C.cpython-312-aarch64-linux-gnu.so": "a0dd834fe6ba7fec8371075bd64353c7936e49c866ae32dcb5412015a1ce3216",
+    "vllm/third_party/deep_gemm/_C.cpython-313-aarch64-linux-gnu.so": "5feea2a6342c191c46b0885cab2262db6b83c46d213f45eb33ae6d2d96727fbe",
+    "vllm/third_party/deep_gemm/_C.cpython-314-aarch64-linux-gnu.so": "ef395f59eb0392d7b91a308a3367d05a96407ff1e57bdb31c092446bfc114daa",
+    "vllm/vllm_flash_attn/_vllm_fa2_C.abi3.so": "42b041ccb5292f240393929d4ef414bfa58ee54003c7019988d6c140c4881443",
+    "vllm/vllm_flash_attn/_vllm_fa3_C.abi3.so": "cc366decb7add1fce75cb2c11b9cd52cac8d7f1b26f1336c80043a04d86a9700"
+  },
+  "memory": "128GB"
+}
