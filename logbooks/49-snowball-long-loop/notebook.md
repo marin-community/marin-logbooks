@@ -1254,3 +1254,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: artifacts re-checked [R].
 - Interpretation and limitations: unchanged.
 - Decision and next action: hourly checks watch for the agentic-preparation failure diagnosis and the exp3 restart's progression.
+
+### 2026-11-19 03:40 UTC - Hourly catch-up (02:40–03:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 identities — terminal `.51`, recovery eval-61 outcome, IB restart preparation (all as recorded at 01:40/02:40).
+- Command or material configuration: as recorded; no recovery/production changes.
+- External inputs and artifact references: archive69 artifacts re-checked [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no new exp3 evidence this window — the eval-61 outcome, archive certification, and IB-restart preparation stand as recorded. (The archive69 directory gained compact-certification and terminal-diagnosis copies — archival reorganization, not new results.)
+- Evidence: archive69 re-check [R].
+- Interpretation and limitations: unchanged.
+- Decision and next action: hourly checks watch for the recovery decision and the restart's progression.
