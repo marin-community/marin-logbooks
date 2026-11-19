@@ -22,15 +22,27 @@ from marin.inference.vllm_server import IsolatedCudaVllm, VllmType
 from rigging.timing import Duration
 
 from experiments.evaluation.knotmeter.allocation import allocation_cost, track_allocations
-from experiments.evaluation.knotmeter.artifacts import copy_file, retain_artifacts, write_record
+from experiments.evaluation.knotmeter.artifacts import copy_file, read_record, retain_artifacts, write_record
 from experiments.evaluation.knotmeter.runtime import materialize_release
 
 
 def component_worker(payload: dict) -> None:
     if payload.get("mode") == "compare":
+        build = payload["build_payload"]
+        component_worker(build | {"label": "build"})
+        manifest = read_record(build["uri"] + "/manifest.json")
+        binary_hashes = read_record(build["uri"] + "/build.json")["native_members"]
+        payload["variants"]["candidate"]["candidate_manifest"] = manifest
         for label, variant in payload["variants"].items():
             component_worker(
-                payload | variant | {"mode": "component", "label": label, "uri": payload["uri"] + "/" + label}
+                payload
+                | variant
+                | {
+                    "mode": "component",
+                    "label": label,
+                    "uri": payload["uri"] + "/" + label,
+                    "native_members": binary_hashes,
+                }
             )
         return
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
