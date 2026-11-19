@@ -1861,3 +1861,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the task-replacement gate outcomes.
+
+### 2026-11-19 17:40 UTC - Hourly catch-up (16:40–17:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `75a0797a6d…` (16:20:24 UTC) to head `2dcc46a22367d88bc9e93f9e49287888f5406dc3`, landed 17:23:42 UTC (~10 landings 16:44–17:23 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 75a0797a..2dcc46a2` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Contract-correction lane hardened**: contract correction inputs frozen with shared receipt serialization (`2dcc46a223…`, head); seven corrected derived-contract receipts selected explicitly (`c468ea49a6…`).
+  - **Bounded-window hardening**: staged catalog rows counted in bounded key windows (`49a8b816ef…`); cohort summaries aggregated in bounded task windows (`487107883a…`); count window sizes asserted from query results (`56cd72bb9a…`).
+  - **Projection waivers evaluated against the gated audit findings** (`2474d1a4f7…`); retained-view checks scoped to the test schema (`8356b69bef…`); backend counts preserved while error messages redacted (`8f73a4da1c…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the corrected derived-contract receipts' outcomes.
