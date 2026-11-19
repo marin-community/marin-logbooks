@@ -153,7 +153,7 @@ def main() -> None:
                 name=payload["job_name"],
                 resources=ResourceSpec(
                     cpu=8 if not gpus else 4,
-                    memory="32GB",
+                    memory=payload.get("memory", "32GB"),
                     disk="128GB",
                     device=gpu_device("GB200", gpus) if gpus else None,
                 ),
