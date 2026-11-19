@@ -314,3 +314,7 @@ GPT-OSS and Gemma use at most four judge calls per submission after malformed ou
 The [GPT-OSS scorecard](full/gpt-oss-reconciled-50.csv) contains all 50 public tasks. Mean signed score was 14.74/100 and mean unsigned score was 17.40/100. MiniMax graded 23 submissions. The verifier recorded 27 missing submissions as zero.
 
 The first da-13-1 attempt lost the sandbox HTTP service before verification. A [single replacement trial](full/gpt-oss-final-submission.json) used the same solver, rubric, pinned judge configuration and resource limits. The verifier successfully inspected the submission directory and found only data and sandbox metadata. The missing-submission rule assigned zero without a judge call. The replacement canonical record succeeded. All 49 prior scores were preserved and reconciled against their verifier evaluations. Both serving workers stopped.
+
+### November 19 — Gemma public-50 launch
+
+Submitted google/gemma-4-26B-A4B-it at cohort revision `4d7ae4984b7db7de8f8457170b3f1a419ee76d52` for one pass over the same 50 tasks. The run uses two solver H100s and eight for the pinned MiniMax judge, capped at eight hours. The model configuration digest matches the BixBench comparison pin. All 50 packaged instructions, rubrics and retry wrappers passed the prelaunch checks. The grader uses the same two inline and two frozen-submission attempts as GPT-OSS. [Iris submission receipt](full/gemma-launcher-submission.json)
