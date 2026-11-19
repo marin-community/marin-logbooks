@@ -1242,3 +1242,15 @@ This supplements the earlier OpenCode-only result. Live Exp3 `.51` continues unc
 - Evidence: coverage-audit.json, eval61-verified-manifest.json, eval61-archive-certification.json [R].
 - Interpretation and limitations: the step-20 checkpoint's scored-only mean 0.3859 is NOT comparable to the round-1 0.4526 headline (different scoring coverage: 340/440 with all agentic attempts unscored); the bounds are not confidence intervals; production seal incomplete.
 - Decision and next action: hourly checks watch for the agentic-preparation failure diagnosis and whether a corrected eval re-run is authorized.
+
+### 2026-11-19 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp3 identities — terminal `.51` (source `0f5721bbb4…`), recovery eval-61 (scored outcome recorded 01:40), IB restart prepared (artifact `2026.11.17.55`).
+- Command or material configuration: as recorded; no recovery/production changes.
+- External inputs and artifact references: `archive69/eval61-archive-certification.json` (production_seal_complete still false) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no new exp3 evidence this window — the eval-61 scored outcome (340/440, agentic prep failure), archive certification (production seal incomplete), and IB-restart preparation stand as recorded in the 00:35/01:40 entries.
+- Evidence: artifacts re-checked [R].
+- Interpretation and limitations: unchanged.
+- Decision and next action: hourly checks watch for the agentic-preparation failure diagnosis and the exp3 restart's progression.
