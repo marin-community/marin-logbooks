@@ -48,6 +48,29 @@ def tensor_digest(value):
     return digest.hexdigest()
 
 
+def router_timings(config):
+    rows = []
+    router = GrugMoeRouter(8, 384, torch.zeros(384, device="cuda"))
+    for count in (4, 128, 2048):
+        hidden = torch.ones((count, 64), device="cuda", dtype=torch.bfloat16)
+        logits = torch.randn((count, 384), device="cuda")
+        padding = torch.arange(count, device="cuda") >= max(1, count // 2)
+        with set_forward_context(None, config, num_tokens=count, is_padding=padding):
+            for _ in range(10):
+                router.select_experts(hidden_states=hidden, router_logits=logits)
+            measured = []
+            for _ in range(3):
+                start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
+                start.record()
+                for _ in range(100):
+                    router.select_experts(hidden_states=hidden, router_logits=logits)
+                end.record()
+                end.synchronize()
+                measured.append(start.elapsed_time(end) * 1000 / 100)
+            rows.append({"physical_rows": count, "microseconds_per_call": measured})
+    return rows
+
+
 def run_gating(gating, *, source, routed, router, packed, expert_map, workspace, caches, output):
     routed.copy_(source)
     weights, ids = router.select_experts(hidden_states=routed, router_logits=gating)
@@ -93,6 +116,12 @@ def main():
     assert envs.VLLM_MOE_SKIP_PADDING
     expect_stable = payload.get("expect_stable_padding_ids", False)
     assert not Path(vllm.__file__).resolve().is_relative_to(Path(payload["source_root"]).resolve())
+    binary_hashes = {}
+    for name in ("vllm/_C_stable_libtorch.abi3.so", "vllm/_moe_C_stable_libtorch.abi3.so"):
+        path = Path(vllm.__file__).resolve().parent.parent / name
+        with path.open("rb") as stream:
+            binary_hashes[name] = hashlib.file_digest(stream, "sha256").hexdigest()
+        assert binary_hashes[name] == payload["native_members"][name]
     record = {
         "scope": (
             "One-GPU component: current-main Grug router and native Marlin FP8; raw CUDA graphs. "
@@ -107,6 +136,10 @@ def main():
         "torch": torch.__version__,
         "cuda": torch.version.cuda,
         "vllm_package": str(Path(vllm.__file__).resolve()),
+        "native_binary_sha256": binary_hashes,
+        "dependency_versions": {
+            distribution.metadata["Name"]: distribution.version for distribution in importlib.metadata.distributions()
+        },
         "marlin_module": str(
             Path(importlib.import_module("vllm.model_executor.layers.fused_moe.experts.marlin_moe").__file__).resolve()
         ),
@@ -115,32 +148,14 @@ def main():
         "device": torch.cuda.get_device_name(),
         "moe_skip_padding": envs.VLLM_MOE_SKIP_PADDING,
         "expected_stable_padding_ids": expect_stable,
+        "router_timing_scope": (
+            "CUDA events across eager layer calls; includes dispatch gaps; no serving throughput claim"
+        ),
         "started_unix": time.time(),
         "weight_inputs": [],
         "cases": [],
     }
     output.write_text(json.dumps(record, indent=2) + "\n")
-    if payload.get("run_focused_pytest"):
-        root = Path(payload["source_root"])
-        sys.path.insert(0, str(root / "infra/release"))
-        native = runpy.run_path(str(root / "infra/release/gpu_validation.py"))
-        record["pytest_exit"] = native["run_wheel_tests"](
-            SimpleNamespace(
-                package_source_root=root,
-                validation_source_root=root,
-                exclude_test=[],
-                pytest_args=[
-                    str(root / "tests/models/test_grugmoe.py"),
-                    "-k",
-                    payload["pytest_selection"],
-                    "-v",
-                    "--maxfail=1",
-                    "--junitxml=" + str(output.with_suffix(".xml")),
-                ],
-            )
-        )
-        output.write_text(json.dumps(record, indent=2) + "\n")
-        assert record["pytest_exit"] == 0
     global_experts, hidden, intermediate, topk, maximum = 384, 3072, 3072, 8, 2048
     config = VllmConfig()
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -221,6 +236,7 @@ def main():
                     assert not torch.count_nonzero(base_weights[real:]).item()
                     first, same = fresh(logits), fresh(logits)
                     assert torch.isfinite(first).all() and torch.isfinite(same).all()
+                    assert first[:real].abs().max().item() > 0
                     for name in ("other-local", "non-local"):
                         alternate = choices[name]
                         routed.copy_(source)
@@ -231,6 +247,7 @@ def main():
                         assert torch.equal(base_weights, other_weights)
                         padded_ids_differ = not torch.equal(base_ids[real:], other_ids[real:])
                         assert padded_ids_differ != expect_stable
+                        assert ((other_ids >= 0) & (other_ids < global_experts)).all()
                         changed, restored = fresh(alternate), fresh(logits)
                         assert torch.isfinite(changed).all()
                         assert torch.equal(logits, original_logits)
@@ -275,6 +292,7 @@ def main():
                             torch.cuda.synchronize()
                             row["graph_restored_route_max"] = maximum_difference(graph_first[:real], captured[:real])
                         output.write_text(json.dumps(record, indent=2) + "\n")
+        record["router_timing"] = router_timings(config)
     record |= {
         "status": "completed-diagnostic",
         "finished_unix": time.time(),
@@ -284,6 +302,27 @@ def main():
         "restored_route_failures": sum(row["restored_route_max"] > 0 for row in record["cases"]),
     }
     output.write_text(json.dumps(record, indent=2) + "\n")
+    if payload.get("run_focused_pytest"):
+        root = Path(payload["source_root"])
+        sys.path.insert(0, str(root / "infra/release"))
+        native = runpy.run_path(str(root / "infra/release/gpu_validation.py"))
+        record["pytest_exit"] = native["run_wheel_tests"](
+            SimpleNamespace(
+                package_source_root=root,
+                validation_source_root=root,
+                exclude_test=[],
+                pytest_args=[
+                    str(root / "tests/models/test_grugmoe.py"),
+                    "-k",
+                    payload["pytest_selection"],
+                    "-v",
+                    "--maxfail=1",
+                    "--junitxml=" + str(output.with_suffix(".xml")),
+                ],
+            )
+        )
+        output.write_text(json.dumps(record, indent=2) + "\n")
+        assert record["pytest_exit"] == 0
     print(json.dumps({k: record[k] for k in ("status", "padded_route_sensitive_cases", "same_route_failures")}))
 
 

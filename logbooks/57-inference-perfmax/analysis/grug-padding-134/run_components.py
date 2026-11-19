@@ -16,7 +16,6 @@ from pathlib import Path
 
 from iris.cli.connect import connect_controller
 from iris.client.client import IrisClient
-from iris.cluster.constraints import Constraint, ConstraintOp
 from iris.cluster.types import Entrypoint, EnvironmentSpec, ResourceSpec, gpu_device
 from iris.rpc import job_pb2
 from marin.inference.vllm_server import IsolatedCudaVllm, VllmType
@@ -132,7 +131,6 @@ def main() -> None:
             job = client.submit(
                 entrypoint=Entrypoint.from_callable(component_worker, payload),
                 name=payload["job_name"],
-                constraints=[Constraint.create(key="pool", op=ConstraintOp.EQ, value="gb200")],
                 resources=ResourceSpec(
                     cpu=8 if not gpus else 4,
                     memory="32GB",
