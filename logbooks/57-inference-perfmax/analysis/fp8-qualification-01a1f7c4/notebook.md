@@ -136,3 +136,9 @@ The same-wheel BF16 control and full-decode FP8 both pass all shared groups. The
 The alignment microbenchmark measures the sort in isolation. A matched serving run can test whether that cost moves client throughput and whether Snowball needs the sort for stable cache reuse. [H100 component timings](routing-timing-x86_64-results.json)
 
 The experiment head `c96f9b5d27767a13c69961637c75dbd00622b010` removes the two canonical-ordering commits from the tested Snowball wheel. The source comparison changes only Marlin ordering and its isolated regression. The routed C128 retention-zero profile changes only the wheel. Run the full gate first. A mismatch in the fixed or exact cache comparisons stops the run before AgentX. A passing gate enables an uninstrumented normal hour for the one-setting throughput comparison.
+
+### Completed Mochi DP32/C128 window
+
+Middle-16 block FP8 reaches 31.01618 output tokens/s/GPU, p90 TTFT 270.17412 s and p90 completion 283.74354 s. The strongest retained C128 BF16 run on an earlier wheel reached 31.42858, 268.89855 s and 281.34879 s. FP8 is 1.3% slower in this comparison and has 51,510 more usable BF16 KV tokens per engine. Its model-load profile shows 4.01 GiB more per GPU. These are separate memory measurements.
+
+The window is valid with 5,164 profiling successes and three HTTP 500 errors. The later Gloo peer-close exception starts after AgentX finalizes during server teardown. Keep it separate from the client errors, whose root cause remains open. The recorded cost is 184,894.612 GB200-seconds. Seven hosts use pod-container finish and the leader uses the Iris terminal timestamp. [Native DP32 trial](s3://marin-us-east-02a/marin/knotmeter/campaigns/fp8-qualification-mochi-01a1f7c4/trials/20261120T090555Z-3728f9354610/result.json)
