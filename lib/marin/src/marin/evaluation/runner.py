@@ -253,6 +253,7 @@ class EvaluationBatch:
     egress_allow: tuple[str, ...] = ()
     """Egress rules the orchestrator job and its children need beyond the cluster allowlist."""
     source_model_config: ModelConfigRef | None = None
+    placement_timeout_seconds: float | None = None
 
 
 @dataclass(frozen=True)
@@ -625,6 +626,7 @@ def run_evaluation_steps(
     inference = inference_config_for_model(
         batch.model,
         batch.accelerator,
+        placement_timeout_seconds=batch.placement_timeout_seconds,
         env_vars=runtime_env,
         capability_origin=batch.capability_origin,
         api_model=batch.api_model,
@@ -662,6 +664,7 @@ def run_evaluation_steps(
             judge_inference = inference_config_for_model(
                 batch.judge.model,
                 batch.judge.accelerator,
+                placement_timeout_seconds=batch.placement_timeout_seconds,
                 env_vars=runtime_env,
                 capability_origin=batch.capability_origin,
                 api_model=batch.judge.api_model,

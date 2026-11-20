@@ -686,7 +686,9 @@ def _task_is_placed(task: TaskStatus) -> bool:
     )
 
 
-def _wait_for_endpoint(job: JobHandle, endpoint_name: str, timeout_seconds: float) -> tuple[str, dict[str, str]]:
+def _wait_for_endpoint(
+    job: JobHandle, endpoint_name: str, timeout_seconds: float, *, placement_timeout_seconds: float | None = None
+) -> tuple[str, dict[str, str]]:
     """Wait for the serving job to register its endpoint.
 
     ``timeout_seconds`` budgets server startup after placement. Queue time is
@@ -697,12 +699,22 @@ def _wait_for_endpoint(job: JobHandle, endpoint_name: str, timeout_seconds: floa
         endpoints = iris_ctx().client.list_endpoint_instances(endpoint_name)
         return (endpoints[0].address, dict(endpoints[0].metadata)) if endpoints else None
 
-    return _wait_for_serving((job,), timeout_seconds, registered_endpoint)
+    return _wait_for_serving(
+        (job,), timeout_seconds, registered_endpoint, placement_timeout_seconds=placement_timeout_seconds
+    )
 
 
-def _wait_for_serving[T](jobs: tuple[JobHandle, ...], timeout_seconds: float, ready: Callable[[], T | None]) -> T:
+def _wait_for_serving[T](
+    jobs: tuple[JobHandle, ...],
+    timeout_seconds: float,
+    ready: Callable[[], T | None],
+    *,
+    placement_timeout_seconds: float | None = None,
+) -> T:
     ctx = iris_ctx()
-    placement_deadline = Deadline.from_seconds(_ENDPOINT_PLACEMENT_TIMEOUT_SECONDS)
+    if placement_timeout_seconds is None:
+        placement_timeout_seconds = _ENDPOINT_PLACEMENT_TIMEOUT_SECONDS
+    placement_deadline = Deadline.from_seconds(placement_timeout_seconds)
     ready_deadline: Deadline | None = None
     while True:
         result = ready()
@@ -727,8 +739,7 @@ def _wait_for_serving[T](jobs: tuple[JobHandle, ...], timeout_seconds: float, re
             ready_deadline = None
             if placement_deadline.expired():
                 raise TimeoutError(
-                    "Timed out waiting for inference jobs to be placed "
-                    f"(queued for {_ENDPOINT_PLACEMENT_TIMEOUT_SECONDS:.0f}s)"
+                    f"Timed out waiting for inference jobs to be placed (queued for {placement_timeout_seconds:.0f}s)"
                 )
         time.sleep(_ENDPOINT_READY_POLL_SECONDS)
 
@@ -804,6 +815,7 @@ def _start_direct_inference(
                 job,
                 endpoint_name,
                 timeout_seconds=iris.endpoint_ready_timeout_seconds,
+                placement_timeout_seconds=iris.placement_timeout_seconds,
             )
             tensor_parallel_size = int(metadata[_METADATA_TENSOR_PARALLEL_SIZE])
             backend_name = metadata[_METADATA_BACKEND]
@@ -969,6 +981,7 @@ def _expose_brokered_inference(
         tuple(worker_jobs),
         iris.endpoint_ready_timeout_seconds,
         lambda: True if response_provider.status().readiness is InferenceBackendState.READY else None,
+        placement_timeout_seconds=iris.placement_timeout_seconds,
     )
     with serve_inference_proxy(
         broker=response_provider,

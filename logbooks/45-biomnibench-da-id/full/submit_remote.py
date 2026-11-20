@@ -26,10 +26,15 @@ def main():
     candidates.add_argument("--gemma", action="store_true")
     candidates.add_argument("--gpt-oss", action="store_true")
     parser.add_argument("--final-task", action="store_true")
+    parser.add_argument("--two-day-window", action="store_true")
     args = parser.parse_args()
     if args.final_task and not (args.gpt_oss or args.gemma):
         parser.error("--final-task requires --gpt-oss or --gemma")
     cap = 7200 if args.final_task else 28800
+    if args.two_day_window:
+        if not (args.gemma and args.final_task):
+            parser.error("--two-day-window applies to the final Gemma task")
+        cap = 48 * 3600
     validation = json.loads(args.validation.read_text())
     assert {key: validation[key] for key in ("status", "snapshots", "runtime_checks", "all_closed")} == {
         "status": "passed",
@@ -42,6 +47,8 @@ def main():
         receipt = ROOT / "gemma-launcher-submission.json"
     if args.final_task:
         receipt = ROOT / ("gemma-final-submission.json" if args.gemma else "gpt-oss-final-submission.json")
+    if args.two_day_window:
+        receipt = ROOT / "gemma-final-48h-submission.json"
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
     source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     secrets = {name: require_secret(name) for name in ("CW_KEY_ID", "CW_KEY_SECRET")}
@@ -57,6 +64,7 @@ def main():
                 "python",
                 "logbooks/45-biomnibench-da-id/full/launch_full.py",
                 "--submit-in-cluster",
+                *(["--two-day-window"] if args.two_day_window else []),
                 *(["--final-task"] if args.final_task else []),
                 *(["--gemma"] if args.gemma else []),
                 *(["--gpt-oss"] if args.gpt_oss else []),
@@ -78,7 +86,7 @@ def main():
                 preemptible_constraint(False),
             ],
             timeout=Duration.from_seconds(cap),
-            scheduling_timeout=Duration.from_seconds(1800),
+            scheduling_timeout=Duration.from_seconds(cap if args.two_day_window else 1800),
             max_retries_failure=0,
             max_retries_preemption=0,
         )

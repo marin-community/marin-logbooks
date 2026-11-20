@@ -404,6 +404,8 @@ class IrisConfig:
     max_retries_failure: int = 1
     max_retries_preemption: int = 10
 
+    placement_timeout_seconds: float | None = None
+
     def __post_init__(self) -> None:
         if self.cache_ttl_days < 0:
             raise ValueError("cache_ttl_days must not be negative")

@@ -49,6 +49,11 @@ if final_task:
     policy_path = root / "gpt-oss-final.yaml"
     benchmark = f"biomnibench-final-da-13-1-{candidate}"
 cap = 7200 if final_task else 28800
+long_queue = "--two-day-window" in sys.argv
+if long_queue:
+    assert final_task and gemma
+    cap = 48 * 3600
+scheduling_cap = cap if long_queue else 1800
 spec = LaunchSpec(
     model=load_model_config(model_path),
     evals=(HarborDefinition(name=benchmark, config_path=policy_path),),
@@ -74,6 +79,8 @@ spec = LaunchSpec(
     ),
 )
 batch = prepare_evaluation_batch(spec)
+if long_queue:
+    batch = replace(batch, placement_timeout_seconds=cap)
 remote = "--submit-in-cluster" in sys.argv
 if "--submit" not in sys.argv and not remote:
     print(
@@ -100,7 +107,7 @@ with connection as client:
     client.submit = partial(
         client.submit,
         timeout=Duration.from_seconds(cap),
-        scheduling_timeout=Duration.from_seconds(1800),
+        scheduling_timeout=Duration.from_seconds(scheduling_cap),
         max_retries_preemption=0,
     )
     group = launch_group(batch, client)
@@ -110,7 +117,7 @@ with connection as client:
         "run_ids": [x.run_id for x in group.evaluations],
         "records_prefix": group.records_prefix,
         "parent_timeout_seconds": cap,
-        "scheduling_timeout_seconds": 1800,
+        "scheduling_timeout_seconds": scheduling_cap,
         "task_count": 1 if final_task else 50,
     }
     (root / "full-evaluation-submission.json").write_text(json.dumps(result, indent=2) + "\n")

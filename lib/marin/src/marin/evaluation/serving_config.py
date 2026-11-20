@@ -266,6 +266,7 @@ def inference_config_for_model(
     instances: int | None = None,
     broker: BrokerConfig | None = None,
     request_timeout_seconds: float = EVALUATION_REQUEST_TIMEOUT_SECONDS,
+    placement_timeout_seconds: float | None = None,
 ) -> RemoteInferenceConfig:
     """Lower one model and selected accelerator into remote inference configuration."""
     serve = resolved_serve_config(model)
@@ -358,6 +359,7 @@ def inference_config_for_model(
         ),
         engine=engine,
         iris=IrisConfig(
+            placement_timeout_seconds=placement_timeout_seconds,
             serving_geometry=geometry,
             worker_resources=resources,
             worker_environment=environment,
