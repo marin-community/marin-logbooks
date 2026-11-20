@@ -2183,3 +2183,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the forge-cohort publication outcomes.
+
+### 2026-11-19 23:40 UTC / 2026-11-20 22:40-23:40 UTC - Hourly catch-up (21:40–23:40 UTC windows, combined after a session gap)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `7aa901a1be…` (21:33:48 UTC) to head `edbb77a7bc3a1d7e46c71e7b97b5e0c5424b6f3b`, landed 22:28:37 UTC (2 landings 21:35 / 22:28 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 7aa901a1..edbb77a7` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the windows: repair wrapper licenses resolved from recorded release pins (`d03066f167…`); the selected Docker daemon used for OCI image imports (`edbb77a7bc…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the repair-wrapper license outcomes.
