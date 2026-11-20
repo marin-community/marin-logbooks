@@ -92,3 +92,7 @@ The exact, separate hybrid contribution also passes on GB200. It targets the exi
 ### Snowball cache retention under session affinity
 
 The early C128 router samples show more actual prefix reuse than the unrouted trial. At 09:08:51 UTC the routed point shows 53.3% actual hits against 95.9% theoretical, with 91.4% KV occupancy. These are live samples. The fixed C128 retention-zero test keeps session affinity and skips periodic sliding-window checkpoints. It can show whether keeping only semantic checkpoints preserves more useful histories under load. Run the same full numerical gate and one-hour replay on `snowball-block-router-retention0.yaml`.
+
+### First completed one-hour Snowball window
+
+Without the router at C128, block FP8 delivers 122.41574 output tokens/s/GPU, 104.73873 s p90 TTFT and 301.64845 s p90 request completion. The previous qualified C128 BF16 run on a different vLLM source reached 124.39607, 103.33113 s and 297.61639 s. The replay recipe, saved corpus, seed, golden and numerical limits match. FP8 is 1.59% slower at this point with 7.49 GiB less loaded memory per GPU. FP8 measured 10.373% actual prefix hits. AgentX reports 5,107 profiling successes and one profiling error, with a valid and unchanged gang. The allocation cost is 42,872 H100-seconds, including load, gate, warmup, replay and drain. [Native C128 FP8 trial](s3://marin-us-east-08a/marin/knotmeter/campaigns/fp8-qualification-snowball-01a1f7c4/trials/20261120T074542Z-a2724beec7dc/result.json)
