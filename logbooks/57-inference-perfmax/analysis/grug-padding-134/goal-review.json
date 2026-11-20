@@ -71,13 +71,13 @@
     },
     {
       "finding": "Most directly affected existing default-backend GPU test remains unrun.",
-      "status": "pre_merge_pending",
-      "action": "Name the test in report, PR and results. Require it before merge through existing GPU validation. Leave PR draft and do not expand this landing task into backend compilation."
+      "status": "resolved",
+      "action": "The named candidate test passed on one H100 with the default Triton FP8 MoE backend, 1 test and 0 skips/failures/errors. See h100-loading-result.json."
     },
     {
       "finding": "Evidence link was mutable and unpublished.",
-      "status": "publication_step",
-      "action": "Commit and push evidence, then pin PR link to that commit before publishing the body."
+      "status": "resolved",
+      "action": "The evidence is published and the PR uses an immutable commit link. The H100 follow-up is included in the updated evidence."
     }
   ],
   "claims_not_adopted": [
@@ -99,5 +99,17 @@
   "archive": {
     "uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/review/high-goal-9e7b0d8b70c2281d8ae1f0db2f54fcaa4c6e0c811cbb1f80fd98eafa865dfd7a.tar.zst",
     "sha256": "9e7b0d8b70c2281d8ae1f0db2f54fcaa4c6e0c811cbb1f80fd98eafa865dfd7a"
+  },
+  "h100_loading_followup": {
+    "status": "passed",
+    "record": "h100-loading-result.json",
+    "source_unchanged": true,
+    "high_review_reused": true,
+    "test_counts": {
+      "tests": 1,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0
+    }
   }
 }
