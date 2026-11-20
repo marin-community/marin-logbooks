@@ -96,3 +96,9 @@ The early C128 router samples show more actual prefix reuse than the unrouted tr
 ### First completed one-hour Snowball window
 
 Without the router at C128, block FP8 delivers 122.41574 output tokens/s/GPU, 104.73873 s p90 TTFT and 301.64845 s p90 request completion. The previous qualified C128 BF16 run on a different vLLM source reached 124.39607, 103.33113 s and 297.61639 s. The replay recipe, saved corpus, seed, golden and numerical limits match. FP8 is 1.59% slower at this point with 7.49 GiB less loaded memory per GPU. FP8 measured 10.373% actual prefix hits. AgentX reports 5,107 profiling successes and one profiling error, with a valid and unchanged gang. The allocation cost is 42,872 H100-seconds, including load, gate, warmup, replay and drain. [Native C128 FP8 trial](s3://marin-us-east-08a/marin/knotmeter/campaigns/fp8-qualification-snowball-01a1f7c4/trials/20261120T074542Z-a2724beec7dc/result.json)
+
+### Mochi DP32 gate and the distribution of DP8 changes
+
+Middle-16 block FP8 also passes the full DP32 checks. The short maximum is 0.521529 and p99 is 0.097216. The long maximum is 0.283892 and decode p99 is 0.054338. At DP32 the model-load profiler shows 60.06 GiB per GPU versus retained BF16 at 56.05 GiB. Usable BF16 KV capacity is 1,507,772 versus 1,456,262 tokens per engine. The C128 replay will measure the performance side of those memory figures.
+
+On the same eight DP8 histories, middle-16 block differs from matched BF16 by 0.08691 at p99 over 6,815 short positions. Late-16 block, late-16 tensor and late-24 block reach 0.09237, 0.09564 and 0.12587. Middle-16 changes the BF16 top token at 114 short positions, versus 89 for late-16 block. The shared gate uses probability differences against Levanter. [Matched DP8 probability changes](matched-mochi-dp8-probability-shifts.json)
