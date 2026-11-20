@@ -2075,3 +2075,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the repaired source's fingerprint figure is the landing's own report.
 - Decision and next action: next hourly check watches for the repaired-source publication outcome.
+
+### 2026-11-20 09:40 UTC - Hourly catch-up (08:40–09:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `7ecd80939c…` (08:22:07 UTC) to head `24a70400f15fc8610a5f305fdc0b842ba03b5fed`, landed 09:21:48 UTC (~6 landings 09:12–09:21 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 7ecd8093..24a70400` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: swe-repair census receipts recorded at the /testbed consolidation identity (`9502f1728f…`) with the uniform /testbed workspace consolidating the snapshot identities (`23c9f4fb8e…`); the v9 full-population wave launcher constants (`94aa64a05e…`); oracle evidence resolved through restored archive roots (`86a27daf2d…`); census-bound native Endless conversion (`c30d47fdb5…`); archive and recollection argument binding formatted (`24a70400f1…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the v9 wave-launch outcomes.
