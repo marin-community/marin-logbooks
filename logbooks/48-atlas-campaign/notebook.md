@@ -2039,3 +2039,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the curriculum-aggregation outcomes.
+
+### 2026-11-20 06:40 UTC - Hourly catch-up (05:40–06:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `43e4e27656…` (05:21:37 UTC) to head `2997cbe70a7bcb49f26b120e2a7aec58a1714039`, landed 05:55:54 UTC (2 landings 05:55 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 43e4e276..2997cbe7` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: served contract references limited to their census identities (`2997cbe70a…`, head); derived contract receipt metadata preserved for withheld sources (`81d242aa87…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the served-contract reference outcomes.
