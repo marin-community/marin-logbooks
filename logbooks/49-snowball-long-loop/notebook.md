@@ -1784,3 +1784,17 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; zero-score-audit86.json [R]; landing records [R].
 - Interpretation and limitations: the zero-score audit's acceptance covers the audited zero outcomes; the full `.86` scored aggregate is not yet published in this readback.
 - Decision and next action: hourly checks watch for the `.86` scored aggregate publication and the wave-launch outcomes.
+
+### 2026-11-20 17:40 UTC - Hourly catch-up (16:40–17:40 UTC window): exp4 step-36 Micro210 eval SEALED; Round-4 HF model published
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities; **the step-36 Micro210 eval is SEALED** (seal86-closeout.json, verified 2026-11-20 16:47:55 UTC).
+- Command or material configuration: verified via `seal86-closeout.json` [R: /experiments/active/long-loop-exp4-recovery/].
+- External inputs and artifact references: seal manifest `s3://…/long-loop-exp4/evidence/micro210-step36-seal86/manifest.json` SHA256 `f27696241087…` (29 manifest objects / 44,652,376 bytes verified); eval record `s3://marin-us-east-02a/marin/evals/long-loop-exp4-step36-micro210-sealed-20261120/record.json` SHA256 `5ed5b8cfaba6…` [P/R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **the exp4 step-36 Micro210 eval is SEALED**: attempted 440 / **scored 439** / infra-absent 1; 20 benchmarks; **scored-attempt mean 0.37632**; **mean of benchmark means 0.42503**; the GitHub comment posted at [#11337 comment 7045212856](https://github.com/marin-community/marin/issues/11337#issuecomment-7045212856) [P]. The **HF model `open-athena/Snowball-LongLoop-Round4-2026.11.19.82` @ `a744f19cc5b2…`** — best and final tags both verified at that revision. Root86 state succeeded; index exactly one row added, other bytes unchanged; policy unchanged. (The prior incomplete comment 7041444420 remains minimized/outdated.)
+- Evidence: seal86-closeout.json [R]; #11337 comment [P]; HF tags verified [P/R].
+- Interpretation and limitations: the scored-attempt mean 0.37632 / mean-of-means 0.42503 for the step-36 checkpoint is **not directly comparable to eval-61's step-20 41.07% equal-benchmark figure** (eval-61 scored only 340/440 with the agentic-preparation failure; step-36 scored 439/440). Atlas branch advanced ~8 landings — **qualified FACET v2 and v3 releases ADMITTED** (`ae6e3ff077…`, head); conversion-lineage regression verified against the producer receipt (`3fd6f82b4a…`); backend-table assertions kept on their unchanged columns; legacy-row method variants and readability checks covered; current populations resolved from typed census artifacts; receipt-qualified method tags shown for dataset variants; conversion-lineage regression formatted.
+- Evidence: landing records [R].
+- Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
+- Decision and next action: hourly checks watch for the FACET v2/v3 downstream outcomes and the exp4 RL-child submission.
