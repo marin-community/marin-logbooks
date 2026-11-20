@@ -1810,3 +1810,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three-arm87-launch.json + admission readback [R]; landing records [R].
 - Interpretation and limitations: the slice runs are in progress; their scored outcomes are pending.
 - Decision and next action: hourly checks track the three arms' progression and scored outcomes.
+
+### 2026-11-20 19:30 UTC - Correction to the 18:40 entry: EOT means END-OF-TURN, not end-of-training
+
+- Question or hypothesis and reason for trying it: coordinator correction — in the three-arm slice comparison and #11845, **EOT means END-OF-TURN** (the `<|eot_id|>` turn terminator), **not** end-of-training.
+- Published source revision: unchanged exp4 identities (three-arm87-launch.json, runtime `f87ef695ee…`).
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator correction [R]; three-arm87-launch.json [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **Corrected reading** — the three arms are **end-of-turn slice comparisons**: arm A "Exp4 final SFT359" (SFT handoff at the end-of-turn slice, model from `round4/sft-handoff/2026.11.18.76/hf`), arm B "Exp4 RL36" (RL checkpoint from `mochi-exp4-rl/2026.11.19.82/exports-recovery/2026.11.20.83/global_step_36/policy`), arm C "Exp3 final SFT387" (from `round3/sft-handoff/2026.11.16.51/hf`). My 18:40 entry's "end-of-training (EOT) slice comparison" phrasing is withdrawn; the arms compare **training-lineage checkpoints under one runtime**, where "EOT" labels the turn-terminator slicing convention used by the #11845 comparison, not a training-phase boundary.
+- Evidence: coordinator correction [R].
+- Interpretation and limitations: the arms' scored outcomes remain pending.
+- Decision and next action: hourly checks track the three arms under the corrected terminology.
