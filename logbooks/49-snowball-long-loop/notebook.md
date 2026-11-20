@@ -1760,3 +1760,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; worker tail [R].
 - Interpretation and limitations: "Terminated by user" on both inference children reads as a deliberate cutoff (matching the .76-RL-attempt kill pattern), not a crash; the underlying reason is recorded by the run's own STATUS (not yet read).
 - Decision and next action: hourly checks watch for the replacement eval and the run STATUS explanation.
+
+### 2026-11-20 15:40 UTC - Hourly catch-up (14:40–15:40 UTC window): infra-recovery eval .85 attempted and FAILED; swe-repair wave-v11
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities; a **new infra-recovery eval attempted** — `/benfeuer/mochi-exp4-micro210-infra-recovery-2026.11.20.85-coordinator-09620cf0` (source `895d4c75943d…`, base branch `benfeuer/long-loop-prototype`, policy `e0faa32c6899…`, recorded 14:58:51 UTC).
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4-micro210-infra-recovery-2026.11.20.85` at 15:40 UTC.
+- External inputs and artifact references: Iris job list [R]; `recovery85-launch.json` (recorded 14:58:51 UTC) [R]; long-loop-exp4-recovery STATUS [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the **infra-recovery eval `.85` FAILED**: prepare-model succeeded (14:58:36 UTC) but both inference children (broker + worker) were killed — "Terminated by user" (14:59:15 / 14:59:27 UTC) — and the coordinator + eval task `…-ada9c5c7648e` FAILED with "Cumulative failed task attempts exceeded max_task_failures" (15:14:01 UTC). The `.84` eval ended the same way (per the 14:40 entry); the recovery eval reproduces the same cutoff. The run's own STATUS explains the recovery intent (infra-recovery of the `.84` eval). Atlas branch advanced ~9 landings: swe-repair **wave-v11 launcher constants** (the wave follows the v11 conversion; wave launcher pinned at the staged amended driver SHA; census receipts at the v11 identity + the laion shard restore); difficulty trials routed to DATA with inventory admission; admission checks matched to the worker account configuration.
+- Evidence: Iris job list [R]; recovery85-launch.json [R]; landing records [R].
+- Interpretation and limitations: the identical kill signature on both eval attempts suggests a deliberate operational cutoff policy (matching the .76-RL kill pattern) rather than crashes; the underlying reason is recorded by the run's own STATUS/agent, not yet read.
+- Decision and next action: hourly checks watch for the recovery eval's replacement and the run-STATUS explanation of the cutoffs.
