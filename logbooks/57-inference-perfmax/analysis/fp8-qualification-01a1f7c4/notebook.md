@@ -32,3 +32,24 @@ Snowball passes all 1,770 fixed positions, four overlapping batch comparisons, 1
 Mochi's blockwise run gives token 279 probability 0.945655 at book03:769 against 0.227479 in the golden. At book04:1016 it recovers the golden's top token. Finer scales can move different tokens in different directions. The next run keeps the first 24 expert layers in BF16 and quantizes the last 24. This preserves the early residual path and keeps half of routed weights in FP8. It uses the previously tested hybrid backend code on current main. The new engine precision check verifies the selected layers on every worker.
 
 Twelve focused tests passed on each GPU type on the full-block wheel, including the new block loader case. They cost 115 H100-seconds and 107 GB200-seconds.
+
+### Activation precision and layer selection
+
+Snowball's block FP8 Triton run uses dynamically quantized FP8 expert activations. On the same DP8 topology and retention setting it passes batch, cache and decode, including all 19 exact cache cases. The fixed reference maximum is 0.302993 against 0.25. At `knowledge-longbench-02:15022`, the same token 5618 has probability 0.769889 in Levanter, 0.704756 in BF16 vLLM, 0.545471 in block Marlin and 0.466896 in block Triton. The scorer's lower and upper bounds coincide. The comparison varies the expert implementation as well as activation precision. [Aligned scores](snowball-w8a8-worst-token-scores.json)
+
+Mochi's late-24 run uses BF16 Triton in layers 0–23 and block FP8 Marlin in layers 24–47. It loads 119.52 GiB per GPU at DP8, passes batch and all cache checks, and reaches a long-reference maximum of 0.15531. It still fails the short-reference maximum at book03:769 (0.69831 against 0.65) and decode p99 (0.170644 against 0.15). A short pair compares last-16 block FP8 with all-BF16 on the same current runtime, DP8, retention zero and eight fixed histories.
+
+The first pair stopped during subset selection. The test passed a Pydantic model to a dataclass helper and stopped before scoring. These attempts used 3.05 GB200-hours. The corrected test was replayed through a local HTTP endpoint serving eight authentic retained responses, including deployment verification and 7,341 scored positions, before the second pair was submitted.
+
+The routing-order microbenchmark compares alignment alone with alignment plus the exact #133 sort helper under CUDA graph replay. For 16 to 32,768 synthetic rows after dispatch, the added median time was 62–125 microseconds on H100 and 59–129 microseconds on GB200. Each sorting call handles one routed layer. The direct single-token path skips the sort. The measurement excludes serving, inter-device dispatch and cache effects. Costs were 65 H100-seconds and 66 GB200-seconds. [H100 timings](routing-timing-x86_64-results.json), [GB200 timings](routing-timing-aarch64-results.json)
+
+### Snowball session routing
+
+The retained C64 BF16 run eased KV pressure but still used only 24–28% of prefixes in live samples against 95–97% theoretical reuse. Early samples from the FP8 C128 run also show a large gap. Test the runner's existing consistent-hash router, which uses the AgentX session header to send later turns to the same native rank. Keep C128, DP8, retention 128 and the exact wheel. Run a fresh one-hour point, with the same checks on its worker before the timed client traffic goes through the router. [Earlier cache observations](../../snowball-tuning-01a1eabe.md)
+
+```bash
+marin-env .venv/bin/python -m experiments.evaluation.knotmeter.cli run \
+  --profile logbooks/57-inference-perfmax/analysis/fp8-qualification-01a1f7c4/snowball-block.yaml \
+  --set serving.router=true --campaign fp8-qualification-snowball-01a1f7c4 \
+  --priority interactive --logbook https://github.com/marin-community/marin-logbooks/issues/57
+```
