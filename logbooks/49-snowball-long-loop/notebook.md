@@ -1724,3 +1724,27 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris child-job lists [R]; coordinator correction [R]; Echo wiki 1032 [P per coordinator].
 - Interpretation and limitations: the export-36 failure's underlying PyNccl cause is recorded in the incident, not re-derived here; the export-only rerun's outcome is pending.
 - Decision and next action: hourly checks track the export-only rerun (`…-step36-export-2026.11.20.83`), then the HF archive and Micro210; terminal state for exp4 read from job describe PLUS child job lists going forward.
+
+### 2026-11-20 13:40 UTC - Hourly catch-up (02:40–03:40+ UTC window): step-36 Micro210 eval launched (correcting the export rerun)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the failed export-36 (harbor-recovery `.82`), the succeeded RL training child, and the new eval.
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4` at 13:33 UTC: the **step-36 Micro210 eval `2026.11.20.84` is RUNNING** — coordinator `…-12c76291` (submitted 12:43:40 UTC), prepare-model **succeeded** (12:44:49 UTC), inference-broker **running** (12:45:27 UTC), inference-worker **running** (12:45:42 UTC). **No jobs exist under the earlier `/benfeuer/mochi-exp4-step36-export-2026.11.20.83` prefix** — the export-only rerun the coordinator named was apparently superseded/replaced by the direct Micro210 eval; my 03:45 correction's export-rerun line is accordingly provisional and now superseded.
+- External inputs and artifact references: Iris job list [R]; #11337 (expected to carry the scored outcome when complete).
+- Environment and hardware when relevant: the eval lane is the 128-inference-GPU + judge pattern from eval-61.
+- Result, including failure or restart: **the step-36 Micro210 evaluation has been launched directly** (`2026.11.20.84`) rather than via the export-only rerun named at 03:45 UTC; prepare-model succeeded and the inference broker/worker are running. The failed export-36 remains terminal (the new eval does not depend on it).
+- Evidence: Iris job list [R].
+- Interpretation and limitations: the eval is in progress; the scored outcome is pending.
+- Decision and next action: hourly checks track the eval's completion and the scored outcome.
+
+### 2026-11-20 13:40 UTC - Hourly catch-up addendum: step-36 Micro210 eval launched directly (2026.11.20.84)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the failed export-36 (harbor-recovery `.82`), the succeeded RL training child, and the new eval.
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4` at 13:33 UTC: the **step-36 Micro210 eval `2026.11.20.84` is RUNNING** — coordinator `…-12c76291` (submitted 12:43:40 UTC), prepare-model **succeeded** (12:44:49 UTC), inference-broker **running** (12:45:27 UTC), inference-worker **running** (12:45:42 UTC). **No jobs exist under the earlier `/benfeuer/mochi-exp4-step36-export-2026.11.20.83` prefix** — the export-only rerun named at 03:45 UTC was superseded/replaced by the direct Micro210 eval; the 03:45 correction's export-rerun line is accordingly provisional and now superseded.
+- External inputs and artifact references: Iris job list [R].
+- Environment and hardware when relevant: the eval lane is the 128-inference-GPU + judge pattern from eval-61.
+- Result, including failure or restart: **the step-36 Micro210 evaluation has been launched directly** (`2026.11.20.84`) rather than via the export-only rerun; prepare-model succeeded and the inference broker/worker are running. The failed export-36 remains terminal (the new eval does not depend on it).
+- Evidence: Iris job list [R].
+- Interpretation and limitations: the eval is in progress; the scored outcome is pending.
+- Decision and next action: hourly checks track the eval's completion and the scored outcome.
