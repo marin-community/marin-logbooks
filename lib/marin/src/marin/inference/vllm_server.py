@@ -49,6 +49,8 @@ from marin.inference.config import (
     InferenceModelConfig,
     VllmCompilationCacheMode,
     VllmRouterConfig,
+    normalize_vllm_option,
+    vllm_option_flags,
 )
 from marin.inference.vllm_cache import VllmCompilationCache, VllmCompileIdentity
 from marin.inference.vllm_release import (
@@ -777,19 +779,51 @@ def _get_first_model_id(server_url: str) -> str:
 
 
 def _router_data_parallel_size(extra_cli_args: Sequence[str]) -> int:
-    """Read the native ranks reachable behind vLLM's global internal DP frontend."""
+    """Return configured global DP size; reject balancing modes that hide ranks."""
     parser = argparse.ArgumentParser(add_help=False, allow_abbrev=False)
     parser.add_argument(*VLLM_DATA_PARALLEL_SIZE_FLAGS, type=int, default=1)
-    parser.add_argument("--data-parallel-hybrid-lb", action="store_true")
-    parser.add_argument("--data-parallel-external-lb", action="store_true")
-    topology, _ = parser.parse_known_args(extra_cli_args)
-    if topology.data_parallel_hybrid_lb or topology.data_parallel_external_lb:
+    parser.add_argument(*vllm_option_flags("--data-parallel-size-local"), type=int)
+    parser.add_argument(*vllm_option_flags("--data-parallel-rank"), type=int)
+    parser.add_argument(*vllm_option_flags("--data-parallel-start-rank"), type=int)
+    parser.add_argument(*vllm_option_flags("--nnodes"), type=int, default=1)
+    parser.add_argument("--headless", action="store_true")
+    parser.add_argument(*vllm_option_flags("--data-parallel-hybrid-lb"), action=argparse.BooleanOptionalAction)
+    parser.add_argument(*vllm_option_flags("--data-parallel-external-lb"), action=argparse.BooleanOptionalAction)
+    parser.add_argument(
+        *vllm_option_flags("--data-parallel-multi-port-external-lb"), action=argparse.BooleanOptionalAction
+    )
+    native_args = []
+    for arg in extra_cli_args:
+        option, equals, value = arg.partition("=")
+        native_args.append(f"{normalize_vllm_option(option)}{equals}{value}")
+    topology, _ = parser.parse_known_args(native_args)
+    local_dp = topology.data_parallel_size_local
+    if local_dp is None and topology.nnodes > 1:
+        local_dp = max(topology.data_parallel_size // topology.nnodes, 1)
+    # A rank selects external balancing; a partial local group with a start rank
+    # selects hybrid balancing even without an explicit load-balancer flag.
+    if (
+        topology.data_parallel_hybrid_lb
+        or topology.data_parallel_external_lb
+        or topology.data_parallel_multi_port_external_lb
+        or topology.data_parallel_rank is not None
+        or (
+            not topology.headless
+            and topology.data_parallel_start_rank is not None
+            and local_dp is not None
+            and local_dp != topology.data_parallel_size
+        )
+    ):
         raise ValueError("session routing requires vLLM's global internal DP load balancer")
     return topology.data_parallel_size
 
 
 class VllmEnvironment:
-    """Manage vLLM server lifecycle and eval-client configuration."""
+    """Manage native vLLM and an optional router.
+
+    With ``wait_for_ready=False``, call ``wait_until_ready()`` before using ``server_url``.
+    Router rank count comes from the final native arguments.
+    """
 
     def __init__(
         self,
@@ -802,8 +836,6 @@ class VllmEnvironment:
         launcher: VllmLauncher | None = None,
         compilation_cache_mode: VllmCompilationCacheMode = VllmCompilationCacheMode.MANAGED,
         extra_metric_families: frozenset[str] = frozenset(),
-        collect_metrics: bool = True,
-        collect_nccl: bool = True,
         router: VllmRouterConfig | None = None,
         router_port: int | None = None,
         wait_for_ready: bool = True,
@@ -820,8 +852,6 @@ class VllmEnvironment:
         self.launcher: VllmLauncher = launcher or PreinstalledVllm()
         self.compilation_cache_mode = compilation_cache_mode
         self.extra_metric_families = extra_metric_families
-        self.collect_metrics = collect_metrics
-        self.collect_nccl = collect_nccl
         self.router_config = router
         self.router_port = router_port
         self.router: RunningVllmRouter | None = None
@@ -870,7 +900,7 @@ class VllmEnvironment:
         *,
         poll_interval_seconds: float = 5,
     ) -> None:
-        """Wait once for the running vLLM process to become HTTP-ready."""
+        """Wait for native vLLM and the optional router to become HTTP-ready."""
         if self.model_id is not None:
             return
         if self.vllm_server is None:
@@ -892,15 +922,13 @@ class VllmEnvironment:
                 host=self.host,
                 launcher=self.launcher,
                 extra_metric_families=self.extra_metric_families,
-                collect_metrics=self.collect_metrics,
-                collect_nccl=self.collect_nccl,
             )
             self.model_id = _get_first_model_id(self.vllm_server.server_url)
             if self.router_config is not None:
                 self.router = self._router_context.enter_context(
                     vllm_router(
                         self.router_config,
-                        (self.worker_server_url.removesuffix(OPENAI_API_SUFFIX),),
+                        self.worker_server_url.removesuffix(OPENAI_API_SUFFIX),
                         data_parallel_size=self._router_data_parallel_size,
                         host=self.host,
                         port=self.router_port,
@@ -947,23 +975,29 @@ class VllmEnvironment:
 
     @property
     def command(self) -> tuple[str, ...]:
-        """Return the effective argv of the running server."""
+        """Return the effective argv used to launch the native vLLM process."""
         if self._command is None:
             raise RuntimeError("vLLM server is not running in this environment.")
         return tuple(self._command)
 
     @property
     def server_url(self) -> str:
+        """OpenAI URL, including ``/v1``; routed after readiness when enabled."""
         if self.router is not None:
             return self.router.server_url
         return self.worker_server_url
 
     @property
     def worker_server_url(self) -> str:
-        """Direct worker URL; worker metrics remain here when routing is enabled."""
+        """Direct native OpenAI URL, including ``/v1``."""
         if self.vllm_server is None:
             raise RuntimeError("vLLM server is not running in this environment.")
         return self.vllm_server.server_url
+
+    @property
+    def metrics_url(self) -> str:
+        """Native worker metrics URL, including ``/metrics``, with or without routing."""
+        return f"{self.worker_server_url.removesuffix(OPENAI_API_SUFFIX)}/metrics"
 
     def debug_snapshot(self) -> dict[str, str | int | None]:
         return {
@@ -1240,7 +1274,7 @@ def _start_vllm_native_process(
         port=port,
         extra_cli_args=extra_cli_args,
     )
-    logger.info("vLLM runtime: %s; command: %s", launcher.cache_identity(), command)
+    logger.info("vLLM runtime: %s", launcher.cache_identity())
     log_dir = tempfile.mkdtemp(prefix=log_prefix)
     cache, native_env = _prepare_vllm_compilation_cache(
         model_name_or_path=model_name_or_path,
@@ -1318,12 +1352,8 @@ def _configure_vllm_telemetry(
     host: str,
     launcher: VllmLauncher,
     extra_metric_families: frozenset[str],
-    collect_metrics: bool = True,
-    collect_nccl: bool = True,
 ) -> VllmServerHandle:
     """Attach telemetry collectors after a native vLLM server is ready."""
-    if not collect_metrics and not collect_nccl:
-        return handle
     # Now that the server answers, forward its /metrics (throughput, TTFT, queue depth) to
     # direct telemetry so it reaches Finelog. The metrics endpoint sits at the root, not under /v1.
     runtime_telemetry.configure(
@@ -1332,24 +1362,22 @@ def _configure_vllm_telemetry(
     )
     if not telemetry.runtime_status().configured:
         return handle
-    metrics_collector = None
-    if collect_metrics:
-        metrics_url = f"http://{host}:{handle.port}/metrics"
-        metrics_collector = PrometheusCollector(
-            metric_source=_VLLM_METRICS_SERVICE,
-            scraper=PrometheusScraper(metrics_url),
-            processor=functools.partial(
-                _vllm_metric_snapshots,
-                family_names=STANDARD_VLLM_METRIC_FAMILIES | extra_metric_families,
-            ),
-            publisher=_VllmMetricSnapshotPublisher(
-                max_records=_VLLM_METRIC_SAMPLE_LIMIT,
-                attributes={"metric_source": _VLLM_METRICS_SERVICE},
-            ),
-        )
-        metrics_collector.start()
-        logger.info("Forwarding vLLM metrics from %s to Finelog telemetry", metrics_url)
-    nccl_probe = nccl.start() if collect_nccl and _starts_nccl_ras_probe(launcher) else None
+    metrics_url = f"http://{host}:{handle.port}/metrics"
+    metrics_collector = PrometheusCollector(
+        metric_source=_VLLM_METRICS_SERVICE,
+        scraper=PrometheusScraper(metrics_url),
+        processor=functools.partial(
+            _vllm_metric_snapshots,
+            family_names=STANDARD_VLLM_METRIC_FAMILIES | extra_metric_families,
+        ),
+        publisher=_VllmMetricSnapshotPublisher(
+            max_records=_VLLM_METRIC_SAMPLE_LIMIT,
+            attributes={"metric_source": _VLLM_METRICS_SERVICE},
+        ),
+    )
+    metrics_collector.start()
+    logger.info("Forwarding vLLM metrics from %s to Finelog telemetry", metrics_url)
+    nccl_probe = nccl.start() if _starts_nccl_ras_probe(launcher) else None
     return dataclasses.replace(
         handle,
         metrics_collector=metrics_collector,

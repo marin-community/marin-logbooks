@@ -7,45 +7,16 @@ import json
 import platform
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import quote
-
-import draccus
 
 from marin.external_dependencies import VllmGpuRelease, VllmGpuWheel
+from marin.inference.vllm_release_schema import release_from_manifest
 
 
-def load_vllm_gpu_release(path: Path) -> VllmGpuRelease:
-    """Read a release or experimental build manifest without changing shared defaults."""
-    record = json.loads(path.read_text())
-    if "release" in record:
-        release = record["release"]
-        if (
-            release["repository"] != "marin-community/vllm"
-            or release["status"] != "released"
-            or record["validation"]["status"] != "passed"
-        ):
-            raise ValueError("A GPU override requires a validated published Marin release")
-        tag = release["tag"]
-        record = {
-            "release_tag": tag,
-            "source_commit": record["source"]["fork_commit"],
-            "version": record["distribution"]["version"],
-            "torch_backend": record["abi"]["cuda_variant"],
-            "torch_version": record["abi"]["torch_version"],
-            "wheels": [
-                {
-                    "architecture": platform["architecture"],
-                    "sm_targets": platform["sm_targets"],
-                    "url": (
-                        f"https://github.com/marin-community/vllm/releases/download/{tag}/"
-                        + quote(platform["wheel"]["filename"], safe="")
-                    ),
-                    "sha256": platform["wheel"]["sha256"],
-                }
-                for platform in record["platforms"]
-            ],
-        }
-    return draccus.decode(VllmGpuRelease, record)
+def load_vllm_gpu_release(path: Path | None) -> VllmGpuRelease | None:
+    """Load a published GPU release manifest, or return None when no path is given."""
+    if path is None:
+        return None
+    return release_from_manifest(json.loads(path.read_text()), path)
 
 
 @dataclass(frozen=True)

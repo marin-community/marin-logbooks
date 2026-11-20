@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Own a released vLLM Router process without importing its Python package."""
+"""Manage the isolated vLLM Router process."""
 
 import contextlib
 import logging
@@ -10,7 +10,7 @@ import signal
 import socket
 import subprocess
 import tempfile
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -23,6 +23,7 @@ from marin.inference.config import WORKER_PYTHON_VERSION, VllmRouterConfig
 logger = logging.getLogger(__name__)
 VLLM_ROUTER_VERSION = "0.1.16"
 _ROUTER_SHUTDOWN_TIMEOUT = 10
+_ROUTER_PROBE_TIMEOUT = 5
 
 
 def available_port(host: str) -> int:
@@ -52,7 +53,7 @@ class RunningVllmRouter:
 @contextlib.contextmanager
 def vllm_router(
     config: VllmRouterConfig,
-    worker_urls: Sequence[str],
+    worker_url: str,
     *,
     data_parallel_size: int,
     host: str = "127.0.0.1",
@@ -60,15 +61,10 @@ def vllm_router(
     startup_timeout_seconds: float = 600,
     check_dependencies: Callable[[], None] = lambda: None,
 ) -> Iterator[RunningVllmRouter]:
-    """Start the pinned router and yield only after workers and routes are ready.
+    """Route global DP ranks behind one vLLM HTTP root (without ``/v1``).
 
-    Worker URLs are HTTP roots, without ``/v1``. Each exposes ``data_parallel_size``
-    native ranks, including remote ranks behind a global DP frontend.
-    The caller owns the workers; this context owns only the router.
-    Logs flow to the job and remain in the reported directory after shutdown.
+    Yield after the worker and router are ready. The caller owns the worker.
     """
-    if not worker_urls:
-        raise ValueError("vLLM Router requires at least one worker URL")
     if data_parallel_size < 1:
         raise ValueError("router data parallel size must be positive")
     port = available_port(host) if port is None else port
@@ -85,7 +81,7 @@ def vllm_router(
         "--port",
         str(port),
         "--worker-urls",
-        *worker_urls,
+        worker_url,
         "--policy",
         "consistent_hash",
         "--intra-node-data-parallel-size",
@@ -121,22 +117,23 @@ def vllm_router(
             try:
                 root = router.server_url.removesuffix(OPENAI_API_SUFFIX)
                 return (
-                    all(requests.get(f"{worker}/health", timeout=5).status_code == 200 for worker in worker_urls)
-                    and requests.get(f"{root}/health", timeout=5).status_code == 200
-                    and requests.get(f"{router.server_url}/models", timeout=5).status_code == 200
+                    requests.get(f"{worker_url}/health", timeout=_ROUTER_PROBE_TIMEOUT).status_code == 200
+                    and requests.get(f"{root}/health", timeout=_ROUTER_PROBE_TIMEOUT).status_code == 200
+                    and requests.get(f"{router.server_url}/models", timeout=_ROUTER_PROBE_TIMEOUT).status_code == 200
                 )
             except (requests.ConnectionError, requests.Timeout):
                 return False
 
-        ExponentialBackoff(initial=0.1, maximum=2).wait_until_or_raise(
-            ready,
-            timeout=Duration.from_seconds(startup_timeout_seconds),
-            error_message=f"vLLM Router did not become ready; logs: {log_dir}",
-        )
+        try:
+            ExponentialBackoff(initial=0.1, maximum=2).wait_until_or_raise(
+                ready,
+                timeout=Duration.from_seconds(startup_timeout_seconds),
+                error_message=f"vLLM Router did not become ready; logs: {log_dir}",
+            )
+        except Exception:
+            logger.error("vLLM Router startup failed; logs: %s\n%s", log_dir, router.logs_tail())
+            raise
         yield router
-    except Exception:
-        logger.error("vLLM Router failed; logs: %s\n%s", log_dir, router.logs_tail())
-        raise
     finally:
         # Signal the session even if uvx's parent already exited. A surviving
         # Python/Rust child must not retain the listener after a failed launch.
