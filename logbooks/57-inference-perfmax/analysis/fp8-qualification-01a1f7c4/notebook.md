@@ -59,3 +59,14 @@ marin-env .venv/bin/python -m experiments.evaluation.knotmeter.cli run \
 The BF16 control passes the eight-history probe. At book03:769 the measured reference error is 0.581942 in BF16 and 0.732109 with the last 16 expert layers in block FP8. The short p99 values are 0.083103 and 0.113886. The long checks pass in both. Model-load memory falls from 149.42 to 129.49 GiB per GPU (13.3%) at matched DP8. This is a rejected precision setting. The retries cost 4,372 GB200-seconds for BF16 and 4,608 for late-16 FP8.
 
 Reducing the late block selection from 24 to 16 layers made the worst token further from the golden. Test two separate changes from late-16 block at DP8. Move the same block FP8 coverage to layers 16–31, which leaves the final third in BF16. On the last 16 layers, try per-tensor scales, whose retained all-layer result was closer on the limiting token. Both use the same short probe and the same 16 of 48 expert layers. A short pass will select a candidate for the full suite.
+
+The middle-16 block run passes all eight histories. Short maximum and p99 are 0.614273 and 0.101123. The late-16 tensor run reaches 0.655094 on the same worst token, down from 0.732109 for late-16 block. It still exceeds the 0.65 maximum and has a subset p99 of 0.125352. Middle-16 costs 4,416 GB200-seconds and late-16 tensor costs 4,424. Preserve the layer placement for the full DP16/C64 point with the same runtime and retention zero. The changed expert partition and the untested histories, batches and decode steps all still need validation.
+
+The BF16 control already differs from the golden. The saved Levanter short run used BF16 from the fixed checkpoint, the dropless Sonic CuTe experts and zero reported routing overflow. Current vLLM's Mochi router also rounds its dot product to BF16 before FP32 bias and top-k. Levanter casts the resulting routing combine weights to BF16 while vLLM's router returns them in FP32. This and differences in expert and attention arithmetic are possible contributors. The retained responses cannot assign the error to one of them. [Aligned DP8 scores](matched-mochi-dp8-scores.json)
+
+```bash
+marin-env .venv/bin/python -m experiments.evaluation.knotmeter.cli run \
+  --profile logbooks/57-inference-perfmax/analysis/fp8-qualification-01a1f7c4/mochi-mid16-block.yaml \
+  --set gpus.count=16 --session-concurrency 64 --campaign fp8-qualification-mochi-01a1f7c4 \
+  --priority interactive --logbook https://github.com/marin-community/marin-logbooks/issues/57
+```
