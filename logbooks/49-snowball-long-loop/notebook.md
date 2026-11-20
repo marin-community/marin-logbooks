@@ -1748,3 +1748,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R].
 - Interpretation and limitations: the eval is in progress; the scored outcome is pending.
 - Decision and next action: hourly checks track the eval's completion and the scored outcome.
+
+### 2026-11-20 14:40 UTC - Hourly catch-up (13:40–14:40 UTC window): the 84 Micro210 eval ended with both inference children killed by user; eval child succeeded
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the step-36 Micro210 eval `2026.11.20.84`.
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4-step36-micro210-2026.11.20.84` at 14:33 UTC.
+- External inputs and artifact references: Iris job list [R]; `restart55-tail-python-core-worker-…14407.log` (worker tail, ray task-event stats) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **the `.84` eval ended** (Iris at 14:33 UTC): the eval task `…-ac3c467db45c` and the coordinator both **succeeded**; prepare-model succeeded; but **both inference children (broker and worker) were killed — "Terminated by user"** (12:45 launches; the worker's ray tail shows ~143k task events with 1 still active at shutdown — the inference lane was cut off mid-run, not failed). The scored outcome of the `.84` eval is therefore not available in this readback; a follow-up eval/relaunch is expected from the run's own STATUS. No new exp3 scored outcome beyond the sealed eval-61 (41.07% equal-benchmark).
+- Evidence: Iris job list [R]; worker tail [R].
+- Interpretation and limitations: "Terminated by user" on both inference children reads as a deliberate cutoff (matching the .76-RL-attempt kill pattern), not a crash; the underlying reason is recorded by the run's own STATUS (not yet read).
+- Decision and next action: hourly checks watch for the replacement eval and the run STATUS explanation.
