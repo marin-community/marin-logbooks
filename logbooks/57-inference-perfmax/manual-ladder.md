@@ -88,4 +88,10 @@ The [evidence bundle](s3://marin-us-east-02a/marin/knotmeter/validation/manual-l
 contains test logs, live metadata, reader packets and responses, reviews and their
 resolution. Its uploaded bytes were read back and matched SHA-256
 `a3d10be1edff37e198218833c0b1ab2fd3e7a512091f257471938e6c99776a12`. Raw native AgentX archives remain at each trial's receipt URL.
-Filer requires Marina login. Current PR CI is pending.
+Filer requires Marina login. CI for `4546acc39a32` finished with 19 successful checks and 20 skipped checks.
+No failures remain. No new or edited review feedback arrived; all four review
+threads are resolved.
+
+The [handoff supplement](s3://marin-us-east-02a/marin/knotmeter/validation/manual-ladder-20261120-01a1d379/handoff-3d3836c0175038a22780ab7788ded0456b3d4ce9cf45237580899e4aedb9f28b.tar.zst) · [Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-02a%2Fmarin%2Fknotmeter%2Fvalidation%2Fmanual-ladder-20261120-01a1d379%2Fhandoff-3d3836c0175038a22780ab7788ded0456b3d4ce9cf45237580899e4aedb9f28b.tar.zst)
+retains the terminal CI snapshot, advisory responses and prose-reader findings.
+Its uploaded bytes matched SHA-256 `3d3836c0175038a22780ab7788ded0456b3d4ce9cf45237580899e4aedb9f28b` on readback.
