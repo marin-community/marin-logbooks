@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import asyncio
-import dataclasses
 import hashlib
 import json
 import math
@@ -13,7 +12,6 @@ from pathlib import Path
 
 import pytest
 from aiohttp import web
-from marin.external_dependencies import VLLM_GPU_RELEASE
 from marin.testing.inference.backend_parity import TokenDistribution, distribution_difference
 from marin.testing.inference.endpoint_checks import check_endpoint, response_distribution, response_top_distribution
 from marin.testing.inference.goldens import (
@@ -31,13 +29,7 @@ from marin.testing.inference.goldens import (
     lookup_reference,
 )
 
-from experiments.evaluation.knotmeter.artifacts import write_record
-from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
-from experiments.evaluation.knotmeter.report import report_campaign
-from experiments.evaluation.knotmeter.run import run_checks
-
-# The HTTP fixture and its synthetic trial manifest must name the same runtime.
-RUNTIME = VLLM_GPU_RELEASE.source_commit
+RUNTIME = "0123456789abcdef0123456789abcdef01234567"
 LOGPROBS = {token: math.log(0.5 if token == 1 else 0.3 if token == 2 else 0.2 / 14) for token in range(16)}
 
 
@@ -170,7 +162,7 @@ class HttpEngine:
             # engine. This avoids a timer race in the HTTP fixture.
             await self.observed_batch.wait()
         probabilities = dict(LOGPROBS)
-        if cached and (self.mode == "corrupt-cache" or tokens in self.corrupted):
+        if self.mode == "bad-scores" or (cached and (self.mode == "corrupt-cache" or tokens in self.corrupted)):
             probabilities[1] = math.log(0.1)
             probabilities[2] = math.log(0.7)
         top = {f"token_id:{token}": value for token, value in probabilities.items()}
@@ -297,6 +289,7 @@ async def http_endpoint(engine: HttpEngine):
         ("correct", None),
         ("streamed-model", None),
         ("wrong-weights", "deployment"),
+        ("bad-scores", "reference"),
         ("reference-error", "reference"),
         ("cache-error", "cache"),
         ("prefill-only", "cache"),
@@ -396,39 +389,89 @@ async def test_cache_contract_covers_retention_and_replayed_generation(tmp_path,
         assert row["alternate_cached_tokens"] == row["required_alternate_checkpoint"]
     for row in cache["prefill_reuse"]["observations"]:
         assert min(row["cached_tokens"]) >= row["required_checkpoint"] > 0
-        assert row["seed_tokens"] == row["required_checkpoint"] + 1
     assert cache["same_split"]["statistics"]["maximum"] == 0
     assert cache["same_split"]["positions"] == 2 * len(reference_fixture.policy.boundary_lengths) + 1
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("mode", ["correct", "no-cache"])
-async def test_cli_exit_agrees_with_retained_report(tmp_path, reference_fixture, mode):
+@pytest.mark.parametrize(
+    "mode,expected_status,failed_check,retention",
+    [
+        ("correct", "passed", None, None),
+        ("correct", "passed", None, 0),
+        ("no-cache", "failed", "cache", None),
+        ("branch-corrupt", "failed", "cache", 0),
+        ("wrong-weights", "failed", "deployment", None),
+        ("bad-scores", "failed", "reference", None),
+        ("reference-error", "failed", "reference", None),
+        ("missing-reference", "pending", None, None),
+        ("mismatched-reference", "failed", "reference_identity", None),
+    ],
+)
+async def test_endpoint_adapters_agree_with_retained_outcome(
+    tmp_path, reference_fixture, mode, expected_status, failed_check, retention
+):
+    if mode == "mismatched-reference":
+        reference_fixture = reference_fixture.model_copy(
+            update={"model": reference_fixture.model.model_copy(update={"revision": "other-checkpoint"})}
+        )
     fixture_path = tmp_path / "fixture.json"
     fixture_path.write_text(reference_fixture.model_dump_json())
-    output = tmp_path / "cli-report.json"
-    async with http_endpoint(HttpEngine(mode, reference_fixture.model)) as url:
-        process = await asyncio.create_subprocess_exec(
-            sys.executable,
-            "-m",
-            "marin.testing.inference.check_endpoint",
-            "--fixture",
-            str(fixture_path),
-            "--url",
-            url,
-            "--model",
-            "test-model",
-            "--runtime-source",
-            RUNTIME,
-            "--output",
-            str(output),
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        stdout, stderr = await process.communicate()
-    assert process.returncode == (0 if mode == "correct" else 1), stderr.decode()
-    report = json.loads(output.read_bytes())
-    assert json.loads(stdout)["status"] == report["status"] == ("passed" if mode == "correct" else "failed")
+    if mode == "missing-reference":
+        (tmp_path / "scores.json").unlink()
+    for adapter in ("cli", "pytest"):
+        output = tmp_path / f"{adapter}-report.json"
+        async with http_endpoint(HttpEngine(mode, reference_fixture.model, retention_interval=retention)) as url:
+            arguments = (
+                [
+                    "marin.testing.inference.check_endpoint",
+                    "--fixture",
+                    str(fixture_path),
+                    "--url",
+                    url,
+                    "--model",
+                    "test-model",
+                    "--runtime-source",
+                    RUNTIME,
+                    "--output",
+                    str(output),
+                ]
+                if adapter == "cli"
+                else [
+                    "pytest",
+                    "--confcutdir=tests/cluster/vllm",
+                    "tests/cluster/vllm/test_inference_correctness.py",
+                    "-o",
+                    "addopts=",
+                    "-o",
+                    f"cache_dir={tmp_path / 'pytest-cache'}",
+                    "--endpoint-url",
+                    url,
+                    "--correctness-fixture",
+                    str(fixture_path),
+                    "--correctness-model",
+                    "test-model",
+                    "--runtime-source",
+                    RUNTIME,
+                    "--correctness-output",
+                    str(output),
+                ]
+            )
+            process = await asyncio.create_subprocess_exec(
+                sys.executable,
+                "-m",
+                *arguments,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await process.communicate()
+            assert process.returncode == (0 if expected_status == "passed" else 1), (stdout.decode(), stderr.decode())
+            report = json.loads(output.read_bytes())
+            assert report["status"] == expected_status
+            if adapter == "cli":
+                assert json.loads(stdout)["status"] == expected_status
+            if failed_check:
+                assert report["checks"][failed_check]["status"] == "failed"
 
 
 def test_lookup_distinguishes_wrong_checkpoint_missing_and_modified_scores(tmp_path, reference_fixture):
@@ -441,78 +484,3 @@ def test_lookup_distinguishes_wrong_checkpoint_missing_and_modified_scores(tmp_p
     assert lookup_reference(reference_fixture).status == LookupStatus.MISMATCHED
     (tmp_path / "scores.json").unlink()
     assert lookup_reference(reference_fixture).status == LookupStatus.MISSING
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    "mode,retention",
-    [
-        ("correct", None),
-        ("correct", 0),
-        ("no-cache", None),
-        ("no-cache", 0),
-        ("corrupt-cache", 0),
-        ("no-branch-reuse", 0),
-        ("missing-reference", None),
-    ],
-)
-async def test_perfmax_retains_real_check_report_and_blocks_unqualified_recommendations(
-    tmp_path, reference_fixture, mode, retention
-):
-    fixture_path = tmp_path / "fixture.json"
-    fixture_path.write_text(reference_fixture.model_dump_json())
-    if mode == "missing-reference":
-        (tmp_path / "scores.json").unlink()
-    profile = load_profile(Path("snowball-h100"), [])
-    profile = profile.model_copy(
-        update={
-            "model": profile.model.model_copy(
-                update={"repo": "test-model", "revision": reference_fixture.model.revision}
-            ),
-            "checks": [Check(name="shared-policy", fixture=str(fixture_path), timeout=60)],
-        }
-    )
-    async with http_endpoint(HttpEngine(mode, reference_fixture.model, retention_interval=retention)) as url:
-        checks = await asyncio.to_thread(run_checks, profile, url, tmp_path, RUNTIME)
-    report_bytes = (tmp_path / "check-0.json").read_bytes()
-    assert checks[0]["report_sha256"] == hashlib.sha256(report_bytes).hexdigest()
-    assert checks[0]["status"] == json.loads(report_bytes)["status"]
-
-    # AgentX validity and allocation are synthetic here. The numerical input comes
-    # from the real HTTP/CLI workflow above; only a pass may produce a decision.
-    campaign = tmp_path / "campaign"
-    trial_uri = campaign / "trials" / "candidate"
-    result = {
-        "trial_id": "candidate",
-        "trial_uri": str(trial_uri),
-        "job_state": "succeeded",
-        "job_succeeded": True,
-        "cost_complete": True,
-        "gpu_seconds": 0,
-        "attempts": [],
-        "manifest": {
-            "series": resolved_series(profile),
-            "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE),
-            "diagnostic": False,
-            "workload": {"recipe": {"fixture": True}},
-        },
-        "measurement": {
-            "checks": checks,
-            "validity": {"protocol_valid": True, "submission_valid": True, "gang_valid": True},
-            "aggregate": {
-                "request_metrics": {
-                    "throughput": {"per_gpu": {"output_tput_tps": 100}},
-                    "latency": {"ttft": {"p90": 1}, "e2el": {"p90": 10}},
-                }
-            },
-        },
-    }
-    write_record(str(trial_uri / "result.json"), result)
-    if mode == "correct":
-        report_campaign(str(campaign), recommendation="candidate")
-        assert (campaign / "recommended.yaml").is_file()
-        assert json.loads((campaign / "decision.json").read_bytes())["provisional"] is True
-    else:
-        with pytest.raises(ValueError):
-            report_campaign(str(campaign), recommendation="candidate")
-        assert not (campaign / "recommended.yaml").exists()

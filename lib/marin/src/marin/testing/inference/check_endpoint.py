@@ -6,7 +6,6 @@
 import argparse
 import asyncio
 import json
-import os
 from pathlib import Path
 
 from marin.testing.inference.endpoint_checks import check_endpoint
@@ -17,10 +16,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fixture", required=True, help="Path to a JSON fixture")
     parser.add_argument("--lookup", action="store_true", help="Verify saved artifacts without contacting a server")
-    parser.add_argument("--url", default=os.environ.get("KNOTMETER_SERVER_URL"))
-    parser.add_argument("--model", default=os.environ.get("KNOTMETER_MODEL"))
-    parser.add_argument("--runtime-source", default=os.environ.get("KNOTMETER_RUNTIME_SOURCE"))
-    parser.add_argument("--output", type=Path, default=os.environ.get("KNOTMETER_CHECK_OUTPUT", "correctness.json"))
+    parser.add_argument("--url", help="Dedicated vLLM endpoint URL")
+    parser.add_argument("--model", help="Served model name")
+    parser.add_argument("--runtime-source", help="Expected vLLM source commit")
+    parser.add_argument("--output", type=Path, default=Path("correctness.json"))
     args = parser.parse_args()
     fixture = read_fixture(args.fixture)
     if args.lookup:
@@ -35,7 +34,7 @@ def main() -> None:
         print(json.dumps(result, indent=2))
         raise SystemExit(0 if found.status == LookupStatus.FOUND else 1)
     if not args.url or not args.model or not args.runtime_source:
-        parser.error("Supply --url, --model and --runtime-source, or their KNOTMETER environment variables")
+        parser.error("Supply --url, --model and --runtime-source")
     report = asyncio.run(check_endpoint(args.url, args.model, fixture, args.runtime_source, args.output))
     print(
         json.dumps(

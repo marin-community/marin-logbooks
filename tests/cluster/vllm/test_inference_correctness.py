@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""The runtime-adoption and perfmax endpoint contract, under candidate settings."""
+"""Run the shared checker against an existing dedicated vLLM endpoint."""
 
 import asyncio
 
@@ -9,7 +9,7 @@ import pytest
 from marin.testing.inference.endpoint_checks import check_endpoint
 
 
-@pytest.mark.cluster
+@pytest.mark.manual
 @pytest.mark.timeout(10800)
 def test_candidate_matches_shared_correctness_policy(correctness_endpoint):
     endpoint = correctness_endpoint
