@@ -1798,3 +1798,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: landing records [R].
 - Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
 - Decision and next action: hourly checks watch for the FACET v2/v3 downstream outcomes and the exp4 RL-child submission.
+
+### 2026-11-20 18:40 UTC - Hourly catch-up (17:40–18:40 UTC window): three-arm end-of-training slice comparison launched
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: **a three-arm end-of-training (EOT) slice comparison launched** (`three-arm87-launch.json`, recorded 14:58+ timestamps 18:18:26–18:18:57 UTC; runtime revision `f87ef695ee…`, regional preflight SHA `28c30204f2…`): **arm A "Exp4 final SFT359"** (`/benfeuer/mochi-exp4-eot-slice-a-2026.11.20.87-coordinator-589264c5`, model from `…round4/sft-handoff/2026.11.18.76/hf`); **arm B "Exp4 RL36"** (`…-a868e636`, model from `…mochi-exp4-rl/2026.11.19.82/exports-recovery/2026.11.20.83/global_step_36/policy`); **arm C "Exp3 final SFT387"** (`…-784d9db7`, model from `…round3/sft-handoff/2026.11.16.51/hf`). Iris at 18:33 readback: arms B and C **running**; arm A running with prepare-model **pending**.
+- Command or material configuration: verified via `uv run iris --cluster=marin job list` at 18:33 UTC.
+- External inputs and artifact references: `sft-rl-slice/three-arm87-launch.json`, `admission87-first.txt` [R: /experiments/active/long-loop-exp4-recovery/sft-rl-slice/].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the **three-arm EOT slice comparison launched** — comparing exp4-final-SFT (359), exp4-RL (step 36), and exp3-final-SFT (387) under one runtime revision, with the first admission readback captured. Atlas branch advanced ~6 landings: campaign publication scoped to selected sources (`e277ba6b1d…`, head); repair lineage and FineEnvs sharing acknowledged (`5bd0b89025…`); the current qualified declaration test model used (`7b80469943…`); consumer-blocked populations kept pending in catalog counts (`bf75fadeaa…`); consumer receipts required before Atlas admission (`f606b980b8…`); **Scale-SWE and SWE-Lego admitted from verified v3 controls** (`f6ce7fdd63…`).
+- Evidence: three-arm87-launch.json + admission readback [R]; landing records [R].
+- Interpretation and limitations: the slice runs are in progress; their scored outcomes are pending.
+- Decision and next action: hourly checks track the three arms' progression and scored outcomes.
