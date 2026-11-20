@@ -122,3 +122,17 @@ AgentX reports a GPU prefix-hit rate of 30.77%, versus 10.37% without routing. I
 Middle-16 block FP8 at DP16/C64 reaches 28.21292 output tokens/s/GPU, p90 TTFT 240.48749 s and p90 completion 257.17333 s. The retained C64 BF16 run on an earlier wheel reached 23.60952, 276.38157 s and 282.52929 s. The FP8 trial yields 19.5% higher throughput with 5.46 GiB less loaded memory per GPU. All 16 archived rank checks confirm the same FP8 layers and BF16 expert activations, attention cache and convolution state. The window is valid with 2,325 successes, zero errors and 86,064 allocated GB200-seconds. [Native Mochi C64 trial](s3://marin-us-east-02a/marin/knotmeter/campaigns/fp8-qualification-mochi-01a1f7c4/trials/20261120T084518Z-4921acafea29/result.json)
 
 Run two follow-ups at the same DP16/C64. The same-wheel BF16 control uses `mochi-bf16-dp8-control.yaml` with `--set gpus.count=16 --session-concurrency 64`. The full-decode FP8 point uses `mochi-mid16-block-full-decode.yaml` with the same overrides. They measure the precision and graph-mode changes separately, with the existing full gate before warmup in both trials.
+
+### Matched Snowball BF16 with retention 128
+
+The same-wheel routed BF16 control reaches 134.44815 output tokens/s/GPU, p90 TTFT 103.93386 s and p90 completion 274.89422 s. Routed FP8 at 138.08517 is 2.7% faster in these two windows. Every rank reports a load footprint of 20.87 GiB in BF16 and 10.88 GiB in FP8. The stored parameter bytes are 19,687,358,464 and 11,636,260,864 per rank. Usable BF16 KV rises from 2,572,520 to 2,943,772 tokens per engine. The BF16 control cost 43,016 H100-seconds. [Matched BF16 trial](s3://marin-us-east-08a/marin/knotmeter/campaigns/fp8-qualification-snowball-01a1f7c4/trials/20261120T085808Z-e995203c42d8/result.json)
+
+### Mochi DP16 follow-up gates
+
+The same-wheel BF16 control and full-decode FP8 both pass all shared groups. Their short maxima are 0.564567 and 0.527668, their decode p99 values are 0.041541 and 0.053453, and both pass 19 exact cache cases. The full-decode worker logs confirm full CUDA graph capture. It loads 80.96 GiB per GPU against 90.92 GiB for the same-wheel BF16 point. The normal windows start with fresh caches after the gates.
+
+### Isolate Marlin ordering cost
+
+The alignment microbenchmark measures the sort in isolation. A matched serving run can test whether that cost moves client throughput and whether Snowball needs the sort for stable cache reuse. [H100 component timings](routing-timing-x86_64-results.json)
+
+The experiment head `c96f9b5d27767a13c69961637c75dbd00622b010` removes the two canonical-ordering commits from the tested Snowball wheel. The source comparison changes only Marlin ordering and its isolated regression. The routed C128 retention-zero profile changes only the wheel. Run the full gate first. A mismatch in the fixed or exact cache comparisons stops the run before AgentX. A passing gate enables an uninstrumented normal hour for the one-setting throughput comparison.
