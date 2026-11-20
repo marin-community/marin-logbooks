@@ -2195,3 +2195,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the repair-wrapper license outcomes.
+
+### 2026-11-21 00:40 UTC - Hourly catch-up (23:40–00:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `548fb252ee…` (01:45:08 UTC) to head `35aeaab28b4504c49ffb1cb32969e124df685f72`, landed 23:33:00 UTC (~12 landings 22:57–23:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 548fb252..35aeaab2` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Source-table/display contract**: the source display projection contract stated (`d49ca9e53a…`); source-table responses trimmed to rendered evidence (`66040ec809…`); task packet buffering bounded during oracle calibration (`034d7e83b1…`).
+  - **Inventory/admission**: inventory headroom limits read during admission (`1f888a4b79…`); QC inventory counts bound to each selected pipeline (`35aeaab28b…`, head); the 12 measured overlap flags from the forge landing's scan acknowledged (`2b4c8b53f5…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the inventory-admission outcomes.
