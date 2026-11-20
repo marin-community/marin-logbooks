@@ -1,5 +1,5 @@
 {
-  "decision": "Standalone padding-routing benefit is reproduced. Recommend review of #134 with a narrow claim; leave it draft and unmerged.",
+  "decision": "Standalone routing benefit and the missing H100 loading regression are supported. Leave #134 ready for Romain review and unmerged.",
   "base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
   "candidate": "139b7521151c580f2e524691b53be00127992e64",
   "research_source": "204cf26bb6bf287442cc41236c202838b8a16ab7",
@@ -712,8 +712,8 @@
   "limits": [
     "Small floating-point differences do not establish corrupted outputs or improved model quality.",
     "Identical-input variation remains in the native component, including CUDA graphs. Its cause was not isolated; full-model logprob equality is unestablished.",
-    "Full BF16/FP8 backend loading/reference tests were not completed. Existing focused tests and native Marlin controls supply the stated evidence.",
-    "Timing uses eager router calls with width 64 and includes host dispatch gaps. It does not measure serving throughput, compiled production overhead or RL logprob alignment."
+    "Timing uses eager router calls with width 64 and includes host dispatch gaps. It does not measure serving throughput, compiled production overhead or RL logprob alignment.",
+    "The H100 follow-up runs one FP8 loading/padding test. Other backend loading/reference tests and full-model qualification are not established."
   ],
   "allocated_gb200_seconds": 1919.0,
   "allocated_gb200_hours": 0.5330555555555555,
@@ -745,21 +745,47 @@
     "all_owned_jobs_terminal": true,
     "owned_terminal_pods_deleted": true,
     "h100_seconds": 0,
-    "max_simultaneous_gb200": 1
+    "max_simultaneous_gb200": 1,
+    "scope": "Earlier standalone GB200 task only"
   },
-  "pre_merge_pending": [
-    {
-      "test": "tests/models/test_grugmoe.py::test_grug_moe_online_fp8_loading_matches_vllm",
-      "status": "not_run",
-      "reason": "Existing default-backend FP8 layer/padding check was not reached during the cold backend build. CPU PR CI does not cover it.",
-      "existing_route": "One-H100 nightly covers this model file. No new H100 work was launched in this task."
-    }
-  ],
-  "recommendation_scope": "Draft code review of stable dummy routing, with a measured small-batch FP8 Marlin benefit. Default backend and full-model qualification remain open.",
+  "pre_merge_pending": [],
+  "recommendation_scope": "Review stable dummy routing, with small-batch FP8 Marlin evidence and the existing H100 Triton loading/padding test. Full-model qualification remains open.",
   "local_launch_failures": [
     {
       "stage": "local driver import",
       "result": "Failed before RPC or allocation because PYTHONPATH did not include the checkout. Corrected with PYTHONPATH=.; no job was submitted."
     }
-  ]
+  ],
+  "h100_loading": {
+    "status": "passed",
+    "candidate": "139b7521151c580f2e524691b53be00127992e64",
+    "base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+    "research_source": "8e40e751487eef59f83e13d2e6f4849026973517",
+    "pytest_node": "tests/models/test_grugmoe.py::test_grug_moe_online_fp8_loading_matches_vllm",
+    "test_counts": {
+      "tests": 1,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "selected_backend": "TRITON Fp8 MoE",
+    "cost": {
+      "h100_seconds": 172.0,
+      "h100_hours": 0.04777777777777778,
+      "gpu_attempts": 1,
+      "failed_gpu_attempts": 0,
+      "includes_setup_and_packaging": true,
+      "scope": "This H100 follow-up only. Earlier standalone work used 1919 GB200 seconds."
+    },
+    "resources": {
+      "board_row": 2292,
+      "phase": "closed",
+      "all_owned_jobs_terminal": true,
+      "owned_pod_released": true,
+      "max_h100": 1,
+      "requested_priority": "interactive",
+      "observed_pod_priority_class": "iris-interactive"
+    },
+    "record": "h100-loading-result.json"
+  }
 }
