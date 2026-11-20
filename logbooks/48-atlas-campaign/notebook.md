@@ -2125,3 +2125,16 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the reconciler's campaign outcomes.
+
+### 2026-11-20 13:40 UTC - Hourly catch-up (12:40–13:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `59c47d94d8…` (12:18:11 UTC) to head `8d351521202d6abaeb143488aa7bc47f33ae20d9`, landed 13:12:06 UTC (~7 landings 12:52–13:12 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 59c47d94..8d351521` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Difficulty campaign machinery completed**: the controller profile exercised through the Iris CLI (`8d35152120…`, head); the difficulty controller enabled to submit privileged children (`d4d4b7b708…`); receipts imported from early unindexed difficulty aggregates (`c175b91328…`); frozen selection checks shared across difficulty workers (`bb124e27d1…`); static difficulty admission gaps rechecked before escalation (`266b8bad88…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the difficulty-controller campaign outcomes.
