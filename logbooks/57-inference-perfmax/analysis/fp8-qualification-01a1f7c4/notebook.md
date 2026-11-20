@@ -17,3 +17,18 @@ Sources
 - [Fixed fixtures and shared checks](https://github.com/yonromai/marin/tree/3d04a90d36e393683a25ea01c1b3528f12ec3204/experiments/evaluation/inference_correctness)
 - [Retained Mochi and Snowball results](../../handoff.md)
 - [Blockwise FP8 runtime source](https://github.com/yonromai/vllm/commit/790f4cc3bd4db428e54bbf85bee5577b2337b4dd)
+
+### First physical tests
+
+Both models loaded FP8 in all routed expert layers. Marlin used BF16 activations. Other projections and KV/state used BF16, and the router stayed FP32. Both deployments passed 19 exact cache comparisons at TP1 with compilation and CUDA graphs on.
+
+| Test | Reference max / p99 | Verdict | Allocated GPU-hours |
+| --- | --- | --- | ---: |
+| Snowball DP8, retention 128 | 0.226172 / 0.122289 | All required checks pass | 1.793333 H100 |
+| Mochi DP4, retention 0 | Short 0.718176 / 0.124168. Long 0.233313 / 0.056864. | Short maximum fails 0.65. Batch, cache and decode pass. | 1.170000 GB200 |
+
+Snowball passes all 1,770 fixed positions, four overlapping batch comparisons, 19 exact cache controls, 27 changed-step comparisons and 64 decode comparisons. The loaded footprint is 10.88 GiB per GPU versus 18.37 GiB for retained BF16 at DP8. Usable BF16 KV capacity rises from 2,575,809 to 2,943,772 tokens per engine, about 14.3%. The new C128 AgentX run measures the speed side of that tradeoff.
+
+Mochi's blockwise run gives token 279 probability 0.945655 at book03:769 against 0.227479 in the golden. At book04:1016 it recovers the golden's top token. Finer scales can move different tokens in different directions. The next run keeps the first 24 expert layers in BF16 and quantizes the last 24. This preserves the early residual path and keeps half of routed weights in FP8. It uses the previously tested hybrid backend code on current main. The new engine precision check verifies the selected layers on every worker.
+
+Twelve focused tests passed on each GPU type on the full-block wheel, including the new block loader case. They cost 115 H100-seconds and 107 GB200-seconds.

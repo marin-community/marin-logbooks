@@ -9,11 +9,20 @@ import os
 import subprocess
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
-from marin.testing.inference.endpoint_checks import EndpointClient, check_cache, check_endpoint, verify_deployment
+from marin.testing.inference.endpoint_checks import (
+    EndpointClient,
+    check_cache,
+    check_endpoint,
+    check_reference,
+    verify_deployment,
+)
 from marin.testing.inference.goldens import LookupStatus, lookup_reference
+
+MOCHI_REFERENCE_PROBE = frozenset({"chat00", "chat09", "book00", "book02", "book03", "book04", "book07", "long4096"})
 
 
 def save_memory_peak(output: Path):
@@ -113,4 +122,46 @@ def test_grug_storage_and_shared_suite(correctness_endpoint, request):
     assert report["status"] == "passed", {
         "report": str(endpoint.output),
         "checks": {name: value["status"] for name, value in report["checks"].items()},
+    }
+
+
+async def reference_probe(endpoint):
+    references = lookup_reference(endpoint.fixture)
+    assert references.status == LookupStatus.FOUND
+    cases = tuple(case for case in references.cases if case.id in MOCHI_REFERENCE_PROBE)
+    assert {case.id for case in cases} == MOCHI_REFERENCE_PROBE
+    reports = {
+        "scope": "Eight fixed histories for diagnosis before the full suite",
+        "runtime_source": endpoint.runtime_source,
+        "model": endpoint.fixture.model.model_dump(mode="json"),
+        "manifest": endpoint.fixture.manifest.model_dump(mode="json"),
+        "policy": endpoint.fixture.policy.model_dump(mode="json"),
+        "checks": {},
+    }
+    async with EndpointClient(
+        endpoint.url, endpoint.model, endpoint.output.with_name("report-requests")
+    ) as client:
+        try:
+            deployment = await verify_deployment(client, endpoint.fixture, endpoint.runtime_source)
+            reports["checks"]["deployment"] = deployment
+            assert deployment["status"] == "passed", deployment
+            reports["checks"]["reference"] = await check_reference(
+                client, replace(references, cases=cases), endpoint.fixture
+            )
+        finally:
+            reports["requests"] = client.requests
+            endpoint.output.write_text(json.dumps(reports, indent=2) + "\n")
+    return reports
+
+
+@pytest.mark.cluster
+@pytest.mark.timeout(10800)
+def test_mochi_reference_probe(correctness_endpoint, request):
+    endpoint = correctness_endpoint
+    inspection = inspect_weights(endpoint, request)
+    report = asyncio.run(reference_probe(endpoint))
+    inspection.check_returncode()
+    assert report["checks"]["reference"]["status"] == "passed", {
+        name: group["statistics"]
+        for name, group in report["checks"]["reference"]["groups"].items()
     }
