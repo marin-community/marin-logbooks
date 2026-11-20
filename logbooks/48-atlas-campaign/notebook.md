@@ -1989,3 +1989,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the swe-repair intake registration outcomes.
+
+### 2026-11-20 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `fc979f62f6…` (01:27:29 UTC) to head `677a1900052a74e6bca9a319741c828c48ba7bfd`, landed 02:32:48 UTC (~8 landings 02:05–02:32 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log fc979f62..677a1900` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **swe-repair intake bootstrap hardened**: fetches the landed script over HTTP (`677a190005…`, head) with redirect-following, archive verification, and tree confirmation (`9b51fdb7db…`); an exact-argv launcher for the intake conversion with a loud-failure trap (`baf3c1f10a…`); the intake launcher linted (`f3bd2f220a…`); tomli declared for source-fingerprint baseline comparisons (`5b96873d46…`).
+  - **Served-catalog drift handling**: drifted retained bindings recorded as waivable served-catalog gaps instead of crashing (`51dc449f73…`); staging clarified on withheld content (`79831643c2…`); content withholding honored in Atlas browse checks (`35ef316483…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the swe-repair intake bootstrap outcomes.
