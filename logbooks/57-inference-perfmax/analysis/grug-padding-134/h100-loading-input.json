@@ -1,0 +1,70 @@
+{
+  "mode": "compare",
+  "job_name": "padding134-h100-01a1d379-a1",
+  "cluster": "cw-rno2a",
+  "gpu_type": "H100",
+  "architecture": "x86_64",
+  "sm_targets": [
+    "9.0"
+  ],
+  "memory": "128GB",
+  "uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-h100-20261120-01a1d379/candidate-a1",
+  "task_image": "ghcr.io/marin-community/iris-task@sha256:28a807a676b0b0ae155a80b1c6de75ae1b2932e25cef9bb8462b9ed7582c6990",
+  "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/source-139b752.tar.gz",
+  "archive_sha256": "77c71b76e4173a5782d5dd198140a5df5ae58b97e750278ede1b032d80dad320",
+  "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+  "compiled_base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "model_sha256": "9f75e3243d4e2b8b1a8ed92631481b4ba07a05553ff2819fc0e9872a0eb2095e",
+  "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+  "factory_sha256": "def0b4e13bcc1e4e21ee10644e647e2eda1acbf0cc01e76d6128abb59ea08224",
+  "bootstrap": "logbooks/57-inference-perfmax/analysis/grug-padding-134/h100_loading.py",
+  "bootstrap_sha256": "4f93af27be85b71f5caebe02d746852bd2eb4223f7dd1294287e9c412ea755a6",
+  "pytest_node": "tests/models/test_grugmoe.py::test_grug_moe_online_fp8_loading_matches_vllm",
+  "test_sha256": "0cc5df6c819944ddbb21320fe720a7436b0bcb46ca8bf7217bad978037c4dd15",
+  "validation_helper_sha256": "9e880a7d93aad75250c654591d5d7faa49532e70c37e8a2866e2469084fa8cbd",
+  "build_payload": {
+    "mode": "build",
+    "compiled_base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+    "source_commit": "139b7521151c580f2e524691b53be00127992e64",
+    "archive_uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-standalone-20261119-01a1d379/source-139b752.tar.gz",
+    "archive_sha256": "77c71b76e4173a5782d5dd198140a5df5ae58b97e750278ede1b032d80dad320",
+    "bootstrap": "logbooks/57-inference-perfmax/analysis/grug-padding-134/wheel_build.py",
+    "bootstrap_sha256": "11603e72db9e640e5a9ebbaabe6c7cc1f7d45fdbd7cd6ec233fa6ea39bc1e8e1",
+    "uri": "s3://marin-us-east-02a/marin/experiments/grug-padding-h100-20261120-01a1d379/build-x86-a1",
+    "task_image": "ghcr.io/marin-community/iris-task@sha256:28a807a676b0b0ae155a80b1c6de75ae1b2932e25cef9bb8462b9ed7582c6990",
+    "job_name": "grug-padding-build-139b752-01a1d379-a1",
+    "version": "0.0.0.dev20261119+marin.139b7521151c.cu132",
+    "release_tag": "experimental-grug-padding-h100-139b7521151c-01a1d379",
+    "source_date_epoch": 1794995163,
+    "base_wheel_url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261118-47a8e415bff1/vllm-0.0.0.dev20261118+marin.47a8e415bff1.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+    "base_wheel_sha256": "fc2a147c5d068d389f8094ed137b9f731d2fa81cfe143af575a4c3d2ce8a7962",
+    "candidate_manifest": {
+      "release_tag": "marin-vllm-gpu-20261118-47a8e415bff1",
+      "source_commit": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+      "version": "0.0.0.dev20261118+marin.47a8e415bff1.cu132",
+      "torch_backend": "cu132",
+      "torch_version": "2.14.1+cu132",
+      "wheels": [
+        {
+          "architecture": "x86_64",
+          "sm_targets": [
+            "9.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261118-47a8e415bff1/vllm-0.0.0.dev20261118+marin.47a8e415bff1.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "fc2a147c5d068d389f8094ed137b9f731d2fa81cfe143af575a4c3d2ce8a7962"
+        }
+      ]
+    },
+    "model_sha256": "9f75e3243d4e2b8b1a8ed92631481b4ba07a05553ff2819fc0e9872a0eb2095e",
+    "marlin_sha256": "93916b721548e6194dc70cf6cec224b4b1456a0cc0980235e97beba7bf36541d",
+    "factory_sha256": "def0b4e13bcc1e4e21ee10644e647e2eda1acbf0cc01e76d6128abb59ea08224",
+    "architecture": "x86_64",
+    "sm_targets": [
+      "9.0"
+    ]
+  },
+  "variants": {
+    "candidate": {}
+  },
+  "scope": "Build the Python-only candidate with matching SM90 x86 binaries, then run one existing FP8 loading regression through the fork wheel-test helper. No serving or broader suite."
+}
