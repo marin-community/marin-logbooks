@@ -102,3 +102,7 @@ Without the router at C128, block FP8 delivers 122.41574 output tokens/s/GPU, 10
 Middle-16 block FP8 also passes the full DP32 checks. The short maximum is 0.521529 and p99 is 0.097216. The long maximum is 0.283892 and decode p99 is 0.054338. At DP32 the model-load profiler shows 60.06 GiB per GPU versus retained BF16 at 56.05 GiB. Usable BF16 KV capacity is 1,507,772 versus 1,456,262 tokens per engine. The C128 replay will measure the performance side of those memory figures.
 
 On the same eight DP8 histories, middle-16 block differs from matched BF16 by 0.08691 at p99 over 6,815 short positions. Late-16 block, late-16 tensor and late-24 block reach 0.09237, 0.09564 and 0.12587. Middle-16 changes the BF16 top token at 114 short positions, versus 89 for late-16 block. The shared gate uses probability differences against Levanter. [Matched DP8 probability changes](matched-mochi-dp8-probability-shifts.json)
+
+### Snowball retention-zero gate and paired control
+
+The routed retention-zero point passes the full gate, including 19 exact cache comparisons. Its reference maximum and p99 are 0.226172 and 0.122289, the same as retention 128 in the first run. The pinned warmup finishes all 1,406 requests in 220.43 seconds, compared with about 17 minutes in the routed retention-128 run. A normal window will measure throughput under sustained load. Use `snowball-bf16-c128-retention0.yaml` to pair the same cache and routing settings with BF16 on the same wheel.
