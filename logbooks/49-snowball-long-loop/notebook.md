@@ -1885,3 +1885,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R]; coordinator correction [R].
 - Interpretation and limitations: the `.89` arms are in progress (no scored outcome yet); the `.7` base/SFT evals are in progress (scored outcomes pending).
 - Decision and next action: hourly checks track the `.89` arms and the `.7` evals' scored outcomes.
+
+### 2026-11-21 00:40 UTC - Hourly catch-up (23:40–00:40 UTC window): .89 arms still running; Mochi .7 evals progressing
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the `.89` standard-path slice arms **all still running** (Iris at 00:33 UTC: arm A task 0 at 1 h 40 m 26 s, arm B at 1 h 40 m 22 s, arm C at 1 h 39 m 59 s; exit=0, failures=0, preemptions=0 each) — the standard-path inference lane held through the first ~1.7 h (unlike `.87`/`.88`).
+- Command or material configuration: verified via `uv run iris --cluster=marin job describe` on the three arms and the two Mochi `.7` evals at 00:33 UTC.
+- External inputs and artifact references: Iris outputs [R]; landing records [R].
+- Environment and hardware when relevant: the Mochi `.7` evals run on 08a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; ~3 new `atlas-env-audit` landings: QC inventory counts bound to each selected pipeline, the 12 measured overlap flags from the forge landing's scan acknowledged, inventory headroom limits read during admission). The Mochi `.7` base/SFT evals are progressing (Iris at 00:33 UTC: base task 0 at 2 h 01 m 14 s, SFT task 0 at 2 h 00 m 46 s; both running, failures=0).
+- Evidence: Iris outputs [R]; landing records [R].
+- Interpretation and limitations: the `.89` arms and `.7` evals are in progress; scored outcomes pending.
+- Decision and next action: hourly checks track the `.89` arms and the `.7` evals.
