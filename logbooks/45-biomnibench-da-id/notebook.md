@@ -326,3 +326,19 @@ The [single-task replacement](full/gemma-final-submission.json) for da-13-1 pass
 ### November 20 — Gemma replacement with a two-day queue window
 
 Iris accepted a [second single-task replacement](full/gemma-final-48h-submission.json) for da-13-1 at 17:00 UTC. The launcher and serving placement waits allow up to 48 hours. An exact-job cutoff is scheduled for November 22 at 17:00 UTC. The solver still gets one hour, and the verifier gets 15 minutes. The run requests two H100s for Gemma and eight for MiniMax. The original 49 scores carry forward.
+
+### November 20 — Interim evidence for the Marin ID decision
+
+Does BiomniBench-DA add a useful development signal beyond BixBench? Across three external checkpoints the two benchmarks give the same ordering. BiomniBench-DA provides rubric-level partial credit on multi-step analyses, and the [task-content review](https://github.com/marin-community/marin/issues/9258#issuecomment-6781595235) identifies additional workflows. Whether those workflows help select between nearby checkpoints remains open.
+
+| External checkpoint | Biomni signed mean (coverage) | Same 49 Biomni tasks | Unchanged inputs | Five derived inputs | BixBench solved / scored |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Qwen3.6-35B-A3B | 49.72 (50/50) | 48.98 | 47.44 (45/45) | 70.20 | 73/202 (36.14%) |
+| Gemma-4-26B-A4B-it | 21.90 (49/50) | 21.90 | 19.77 (44/45) | 40.60 | 62/204 (30.39%) |
+| GPT-OSS-20B | 14.74 (50/50) | 15.04 | 15.20 (45/45) | 10.60 | 35/205 (17.07%) |
+
+The common-task column omits da-13-1 for every model. Gemma has 1,073 points across 49 tasks. Since each task contributes 0–100 points, its eventual public-50 mean must lie between 21.46 and 23.46. The remaining task cannot change the ordering. The five derived inputs all received scores, but the subgroup means cannot establish equivalence to the authors’ inputs. [Qwen scorecard](full/qwen-reconciled-50.csv) · [Gemma interim signed scores](full/gemma-interim-49.csv) · [GPT-OSS scorecard](full/gpt-oss-reconciled-50.csv)
+
+The BixBench records match the model revisions and attempted all 205 tasks. The table uses the higher-coverage of two Gemma runs. The other scored 60/190 (31.58%), giving the same order. Policy versions and scored denominators vary. BixBench measures questions solved, while Biomni awards rubric points for analysis and reporting, so differences in absolute score do not measure relative difficulty. GPT-OSS had 27 verified missing submissions scored zero on Biomni, which also makes its mean sensitive to report delivery. [Archived BixBench metrics and coverage](full/bixbench-comparison-records.json) · [Model revisions and run IDs](full/external-model-pins.json)
+
+This is one solver pass per model, with operational recoveries. Before adoption, the open review questions include reliability across repetitions, trace-level grading and rubric feasibility on the modified inputs, full-run EvalDash visibility, and ownership of a maintained implementation. The validated EvalDash control and reproducible scorecards provide separate pieces of evidence. The proposal keeps Marin checkpoints held out until policy is decided. [Decision issue](https://github.com/marin-community/marin/issues/11385)
