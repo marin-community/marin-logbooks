@@ -45,9 +45,9 @@ if gpt_oss or gemma:
 final_task = "--final-task" in sys.argv
 benchmark = f"biomnibench-public50-{candidate}"
 if final_task:
-    assert gpt_oss
+    assert gpt_oss or gemma
     policy_path = root / "gpt-oss-final.yaml"
-    benchmark = "biomnibench-final-da-13-1-gpt-oss-20b"
+    benchmark = f"biomnibench-final-da-13-1-{candidate}"
 cap = 7200 if final_task else 28800
 spec = LaunchSpec(
     model=load_model_config(model_path),

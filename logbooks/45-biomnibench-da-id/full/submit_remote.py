@@ -27,8 +27,8 @@ def main():
     candidates.add_argument("--gpt-oss", action="store_true")
     parser.add_argument("--final-task", action="store_true")
     args = parser.parse_args()
-    if args.final_task and not args.gpt_oss:
-        parser.error("--final-task requires --gpt-oss")
+    if args.final_task and not (args.gpt_oss or args.gemma):
+        parser.error("--final-task requires --gpt-oss or --gemma")
     cap = 7200 if args.final_task else 28800
     validation = json.loads(args.validation.read_text())
     assert {key: validation[key] for key in ("status", "snapshots", "runtime_checks", "all_closed")} == {
@@ -41,7 +41,7 @@ def main():
     if args.gemma:
         receipt = ROOT / "gemma-launcher-submission.json"
     if args.final_task:
-        receipt = ROOT / "gpt-oss-final-submission.json"
+        receipt = ROOT / ("gemma-final-submission.json" if args.gemma else "gpt-oss-final-submission.json")
     assert not receipt.exists(), "Submission already recorded; inspect before any retry"
     source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     secrets = {name: require_secret(name) for name in ("CW_KEY_ID", "CW_KEY_SECRET")}
