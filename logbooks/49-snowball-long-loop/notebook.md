@@ -1772,3 +1772,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; recovery85-launch.json [R]; landing records [R].
 - Interpretation and limitations: the identical kill signature on both eval attempts suggests a deliberate operational cutoff policy (matching the .76-RL kill pattern) rather than crashes; the underlying reason is recorded by the run's own STATUS/agent, not yet read.
 - Decision and next action: hourly checks watch for the recovery eval's replacement and the run-STATUS explanation of the cutoffs.
+
+### 2026-11-20 16:40 UTC - Hourly catch-up (15:40–16:40 UTC window): infra-recovery eval .86 completed with zero-score audit; swe-repair wave launcher advanced
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities; a **third infra-recovery eval `.86` completed** — `/benfeuer/mochi-exp4-micro210-infra-recovery-2026.11.20.86-coordinator-a792f3ec` (eval task `…-a442771904fe` **succeeded**, 15:55:00 UTC; coordinator succeeded 15:39:46 UTC).
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4-micro210-infra-recovery` at 16:33 UTC.
+- External inputs and artifact references: Iris job list [R]; `zero-score-audit86.json`, `recovery86-trial-identities.json`, `recovery86-error-classification.json` [R: /experiments/active/long-loop-exp4-recovery/].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **the third infra-recovery eval `.86` completed with its eval task succeeded** — again with both inference children (broker + worker) killed "Terminated by user" (15:41:39 / 15:41:51 UTC) before the eval task succeeded (15:55:00 UTC). A **zero-score audit `zero-score-audit86.json` exists and is accepted** (`"accepted": true`): benchmarks itemized (e.g. bixbench-pi: 10 representative traces / 10 distinct tasks, zero accepted, native verification verified, raw verifier reward 0.0, trial URIs + SHA256s recorded). **The `.86` eval's scored outcome is therefore recorded via the zero-score audit pathway** — unlike `.84`/`.85`. Atlas branch advanced ~4 landings: swe-repair wave launcher pinned at the current staged driver (the org switch + the churn monitor); Dockerfile image pins checked on FROM instructions only; admission rechecked before escalating executability gaps; the blocked status shared across repair receipts.
+- Evidence: Iris job list [R]; zero-score-audit86.json [R]; landing records [R].
+- Interpretation and limitations: the zero-score audit's acceptance covers the audited zero outcomes; the full `.86` scored aggregate is not yet published in this readback.
+- Decision and next action: hourly checks watch for the `.86` scored aggregate publication and the wave-launch outcomes.
