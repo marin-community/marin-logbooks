@@ -1858,3 +1858,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; landing records [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: hourly checks watch for the next EOT-slice attempt and the forge-cohort outcomes.
+
+### 2026-11-19 23:40 UTC / 2026-11-20 22:40 UTC - Hourly catch-up (21:40–22:40 + 22:40–23:40 UTC windows, combined after a session gap)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief. The session was idle through part of the window; this entry covers 21:40→23:40 UTC readbacks together.
+- Published source revision: unchanged exp4 identities — the `.88` retry's terminal state unchanged (all three arms killed by user; inference children "Parent job terminated"; no new EOT-slice attempt yet).
+- Command or material configuration: as recorded; Iris job list re-checked at 23:33 UTC.
+- External inputs and artifact references: Iris job list [R]; landing records [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet across the windows (no new exp3 evidence). Atlas branch advanced ~2 landings (repair wrapper licenses resolved from recorded release pins, `d03066f167…`; the selected Docker daemon used for OCI image imports, `edbb77a7bc…`, head).
+- Evidence: Iris job list [R]; landing records [R].
+- Interpretation and limitations: quiet windows.
+- Decision and next action: hourly checks watch for the next EOT-slice attempt and the repair-wrapper license outcomes.
