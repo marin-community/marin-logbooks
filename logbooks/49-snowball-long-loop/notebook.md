@@ -1834,3 +1834,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job describe on all three arms [R]; landing records [R].
 - Interpretation and limitations: the underlying startup cause is in the broker/inference startup path (`iris.py:1080`), not re-derived here; a relaunch after the startup fix is expected from the run's own agent.
 - Decision and next action: hourly checks watch for the startup fix and the arms' relaunch.
+
+### 2026-11-20 20:40 UTC - Hourly catch-up (19:40–20:40 UTC window): EOT-slice retry (.88) launched and deliberately killed after 5 minutes
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the EOT-slice **retry `.88`** (three arms: `…-2e91113f` A / `…-f0b7b123` B / `…-9ec22ee8` C) launched ~19:47 UTC.
+- Command or material configuration: verified via `uv run iris --cluster=marin job list/describe` at 20:33 UTC.
+- External inputs and artifact references: Iris job list/describe [R: live cluster state].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the **EOT-slice retry `.88` launched and all three arms were deliberately killed after ~5 minutes** (state killed, exit=0, failures=0, preemptions=1, "Terminated by user"; tasks 1/1 completed, killed=1 — durations 5 m 17.71 s / 5 m 10.94 s / 5 m 11.85 s; the inference broker/worker children killed "Parent job terminated" at 19:48 UTC). Unlike the `.87` arms' `RemoteInferenceStartupError`, the `.88` arms got past prepare-model and into the run before the deliberate kill — consistent with a diagnostic/cancelled attempt (e.g. verifying the startup fix) rather than a crash. The run's own agent records the kill's purpose.
+- Evidence: Iris job list/describe [R].
+- Interpretation and limitations: the deliberate-kill reason is recorded by the run's own agent; not re-derived here.
+- Decision and next action: hourly checks watch for the next slice attempt and the agent's record.
