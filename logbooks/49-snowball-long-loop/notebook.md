@@ -1568,3 +1568,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job describe [R].
 - Interpretation and limitations: root success does not yet certify the selection/handoff outputs (those stages verify committed metadata first, per the exp3 pattern).
 - Decision and next action: hourly checks track the selection/handoff receipts and the RL-child submission.
+
+### 2026-11-20 01:40 UTC - Hourly catch-up (00:40–01:40 UTC window): Exp4 selection/handoff done; first RL attempt killed, harbor-recovery submitted
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: Exp4 — the `.76` production run completed (00:40 entry); since then: `export_shared_sft-76ede273` **succeeded** (22:51:31 UTC); the first RL attempt `…-af5963cbfb9b` was **killed** ("Terminated by user", 23:07:53 UTC); a **harbor-recovery run submitted**: `/benfeuer/mochi-exp4-harbor-recovery-2026.11.19.82` (root running 23:09:16 UTC; verify_inputs succeeded 23:11:01 UTC; RL task `…-aa2febe66602` RUNNING 23:12:57 UTC).
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4` at 01:33 UTC.
+- External inputs and artifact references: Iris job list [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: three items this window: (1) the shared-SFT export succeeded — the selection/handoff chain progressed after the `.76` root completion; (2) the first exp4 RL attempt was killed by the operator ("Terminated by user") — presumably the recovery/replacement action following the `.51`-style socket-transport failure class, though the kill reason recorded is only the user termination; (3) a **harbor-recovery run `2026.11.19.82` was submitted and its RL task is RUNNING** (the replacement RL attempt). The Atlas branch also advanced (~10 landings): the swe-repair lane's intake conversion artifacts/pinned inputs, the curriculum gateway tests, and a gap-exclusion test ported to the typed gap table.
+- Evidence: Iris job list [R]; landing records [R].
+- Interpretation and limitations: the kill's specific reason beyond "Terminated by user" is recorded by the run's own STATUS (not yet read at this readback); the recovery RL task is running.
+- Decision and next action: hourly checks track the harbor-recovery RL task's progression and any STATUS entries explaining the `.76` RL kill.
