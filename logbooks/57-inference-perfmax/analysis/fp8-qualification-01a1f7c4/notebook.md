@@ -53,3 +53,9 @@ marin-env .venv/bin/python -m experiments.evaluation.knotmeter.cli run \
   --set serving.router=true --campaign fp8-qualification-snowball-01a1f7c4 \
   --priority interactive --logbook https://github.com/marin-community/marin-logbooks/issues/57
 ```
+
+### Matched Mochi controls at DP8
+
+The BF16 control passes the eight-history probe. At book03:769 the measured reference error is 0.581942 in BF16 and 0.732109 with the last 16 expert layers in block FP8. The short p99 values are 0.083103 and 0.113886. The long checks pass in both. Model-load memory falls from 149.42 to 129.49 GiB per GPU (13.3%) at matched DP8. This is a rejected precision setting. The retries cost 4,372 GB200-seconds for BF16 and 4,608 for late-16 FP8.
+
+Reducing the late block selection from 24 to 16 layers made the worst token further from the golden. Test two separate changes from late-16 block at DP8. Move the same block FP8 coverage to layers 16–31, which leaves the final third in BF16. On the last 16 layers, try per-tensor scales, whose retained all-layer result was closer on the limiting token. Both use the same short probe and the same 16 of 48 expert layers. A short pass will select a candidate for the full suite.
