@@ -60,18 +60,14 @@ async def cache_screen(endpoint):
     return report
 
 
-@pytest.mark.cluster
-@pytest.mark.timeout(10800)
-def test_hero_canonical_storage_cache_then_shared_suite(correctness_endpoint, request):
-    endpoint = correctness_endpoint
-    request.addfinalizer(lambda: save_memory_peak(endpoint.output.with_name("memory.json")))
+def inspect_weights(endpoint, request):
     plan = json.loads(Path(request.config.getoption("--correctness-plan")).read_text())
     profile_path = endpoint.output.with_name("loaded-storage-profile.json")
     profile_path.write_text(json.dumps(plan["series"]["profile"]))
     inspection = next(item["command"] for item in plan["series"]["profile"]["checks"] if item["kind"] == "serving")
     assert inspection[0] == "python"
     inspector = Path(__file__).resolve().parents[3] / inspection[1]
-    subprocess.run(
+    return subprocess.run(
         [sys.executable, str(inspector)],
         env=os.environ
         | {
@@ -80,8 +76,16 @@ def test_hero_canonical_storage_cache_then_shared_suite(correctness_endpoint, re
             "KNOTMETER_RUNTIME_SOURCE": endpoint.runtime_source,
             "KNOTMETER_CHECK_OUTPUT": str(endpoint.output.with_name("loaded-storage.json")),
         },
-        check=True,
+        check=False,
     )
+
+
+@pytest.mark.cluster
+@pytest.mark.timeout(10800)
+def test_hero_canonical_storage_cache_then_shared_suite(correctness_endpoint, request):
+    endpoint = correctness_endpoint
+    request.addfinalizer(lambda: save_memory_peak(endpoint.output.with_name("memory.json")))
+    inspect_weights(endpoint, request).check_returncode()
     focused = asyncio.run(cache_screen(endpoint))
     assert focused["status"] == "passed", {
         "report": str(endpoint.output.with_name("cache-screen.json")),
@@ -90,6 +94,22 @@ def test_hero_canonical_storage_cache_then_shared_suite(correctness_endpoint, re
     report = asyncio.run(
         check_endpoint(endpoint.url, endpoint.model, endpoint.fixture, endpoint.runtime_source, endpoint.output)
     )
+    assert report["status"] == "passed", {
+        "report": str(endpoint.output),
+        "checks": {name: value["status"] for name, value in report["checks"].items()},
+    }
+
+
+@pytest.mark.cluster
+@pytest.mark.timeout(10800)
+def test_grug_storage_and_shared_suite(correctness_endpoint, request):
+    endpoint = correctness_endpoint
+    request.addfinalizer(lambda: save_memory_peak(endpoint.output.with_name("memory.json")))
+    inspection = inspect_weights(endpoint, request)
+    report = asyncio.run(
+        check_endpoint(endpoint.url, endpoint.model, endpoint.fixture, endpoint.runtime_source, endpoint.output)
+    )
+    inspection.check_returncode()
     assert report["status"] == "passed", {
         "report": str(endpoint.output),
         "checks": {name: value["status"] for name, value in report["checks"].items()},
