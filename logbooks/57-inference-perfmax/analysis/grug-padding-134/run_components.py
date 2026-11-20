@@ -157,7 +157,7 @@ def main() -> None:
                     cpu=8 if not gpus else 4,
                     memory=payload.get("memory", "32GB"),
                     disk="128GB",
-                    device=gpu_device("GB200", gpus) if gpus else None,
+                    device=gpu_device(payload.get("gpu_type", "GB200"), gpus) if gpus else None,
                 ),
                 environment=EnvironmentSpec(
                     sync_packages=["marin-core"], extras=["cpu"], env_vars={"MAX_JOBS": "2", "NVCC_THREADS": "1"}
