@@ -50,7 +50,7 @@ def main() -> None:
     # the CPU job on another architecture, setuptools only packages those bytes.
     command = [sys.executable, "-m", "build", "--wheel", "--no-isolation", "--outdir", str(root / "dist")]
     if platform.machine() != architecture:
-        command += ["--config-setting", f"--build-option=--plat-name=linux_{architecture}"]
+        command += [f"--config-setting=--build-option=--plat-name=linux_{architecture}"]
     command += [str(root)]
     subprocess.run(command, cwd=root, env=environment, check=True)
     wheels = list((root / "dist").glob("*.whl"))
@@ -68,8 +68,8 @@ def main() -> None:
         ],
     }
     with zipfile.ZipFile(wheel) as archive:
-        core = archive.open("vllm/_C.abi3.so")
-        with core:
+        core_name = next(name for name in candidate_native if name.startswith("vllm/_moe_C") and name.endswith(".so"))
+        with archive.open(core_name) as core:
             elf_architecture = int.from_bytes(core.read(20)[18:20], "little")
         assert elf_architecture == {"aarch64": 183, "x86_64": 62}[architecture]
         for name, expected in payload.get("python_hashes", {}).items():
