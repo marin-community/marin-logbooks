@@ -2138,3 +2138,19 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the difficulty-controller campaign outcomes.
+
+### 2026-11-20 14:40 UTC - Hourly catch-up (13:40–14:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `8d35152120…` (13:12:06 UTC) to head `3d06b7978451832183dca4d055560ab40da66684`, landed 14:30:23 UTC (~10 landings 14:23–14:30 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 8d351521..3d06b797` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **swe-repair wave-v10 launcher constants recorded** (the authoritative /testbed oracle run; the wave1-full-v2 resume retired as superseded; `3d06b79784…`, head).
+  - **License checks supplied explicit registry ban state** (`7ba3a8a9c0…`, `05a89ac31b…`); frozen TaskSpec identities preserved across schema defaults (`05a89ac31b…`-adjacent); frozen panel bindings and queue evidence shared (`445dca7f7d…`).
+  - **Train/eval use passed to private dataset publication license checks** (`b7df4160dd…`).
+  - **Oracle solve script moved to the uniform workspace** (`060aa81b14…`) with test-import hoists (`08364bddd6…`, `56446b920d…`, `c437e3ca5d…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the wave-v10 outcomes.
