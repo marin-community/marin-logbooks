@@ -17,9 +17,10 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from marin.profiling.trace_summary import sha256_for_path
 from tokenizers import Tokenizer, models, pre_tokenizers
 
-from experiments.evaluation.knotmeter.artifacts import file_digest, pack_server_metrics, restore_server_metrics
+from experiments.evaluation.knotmeter.artifacts import pack_server_metrics, restore_server_metrics
 from experiments.evaluation.knotmeter.cli import main as run_cli
 from experiments.evaluation.knotmeter.collect import process_point, validate_window
 from experiments.evaluation.knotmeter.config import Stage, load_profile, resolved_series
@@ -216,7 +217,7 @@ def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_pat
         "dataset": str(corpus),
         "dataset_loader": "weka_trace",
         "sessions": 1,
-        "dataset_sha256": file_digest(corpus),
+        "dataset_sha256": sha256_for_path(corpus),
         "tokenizer": str(tokenizer_dir),
         "tokenizer_revision": "local",
         "max_context": 2048,
@@ -254,10 +255,10 @@ def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_pat
     assert len({session for session, _ in replay_server.sessions}) < len(replay_server.sessions)
     assert replay_server.scrapes
     metrics = point / "aiperf_artifacts/server_metrics_export.json"
-    digest = file_digest(metrics)
+    digest = sha256_for_path(metrics)
     pack_server_metrics(point)
     restore_server_metrics(point)
-    assert file_digest(metrics) == digest
+    assert sha256_for_path(metrics) == digest
     validity = validate_window(
         point,
         {"series": series | {"duration": 3}, "diagnostic": True},

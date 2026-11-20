@@ -15,6 +15,7 @@ from iris.client.workload import TaskOutputArchiveState
 from iris.cluster.types import JobName
 from iris.resources.state import JobState, is_job_finished
 from marin.inference.config import VLLM_METRIC_PREFIX
+from marin.profiling.trace_summary import sha256_for_path
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.allocation import allocation_cost
@@ -22,14 +23,20 @@ from experiments.evaluation.knotmeter.artifacts import (
     PROFILE_EXPORT_RELATIVE_PATH,
     SERVER_METRICS_RELATIVE_PATH,
     copy_file,
-    file_digest,
     read_record,
     restore_server_metrics,
     unpack,
     write_record,
 )
 from experiments.evaluation.knotmeter.config import Profile
-from experiments.evaluation.knotmeter.recipe import DIRECTORY, PointManifest, TrialPlan, processor_package
+from experiments.evaluation.knotmeter.recipe import (
+    ATTEMPT_RECEIPT_NAME,
+    DIRECTORY,
+    PointManifest,
+    TrialPlan,
+    processor_package,
+    unmeasured_result,
+)
 
 
 def process_point(point: Path, manifest: PointManifest, artifacts: Path) -> dict:
@@ -186,7 +193,7 @@ def collect_trial(client: IrisClient, plan: TrialPlan, work: Path) -> dict:
             local = work / attempt.attempt_uid / str(index)
             local.mkdir(parents=True, exist_ok=True)
             try:
-                record = read_record(prefix_join(prefix, "receipt.json"))
+                record = read_record(prefix_join(prefix, ATTEMPT_RECEIPT_NAME))
             except FileNotFoundError as missing:
                 archive = attempt.output_archive
                 if archive is None or archive.state != TaskOutputArchiveState.UPLOADED:
@@ -195,7 +202,7 @@ def collect_trial(client: IrisClient, plan: TrialPlan, work: Path) -> dict:
                     continue
                 raw = local / "iris.tar.zst"
                 copy_file(archive.uri, str(raw))
-                if file_digest(raw) != archive.sha256:
+                if sha256_for_path(raw) != archive.sha256:
                     raise ValueError("Iris output archive checksum changed") from missing
                 unpack(raw, local / "iris")
                 point = local / "iris/point"
@@ -208,7 +215,7 @@ def collect_trial(client: IrisClient, plan: TrialPlan, work: Path) -> dict:
             else:
                 raw = local / "native.tar.zst"
                 copy_file(record["archive_uri"], str(raw))
-                if file_digest(raw) != record["archive_sha256"]:
+                if sha256_for_path(raw) != record["archive_sha256"]:
                     raise ValueError("Retained native archive checksum changed")
                 unpack(raw, local / "point")
                 point = local / "point"
@@ -299,29 +306,5 @@ def refresh_costs(plan: TrialPlan) -> dict:
 
 def record_preparation_failure(plan: TrialPlan, error: str, *, gpu_job_absent: bool = True) -> None:
     """Preserve preparation/submission failures, including uncertain GPU admission."""
-    result = {
-        "trial_id": plan["trial_id"],
-        "trial_uri": plan["trial_uri"],
-        "manifest": (
-            plan.get("manifest")
-            or {
-                "series": plan["series"],
-                "diagnostic": bool(plan["series"].get("diagnostic")),
-                "vllm_release": plan["vllm_release"],
-                "workload": {"recipe": None},
-            }
-        ),
-        "job_state": "preparation-failed",
-        "job_succeeded": False,
-        "attempts": [],
-        "measurement": None,
-        "gpu_seconds": 0.0,
-        "cost_complete": gpu_job_absent,
-        "error": error,
-        "cost_basis": (
-            "GPU child was not submitted or the controller confirmed it absent"
-            if gpu_job_absent
-            else "GPU submission was not acknowledged; allocation cost remains unknown"
-        ),
-    }
+    result = unmeasured_result(plan, "preparation-failed", cost_complete=gpu_job_absent) | {"error": error}
     write_record(prefix_join(plan["trial_uri"], "result.json"), result)

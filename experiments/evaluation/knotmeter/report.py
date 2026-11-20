@@ -11,7 +11,8 @@ from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.artifacts import read_record, write_record
-from experiments.evaluation.knotmeter.config import confirm_recipe
+from experiments.evaluation.knotmeter.config import is_confirm_recipe
+from experiments.evaluation.knotmeter.recipe import unmeasured_result
 
 QUALIFICATION_SCOPE = "Serving checks do not qualify RL learning or trainer probability ratios."
 
@@ -100,7 +101,7 @@ def accepted(result: dict) -> bool:
     required = manifest["series"]["profile"]["checks"]
     return (
         not manifest["diagnostic"]
-        and confirm_recipe(manifest["series"])
+        and is_confirm_recipe(manifest["series"])
         and validity["protocol_valid"]
         and validity["submission_valid"]
         and validity["gang_valid"]
@@ -243,31 +244,12 @@ def report_campaign(campaign_uri: str, recommendation: str | None = None, baseli
     filesystem, path = filesystem_for(prefix_join(campaign_uri, "trials/*/result.json"))
     results = [read_record(filesystem.unstrip_protocol(item)) for item in sorted(filesystem.glob(path))]
     recorded = {row["trial_id"] for row in results}
-    for item in sorted(filesystem.glob(path.removesuffix("result.json") + "plan.json")):
+    _, plan_glob = filesystem_for(prefix_join(campaign_uri, "trials/*/plan.json"))
+    for item in sorted(filesystem.glob(plan_glob)):
         plan = read_record(filesystem.unstrip_protocol(item))
         if plan["trial_id"] in recorded:
             continue
-        results.append(
-            {
-                "trial_id": plan["trial_id"],
-                "trial_uri": plan["trial_uri"],
-                "manifest": (
-                    plan.get("manifest")
-                    or {
-                        "series": plan["series"],
-                        "diagnostic": bool(plan["series"].get("diagnostic")),
-                        "vllm_release": plan["vllm_release"],
-                        "workload": {"recipe": None},
-                    }
-                ),
-                "job_state": "unrecorded",
-                "job_succeeded": False,
-                "attempts": [],
-                "measurement": None,
-                "gpu_seconds": 0.0,
-                "cost_complete": False,
-            }
-        )
+        results.append(unmeasured_result(plan, "unrecorded"))
     results.sort(key=lambda row: row["trial_id"])
     if recommendation is None and baseline is None:
         try:

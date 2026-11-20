@@ -101,7 +101,7 @@ Both presets use the [shared correctness suite](../inference_correctness/README.
 It compares saved Levanter scores, engine batches, cache states and decode versus
 recomputation. The Git fixture pins the manifest and a separate numerical policy.
 The runner verifies references on CPU, then checks the actual server before
-AgentX. It retains `check-N.json` and raw responses. Both the CLI exit and report
+AgentX. It retains `check-N.json` and raw completion responses. Both the CLI exit and report
 must pass. Missing or failed required checks stop ordinary measurements;
 `--measure-failed-checks` permits diagnostic traffic. The cache is reset before native warmup.
 

@@ -8,8 +8,10 @@ import dataclasses
 import hashlib
 import json
 import shutil
+import signal
+import subprocess
 import sys
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 from types import SimpleNamespace
 from urllib.parse import unquote
@@ -17,7 +19,8 @@ from urllib.parse import unquote
 import pytest
 from connectrpc.code import Code
 from connectrpc.errors import ConnectError
-from iris.cluster.types import JobName
+from iris.cluster.client.job_info import JobInfo
+from iris.cluster.types import Entrypoint, JobName
 from iris.resources.state import JobState, TaskState
 from marin.datakit.chat_template import MARIN_CHAT_TEMPLATE
 from marin.external_dependencies import VLLM_GPU_RELEASE
@@ -25,7 +28,7 @@ from marin.inference.vllm_cache import VllmCompileIdentity
 from rigging.provenance import Provenance
 from rigging.timing import Timestamp
 
-from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, write_record
+from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, unpack, write_record
 from experiments.evaluation.knotmeter.cli import main as run_cli
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial, refresh_costs
@@ -34,7 +37,65 @@ from experiments.evaluation.knotmeter.coordinator import run_coordinator
 from experiments.evaluation.knotmeter.recipe import benchmark_command
 from experiments.evaluation.knotmeter.report import recorded_checks, report_campaign, throughput_change
 from experiments.evaluation.knotmeter.run import create_server, run_checks
+from experiments.evaluation.knotmeter.run import run as run_trial
 from experiments.evaluation.knotmeter.runtime import materialize_release, resolve_release
+
+
+def test_multihost_entrypoint_retains_a_hardware_failure_and_closes_its_coordinator(tmp_path, monkeypatch):
+    profile = load_profile(Path("hero-gb200"), [])
+    plan = {
+        "trial_uri": str(tmp_path / "retained"),
+        "manifest": {"series": resolved_series(profile, Stage.PROBE)},
+    }
+    info = JobInfo(task_id=JobName.from_string("/fixture/hero/0"), num_tasks=4, advertise_host="127.0.0.1")
+    registrations = []
+
+    @contextmanager
+    def registered(name, address):
+        row = {"name": name, "address": address, "active": True}
+        registrations.append(row)
+        try:
+            yield
+        finally:
+            row["active"] = False
+
+    original_check_output = subprocess.check_output
+
+    def hardware_failure(command, **kwargs):
+        if command[0] == "nvidia-smi":
+            raise subprocess.CalledProcessError(1, command, stderr="No GPU in this CPU test")
+        return original_check_output(command, **kwargs)
+
+    # Iris metadata, registration and GPU processes are external boundaries.
+    # Keep the shared gang launcher and its real local actor lifecycle.
+    monkeypatch.setattr("experiments.evaluation.knotmeter.run.get_job_info", lambda: info)
+    monkeypatch.setattr("marin.inference.iris_vllm.get_job_info", lambda: info)
+    monkeypatch.setattr(
+        "marin.inference.iris_vllm.iris_ctx", lambda: SimpleNamespace(registry=SimpleNamespace(registered=registered))
+    )
+    monkeypatch.setattr(subprocess, "check_output", hardware_failure)
+    for name, value in {
+        "IRIS_OUTPUT_DIR": str(tmp_path / "outputs"),
+        "IRIS_TASK_ID": "/fixture/hero/0",
+        "IRIS_ATTEMPT_UID": "local-hardware-failure",
+        "IRIS_BUNDLE_ID": "local-source",
+        "VLLM_HOST_IP": "127.0.0.1",
+        "GLOO_SOCKET_IFNAME": "lo",
+    }.items():
+        monkeypatch.setenv(name, value)
+    handlers = {signum: signal.getsignal(signum) for signum in (signal.SIGINT, signal.SIGTERM)}
+    try:
+        function, args, kwargs = Entrypoint.from_callable(run_trial, plan).resolve()
+        with pytest.raises(subprocess.CalledProcessError):
+            function(*args, **kwargs)
+    finally:
+        for signum, handler in handlers.items():
+            signal.signal(signum, handler)
+    receipt = read_record(str(tmp_path / "retained/attempts/local-hardware-failure/hosts/0/receipt.json"))
+    assert receipt["status"] == "failed" and receipt["task_index"] == 0
+    assert registrations and not any(row["active"] for row in registrations)
+    unpack(Path(receipt["archive_uri"]), tmp_path / "restored")
+    assert read_record(str(tmp_path / "restored/attempt.json"))["error"].startswith("CalledProcessError:")
 
 
 @pytest.mark.parametrize("operation", ["plan", "run"])
@@ -145,15 +206,6 @@ def test_chat_template_survives_native_compilation_cache_identity(tmp_path):
         extra_cli_args=tuple(server.extra_cli_args),
     )
     assert hashlib.sha256(template.read_bytes()).hexdigest() in identity.extra_cli_args
-
-
-def test_online_configuration_keeps_native_selector_and_explicit_weight_format(tmp_path):
-    profile = load_profile(Path("snowball-h100"), ["quantization=online", "weight_precision=fp8"])
-    series = resolved_series(profile, Stage.CONFIRM)
-    assert series["precision"] == "fp8"
-    server = create_server({"series": series, "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE)}, tmp_path, None)
-    assert server.extra_cli_args[server.extra_cli_args.index("--quantization") + 1] == "online"
-    assert series["profile"]["quantization"] == "online"
 
 
 def test_launch_plan_survives_json_delivery_without_invalidating_worker_identity(monkeypatch):

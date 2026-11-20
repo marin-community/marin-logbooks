@@ -20,6 +20,7 @@ REQUIREMENTS_PATH = DIRECTORY / "requirements-harness.txt"
 
 PREPARATION_VERSION = 1
 SERVER_PORT = 38197
+ATTEMPT_RECEIPT_NAME = "receipt.json"
 
 
 class PointManifest(TypedDict):
@@ -50,6 +51,34 @@ class TrialPlan(TypedDict):
     source: dict
     research_logbook: str | None
     manifest: NotRequired[PointManifest]
+
+
+def unmeasured_result(plan: TrialPlan, state: str, *, cost_complete: bool = False) -> dict:
+    """Keep plans without collected measurements visible in campaign reports."""
+    return {
+        "trial_id": plan["trial_id"],
+        "trial_uri": plan["trial_uri"],
+        "manifest": (
+            plan.get("manifest")
+            or {
+                "series": plan["series"],
+                "diagnostic": bool(plan["series"].get("diagnostic")),
+                "vllm_release": plan["vllm_release"],
+                "workload": {"recipe": None},
+            }
+        ),
+        "job_state": state,
+        "job_succeeded": False,
+        "attempts": [],
+        "measurement": None,
+        "gpu_seconds": 0.0,
+        "cost_complete": cost_complete,
+        "cost_basis": (
+            "GPU child was not submitted or the controller confirmed it absent"
+            if cost_complete
+            else "Attempts have not been collected; GPU allocation cost remains unknown"
+        ),
+    }
 
 
 def load_series(path: Path = SERIES_PATH) -> dict:

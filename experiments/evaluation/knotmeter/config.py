@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Literal
 
 import yaml
-from marin.inference.config import VLLM_TOPOLOGY_OPTIONS
+from marin.inference.config import VLLM_TOPOLOGY_OPTIONS, ServingGeometry
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from experiments.evaluation.knotmeter.recipe import DIRECTORY, load_series
@@ -105,10 +105,19 @@ class Profile(Config):
     memory: str = "768GB"
     disk: str = "1TB"
 
+    @property
+    def geometry(self) -> ServingGeometry:
+        return ServingGeometry(
+            tensor_parallel_size=self.serving.tensor_parallel_size,
+            data_parallel_size=self.gpus.count // self.serving.tensor_parallel_size,
+            pipeline_parallel_size=1,
+            gpus_per_task=self.gpus.per_host,
+        )
+
     @model_validator(mode="after")
     def valid_geometry(self) -> "Profile":
-        if self.gpus.count % self.gpus.per_host or self.gpus.per_host % self.serving.tensor_parallel_size:
-            raise ValueError("GPU count must divide into hosts and tensor-parallel groups")
+        if self.geometry.total_gpus != self.gpus.count:
+            raise ValueError("GPU count must divide into tensor-parallel groups")
         if self.vllm.release and self.vllm.manifest:
             raise ValueError("Choose vllm.release or vllm.manifest")
         if (self.vllm.repo or self.vllm.revision) and not self.vllm.manifest:
@@ -155,7 +164,7 @@ def load_profile(path: Path, overrides: list[str]) -> Profile:
     return Profile.model_validate(values)
 
 
-def confirm_recipe(series: dict) -> bool:
+def is_confirm_recipe(series: dict) -> bool:
     """Require Confirm's minimum recipe independently of native window validity."""
     recipe = load_series()
     return (
@@ -182,7 +191,7 @@ def resolved_series(
     recipe |= stage_defaults | {"concurrency": min(profile.session_concurrency, limit)}
     recipe |= overrides.model_dump(exclude_none=True)
     if recipe["duration"] < recipe["minimum_duration"] and not recipe["unsafe_override"]:
-        raise ValueError("AgentX requires at least 900 seconds without --unsafe-override")
+        raise ValueError(f"AgentX requires at least {recipe['minimum_duration']} seconds without --unsafe-override")
     selector = profile.workload.public_dataset
     if selector not in datasets:
         raise ValueError(f"No pinned corpus for {selector!r}; add its reviewed identity to recipe.yaml")
@@ -211,7 +220,7 @@ def resolved_series(
             ),
         }
     )
-    series["diagnostic"] = not confirm_recipe(series)
+    series["diagnostic"] = not is_confirm_recipe(series)
     if measure_failed_checks:
         series["measure_failed_checks"] = True
     return series

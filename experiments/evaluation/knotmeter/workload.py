@@ -10,12 +10,12 @@ import logging
 import shutil
 from pathlib import Path
 
+from marin.profiling.trace_summary import sha256_for_path
 from rigging.filesystem.cluster_config import marin_temp_bucket
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.artifacts import (
     copy_file,
-    file_digest,
     read_record,
     retain_artifacts,
     unpack,
@@ -82,7 +82,7 @@ def restore_workload(receipt: dict, bundle: Path) -> None:
     bundle.mkdir(parents=True, exist_ok=False)
     archive = bundle.parent / "workload.tar.zst"
     copy_file(receipt["archive_uri"], str(archive))
-    digest = file_digest(archive)
+    digest = sha256_for_path(archive)
     if digest != receipt["archive_sha256"]:
         raise ValueError("Prepared workload bundle differs from its retained digest")
     unpack(archive, bundle)

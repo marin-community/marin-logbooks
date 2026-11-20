@@ -11,17 +11,13 @@ from pathlib import Path
 
 import zstandard
 from fsspec.implementations.local import LocalFileSystem
+from marin.profiling.trace_summary import sha256_for_path
 from rigging.filesystem import atomic
 from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.storage_path import prefix_join
 
 PROFILE_EXPORT_RELATIVE_PATH = Path("aiperf_artifacts/profile_export_aiperf.json")
 SERVER_METRICS_RELATIVE_PATH = Path("aiperf_artifacts/server_metrics_export.json")
-
-
-def file_digest(path: Path) -> str:
-    with path.open("rb") as stream:
-        return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
 def read_record(uri: str) -> dict:
@@ -65,7 +61,7 @@ def retain_artifacts(artifacts: Path, bundle: Path, prefix: str, *, name: str) -
     with bundle.open("wb") as encoded, zstandard.ZstdCompressor().stream_writer(encoded) as compressed:
         with tarfile.open(fileobj=compressed, mode="w|") as contents:
             contents.add(artifacts, arcname=".")
-    digest = file_digest(bundle)
+    digest = sha256_for_path(bundle)
     uri = prefix_join(prefix, f"{name}-{digest}.tar.zst")
     copy_file(str(bundle), uri)
     return uri, digest
@@ -77,7 +73,7 @@ def pack_server_metrics(point: Path) -> None:
     if not source.is_file():
         return
     encoded = source.with_suffix(".json.zst")
-    expected = file_digest(source)
+    expected = sha256_for_path(source)
     with source.open("rb") as reader, encoded.open("wb") as writer:
         with zstandard.ZstdCompressor().stream_writer(writer) as compressed:
             shutil.copyfileobj(reader, compressed, length=8 * 1024**2)
@@ -87,7 +83,7 @@ def pack_server_metrics(point: Path) -> None:
     receipt = {
         "raw_sha256": expected,
         "raw_bytes": source.stat().st_size,
-        "compressed_sha256": file_digest(encoded),
+        "compressed_sha256": sha256_for_path(encoded),
         "compressed_bytes": encoded.stat().st_size,
         "codec": "zstandard",
     }
@@ -102,16 +98,16 @@ def restore_server_metrics(point: Path) -> None:
     if not encoded.exists():
         return
     receipt = json.loads(encoded.with_suffix(".receipt.json").read_text())
-    if file_digest(encoded) != receipt["compressed_sha256"]:
+    if sha256_for_path(encoded) != receipt["compressed_sha256"]:
         raise ValueError("Compressed server metrics checksum mismatch")
     if source.exists():
-        if source.stat().st_size != receipt["raw_bytes"] or file_digest(source) != receipt["raw_sha256"]:
+        if source.stat().st_size != receipt["raw_bytes"] or sha256_for_path(source) != receipt["raw_sha256"]:
             raise ValueError("Restored server metrics checksum mismatch")
         return
     temporary = source.with_suffix(".json.tmp")
     with encoded.open("rb") as compressed, zstandard.ZstdDecompressor().stream_reader(compressed) as decoded:
         with temporary.open("wb") as writer:
             shutil.copyfileobj(decoded, writer, length=8 * 1024**2)
-    if temporary.stat().st_size != receipt["raw_bytes"] or file_digest(temporary) != receipt["raw_sha256"]:
+    if temporary.stat().st_size != receipt["raw_bytes"] or sha256_for_path(temporary) != receipt["raw_sha256"]:
         raise ValueError("Restored server metrics checksum mismatch")
     temporary.replace(source)

@@ -98,7 +98,8 @@ changes into draft contribution PRs; keep the research branch.
 Report stage, native/protocol validity, numerical outcomes, latency, request
 errors, evidence links and total allocated GPU cost separately. One window has
 no measured repeatability. Default to one run; repeat promising Confirm trials
-when noise could change the decision. Native multi-run reuses the server and
+when noise could change the decision. One valid Confirm may be recommended with
+repeatability labeled unmeasured. Native multi-run reuses the server and
 skips additional warmup after the first by default; use separate runner trials
 to preserve fresh servers. Reuse native confidence tools where compatible and
 keep their uncertainty limits visible.
@@ -107,3 +108,8 @@ The terminal report and `summary.md` must match. Select a valid Confirm point
 with complete required checks explicitly to write `recommended.yaml` with its settings and
 exact runtime. Explain why it wins against the baseline and label deferred RL
 qualification. Use [manage-pr](../manage-pr/SKILL.md) for publication; preserve the user's merge boundary.
+
+`report --recommend TRIAL_ID --baseline TRIAL_ID` takes IDs such as
+`20261120T093456Z-5d738d2cdf86`. Status and recovery take full `--trial-uri` paths.
+Compare runtime changes after both sides qualify under matching controls; a
+numerical pass from an older runtime does not qualify the changed runtime.

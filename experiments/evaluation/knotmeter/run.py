@@ -44,6 +44,7 @@ from experiments.evaluation.knotmeter.artifacts import (
 from experiments.evaluation.knotmeter.config import Profile
 from experiments.evaluation.knotmeter.processes import run_logged
 from experiments.evaluation.knotmeter.recipe import (
+    ATTEMPT_RECEIPT_NAME,
     SERVER_PORT,
     PointManifest,
     TrialPlan,
@@ -386,8 +387,9 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
         write_record(str(output / "attempt.json"), record)
         prefix = prefix_join(plan["trial_uri"], f"attempts/{record['iris_attempt_uid']}/hosts/{info.task_index}")
         uri, digest = retain_artifacts(output, output.parent / "host.tar.zst", prefix, name="native")
-        write_record(prefix_join(prefix, "receipt.json"), record | {"archive_uri": uri, "archive_sha256": digest})
-        print(f"KNOTMETER_ATTEMPT {prefix}/receipt.json", flush=True)
+        receipt_uri = prefix_join(prefix, ATTEMPT_RECEIPT_NAME)
+        write_record(receipt_uri, record | {"archive_uri": uri, "archive_sha256": digest})
+        print(f"KNOTMETER_ATTEMPT {receipt_uri}", flush=True)
         if launch and not leader and record["status"] == "succeeded":
             notify_iris_vllm_stopped(launch)
 
@@ -402,10 +404,5 @@ def run(plan: TrialPlan) -> None:
         if profile.gpus.count == profile.gpus.per_host:
             run_point(plan, output, bundle, None)
         else:
-            with iris_vllm_launch(
-                pipeline_parallel_size=1,
-                tensor_parallel_size=profile.serving.tensor_parallel_size,
-                data_parallel_size=profile.gpus.count // profile.serving.tensor_parallel_size,
-                data_parallel_size_local=profile.gpus.per_host // profile.serving.tensor_parallel_size,
-            ) as launch:
+            with iris_vllm_launch(profile.geometry) as launch:
                 run_point(plan, output, bundle, launch)

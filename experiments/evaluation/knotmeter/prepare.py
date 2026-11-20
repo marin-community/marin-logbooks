@@ -15,6 +15,7 @@ import uuid
 from pathlib import Path
 
 from agentx_cli import app
+from aiperf._build_info import COMMIT_SHA
 from aiperf.common import random_generator
 from aiperf.common.environment import Environment
 from aiperf.common.messages.command_messages import ProfileConfigureCommand
@@ -126,6 +127,8 @@ def benchmark_run(series: dict, output: Path) -> BenchmarkRun:
 async def native_cache(series: dict, bundle: Path, *, check_only: bool) -> dict:
     if importlib.metadata.version("agentx-harness") != series["harness_version"]:
         raise RuntimeError("AgentX distribution differs from the reviewed pin")
+    if COMMIT_SHA != series["harness_source"]:
+        raise RuntimeError("AgentX build source differs from the reviewed pin")
     run = benchmark_run(series, bundle.parent / "preparation-artifacts")
     with Environment.defaults(get_scenario("agentx").environment_defaults):
         key = mmap_cache.compute_cache_key_from_run(run)
@@ -170,7 +173,7 @@ def main() -> None:
         | {
             "preparation_version": PREPARATION_VERSION,
             "harness_version": series["harness_version"],
-            "harness_source": series["harness_source"],
+            "harness_source": COMMIT_SHA,
             "preparation_seconds": time.monotonic() - started,
             "peak_memory_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         }

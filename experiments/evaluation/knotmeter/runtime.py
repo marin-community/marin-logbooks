@@ -63,7 +63,7 @@ def gpu_release(metadata: dict) -> VllmGpuRelease:
 
 
 def materialize_release(metadata: dict, output: Path) -> VllmGpuRelease:
-    """Return a release whose private wheel has a verified local URI."""
+    """Materialize this host's private wheel and verify its bytes."""
     release = gpu_release(metadata)
     wheels = []
     for wheel in release.wheels:

@@ -198,7 +198,7 @@ def print_plan(plan: TrialPlan) -> None:
         print("Failed checks will be retained while measuring the native protocol; they still block recommendations.")
 
 
-def main() -> None:
+def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="operation", required=True)
     for operation in ("plan", "run"):
@@ -258,9 +258,15 @@ def main() -> None:
         command.add_argument("--trial-uri", required=True)
     report = commands.add_parser("report", help="Print and save the campaign comparison")
     report.add_argument("--campaign-uri", required=True)
-    report.add_argument("--recommend", help="Select a qualified trial and pin recommended.yaml")
-    report.add_argument("--baseline", help="Show changes against this trial's matched model and workload controls")
-    args = parser.parse_args()
+    report.add_argument("--recommend", metavar="TRIAL_ID", help="Select a qualified trial ID and pin recommended.yaml")
+    report.add_argument(
+        "--baseline", metavar="TRIAL_ID", help="Baseline trial ID within this campaign; not a storage URI"
+    )
+    return parser
+
+
+def main() -> None:
+    args = argument_parser().parse_args()
     if args.operation == "report":
         print(report_campaign(args.campaign_uri, args.recommend, args.baseline), end="")
         return
@@ -323,7 +329,13 @@ def main() -> None:
                     plan = read_record(prefix_join(plan["trial_uri"], "plan.json"))
                     status = client.job_status(job.job_id)
                     if "manifest" in plan:
-                        result = refresh_costs(plan)
+                        try:
+                            result = refresh_costs(plan)
+                        except FileNotFoundError:
+                            # A preempted coordinator cannot collect its terminal GPU child.
+                            capture_allocations(client, plan)
+                            with tempfile.TemporaryDirectory(prefix="knotmeter-collection-") as directory:
+                                result = collect_trial(client, plan, Path(directory))
                     else:
                         record_preparation_failure(plan, status.error_message)
                         result = read_record(prefix_join(plan["trial_uri"], "result.json"))
