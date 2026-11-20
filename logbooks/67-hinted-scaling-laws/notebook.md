@@ -66,6 +66,42 @@ status: active
   - This checks the fit code only. Our own eval has not produced any rollouts yet.
 - Decision and next action: the fit code is accepted for the gate. Next, generate fresh Delphi GSM8K rollouts with the hinted eval (marin-community/marin#11866) on each rung's original seed, compare per-cell accuracies with the paper's rollouts, and rerun these fits and figures on our rollouts (marin-community/marin#11868).
 
+### 2026-11-20 23:10 UTC - Fit module reproduces the paper's Qwen forecasts
+
+- Question or hypothesis and reason for trying it: do the fits also reproduce the paper's chat-model pairs, where capability is the paper's model-size scale and the fits use the first 10 rollouts per problem?
+- Published source revision: marin-community/marin#11891 at `344ecd5056` (fit module plus paper-regression tests for these pairs).
+- Command or material configuration, from a checkout with the fit module and the paper checkout at `$HSL`:
+
+  ```bash
+  uv run --with pandas --with matplotlib python -I logbooks/67-hinted-scaling-laws/scripts/plot_pairs.py "$HSL" logbooks/67-hinted-scaling-laws/figures
+  ```
+
+- External inputs and artifact references: tatsu-lab/hinted-scaling-laws at c0490e53, `data/results/` for AIME × Qwen2.5-Instruct and Qwen3, and HLE × Qwen2.5-Instruct, Qwen3 and Qwen3.5. The paper's own `experiments/forecasting/plot.py forecasts` output, run in a scratch environment, is the reference.
+- Environment and hardware when relevant: laptop CPU. No rollouts were generated.
+- Result, including failure or restart: all 19 sigmoid-baseline and ensemble forecast errors (every pair, every fitted size from 2 to n−1) equal the paper's to four decimals. Forecasting each pair's largest model from all smaller ones:
+
+  | Pair | Fitted | Observed | Masking | Truncation | Ensemble | Sigmoid |
+  |---|---|---|---|---|---|---|
+  | AIME × Qwen2.5 | 5 | 0.118 | 0.131 | 0.048 | 0.089 | 0.236 |
+  | AIME × Qwen3 | 5 | 0.752 | 0.832 | 0.853 | 0.842 | 0.886 |
+  | HLE × Qwen2.5 | 5 | 0.027 | 0.095 | 0.041 | 0.068 | 0.035 |
+  | HLE × Qwen3 | 5 | 0.103 | 0.090 | 0.061 | 0.075 | 0.039 |
+  | HLE × Qwen3.5 | 4 | 0.341 | 0.181 | 0.192 | 0.187 | 0.255 |
+
+- Evidence:
+
+  ![Qwen hint curves](figures/qwen_hint_curves.png)
+  ![Qwen forecasts of the largest model](figures/qwen_forecast_largest_t.png)
+  ![Qwen forecast error against fitted models](figures/qwen_forecast_error.png)
+
+- Interpretation and limitations:
+  - The ensemble beats the sigmoid baseline in 15 of 19 panels, as the paper reports.
+  - AIME × Qwen2.5 shows the same cancellation as Delphi: with 2 fitted models, masking forecasts 0.157 and truncation 0.021 against an observed 0.118.
+  - On HLE × Qwen2.5 the ensemble loses to the baseline from 3 fitted models up; the family barely improves with scale and masking overshoots.
+  - On HLE × Qwen3.5 both methods forecast about 0.19 against 0.341; the 9B → 27B step is steeper than the smaller models predict.
+  - On AIME × Qwen3 every forecast overshoots (0.83–0.89 against 0.752).
+- Decision and next action: the paper-regression tests in marin-community/marin#11891 now cover these pairs. Fresh Delphi rollouts remain the next step (marin-community/marin#11868).
+
 ## Final decision
 
 - Selected approach and evidence:
