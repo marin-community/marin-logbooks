@@ -9,6 +9,7 @@ import os
 import traceback
 import urllib.error
 import urllib.request
+from fnmatch import fnmatchcase
 from pathlib import Path
 
 
@@ -29,7 +30,7 @@ def cache_views(value, tensor_type):
 
 
 class GrugExpertStorage:
-    def inspect_grug_experts(self, scheme: str, backend: str, group: str) -> dict:
+    def inspect_grug_experts(self, scheme: str, backend: str, ignored: list[str], group: str) -> dict:
         # These import the exact vLLM under test, in its GPU worker process.
         import torch  # noqa: PLC0415
         from vllm.model_executor.layers.fused_moe import RoutedExperts  # noqa: PLC0415
@@ -49,6 +50,10 @@ class GrugExpertStorage:
             weight_dtype = getattr(quant, "weight_quant_dtype", None)
             selected_backend = getattr(method, "fp8_backend", None)
             selected_backend = getattr(selected_backend, "value", None)
+            prefix = name.removesuffix(".routed_experts")
+            expected_fp8 = scheme != "bf16" and not any(fnmatchcase(prefix, pattern) for pattern in ignored)
+            if bool(selected_backend) != expected_fp8:
+                errors.append(f"{name} does not match the requested precision")
             block_shape = getattr(module, "weight_block_size", None)
             fp8_storage_dtype = torch.int32 if backend == "MARLIN" else torch.float8_e4m3fn
             expected_dtype = fp8_storage_dtype if selected_backend else torch.bfloat16
@@ -145,10 +150,11 @@ def main():
     selector = json.loads(args[args.index("--quantization-config") + 1]) if profile["quantization"] else {}
     scheme = selector.get("moe", "bf16")
     backend = json.loads(args[args.index("--kernel-config") + 1])["moe_backend"].upper()
+    ignored = selector.get("ignore", [])
     request = urllib.request.Request(
         f"{base}/collective_rpc",
         data=json.dumps(
-            {"method": "inspect_grug_experts", "args": [scheme, backend, output.parent.name], "timeout": 120}
+            {"method": "inspect_grug_experts", "args": [scheme, backend, ignored, output.parent.name], "timeout": 120}
         ).encode(),
         headers={"Content-Type": "application/json"},
     )
@@ -159,13 +165,15 @@ def main():
             reports = json.load(response)["results"]
         report["workers_returned"] = reports
         expected_layers = 26 if profile["gpus"]["type"] == "H100" else 48
-        if selector.get("ignore"):
-            raise ValueError("Record the expected mixed-precision layer count before running a hybrid")
+        expected_fp8 = sum(
+            scheme != "bf16" and not any(fnmatchcase(f"model.layers.{layer}.mlp.experts", pattern) for pattern in ignored)
+            for layer in range(expected_layers)
+        )
         if reports and all(
             worker["status"] == "passed"
             and worker["dp_size"] == profile["gpus"]["count"]
             and worker["extension_sha256"] == digest
-            and len(worker["fp8_layers"]) == (expected_layers if selector else 0)
+            and len(worker["fp8_layers"]) == expected_fp8
             for worker in reports
         ):
             report["status"] = "passed"
