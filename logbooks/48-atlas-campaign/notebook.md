@@ -1962,3 +1962,16 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the legacy-retained-grading fix's rollout outcomes.
+
+### 2026-11-20 00:40 UTC - Hourly catch-up (23:40–00:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `22fe092c6f…` (23:02:27 UTC) to head `e0b918dde6eda18d5e450912c7655270ad906a72`, landed 00:32:24 UTC (~10 landings 23:35–00:32 UTC incl. one by the exp3/exp4 runtime agent).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 22fe092c..e0b918dd` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **SWE-repair lane landed**: the SWE-rebench V2.1 repair module, fidelity gate driver, wave runs, and the grader-unscorable fix (`eae68562cc…`); vendored harness trees exempted from repo lint (`3ec42a57ff…`, `d43e6bb912…`); the grade template renamed to .py.tmpl (`db1289d6b5…`); lint-clean repair module (`ad12cd7c68…`); the source registered only once its within-source dedup receipt exists (`0618163b36…`); the registration gate flattened (`3a23dd2bf7…`); the repaired source registered as **pending intake measurement** (`e0b918dde6…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the registered source awaits intake measurement.
+- Decision and next action: next hourly check watches for the swe-repair intake measurement outcomes.
