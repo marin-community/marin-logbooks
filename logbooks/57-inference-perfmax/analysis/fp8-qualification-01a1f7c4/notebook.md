@@ -80,3 +80,11 @@ Take two experts from Mochi layer 31. The test feeds identical synthetic BF16 ro
 Casting weights to FP8 changes the reference output by 4.55–4.77% in relative L2 across one, 41 and 257 rows. Marlin's output differs from the reference using the same quantized values by 0.48% for tensor scaling and 0.62–0.64% for block scaling. Removing the reference's intermediate BF16 rounding changes that reference by 0.38–0.40%. Weight approximation is the larger effect in this sample. The remaining difference includes arithmetic and rounding in the two implementations. Fixed synthetic inputs and routes limit what this says about token probabilities or routing changes. Cost was 87 GB200-seconds. [Native arithmetic and input hashes](component-real-experts-results.json)
 
 The exact, separate block loader contribution passes 12 focused H100 tests (116 GPU-seconds). The combined hybrid wheel passes 14 focused GB200 tests (99 GPU-seconds). [Block contribution](component-block-contribution-results.json), [Hybrid wheel](component-mochi-hybrid-results.json)
+
+### Full Mochi qualification gate
+
+At DP16 the middle-16 block deployment passes the shared reference, batch, cache and decode checks before AgentX. The short maximum is 0.647211 at book03:769 against 0.65, with p99 0.092948 against 0.125. The long maximum is 0.274558 against 0.35. Decode p99 is 0.038357 against 0.15. Preserve the small short-reference margin when describing this result.
+
+The same point loads 80.96 GiB per GPU versus 86.42 GiB in the retained BF16 DP16 run, with usable BF16 KV capacity of 1,218,836 versus 1,102,533 tokens per engine. The normal C64 replay is in progress. Run a fresh full gate and normal C128 comparison at DP32 to match the strongest retained BF16 throughput point. It uses the same profile with `--set gpus.count=32 --session-concurrency 128`. DP32 needs its own gate because the expert partition changes.
+
+The exact, separate hybrid contribution also passes on GB200. It targets the existing selective FP8 draft and uses the ordinary BF16 loader test with Marlin configured globally. [Hybrid contribution regression](component-hybrid-contribution-results.json)
