@@ -29,7 +29,8 @@ def native_members(path: Path) -> dict[str, str]:
 def main() -> None:
     payload = json.loads(Path(sys.argv[1]).read_text())
     root, base = Path(payload["source_root"]), Path(payload["base_wheel"])
-    assert platform.machine() == "aarch64", platform.machine()
+    architecture = payload.get("architecture", "aarch64")
+    assert architecture in {"aarch64", "x86_64"}, architecture
     assert torch.__version__ == "2.14.1+cu132", torch.__version__
     source = root / "vllm/model_executor/models/grugmoe.py"
     assert hashlib.sha256(source.read_bytes()).hexdigest() == payload["model_sha256"]
@@ -45,11 +46,17 @@ def main() -> None:
         "VLLM_SKIP_PRECOMPILED_VERSION_SUFFIX": "1",
         "SOURCE_DATE_EPOCH": str(payload["source_date_epoch"]),
     }
-    command = [sys.executable, "-m", "build", "--wheel", "--no-isolation", "--outdir", str(root / "dist"), str(root)]
+    # The supplied base wheel contains the target binaries. When Iris places
+    # the CPU job on another architecture, setuptools only packages those bytes.
+    command = [sys.executable, "-m", "build", "--wheel", "--no-isolation", "--outdir", str(root / "dist")]
+    if platform.machine() != architecture:
+        command += ["--config-setting", f"--build-option=--plat-name=linux_{architecture}"]
+    command += [str(root)]
     subprocess.run(command, cwd=root, env=environment, check=True)
     wheels = list((root / "dist").glob("*.whl"))
     assert len(wheels) == 1, wheels
     wheel = wheels[0]
+    assert wheel.name.endswith(f"linux_{architecture}.whl"), wheel.name
     baseline_native, candidate_native = native_members(base), native_members(wheel)
     assert candidate_native and candidate_native == baseline_native, {
         "missing": sorted(baseline_native.keys() - candidate_native.keys()),
@@ -61,6 +68,12 @@ def main() -> None:
         ],
     }
     with zipfile.ZipFile(wheel) as archive:
+        core = archive.open("vllm/_C.abi3.so")
+        with core:
+            elf_architecture = int.from_bytes(core.read(20)[18:20], "little")
+        assert elf_architecture == {"aarch64": 183, "x86_64": 62}[architecture]
+        for name, expected in payload.get("python_hashes", {}).items():
+            assert hashlib.sha256(archive.read(name)).hexdigest() == expected, name
         model_sha = hashlib.sha256(archive.read("vllm/model_executor/models/grugmoe.py")).hexdigest()
         marlin_sha = hashlib.sha256(
             archive.read("vllm/model_executor/layers/fused_moe/experts/marlin_moe.py")
@@ -91,6 +104,7 @@ def main() -> None:
         },
         "python": sys.version,
         "machine": platform.machine(),
+        "architecture": architecture,
         "torch": torch.__version__,
     }
     Path(payload["output"]).write_text(json.dumps(record, indent=2) + "\n")

@@ -114,6 +114,7 @@ def component_worker(payload: dict) -> None:
         if payload.get("mode") == "build":
             built = json.loads(Path(payload["output"]).read_text())
             copy_file(built["wheel_path"], payload["uri"] + "/" + Path(built["wheel_path"]).name)
+            architecture = built["architecture"]
             manifest = {
                 "release_tag": payload["release_tag"],
                 "source_commit": payload["source_commit"],
@@ -122,8 +123,8 @@ def component_worker(payload: dict) -> None:
                 "torch_version": "2.14.1+cu132",
                 "wheels": [
                     {
-                        "architecture": "aarch64",
-                        "sm_targets": ["10.0"],
+                        "architecture": architecture,
+                        "sm_targets": {"aarch64": ["10.0"], "x86_64": ["9.0"]}[architecture],
                         "url": payload["uri"] + "/" + Path(built["wheel_path"]).name,
                         "sha256": built["wheel_sha256"],
                     }
@@ -146,7 +147,8 @@ def main() -> None:
     if hashlib.sha256(bootstrap.read_bytes()).hexdigest() != payload["bootstrap_sha256"]:
         raise ValueError("The local bootstrap differs from the frozen input; no job submitted")
     gpus = 0 if payload.get("mode") == "build" else 1
-    with connect_controller(cluster_name="cw-us-east-08a") as endpoint:
+    cluster = payload.get("cluster", "cw-us-east-08a")
+    with connect_controller(cluster_name=cluster) as endpoint:
         with IrisClient.remote(endpoint.url, credentials=endpoint.credentials, workspace=Path.cwd()) as client:
             job = client.submit(
                 entrypoint=Entrypoint.from_callable(component_worker, payload),
@@ -167,7 +169,7 @@ def main() -> None:
                 max_retries_preemption=1,
                 task_image=payload["task_image"],
             )
-            plan = {"gpu_job_id": str(job.job_id), "cluster": "cw-us-east-08a", "trial_uri": payload["uri"]}
+            plan = {"gpu_job_id": str(job.job_id), "cluster": cluster, "trial_uri": payload["uri"]}
             args.output.write_text(json.dumps({"plan": plan, "payload": payload}, indent=2) + "\n")
             write_record(payload["uri"] + "/input.json", {"plan": plan, "payload": payload})
             print(json.dumps(plan), flush=True)
