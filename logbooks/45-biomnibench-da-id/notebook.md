@@ -322,3 +322,7 @@ Submitted google/gemma-4-26B-A4B-it at cohort revision `4d7ae4984b7db7de8f845717
 ### November 20 — Gemma replacement blocked by solver capacity
 
 The [single-task replacement](full/gemma-final-submission.json) for da-13-1 passed remote preflight and model preparation. The Gemma worker remained scheduling-gated on two H100s and matching InfiniBand quota in CoreWeave US East. At the two-hour cutoff the archive contained zero trial artifacts and the job was canceled. No replacement solver trial or judge call ran. The first pass retains 49/50 scores totaling 1,073 signed points; da-13-1 remains unscored.
+
+### November 20 — Gemma replacement with a two-day queue window
+
+Iris accepted a [second single-task replacement](full/gemma-final-48h-submission.json) for da-13-1 at 17:00 UTC. The launcher and serving placement waits allow up to 48 hours. An exact-job cutoff is scheduled for November 22 at 17:00 UTC. The solver still gets one hour, and the verifier gets 15 minutes. The run requests two H100s for Gemma and eight for MiniMax. The original 49 scores carry forward.
