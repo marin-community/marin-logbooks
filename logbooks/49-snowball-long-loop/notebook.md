@@ -1870,3 +1870,18 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; landing records [R].
 - Interpretation and limitations: quiet windows.
 - Decision and next action: hourly checks watch for the next EOT-slice attempt and the repair-wrapper license outcomes.
+
+### 2026-11-20 23:40 UTC - CORRECTION + hourly catch-up (22:40–23:40 UTC window): the three-arm slice RESUBMITTED on the standard path (.89); Mochi .7 base/SFT evals running
+
+- Question or hypothesis and reason for trying it: coordinator correction — the ".88 unchanged" line was stale: the three-arm slice was **resubmitted on the standard path as `.89` at ~21:55 UTC** (4:55 PM EST), and the **Mochi `.7` base and SFT evals are also running on 08a**. Both items verified via Iris.
+- Published source revision: unchanged exp4 identities; **new standard-path slice `.89`** and **new Mochi `.7` evals**.
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4-standard-slice` and `--prefix /benfeuer/mochi` at 23:33 UTC.
+- External inputs and artifact references: Iris job lists [R: live cluster state]; coordinator correction [R].
+- Environment and hardware when relevant: the Mochi `.7` evals run on 08a.
+- Result, including failure or restart:
+  1. **Three-arm slice resubmitted on the standard path as `.89`** — roots `/benfeuer/mochi-exp4-standard-slice-{a,b,c}-2026.11.20.89-coordinator-*` (a: `…-6cac7d59`, b: `…-8ee3f812`, c: `…-671aba9c`) **all running on cw-rno2a** (submitted 22:11–22:12 UTC), with inference broker/worker children **running** (launched ~21:56–21:57 UTC) — unlike `.87`/`.88`, the standard path got the inference lane up and running. The `.88` diagnostic kill is superseded.
+  2. **Mochi `.7` base and SFT Micro210 evals running on 08a**: `/benfeuer/mochi-base-micro210-eval-2026.11.20.7-coordinator-f1c15483` (submitted 21:32:35 UTC; preflight succeeded) and `/benfeuer/mochi-sft-micro210-eval-2026.11.20.7-coordinator-5d9d0c2a` (submitted 21:33:07 UTC; preflight succeeded) — both with their eval tasks **running** (21:34–21:35 UTC). These are the base/SFT reference rows for the exp3/exp4 comparison.
+  3. The 22:40-cycle entry's ".88 unchanged / no new EOT attempt" line is **withdrawn as stale**.
+- Evidence: Iris job lists [R]; coordinator correction [R].
+- Interpretation and limitations: the `.89` arms are in progress (no scored outcome yet); the `.7` base/SFT evals are in progress (scored outcomes pending).
+- Decision and next action: hourly checks track the `.89` arms and the `.7` evals' scored outcomes.
