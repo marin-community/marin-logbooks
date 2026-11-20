@@ -2003,3 +2003,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the swe-repair intake bootstrap outcomes.
+
+### 2026-11-20 03:40 UTC - Hourly catch-up (02:40–03:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `677a190005…` (02:32:48 UTC) to head `d707f3252056661a2831be7792dcd467227d4759`, landed 03:23:46 UTC (3 landings 03:01 / 03:23 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 677a1900..d707f325` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: compact curriculum sample records typed (`d707f32520…`, head); curriculum task bodies kept out of the membership shuffle (`f05d1fde58…`); an unbound-census sample binding kept pending instead of crashing with the curriculum converter versions verified (`c69a7035a2…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the curriculum-shuffle outcomes.
