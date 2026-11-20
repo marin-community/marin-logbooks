@@ -9,7 +9,6 @@ import os
 import subprocess
 import sys
 import time
-from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -125,11 +124,16 @@ def test_grug_storage_and_shared_suite(correctness_endpoint, request):
     }
 
 
-async def reference_probe(endpoint):
-    references = lookup_reference(endpoint.fixture)
+def mochi_probe_reference(fixture):
+    references = lookup_reference(fixture)
     assert references.status == LookupStatus.FOUND
     cases = tuple(case for case in references.cases if case.id in MOCHI_REFERENCE_PROBE)
     assert {case.id for case in cases} == MOCHI_REFERENCE_PROBE
+    return references.model_copy(update={"cases": cases})
+
+
+async def reference_probe(endpoint):
+    references = mochi_probe_reference(endpoint.fixture)
     reports = {
         "scope": "Eight fixed histories for diagnosis before the full suite",
         "runtime_source": endpoint.runtime_source,
@@ -145,9 +149,7 @@ async def reference_probe(endpoint):
             deployment = await verify_deployment(client, endpoint.fixture, endpoint.runtime_source)
             reports["checks"]["deployment"] = deployment
             assert deployment["status"] == "passed", deployment
-            reports["checks"]["reference"] = await check_reference(
-                client, replace(references, cases=cases), endpoint.fixture
-            )
+            reports["checks"]["reference"] = await check_reference(client, references, endpoint.fixture)
         finally:
             reports["requests"] = client.requests
             endpoint.output.write_text(json.dumps(reports, indent=2) + "\n")
