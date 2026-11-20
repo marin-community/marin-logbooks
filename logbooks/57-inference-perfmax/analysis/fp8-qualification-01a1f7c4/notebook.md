@@ -106,3 +106,7 @@ On the same eight DP8 histories, middle-16 block differs from matched BF16 by 0.
 ### Snowball retention-zero gate and paired control
 
 The routed retention-zero point passes the full gate, including 19 exact cache comparisons. Its reference maximum and p99 are 0.226172 and 0.122289, the same as retention 128 in the first run. The pinned warmup finishes all 1,406 requests in 220.43 seconds, compared with about 17 minutes in the routed retention-128 run. A normal window will measure throughput under sustained load. Use `snowball-bf16-c128-retention0.yaml` to pair the same cache and routing settings with BF16 on the same wheel.
+
+### Mochi full decode graph preflight
+
+The hybrid wheel includes vLLM #130. Its existing tests exercise graph normalization, padded rows and repeated full-graph decode with changing inputs and state slots. All nine pass on one GB200, including exact comparisons with eager decode. The allocation cost is 84 GB200-seconds. The prepared C64 profile changes only the graph mode to `FULL_AND_PIECEWISE` and preserves the ShortConv split. Use the full model gate before measuring it. [Native component results](component-mochi-graphs-results.json)
