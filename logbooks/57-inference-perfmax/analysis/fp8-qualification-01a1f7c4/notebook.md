@@ -110,3 +110,9 @@ The routed retention-zero point passes the full gate, including 19 exact cache c
 ### Mochi full decode graph preflight
 
 The hybrid wheel includes vLLM #130. Its existing tests exercise graph normalization, padded rows and repeated full-graph decode with changing inputs and state slots. All nine pass on one GB200, including exact comparisons with eager decode. The allocation cost is 84 GB200-seconds. The prepared C64 profile changes only the graph mode to `FULL_AND_PIECEWISE` and preserves the ShortConv split. Use the full model gate before measuring it. [Native component results](component-mochi-graphs-results.json)
+
+### Snowball C128 with routing and retention 128
+
+The valid routed comparison reaches 138.08517 output tokens/s/GPU, p90 TTFT 100.91485 s and p90 request completion 272.88136 s. Session routing adds 12.8% throughput and reduces p90 completion by 9.5% relative to the same wheel without routing. The window has 5,538 profiling successes, zero errors, and a complete allocation of 43,432 H100-seconds.
+
+AgentX reports a GPU prefix-hit rate of 30.77%, versus 10.37% without routing. Its exporter warns that some server counters decreased. The selected Iris attempt and GPU gang stayed the same, and Kubernetes recorded zero container restarts. Use the client completions for the performance comparison and treat the server-counter estimate as approximate. [Native routed trial](s3://marin-us-east-08a/marin/knotmeter/campaigns/fp8-qualification-snowball-01a1f7c4/trials/20261120T083024Z-16220c81d086/result.json)
