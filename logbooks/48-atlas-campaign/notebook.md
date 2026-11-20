@@ -2027,3 +2027,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R], cross-checked.
 - Interpretation and limitations: quiet window on the branch.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-20 05:40 UTC - Hourly catch-up (04:40–05:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `d707f32520…` (03:23:46 UTC) to head `43e4e276564b3fdd3256f0362a5f9eb4c04402f4`, landed 05:21:37 UTC (2 landings 05:02 / 05:21 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log d707f325..43e4e276` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: curriculum tasks filtered by subject before aggregating outcomes (`43e4e27656…`, head); the original census bound in the filtered content regression (`0e5d44c980…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the curriculum-aggregation outcomes.
