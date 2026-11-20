@@ -1,0 +1,55 @@
+model:
+  repo: open-athena/Marin-Snowball-67B-A2B-v0.1.1
+  revision: 59852d6f07261722bbec1edb6ab148317156b58e
+  tokenizer: open-athena/Marin-Snowball-67B-A2B-v0.1.1
+  tokenizer_revision: 59852d6f07261722bbec1edb6ab148317156b58e
+gpus:
+  type: H100
+  count: 8
+  per_host: 8
+cluster: cw-rno2a
+priority: interactive
+memory: 384GB
+session_concurrency: 128
+serving:
+  environment:
+    VLLM_SERVER_DEV_MODE: '1'
+    PYTHONPATH: /app/logbooks/57-inference-perfmax/analysis/fp8-qualification-01a1f7c4
+  dtype: bfloat16
+  max_model_len: 262144
+  max_num_seqs: 128
+  max_num_batched_tokens: 8192
+  gpu_memory_utilization: 0.94
+  router: true
+  extra_args:
+  - --enable-prompt-tokens-details
+  - --max-logprobs
+  - '50'
+  - --reasoning-parser
+  - grug
+  - --enable-auto-tool-choice
+  - --tool-call-parser
+  - hermes
+  - --prefix-cache-retention-interval
+  - '128'
+  - --kernel-config
+  - '{"moe_backend":"auto"}'
+  - --worker-extension-cls
+  - grug_expert_storage.GrugExpertStorage
+workload:
+  public_dataset: semianalysis_cc_traces_weka_062126_256k
+checks:
+- name: loaded-weight-storage
+  kind: serving
+  timeout: 210
+  command:
+  - python
+  - logbooks/57-inference-perfmax/analysis/fp8-qualification-01a1f7c4/grug_expert_storage.py
+- name: model-numerics
+  fixture: experiments/evaluation/inference_correctness/fixtures/snowball-v0.1.1.json
+  timeout: 3600
+weight_precision: bf16
+vllm:
+  repo: https://github.com/yonromai/vllm
+  revision: 790f4cc3bd4db428e54bbf85bee5577b2337b4dd
+  manifest: s3://marin-us-east-02a/marin/knotmeter/campaigns/fp8-qualification-01a1f7c4/builds/790f4cc3bd4d/x86_64-a2/manifest.json

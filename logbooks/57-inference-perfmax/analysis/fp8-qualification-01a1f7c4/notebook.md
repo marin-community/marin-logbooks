@@ -54,6 +54,8 @@ marin-env .venv/bin/python -m experiments.evaluation.knotmeter.cli run \
   --priority interactive --logbook https://github.com/marin-community/marin-logbooks/issues/57
 ```
 
+Use `snowball-bf16-c128-control.yaml` for the same-wheel BF16 control with the router. It keeps the workload, C128, DP8, retention 128 and full gate. Kernel selection is the native BF16 default. This controls for the new runtime and route placement when estimating the cost of the FP8 recipe.
+
 ### Matched Mochi controls at DP8
 
 The BF16 control passes the eight-history probe. At book03:769 the measured reference error is 0.581942 in BF16 and 0.732109 with the last 16 expert layers in block FP8. The short p99 values are 0.083103 and 0.113886. The long checks pass in both. Model-load memory falls from 149.42 to 129.49 GiB per GPU (13.3%) at matched DP8. This is a rejected precision setting. The retries cost 4,372 GB200-seconds for BF16 and 4,608 for late-16 FP8.
@@ -70,3 +72,11 @@ marin-env .venv/bin/python -m experiments.evaluation.knotmeter.cli run \
   --set gpus.count=16 --session-concurrency 64 --campaign fp8-qualification-mochi-01a1f7c4 \
   --priority interactive --logbook https://github.com/marin-community/marin-logbooks/issues/57
 ```
+
+### Arithmetic with real expert weights
+
+Take two experts from Mochi layer 31. The test feeds identical synthetic BF16 rows and fixed FP32 route weights to Marlin and a plain FP32 matmul reference with BF16 intermediate rounding. The reference dequantizes the exact native FP8 values and the same BF16 scales that Marlin receives.
+
+Casting weights to FP8 changes the reference output by 4.55–4.77% in relative L2 across one, 41 and 257 rows. Marlin's output differs from the reference using the same quantized values by 0.48% for tensor scaling and 0.62–0.64% for block scaling. Removing the reference's intermediate BF16 rounding changes that reference by 0.38–0.40%. Weight approximation is the larger effect in this sample. The remaining difference includes arithmetic and rounding in the two implementations. Fixed synthetic inputs and routes limit what this says about token probabilities or routing changes. Cost was 87 GB200-seconds. [Native arithmetic and input hashes](component-real-experts-results.json)
+
+The exact, separate block loader contribution passes 12 focused H100 tests (116 GPU-seconds). The combined hybrid wheel passes 14 focused GB200 tests (99 GPU-seconds). [Block contribution](component-block-contribution-results.json), [Hybrid wheel](component-mochi-hybrid-results.json)

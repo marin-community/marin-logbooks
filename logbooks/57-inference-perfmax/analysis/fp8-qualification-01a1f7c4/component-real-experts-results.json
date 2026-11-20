@@ -1,0 +1,179 @@
+{
+  "source_commit": "c070e211e3fb4b1cee680b546eacb8f48f1959a2",
+  "device": "NVIDIA GB200",
+  "scope": "Two fixed Mochi experts with synthetic BF16 inputs and fixed FP32 combine weights",
+  "inputs": {
+    "checkpoint": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+    "weights": {
+      "gate": [
+        {
+          "uri": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1/model-00126-of-00193.safetensors",
+          "tensor": "model.layers.31.mlp.experts.191.gate_proj.weight",
+          "expert": null,
+          "sha256": "7f458e5e6d26d7ddad824dc6e4f6bbf3d69982ca0fd410a683d7f78093feb3cb"
+        },
+        {
+          "uri": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1/model-00126-of-00193.safetensors",
+          "tensor": "model.layers.31.mlp.experts.192.gate_proj.weight",
+          "expert": null,
+          "sha256": "ee22d36c1d55991a0fd377a2f9c35e5bfc2adbb2a793a6dcc86a2ea61b39353c"
+        }
+      ],
+      "up": [
+        {
+          "uri": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1/model-00127-of-00193.safetensors",
+          "tensor": "model.layers.31.mlp.experts.191.up_proj.weight",
+          "expert": null,
+          "sha256": "26a9296b3d5e5e31822b00975ec22037ca3ca91de70b76cecc1e5659a193d63a"
+        },
+        {
+          "uri": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1/model-00127-of-00193.safetensors",
+          "tensor": "model.layers.31.mlp.experts.192.up_proj.weight",
+          "expert": null,
+          "sha256": "2df0ca0be7775e49f074b92485b185ecd0dfd8bf2569752bd1fdddbb2528359f"
+        }
+      ],
+      "down": [
+        {
+          "uri": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1/model-00128-of-00193.safetensors",
+          "tensor": "model.layers.31.mlp.experts.191.down_proj.weight",
+          "expert": null,
+          "sha256": "683e13d82adca0e953b73638503bbbb796e93440d53cb4aaecce05487035e3af"
+        },
+        {
+          "uri": "s3://marin-us-east-02a/marin/exports/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1/model-00128-of-00193.safetensors",
+          "tensor": "model.layers.31.mlp.experts.192.down_proj.weight",
+          "expert": null,
+          "sha256": "0a05f411fe24fb88865e5ac0ea3f93b4a0b0b365c58178d0021114a2541faf1c"
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "scheme": "per_tensor",
+      "rows": 1,
+      "weight_cast_vs_bf16": {
+        "relative_l2": 0.04770709574222565,
+        "max_abs": 0.00732421875
+      },
+      "kernel_vs_same_quantized_values": {
+        "relative_l2": 0.004779492970556021,
+        "max_abs": 0.001953125
+      },
+      "intermediate_rounding": {
+        "relative_l2": 0.003980058245360851,
+        "max_abs": 0.0009182989597320557
+      },
+      "kernel_vs_bf16": {
+        "relative_l2": 0.047822944819927216,
+        "max_abs": 0.00732421875
+      }
+    },
+    {
+      "scheme": "per_tensor",
+      "rows": 41,
+      "weight_cast_vs_bf16": {
+        "relative_l2": 0.04570602998137474,
+        "max_abs": 0.01171875
+      },
+      "kernel_vs_same_quantized_values": {
+        "relative_l2": 0.004775040317326784,
+        "max_abs": 0.001953125
+      },
+      "intermediate_rounding": {
+        "relative_l2": 0.0038286906201392412,
+        "max_abs": 0.0012060701847076416
+      },
+      "kernel_vs_bf16": {
+        "relative_l2": 0.045779433101415634,
+        "max_abs": 0.01171875
+      }
+    },
+    {
+      "scheme": "per_tensor",
+      "rows": 257,
+      "weight_cast_vs_bf16": {
+        "relative_l2": 0.04572002589702606,
+        "max_abs": 0.013671875
+      },
+      "kernel_vs_same_quantized_values": {
+        "relative_l2": 0.004833484534174204,
+        "max_abs": 0.001953125
+      },
+      "intermediate_rounding": {
+        "relative_l2": 0.0038229385390877724,
+        "max_abs": 0.001283884048461914
+      },
+      "kernel_vs_bf16": {
+        "relative_l2": 0.0458047054708004,
+        "max_abs": 0.013671875
+      }
+    },
+    {
+      "scheme": "per_block",
+      "rows": 1,
+      "weight_cast_vs_bf16": {
+        "relative_l2": 0.045840051025152206,
+        "max_abs": 0.0087890625
+      },
+      "kernel_vs_same_quantized_values": {
+        "relative_l2": 0.006426467094570398,
+        "max_abs": 0.0009765625
+      },
+      "intermediate_rounding": {
+        "relative_l2": 0.0039179688319563866,
+        "max_abs": 0.0007421374320983887
+      },
+      "kernel_vs_bf16": {
+        "relative_l2": 0.046001844108104706,
+        "max_abs": 0.008544921875
+      }
+    },
+    {
+      "scheme": "per_block",
+      "rows": 41,
+      "weight_cast_vs_bf16": {
+        "relative_l2": 0.045476920902729034,
+        "max_abs": 0.0107421875
+      },
+      "kernel_vs_same_quantized_values": {
+        "relative_l2": 0.006249411962926388,
+        "max_abs": 0.001953125
+      },
+      "intermediate_rounding": {
+        "relative_l2": 0.0038486781995743513,
+        "max_abs": 0.0012028813362121582
+      },
+      "kernel_vs_bf16": {
+        "relative_l2": 0.04558347538113594,
+        "max_abs": 0.010498046875
+      }
+    },
+    {
+      "scheme": "per_block",
+      "rows": 257,
+      "weight_cast_vs_bf16": {
+        "relative_l2": 0.04564020410180092,
+        "max_abs": 0.01220703125
+      },
+      "kernel_vs_same_quantized_values": {
+        "relative_l2": 0.006255431566387415,
+        "max_abs": 0.0029296875
+      },
+      "intermediate_rounding": {
+        "relative_l2": 0.0038288168143481016,
+        "max_abs": 0.0012581944465637207
+      },
+      "kernel_vs_bf16": {
+        "relative_l2": 0.04578617215156555,
+        "max_abs": 0.01171875
+      }
+    }
+  ],
+  "native_receipt": {
+    "archive_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/fp8-qualification-01a1f7c4/builds/c070e211e3fb/aarch64/checks/real-expert-arithmetic-a1/native-3ade5c3d67e381ee175a9c589d6337b1c979672819f55f238c5dd0e61546dbbb.tar.zst",
+    "archive_sha256": "3ade5c3d67e381ee175a9c589d6337b1c979672819f55f238c5dd0e61546dbbb"
+  },
+  "allocated_gpu_seconds": 87.0
+}
