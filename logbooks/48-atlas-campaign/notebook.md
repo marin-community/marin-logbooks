@@ -1975,3 +1975,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings; the registered source awaits intake measurement.
 - Decision and next action: next hourly check watches for the swe-repair intake measurement outcomes.
+
+### 2026-11-20 01:40 UTC - Hourly catch-up (00:40–01:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `e0b918dde6…` (00:32:24 UTC) to head `fc979f62f647e541608fa7ea207dca8cffa72db2`, landed 01:27:29 UTC (~10 landings 01:13–01:27 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log e0b918dd..fc979f62` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **swe-repair intake chain completed**: the intake conversion writes its artifacts under the intake prefix (`c6aa01befe…`); conversion inputs pinned at the landed revision with their current digests (`d2a37a45bd…`) and fetched over HTTP (`defa01cae2…`); intake input overrides require local execution with `--cache-dir` (`ee4060cc88…`); end-of-file newlines on the receipts/intake inputs (`9c871f80ac…`, `be8aa40d33…`); generated Atlas intake metadata refreshed (`d2103ebc0a…`); the gap-exclusion test ported to the typed gap table (`fc979f62f6…`, head).
+  - **Curriculum gateway tests**: the gateway limit reused in the curriculum regression test (`cb3867586f…`); curriculum metadata reads bounded for the query gateway (`2e873500be…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the swe-repair intake registration outcomes.
