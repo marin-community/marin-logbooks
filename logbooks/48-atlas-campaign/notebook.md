@@ -2113,3 +2113,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R], cross-checked.
 - Interpretation and limitations: quiet window on the branch.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-20 12:40 UTC - Hourly catch-up (11:40–12:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `5dbd427707…` (10:34 UTC) to head `59c47d94d86e3a14fbe98c142532126d197fd83d`, landed 12:18:11 UTC (~4 landings 12:18 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 5dbd4277..59c47d94` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window: the difficulty campaign chains **replaced with a reconciler** (`c3f11d986e…`); the approved difficulty GPU budget enforced (`6de3d3ab61…`); reconciliation evidence and admission settings kept consistent (`e204a4ba42…`); the controller's Daytona secret versions pinned (`59c47d94d8…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the reconciler's campaign outcomes.
