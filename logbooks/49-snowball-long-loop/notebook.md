@@ -1556,3 +1556,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris describe [R].
 - Interpretation and limitations: child success does not yet certify the selection/handoff outputs (those stages verify committed metadata before completion, per the exp3 pattern).
 - Decision and next action: hourly checks track the selection/handoff completion and the RL-child submission.
+
+### 2026-11-20 00:40 UTC - Hourly catch-up (23:40–00:40 UTC window): Exp4 .76 root SUCCEEDED
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: **Exp4 `.76` root SUCCEEDED** (Iris at 00:33 UTC: state succeeded, exit=0, failures=0, preemptions=0; task 0 succeeded at 19 h 23 m 5.43 s) — the full `.76` production run (SFT + graceful finalization/handoff) has completed, following the SFT child success recorded at 23:40. The RL child submission/selection details are expected in the run's own STATUS next.
+- Command or material configuration: as recorded at launch; Iris describe at 00:33 UTC.
+- External inputs and artifact references: Iris job describe [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the **LR-corrected Exp4 `.76` production run completed successfully** (root + SFT child both succeeded, no failures/preemptions). The selection/handoff verification steps and RL-child submission are the next milestones.
+- Evidence: Iris job describe [R].
+- Interpretation and limitations: root success does not yet certify the selection/handoff outputs (those stages verify committed metadata first, per the exp3 pattern).
+- Decision and next action: hourly checks track the selection/handoff receipts and the RL-child submission.
