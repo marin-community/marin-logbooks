@@ -2087,3 +2087,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the v9 wave-launch outcomes.
+
+### 2026-11-20 10:40 UTC - Hourly catch-up (09:40–10:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `24a70400f1…` (09:21:48 UTC) to head `5dbd4277078b226ac2f7a8881b98b1e39a1460b4`, landed 10:34 UTC (~4 landings 10:07–10:16 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 24a70400..5dbd4277` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **FineEnvs ADMITTED**: FineEnvs admission bound to its final grading censuses (`5dbd427707…`) and the qualified FineEnvs training populations admitted (`ab7c4a3e3b…`) — the census-bound conversion from the 09:40 window led to admission.
+  - **Daytona connection environment required before a campaign runs** (`1f2ef2ed6f…`, `881e5bbc2a…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
+- Decision and next action: next hourly check watches for the FineEnvs downstream outcomes.
