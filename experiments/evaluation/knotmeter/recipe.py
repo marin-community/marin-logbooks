@@ -118,6 +118,8 @@ def profile_arguments(
         str(concurrency),
         "--benchmark-duration",
         str(series["duration"]),
+        "--warmup-requests-per-lane",
+        str(series["warmup_requests_per_lane"]),
         "--failed-request-threshold",
         str(series["max_profiling_error_ratio"]),
         "--random-seed",
@@ -133,7 +135,7 @@ def profile_arguments(
         "--ui",
         "none",
     ]
-    return [*args, "--unsafe-override"] if series.get("diagnostic") else args
+    return [*args, "--unsafe-override"] if series["unsafe_override"] else args
 
 
 def benchmark_command(

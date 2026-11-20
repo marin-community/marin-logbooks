@@ -130,7 +130,7 @@ def validate_window(point: Path, manifest: PointManifest, record: dict) -> dict:
         "profiling_successes": successes,
         "profiling_errors": errors,
         "profiling_error_ratio": ratio,
-        "protocol_valid": bool(valid and not manifest["diagnostic"]),
+        "protocol_valid": bool(valid and not manifest["series"]["unsafe_override"]),
         "diagnostic": manifest["diagnostic"],
     }
 

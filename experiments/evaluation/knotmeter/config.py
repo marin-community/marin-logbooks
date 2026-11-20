@@ -3,6 +3,7 @@
 
 """Validate serving presets and resolve their shared measurement inputs."""
 
+from enum import StrEnum
 from pathlib import Path
 from typing import Literal
 
@@ -15,6 +16,19 @@ from experiments.evaluation.knotmeter.recipe import DIRECTORY, load_series
 
 class Config(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
+
+
+class Stage(StrEnum):
+    PROBE = "probe"
+    SCREEN = "screen"
+    CONFIRM = "confirm"
+
+
+class MeasurementOverrides(Config):
+    duration: int | None = Field(default=None, gt=0)
+    warmup_requests_per_lane: int | None = Field(default=None, ge=0)
+    concurrency: int | None = Field(default=None, gt=0)
+    unsafe_override: bool | None = None
 
 
 class Model(Config):
@@ -141,11 +155,34 @@ def load_profile(path: Path, overrides: list[str]) -> Profile:
     return Profile.model_validate(values)
 
 
+def confirm_recipe(series: dict) -> bool:
+    """Require Confirm's minimum recipe independently of native window validity."""
+    recipe = load_series()
+    return (
+        series.get("stage") == Stage.CONFIRM
+        and series["duration"] >= recipe["duration"]
+        and series["warmup_requests_per_lane"] >= recipe["warmup_requests_per_lane"]
+        and not series["unsafe_override"]
+    )
+
+
 def resolved_series(
-    profile: Profile, diagnostic_seconds: int | None = None, *, measure_failed_checks: bool = False
+    profile: Profile,
+    stage: Stage,
+    overrides: MeasurementOverrides = MeasurementOverrides(),
+    *,
+    measure_failed_checks: bool = False,
 ) -> dict:
     recipe = load_series()
     datasets = recipe.pop("datasets")
+    stages = recipe.pop("stages")
+    stage_defaults = stages[stage]
+    limit = stage_defaults.pop("concurrency_limit", profile.session_concurrency)
+    requested = overrides.model_dump(mode="json")
+    recipe |= stage_defaults | {"concurrency": min(profile.session_concurrency, limit)}
+    recipe |= overrides.model_dump(exclude_none=True)
+    if recipe["duration"] < recipe["minimum_duration"] and not recipe["unsafe_override"]:
+        raise ValueError("AgentX requires at least 900 seconds without --unsafe-override")
     selector = profile.workload.public_dataset
     if selector not in datasets:
         raise ValueError(f"No pinned corpus for {selector!r}; add its reviewed identity to recipe.yaml")
@@ -168,12 +205,13 @@ def resolved_series(
             "profiles": {
                 name: {"gpu": hardware.type, "gpus": hardware.per_host, "hosts": hardware.count // hardware.per_host}
             },
+            "stage": stage.value,
+            "measurement_requested": (
+                {"stage": stage.value, "target_concurrency": profile.session_concurrency} | requested
+            ),
         }
     )
-    if diagnostic_seconds is not None:
-        if diagnostic_seconds <= 0:
-            raise ValueError("Diagnostic duration must be positive")
-        series |= {"duration": diagnostic_seconds, "diagnostic": True}
+    series["diagnostic"] = not confirm_recipe(series)
     if measure_failed_checks:
         series["measure_failed_checks"] = True
     return series

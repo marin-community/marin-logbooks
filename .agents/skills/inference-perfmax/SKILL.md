@@ -16,7 +16,7 @@ Read the dispatch request and retained findings, then resolve defaults and overr
 
 ```sh
 uv run python -m experiments.evaluation.knotmeter.cli plan \
-  --profile snowball-h100 --campaign CAMPAIGN --output /tmp/perfmax-plan.json
+  --profile snowball-h100 --campaign CAMPAIGN --stage probe --output /tmp/perfmax-plan.json
 ```
 
 Present the model and tokenizer revisions, workload, hardware, runtime, latest
@@ -50,11 +50,23 @@ correlation. Use profiles and controlled changes when they can resolve that gap.
 When prefix reuse is poor, compare AgentX's reported actual and theoretical hit rates.
 Check KV use and routing across data-parallel engines before blaming cache capacity.
 
-Start near the best known throughput bend. Reject poor candidates with CPU,
-component or short diagnostic checks. Increase load and duration only when the
-likely benefit justifies the GPU time. Confirm promising points under the pinned
-AgentX protocol; repeat when noise could change the decision. This is an adaptive
-ladder, with no fixed grid, compulsory sequence or AgentX ladder score.
+Start with applicable correctness checks and Probe. Select each stage explicitly;
+one invocation runs its checks and that stage, then stops. Advance only when the
+result supports the hypothesis and the likely gain warrants more GPU time:
+
+| Stage | Measured time | Additional warmup/lane | Load | Native override |
+| --- | ---: | ---: | --- | --- |
+| Probe | 180 s | 1 | min(C, 8) | unsafe; diagnostic |
+| Screen | 900 s | 10 | C | none |
+| Confirm | 3,600 s | 10 | selected C | none |
+
+C is the target `--session-concurrency`. Start near the best known throughput
+bend. Use the full pinned corpus at every stage. Override measured seconds,
+warmup or effective load with `--duration`, `--warmup-requests-per-lane` or
+`--concurrency`; inspect requested and effective settings in the plan. A shorter
+Confirm cannot qualify. Probe and Screen cannot produce accepted recommendations.
+There is no AgentX ladder score. Reuse evidence only when its identities,
+controls and coverage match; partial checks remain incomplete.
 
 Use the session's resource board and [use-iris](../use-iris/SKILL.md) before GPU work. Stay within the agreed
 concurrent ceilings across trials and retries. Let the runner's CPU coordinator
@@ -65,13 +77,14 @@ and failed allocations. Prioritize GPU efficiency over elapsed time.
 
 Use the runner's shared recipe and upstream public-dataset selector names.
 Preserve AgentX replay, warmup, cache busting and validity. Each attempt starts
-a fresh server. Keep diagnostics distinct from comparable measurements.
+a fresh server. Startup, checks, warmup and drain fall outside measured time.
 
 Use the preset's [shared checks](../../../experiments/evaluation/inference_correctness/README.md)
 against the actual settings. Reuse its immutable goldens across runtime changes.
 For quantization, verify loaded weight storage and record activation and KV precision separately.
 The runner checks before AgentX and resets caches before native warmup. Retain
 failed observations; missing evidence and failed checks block recommendations.
+They stop traffic unless `--measure-failed-checks` explicitly permits diagnostics.
 Use the agreed policy, including its provisional status. Change bounds only with
 recorded evidence and delegated authority. These checks do not qualify RL learning
 or trainer probability ratios; new investigations need their own scope.
@@ -82,8 +95,15 @@ Use the [research-engineering workflow](../research-engineering/SKILL.md) for
 experimental code, the notebook and negative findings. Promote selected reusable
 changes into draft contribution PRs; keep the research branch.
 
-Return the comparison table, latency tradeoffs, evidence links, total GPU cost
-and material gaps. The terminal report and `summary.md` must match. Select a
-qualified point explicitly to write `recommended.yaml` with its settings and
+Report stage, native/protocol validity, numerical outcomes, latency, request
+errors, evidence links and total allocated GPU cost separately. One window has
+no measured repeatability. Default to one run; repeat promising Confirm trials
+when noise could change the decision. Native multi-run reuses the server and
+skips additional warmup after the first by default; use separate runner trials
+to preserve fresh servers. Reuse native confidence tools where compatible and
+keep their uncertainty limits visible.
+
+The terminal report and `summary.md` must match. Select a valid Confirm point
+with complete required checks explicitly to write `recommended.yaml` with its settings and
 exact runtime. Explain why it wins against the baseline and label deferred RL
 qualification. Use [manage-pr](../manage-pr/SKILL.md) for publication; preserve the user's merge boundary.

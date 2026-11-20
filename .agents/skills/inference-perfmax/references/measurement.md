@@ -9,8 +9,18 @@ exceeds 256,000 tokens. Preserve its identity and replay timing.
 Concurrency counts resident session-tree lanes, including pauses. Subagents can
 produce more in-flight requests than the lane count. Native warmup is count
 driven. A benchmark duration flag does not include server startup and warmup.
-The runner's normal recipe profiles for one hour; short unsafe runs remain
-diagnostics. AgentX does not assign a campaign or ladder score.
+The runner requires an explicit Probe (180 s), Screen (900 s) or Confirm (3,600 s).
+Probe uses the unsafe override. Screen meets the pinned scenario's 900-second
+minimum without that override; it still cannot produce an accepted recommendation.
+Only a valid Confirm with complete required checks qualifies. Shortened Confirm
+runs and unsafe overrides remain diagnostic. AgentX has no campaign or ladder score.
+
+The warmup counts are additional requests per lane after native cache warmup.
+Each invocation runs one window on a fresh server. One window provides no measured
+repeatability. Upstream multi-run confidence reports can summarize repeats, but
+native multi-run reuses vLLM and drops additional warmup after the first by default.
+Use separate runner invocations for fresh-server repeats. Confidence estimates
+do not establish that one configuration beats another.
 
 Completed output throughput uses retained successful profiling requests and the
 upstream measurement span. Preserve request lengths, errors, partial work and

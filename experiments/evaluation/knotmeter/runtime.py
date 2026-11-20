@@ -7,6 +7,7 @@ import dataclasses
 import hashlib
 import json
 import platform
+import re
 import tempfile
 from pathlib import Path
 from urllib.parse import quote
@@ -37,7 +38,17 @@ def resolve_release(runtime: Runtime) -> dict:
                 path.write_bytes(response.content)
             else:
                 copy_file(location, str(path))
-            release = load_vllm_gpu_release(path)
+            if runtime.release:
+                selected = load_vllm_gpu_release(path)
+                assert selected is not None
+                release = selected
+            else:
+                # Saved trial/build descriptors use Marin's existing release type.
+                release = gpu_release(json.loads(path.read_text()))
+    if re.fullmatch(r"[0-9a-f]{40}", release.source_commit) is None:
+        raise ValueError("Runtime requires a full source commit")
+    if any(re.fullmatch(r"[0-9a-f]{64}", wheel.sha256) is None for wheel in release.wheels):
+        raise ValueError("Runtime wheels require SHA-256 identities")
     if release.torch_backend not in CUDA_TOOLCHAIN_VERSION_BY_BACKEND:
         raise ValueError(f"No registered CUDA toolchain for {release.torch_backend!r}")
     if runtime.release and release.release_tag != runtime.release:

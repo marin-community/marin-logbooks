@@ -68,7 +68,7 @@ def prepare_plan(plan: TrialPlan, work: Path) -> TrialPlan:
     for check in Profile.model_validate(series["profile"]).checks:
         if check.fixture:
             reference = lookup_reference(read_fixture(check.fixture))
-            if reference.status != LookupStatus.FOUND and not series.get("diagnostic"):
+            if reference.status != LookupStatus.FOUND and not series.get("measure_failed_checks"):
                 raise ValueError(f"Required reference is {reference.status}: {reference.reason}")
     path = work / "series.json"
     path.write_text(json.dumps(series))
@@ -80,7 +80,7 @@ def prepare_plan(plan: TrialPlan, work: Path) -> TrialPlan:
     ).hexdigest()
     manifest: PointManifest = {
         "profile": "h100" if series["profile"]["gpus"]["type"] == "H100" else "gb200",
-        "concurrency": series["profile"]["session_concurrency"],
+        "concurrency": series["concurrency"],
         "series": series,
         "recipe_fingerprint": fingerprint,
         "vllm_release": plan["vllm_release"],

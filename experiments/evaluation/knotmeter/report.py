@@ -11,6 +11,7 @@ from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.storage_path import prefix_join
 
 from experiments.evaluation.knotmeter.artifacts import read_record, write_record
+from experiments.evaluation.knotmeter.config import confirm_recipe
 
 QUALIFICATION_SCOPE = "Serving checks do not qualify RL learning or trainer probability ratios."
 
@@ -58,6 +59,9 @@ def comparison_controls(result: dict) -> dict:
             "dataset_revision",
             "dataset_sha256",
             "duration",
+            "stage",
+            "warmup_requests_per_lane",
+            "unsafe_override",
             "max_context",
             "random_seed",
             "warmup_grace_period",
@@ -96,6 +100,7 @@ def accepted(result: dict) -> bool:
     required = manifest["series"]["profile"]["checks"]
     return (
         not manifest["diagnostic"]
+        and confirm_recipe(manifest["series"])
         and validity["protocol_valid"]
         and validity["submission_valid"]
         and validity["gang_valid"]
@@ -126,11 +131,12 @@ def render_report(
         "",
         f"Evidence: {evidence_link(campaign_uri)}",
         "",
-        "Throughput counts completed output tokens. Latencies are seconds. Each row is a separate trial.",
+        "Throughput counts completed output tokens. Latencies are seconds. Each trial has one measured window; "
+        "repeatability has not been measured.",
         "",
-        "| Trial | Runtime | Weights | GPU job | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
-        "p90 completion | AgentX | Checks | GPU-hours |",
-        "| --- | --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | ---: |",
+        "| Trial | Stage | Runtime | Weights | GPU job | Sessions | GPUs | Output tokens/s/GPU | Change | p90 TTFT | "
+        "p90 completion | AgentX | Errors | Checks | GPU-hours |",
+        "| --- | --- | --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | --- | --- | --- | ---: |",
     ]
     for result in results:
         profile = result["manifest"]["series"]["profile"]
@@ -159,8 +165,12 @@ def render_report(
             else ", ".join(f"{check['name']}: pending" for check in profile["checks"]) or "not run"
         )
         agentx = "no window"
+        errors = "unknown"
         if measurement:
-            agentx = "valid" if measurement["validity"]["submission_valid"] else "invalid"
+            validity = measurement["validity"]
+            agentx = "native " + ("valid" if validity["submission_valid"] else "invalid")
+            agentx += "; protocol " + ("valid" if validity["protocol_valid"] else "invalid")
+            errors = str(validity.get("profiling_errors", "unknown"))
         if result["manifest"]["diagnostic"]:
             agentx += "; diagnostic"
         elif result["manifest"]["series"].get("measure_failed_checks") and any(
@@ -173,12 +183,13 @@ def render_report(
         record_file = "plan.json" if result["job_state"] == "unrecorded" else "result.json"
         weights = profile.get("weight_precision") or profile.get("quantization") or profile["serving"]["dtype"]
         lines.append(
-            f"| [{result['trial_id']}]({result['trial_uri']}/{record_file}) | {runtime} | {weights} | "
+            f"| [{result['trial_id']}]({result['trial_uri']}/{record_file}) | "
+            f"{result['manifest']['series']['stage']} | {runtime} | {weights} | "
             f"{result['job_state']} | "
-            f"{profile['session_concurrency']} | {profile['gpus']['count']} {profile['gpus']['type']} | "
+            f"{result['manifest']['series']['concurrency']} | {profile['gpus']['count']} {profile['gpus']['type']} | "
             f"{format_value(rate)} | {change_text} | "
             f"{format_value(latency.get('ttft', {}).get('p90'))} | "
-            f"{format_value(latency.get('e2el', {}).get('p90'))} | {agentx} | {checks} | {cost} |"
+            f"{format_value(latency.get('e2el', {}).get('p90'))} | {agentx} | {errors} | {checks} | {cost} |"
         )
     lines += [
         "",
@@ -202,9 +213,7 @@ def render_report(
         if chosen is None:
             raise ValueError(f"No recommendation trial {recommendation!r} in this campaign")
         if not accepted(chosen):
-            raise ValueError(
-                "Recommendation requires a complete native protocol window, unchanged gang and passed required checks"
-            )
+            raise ValueError("Recommendation requires a valid Confirm window, unchanged gang and passed required checks")
         if reference and (not accepted(reference) or comparison_controls(chosen) != comparison_controls(reference)):
             raise ValueError(
                 "A baseline comparison requires a qualified baseline " "with matched model and workload controls"

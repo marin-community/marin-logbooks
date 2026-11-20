@@ -141,8 +141,6 @@ def create_server(manifest: PointManifest, output: Path, launch: IrisVllmLaunch 
         extra_args=args,
         launcher=launcher,
         compilation_cache_mode=VllmCompilationCacheMode.MANAGED,
-        collect_metrics=False,
-        collect_nccl=False,
         router=VllmRouterConfig() if serving.router and (launch is None or launch.is_leader) else None,
         wait_for_ready=False,
     )
@@ -163,7 +161,21 @@ def run_checks(profile: Profile, server_url: str, output: Path, runtime_source: 
         }
         command = check.command
         if check.fixture:
-            command = [sys.executable, "-m", "marin.testing.inference.check_endpoint", "--fixture", check.fixture]
+            command = [
+                sys.executable,
+                "-m",
+                "marin.testing.inference.check_endpoint",
+                "--fixture",
+                check.fixture,
+                "--url",
+                server_url,
+                "--model",
+                profile.model.repo,
+                "--runtime-source",
+                runtime_source,
+                "--output",
+                str(output / f"check-{index}.json"),
+            ]
             record |= {
                 "command": command,
                 "checkpoint_revision": profile.model.revision,
@@ -316,8 +328,8 @@ def run_point(plan: TrialPlan, output: Path, bundle: Path, launch: IrisVllmLaunc
                     profile, server.worker_server_url, output, manifest["vllm_release"]["source_commit"]
                 )
                 write_record(str(output / "attempt.json"), record)
-                if any(check["status"] != "passed" for check in record["checks"]) and not (
-                    manifest["diagnostic"] or series.get("measure_failed_checks")
+                if any(check["status"] != "passed" for check in record["checks"]) and not series.get(
+                    "measure_failed_checks"
                 ):
                     raise RuntimeError("Required correctness evidence did not pass; AgentX measurement was not started")
                 # The checks exercise prefix reuse. Clear those entries before native AgentX

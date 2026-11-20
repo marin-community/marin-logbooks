@@ -14,13 +14,15 @@ import threading
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from tokenizers import Tokenizer, models, pre_tokenizers
 
 from experiments.evaluation.knotmeter.artifacts import file_digest, pack_server_metrics, restore_server_metrics
+from experiments.evaluation.knotmeter.cli import main as run_cli
 from experiments.evaluation.knotmeter.collect import process_point, validate_window
-from experiments.evaluation.knotmeter.config import load_profile, resolved_series
+from experiments.evaluation.knotmeter.config import Stage, load_profile, resolved_series
 from experiments.evaluation.knotmeter.processes import run_logged
 from experiments.evaluation.knotmeter.recipe import benchmark_command, workload_environment
 from experiments.evaluation.knotmeter.workload import prepare_workload
@@ -36,7 +38,7 @@ def test_workload_restores_without_preparation_and_rebuilds_expired_or_changed_i
     events = tmp_path / "events"
     monkeypatch.setenv("PATH", f"{bin_directory}{os.pathsep}{os.environ['PATH']}")
     monkeypatch.setenv("AGENTX_FIXTURE_EVENTS", str(events))
-    series = resolved_series(load_profile(Path("snowball-h100"), []))
+    series = resolved_series(load_profile(Path("snowball-h100"), []), Stage.CONFIRM)
     series_path = tmp_path / "series.yaml"
     series_path.write_text(json.dumps(series))
     store = str(tmp_path / "store")
@@ -140,7 +142,8 @@ def replay_server():
 
 @pytest.mark.integration
 @pytest.mark.timeout(300)
-def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_path, replay_server):
+@pytest.mark.parametrize("stage", list(Stage))
+def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_path, replay_server, stage, monkeypatch):
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()
     tokenizer = Tokenizer(models.WordLevel({"<unk>": 0} | {f"word{i}": i + 1 for i in range(512)}, unk_token="<unk>"))
@@ -172,8 +175,44 @@ def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_pat
             }
         )
     )
-    series = resolved_series(load_profile(Path("snowball-h100"), [])) | {
-        "model": "tiny",
+    profile = load_profile(Path("snowball-h100"), []).model_dump()
+    profile["model"] |= {"repo": "tiny", "tokenizer": str(tokenizer_dir), "tokenizer_revision": "local"}
+    profile["serving"]["max_model_len"] = 2048
+    profile["checks"] = []
+    preset = tmp_path / "profile.json"
+    preset.write_text(json.dumps(profile))
+    plan_path = tmp_path / "plan.json"
+    monkeypatch.setattr(
+        "huggingface_hub.HfApi.model_info", lambda self, repo, *, revision: SimpleNamespace(sha=revision)
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "knotmeter",
+            "plan",
+            "--profile",
+            str(preset),
+            "--campaign",
+            "compat",
+            "--stage",
+            stage.value,
+            "--session-concurrency",
+            "17",
+            "--concurrency",
+            "2",
+            "--duration",
+            "3",
+            "--warmup-requests-per-lane",
+            "2",
+            "--unsafe-override",
+            "--output",
+            str(plan_path),
+        ],
+    )
+    run_cli()
+    plan = json.loads(plan_path.read_text())
+    series = plan["series"] | {
         "dataset": str(corpus),
         "dataset_loader": "weka_trace",
         "sessions": 1,
@@ -181,7 +220,6 @@ def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_pat
         "tokenizer": str(tokenizer_dir),
         "tokenizer_revision": "local",
         "max_context": 2048,
-        "duration": 900,
     }
     series_path = tmp_path / "local.yaml"
     series_path.write_text(json.dumps(series))
@@ -195,7 +233,7 @@ def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_pat
     point.mkdir()
     url = replay_server.url
     # Short replay proves compatibility, and deliberately cannot qualify as a comparison window.
-    command = [*benchmark_command(series | {"duration": 3}, 1, url, point / "aiperf_artifacts"), "--unsafe-override"]
+    command = benchmark_command(series, series["concurrency"], url, point / "aiperf_artifacts")
     run_logged(
         command,
         workload_environment(tmp_path / "restored/bundle", series),
@@ -203,6 +241,10 @@ def test_pinned_tools_prepare_restore_replay_and_normalize_physical_gpus(tmp_pat
         timeout=120,
         sample=point / "client-load.jsonl",
     )
+    export = json.loads((point / "aiperf_artifacts/profile_export_aiperf.json").read_text())
+    phase = export["input_config"]["phases"][0]
+    assert (phase["concurrency"], phase["duration"], phase["warmup_requests_per_lane"]) == (2, 3, 2)
+    assert plan["series"]["measurement_requested"]["target_concurrency"] == 17
     assert json.loads((point / "client-load.jsonl").read_text().splitlines()[0])["available_cpus"] > 0
     requests = [json.loads(row) for row in (point / "aiperf_artifacts/profile_export.jsonl").read_text().splitlines()]
     assert any(row["metadata"]["benchmark_phase"] == "profiling" and not row.get("error") for row in requests)

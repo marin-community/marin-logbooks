@@ -35,7 +35,7 @@ from rigging.timing import Duration
 from experiments.evaluation.knotmeter.allocation import capture_allocations, track_allocations
 from experiments.evaluation.knotmeter.artifacts import read_record, write_record
 from experiments.evaluation.knotmeter.collect import collect_trial, record_preparation_failure, refresh_costs
-from experiments.evaluation.knotmeter.config import Profile, load_profile, resolved_series
+from experiments.evaluation.knotmeter.config import MeasurementOverrides, Profile, Stage, load_profile, resolved_series
 from experiments.evaluation.knotmeter.coordinator import run_coordinator
 from experiments.evaluation.knotmeter.recipe import TrialPlan
 from experiments.evaluation.knotmeter.report import report_campaign
@@ -75,7 +75,8 @@ def resolve_plan(
     profile: Profile,
     campaign: str,
     *,
-    diagnostic_seconds: int | None = None,
+    stage: Stage,
+    measurement: MeasurementOverrides = MeasurementOverrides(),
     measure_failed_checks: bool = False,
     marin_prefix: str | None = None,
     placement: dict | None = None,
@@ -83,6 +84,7 @@ def resolve_plan(
     logbook: str | None = None,
 ) -> TrialPlan:
     """Resolve a self-contained trial before submission; this function allocates no compute."""
+    series = resolved_series(profile, stage, measurement, measure_failed_checks=measure_failed_checks)
     for check in profile.checks:
         if check.fixture:
             try:
@@ -90,6 +92,8 @@ def resolve_plan(
             except FileNotFoundError as error:
                 raise ValueError("Use an existing fixture JSON path; update historical fixture names") from error
     profile = pin_profile(profile)
+    series["profile"] = profile.model_dump(mode="json")
+    series |= {"model_revision": profile.model.revision, "tokenizer_revision": profile.model.tokenizer_revision}
     if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", campaign) is None:
         raise ValueError("Campaign must be one path segment containing letters, numbers, underscores, dots or hyphens")
     config_path = resolve_cluster_config(profile.cluster, dirs=IRIS_CLUSTER_CONFIG_DIRS)
@@ -115,7 +119,7 @@ def resolve_plan(
         "controller": controller or profile.cluster,
         "cluster": profile.cluster,
         "marin_prefix": prefix,
-        "series": resolved_series(profile, diagnostic_seconds, measure_failed_checks=measure_failed_checks),
+        "series": series,
         "vllm_release": release,
         "placement": placement or {},
         "job_id": str(job_id),
@@ -166,9 +170,13 @@ def print_plan(plan: TrialPlan) -> None:
                 "gpus": profile["gpus"],
                 "cluster": plan["cluster"],
                 "priority": profile["priority"],
-                "sessions": profile["session_concurrency"],
+                "stage": plan["series"]["stage"],
+                "measurement_requested": plan["series"]["measurement_requested"],
+                "sessions": plan["series"]["concurrency"],
                 "workload": profile["workload"],
                 "duration_seconds": plan["series"]["duration"],
+                "warmup_requests_per_lane": plan["series"]["warmup_requests_per_lane"],
+                "unsafe_override": plan["series"]["unsafe_override"],
                 "vllm_source": plan["vllm_release"]["source_commit"],
                 "serving": {
                     key: value for key, value in profile["serving"].items() if key not in {"extra_args", "environment"}
@@ -185,7 +193,7 @@ def print_plan(plan: TrialPlan) -> None:
             "Accepted recommendations are blocked."
         )
     if plan["series"].get("diagnostic"):
-        print("Diagnostic replay: this duration cannot establish an AgentX comparison.")
+        print("Diagnostic stage or recipe: accepted recommendations are blocked.")
     elif plan["series"].get("measure_failed_checks"):
         print("Failed checks will be retained while measuring the native protocol; they still block recommendations.")
 
@@ -199,6 +207,7 @@ def main() -> None:
         )
         command.add_argument("--profile", type=Path, default=Path("snowball-h100"))
         command.add_argument("--campaign", required=True)
+        command.add_argument("--stage", choices=list(Stage), type=Stage, required=True, help="Run one stage, then stop")
         command.add_argument(
             "--set",
             dest="overrides",
@@ -207,14 +216,22 @@ def main() -> None:
             metavar="FIELD=YAML",
             help="Override a dotted profile field",
         )
-        command.add_argument("--session-concurrency", type=int)
+        command.add_argument("--session-concurrency", type=int, help="Target load C; Probe defaults to min(C, 8)")
         command.add_argument("--cluster")
         command.add_argument("--priority", choices=("batch", "interactive"))
         runtime = command.add_mutually_exclusive_group()
-        runtime.add_argument("--vllm-release")
-        runtime.add_argument("--vllm-manifest")
+        runtime.add_argument("--vllm-release", help="Published Marin vLLM release tag")
+        runtime.add_argument("--vllm-manifest", help="Saved trial/build VllmGpuRelease JSON descriptor")
+        command.add_argument("--duration", type=int, help="Override the stage's measured seconds")
+        command.add_argument("--warmup-requests-per-lane", type=int, help="Override additional native warmup per lane")
         command.add_argument(
-            "--diagnostic-seconds", type=int, help="Use a short unsafe upstream replay; always unqualified"
+            "--concurrency", type=int, help="Override the stage's effective load, including Probe's cap"
+        )
+        command.add_argument(
+            "--unsafe-override",
+            action=argparse.BooleanOptionalAction,
+            default=None,
+            help="Override native scenario checks; always blocks accepted recommendations",
         )
         command.add_argument(
             "--measure-failed-checks",
@@ -265,7 +282,13 @@ def main() -> None:
         plan = resolve_plan(
             profile,
             args.campaign,
-            diagnostic_seconds=args.diagnostic_seconds,
+            stage=args.stage,
+            measurement=MeasurementOverrides(
+                duration=args.duration,
+                warmup_requests_per_lane=args.warmup_requests_per_lane,
+                concurrency=args.concurrency,
+                unsafe_override=args.unsafe_override,
+            ),
             measure_failed_checks=args.measure_failed_checks,
             marin_prefix=args.marin_prefix,
             placement=read_record(args.placement_uri) if args.placement_uri else None,

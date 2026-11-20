@@ -7,9 +7,9 @@ owns campaign choices and the adaptive experiment ladder.
 
 ```sh
 uv run python -m experiments.evaluation.knotmeter.cli plan \
-  --profile snowball-h100 --campaign snowball-throughput --output /tmp/plan.json
+  --profile snowball-h100 --campaign snowball-throughput --stage probe --output /tmp/plan.json
 uv run python -m experiments.evaluation.knotmeter.cli run \
-  --profile snowball-h100 --campaign snowball-throughput
+  --profile snowball-h100 --campaign snowball-throughput --stage probe
 ```
 
 `--profile` accepts a preset name or YAML path. Use `hero-gb200` for Hero/Mochi.
@@ -30,13 +30,33 @@ cluster, verification time and inventory digest beside that list. Check protecte
 training priorities and recheck delayed admissions. This guard checks admitted
 hosts against the list after allocation; it does not constrain or reserve placement.
 
-Precedence is named flags, then `--set`, then the preset. Dotted
+`--stage probe|screen|confirm` is required for both `plan` and `run`. Each trial
+checks correctness and runs one selected stage, then stops. The agent decides
+whether evidence warrants another trial.
+
+| Stage | Measured seconds | Additional warmup/lane | Concurrency | Unsafe override |
+| --- | ---: | ---: | --- | --- |
+| Probe | 180 | 1 | min(C, 8) | yes |
+| Screen | 900 | 10 | C | no |
+| Confirm | 3,600 | 10 | selected C | no |
+
+All stages use the full pinned 393-session corpus. Startup, correctness, native
+warmup and drain do not count toward measured time. C is the profile's target
+`session_concurrency`, overridable with `--session-concurrency`. Measurement
+precedence is explicit flags, then stage overrides, then the shared recipe.
+Use `--duration`, `--warmup-requests-per-lane`, `--concurrency` and
+`--unsafe-override`/`--no-unsafe-override` to override a stage. `--concurrency`
+sets the effective load directly, including overriding Probe's cap. The plan
+records requested overrides, target C and effective settings. Durations below
+900 seconds require the unsafe override.
+
+Profile precedence is named flags, then `--set`, then the preset. Dotted
 `--set FIELD=YAML` changes profile fields; unknown fields fail before submission.
 For example:
 
 ```sh
 uv run python -m experiments.evaluation.knotmeter.cli run \
-  --profile snowball-h100 --campaign snowball-throughput \
+  --profile snowball-h100 --campaign snowball-throughput --stage screen \
   --session-concurrency 64 --priority interactive \
   --set serving.max_num_batched_tokens=4096
 ```
@@ -45,7 +65,7 @@ Replace whole lists with `--set 'checks=[...]'`, or edit a copy of the preset
 for longer check commands. Dotted paths address mappings; list indices are unsupported.
 
 The runner resolves Marin's selected serving wheel once. `--vllm-release TAG`
-uses another published release. `--vllm-manifest URI` accepts a build manifest
+uses another published release. `--vllm-manifest URI` accepts a saved trial/build descriptor
 without changing `config/external/vllm/gpu.toml`. Reuse the fork's native build
 paths. For Python-only changes, its
 [precompiled build](https://github.com/marin-community/vllm/blob/0ac9dcb157ee86ccb447bc717259159c41ad456a/setup.py#L939-L951)
@@ -69,11 +89,11 @@ format in upstream exports and reports. Keep the exact selective configuration
 in `serving.extra_args` and verify its loaded methods with a serving check.
 
 [recipe.yaml](recipe.yaml) supplies the shared harness, corpus and processor
-pins. Normal runs retain upstream warmup, replay and validity. Data preparation
-runs on CPU before GPU submission. `--diagnostic-seconds N` explicitly requests
-a short unsafe upstream replay; it cannot produce an accepted recommendation.
-`--measure-failed-checks` instead retains failed checks and continues with the
-normal one-hour protocol. It preserves native warmup, cache reset and validity.
+pins. All stages retain upstream replay, cache busting and native warmup.
+Data preparation runs on CPU before GPU submission. Probe and Screen cannot
+produce accepted recommendations. Neither can a shortened Confirm or any unsafe
+override. `--measure-failed-checks` retains failed checks and permits diagnostic
+traffic at the selected stage. It preserves that stage's recipe and native validity.
 Reports label performance with failed checks as diagnostic; those failures still
 block recommendations.
 
@@ -83,7 +103,7 @@ recomputation. The Git fixture pins the manifest and a separate numerical policy
 The runner verifies references on CPU, then checks the actual server before
 AgentX. It retains `check-N.json` and raw responses. Both the CLI exit and report
 must pass. Missing or failed required checks stop ordinary measurements;
-explicit diagnostics may continue. The cache is reset before native warmup.
+`--measure-failed-checks` permits diagnostic traffic. The cache is reset before native warmup.
 
 Additional check commands receive `KNOTMETER_SERVER_URL` (the worker's `/v1` URL),
 `KNOTMETER_MODEL`, `KNOTMETER_MODEL_REVISION`, `KNOTMETER_RUNTIME_SOURCE`,
@@ -91,7 +111,7 @@ Additional check commands receive `KNOTMETER_SERVER_URL` (the worker's `/v1` URL
 External numerical checks declare `checkpoint_revision` and `runtime_source`;
 a mismatched pass remains regression evidence. `kind: serving` identifies checks
 that cannot replace numerical evidence. Recommendations require all required
-checks, a numerical pass for this deployment and valid AgentX evidence. Passing
+checks, a numerical pass for this deployment and a valid Confirm window. Passing
 these serving checks does not qualify RL learning or trainer probability ratios.
 
 Outputs live at `MARIN_PREFIX/knotmeter/campaigns/CAMPAIGN/`. The selected
@@ -130,7 +150,10 @@ cleanup before retrying.
 The report prints the same Markdown saved as `summary.md`, including all attempts'
 GPU cost. Trials without a result remain visible with unknown cost. Interrupted
 partial exports retain attempt costs without qualifying a measurement.
-`report --recommend TRIAL_ID` requires valid protocol, unchanged gang,
+One invocation measures one window; repeatability has not been measured. Use
+separate fresh-server trials when noise could change a decision. Native multi-run
+reuses the server and skips additional warmup after the first by default.
+`report --recommend TRIAL_ID` requires a valid Confirm protocol, unchanged gang,
 passed checks and complete cost. Every physical host must retain the same Iris
 attempt ID throughout profiling. The command writes `recommended.yaml` with a
 frozen runtime. Add `--baseline TRIAL_ID` to show changes within a comparison

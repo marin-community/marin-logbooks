@@ -8,17 +8,16 @@ import dataclasses
 import hashlib
 import json
 import shutil
-import subprocess
 import sys
-import xml.etree.ElementTree as ET
 from contextlib import nullcontext
 from pathlib import Path
 from types import SimpleNamespace
+from urllib.parse import unquote
 
 import pytest
 from connectrpc.code import Code
 from connectrpc.errors import ConnectError
-from iris.cluster.types import Entrypoint, JobName
+from iris.cluster.types import JobName
 from iris.resources.state import JobState, TaskState
 from marin.datakit.chat_template import MARIN_CHAT_TEMPLATE
 from marin.external_dependencies import VLLM_GPU_RELEASE
@@ -26,12 +25,11 @@ from marin.inference.vllm_cache import VllmCompileIdentity
 from rigging.provenance import Provenance
 from rigging.timing import Timestamp
 
-from experiments.evaluation.inference_correctness.launch import run_pytest_gate
-from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, unpack, write_record
+from experiments.evaluation.knotmeter.artifacts import read_record, retain_artifacts, write_record
 from experiments.evaluation.knotmeter.cli import main as run_cli
 from experiments.evaluation.knotmeter.cli import resolve_plan
 from experiments.evaluation.knotmeter.collect import collect_trial, refresh_costs
-from experiments.evaluation.knotmeter.config import Check, load_profile, resolved_series
+from experiments.evaluation.knotmeter.config import Check, MeasurementOverrides, Stage, load_profile, resolved_series
 from experiments.evaluation.knotmeter.coordinator import run_coordinator
 from experiments.evaluation.knotmeter.recipe import benchmark_command
 from experiments.evaluation.knotmeter.report import recorded_checks, report_campaign, throughput_change
@@ -39,9 +37,104 @@ from experiments.evaluation.knotmeter.run import create_server, run_checks
 from experiments.evaluation.knotmeter.runtime import materialize_release, resolve_release
 
 
+@pytest.mark.parametrize("operation", ["plan", "run"])
+def test_missing_stage_exits_before_hub_or_iris_access(tmp_path, monkeypatch, operation):
+    def unexpected_io(*args, **kwargs):
+        raise AssertionError("Missing stage must fail before external I/O")
+
+    monkeypatch.setattr("huggingface_hub.HfApi.model_info", unexpected_io)
+    monkeypatch.setattr("experiments.evaluation.knotmeter.cli.IrisClient.remote", unexpected_io)
+    output = tmp_path / "plan.json"
+    monkeypatch.setattr(sys, "argv", ["knotmeter", operation, "--campaign", "fixture", "--output", str(output)])
+    with pytest.raises(SystemExit) as stopped:
+        run_cli()
+    assert stopped.value.code == 2
+    assert not output.exists()
+
+
+def test_probe_coordinator_stops_after_one_gpu_job(tmp_path, monkeypatch):
+    result = trial(tmp_path, "probe", 0, diagnostic=True)
+    plan = {
+        "trial_id": "probe",
+        "trial_uri": result["trial_uri"],
+        "campaign_uri": str(tmp_path),
+        "job_id": "/fixture/probe",
+        "gpu_job_id": "/fixture/probe/serve",
+        "marin_prefix": str(tmp_path),
+        "series": result["manifest"]["series"],
+        "vllm_release": result["manifest"]["vllm_release"],
+        "source": {},
+        "placement": {},
+    }
+
+    class Client:
+        def __init__(self):
+            self.jobs = []
+
+        def submit(self, **kwargs):
+            self.jobs.append(kwargs)
+            return SimpleNamespace(job_id=JobName.from_string(plan["gpu_job_id"]), wait=lambda **kwargs: None)
+
+        def job_status(self, job_id):
+            return SimpleNamespace(job_id=job_id, state=JobState.SUCCEEDED, execution_cluster_id="fixture")
+
+        def list_tasks(self, job_id):
+            return []
+
+    client = Client()
+    monkeypatch.setattr("experiments.evaluation.knotmeter.coordinator.iris_ctx", lambda: SimpleNamespace(client=client))
+    monkeypatch.setattr(
+        "experiments.evaluation.knotmeter.coordinator.prepare_workload",
+        lambda *args, **kwargs: {"key": "fixture", "recipe": {"fixture": True}},
+    )
+    run_coordinator(plan)
+    assert len(client.jobs) == 1
+    saved = read_record(f"{plan['trial_uri']}/result.json")
+    assert saved["manifest"]["series"]["stage"] == "probe"
+    assert saved["manifest"]["concurrency"] == 8
+    assert (tmp_path / "summary.md").is_file()
+    assert not (tmp_path / "recommended.yaml").exists()
+
+
+@pytest.mark.parametrize("stage", list(Stage))
+@pytest.mark.parametrize("coverage", ["complete", "missing", "failed"])
+def test_only_confirm_with_complete_checks_writes_a_recommendation(tmp_path, stage, coverage):
+    result = trial(tmp_path, "candidate", 120)
+    profile = load_profile(Path("snowball-h100"), [])
+    profile = profile.model_copy(update={"checks": [Check(name="synthetic-fixture-check")]})
+    # Matching Confirm's full recipe cannot promote an explicitly selected early stage.
+    result["manifest"]["series"] = resolved_series(
+        profile, stage, MeasurementOverrides(duration=3600, warmup_requests_per_lane=10, unsafe_override=False)
+    )
+    result["manifest"]["diagnostic"] = False
+    if coverage == "missing":
+        result["measurement"]["checks"] = []
+    elif coverage == "failed":
+        result["measurement"]["checks"][0]["status"] = "failed"
+    write_record(f"{result['trial_uri']}/result.json", result)
+    report_campaign(str(tmp_path))
+    if stage == Stage.CONFIRM and coverage == "complete":
+        report_campaign(str(tmp_path), recommendation="candidate")
+        assert (tmp_path / "recommended.yaml").is_file()
+        assert read_record(str(tmp_path / "decision.json"))["recommended_trial"] == "candidate"
+    else:
+        with pytest.raises(ValueError, match="valid Confirm"):
+            report_campaign(str(tmp_path), recommendation="candidate")
+        assert not (tmp_path / "recommended.yaml").exists()
+
+
+def test_short_confirm_cannot_write_a_recommendation(tmp_path):
+    result = trial(tmp_path, "short-confirm", 120)
+    result["manifest"]["series"]["duration"] = 900
+    write_record(f"{result['trial_uri']}/result.json", result)
+    with pytest.raises(ValueError, match="valid Confirm"):
+        report_campaign(str(tmp_path), recommendation="short-confirm")
+    assert not (tmp_path / "recommended.yaml").exists()
+
+
 def test_chat_template_survives_native_compilation_cache_identity(tmp_path):
     profile = load_profile(Path("snowball-h100"), ["model.chat_template=marin"])
-    manifest = {"series": resolved_series(profile), "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE)}
+    manifest = {"series": resolved_series(profile, Stage.CONFIRM), "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE)}
     server = create_server(manifest, tmp_path, None)
     template = Path(server.extra_cli_args[server.extra_cli_args.index("--chat-template") + 1])
     assert template.read_text() == MARIN_CHAT_TEMPLATE
@@ -56,7 +149,7 @@ def test_chat_template_survives_native_compilation_cache_identity(tmp_path):
 
 def test_online_configuration_keeps_native_selector_and_explicit_weight_format(tmp_path):
     profile = load_profile(Path("snowball-h100"), ["quantization=online", "weight_precision=fp8"])
-    series = resolved_series(profile)
+    series = resolved_series(profile, Stage.CONFIRM)
     assert series["precision"] == "fp8"
     server = create_server({"series": series, "vllm_release": dataclasses.asdict(VLLM_GPU_RELEASE)}, tmp_path, None)
     assert server.extra_cli_args[server.extra_cli_args.index("--quantization") + 1] == "online"
@@ -69,47 +162,8 @@ def test_launch_plan_survives_json_delivery_without_invalidating_worker_identity
         "experiments.evaluation.knotmeter.cli.launch_provenance",
         lambda: Provenance("fixture", "b" * 40, False, "fixture", None, command_line=("knotmeter", "run")),
     )
-    plan = resolve_plan(load_profile(Path("snowball-h100"), []), "fixture")
+    plan = resolve_plan(load_profile(Path("snowball-h100"), []), "fixture", stage=Stage.PROBE)
     assert json.loads(json.dumps(plan)) == plan
-
-
-def test_pytest_fixture_failure_retains_traceback_and_nonzero_exit(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("IRIS_OUTPUT_DIR", str(tmp_path / "outputs"))
-    monkeypatch.setenv("IRIS_ATTEMPT_UID", "local-fixture-attempt")
-    monkeypatch.setenv("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
-    # Iris task metadata is the external boundary; pytest and artifact delivery are real.
-    monkeypatch.setattr(
-        "experiments.evaluation.inference_correctness.launch.get_job_info", lambda: SimpleNamespace(task_index=0)
-    )
-    case = tmp_path / "test_broken_endpoint.py"
-    case.write_text(
-        "import json\nfrom pathlib import Path\nimport pytest\n"
-        "@pytest.fixture\ndef endpoint():\n"
-        "    source = json.loads(Path('correctness-plan.json').read_text())['source']['tree_hash']\n"
-        "    raise RuntimeError(f'fixture setup failed for {source}')\n"
-        "def test_model_gate(endpoint):\n    raise AssertionError('fixture unexpectedly succeeded')\n"
-    )
-    plan = {
-        "trial_uri": str(tmp_path / "retained"),
-        "series": {"task_timeout": 30},
-        "source": {"tree_hash": "retained-source"},
-    }
-    entrypoint = Entrypoint.from_callable(
-        run_pytest_gate, [sys.executable, "-m", "pytest", str(case), "-q", "-o", "addopts="], plan
-    )
-    function, args, kwargs = entrypoint.resolve()
-    with pytest.raises(subprocess.CalledProcessError) as failure:
-        function(*args, **kwargs)
-    assert failure.value.returncode == 1
-    prefix = tmp_path / "retained/attempts/local-fixture-attempt/hosts/0"
-    receipt = read_record(str(prefix / "pytest-receipt.json"))
-    unpack(Path(receipt["archive_uri"]), tmp_path / "restored")
-    message = "fixture setup failed for retained-source"
-    assert message in (tmp_path / "restored/pytest.log").read_text()
-    error = ET.parse(tmp_path / "restored/pytest.xml").find(".//testcase/error")
-    assert error is not None and error.text is not None
-    assert message in error.text
 
 
 @pytest.mark.parametrize("corrupt", [False, True])
@@ -156,6 +210,21 @@ def test_named_runtime_flag_replaces_a_preset_selection(tmp_path, monkeypatch, s
     metadata = json.loads(json.dumps(dataclasses.asdict(VLLM_GPU_RELEASE)))
     manifest = tmp_path / "runtime.json"
     manifest.write_text(json.dumps(metadata))
+    published = {
+        "release": {"repository": "marin-community/vllm", "status": "released", "tag": metadata["release_tag"]},
+        "validation": {"status": "passed"},
+        "source": {"fork_commit": metadata["source_commit"]},
+        "distribution": {"version": metadata["version"]},
+        "abi": {"cuda_variant": metadata["torch_backend"], "torch_version": metadata["torch_version"]},
+        "platforms": [
+            {
+                "architecture": wheel["architecture"],
+                "sm_targets": wheel["sm_targets"],
+                "wheel": {"filename": unquote(wheel["url"].rsplit("/", 1)[-1]), "sha256": wheel["sha256"]},
+            }
+            for wheel in metadata["wheels"]
+        ],
+    }
     profile = load_profile(Path("snowball-h100"), []).model_dump()
     opposite = "manifest" if selector == "release" else "release"
     profile["vllm"] = {opposite: "stale-selection", "revision": "a" * 40}
@@ -168,7 +237,7 @@ def test_named_runtime_flag_replaces_a_preset_selection(tmp_path, monkeypatch, s
     )
     monkeypatch.setattr(
         "experiments.evaluation.knotmeter.runtime.requests.get",
-        lambda *args, **kwargs: SimpleNamespace(content=manifest.read_bytes(), raise_for_status=lambda: None),
+        lambda *args, **kwargs: SimpleNamespace(content=json.dumps(published).encode(), raise_for_status=lambda: None),
     )
     monkeypatch.setattr(
         sys,
@@ -176,6 +245,8 @@ def test_named_runtime_flag_replaces_a_preset_selection(tmp_path, monkeypatch, s
         [
             "knotmeter",
             "plan",
+            "--stage",
+            "probe",
             "--profile",
             str(preset),
             "--campaign",
@@ -199,19 +270,20 @@ def test_plan_uses_target_storage_unless_explicitly_overridden(monkeypatch, ambi
     monkeypatch.setattr("experiments.evaluation.knotmeter.cli.pin_profile", lambda profile: profile)
     monkeypatch.setenv("MARIN_PREFIX", ambient)
     profile = load_profile(Path("snowball-h100"), [])
-    plan = resolve_plan(profile, "fixture")
+    plan = resolve_plan(profile, "fixture", stage=Stage.PROBE)
     assert plan["marin_prefix"].startswith("s3://") and plan["marin_prefix"] != ambient
     assert (
-        resolve_plan(profile, "fixture", marin_prefix="s3://fixture/outputs")["marin_prefix"] == "s3://fixture/outputs"
+        resolve_plan(profile, "fixture", stage=Stage.PROBE, marin_prefix="s3://fixture/outputs")["marin_prefix"]
+        == "s3://fixture/outputs"
     )
     with pytest.raises(ValueError, match="shared"):
-        resolve_plan(profile, "fixture", marin_prefix="local_store")
+        resolve_plan(profile, "fixture", stage=Stage.PROBE, marin_prefix="local_store")
 
 
 def trial(root: Path, name: str, rate: float, *, diagnostic: bool = False) -> dict:
     profile = load_profile(Path("snowball-h100"), [])
     profile = profile.model_copy(update={"checks": [Check(name="synthetic-fixture-check")]})
-    series = resolved_series(profile, diagnostic_seconds=3 if diagnostic else None)
+    series = resolved_series(profile, Stage.PROBE if diagnostic else Stage.CONFIRM)
     runtime = json.loads(json.dumps(dataclasses.asdict(VLLM_GPU_RELEASE))) | {
         "release_tag": "fixture",
         "source_commit": "b" * 40,
@@ -276,8 +348,8 @@ def test_report_keeps_diagnostics_separate_and_pins_selected_runtime(tmp_path, m
 
 def test_failed_check_measurement_preserves_native_protocol_and_blocks_recommendation(tmp_path):
     profile = load_profile(Path("snowball-h100"), [])
-    normal = resolved_series(profile)
-    measured = resolved_series(profile, measure_failed_checks=True)
+    normal = resolved_series(profile, Stage.CONFIRM)
+    measured = resolved_series(profile, Stage.CONFIRM, measure_failed_checks=True)
     assert measured["duration"] == 3600
     assert not measured.get("diagnostic")
     args = (64, "http://localhost:8000", tmp_path / "exports")
@@ -416,7 +488,7 @@ def test_existing_check_pass_transfers_only_to_its_checkpoint_and_runtime(tmp_pa
     profile = base.model_copy(update={"checks": [check]})
     checks = run_checks(profile, "http://fixture/v1", tmp_path, "b" * 40)
     result = trial(tmp_path, "candidate", 120)
-    result["manifest"]["series"] = resolved_series(profile)
+    result["manifest"]["series"] = resolved_series(profile, Stage.CONFIRM)
     result["measurement"]["checks"] = checks
     write_record(f"{result['trial_uri']}/result.json", result)
     if scope == "matching":
