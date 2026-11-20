@@ -1580,3 +1580,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; landing records [R].
 - Interpretation and limitations: the kill's specific reason beyond "Terminated by user" is recorded by the run's own STATUS (not yet read at this readback); the recovery RL task is running.
 - Decision and next action: hourly checks track the harbor-recovery RL task's progression and any STATUS entries explaining the `.76` RL kill.
+
+### 2026-11-20 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: the exp4 **harbor-recovery `.82` RL task continues RUNNING** (task 0 at 3 h 24 m 02 s; exit=0, failures=0, preemptions=0; Iris at 02:33 UTC) — the replacement RL attempt from the 01:40 entry is progressing past the duration where the first attempt was killed.
+- Command or material configuration: as recorded; Iris describe at 02:33 UTC.
+- External inputs and artifact references: Iris job describe [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the harbor-recovery RL task has been running 3 h 24 m without failure/preemption — past the point where the killed `.76` first attempt terminated. Atlas branch advanced ~8 landings (swe-repair intake bootstrap fetches the landed script over HTTP with redirect/verification hardening; tomli declared for source-fingerprint baselines; intake launcher with exact-argv + loud-failure trap; drifted retained bindings recorded as waivable served-catalog gaps instead of crashing; content withholding honored in browse checks).
+- Evidence: Iris job describe [R]; landing records [R].
+- Interpretation and limitations: RL progress evidence (updates/optimizer state) not yet visible in this readback.
+- Decision and next action: hourly checks track the recovery RL task's updates.
