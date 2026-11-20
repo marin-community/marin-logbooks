@@ -2169,3 +2169,17 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
 - Decision and next action: next hourly check watches for the FACET v2/v3 downstream outcomes.
+
+### 2026-11-20 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `0aee325a82…` (20:32:47 UTC) to head `7aa901a1be45bc4459d179cc54ccc955f7b064cc`, landed 21:33:48 UTC (~10 landings 21:05–21:33 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 0aee325a..7aa901a1` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Forge-cohort lane completed through receipt binding**: forge cohort's pending served-catalog projection waived (`5ae792c7a9…`); fingerprint bound to the overlap index (`5bdf592ec5…`); census receipts bound to the registry (`cabc3abd89…`); declaration-phase Atlas receipts measured (`8e759d617f…`); forge census entrypoint formatted (`00a9618bbb…`); rerun populations located for every changed overlap source (`70f80b245c…`); the superseded forge locators pointer document kept (`4635ace959…`); CLI-Gym tests and upstream parser semantics preserved (`7aa901a1be…`, head).
+  - **Marina integration**: the local marina import marked as a guarded optional dependency (`f7523d3fc2…`); the marina query client imported at its difficulty-coverage call sites (`c0fa24140a…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the forge-cohort publication outcomes.
