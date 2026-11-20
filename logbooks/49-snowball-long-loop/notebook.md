@@ -1700,3 +1700,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job describe [R]; `git ls-remote` [R].
 - Interpretation and limitations: RL progress evidence (updates) not yet visible in this readback.
 - Decision and next action: hourly checks track the recovery RL task's updates.
+
+### 2026-11-20 12:40 UTC - Hourly catch-up (11:40–12:40 UTC window): harbor-recovery .82 RL task FAILED
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the harbor-recovery `.82` run (RL task `…-aa2febe66602`).
+- Command or material configuration: verified via `uv run iris --cluster=marin job describe /benfeuer/mochi-exp4-harbor-recovery-2026.11.19.82` at 12:33 UTC.
+- External inputs and artifact references: Iris job describe [R: live cluster state].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **the harbor-recovery `.82` RL task FAILED** (Iris at 12:33 UTC): state **failed**, failures=1, tasks 0/1 completed, 0/1 running — "Cumulative failed task attempts exceeded max_task_failures: failures=1, limit=0" with `RuntimeError: Step failed: users/benfeuer/checkpoints/mochi-exp4-rl_29ef4124`. The run_id `users/benfeuer/checkpoints/mochi-exp4-rl-2026.11.19.82` (tree `0cdd809b73`, runtime_profile megatron-export, created 2026-11-19 18:09:14 UTC) is recorded in the error. The task had been running ~11–12 h before the step failure. **No new recovery has been observed in this readback**; the monitoring observer's signal still shows the older update-4 failure text (stale). The Atlas branch also advanced ~4 landings (difficulty campaign reconciler replacing chains; approved difficulty GPU budget enforced; reconciliation evidence consistent with admission settings; the controller's Daytona secret versions pinned).
+- Evidence: Iris job describe [R]; landing records [R].
+- Interpretation and limitations: the step-failure's underlying exception chain is truncated in the diagnostic; the underlying cause needs the run's own STATUS/agent diagnosis.
+- Decision and next action: hourly checks watch for the `.82` failure diagnosis and any new recovery submission.
