@@ -1604,3 +1604,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job describe [R]; landing records [R].
 - Interpretation and limitations: RL progress evidence (updates) not yet visible in this readback.
 - Decision and next action: hourly checks track the recovery RL task's updates.
+
+### 2026-11-20 04:40 UTC - Hourly catch-up (03:40–04:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: the exp4 **harbor-recovery `.82` RL task continues RUNNING** (task 0 at 5 h 24 m 06 s; exit=0, failures=0, preemptions=0; Iris at 04:33 UTC).
+- Command or material configuration: as recorded; Iris describe at 04:33 UTC.
+- External inputs and artifact references: Iris job describe [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the harbor-recovery RL task has been running 5 h 24 m without failure/preemption. Atlas branch quiet this window (no new `atlas-env-audit` landings — head unchanged at `d707f32520…`).
+- Evidence: Iris job describe [R]; `git ls-remote` [R].
+- Interpretation and limitations: RL progress evidence (updates) not yet visible in this readback.
+- Decision and next action: hourly checks track the recovery RL task's updates.
