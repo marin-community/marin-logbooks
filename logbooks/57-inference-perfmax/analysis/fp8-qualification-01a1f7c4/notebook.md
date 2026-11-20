@@ -88,3 +88,7 @@ At DP16 the middle-16 block deployment passes the shared reference, batch, cache
 The same point loads 80.96 GiB per GPU versus 86.42 GiB in the retained BF16 DP16 run, with usable BF16 KV capacity of 1,218,836 versus 1,102,533 tokens per engine. The normal C64 replay is in progress. Run a fresh full gate and normal C128 comparison at DP32 to match the strongest retained BF16 throughput point. It uses the same profile with `--set gpus.count=32 --session-concurrency 128`. DP32 needs its own gate because the expert partition changes.
 
 The exact, separate hybrid contribution also passes on GB200. It targets the existing selective FP8 draft and uses the ordinary BF16 loader test with Marlin configured globally. [Hybrid contribution regression](component-hybrid-contribution-results.json)
+
+### Snowball cache retention under session affinity
+
+The early C128 router samples show more actual prefix reuse than the unrouted trial. At 09:08:51 UTC the routed point shows 53.3% actual hits against 95.9% theoretical, with 91.4% KV occupancy. These are live samples. The fixed C128 retention-zero test keeps session affinity and skips periodic sliding-window checkpoints. It can show whether keeping only semantic checkpoints preserves more useful histories under load. Run the same full numerical gate and one-hour replay on `snowball-block-router-retention0.yaml`.
