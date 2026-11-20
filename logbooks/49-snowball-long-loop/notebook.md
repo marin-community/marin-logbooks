@@ -1846,3 +1846,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list/describe [R].
 - Interpretation and limitations: the deliberate-kill reason is recorded by the run's own agent; not re-derived here.
 - Decision and next action: hourly checks watch for the next slice attempt and the agent's record.
+
+### 2026-11-20 21:40 UTC - Hourly catch-up (20:40–21:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the `.88` retry's terminal state unchanged (all three arms killed by user, inference children "Parent job terminated"); no new EOT-slice attempt yet.
+- Command or material configuration: as recorded; Iris job list re-checked at 21:34 UTC.
+- External inputs and artifact references: Iris job list [R]; landing records [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; ~10 new `atlas-env-audit` landings but the head moved past the earlier sweep — the landings are forge-cohort/atlas-UI work: CLI-Gym tests + upstream parser semantics preserved; superseded forge locators pointer kept; rerun populations located for every changed overlap source; forge census entrypoint formatted; forge cohort's pending served-catalog projection waived, fingerprint bound to the overlap index, census receipts bound to the registry, declaration-phase receipts measured; marina import marked as a guarded optional dependency and the query client imported at its difficulty-coverage call sites).
+- Evidence: Iris job list [R]; landing records [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: hourly checks watch for the next EOT-slice attempt and the forge-cohort outcomes.
