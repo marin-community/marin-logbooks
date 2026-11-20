@@ -2063,3 +2063,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R], cross-checked.
 - Interpretation and limitations: quiet window on the branch.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-20 08:40 UTC - Hourly catch-up (07:40–08:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `2997cbe70a…` (05:55:54 UTC) to head `7ecd80939ce10bb4d372d6d4c7e9006c4ab03db2`, landed 08:22:07 UTC (~10 landings 08:14–08:22 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 2997cbe7..7ecd8093` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window — the swe-repair repaired-source publication chain landed: fingerprint index pointers pinned at the published registry revision (the repaired source's compact entry and fingerprint: **21,272 tasks, 0 within-source duplicates**); the actor census receipt citing the full landed commit SHA; the ruling-68 post-seal waiver naming the repaired source; the intake tarball downloading via curl before the tree exists; EOF-newline/format cleanups throughout.
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; the repaired source's fingerprint figure is the landing's own report.
+- Decision and next action: next hourly check watches for the repaired-source publication outcome.
