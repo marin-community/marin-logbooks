@@ -318,3 +318,7 @@ The first da-13-1 attempt lost the sandbox HTTP service before verification. A [
 ### November 19 — Gemma public-50 launch
 
 Submitted google/gemma-4-26B-A4B-it at cohort revision `4d7ae4984b7db7de8f8457170b3f1a419ee76d52` for one pass over the same 50 tasks. The run uses two solver H100s and eight for the pinned MiniMax judge, capped at eight hours. The model configuration digest matches the BixBench comparison pin. All 50 packaged instructions, rubrics and retry wrappers passed the prelaunch checks. The grader uses the same two inline and two frozen-submission attempts as GPT-OSS. [Iris submission receipt](full/gemma-launcher-submission.json)
+
+### November 20 — Gemma replacement blocked by solver capacity
+
+The [single-task replacement](full/gemma-final-submission.json) for da-13-1 passed remote preflight and model preparation. The Gemma worker remained scheduling-gated on two H100s and matching InfiniBand quota in CoreWeave US East. At the two-hour cutoff the archive contained zero trial artifacts and the job was canceled. No replacement solver trial or judge call ran. The first pass retains 49/50 scores totaling 1,073 signed points; da-13-1 remains unscored.
