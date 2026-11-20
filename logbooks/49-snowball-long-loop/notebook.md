@@ -1822,3 +1822,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: coordinator correction [R].
 - Interpretation and limitations: the arms' scored outcomes remain pending.
 - Decision and next action: hourly checks track the three arms under the corrected terminology.
+
+### 2026-11-19 19:40 UTC - Hourly catch-up (18:40–19:40 UTC window): all three EOT-slice arms FAILED at brokered-inference startup
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the three end-of-turn (EOT) slice arms (per the 19:30 correction: EOT = the `<|eot_id|>` turn terminator, not end-of-training).
+- Command or material configuration: verified via `uv run iris --cluster=marin job describe` on all three arms at 19:33 UTC.
+- External inputs and artifact references: Iris job describe [R: live cluster state]; landing records [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **all three EOT-slice arms FAILED** at brokered-inference startup — arm A "Exp4 final SFT359" (`…-589264c5`), arm B "Exp4 RL36" (`…-a868e636`), arm C "Exp3 final SFT387" (`…-784d9db7`): each state failed, failures=1, 0/1 completed, with `RemoteInferenceStartupError` raised from `marin/inference/iris.py:1080 _start_brokered_inference` (Cumulative failed task attempts exceeded max_task_failures: failures=1, limit=0). Identical signature across all three arms — an inference-startup issue, not a model/checkpoint issue. Atlas branch advanced ~3 landings (swe-repair wave runs at production priority; panel repair bound to typed census records; difficulty repairs routed through executable data paths).
+- Evidence: Iris job describe on all three arms [R]; landing records [R].
+- Interpretation and limitations: the underlying startup cause is in the broker/inference startup path (`iris.py:1080`), not re-derived here; a relaunch after the startup fix is expected from the run's own agent.
+- Decision and next action: hourly checks watch for the startup fix and the arms' relaunch.
