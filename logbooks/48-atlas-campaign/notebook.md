@@ -2154,3 +2154,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the wave-v10 outcomes.
+
+### 2026-11-20 17:40 UTC - Hourly catch-up (16:40–17:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `75a0797a6d…` (16:20:24 UTC) to head `ae6e3ff077a50dd8faaad0bc844cbfcd0bf838d7`, landed ~17:26 UTC (~8 landings incl. an earlier sweep from 16:44–17:23 already covered).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 75a0797a..ae6e3ff0` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Qualified FACET v2 AND v3 releases ADMITTED** (`ae6e3ff077…`, head).
+  - **Conversion lineage verified**: variant conversion lineage checked against its producer receipt (`3fd6f82b4a…`); the lineage regression formatted (`7dfe196a06…`).
+  - **Typed census artifacts resolve current populations** (`890796bc1a…`); receipt-qualified method tags shown for dataset variants (`e5af3a7df7…`); legacy-row method variants and readability checks covered (`60e89f0d06…`); backend-table assertions kept on their unchanged columns (`a0149e9707…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: admission commits report outcomes; receipts registry-private [M].
+- Decision and next action: next hourly check watches for the FACET v2/v3 downstream outcomes.
