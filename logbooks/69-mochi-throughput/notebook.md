@@ -583,3 +583,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: landing/test receipts [R].
 - Interpretation and limitations: the gate values are derived from the measured semantics recorded in this notebook (staleness lease, Harbor slots, quota admission); the engine geometry remains provisional until the 19:30 choice.
 - Decision and next action: record the NO-SUBMIT preflight result, A9/A10 finals (19:13:18.607 / 19:22:58.540 UTC), the 19:30 choice, and the 19:45 real `--run`.
+
+### 2026-11-21 23:15 UTC - Matched 9.4-min comparison: A10 (HBM .85) leads A9 early; training-draft preflight PASSED
+
+- Question or hypothesis and reason for trying it: the A9-vs-A10 pair finally isolates the HBM knob on identical code, config, and HTTP identity.
+- Published source revision: both on `858ab5d15bf3118ae0358ff79569ec6b33320a68`.
+- Command or material configuration: matched first-9.4-min windows (all 16 ranks, 0 resets); training draft compiled assert = 32 steps, 48 trainer + 12 rollout provisional, staleness 3, quotas 16/16, graphs PIECEWISE.
+- External inputs and artifact references: worker readout over Rhizome (~23:1x UTC) [R]; receipts `a9-partial-1858-analysis.json`, `a10-matched9min-1907-analysis.json`, `sprint-final-training-validation/6bc29178…/receipt.json`, `final-training-compiled-assertions.json`.
+- Environment and hardware when relevant: 128 GPU total; Harbor 384 each; A9 final due 19:13:18.607 UTC; A10 final due 19:22:58.540 UTC.
+- Result, including failure or restart: A9 HBM .90 — 1891.24 agg / 118.20/GPU / req 3.185 / 32.85/64 / KV 29.74/58.08% / TTFT 7.339 s / prefix 84.59%. A10 HBM .85 — 2244.33 agg / **140.27/GPU** / req 4.725 / 26.73/64 / KV 27.46/54.98% / TTFT 3.771 s / prefix 80.82%. Prompt 2395.03 vs 1781.09/GPU; cache-query MISS 370.26 vs 342.45. Both 0 preemptions.
+- Evidence: matched-window analyses [R]; preflight receipt [R].
+- Interpretation and limitations: A10 leads early by 18.7% per-GPU, but the natural real-rollout workload differs between arms — not a precise causal HBM gain; the 25-min finals decide. The training draft is fully validated pending the 19:30 engine choice.
+- Decision and next action: record both 25-min finals; the 19:30 choice finalizes the engine geometry and the quota decision; real `--run` 19:45 UTC.
