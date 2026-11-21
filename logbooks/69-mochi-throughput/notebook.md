@@ -703,3 +703,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission + preflight receipts [R].
 - Interpretation and limitations: single-knob delta on the EP12 baseline; the historical A5 staleness-11 comparison remains a caveat — no isolated-gain claim. Fresh labels A11/A12 avoid colliding with the used A9/A10.
 - Decision and next action: record A11's measured window; launch A12 after A11 releases; verify training past its first update; then close the records.
+
+### 2026-11-22 01:45 UTC - Bounded startup (20:00 UTC): training CUDA graphs captured; A11 NCCL rendezvous; A12 draft capacity caveats
+
+- Question or hypothesis and reason for trying it: confirm both running jobs' startup health before any throughput claim.
+- Published source revision: training `5957d8bbcf…`; A11 `ce13e39e84…`.
+- Command or material configuration: bounded startup log capture at 20:00 UTC.
+- External inputs and artifact references: worker readout over Rhizome (~01:4x UTC) [R]; receipts `training-startup-2000.jsonl`, `training-native-startup-2000.jsonl`, `kv-fp8-bounded-startup-2000.txt`.
+- Environment and hardware when relevant: training 64 + A11 60 = 124 GPU.
+- Result, including failure or restart: training GPU child a25d2a2abc62 — successful CUDA graph captures 19:58:02/19:58:52 (rank-repeated), policy workers start 19:59:17; no rollout/native gate event yet, so throughput/window not claimed; known custom-model config-parser ERROR/retry strings also occurred in successful prior arms; no Traceback/RuntimeError/OOM in the bounded capture. A11 GPU child a3902907d2a8 found, NCCL rendezvous 19:59:35, no decode measurement yet.
+- Evidence: bounded startup receipts [R].
+- Interpretation and limitations: startup-only state — no throughput claim for either job. A12's 160 GiB/GPU offload draft is logical-only (2.671875 GiB/64k prefix excludes physical padding/short conv; the average 32 Harbor conversations/engine is not worst-case coverage) — actual layout/session skew must be validated before launch.
+- Decision and next action: bounded qualification/marker checkpoint 20:12:27 UTC; then A11's actual rollout + 25-min/cancel; A12 launches only after layout validation and A11's release.
