@@ -391,3 +391,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission receipt + preflight [R].
 - Interpretation and limitations: A8 is a single-knob delta versus A5 (Harbor 256 vs 384 differs too — second knob noted in the 18:30 entry); its numeric context observability makes the prompt/decode split exact for this arm, addressing the A3/A5 retention gap.
 - Decision and next action: record A7's and A8's measured windows when they land; report 19:30 UTC milestones complete; real training 19:45 UTC.
+
+### 2026-11-21 20:10 UTC - A8 GPU child admitted; A9 HBM90 one-knob real arm landed (`.113`)
+
+- Question or hypothesis and reason for trying it: complete the A8 launch and prepare the HBM 0.90 real-rollout test (the real-RL counterpart of the kv90 serving arm).
+- Published source revision: `.113` landed at `f26fc27bcd86dac16bcf867435f72ef9166cf463` (loop-push; 8 adopted RL round tests/lint/types pass; native preflight in progress); A8 root at `119ea9984b7…`.
+- Command or material configuration: `rounds/mochi-throughput-ep16-seqs64-kv90.yaml` — ONLY HBM 0.85→0.90 vs A7; 48 trainer + 16 rollout = 64 GPU.
+- External inputs and artifact references: worker readout over Rhizome (~20:1x UTC) [R].
+- Environment and hardware when relevant: A8 GPU child `/benfeuer/long-loop-mochi-throughput-noquotas-2026.11.21.112-coordinator-8aa614a8/long-loop-mochi-throughput-noquotas-2026.11.21.112-aefb515be064` RUNNING (submitted 17:59:47.811 UTC, root 17:58:30); both A7/A8 GPU children admitted, total 124 GB200; B paused. A9 cannot launch concurrently with A7+A8 (124+64 > 128) — it replaces A7 after its 25-min window.
+- Result, including failure or restart: landings passed; A9 not launched yet. A7 startup bounded logs are being read at the 15-min gate rather than waiting an hour.
+- Evidence: loop-push landing receipts [R]; worker readout [R].
+- Interpretation and limitations: A9 completes the one-knob HBM sweep on the real-rollout lane (0.85→0.90), mirroring the kv90 serving arm (which finished below batch4096 as a serving config); its rollout rate will show whether KV headroom helps real rollouts.
+- Decision and next action: record A9's preflight and launch when they occur; A7/A8 windows are the current decisive evidence.
