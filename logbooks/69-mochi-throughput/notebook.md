@@ -283,3 +283,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: compiled-assert receipts [R]; worker readout [R].
 - Interpretation and limitations: the correction chain (18:40 premature → 18:45 withdrawn → 18:50 root cause → 18:55 confirmed) is complete; `.112` remains unlaunched until the scheduled parallel slot.
 - Decision and next action: launch `.111` + `.112` in parallel after the current windows; record measured windows as they land; report 19:30 UTC; real training 19:45 UTC.
+
+### 2026-11-21 19:00 UTC - Job-index correction: `.108` Harbor1024 root ID recorded; no Harbor512 job exists
+
+- Question or hypothesis and reason for trying it: the coordinator's 11:53 Harbor512 correction prompted the worker to confirm the exact identity and cancellation receipt of the cancelled Harbor1024 arm.
+- Published source revision: unchanged — quota-free A8 compiled `{}` confirmed at `30d6357c550d35617b49e9f0c630c3754d7c87f2`; EP16/384 `.111` unchanged per the 12:13 direction.
+- Command or material configuration: cancellation receipt review.
+- External inputs and artifact references: worker readout over Rhizome (~19:0x UTC) [R]; receipt `sprint-a4-quota-cancellation.log`.
+- Environment and hardware when relevant: no 1024 running and no 512 job submitted; the running set remains A5 Harbor384 (`.109`) + the B trio (108 GPU).
+- Result, including failure or restart: the `.108` Harbor1024 root was `/benfeuer/long-loop-mochi-throughput-harbor1024-2026.11.21.108-coordinator-07903cf1`, cancelled at 17:01 UTC before measurement — previously the job ID had not been recorded in this notebook or in marin#11954.
+- Evidence: cancellation receipt [R].
+- Interpretation and limitations: pure bookkeeping correction; no measurement impact.
+- Decision and next action: job index updated in marin#11954; continue waiting for the A5/B measured windows.
