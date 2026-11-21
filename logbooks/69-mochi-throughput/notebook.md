@@ -331,3 +331,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final result receipt [R].
 - Interpretation and limitations: the gain comes from cache fit on a fixed 32-shared-prompt-pool — NOT yet a real-RL gain; real-rollout validation must follow. Best valid long-B is now 751.05; kv90's 844.22/GPU remains provisional.
 - Decision and next action: sequencing per the worker — A7 (`.111`) runs its specified batch 8192 first; the best one-knob B candidate follows in real rollouts. Both A7/A8 preflights passed on `8b1e1686a985691f9454ed2c01c757c79f3ec736`; A5's 25-min window completes 17:44:36 UTC.
+
+### 2026-11-21 19:30 UTC - A7 real EP16 arm submitted; measured A5 cancelled 17:45:29 UTC
+
+- Question or hypothesis and reason for trying it: run the decisive real-RL test of the EP16 rollout geometry (the 18:10/18:15 plan).
+- Published source revision: `8b1e1686a985691f9454ed2c01c757c79f3ec736` (includes the UID observability fix and Daytona ownership metric).
+- Command or material configuration: `rounds/mochi-throughput-ep16-seqs64.yaml` (`.111`) — seq64/EP16/DP16/TP1, HBM 0.85, batch 8192, Harbor384, staleness 3, workers 32, inflight128, native `inference_stats`; 48 trainer + 16 rollout = 64 GB200, PRODUCTION 08a, r136 excluded, graphs on.
+- External inputs and artifact references: worker readout over Rhizome (~19:3x UTC) [R]; submission receipt `sprint-real-ep16-submission.log`.
+- Environment and hardware when relevant: job `/benfeuer/long-loop-mochi-throughput-ep16-seqs64-2026.11.21.111-coordinator-22f1e6e8`; quota-free A8 (`.112`) launches next as remaining B measurement/drain releases capacity (parallel A7+A8 = 124 GPU).
+- Result, including failure or restart: A7 submitted; A5/Harbor384 measured and cancelled at 17:45:29 UTC (final receipt pending — its provisional first-17.6min rate was 134.13 tok/s/GPU).
+- Evidence: submission receipt [R]; worker readout [R].
+- Interpretation and limitations: A7's measured rollout rate will be compared against A3's 127.22/GPU (console, first-25min) and A5's native provisional 134.13/GPU (first-17.6min) — method and window-age differences noted in prior entries; native counters are on for a like-for-like A5/A7 comparison.
+- Decision and next action: record A5's final receipt and A7's window when they land; A8 launch as capacity frees; report 19:30 UTC; real training 19:45 UTC.
