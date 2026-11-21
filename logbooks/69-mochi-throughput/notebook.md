@@ -499,3 +499,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: reconciled table from the worker readout [R]; all underlying receipts already catalogued in marin#11954.
 - Interpretation and limitations: the EP16 per-GPU shortfall is now mechanistically explained (underfilled engine at the tail of the window); the A8 figure remains mix-caveated. The conservative training candidate stands at seq32/HBM 0.85/batch 8192/EP12/workers 32/Harbor 256/inflight128/staleness 3, with the quota choice pending the 19:30 evidence.
 - Decision and next action: record A9/A10 finals when they land; the 19:30 choice finalizes the quota decision; real training launch 19:45 UTC.
+
+### 2026-11-21 21:55 UTC - Worker's consolidated authoritative arm table received (18:42:50 UTC); secretary table synced
+
+- Question or hypothesis and reason for trying it: sync the secretary's #11954 table against the worker's consolidated authoritative table (which adds the Peak Daytona vCPU column).
+- Published source revision: table as of 2026-11-21T18:42:50.698134+00:00; REPORT/STATUS reconciled.
+- Command or material configuration: no change — sync only.
+- External inputs and artifact references: worker consolidated table over Rhizome [R]; receipts rooted at /experiments/active/mochi-throughput (per-arm index follows separately from the worker).
+- Environment and hardware when relevant: A9/A10 in flight at 128 GPU on the matched source.
+- Result, including failure or restart: table synced — A5 KV max 99.84%, B EP16/seqs64 KV max 99.99%, B EP16/seqs128 final running 66.97/128 and request 6.44, kv90 KV max 66.93%, and an A6/workers128 row added ("retired before launch — client already fills engines", 0 Daytona vCPU). The worker's A3 concurrency-evidence block (128 RUNNING group calls, 1024 scheduled coroutines, workers' max_concurrent_tasks 1024, no GIL bottleneck) matches the standing trace section.
+- Evidence: consolidated table [R].
+- Interpretation and limitations: caveats restated by the worker — .103/A1/A2/A3 console estimates vs A5/A7/A8 native; A2 no causal staleness gain; A8 zero consumed batches/90 nonagentic completions (agentic share unavailable); serving fixed-prompt-pool 99.8% prefix is an upper bound, not a real-RL gain.
+- Decision and next action: worker will cc every readout/submission/measurement/config decision/training launch; secretary keeps syncing.
