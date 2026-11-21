@@ -1027,3 +1027,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: startup receipts [R].
 - Interpretation and limitations: startup-only state; the runtime dtype confirmation completes the precision audit for the launched run.
 - Decision and next action: ONE 23:25 UTC bounded startup/first-update checkpoint; record the first rollout/gates and completed update when observed.
+
+### 2026-11-22 10:20 UTC - `.120` ACTUAL ROLLOUT BEGAN 23:12:34.129 UTC; live gates verified; batch-priority visibly working
+
+- Question or hypothesis and reason for trying it: the corrected training's real rollout start, gate verification, and the first evidence that the Harbor batch-priority fix works.
+- Published source revision: `.120` root 0b9c186a, child a86b6691860a, at `6a118946e605a3eba586b0d256139a6690a859cc`.
+- Command or material configuration: native configuration event 23:12:34.034 — max_in_flight 1024/effective 128, task 1024/executor 256/verifier 64, Harbor 384 (12/worker), workers 32, attempt 2280, full_batch, routes 16+16, staleness 3, EP16 TP1 seq64 HBM 0.85 batch 8192.
+- External inputs and artifact references: worker readout over Rhizome (~10:2x UTC) [R]; receipts `training120-live-gate-event-receipt.json`, `training120-first-update-watch-2325-receipt.json`, `training120-through-2325-analysis.json`, `training120-worker-gates-2325.jsonl`, `training120-startup-2325.jsonl`, `training120-native-input-index.json` (all 16 raw 19,712 rows retained; `.115` index untouched).
+- Environment and hardware when relevant: only `.120` runs (64 GPU); no jobs/configs changed.
+- Result, including failure or restart: actual rollout began 23:12:34.129 UTC (initial step-0 weight publish 23:12:34.031 is NOT a policy update). First 13 min (all 16): 2223.38 aggregate / 138.961 tok/s/rollout-GPU, 29.47/64 running + 0.106 waiting, KV 41.269%/70.503%; latest 10 min 2476.63 / 154.789/GPU, 27.107/64, ~0 waiting, KV 48.351%/70.503%; 1,738,381 generated tokens; 0 counter resets/0 preemptions; prefix 88.10%; request decode 4.19 tok/s, TTFT 3.46 s (latest-10 request 5.39, TTFT 0.98 s). FIRST policy update still pending; no native trainer_metric/nonfinite rows yet; mismatch UNAVAILABLE not zero; TP1/BF16 verified.
+- Evidence: live-gate + watch receipts [R].
+- Interpretation and limitations: the Harbor batch-priority fix is visibly working — by batch: blocked 2=64/3=128/4=128, resumed 2=23/3=9, NO batch-1 Harbor block observed (priority is PER worker, not global batch order); 320 blocked/32 resumed, 14,870.556 observed resumed wait-seconds (censored). Buffer 23:16:32: None/leased 121 → batch_lookahead/leased 122; pure max_in_flight not observed blocking. 9 Hermes malformed-tool-JSON headings/JSONDecodeError tracebacks are output-format signals, not proof of numeric regression (Ray dedup prevents an exact failure fraction); no explicit OOM/RuntimeError/NaN/nonfinite/degenerate match in the selected query (not a full output audit). No age-matched gain claim.
+- Decision and next action: 23:37:34 UTC checkpoint (first-25 measurement ONLY, never cancel the real run); record the first policy update when it completes.
