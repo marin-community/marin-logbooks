@@ -439,3 +439,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: A3 raw-log event counts [R].
 - Interpretation and limitations: this explains the residual context-distribution gap despite the `119ea9984b…` numeric-fields landing; ID-based joins (including agentic-share grouping) must be re-validated after the fix.
 - Decision and next action: causality plan — the next HBM 0.90 arm carries the header fix, and an HBM 0.85 same-fix control arm runs after the A8 window (slots 64+64 = 128), both 25-min windows finishing ~19:10–19:22 UTC before the 19:30 choice; record the fix SHA and control-arm launch when they land.
+
+### 2026-11-21 20:50 UTC - FINAL: A7 25-min 107.38/GPU — per-GPU below A5; no EP real-rollout gain established; A9 submitted with header fix
+
+- Question or hypothesis and reason for trying it: does the EP16 rollout geometry (A7) beat A5's EP12 at cap 32 in real rollouts over a full 25-min window?
+- Published source revision: A7 at `8b1e1686a985691f9454ed2c01c757c79f3ec736`; A9 at `858ab5d15bf3118ae0358ff79569ec6b33320a68` (lands the HTTP request-ID header fix).
+- Command or material configuration: A7 final 25-min native window (16 ranks); A9 = `rounds/mochi-throughput-ep16-seqs64-kv90.yaml`, ONLY HBM 0.85→0.90 vs A7, 64 GB200.
+- External inputs and artifact references: worker readout over Rhizome (~20:5x UTC) [R]; receipts `a7-final25-analysis.json`, `sprint-a9-submission.log`, `sprint-a9-httpid-validation/a81b9f95…/receipt.json`.
+- Environment and hardware when relevant: A9+A8 = 124 GPU running; A10 (same-source HBM 0.85) planned after A8's window to isolate the HBM knob.
+- Result, including failure or restart: A7 FINAL 1718.01 aggregate / **107.376 tok/s/GPU**, 25.894/64 running + 0.092 waiting, KV 46.60% mean / 89.71% max, request 3.940, TTFT 2.252 s, prompt 3224.19/GPU, prefix 88.576%, 0 preemptions; retained and cancelled 18:31 UTC. A9 submitted.
+- Evidence: A7 final analysis receipt [R]; A9 submission receipt [R].
+- Interpretation and limitations: **per-GPU 107.38 < A5's 124.97 despite +14.6% aggregate — no EP real-rollout gain established.** The EP16 serving-bound gains (552–831 tok/s/GPU on the fixed-prompt-pool decode lane) do not transfer to real RL rollouts. Confounds already in the record (staleness 3-vs-11 across A5/A7; age alignment) do not rescue a gain. A9 (HBM 0.90) and A10 (HBM 0.85, same source) will isolate the HBM knob next.
+- Decision and next action: record A8's and A9's windows; the 19:30 candidate/gain choice proceeds on A5-class configs unless A9/A10 overturn; real training launch 19:45 UTC.
