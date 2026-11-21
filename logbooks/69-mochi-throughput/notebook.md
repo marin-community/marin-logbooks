@@ -811,3 +811,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: through-2042 analysis receipts [R].
 - Interpretation and limitations: the so-far rate declines as contexts lengthen (116.75 → 95.47 → 84.90 cumulative windows) — observational, consistent with the fresh variable-length workload; no causal claim. Per-gate: semantic batch_lookahead unchanged; max_in_flight 1024 not observed binding; Harbor 322 blocked entries / 109 resumptions, cumulative resumed wait 139,953.127 s (mean 1283.974 s; pending/cancelled censored); no trajectory_tasks events (not proof never-binds).
 - Decision and next action: one 20:55:30 UTC checkpoint; record the completed update when it lands; then the Conclusion.
+
+### 2026-11-22 04:40 UTC - Binding-element analysis linked: which limit bound in each arm and on the .115 training run
+
+- Question or hypothesis and reason for trying it: the coordinator directed (user request 15:58 EST) that the binding-element analysis be summarized in marin#11954 and linked to the per-run table on marin#11957.
+- Published source revision: analysis over retained receipts; training unchanged at 64 GPU.
+- Command or material configuration: no change — documentation link + summary.
+- External inputs and artifact references: per-run table comment https://github.com/marin-community/marin/issues/11957#issuecomment-7069089571 [R]; worker receipts `training-through-2042-analysis.json`, `training-worker-gates-2042.jsonl` [R].
+- Environment and hardware when relevant: training unchanged at 64 GPU; all probes retired.
+- Result, including failure or restart: added to #11954 Status — `.103` max_in_flight 32; A1 staleness lookahead; A3 engine slots (30.5/32 + queue); A5 long-context prefill; A7/A10 underfilled engines; `.115` buffer batch_lookahead (128 groups) + Harbor slots (322 blocked / 109 resumptions, mean ~21 min) while max_in_flight, task slots, and executor/verifier threads never blocked.
+- Evidence: the #11957 comment table [R]; worker receipts [R].
+- Interpretation and limitations: the binding picture explains the sprint's observed ceilings arm-by-arm and identifies the `.115` run's live binding pair (batch_lookahead + Harbor slots); the never-blocked elements are bounded by observation, not proof of never-binding.
+- Decision and next action: keep the table in sync as new evidence lands; the first-update watch continues (20:55:30 UTC checkpoint).
