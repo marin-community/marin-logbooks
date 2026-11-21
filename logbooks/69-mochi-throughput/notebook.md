@@ -739,3 +739,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: native validation receipt [R]; worktree verification [R].
 - Interpretation and limitations: the effective lease bound stays 128 (4×32 lookahead) — the record will not claim a 192-effective gain; Harbor 512 is the changed admission allowance to be measured by occupancy.
 - Decision and next action: capture A11's 25-min window; launch A13 on release; keep the training untouched throughout.
+
+### 2026-11-22 02:50 UTC - Full launched-gate table received; timeout split and proof-coverage clarified
+
+- Question or hypothesis and reason for trying it: reconcile the launched training's complete gate table against the secretary's Decision Log.
+- Published source revision: launched training `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: launched gates — max_in_flight 1024 (≥ semantic 128; pure cap), max_concurrent_tasks 1024/worker, executor 256/worker, verifier 64/worker, GenRM 64/group (inactive on this curriculum), teacher disabled, symbolic 8 unchanged, progress timeout 43200 s, trajectory/model-turn timeouts run 10800 s / turn 10800 s / attempt 14400 s (attempt includes setup/cleanup headroom), Harbor 384/job = 12/worker (≤512), vLLM 16DP/EP × 64 seq / 0.85 HBM / 8192 batched, semantics stale 3 + full_batch + routes 16/16; 32 workers × 2 CPU; leased trajectory budget 128×8 = 1024 (4 groups/32 trajectories per worker).
+- External inputs and artifact references: worker gate table over Rhizome (~02:5x UTC) [R]; proofs `selected-training-compiled-assertions.json` (exact EP16 geometry) vs `final-gates-native-config-event.json` (earlier EP12 draft schema), curriculum receipts retained.
+- Environment and hardware when relevant: the training's own gate event was not yet in the 20:00 bounded query; the 20:12:27 UTC checkpoint must capture it.
+- Result, including failure or restart: table matches the recorded Decision Log; additions are the timeout split and the proof-coverage clarification.
+- Evidence: worker table [R]; retained proofs [R].
+- Interpretation and limitations: no mutation of the running training; selection was sent 19:29:37 UTC (before the deadline) and training submitted 19:45 UTC as mandated.
+- Decision and next action: capture the training gate event at the 20:12:27 checkpoint; continue the standing watch.
