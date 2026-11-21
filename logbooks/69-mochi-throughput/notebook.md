@@ -643,3 +643,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: preflight + compiled-assertion receipts [R]; worktree verification [R].
 - Interpretation and limitations: the recipe is ready; the REAL run is not a 25-min cancel probe — measured A10 rates are first-25min observations, not an update-wall-clock promise.
 - Decision and next action: capture the training root job ID at 19:45 UTC, verify the run past its first update, then write the Conclusion and close marin#11954 and this logbook per the campaign rules.
+
+### 2026-11-22 00:30 UTC - Phase-2 retained-data analysis: serving-vs-real gap decomposition; KV exhaustion not a proven bottleneck
+
+- Question or hypothesis and reason for trying it: explain the serving-to-real rollout gap from retained data before the launch (no config change).
+- Published source revision: analysis over retained receipts; final training `5957d8bbcf…` / `rounds/mochi-throughput-train.yaml` `.115` unchanged.
+- Command or material configuration: matched HBM .85 EP16/seq64/batch8192 comparison (serving `3a859712f5…`/`530ab73b76…` benchmarks vs real `858ab5d15b…`); bench-spec check.
+- External inputs and artifact references: worker readout over Rhizome (~00:3x UTC) [R]; receipts `serving-vs-real-gap-decomposition.json`, `a10-request-speed-by-concurrency-context.json`, `a9-request-speed-by-context-final25.json`.
+- Environment and hardware when relevant: all probes cancelled; 19:45 UTC one-shot verified loaded (no duplicate, submission log absent).
+- Result, including failure or restart: serving 552.147/GPU at 59.79/64 running vs REAL A10 121.257/GPU at 20.41/64 running — approximate descriptive split of the 4.55x gap = 2.93x running-request count x 1.55x effective generated tok/s per running-request second (9.23 vs 5.94); NOT causal/TPOT (running includes prefill; rank-sample vs RL time-weighted). Best B HBM90 831.73/GPU (61.51 running, prefix 99.78%) is 6.86x real; HBM 0.90 did NOT transfer real (A9 108.73 vs A10 121.26). Zero real preemptions + underfilled late engines ⇒ KV exhaustion is not a proven bottleneck on the selected arm. A10 per-request >=30s decode-progress intervals by running bucket: 1–16 → 6.91 tok/s (n=1471), 17–32 → 6.51 (n=4321), 33–48 → 4.23 (n=1164); no 49–64 interval. A9 completed-request context bins NOT monotonic (<4k median 3.29 vs 32–64k 5.97 tok/s) — "long context alone causes all slowdown" unproven (completion censoring + time/concurrency confound). Bench spec CONFIRMED to include routed-expert capture + logprobs true/top-0.
+- Evidence: retained-data analyses [R].
+- Interpretation and limitations: descriptive, not causal; the residual difference needs a future engine profile, not unmeasured config changes before launch.
+- Decision and next action: capture the 19:45 UTC training launch, verify past the first update, then close the records.
