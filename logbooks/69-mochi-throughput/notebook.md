@@ -619,3 +619,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: audit receipts [R].
 - Interpretation and limitations: the GenRM-64 raise in the final config is non-binding/inactive; the symbolic-8 cap stays numerically unchanged; teacher disabled. The 3.49% raw share reinforces NOT claiming A8's 208.63/GPU as a like-for-like 50/50 training gain — the consumed-batch mix remains unmeasured.
 - Decision and next action: A10's full-25min final at 19:22:58.540 UTC decides the HBM question; selection 19:30 UTC; real training 19:45 UTC.
+
+### 2026-11-21 23:55 UTC - TRAINING SELECTION: A10 geometry (EP16/seq64, HBM 0.85, 64 GB200) chosen at 2.169x control
+
+- Question or hypothesis and reason for trying it: the sprint's central decision — which real-rollout geometry trains first.
+- Published source revision: selection measured on `858ab5d15bf3118ae0358ff79569ec6b33320a68` (A10 root `/benfeuer/long-loop-mochi-throughput-ep16-httpid-control-2026.11.21.114-coordinator-4fa04020`); final `.115` recipe on the cf7 gates.
+- Command or material configuration: selected = EP16/DP16/TP1, seq64, HBM 0.85, batch 8192; 48 trainer + 16 rollout = 64 GB200; `.115` changes ONLY DP12→16, EP12→16, seq32→64 with all cf7 gates retained (Harbor 384, staleness 3, quotas 16+16).
+- External inputs and artifact references: worker selection readout over Rhizome (~23:5x UTC) [R]; receipts `a10-final25-analysis.json`, `a10-native-final25-1923.jsonl`, `a10-context-final25-1923.jsonl`, `a10-all-engine-final25-1923.json`, `sprint-a10-measured-cancellation.log`, `selected-training-landing.log`.
+- Environment and hardware when relevant: both A9/A10 finals retained and cancelled; lane at 0 GPU; post-rebase native preflight in progress.
+- Result, including failure or restart: A10 FINAL 25-min — 1940.10955 aggregate / **121.25685 tok/s/rollout-GPU**; 20.4122/64 running + 0.04283 waiting; KV 39.3497% mean / 84.7560% max; request 5.71435; TTFT 2.13218 s; prefix 90.37887%; 0 preemptions; last 10 min 108.03/GPU with near-zero queue. Observed 2.169x per-GPU and 2.892x aggregate vs the `.103` control (55.90/670.82); short windows are NOT an update-wall-clock guarantee.
+- Evidence: A10 final receipts [R].
+- Interpretation and limitations: same-source HBM 0.85 is 11.53% above the 0.90 observationally (single-window traffic varies); A8's quota-off 208.6/GPU is not eligible like-for-like (0 consumed batches, mix unknown, 16/16 routes kept in current semantics); A3/A5's older staleness-11 is not retained for training. The selection preserves staleness 3 and 50/50 routes.
+- Decision and next action: REAL `--run` of `.115` at 19:45 UTC (14:45 EST) on the authorized schedule; the secretary verifies the launch past its first update before closing the campaign records.
