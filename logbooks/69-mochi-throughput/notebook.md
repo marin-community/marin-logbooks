@@ -979,3 +979,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker launch record [R].
 - Interpretation and limitations: the legacy session-timeout keys are inactive for the canonical task compendium — the active path is task_spec.session.*; the full dictionary is retained in the worker's REPORT/STATUS and receipts.
 - Decision and next action: the first-update watch applies to `.120`; the Conclusion follows.
+
+### 2026-11-22 09:05 UTC - `.120` GPU child admitted; bounded startup shows frozen runtime ready
+
+- Question or hypothesis and reason for trying it: capture the corrected training run's child identity and startup state.
+- Published source revision: `.120` at `6a118946e605a3eba586b0d256139a6690a859cc`.
+- Command or material configuration: bounded startup read at 22:58:39 UTC.
+- External inputs and artifact references: worker readout over Rhizome (~09:0x UTC) [R]; receipt `relaunch-30m-120-bounded-coordinator-startup-2258.txt`.
+- Environment and hardware when relevant: GPU child `/benfeuer/long-loop-mochi-throughput-train-30m-2026.11.21.120-coordinator-0b9c186a/long-loop-mochi-throughput-train-30m-2026.11.21.120-a86b6691860a` — frozen runtime ready, NCCL/Gloo rendezvous; only `.120` runs (64 GB200); `.119` cancellation confirmed.
+- Result, including failure or restart: startup healthy in the bounded read; no rollout/throughput claim yet.
+- Evidence: bounded startup receipt [R].
+- Interpretation and limitations: startup-only state.
+- Decision and next action: single startup/first-update checkpoint 23:11:30 UTC (no probes); record the first update when it completes.
