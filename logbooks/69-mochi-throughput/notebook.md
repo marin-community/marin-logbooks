@@ -427,3 +427,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: native partial analyses [R].
 - Interpretation and limitations: NO gain claim — await the 25-min window. Mechanistic read: demand (~600 requests aggregated in both) is spread by EP16/cap-64 with almost no queue, versus A5's 18-waiting queue at cap 32. Confound: A7 restores staleness 3 vs A5's actual 11 (lease-lookahead difference), so the engine-geometry effect is not isolated.
 - Decision and next action: record A7's 25-min final and the A5-vs-A7 verdict when it lands (18:27:04.921 UTC); A9 replaces A7 after the window unless new steering arrives.
+
+### 2026-11-21 20:40 UTC - Found: HTTP request-ID tracing bug (join-coverage gap); causality-preserving HBM85 control planned
+
+- Question or hypothesis and reason for trying it: the new numeric context fields were not joining to request timings — root cause found.
+- Published source revision: fix in progress (source SHA pending); no live-job patch.
+- Command or material configuration: `model_clients` sends lowercase `x-request-id`; the pinned vLLM adapter's `_MinimalRequest.headers` is a case-sensitive plain dict; `BaseServing._base_request_id` looks up `X-Request-Id`, misses it, and generates a different ID. Fix: case-insensitive Starlette headers + a stable ID generated once; adapter moves to the CPU-light `inference_http_backend` with a behavior regression (case variants + timing join).
+- External inputs and artifact references: worker readout over Rhizome (~20:4x UTC) [R].
+- Environment and hardware when relevant: A7/A8 continue unchanged at 124 GPU; A8's startup 15-min gate bounded errors read in progress.
+- Result, including failure or restart: join-coverage gap confirmed in A3's all-12 raw logs — 3,611 submitted vs only 24 first_token and 3,181 ended events joined. The bug may also affect ID-based group behavior; no gain claim.
+- Evidence: A3 raw-log event counts [R].
+- Interpretation and limitations: this explains the residual context-distribution gap despite the `119ea9984b…` numeric-fields landing; ID-based joins (including agentic-share grouping) must be re-validated after the fix.
+- Decision and next action: causality plan — the next HBM 0.90 arm carries the header fix, and an HBM 0.85 same-fix control arm runs after the A8 window (slots 64+64 = 128), both 25-min windows finishing ~19:10–19:22 UTC before the 19:30 choice; record the fix SHA and control-arm launch when they land.
