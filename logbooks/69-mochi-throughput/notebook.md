@@ -691,3 +691,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission receipt [R]; worker readout [R].
 - Interpretation and limitations: the historical "20% prefix" diagnosis is superseded (latest EP16 prefix 90.38%, 0 preemptions). The FP8/offload probes must never alter or cancel the real training.
 - Decision and next action: record A11/A12 landings/launches when they occur; verify training past its first update; then close the records.
+
+### 2026-11-22 01:30 UTC - A11 FP8-KV submitted on the EP12 baseline; A12 native-offload prepared but held
+
+- Question or hypothesis and reason for trying it: the post-selection FP8/offload request — does `kv_cache_dtype=fp8` lift real-rollout throughput on the EP12 baseline?
+- Published source revision: A11 at `ce13e39e8435a9149a1268d6b25db54c32f75411` (recipe `rounds/mochi-throughput-kv-fp8.yaml`, `.116`); A12 `.117` prepared/validated, not submitted.
+- Command or material configuration: A11 = EP12/seq32/HBM 0.85/batch 8192 with ONE engine knob `kv_cache_dtype=fp8`; Harbor 384, default staleness 3, quotas 16+16; graphs on; PRODUCTION 08a; r136 excluded; 60 GB200.
+- External inputs and artifact references: worker readout over Rhizome (~01:3x UTC) [R]; receipts `sprint-kv-fp8-submission.log`, `sprint-kv-fp8-validation/90c48929…/receipt.json`.
+- Environment and hardware when relevant: training 64 + probe 60 = 124 ≤ 128; the real training is untouched. A12's 160 GiB/GPU draft capacity needs a physical layout check; the pinned connector requires `enable_cumem_allocator=true` with existing expandable_segments.
+- Result, including failure or restart: A11 submitted; A12 held until A11 is measured/released.
+- Evidence: submission + preflight receipts [R].
+- Interpretation and limitations: single-knob delta on the EP12 baseline; the historical A5 staleness-11 comparison remains a caveat — no isolated-gain claim. Fresh labels A11/A12 avoid colliding with the used A9/A10.
+- Decision and next action: record A11's measured window; launch A12 after A11 releases; verify training past its first update; then close the records.
