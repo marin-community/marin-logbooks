@@ -1003,3 +1003,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: audit receipt + SQL/raw logs [R].
 - Interpretation and limitations: metric watch for `.120`: policy/mismatch/pooled/log_ratio_abs_mean, staleness 0/log_ratio_abs_mean, abs-max/tails/finite-fraction plus training_nonfinite_values; the legacy policy/rollout_train_prob_diff_mean is mean exp(rollout−trainer logprob) with parity 1, NOT an absolute-logprob difference. A future TP/quantization arm requires per-token mismatch + fixed-prompt eval against TP1/BF16 BEFORE throughput counts — no probe currently authorized.
 - Decision and next action: apply the metric watch to `.120`'s first update; the Conclusion follows.
+
+### 2026-11-22 09:45 UTC - 17:50 correction fulfillment VERIFIED (23:05 UTC): revert exact, tests pass, timestamps pinned
+
+- Question or hypothesis and reason for trying it: verify the 17:50 default-scoring correction was fully fulfilled in the launched `.120`.
+- Published source revision: `.120` submitted 22:56:30.965 UTC (root 0b9c186a, child a86b6691860a) at `6a118946e605a3eba586b0d256139a6690a859cc`; `.119` cancel-own confirmed 22:56:43; `.115` cancelled 22:50 only after the `.119` submission.
+- Command or material configuration: the revert makes all three cap-grading/projection files match the pre-be42 base exactly; TaskWorker returns unmodified default rollouts; Harbor batch-priority + 30-min budget retained; TP1/BF16 weights/BF16 KV/full_batch/routes 16+16/stale 3/Harbor 384 unchanged.
+- External inputs and artifact references: worker verification readout over Rhizome (~09:4x UTC) [R]; receipts `relaunch-30m-old119-cancellation.log`, `relaunch-30m-old115-cancellation.log`, `relaunch-30m-120-submission-receipt.json`, native preflight `8963e24b…` PASS, full record `relaunch-30m-120-launch-record.txt`.
+- Environment and hardware when relevant: no duplicate launch; ONE 23:11:30 startup/first-update wake retained.
+- Result, including failure or restart: 34 targeted + 9 existing Harbor scoring tests PASS; correction verified fulfilled.
+- Evidence: verification readout + receipts [R].
+- Interpretation and limitations: the correction chain is closed — the launched `.120` runs default verifier scoring with no cap-scoring remnants.
+- Decision and next action: first-update watch on `.120` (23:11:30 checkpoint); then the Conclusion.
