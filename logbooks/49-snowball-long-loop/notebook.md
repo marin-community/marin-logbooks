@@ -1933,3 +1933,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris describe [R].
 - Interpretation and limitations: scored outcomes not yet read; the ~2 h difference between arms A/B and arm C reflects arm C's later start (2 h 39 m at 00:33 vs A/B's 2 h 02 m) and its longer total duration.
 - Decision and next action: hourly checks track the three arms' scored outcomes.
+
+### 2026-11-21 03:40 UTC - Hourly catch-up (02:40–03:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the `.89` slice: all three arms succeeded (A 2 h 02 m, B 2 h 03 m, C 4 h 04 m; re-verified at 03:33 UTC; arm C confirmed at 4 h 04 m 19.69 s). Scored outcomes expected in the run's reports/EvalDash.
+- Command or material configuration: Iris describe at 03:33 UTC [R].
+- External inputs and artifact references: Iris output [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; no new `atlas-env-audit` landings — head unchanged at `681a339d9c…`).
+- Evidence: Iris [R]; `git ls-remote` [R].
+- Interpretation and limitations: progression-only status; scored outcomes pending in the run's reports.
+- Decision and next action: hourly checks track the scored outcomes.
