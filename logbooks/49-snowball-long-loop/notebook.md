@@ -1969,3 +1969,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; `git ls-remote` [R].
 - Interpretation and limitations: progression-only status; scored outcomes pending in the run's reports.
 - Decision and next action: hourly checks track the scored outcomes.
+
+### 2026-11-21 06:40 UTC - Hourly catch-up (05:40–06:40 UTC window): exposure rescore completed
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities; a new **exposure rescore** completed — `/benfeuer/mochi-exp4-exposure-rescore-2026.11.21.100-coordinator-d2bb4e91`: the eval task `…-aad25418e4df` **succeeded** (02:41:02 UTC), while its inference broker/worker children were killed "Terminated by user" (02:25:24/02:25:44 UTC) after doing their work — the same completion pattern as the `.84`/`.86` evals.
+- Command or material configuration: verified via `uv run iris --cluster=marin job list --prefix /benfeuer/mochi-exp4` at 06:33 UTC.
+- External inputs and artifact references: Iris job list [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the **exposure rescore completed** (eval task succeeded) — presumably rescoring the exp3 step-20/RL-36 exposure under the corrected accounting; the scored outcome is pending in the run's reports. Atlas branch quiet this window (no new `atlas-env-audit` landings — head unchanged at `681a339d9c…`).
+- Evidence: Iris job list [R].
+- Interpretation and limitations: the rescore's outcome is not yet published in this readback; "Terminated by user" on the children follows the established eval-completion pattern.
+- Decision and next action: hourly checks watch for the rescore's scored outcome publication.
