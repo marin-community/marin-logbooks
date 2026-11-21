@@ -727,3 +727,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker readout [R]; source check `buffer.max_untrained_groups` = (staleness 3 + 1) × batch 32 = 128, so max_in_flight 192 does not raise the effective lease lookahead — Harbor 512 is the actual changed admission allowance.
 - Interpretation and limitations: demand-limit gain ceiling from Harbor alone is 1.33x if the model-time fraction is stable — not a prediction or proven gain; occupancy will be measured rather than claiming a 192-group effect. A13 takes priority over the draft A12 offload (the old 20%-prefix diagnosis no longer describes EP16).
 - Decision and next action: record A13's landing/launch when they occur; A11's window remains the next measurement.
+
+### 2026-11-22 02:35 UTC - A13 demand arm LANDED and validated (`.118`, `dd0250dc1a…`); not submitted
+
+- Question or hypothesis and reason for trying it: prepare the Harbor-512 demand probe per the 13:36 EST direction.
+- Published source revision: `dd0250dc1a65a3e04c2f6b0d2f79ea55511a506f` (loop-push; config verified in the worktree — `rounds/mochi-throughput-ep16-demand512.yaml` v2026.11.21.118).
+- Command or material configuration: 48 trainer + 16 rollout = 64 GPU; EP16/seq64/HBM 0.85/batch 8192 BF16; Harbor 512, cap 192, staleness 3/routes 16+16; all incidental cf7 gates; graphs PIECEWISE, PRODUCTION 08a, r136 excluded.
+- External inputs and artifact references: worker readout over Rhizome (~02:3x UTC) [R]; receipts `sprint-ep16-demand512-validation/98777238…/receipt.json`, `a13-demand512-prepared-receipt.json`, `next-probe-plan.json`.
+- Environment and hardware when relevant: launches after A11's (`.116`) actual 25-min capture/cancel, alongside the untouched REAL training `.115` (64+64 = 128); A12 offload paused behind A13; no job ID until capacity is released; no third arm.
+- Result, including failure or restart: landed and validated; not submitted.
+- Evidence: native validation receipt [R]; worktree verification [R].
+- Interpretation and limitations: the effective lease bound stays 128 (4×32 lookahead) — the record will not claim a 192-effective gain; Harbor 512 is the changed admission allowance to be measured by occupancy.
+- Decision and next action: capture A11's 25-min window; launch A13 on release; keep the training untouched throughout.
