@@ -919,3 +919,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: test/lint receipts [R].
 - Interpretation and limitations: the priority and fail-closed changes address the observed Harbor waits (mean ~21–45 min resumed waits) and the post-timeout reward hazard; the geometry is unchanged, so measured rates remain comparable.
 - Decision and next action: record the `.119` landing/preflight, the new root ID at submission, and the `.115` cancellation; the Conclusion then covers the relaunch.
+
+### 2026-11-22 07:40 UTC - `.119` RELAUNCH SUBMITTED; `.115` cancelled after the confirmed submission
+
+- Question or hypothesis and reason for trying it: launch the batch-priority/fail-closed training recipe per the 17:25 EST relaunch direction.
+- Published source revision: `ccf0bdc3561be7b3a6d407b3c95af03fbf37f2c4` (recipe `rounds/mochi-throughput-train-30m.yaml`).
+- Command or material configuration: `.119` = `.115` geometry/gates + per-worker Harbor batch-priority (FIFO, non-preemptive) + fail-closed timeouts (30-min model-turn budget, attempt 2280 s, overrides per the recorded plan); 32 steps/10 h, 64 GB200.
+- External inputs and artifact references: worker submission notice over Rhizome (~07:4x UTC) [R]; receipt `relaunch-30m-submission-receipt.json`.
+- Environment and hardware when relevant: root `/benfeuer/long-loop-mochi-throughput-train-30m-2026.11.21.119-coordinator-63b8c1a8`; `.115` (root 49544525) cancelled with iris-cancel-own AFTER the confirmed submission, per the mandated sequencing.
+- Result, including failure or restart: `.119` submitted; `.115` cancelled.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: `.115` ran ~2.4 h without a completed update (its final so-far window is retained in the record); the batch-priority and fail-closed changes target the observed Harbor waits and the post-timeout reward hazard; geometry unchanged, so rates remain comparable. The first-update watch carries over to `.119`.
+- Decision and next action: record `.119`'s startup/qualification and first-update watch; the Conclusion then covers both launches.
