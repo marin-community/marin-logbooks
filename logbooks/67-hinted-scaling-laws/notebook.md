@@ -102,6 +102,69 @@ status: active
   - On AIME × Qwen3 every forecast overshoots (0.83–0.89 against 0.752).
 - Decision and next action: the paper-regression tests in marin-community/marin#11891 now cover these pairs. Fresh Delphi rollouts remain the next step (marin-community/marin#11868).
 
+### 2026-11-21 02:15 UTC - Fresh Delphi GSM8K and Qwen AIME rollouts reproduce the paper
+
+- Question or hypothesis and reason for trying it: do our hinted prompts, sampling and grading reproduce the paper's per-cell accuracies, and do fits on our own rollouts reproduce the paper's forecasts? This is the Delphi gate in marin-community/marin#11868, plus a Qwen check on a chat-model pair.
+- Published source revision:
+  - prompts and the GSM8K scorer: marin-community/marin#11905 at `4ababc03db`;
+  - fits: marin-community/marin#11891 at `45b5ceb1e7`;
+  - `marin-serve iris --priority`: local commit `fed5c39cdd` (not on main).
+- Command or material configuration:
+  - Each model was served with `marin-serve iris` on cw-rno2a at production priority, bf16, with a 4,096-token context for Delphi ([`replication/serve_delphi.sh`](replication/serve_delphi.sh)).
+  - A laptop client sampled them directly, bypassing the curated eval driver: [`replication/sample_hinted_gsm8k.py`](replication/sample_hinted_gsm8k.py) for Delphi and [`replication/sample_qwen.py`](replication/sample_qwen.py) for Qwen.
+  - Each request asks for all of a prompt's rollouts with vLLM `n` and is graded in-process.
+  - Delphi uses the paper's sampling: temperature 0.4, top_p 1.0, max_tokens 512, top_k 1000 hinted and off unhinted, with 64 rollouts at H=0 and 32 at H>0 over the first 256 GSM8K test problems.
+  - Qwen uses the paper's released AIME prompts verbatim (`suzeva/hinted-benchmarks@3d3d42c4`), its per-model sampling, its own AIME grader, and 10 rollouts per cell.
+- External inputs and artifact references:
+  - Delphi models: original-seed checkpoints (seed 0 for 5e19 and 6e20, the released `rohithck` repos), pinned in the serve script.
+  - Qwen models: Qwen2.5-1.5B-Instruct and Qwen2.5-3B-Instruct.
+  - Raw per-problem pass strings and completions: `s3://marin-us-east-02a/marin/experiments/hinted-scaling-laws/replication-2026-11-21/` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-02a%2Fmarin%2Fexperiments%2Fhinted-scaling-laws%2Freplication-2026-11-21%2F)).
+- Environment and hardware when relevant:
+  - One H100 per Delphi rung through 1e22, and two (TP2) for 1e23.
+  - 1e22 used 2 replicas and 1e23 used 6, to finish the slow rungs sooner.
+  - The 11 rungs through 1e22 took 38–46 minutes each, and both Qwen models took under 30 minutes.
+- Result, including failure or restart:
+  - The curated eval driver first ran at about 0.3 attempts/s, because it makes two blocking FineStore commits per attempt (marin-community/marin#11391; fix in marin-community/marin#11918). Those runs were cancelled.
+  - The first 1e23 server was OOM-killed at 64 GB host memory and was relaunched with 256 GB.
+  - Per cell, from [`replication/compare_with_paper.py`](replication/compare_with_paper.py) and [`replication/compare_qwen.py`](replication/compare_qwen.py): paired z over problems against the paper's released rollouts for the same checkpoint.
+
+    | Replication | Cells | Beyond 3σ | Median per-problem r |
+    |---|---|---|---|
+    | Delphi GSM8K, 12 rungs × 21 cells | 252 | 1 (2e19 masking H=0.9, z = −3.2) | 0.96 |
+    | AIME, Qwen2.5-1.5B and 3B | 42 | 0 (largest 2.0) | 0.72 |
+
+  - Selected Delphi cells:
+
+    | Cell | Ours | Paper |
+    |---|---|---|
+    | 1e23 unhinted | 0.267 | 0.259 |
+    | 1e23 truncation H=1 | 0.818 | 0.816 |
+    | 1e22 unhinted | 0.076 | 0.075 |
+
+  - Fits on our rollouts and on the paper's rollouts for the same checkpoints ([`replication/fit_ours.py`](replication/fit_ours.py), [`replication/forecasts_ours_vs_paper.csv`](replication/forecasts_ours_vs_paper.csv)):
+
+    | Fitted rungs | Ensemble AE, ours | Ensemble AE, paper | Sigmoid AE, ours | Sigmoid AE, paper |
+    |---|---|---|---|---|
+    | 7 | 0.100 | 0.097 | 0.197 | 0.200 |
+    | 8 | 0.069 | 0.073 | 0.206 | 0.197 |
+    | 9 | 0.013 | 0.019 | 0.216 | 0.208 |
+    | 10 | 0.034 | 0.028 | 0.216 | 0.214 |
+    | 11 | 0.017 | 0.010 | 0.111 | 0.111 |
+
+  - Joint-law parameters, ours against paper: truncation b1 1.770/1.759, b2 2.463/2.453, b0 −6.646/−6.614; masking b1 0.881/0.882, b2 4.096/4.119, b0 −3.829/−3.846.
+- Evidence:
+
+  ![Our cell accuracies against the paper's](figures/replication_agreement.png)
+  ![Delphi hint curves, ours against paper](figures/delphi_ours_vs_paper_hint_curves.png)
+
+- Interpretation and limitations:
+  - The hinted GSM8K dataset, sampling and grading reproduce the paper within sampling noise: one cell beyond 3σ among 252 is about what chance gives. Fits on our rollouts reproduce the paper's parameters and forecast errors. This passes the #11868 gate.
+  - The gate's original "3.1/3.3 pp" target is Table 1's in-sample MAE, which the fit tests in #11891 already check.
+  - These runs cover one seed per rung; the paper's headline numbers average three seeds.
+  - The client used served endpoints, not the curated eval driver. #11905's eval catalog entries have not yet completed a full run through the driver; that waits on #11918.
+  - The Qwen per-problem correlations are lower because each cell has only 10 rollouts over 60 problems.
+- Decision and next action: the Delphi gate passes. Phase C (hero ladder, marin-community/marin#11869) can proceed, with the curated driver once #11918 lands, or with this direct-sampling client in the meantime.
+
 ## Final decision
 
 - Selected approach and evidence:
