@@ -1015,3 +1015,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: verification readout + receipts [R].
 - Interpretation and limitations: the correction chain is closed — the launched `.120` runs default verifier scoring with no cap-scoring remnants.
 - Decision and next action: first-update watch on `.120` (23:11:30 checkpoint); then the Conclusion.
+
+### 2026-11-22 10:00 UTC - `.120` 15-min startup: model loaded 23:02, CUDA graphs 23:09; runtime dtype confirmed TP1/BF16/no-FP8
+
+- Question or hypothesis and reason for trying it: `.120`'s startup qualification and the pending runtime-dtype item from the 23:03 audit.
+- Published source revision: `.120` root 0b9c186a, child a86b6691860a, at `6a118946e605a3eba586b0d256139a6690a859cc`.
+- Command or material configuration: bounded startup read through 23:12:08.567 UTC.
+- External inputs and artifact references: worker readout over Rhizome (~10:0x UTC) [R]; receipts `training120-startup-2311-receipt.json`, `training120-{startup,native-startup,gates-startup}-2311.{sql,jsonl}`.
+- Environment and hardware when relevant: only `.120` runs (64 GPU); no probes; no config/job mutation.
+- Result, including failure or restart: model loaded 23:02 UTC; CUDA graph capture finished 23:09:02 and 23:09:42 (rank repeats 16/15). Runtime EngineCore confirms TP1/torch.bfloat16/quantization None/KV auto ⇒ BF16, no FP8 — closing the audit's pending runtime-qualification item for `.120`. No Traceback/RuntimeError/OOM/explicit NaN/degenerate error in bounded driver logs (the custom repo_utils config-parse ERROR/retries also appeared in previous successful arms). Native rollout counters and effective-gate/event queries returned 0 rows — actual first rollout/initial weights/gates/completed policy update NOT yet observed; throughput/running/mismatch/time-update UNAVAILABLE (not zero); no `.120` raw index yet.
+- Evidence: startup receipts [R].
+- Interpretation and limitations: startup-only state; the runtime dtype confirmation completes the precision audit for the launched run.
+- Decision and next action: ONE 23:25 UTC bounded startup/first-update checkpoint; record the first rollout/gates and completed update when observed.
