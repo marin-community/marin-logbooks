@@ -571,3 +571,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: A9 context/native analyses [R].
 - Interpretation and limitations: the real agentic-context population is now measured — median context ~3.4k with a heavy tail to ~48k, which reframes the KV-budget discussion versus the synthetic 6.4k-prompt serving arms. A9's early 118.20/GPU is below A5's final 124.97 but window-age differs; the 25-min finals decide.
 - Decision and next action: BRIEF final-gate instruction implemented — no new worker/staleness/inflight arms; record both 25-min finals; the 19:30 choice selects the engine (quota decision included) and the 19:45 launch uses `.115`.
+
+### 2026-11-21 23:05 UTC - Final gates landed (`cf7e04df26…`); `.115` training recipe drafted with gate rationale
+
+- Question or hypothesis and reason for trying it: land the final-gate configuration and observability before the real training launch.
+- Published source revision: `cf7e04df26c99f74e52d5c39e3cb7b6e593ea8e1` (loop-push; 17 CPU/runtime cases + 8 adopted RL round tests, lint/types pass); config verified present in the worktree (`rounds/mochi-throughput-train.yaml`).
+- Command or material configuration: `.115` REAL 32-step recipe, 10 h wall budget — staleness 3 (128 groups × 8 = 1024 trajectories global; 32/worker), max_in_flight pure 1024 (effective 128 unchanged), task slots 1024/worker, executor 256, verifier 64 (+12 Harbor conservative 44), GenRM 64, progress 43200 (> 29,760 retry budget), Harbor 384/job = 12 enforced/worker (≤512), route quotas 16/16 kept, teacher disabled.
+- External inputs and artifact references: worker readout over Rhizome (~23:0x UTC) [R]; proofs `final-gates-tests.log`, `final-gates-native-config-event.json`, `a9-symbolic-slot-profile-1902.txt`, `final-gates-landing.log`, `sprint-final-training-preflight.log`.
+- Environment and hardware when relevant: running A9/A10 stay on the `858ab5d15b…` source — the new code is observability, not a live patch; NO-SUBMIT native preflight running; no training job submitted yet.
+- Result, including failure or restart: gates landed and tested; startup logging now records all concurrency limits, which buffer gate blocked, and structured Harbor/task-slot blocked/resumed events; the symbolic-8 cap is numerically unchanged (py-spy found no math-grader frames — not proof of never-queue).
+- Evidence: landing/test receipts [R].
+- Interpretation and limitations: the gate values are derived from the measured semantics recorded in this notebook (staleness lease, Harbor slots, quota admission); the engine geometry remains provisional until the 19:30 choice.
+- Decision and next action: record the NO-SUBMIT preflight result, A9/A10 finals (19:13:18.607 / 19:22:58.540 UTC), the 19:30 choice, and the 19:45 real `--run`.
