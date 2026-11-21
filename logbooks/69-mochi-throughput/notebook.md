@@ -775,3 +775,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: cancellation receipt [R]; worker readout [R].
 - Interpretation and limitations: A11 never produced a measurement window (furthest state: NCCL rendezvous 19:59:35); A12's offload layout question and A13's Harbor-512 occupancy question remain open questions for any future campaign, retired unlaunched here.
 - Decision and next action: watch the first completed policy update; report generated tok/s/rollout-GPU, running/engine, update wall time, blocked-gate-cause evidence; then write the Conclusion and close marin#11954 and this logbook.
+
+### 2026-11-22 03:45 UTC - Training first-update watch (honest partial): 116.75 tok/s/GPU over first 11.3 min; no completed update yet
+
+- Question or hypothesis and reason for trying it: first live native counters from the real training rollout, and the first-update watch.
+- Published source revision: `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: bounded native counters 20:01:42.115–20:12:59.995 UTC (11.3 min, all 16 ranks, 0 resets).
+- External inputs and artifact references: worker readout over Rhizome (~03:4x UTC) [R]; receipts `training-partial-2013-analysis.json`, `training-first-update-watch-2013-receipt.json`, `training-update-and-gate-2013.jsonl`, `training-worker-gates-2013.jsonl`.
+- Environment and hardware when relevant: only the training runs (64 GPU); all probes retired.
+- Result, including failure or restart: 1,266,129 generated tokens — 1867.96495 aggregate / **116.74781 tok/s/rollout-GPU**; 31.0513/64 running + 0.05096 waiting; KV 38.249% mean / 64.869% max; prefix 85.189%; 0 preemptions, 0 resets; request reciprocal mean TPOT 3.402, TTFT 4.673 s. NO completed optimizer/training-step/training-weight-update marker yet (initial `initial` reason excluded); update wall time and optimizer-only duration unavailable until completion.
+- Evidence: partial analysis receipts [R].
+- Interpretation and limitations: per-gate — startup `policy_not_published` then `batch_lookahead` (20:01:43.897, 20:05:28.534); max_in_flight 1024 not observed blocking; worker Harbor 320 blocked entries / 24 resumptions / mean resumed wait 385.399 s (ongoing/cancelled censored); no `trajectory_tasks` events observed (not a never-blocks proof). The early rate is close to A10's selected 121.26/GPU final, on a fresh variable-length workload.
+- Decision and next action: single wake 20:26:42.198 UTC for the first-25min window / first-update check (NOT a cancel deadline); record the completed-update metrics when they land.
