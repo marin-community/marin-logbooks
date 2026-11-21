@@ -487,3 +487,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission + preflight receipts [R].
 - Interpretation and limitations: the pair shares the request-ID fix, so any A9-vs-A10 difference attributes to HBM alone; the A8 mix caveat (0 consumed batches, all-nonagentic completions) still applies to workload-mix-sensitive readings.
 - Decision and next action: record both 25-min finals; training choice 19:30 UTC, real train 19:45 UTC unchanged.
+
+### 2026-11-21 21:45 UTC - Reconciled final table; conservative training candidate stated; A9/A10 in flight
+
+- Question or hypothesis and reason for trying it: reconcile the sprint's native first-25min table across the secretary and worker records before the 19:30 training choice.
+- Published source revision: A9/A10 on the matched `858ab5d15bf3118ae0358ff79569ec6b33320a68` source at 128 GPU total.
+- Command or material configuration: native real first-25min windows; request = reciprocal pooled mean TPOT (B rows use the arithmetic mean, flagged as a different definition).
+- External inputs and artifact references: worker final readout table over Rhizome (~21:4x UTC) [R]; REPORT/STATUS reconciled.
+- Environment and hardware when relevant: next one-shot 18:48 UTC (A9 startup gate); real training launch 19:45 UTC.
+- Result, including failure or restart: A5 124.97/GPU (req 4.04, KV 67.25%, prompt 1663.40/GPU, prefix 19.58%, 66 preemptions); A7 107.38/GPU (prompt 3224.19/GPU, prefix 88.58%, 0 preemptions; last-10min 91.37/GPU at 19.75/64 with no queue — the larger engine shape was underfilled by then); A8 208.63/GPU (req 9.03, prompt 935.35/GPU, prefix 86.65%, 0 preemptions; workload-mix caveat, no 3.73x training-gain claim); B EP16/HBM90 serving final 831.73/GPU (prefix 99.78%).
+- Evidence: reconciled table from the worker readout [R]; all underlying receipts already catalogued in marin#11954.
+- Interpretation and limitations: the EP16 per-GPU shortfall is now mechanistically explained (underfilled engine at the tail of the window); the A8 figure remains mix-caveated. The conservative training candidate stands at seq32/HBM 0.85/batch 8192/EP12/workers 32/Harbor 256/inflight128/staleness 3, with the quota choice pending the 19:30 evidence.
+- Decision and next action: record A9/A10 finals when they land; the 19:30 choice finalizes the quota decision; real training launch 19:45 UTC.
