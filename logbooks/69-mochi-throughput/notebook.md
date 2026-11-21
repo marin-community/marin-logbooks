@@ -535,3 +535,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: A7 final receipts [R].
 - Interpretation and limitations: the provisional candidate's supporting numbers are framed honestly — A3's 2.28x is a short-window/proxy observation (its staleness 11 is not retained for training), and A8's 3.73x raw is not a training gain (0 consumed batches, 90 nonagentic completions).
 - Decision and next action: final choice 19:30 UTC after A9/A10; real training launch 19:45 UTC; secretary records the chosen config and the launch verification, then closes the records per the campaign rules.
+
+### 2026-11-21 22:25 UTC - A10 GPU child admitted; A9/A10 engine init underway, no counter window yet
+
+- Question or hypothesis and reason for trying it: scheduled-checkpoint reconciliation of the parallel pair's startup state.
+- Published source revision: both arms on `858ab5d15bf3118ae0358ff79569ec6b33320a68`.
+- Command or material configuration: A9 (`.113`, HBM 0.90) vs A10 (`.114`, HBM 0.85) — only HBM differs; Harbor 384 each (no >512), graphs on, r136 excluded; 128 GPU total.
+- External inputs and artifact references: worker readout over Rhizome (~22:2x UTC) [R]; diagnostics `a9-iris-bounded-startup-1847.txt`, `a9-startup-task0-1847.txt`, `a9-native-start-marker-1846.jsonl`, `a10-startup-1846.jsonl`, `sprint-a10-initial-job-tree.txt`.
+- Environment and hardware when relevant: A10 GPU child `…-114-coordinator-4fa04020/…-114-a8a50ac911fe` submitted 18:42:17 UTC; A9 engine init 18:45–18:46 UTC; A10 engine init 18:46:38 UTC.
+- Result, including failure or restart: no GPU counter window started on either arm yet. A9's regional Finelog rows are empty while Iris retains progress — a stall cannot be inferred from empty regional rows; no fatal Traceback/OOM in the bounded latest 80 lines (a custom `model_type` parse warning followed by init progress is not terminal proof).
+- Evidence: startup diagnostics receipts [R].
+- Interpretation and limitations: startup-only state; no throughput claim. The empty-regional-Finelog vs Iris-retained-progress discrepancy is a monitoring gap, not engine evidence.
+- Decision and next action: A10's 15-min qualification gate near 18:57 UTC; capture both native windows when they start; selection 19:30 UTC, training 19:45 UTC.
