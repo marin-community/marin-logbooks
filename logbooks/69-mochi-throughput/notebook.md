@@ -787,3 +787,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: partial analysis receipts [R].
 - Interpretation and limitations: per-gate — startup `policy_not_published` then `batch_lookahead` (20:01:43.897, 20:05:28.534); max_in_flight 1024 not observed blocking; worker Harbor 320 blocked entries / 24 resumptions / mean resumed wait 385.399 s (ongoing/cancelled censored); no `trajectory_tasks` events observed (not a never-blocks proof). The early rate is close to A10's selected 121.26/GPU final, on a fresh variable-length workload.
 - Decision and next action: single wake 20:26:42.198 UTC for the first-25min window / first-update check (NOT a cancel deadline); record the completed-update metrics when they land.
+
+### 2026-11-22 04:00 UTC - Training FIRST-25min: 95.47 tok/s/GPU (differs honestly from the selection window); first update > 25 min
+
+- Question or hypothesis and reason for trying it: the first-25min training window and the first-update check.
+- Published source revision: `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: native window 20:01:42–20:26:42 UTC (all 16 engines, 0 resets).
+- External inputs and artifact references: worker readout over Rhizome (~04:0x UTC) [R]; receipts `training-first25-2027-analysis.json`, `training-first-update-watch-2027-receipt.json`, `training-update-and-gate-2027.jsonl`, `training-worker-gates-2027.jsonl` plus all raw native/context/SQL.
+- Environment and hardware when relevant: training continues unchanged at 64 GPU; all probes retired.
+- Result, including failure or restart: 2,288,968 generated tokens — 1527.54190 aggregate / **95.47137 tok/s/rollout-GPU**; 25.2139/64 running + 0.02305 waiting; KV 46.615% mean / 74.449% max; prefix 89.386%; 0 preemptions; request reciprocal mean TPOT 3.5766, TTFT 3.3878 s; last 10 min 76.1983/GPU, 19.7386 running, 0 waiting. Still NO completed optimizer/training-step/training-weight-update through 20:27:00 UTC — the first update exceeds 25 minutes; time/update unavailable (initial publish excluded).
+- Evidence: first-25 analysis receipts [R].
+- Interpretation and limitations: the window differs from the selection-window 121.26/GPU — no new config or causal claim (fresh variable-length RL contexts vs the selection arm's window). Per-gate: buffer policy publication then batch_lookahead; max_in_flight 1024 not observed blocking; Harbor 320 blocked entries / 71 resumptions, cumulative resumed wait 63,915.374 s (mean 900.2165 s; ongoing/cancelled censored); no trajectory_tasks events (not a never-blocks proof).
+- Decision and next action: one 20:42 UTC training-only wake armed; record the completed-update metrics when they land; the Conclusion follows.
