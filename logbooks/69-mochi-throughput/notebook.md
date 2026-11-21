@@ -991,3 +991,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: bounded startup receipt [R].
 - Interpretation and limitations: startup-only state.
 - Decision and next action: single startup/first-update checkpoint 23:11:30 UTC (no probes); record the first update when it completes.
+
+### 2026-11-22 09:30 UTC - Correctness/precision audit: all three training runs TP1 + BF16 weights/KV, quantization None; metric watch defined for `.120`
+
+- Question or hypothesis and reason for trying it: verify dtype/precision and correctness-signal coverage across the three training launches (user 17:36 FYI).
+- Published source revision: `.115`=5957d8bbcf, `.119`=ccf0bdc356, current `.120`=6a118946e6 (rounds/mochi-throughput-train-30m.yaml; root 0b9c186a, child a86b6691860a).
+- Command or material configuration: exact compiled configs + model metadata + runtime EngineCore logs; native SQL query for training_metric_value*/training_nonfinite_values.
+- External inputs and artifact references: worker audit readout over Rhizome (~09:3x UTC) [R]; receipt `correctness-tp1-bf16-2303-receipt.json`; SQL/raw `correctness-2302-native/` logs.
+- Environment and hardware when relevant: no configs/jobs/timers changed; ONE 23:11:30 wake preserved.
+- Result, including failure or restart: all three runs are TP1, BF16 weights AND BF16 KV, quantization=None, no FP8 (`.115`/`.119` runtime logs confirm dtype=torch.bfloat16, TP1, quantization=None, kv_cache_dtype=auto; pinned vLLM 0ac9 resolves auto to model dtype; `.120` compiled same, runtime qualification pending). 0 training_metric_value*/training_nonfinite_values rows — absence is NOT zero or a correctness proof; 14 driver-log matches were config/init, not NaN/degenerate errors; no explicit NaN/degenerate errors in bounded task-0 logs (not a full output-quality audit).
+- Evidence: audit receipt + SQL/raw logs [R].
+- Interpretation and limitations: metric watch for `.120`: policy/mismatch/pooled/log_ratio_abs_mean, staleness 0/log_ratio_abs_mean, abs-max/tails/finite-fraction plus training_nonfinite_values; the legacy policy/rollout_train_prob_diff_mean is mean exp(rollout−trainer logprob) with parity 1, NOT an absolute-logprob difference. A future TP/quantization arm requires per-token mismatch + fixed-prompt eval against TP1/BF16 BEFORE throughput counts — no probe currently authorized.
+- Decision and next action: apply the metric watch to `.120`'s first update; the Conclusion follows.
