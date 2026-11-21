@@ -667,3 +667,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: guard receipts [R]; CUDA-graph receipt [R].
 - Interpretation and limitations: prerequisites hold; the residual gap analysis remains descriptive.
 - Decision and next action: capture the training root ID at 19:45 UTC, verify past the first update, then close the records.
+
+### 2026-11-22 01:00 UTC - REAL TRAINING SUBMITTED: `.115` at 19:45 UTC (job …-train-2026.11.21.115-coordinator-49544525)
+
+- Question or hypothesis and reason for trying it: launch the selected A10 geometry as real RL training — the campaign's objective.
+- Published source revision: `5957d8bbcf0cd945243cdd544eb4433f7e36ac88` (recipe `rounds/mochi-throughput-train.yaml` v2026.11.21.115).
+- Command or material configuration: standard round runner `--run` exactly once at 19:45 UTC (single one-shot; guard `sprint-training-submission.log`); 64 GB200 (48 trainer + 16 rollout), TP1/DP16/EP16, seq64/HBM 0.85/batch 8192, REAL 32 steps / 10 h budget, all cf7 gates, teacher disabled.
+- External inputs and artifact references: worker submission notice over Rhizome (~01:0x UTC) [R].
+- Environment and hardware when relevant: PRODUCTION 08a, r136 excluded, graphs on.
+- Result, including failure or restart: **training submitted** — root `/benfeuer/long-loop-mochi-throughput-train-2026.11.21.115-coordinator-49544525`. This is real training, not a 25-min cancel probe.
+- Evidence: worker submission notice [R]; the preflight/compiled-assertion chain from the prior entries.
+- Interpretation and limitations: measured A10 rates are first-25min observations, not an update-wall-clock promise; the run must be verified past its first update before any training-throughput claim.
+- Decision and next action: verify the run past its first update, then write the Conclusion (selected approach, rejected alternatives, reproduction, remaining uncertainty) and close marin#11954 and this logbook per the campaign rules.
