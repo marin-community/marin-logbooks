@@ -343,3 +343,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission receipt [R]; worker readout [R].
 - Interpretation and limitations: A7's measured rollout rate will be compared against A3's 127.22/GPU (console, first-25min) and A5's native provisional 134.13/GPU (first-17.6min) — method and window-age differences noted in prior entries; native counters are on for a like-for-like A5/A7 comparison.
 - Decision and next action: record A5's final receipt and A7's window when they land; A8 launch as capacity frees; report 19:30 UTC; real training 19:45 UTC.
+
+### 2026-11-21 19:40 UTC - FINAL: A5/Harbor384 25-min 124.97/GPU — ~flat vs A3; Harbor capacity gave no early-window gain
+
+- Question or hypothesis and reason for trying it: does raising Harbor capacity 256→384 improve real-rollout throughput versus A3 (Harbor 256)?
+- Published source revision: `c6515fbdc7bc2b51f0f43649dac08ee54fa3397d`; job `/benfeuer/long-loop-mochi-throughput-harbor384-2026.11.21.109-coordinator-16513921`.
+- Command or material configuration: native final window 17:19:36–17:44:36 UTC (25 min, all 12 ranks, 0 resets); native `inference_stats` counters on.
+- External inputs and artifact references: worker readout over Rhizome (~19:4x UTC) [R]; receipts `a5-final25-analysis.json`, `a5-all-engine-raw-stats-1744.json`, `a5-native-final25-1744.jsonl` in /experiments/active/mochi-throughput/ [R].
+- Environment and hardware when relevant: 60 GB200 (12 rollout counted); A7 (`.111`) running; B seq128/kv90 final windows and drain expected ~17:51 UTC before quota-free A8 launches (parallel 124 GPU).
+- Result, including failure or restart: 1499.61 aggregate / **124.967 tok/s/GPU** native; 30.842/32 running, 11.258 waiting; KV 67.255%; request 1/mean TPOT 4.038; TTFT 53.039 s. Last 10 min 105.61/GPU, 29.94/32 running, KV 85.30%. Cancelled 17:45:29 UTC.
+- Evidence: final 25-min analysis receipts [R].
+- Interpretation and limitations: matched-method comparisons — A5 raw console first-20 ~133.01/GPU vs A3 raw 134.876 (−1.4%, no gain); A5 raw first-25 127.35 vs A3 console 127.22 (~flat, baseline driver-dedup). More Harbor capacity did not improve early-25min throughput; engines were already full/queued, so the Harbor-slot knob is saturated at this operating point. The provisional 134.13 first-17.6min figure overstated the final rate (early-window bias now quantified).
+- Decision and next action: A7's EP16 window is the remaining decisive A comparison; record it when it lands; A8 launch ~17:51 UTC; report 19:30 UTC; real training 19:45 UTC.
