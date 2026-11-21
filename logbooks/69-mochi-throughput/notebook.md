@@ -38,6 +38,7 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Precision (verified): the 8-slot semaphore is one group's worth, not an atomic group lock — partial groups can interleave; dispatch `min(_pending)` has no Harbor-slot awareness; the generic 1024/worker task slots are unbinding.
 - Measurement limit (verified): no explicit Harbor-semaphore wait logs are emitted, and A5's bounded logs contain 0 direct slot-wait records, so actual Harbor occupancy is NOT measured; A3's 128 group calls / 430 pending model requests do not count Harbor occupancy.
 - Staleness admission (verified): `FullBatch.lease_batch` uses `range(step, step + staleness + 1)`, so staleness can change admission during step 1 even without a policy update — this corrects an earlier blanket "never binds" statement; the A2 causal-gain claim remains withdrawn and default staleness 3 is kept per direction.
+- Quota setting path (verified 2026-11-21 ~18:50 UTC): `experiments/post_training/long_loop/nvl72.py:343` — `build_run` unconditionally overwrote `consumed_route_quotas` with groups//2 each (the root cause of the `.112` compiled mismatch); the fix preserves an explicit `{}` while keeping the 50/50 resizing for non-empty quotas, and a one-rack/three-rack round regression asserts launch quotas `{}` + full_batch.
 - Consumed route quotas require `batch_policy: full_batch` (`vendor/skyrl/skyrl-train/skyrl_train/rollouts/buffer.py:49,72`; `lib/skyrlrecipe/src/skyrlrecipe/sections.py:440,444`).
 
 ## User rulings
@@ -258,3 +259,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: compiled.yaml failing receipt [R]; worker correction [R].
 - Interpretation and limitations: the long-loop recipe merge boundary is being fixed to really clear quotas, with a behavior regression test and a compiled assert gating the launch; the parallel 124-GPU plan now depends on that fix landing. Lesson for the record: check the compiled config — native preflight alone misses this class of semantic mismatch.
 - Decision and next action: record the merge-boundary fix and the re-run compiled assert before any `.112` launch; A7 remains ready after the A5 window.
+
+### 2026-11-21 18:50 UTC - Root cause refined: nvl72.build_run unconditionally overwrote consumed_route_quotas
+
+- Question or hypothesis and reason for trying it: pin down why the compiled `.112` config still carried 16/16 quotas despite the empty recipe value.
+- Published source revision: fix being validated/landed via loop-push on top of `3226044a8fcf1dacad4b022074f94784493f83b7`; `.112` recipe source unchanged (`aab5e5f57bfa1ef5a6cb3c599ba40302a8e92247`).
+- Command or material configuration: source trace of `experiments/post_training/long_loop/nvl72.py:343` — `build_run` unconditionally overwrote `consumed_route_quotas` with groups//2 each (the current checkout already shows the fixed conditional form, `... if recipe.trainer.rollout_buffer.consumed_route_quotas else {}`).
+- External inputs and artifact references: worker readout over Rhizome (~18:5x UTC) [R]; source trace/receipts in the worker STATUS [R].
+- Environment and hardware when relevant: no quota-free job launched; EP16 `.111` remains ready; running set unchanged (A5 Harbor384 + B trio, 108 GPU).
+- Result, including failure or restart: the mismatch is NOT a mere empty-dict merge issue — `build_run` itself overwrote the quotas. The fix preserves an explicit `{}` while keeping the 50/50 resizing for non-empty quotas, and a real one-rack/three-rack round regression now asserts launch quotas `{}` + full_batch.
+- Evidence: source trace at nvl72.py:343 [R]; failing compiled receipt from the 18:45 entry [R].
+- Interpretation and limitations: the standing trace section above was updated in place with the verified quota-setting path; the compiled preflight must be refreshed after the fix lands before `.112` can launch.
+- Decision and next action: record the refreshed preflight and the `.112` launch when they occur; A7 still launches after the A5 window.
