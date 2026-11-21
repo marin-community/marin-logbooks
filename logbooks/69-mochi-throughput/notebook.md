@@ -523,3 +523,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker provenance tables [R]; resolved SHAs verified via `git rev-parse` in the checkout.
 - Interpretation and limitations: per-arm sources were lumped in early sprint bookkeeping; the authoritative index now governs. A6/workers128 never launched; the `.104` round is not in the live arm table (provenance explained separately by the worker).
 - Decision and next action: the provenance index governs future Source cells; A9/A10 finals next; choice 19:30 / real train 19:45.
+
+### 2026-11-21 22:15 UTC - A7 transfer verdict quantified; provisional training candidate formalized
+
+- Question or hypothesis and reason for trying it: the coordinator asked the worker for the requested REAL EP16 seq64 arm's outcome and the full table; the response quantifies the serving-to-rollout transfer failure and formalizes the provisional candidate.
+- Published source revision: unchanged — A7 `8b1e1686a9…`; A9/A10 on matched `858ab5d15b…`.
+- Command or material configuration: provisional training candidate = EP12, seq32, HBM 0.85, batch 8192, Harbor 256, workers 32, inflight128, staleness 3, graphs/prefix caching ON.
+- External inputs and artifact references: worker response over Rhizome (~22:1x UTC) [R]; A7 receipts `a7-final25-analysis.json`, `a7-context-summary-final25.jsonl`, `sprint-a7-measured-cancellation.log`.
+- Environment and hardware when relevant: A9/A10 running at 128 GPU; startup-gate one-shot 18:48 UTC armed (no duplicate timer).
+- Result, including failure or restart: A7 — 1.92x the `.103` control raw (55.90), but **−14.1% per-GPU vs A5's Harbor384 124.97 while using 33% more rollout GPUs**; serving 552.15/GPU did NOT transfer as a real per-GPU gain.
+- Evidence: A7 final receipts [R].
+- Interpretation and limitations: the provisional candidate's supporting numbers are framed honestly — A3's 2.28x is a short-window/proxy observation (its staleness 11 is not retained for training), and A8's 3.73x raw is not a training gain (0 consumed batches, 90 nonagentic completions).
+- Decision and next action: final choice 19:30 UTC after A9/A10; real training launch 19:45 UTC; secretary records the chosen config and the launch verification, then closes the records per the campaign rules.
