@@ -1981,3 +1981,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R].
 - Interpretation and limitations: the rescore's outcome is not yet published in this readback; "Terminated by user" on the children follows the established eval-completion pattern.
 - Decision and next action: hourly checks watch for the rescore's scored outcome publication.
+
+### 2026-11-21 07:40 UTC - Hourly catch-up (06:40–07:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the exposure rescore completed (06:40 entry) with no new submissions since; no new exp3 evidence either.
+- Command or material configuration: as recorded; Iris job list re-checked at 07:33 UTC.
+- External inputs and artifact references: Iris job list [R]; landing records [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; no new `atlas-env-audit` landings — head unchanged at `681a339d9c…`).
+- Evidence: Iris job list [R]; landing records [R].
+- Interpretation and limitations: quiet window; the rescore's scored outcome remains pending.
+- Decision and next action: hourly checks continue.
