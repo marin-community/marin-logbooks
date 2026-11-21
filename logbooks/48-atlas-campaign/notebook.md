@@ -2209,3 +2209,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the inventory-admission outcomes.
+
+### 2026-11-21 00:40 UTC - Hourly catch-up (23:40–00:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `35aeaab28b…` (23:33:00 UTC) to head `18096fa2136a2210ed5560ba4a5b2c0c871c72a6`, landed 00:24:31 UTC (~6 landings 00:05–00:24 UTC).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 35aeaab2..18096fa2` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: swe-repair graders fail closed on verifier timeouts (`df835ca9c5…`) with fail-closed test imports hoisted (`e2fcec1928…`).
+- Result, including failure or restart: material changes in the window: QC inventory reads pinned to one source and selected load (`fff4bc3417…`); difficulty controllers kept alive through catalog network failures (`daa6da7892…`); one credential list used for controller launch and validation (`7d00ec039d…`); consumer advisories shown beside the Evidence link (`18096fa213…`, head).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings only.
+- Decision and next action: next hourly check watches for the difficulty-controller outcomes.
