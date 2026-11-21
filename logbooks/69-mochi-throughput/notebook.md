@@ -271,3 +271,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: source trace at nvl72.py:343 [R]; failing compiled receipt from the 18:45 entry [R].
 - Interpretation and limitations: the standing trace section above was updated in place with the verified quota-setting path; the compiled preflight must be refreshed after the fix lands before `.112` can launch.
 - Decision and next action: record the refreshed preflight and the `.112` launch when they occur; A7 still launches after the A5 window.
+
+### 2026-11-21 18:55 UTC - Quota-free fix confirmed; compiled assert passes; both parallel arms ready
+
+- Question or hypothesis and reason for trying it: close the `.112` correction arc by landing the nvl72 quota fix and re-running the compiled assert.
+- Published source revision: `30d6357c550d35617b49e9f0c630c3754d7c87f2` (loop-push; 8 adopted RL round tests including the `{}` one/three-rack regressions, lint/types pass). Verified in the worktree: nvl72.py:346 now carries the fixed `else {}` conditional.
+- Command or material configuration: `.112` compiled config asserts `{}` + full_batch + seq32 + staleness 3 + `inference_stats`, 48+12 = 60 GPU; `.111` EP16 seq64 normal 16/16 preflight refreshed at the same HEAD, 48+16 = 64 GPU.
+- External inputs and artifact references: worker readout over Rhizome (~18:5x UTC) [R]; receipts `sprint-noquotas-fixed-validation/82ccea7b0aeb3d1037a4742b282d3daa1ec397e2500d77b0dccf63c189ede10e/receipt.json` and `sprint-real-ep16-seqs64-final-validation/*` in /experiments/active/mochi-throughput/ [R].
+- Environment and hardware when relevant: parallel launch = A7 (64 GPU) + quota-free (60 GPU) = 124 ≤ 128, after the current A5/B windows/cancels (~17:45 UTC); B pause authorized. The UID observability fix (`3226044a8f…`, an ancestor) provides the actual consumed-group mix join.
+- Result, including failure or restart: fix confirmed; the old c76d9962 compiled quota-free receipt is INVALID and now clearly withdrawn.
+- Evidence: compiled-assert receipts [R]; worker readout [R].
+- Interpretation and limitations: the correction chain (18:40 premature → 18:45 withdrawn → 18:50 root cause → 18:55 confirmed) is complete; `.112` remains unlaunched until the scheduled parallel slot.
+- Decision and next action: launch `.111` + `.112` in parallel after the current windows; record measured windows as they land; report 19:30 UTC; real training 19:45 UTC.
