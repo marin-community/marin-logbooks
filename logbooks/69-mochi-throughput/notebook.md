@@ -379,3 +379,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker receipts (retained) [R]; readout [R].
 - Interpretation and limitations: best valid long-B is batch4096 at 751.05/GPU; kv90 (HBM 0.90 alone) does not beat it as a serving config. The context split reframes decode-rate interpretation — prompt tokens dominate token counts, and prefix-hit consoles overstate token-weighted reality; the prompt-length fix makes the next arm's context distribution exact. These facts feed marin#11957's binding-limits table.
 - Decision and next action: record A8's job ID and A7's measured window when they land; report 19:30 UTC milestone processing complete; real training 19:45 UTC.
+
+### 2026-11-21 20:05 UTC - A8 quota-free submitted; A7+A8 parallel pair complete (124 GPU)
+
+- Question or hypothesis and reason for trying it: launch the user-directed quota-off arm alongside A7 to isolate the consumed-route-quota effect on real-rollout admission.
+- Published source revision: `119ea9984b7e400e926ced96bc8a4a3f8df0a11b` (includes the context-gap fix, UID observability, and Daytona CPU observability).
+- Command or material configuration: `rounds/mochi-throughput-noquotas.yaml` (`.112`) — `consumed_route_quotas{}` compiled-asserted, full_batch kept, seq32/HBM 0.85, batch 8192, Harbor 256, workers 32, staleness 3, inflight128, native `inference_stats`; 48 trainer + 12 rollout = 60 GB200, PRODUCTION 08a, r136 excluded, graphs on.
+- External inputs and artifact references: worker readout over Rhizome (~20:0x UTC) [R]; receipt `sprint-noquotas-submission.log`; preflight `sprint-noquotas-context-validation/82ccea7b0aeb3d1037a4742b282d3daa1ec397e2500d77b0dccf63c189ede10e/receipt.json`.
+- Environment and hardware when relevant: job `/benfeuer/long-loop-mochi-throughput-noquotas-2026.11.21.112-coordinator-8aa614a8`; A7 GPU child `…-a6f6316732f0` RUNNING (submitted 17:47:13 UTC); A7+A8 = 124 GPU; all B arms measured/cancelled/paused.
+- Result, including failure or restart: A8 submitted with the compiled `{}` assert included at submission time (the 18:45-class mismatch cannot recur silently).
+- Evidence: submission receipt + preflight [R].
+- Interpretation and limitations: A8 is a single-knob delta versus A5 (Harbor 256 vs 384 differs too — second knob noted in the 18:30 entry); its numeric context observability makes the prompt/decode split exact for this arm, addressing the A3/A5 retention gap.
+- Decision and next action: record A7's and A8's measured windows when they land; report 19:30 UTC milestones complete; real training 19:45 UTC.
