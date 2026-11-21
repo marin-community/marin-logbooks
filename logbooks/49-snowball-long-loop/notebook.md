@@ -1897,3 +1897,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris outputs [R]; landing records [R].
 - Interpretation and limitations: the `.89` arms and `.7` evals are in progress; scored outcomes pending.
 - Decision and next action: hourly checks track the `.89` arms and the `.7` evals.
+
+### 2026-11-21 00:40 UTC - Hourly catch-up (23:40–00:40 UTC window): .89 arms A and B SUCCEEDED; arm C still running
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the `.89` standard-path slice: **arm A "Exp4 final SFT359" SUCCEEDED** (Iris at 00:33 UTC: state succeeded, task 0 completed at 2 h 02 m 19.35 s; exit=0, failures=0, preemptions=0); **arm B "Exp4 RL36" SUCCEEDED** (task 0 completed at 2 h 03 m 05.17 s; exit=0, failures=0, preemptions=0); **arm C "Exp3 final SFT387" still running** (task 0 at 2 h 39 m 56 s; exit=0, failures=0, preemptions=0).
+- Command or material configuration: verified via `uv run iris --cluster=marin job describe` on the three arms at 00:33 UTC.
+- External inputs and artifact references: Iris outputs [R]; landing records [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the standard path **held**: arms A and B completed their end-of-turn slice evaluations successfully (~2 h each) — the first successful `.87`/`.88`/`.89` slice executions. Arm C continues. Atlas branch advanced ~6 landings (QC inventory reads pinned to one source and selected load; difficulty controllers kept alive through catalog network failures; one credential list for controller launch and validation; consumer advisories shown beside the Evidence link; swe-repair graders fail closed on verifier timeouts with fail-closed test imports hoisted).
+- Evidence: Iris outputs [R]; landing records [R].
+- Interpretation and limitations: the arms' scored outcomes are expected in the run's own reports/EvalDash; not yet read.
+- Decision and next action: hourly checks track arm C and the three arms' scored outcomes.
