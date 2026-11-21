@@ -511,3 +511,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: consolidated table [R].
 - Interpretation and limitations: caveats restated by the worker — .103/A1/A2/A3 console estimates vs A5/A7/A8 native; A2 no causal staleness gain; A8 zero consumed batches/90 nonagentic completions (agentic share unavailable); serving fixed-prompt-pool 99.8% prefix is an upper bound, not a real-RL gain.
 - Decision and next action: worker will cc every readout/submission/measurement/config decision/training launch; secretary keeps syncing.
+
+### 2026-11-21 22:05 UTC - Provenance index received and synced: per-arm config|source|job|receipts for both lanes
+
+- Question or hypothesis and reason for trying it: align every arm's Source attribution in marin#11954 with the worker's authoritative provenance index.
+- Published source revision: machine-readable index `secretary-arm-provenance-20261121.json` in /experiments/active/mochi-throughput/.
+- Command or material configuration: no change — attribution sync only.
+- External inputs and artifact references: worker real-lane and serving-lane provenance tables over Rhizome [R].
+- Environment and hardware when relevant: A9/A10 pending native 25-min on the matched `858ab5d15b…` source (only HBM differs).
+- Result, including failure or restart: corrections applied in marin#11954 — A1 `.105` source is `476a95362f…` (was mislumped under `3a859712f5…`), A2 `.106` is `3bc5ae3fda…`; A4 Harbor1024 config-landed `e0bf304558…` but was actually submitted at `3f4a4c68ce…`; B seqs32 decode arm source is `e9a16e37ce…` (the `.104` real-RL job is a different arm); B KV85 `f91a4966b6…`; B batch16384 `476a95362f…`; B shared8 pair `d08bf17b3a…`; B seqs64 pair `3bc5ae3fda…`. Workload-shape caveat added: fixed-pool shared8 = 32 prompt bodies / 256 request identities, 6439/1024 (long) or 139/1024 (short); repeated cycles can overstate fresh-RL prefix reuse; serving runs 12 GPUs unless EP16 (16).
+- Evidence: worker provenance tables [R]; resolved SHAs verified via `git rev-parse` in the checkout.
+- Interpretation and limitations: per-arm sources were lumped in early sprint bookkeeping; the authoritative index now governs. A6/workers128 never launched; the `.104` round is not in the live arm table (provenance explained separately by the worker).
+- Decision and next action: the provenance index governs future Source cells; A9/A10 finals next; choice 19:30 / real train 19:45.
