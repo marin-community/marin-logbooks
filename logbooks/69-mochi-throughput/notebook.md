@@ -799,3 +799,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: first-25 analysis receipts [R].
 - Interpretation and limitations: the window differs from the selection-window 121.26/GPU — no new config or causal claim (fresh variable-length RL contexts vs the selection arm's window). Per-gate: buffer policy publication then batch_lookahead; max_in_flight 1024 not observed blocking; Harbor 320 blocked entries / 71 resumptions, cumulative resumed wait 63,915.374 s (mean 900.2165 s; ongoing/cancelled censored); no trajectory_tasks events (not a never-blocks proof).
 - Decision and next action: one 20:42 UTC training-only wake armed; record the completed-update metrics when they land; the Conclusion follows.
+
+### 2026-11-22 04:20 UTC - First-update watch through 20:42 UTC: still no completed update after ~40.5min; so-far rate 84.90/GPU
+
+- Question or hypothesis and reason for trying it: continue the first-update watch with bounded incremental capture.
+- Published source revision: `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: all-16 native counters 20:01:42.115–20:42:10.072 UTC (~40.5 min).
+- External inputs and artifact references: worker readout over Rhizome (~04:2x UTC) [R]; receipts `training-through-2042-analysis.json`, `training-first-update-watch-2042-receipt.json`, `training-update-and-gate-2042.jsonl`, `training-worker-gates-2042.jsonl`; incremental native index and merged inputs retained.
+- Environment and hardware when relevant: training unchanged at 64 GPU; all probes retired.
+- Result, including failure or restart: 3,297,880 generated tokens — 1358.33303 aggregate / **84.89581 tok/s/rollout-GPU**; 22.3872/64 running + 0.01436 waiting; KV 51.409% mean / 84.345% max; prefix 89.283%; 0 preemptions/resets; latest 10 min 66.54009/GPU, 17.5861 running, near-zero queue. Still NO Optimizer step completed / Training step completed / weights reason training_step; time/update unavailable after ~40.5 min generation.
+- Evidence: through-2042 analysis receipts [R].
+- Interpretation and limitations: the so-far rate declines as contexts lengthen (116.75 → 95.47 → 84.90 cumulative windows) — observational, consistent with the fresh variable-length workload; no causal claim. Per-gate: semantic batch_lookahead unchanged; max_in_flight 1024 not observed binding; Harbor 322 blocked entries / 109 resumptions, cumulative resumed wait 139,953.127 s (mean 1283.974 s; pending/cancelled censored); no trajectory_tasks events (not proof never-binds).
+- Decision and next action: one 20:55:30 UTC checkpoint; record the completed update when it lands; then the Conclusion.
