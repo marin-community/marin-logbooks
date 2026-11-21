@@ -1921,3 +1921,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris [R]; landing records [R].
 - Interpretation and limitations: progression-only status.
 - Decision and next action: hourly checks track arm C and the scored outcomes.
+
+### 2026-11-21 02:40 UTC - Hourly catch-up (01:40–02:40 UTC window): .89 arm C SUCCEEDED — all three arms complete
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the `.89` slice: **arm C ("Exp3 final SFT387") SUCCEEDED** (Iris at 02:33 UTC: state succeeded, task 0 completed at 4 h 04 m 19.69 s; exit=0, failures=0, preemptions=0) — **all three arms now complete** (arm A 2 h 02 m, arm B 2 h 03 m, arm C 4 h 04 m).
+- Command or material configuration: Iris describe at 02:33 UTC [R].
+- External inputs and artifact references: Iris output [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the standard path held through all three arms — the first fully successful EOT-slice execution after `.87`/`.88` failed. The arms' scored outcomes are expected in the run's own reports/EvalDash.
+- Evidence: Iris describe [R].
+- Interpretation and limitations: scored outcomes not yet read; the ~2 h difference between arms A/B and arm C reflects arm C's later start (2 h 39 m at 00:33 vs A/B's 2 h 02 m) and its longer total duration.
+- Decision and next action: hourly checks track the three arms' scored outcomes.
