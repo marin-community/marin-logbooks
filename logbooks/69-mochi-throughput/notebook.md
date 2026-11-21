@@ -475,3 +475,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final analysis receipts [R].
 - Interpretation and limitations: the raw 3.73x over the `.103` control (55.90) is the top real-rollout rate so far, but the mix caveat dominates — 90 completed groups ALL nonagentic, 0 consumed batches (one fully_masked), so the consumed-agentic share is UNAVAILABLE (not 0%); do not label a training gain. Timing coverage 88/1867 request IDs (HTTP join bug); only 9 active valid context samples (10.6k–14.2k tokens from 69–72-token prompts) — NOT the real agentic context population.
 - Decision and next action: A10 (HBM 0.85, same source as A9) will isolate the HBM knob; record A9/A10 finals; the 19:30 choice proceeds with the mix caveat attached to A8's number.
+
+### 2026-11-21 21:20 UTC - A10 HBM .85 control submitted; A9-vs-A10 pair isolates only the HBM knob
+
+- Question or hypothesis and reason for trying it: complete the HBM-isolation pair on the real-rollout lane with a shared HTTP identity fix.
+- Published source revision: A10 at `858ab5d15bf3118ae0358ff79569ec6b33320a68` — SAME source as A9; recipe `rounds/mochi-throughput-ep16-httpid-control.yaml` (`.114`).
+- Command or material configuration: A9 (HBM 0.90) vs A10 (HBM 0.85); everything else fixed — EP16/seq64/batch8192/Harbor384/staleness3/workers32/inflight128; 64 GB200 each.
+- External inputs and artifact references: worker readout over Rhizome (~21:2x UTC) [R]; receipts `sprint-a10-submission.log`, `sprint-a10-httpid-validation/b0879291…/receipt.json`.
+- Environment and hardware when relevant: A9+A10 = 128 GPU after A8's cancel 18:39:45 UTC; next verified one-shot 18:48 UTC for A9's startup 15-min gate/counters.
+- Result, including failure or restart: A10 submitted; A9 in flight.
+- Evidence: submission + preflight receipts [R].
+- Interpretation and limitations: the pair shares the request-ID fix, so any A9-vs-A10 difference attributes to HBM alone; the A8 mix caveat (0 consumed batches, all-nonagentic completions) still applies to workload-mix-sensitive readings.
+- Decision and next action: record both 25-min finals; training choice 19:30 UTC, real train 19:45 UTC unchanged.
