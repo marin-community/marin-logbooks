@@ -295,3 +295,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: cancellation receipt [R].
 - Interpretation and limitations: pure bookkeeping correction; no measurement impact.
 - Decision and next action: job index updated in marin#11954; continue waiting for the A5/B measured windows.
+
+### 2026-11-21 19:05 UTC - Daytona accounting limitation; 512-trial upper limit accepted; lifecycle telemetry landing for A7/A8
+
+- Question or hypothesis and reason for trying it: quantify actual sandbox CPU usage attributable to the sprint's A arms, and bound future usage.
+- Published source revision: quota-free fix `30d6357c550d35617b49e9f0c630c3754d7c87f2` compiled `{}` verified; lifecycle telemetry landing via loop-push (8 focused SDK lifecycle/creation tests pass; full machine-file tests running).
+- Command or material configuration: SDK acquires sandbox name + `provider.cpu` and confirms delete/not-found release, job-attributed via native telemetry context.
+- External inputs and artifact references: worker readout over Rhizome (~19:0x UTC) [R]; worker REPORT now includes a peak column.
+- Environment and hardware when relevant: A7 (`.111`, Harbor 384) ceiling 1536 vCPU; A8 (`.112`, Harbor 256) ceiling 1024 vCPU; 512-trial upper limit ~2048 vCPU at 4 CPU each.
+- Result, including failure or restart: historical actual vCPU peaks for `.103`/A1/A2/A3/current A5 are UNAVAILABLE (retained org inventory is unattributed); configured ceilings are not measured peaks; all pure-B arms use 0 Daytona vCPU.
+- Evidence: worker readout and REPORT peak column [R].
+- Interpretation and limitations: per-GPU throughput results are unaffected, but any CPU-side cost claims for past arms must cite ceilings, not peaks; future A7/A8 arms will carry actual lifecycle telemetry.
+- Decision and next action: 512-trial upper limit recorded as a user ruling (no exceedance without approval); record actual peaks from A7/A8 telemetry when available.
