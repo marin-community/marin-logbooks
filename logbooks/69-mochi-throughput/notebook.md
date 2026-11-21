@@ -679,3 +679,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker submission notice [R]; the preflight/compiled-assertion chain from the prior entries.
 - Interpretation and limitations: measured A10 rates are first-25min observations, not an update-wall-clock promise; the run must be verified past its first update before any training-throughput claim.
 - Decision and next action: verify the run past its first update, then write the Conclusion (selected approach, rejected alternatives, reproduction, remaining uncertainty) and close marin#11954 and this logbook per the campaign rules.
+
+### 2026-11-22 01:15 UTC - Training GPU child admitted; post-selection FP8/offload probe direction (A11/A12) recorded
+
+- Question or hypothesis and reason for trying it: track the real training's startup and the new post-selection probe request without disturbing the training run.
+- Published source revision: training on `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`; A11/A12 probes to be prepared on the requested EP12 baseline.
+- Command or material configuration: A11 (FP8) and A12 (native-offload) — fresh probes; ONE probe alongside training (124 GPU total).
+- External inputs and artifact references: worker readout over Rhizome (~01:1x UTC) [R]; receipt `training-submission-receipt.json`.
+- Environment and hardware when relevant: training GPU child `…-train-2026.11.21.115-a25d2a2abc62` admitted; startup one-shot 20:00 UTC loaded; no polling.
+- Result, including failure or restart: training running; probes in preparation (not launched).
+- Evidence: submission receipt [R]; worker readout [R].
+- Interpretation and limitations: the historical "20% prefix" diagnosis is superseded (latest EP16 prefix 90.38%, 0 preemptions). The FP8/offload probes must never alter or cancel the real training.
+- Decision and next action: record A11/A12 landings/launches when they occur; verify training past its first update; then close the records.
