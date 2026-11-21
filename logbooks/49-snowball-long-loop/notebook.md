@@ -1957,3 +1957,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris [R]; `git ls-remote` [R].
 - Interpretation and limitations: progression-only status; scored outcomes pending in the run's reports.
 - Decision and next action: hourly checks track the scored outcomes.
+
+### 2026-11-21 05:40 UTC - Hourly catch-up (04:40–05:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the `.89` slice: all three arms succeeded (re-verified at 05:33 UTC); **no mochi jobs currently running** (Iris job list at 05:33 UTC: no active jobs under /benfeuer/mochi-exp4 — the slice arms completed and no new submissions yet). Scored outcomes expected in the run's reports/EvalDash.
+- Command or material configuration: Iris job list at 05:33 UTC [R].
+- External inputs and artifact references: Iris output [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; no new `atlas-env-audit` landings — head unchanged at `681a339d9c…`).
+- Evidence: Iris job list [R]; `git ls-remote` [R].
+- Interpretation and limitations: progression-only status; scored outcomes pending in the run's reports.
+- Decision and next action: hourly checks track the scored outcomes.
