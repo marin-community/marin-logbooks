@@ -307,3 +307,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker readout and REPORT peak column [R].
 - Interpretation and limitations: per-GPU throughput results are unaffected, but any CPU-side cost claims for past arms must cite ceilings, not peaks; future A7/A8 arms will carry actual lifecycle telemetry.
 - Decision and next action: 512-trial upper limit recorded as a user ruling (no exceedance without approval); record actual peaks from A7/A8 telemetry when available.
+
+### 2026-11-21 19:15 UTC - Partial native table 17:38 UTC: first A5 native window (134.13/GPU); B trio provisional; Daytona ownership metric landed
+
+- Question or hypothesis and reason for trying it: capture the first native-counter windows from the running A5 and B trio before their final receipts.
+- Published source revision: A5 at `c6515fbdc7bc2b51f0f43649dac08ee54fa3397d`; B pair `3f4a4c68ce4fad43d1a639d1d390d1ae3e3649b1`; kv90 `530ab73b76a28a3e15a741d8f946a0dfaeea8818`; Daytona ownership metric `8b1e1686a985691f9454ed2c01c757c79f3ec736`.
+- Command or material configuration: native counter deltas with no resets; A5 window from 17:19:36 UTC (first 17.6 min; 25-min deadline 17:44:36 UTC).
+- External inputs and artifact references: worker readout over Rhizome (~19:1x UTC) [R]; `sprint-live-analysis-1738.json` in /experiments/active/mochi-throughput/ [R].
+- Environment and hardware when relevant: A5 60 GB200 (12 rollout counted); B trio 16 GB200 each; all current arms kept (108 GPU).
+- Result, including failure or restart (ALL PROVISIONAL): A5/Harbor384 134.13 tok/s/GPU (1609.60 agg), 31.49/32 running + 12.67 waiting, KV 59.52%, request 4.21, TTFT 57.33 s — the first native A-arm window; the client is already queued in A5 as well. B batch4096 751.43/GPU (12,022.93 agg, ~23 min post-warmup, TTFT 1.52 s); B EP16/seqs128 484.57/GPU (7,753.19 agg, 68.60/128 running, KV 95.06%, TTFT 113.44 s); B kv90 844.22/GPU (13,507.55 agg, early, TTFT 1.66 s).
+- Evidence: sprint-live-analysis-1738.json [R]; worker readout [R].
+- Interpretation and limitations: all provisional — final receipts pending. A5's 134.13/GPU (first 17.6 min) already exceeds A3's first-25min 127.22 console estimate, but the windows differ in method (native vs console) and age; the matched-window comparison waits for the 25-min receipt. The seq128 arm's KV 95.06% and TTFT 113.44 s indicate heavy cache pressure at long windows.
+- Decision and next action: update rows to final when receipts land; Daytona ownership metric recorded (deletion events = delete_requested, not freed; provider-inventory join will yield observed allocated-vCPU peak); both next-A preflights refreshing on `8b1e1686a9`.
