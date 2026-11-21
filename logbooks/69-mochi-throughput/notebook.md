@@ -367,3 +367,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: issue exists (OPEN) — verified via the GitHub API [R].
 - Interpretation and limitations: the design issue consumes the binding-behavior evidence this sprint produced (A5 Harbor saturation, batch4096 cache fit, staleness lease semantics, quota-off root cause); this notebook's code-trace section feeds it.
 - Decision and next action: keep the per-arm "which limit bound" facts flowing to #11957 as arms land.
+
+### 2026-11-21 19:55 UTC - B trio finals; engine-side context split measured; context-gap fix landed
+
+- Question or hypothesis and reason for trying it: finalize the B EP16 trio and measure the prompt/decode context split on the same engine.
+- Published source revision: context-gap fix `119ea9984b7e400e926ced96bc8a4a3f8df0a11b` (loop-push; existing timing events get numeric prompt/context tokens from pinned vLLM `state.prompt_len`, not prompt text; public-evidence unit test/lint pass); B pair `3f4a4c68ce…`; kv90 `530ab73b76…`.
+- Command or material configuration: final 1500 s windows on seq128 and kv90; both cancelled-own 17:54:58–59 UTC; B paused thereafter.
+- External inputs and artifact references: worker readout over Rhizome (~19:5x UTC) [R]; retained receipts (worker retains both finals' receipts).
+- Environment and hardware when relevant: A7 running (64 GPU); quota-free A8 validating/submitting on the new source; parallel A7+A8 = 124 GPU. No 1024 or workers128 launch; 12:13 Harbor384 stands.
+- Result, including failure or restart: B EP16/seqs128 FINAL 443.95/GPU (aggregate 7103.2 derived ×16), KV 94.94%, TTFT 121.13 s — KV-heavy, the seq128 serving bound collapses under cache pressure. B kv90 FINAL 831.73/GPU (13,307.68 agg), KV 52.96%, TTFT 2.925 s — below batch4096's 751.05. All zero errors. Context split: A5 native 25-min 1,663.40 prompt vs 124.97 decode tok/s/GPU; 66 KV preemptions; token-weighted prefix hit 19.575% (console 33% rank mean overstated); prefill mean 1.727 s vs decode 86.739 s (n=3551); 93.0% of tokens are prompt, NOT 93% of GPU time. A3 raw first-20: est. 1,218.73 prompt vs 134.88 decode; 8 retained driver request-rate samples median 3.40/mean 3.54 tok/s (dedup-biased); A3 running-context distribution and exact preemptions not retained (callback off).
+- Evidence: worker receipts (retained) [R]; readout [R].
+- Interpretation and limitations: best valid long-B is batch4096 at 751.05/GPU; kv90 (HBM 0.90 alone) does not beat it as a serving config. The context split reframes decode-rate interpretation — prompt tokens dominate token counts, and prefix-hit consoles overstate token-weighted reality; the prompt-length fix makes the next arm's context distribution exact. These facts feed marin#11957's binding-limits table.
+- Decision and next action: record A8's job ID and A7's measured window when they land; report 19:30 UTC milestone processing complete; real training 19:45 UTC.
