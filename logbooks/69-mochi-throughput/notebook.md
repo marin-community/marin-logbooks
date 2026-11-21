@@ -883,3 +883,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: through-2149 analysis receipts [R].
 - Interpretation and limitations: the cumulative rate continues to decline with context length/occupancy (72.77 → 70.15; latest-10min 50.77 at 7.04 running). Harbor 368 blocked entries / 339 resumptions, cumulative resumed wait 961,280.061 s (mean 2835.634 s; pending/cancelled censored); no trajectory_tasks events (not proof never-blocks).
 - Decision and next action: one 22:03 UTC checkpoint; record the completed update when it lands; then the Conclusion.
+
+### 2026-11-22 06:45 UTC - Watch through 22:03:15 UTC: no completed update after ~121.5min; Harbor 384 stays per user direction
+
+- Question or hypothesis and reason for trying it: continue the first-update watch with bounded incremental capture.
+- Published source revision: `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: all-16 native counters fresh through 22:03:13.960 UTC (~121.5 min).
+- External inputs and artifact references: worker readout over Rhizome (~06:4x UTC) [R]; receipts `training-through-2203-analysis.json`, `training-first-update-watch-2203-receipt.json`, `training-update-and-gate-2203.jsonl`, `training-worker-gates-2203.jsonl` (bounded raw 869.234 s; all prior inputs retained/indexed).
+- Environment and hardware when relevant: training unchanged at 64 GPU; all probes retired.
+- Result, including failure or restart: 7,945,289 generated tokens — 1089.62360 aggregate / **68.10148 tok/s/rollout-GPU**; 14.5749/64 running + 0.00526 waiting; KV 46.551% mean / 94.221% max; prefix 91.016%; 0 preemptions/resets; latest 10 min 50.41506/GPU, 6.4500 running, near-zero queue. Still NO completed optimizer/training-step/training-weight-update; time/update unavailable after ~121.5 min generation.
+- Evidence: through-2203 analysis receipts [R].
+- Interpretation and limitations: new buffer transition 21:50:29 (None/leased 41 → batch_lookahead/leased 42); the last recorded blocker remains semantic batch_lookahead; max_in_flight 1024 not observed blocking; Harbor 370 blocked entries / 357 resumptions, cumulative resumed wait 1,042,087.705 s (mean 2919.013 s; pending/cancelled censored); no trajectory_tasks events (not proof never-blocks). User 16:36 EST direction: Harbor 384 stays, no restart/no 512 — already honored.
+- Decision and next action: one 22:16:30 UTC checkpoint; record the completed update when it lands; then the Conclusion.
