@@ -595,3 +595,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: matched-window analyses [R]; preflight receipt [R].
 - Interpretation and limitations: A10 leads early by 18.7% per-GPU, but the natural real-rollout workload differs between arms — not a precise causal HBM gain; the 25-min finals decide. The training draft is fully validated pending the 19:30 engine choice.
 - Decision and next action: record both 25-min finals; the 19:30 choice finalizes the engine geometry and the quota decision; real `--run` 19:45 UTC.
+
+### 2026-11-21 23:30 UTC - FINAL: A9 108.73/GPU — no proven HBM 0.90 gain over A7's 0.85; context tail quantified
+
+- Question or hypothesis and reason for trying it: does HBM 0.90 beat HBM 0.85 on the identical real-rollout configuration (A9 vs A7, and the matched A10 control)?
+- Published source revision: `858ab5d15bf3118ae0358ff79569ec6b33320a68`; recipe `rounds/mochi-throughput-ep16-seqs64-kv90.yaml`.
+- Command or material configuration: A9 final 25-min native window (all 16 ranks, 0 resets); cancelled 19:14:24 UTC.
+- External inputs and artifact references: worker readout over Rhizome (~23:3x UTC) [R]; receipts `a9-final25-analysis.json`, `a9-context-final25-analysis.json`, `a9-all-engine-final25-1913.json`, `a9-native-final25-1913.jsonl`, `a9-context-final25-1913.jsonl`, `sprint-a9-measured-cancellation.log`.
+- Environment and hardware when relevant: only A10 runs now (64 GPU, Harbor 384); all old A5/A7/A8/B arms measured and released; workers128 never launched.
+- Result, including failure or restart: 1739.60268 aggregate / **108.72517 tok/s/rollout-GPU**; 22.9463/64 running + 0.15436 waiting; KV 33.5594% mean / 62.036% max; request 4.12194; TTFT 4.60466 s; prompt 2424.379/GPU; prefix 89.94489%; 0 preemptions. Last 10 min: 93.38118/GPU, 15.397/64 running, 0 waiting, KV 35.627%, request 6.0437, TTFT 0.9928 s.
+- Evidence: final 25-min analysis receipts [R].
+- Interpretation and limitations: **HBM 0.90 has no proven real gain over A7's 0.85 (108.73 vs 107.38)** — the matched-source A10 control's full-25min window ends 19:22:58.540 UTC and decides the HBM question properly (its early 140.27/GPU is not final). A9's final context population: 99.935% coverage (4617/4620 IDs, 4393 ended, 224 active-decoder observations); active context median 9146.5 / p90 31251 / p95 37843 / max 48868; prompt median 7113 / p95 36178 / max 48489 — the context tail grows materially over the rollout versus the early-window snapshot (60 s refresh, not the instantaneous population).
+- Decision and next action: A10's final at 19:22:58.540 UTC completes the HBM isolation; the 19:30 choice and 19:45 real 32-step training launch follow.
