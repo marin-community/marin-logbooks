@@ -895,3 +895,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: through-2203 analysis receipts [R].
 - Interpretation and limitations: new buffer transition 21:50:29 (None/leased 41 → batch_lookahead/leased 42); the last recorded blocker remains semantic batch_lookahead; max_in_flight 1024 not observed blocking; Harbor 370 blocked entries / 357 resumptions, cumulative resumed wait 1,042,087.705 s (mean 2919.013 s; pending/cancelled censored); no trajectory_tasks events (not proof never-blocks). User 16:36 EST direction: Harbor 384 stays, no restart/no 512 — already honored.
 - Decision and next action: one 22:16:30 UTC checkpoint; record the completed update when it lands; then the Conclusion.
+
+### 2026-11-22 07:05 UTC - First-update watch through 22:16:45 UTC: no completed update after ~135min; so-far 65.42/GPU
+
+- Question or hypothesis and reason for trying it: continue the first-update watch with bounded incremental capture.
+- Published source revision: `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: all-16 native counters fresh through 22:16:40.642 UTC (~135 min).
+- External inputs and artifact references: worker readout over Rhizome (~07:0x UTC) [R]; receipts `training-through-2216-analysis.json`, `training-first-update-watch-2216-receipt.json`, `training-update-and-gate-2216.jsonl`, `training-worker-gates-2216.jsonl` (bounded raw 869.953 s; all prior inputs retained/indexed).
+- Environment and hardware when relevant: training unchanged at 64 GPU / Harbor 384; all probes retired.
+- Result, including failure or restart: 8,476,462 generated tokens — 1046.67612 aggregate / **65.41726 tok/s/rollout-GPU**; 13.6137/64 running + 0.00474 waiting; KV 44.267% mean / 94.221% max; prefix 91.310%; 0 preemptions/resets; latest 10 min 40.92413/GPU, 4.7378 running, 0 queue. Still NO completed optimizer/training-step/training-weight-update; time/update unavailable after ~135 min generation.
+- Evidence: through-2216 analysis receipts [R].
+- Interpretation and limitations: Harbor 370 blocked entries / 370 recorded resumptions, total resumed wait 1,105,297.234 s (mean 2987.290 s), last resumption 22:05:40.849 UTC — equal counts are not per-trajectory-matched; historical waits do not prove current Harbor saturation. Last buffer blocker batch_lookahead/leased 42; no pure max_in_flight 1024 or trajectory_tasks blocker observed.
+- Decision and next action: one 22:30 UTC checkpoint; record the completed update when it lands; then the Conclusion.
