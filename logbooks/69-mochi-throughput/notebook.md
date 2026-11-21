@@ -451,3 +451,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: A7 final analysis receipt [R]; A9 submission receipt [R].
 - Interpretation and limitations: **per-GPU 107.38 < A5's 124.97 despite +14.6% aggregate — no EP real-rollout gain established.** The EP16 serving-bound gains (552–831 tok/s/GPU on the fixed-prompt-pool decode lane) do not transfer to real RL rollouts. Confounds already in the record (staleness 3-vs-11 across A5/A7; age alignment) do not rescue a gain. A9 (HBM 0.90) and A10 (HBM 0.85, same source) will isolate the HBM knob next.
 - Decision and next action: record A8's and A9's windows; the 19:30 candidate/gain choice proceeds on A5-class configs unless A9/A10 overturn; real training launch 19:45 UTC.
+
+### 2026-11-21 21:00 UTC - A9 GPU child admitted; A8 deadline 18:39:00.943 UTC; agentic share pending a consumed batch
+
+- Question or hypothesis and reason for trying it: provenance refresh for the running parallel pair and the agentic-share capture plan.
+- Published source revision: unchanged (A9 at `858ab5d15b…` with the header fix; A8 at `119ea9984b7…`).
+- Command or material configuration: A9 GPU child `/benfeuer/long-loop-mochi-throughput-ep16-seqs64-kv90-2026.11.21.113-coordinator-63f22c5c/long-loop-mochi-throughput-ep16-seqs64-kv90-2026.11.21.113-ab3bbe76a0cb` (submitted 18:33:31 UTC).
+- External inputs and artifact references: worker readout over Rhizome (~21:0x UTC) [R].
+- Environment and hardware when relevant: A8's exact 25-min deadline 18:39:00.943 UTC; A9+A8 = 124 GPU; B paused.
+- Result, including failure or restart: at 18:33 UTC, 83 task groups completed but 0 consumed (one fully_masked) — no consumed-batch agentic share yet; it will be captured at A8's final. A7's request/context population is incomplete on the old case-sensitive HTTP source; A9/A10 carry the fixed header join.
+- Evidence: worker live table + group counters [R].
+- Interpretation and limitations: no unmeasured-throughput claims from A7's context fields; the consumed-batch agentic share remains pending until a batch is consumed.
+- Decision and next action: capture A8's final (deadline 18:39:00.943 UTC) and the agentic-share figure; training choice 19:30 UTC / launch 19:45 UTC unchanged.
