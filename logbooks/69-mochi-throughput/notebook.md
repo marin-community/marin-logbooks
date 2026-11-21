@@ -763,3 +763,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: live-gate receipt [R]; runtime gate event [R].
 - Interpretation and limitations: the campaign's selected configuration is training live with verified gates. The 25-min readout is observational, not a cancel deadline; Hermes tool-decode errors occur while generation continues (no engine-fatal claim).
 - Decision and next action: capture the first-25min training readout (ends 20:26:42.198 UTC) and the first optimizer update; A11's window, then A13; the Conclusion follows once the run is verified past its first update.
+
+### 2026-11-22 03:20 UTC - Sprint end per authoritative 15:08 EST direction: A11 cancelled, A12/A13 retired; only REAL training continues
+
+- Question or hypothesis and reason for trying it: apply the user's authoritative sprint-end direction.
+- Published source revision: unchanged — training `.115` at `5957d8bbcf…`; retired recipes `.116`–`.118` remain landed history.
+- Command or material configuration: A11 cancelled with iris-cancel-own before measurement; A13 (`.118`, landed/validated) and A12 (`.117`, prepared/validated) retired unlaunched; no further probes.
+- External inputs and artifact references: worker readout over Rhizome (~03:2x UTC) [R]; receipt `sprint-a11-sprint-ended-cancellation.log`.
+- Environment and hardware when relevant: only the REAL training `.115` (64 GPU, root 49544525) remains; the 20:12:27 self-wake is replaced with training-only instructions (no timer overlap).
+- Result, including failure or restart: sprint probing ended; the real training continues untouched.
+- Evidence: cancellation receipt [R]; worker readout [R].
+- Interpretation and limitations: A11 never produced a measurement window (furthest state: NCCL rendezvous 19:59:35); A12's offload layout question and A13's Harbor-512 occupancy question remain open questions for any future campaign, retired unlaunched here.
+- Decision and next action: watch the first completed policy update; report generated tok/s/rollout-GPU, running/engine, update wall time, blocked-gate-cause evidence; then write the Conclusion and close marin#11954 and this logbook.
