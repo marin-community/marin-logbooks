@@ -631,3 +631,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: A10 final receipts [R].
 - Interpretation and limitations: same-source HBM 0.85 is 11.53% above the 0.90 observationally (single-window traffic varies); A8's quota-off 208.6/GPU is not eligible like-for-like (0 consumed batches, mix unknown, 16/16 routes kept in current semantics); A3/A5's older staleness-11 is not retained for training. The selection preserves staleness 3 and 50/50 routes.
 - Decision and next action: REAL `--run` of `.115` at 19:45 UTC (14:45 EST) on the authorized schedule; the secretary verifies the launch past its first update before closing the campaign records.
+
+### 2026-11-22 00:10 UTC - FINAL TRAINING CONFIG LANDED (`5957d8bb…`) and preflight-passed; 19:45 `--run` armed
+
+- Question or hypothesis and reason for trying it: the selected A10 geometry is now a landed, compiled-asserted training recipe ready for the real launch.
+- Published source revision: **`5957d8bbcf0cd945243cdd544eb4433f7e36ac88`** (loop-push; verified in the worktree — `rounds/mochi-throughput-train.yaml` carries version 2026.11.21.115).
+- Command or material configuration: REAL 32 steps / 10 h budget; 64 GB200 (48 trainer + 16 rollout); TP1/DP16/EP16; seq64 / HBM 0.85 / batch 8192; PIECEWISE graphs; r136 excluded; PRODUCTION 08a; workers 32 (CPU 2), Harbor 384 ≤ 512, staleness 3 / quotas 16+16; pure caps (max_inflight 1024 effective 128, task 1024, executor 256, verifier 64, GenRM 64, progress 43200); teacher disabled (legacy Math-8/GenRM paths unused by the canonical curriculum).
+- External inputs and artifact references: worker readout over Rhizome (~00:0x UTC) [R]; exact preflight `sprint-final-training-selected-validation/c4e0e6f33f8e30c03e9375f737a6ecc74bef0e7a227eff37cc68be49cc230f66/receipt.json`; proofs `selected-training-compiled-assertions.json`, `selected-training-landing.log`, `sprint-launch-wake.json`.
+- Environment and hardware when relevant: all probes cancelled — lane at 0 GPU; the launch one-shot is armed for 19:45 UTC (single; guard `sprint-training-submission.log`, round runner `--run` exactly once).
+- Result, including failure or restart: EXACT final native post-rebase preflight PASSED; compiled assertions prove 64 GPU / 32 steps / gates / default staleness 3 / quotas / PIECEWISE graphs on the exact source; the prior cf7 engine-12 preflight is superseded.
+- Evidence: preflight + compiled-assertion receipts [R]; worktree verification [R].
+- Interpretation and limitations: the recipe is ready; the REAL run is not a 25-min cancel probe — measured A10 rates are first-25min observations, not an update-wall-clock promise.
+- Decision and next action: capture the training root job ID at 19:45 UTC, verify the run past its first update, then write the Conclusion and close marin#11954 and this logbook per the campaign rules.
