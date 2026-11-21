@@ -1909,3 +1909,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris outputs [R]; landing records [R].
 - Interpretation and limitations: the arms' scored outcomes are expected in the run's own reports/EvalDash; not yet read.
 - Decision and next action: hourly checks track arm C and the three arms' scored outcomes.
+
+### 2026-11-21 01:40 UTC - Hourly catch-up (00:40–01:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: unchanged exp4 identities — the `.89` slice: arm C ("Exp3 final SFT387") still **running at 3 h 39 m 55 s** (exit=0, failures=0, preemptions=0; Iris at 01:33 UTC); arms A/B succeeded (00:40 entry).
+- Command or material configuration: Iris describe at 01:33 UTC [R].
+- External inputs and artifact references: Iris output [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: exp3 and atlas-env-audit are both quiet this window (no new exp3 evidence; ~6 new `atlas-env-audit` landings: Atlas docs synced to preview revision 36; nanosecond timestamps preserved in LOCAL uploads; retained confidence checksums bounded by curriculum load; catalog batching tested against the response byte limit; catalog response sizes bounded within a frozen declaration load; the shared DATA inventory gate used for difficulty attempts).
+- Evidence: Iris [R]; landing records [R].
+- Interpretation and limitations: progression-only status.
+- Decision and next action: hourly checks track arm C and the scored outcomes.
