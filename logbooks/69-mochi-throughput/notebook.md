@@ -943,3 +943,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker readout [R]; receipts [R].
 - Interpretation and limitations: the record keeps both instructions with their timestamps; the fresh version's landing/preflight and submission will be recorded when they occur.
 - Decision and next action: record the fresh version's landing/submission and the `.119` cancellation; the Conclusion then covers the full relaunch chain.
+
+### 2026-11-22 08:15 UTC - `.120` correction landed (preflight PASS); `.119` child identified; `.115` final query: no completed update
+
+- Question or hypothesis and reason for trying it: complete the correction chain with the landed `.120` and close out `.115`'s update question.
+- Published source revision: `.120` at `6a118946e605a3eba586b0d256139a6690a859cc` (loop-push, native preflight PASS — default verifier scoring on timeout, no timeout/length rejection; 30-min timeouts + batch-priority retained); `.119` child `…-train-30m-2026.11.21.119-a9e0b4201eb3` at `ccf0bdc356…`.
+- Command or material configuration: `.120` = the corrected training recipe; exact submission in preparation, then `.119` cancel-own.
+- External inputs and artifact references: worker readout over Rhizome (~08:1x UTC) [R]; receipts `relaunch-30m-submission-receipt.json`, `relaunch-old115-final-completion.jsonl`.
+- Environment and hardware when relevant: `.119` (64 GPU) preserved until the `.120` submission; no probes.
+- Result, including failure or restart: `.120` landed/validated; `.115`'s final bounded completion query through its 22:50:14 cancellation found NO completed optimizer/train-step/training-weight markers (only buffer transitions).
+- Evidence: landing/preflight receipts [R]; `.115` final query receipt [R].
+- Interpretation and limitations: `.115` never completed an update in ~2.4 h (its cancellation was a planned replacement, not a failure); the `.119` run is a temporary pre-correction state.
+- Decision and next action: record the exact `.120` submission and the `.119` cancellation; the Conclusion covers the full chain (`.115` → `.119` → `.120`).
