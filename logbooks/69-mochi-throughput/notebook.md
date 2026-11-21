@@ -319,3 +319,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: sprint-live-analysis-1738.json [R]; worker readout [R].
 - Interpretation and limitations: all provisional — final receipts pending. A5's 134.13/GPU (first 17.6 min) already exceeds A3's first-25min 127.22 console estimate, but the windows differ in method (native vs console) and age; the matched-window comparison waits for the 25-min receipt. The seq128 arm's KV 95.06% and TTFT 113.44 s indicate heavy cache pressure at long windows.
 - Decision and next action: update rows to final when receipts land; Daytona ownership metric recorded (deletion events = delete_requested, not freed; provider-inventory join will yield observed allocated-vCPU peak); both next-A preflights refreshing on `8b1e1686a9`.
+
+### 2026-11-21 19:20 UTC - FINAL: B batch4096 751.05 tok/s/GPU (+36.02% over batch8192 baseline); A7/A8 preflights passed
+
+- Question or hypothesis and reason for trying it: does doubling batched tokens (8192→4096 per-rank path → 4096) lift the EP16/seqs64/shared8 decode rate? Final window answers it.
+- Published source revision: `3f4a4c68ce4fad43d1a639d1d390d1ae3e3649b1`; job `/benfeuer/mochi-throughput-decode-ep16-seqs64-batch4096-shared8-20261121a`.
+- Command or material configuration: valid 1500.818 s window, zero failed requests; 18,553 overlapping requests valid; drain 123.564 s.
+- External inputs and artifact references: worker readout over Rhizome (~19:2x UTC) [R]; receipt `pure-ep16-batch4096-result.json`; S3 final artifact `decode/ep16-seqs64-kv85-batch4096-shared8-20261121a/synthetic-context64-output1024-shared8-seed17-c1024.json`.
+- Environment and hardware when relevant: 16 GB200.
+- Result, including failure or restart: 12,016.76 aggregate / **751.0475 tok/s/GPU**; request arithmetic mean 12.2081 tok/s; 61.5895/64 running; KV 52.4058% mean / 65.5849% max; TTFT mean 3.1973 s; prefix hit 99.7617%. Versus the EP16 seq64 batch8192 baseline (552.1466/GPU): **+36.02%**; request 9.2675→12.2081; KV 85.43→52.41; prefix 48.86→99.76.
+- Evidence: final result receipt [R].
+- Interpretation and limitations: the gain comes from cache fit on a fixed 32-shared-prompt-pool — NOT yet a real-RL gain; real-rollout validation must follow. Best valid long-B is now 751.05; kv90's 844.22/GPU remains provisional.
+- Decision and next action: sequencing per the worker — A7 (`.111`) runs its specified batch 8192 first; the best one-knob B candidate follows in real rollouts. Both A7/A8 preflights passed on `8b1e1686a985691f9454ed2c01c757c79f3ec736`; A5's 25-min window completes 17:44:36 UTC.
