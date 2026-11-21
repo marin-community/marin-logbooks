@@ -715,3 +715,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: bounded startup receipts [R].
 - Interpretation and limitations: startup-only state — no throughput claim for either job. A12's 160 GiB/GPU offload draft is logical-only (2.671875 GiB/64k prefix excludes physical padding/short conv; the average 32 Harbor conversations/engine is not worst-case coverage) — actual layout/session skew must be validated before launch.
 - Decision and next action: bounded qualification/marker checkpoint 20:12:27 UTC; then A11's actual rollout + 25-min/cancel; A12 launches only after layout validation and A11's release.
+
+### 2026-11-22 02:20 UTC - New direction: A13 `.118` planned (Harbor 512 is the real knob); A12 deprioritized
+
+- Question or hypothesis and reason for trying it: the user's 13:36 EST direction — EP16 is a regime change, so probe the Harbor admission allowance next.
+- Published source revision: A13 `.118` to be landed via loop-push/native preflight (source SHA to follow); training `.115` and A11 `.116` unchanged.
+- Command or material configuration: A13 = EP16/seq64/HBM 0.85/batch 8192 BF16 + Harbor 384→512 + max_in_flight 128→192; route 16/16, staleness 3 retained; no staleness change; no third arm, nothing >512.
+- External inputs and artifact references: worker readout over Rhizome (~02:2x UTC) [R].
+- Environment and hardware when relevant: sequencing — A11 (60 GPU) measured then released before A13 (64 GPU) launches, 128 total; training untouched.
+- Result, including failure or restart: plan only — nothing launched.
+- Evidence: worker readout [R]; source check `buffer.max_untrained_groups` = (staleness 3 + 1) × batch 32 = 128, so max_in_flight 192 does not raise the effective lease lookahead — Harbor 512 is the actual changed admission allowance.
+- Interpretation and limitations: demand-limit gain ceiling from Harbor alone is 1.33x if the model-time fraction is stable — not a prediction or proven gain; occupancy will be measured rather than claiming a 192-group effect. A13 takes priority over the draft A12 offload (the old 20%-prefix diagnosis no longer describes EP16).
+- Decision and next action: record A13's landing/launch when they occur; A11's window remains the next measurement.
