@@ -607,3 +607,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final 25-min analysis receipts [R].
 - Interpretation and limitations: **HBM 0.90 has no proven real gain over A7's 0.85 (108.73 vs 107.38)** — the matched-source A10 control's full-25min window ends 19:22:58.540 UTC and decides the HBM question properly (its early 140.27/GPU is not final). A9's final context population: 99.935% coverage (4617/4620 IDs, 4393 ended, 224 active-decoder observations); active context median 9146.5 / p90 31251 / p95 37843 / max 48868; prompt median 7113 / p95 36178 / max 48489 — the context tail grows materially over the rollout versus the early-window snapshot (60 s refresh, not the instantaneous population).
 - Decision and next action: A10's final at 19:22:58.540 UTC completes the HBM isolation; the 19:30 choice and 19:45 real 32-step training launch follow.
+
+### 2026-11-21 23:45 UTC - Curriculum audit: GenRM cap inactive; symbolic-8 off the active path; raw agentic share 3.49%
+
+- Question or hypothesis and reason for trying it: verify which final-gate caps actually bind on the canonical training curriculum before the 19:30 choice.
+- Published source revision: audit run read-only on A10's in-region staged parquet (`.115` cf7 source pins the dataset URIs); no new job or data download.
+- Command or material configuration: grader/verifier scan of the staged curriculum + 4-worker stack dump cross-check.
+- External inputs and artifact references: worker readout over Rhizome (~23:4x UTC) [R]; receipts `curriculum-grader-counts-1913.txt`, `curriculum-legacy-grader-usage-1917.json`, `curriculum-script-entrypoints-1919.txt`, `a9-symbolic-slot-profile-1902.txt`.
+- Environment and hardware when relevant: only A10 runs (64 GPU, Harbor 384, source 858); A9 measured/cancelled FINAL at 108.73/GPU.
+- Result, including failure or restart: raw agentic 5,608 rows (all NoGrader/HarborSWE); nonagentic 154,953 rows (all ScriptGrader/Verifyit). GenRM requires legacy Nemotron NoGrader + harness — zero such nonagentic rows exist, so the GenRM cap is INACTIVE on this curriculum. All 25 unique inline Python/shell verifier resources scanned: no `_SYMBOLIC_SLOTS`/math_with_judge/genrm/max_concurrent_comparisons references; SkyRL utility imports only in NemoUltra/LlamaPost scripts (sample entrypoints calendar/answer-extraction and IFEval). The symbolic-8 cap is not observed on the active path (4-worker stack dump: 0 math frames). Raw-pool agentic share 3.49% — NOT the consumed-batch share; A8's 0-consumed remains UNAVAILABLE.
+- Evidence: audit receipts [R].
+- Interpretation and limitations: the GenRM-64 raise in the final config is non-binding/inactive; the symbolic-8 cap stays numerically unchanged; teacher disabled. The 3.49% raw share reinforces NOT claiming A8's 208.63/GPU as a like-for-like 50/50 training gain — the consumed-batch mix remains unmeasured.
+- Decision and next action: A10's full-25min final at 19:22:58.540 UTC decides the HBM question; selection 19:30 UTC; real training 19:45 UTC.
