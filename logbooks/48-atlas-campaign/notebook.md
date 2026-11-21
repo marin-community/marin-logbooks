@@ -2356,3 +2356,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git ls-remote` [R], cross-checked.
 - Interpretation and limitations: quiet window on the branch.
 - Decision and next action: next hourly check resumes normal Atlas coverage.
+
+### 2026-11-21 17:10 UTC - Correction: atlas-env-audit head had advanced past 681a339d9c
+
+- Question or hypothesis and reason for trying it: the coordinator reported the branch head had moved; prior quiet-window entries (through 12:40 UTC) claimed the head was unchanged at `681a339d9c…` without running `git fetch`, so those claims were stale.
+- Published source revision: after `git fetch origin` (17:0x UTC), `origin/atlas-env-audit` is at `12c730dfb7757c9b1cceb0465cd25523eb7cf540` (cross-checked against `git ls-remote`). Commits landed between `681a339d9c…` and the new head include `43dac77321`, `f96a27d371`, `12ba1b199a`, `42f2c99351`, `cb46ebd51c`, `b218d5e6bc`, `12c730dfb7`, `afb260f9e0`, `3ba52c03e9`, `99f62b7e8c`, `d935380798`, `231fdcf272`, `f10cd8ff92`, `077c73ff0f`, `4c3d7f52e8` (difficulty/verifier identity and transport work, task-format declarations, native Harbor limits, LOCAL image DNS, archived empty directories in build contexts).
+- Command or material configuration: `git fetch origin` in the marin checkout, then `git log 681a339d9c…..origin/atlas-env-audit`; cross-check `git ls-remote`.
+- External inputs and artifact references: coordinator message (user request ~12:05 PM EST); fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the "head unchanged" statements in the 08:40–12:40 UTC quiet-window entries were incorrect for this branch; the branch had in fact advanced. No other entry content is affected.
+- Evidence: `git rev-parse origin/atlas-env-audit` = `12c730dfb7757…` and `git ls-remote` agree [R].
+- Interpretation and limitations: quiet-window conclusions for other sources (Iris job lists) were re-checked live each cycle and stand; only the git-head claim was stale.
+- Decision and next action: always run `git fetch` before reading any head (now a standing step in every cycle, per the coordinator's instruction).
