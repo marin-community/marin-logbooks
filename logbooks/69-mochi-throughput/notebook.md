@@ -559,3 +559,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: native first-rollout receipt [R]; startup receipts [R].
 - Interpretation and limitations: the native hub (marin) has fresh 16-engine rows while the 08a regional query was empty — A9 measurements must use the hub with full-series identity/cluster preserved; the <1-min ramp is not a stable-throughput claim.
 - Decision and next action: A9's window ends 19:13:18.607 UTC — before the 19:30 selection, so its final can inform the choice; A10's window follows; record both finals.
+
+### 2026-11-21 22:50 UTC - A9 join validated at 100%; real context distribution measured; training recipe `.115` prepared
+
+- Question or hypothesis and reason for trying it: confirm the request-ID fix end-to-end and capture the real agentic-context population before the 19:30 choice.
+- Published source revision: A9/A10 on `858ab5d15bf3118ae0358ff79569ec6b33320a68`; `.115` training recipe `rounds/mochi-throughput-train.yaml` prepared (loop-push pending).
+- Command or material configuration: `.115` — REAL 32 steps; incidental max_inflight 1024 with effective 128 unchanged; task slots 1024/worker, executor 256, verifier 64, GenRM 64, progress 43200, Harbor 384, staleness 3, route quotas 16+16 kept; engine provisional until 19:30.
+- External inputs and artifact references: worker readout over Rhizome (~22:5x UTC) [R]; receipts `a9-context-partial-1900-analysis.json`, `a9-all-engine-context-1900.json`.
+- Environment and hardware when relevant: A9 window ends 19:13:18.607 UTC; A10 first rollout 18:57:58.540 UTC, final due 19:22:58.540 UTC; 128 GPU total; hub fresh/region empty (hub = measurement source).
+- Result, including failure or restart: A9 HTTP fix validated on ALL 16 actors — 2834 submitted / 2834 first_token (100% with prompt/context lengths; A8 was 88/1867 = 4.7%). Context distribution (340 active-decoder observations, 60 s refresh): context median 3386 / p90 20040 / p95 27041 / max 48208; prompt median 1242 / p90 19844 / p95 26771 / max 47595. A9 first 9.4 min native: 1891.244 agg / 118.20 tok/s/GPU, 32.85/64 running + 0.41 waiting, KV 29.74%/58.08%, request 3.18, TTFT 7.34 s, prompt 2395.03/GPU, prefix 84.59%, 0 preemptions.
+- Evidence: A9 context/native analyses [R].
+- Interpretation and limitations: the real agentic-context population is now measured — median context ~3.4k with a heavy tail to ~48k, which reframes the KV-budget discussion versus the synthetic 6.4k-prompt serving arms. A9's early 118.20/GPU is below A5's final 124.97 but window-age differs; the 25-min finals decide.
+- Decision and next action: BRIEF final-gate instruction implemented — no new worker/staleness/inflight arms; record both 25-min finals; the 19:30 choice selects the engine (quota decision included) and the 19:45 launch uses `.115`.
