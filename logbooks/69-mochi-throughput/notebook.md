@@ -463,3 +463,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker live table + group counters [R].
 - Interpretation and limitations: no unmeasured-throughput claims from A7's context fields; the consumed-batch agentic share remains pending until a batch is consumed.
 - Decision and next action: capture A8's final (deadline 18:39:00.943 UTC) and the agentic-share figure; training choice 19:30 UTC / launch 19:45 UTC unchanged.
+
+### 2026-11-21 21:10 UTC - FINAL: A8 quota-free 208.63/GPU (3.73x `.103` raw) — top real-rollout rate, heavy mix caveats; A10 submitting
+
+- Question or hypothesis and reason for trying it: does removing consumed route quotas (with staleness 3, Harbor 256, seq32) raise real-rollout throughput?
+- Published source revision: A8 at `119ea9984b7e400e926ced96bc8a4a3f8df0a11b`; A10 submitting at `858ab5d15bf3118ae0358ff79569ec6b33320a68` (HBM 0.85 same-source control).
+- Command or material configuration: native final 25-min window (12 ranks); quotas `{}` compiled-asserted.
+- External inputs and artifact references: worker readout over Rhizome (~21:1x UTC) [R]; receipts `a8-final25-analysis.json`, `a8-batchmix-context-final25-analysis.json`, `a8-all-engine-raw-stats-context-1839.json`, `sprint-a8-measured-cancellation.log`.
+- Environment and hardware when relevant: A9+A10 = 128 GPU after A10 lands; B paused.
+- Result, including failure or restart: 2503.570 aggregate / **208.63 tok/s/rollout-GPU**; 21.9886/32 running + 9.1964 waiting; KV 50.0609% mean / 95.2839% max; request 9.02554; TTFT 90.359 s; 0 preemptions; prompt 935.353/GPU; prefix 86.649%. Last 10 min: 156.806/GPU, 14.755/32 running, 0 waiting, TTFT 0.797 s. Cancelled 18:39:45 UTC; all 12 raw logs/native retained.
+- Evidence: final analysis receipts [R].
+- Interpretation and limitations: the raw 3.73x over the `.103` control (55.90) is the top real-rollout rate so far, but the mix caveat dominates — 90 completed groups ALL nonagentic, 0 consumed batches (one fully_masked), so the consumed-agentic share is UNAVAILABLE (not 0%); do not label a training gain. Timing coverage 88/1867 request IDs (HTTP join bug); only 9 active valid context samples (10.6k–14.2k tokens from 69–72-token prompts) — NOT the real agentic context population.
+- Decision and next action: A10 (HBM 0.85, same source as A9) will isolate the HBM knob; record A9/A10 finals; the 19:30 choice proceeds with the mix caveat attached to A8's number.
