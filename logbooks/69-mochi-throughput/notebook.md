@@ -907,3 +907,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: through-2216 analysis receipts [R].
 - Interpretation and limitations: Harbor 370 blocked entries / 370 recorded resumptions, total resumed wait 1,105,297.234 s (mean 2987.290 s), last resumption 22:05:40.849 UTC — equal counts are not per-trajectory-matched; historical waits do not prove current Harbor saturation. Last buffer blocker batch_lookahead/leased 42; no pure max_in_flight 1024 or trajectory_tasks blocker observed.
 - Decision and next action: one 22:30 UTC checkpoint; record the completed update when it lands; then the Conclusion.
+
+### 2026-11-22 07:25 UTC - Relaunch direction: fresh `.119` train-30m recipe in preparation; `.115` runs until the new submission confirms
+
+- Question or hypothesis and reason for trying it: the user's 17:25 EST relaunch direction — per-worker Harbor priority and fail-closed timeouts on the same geometry.
+- Published source revision: `.119` in preparation (recipe `rounds/mochi-throughput-train-30m.yaml`; source SHA to follow via loop-push/native preflight); `.115` unchanged and running.
+- Command or material configuration: `.119` = same geometry/gates as `.115` (EP16/seq64/HBM 0.85/batch 8192, Harbor 384, staleness 3, routes 16+16, full_batch, 32 steps/10 h, 64 GB200) PLUS per-worker Harbor priority by `lease.batch_id` (FIFO within the same batch, non-preemptive, cancellation returns capacity) and fail-closed timeout/length rejection (turn 1800 s, attempt 2280 s, Harbor/eval overrides 1800, Pi/http idle 1800, setup 360/cleanup 120, verifier 900 under the outer attempt, progress 43200).
+- External inputs and artifact references: worker readout over Rhizome (~07:2x UTC) [R]; receipts `relaunch-30m-priority-tests.log`, `relaunch-30m-priority-lint.log`.
+- Environment and hardware when relevant: no new GPU job yet; `.115` continues at 64 GPU until the `.119` submission is confirmed, then iris-cancel-own.
+- Result, including failure or restart: priority/cancel/fail-closed + runtime/reasoning suites 39 passed; lint/types passed; final rerun/landing/native preflight next.
+- Evidence: test/lint receipts [R].
+- Interpretation and limitations: the priority and fail-closed changes address the observed Harbor waits (mean ~21–45 min resumed waits) and the post-timeout reward hazard; the geometry is unchanged, so measured rates remain comparable.
+- Decision and next action: record the `.119` landing/preflight, the new root ID at submission, and the `.115` cancellation; the Conclusion then covers the relaunch.
