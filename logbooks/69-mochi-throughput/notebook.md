@@ -751,3 +751,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker table [R]; retained proofs [R].
 - Interpretation and limitations: no mutation of the running training; selection was sent 19:29:37 UTC (before the deadline) and training submitted 19:45 UTC as mandated.
 - Decision and next action: capture the training gate event at the 20:12:27 checkpoint; continue the standing watch.
+
+### 2026-11-22 03:05 UTC - REAL TRAINING QUALIFIED/LIVE: gates verified on the actual run; rollout started 20:01:42.198 UTC
+
+- Question or hypothesis and reason for trying it: verify the launched training actually runs with the selected gates — the campaign's core deliverable.
+- Published source revision: `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: actual gate event 20:01:42.095 UTC — inflight 1024/effective 128/lookahead 128, task 1024, executor 256, verifier 64, GenRM 64, progress 43200, Harbor 384 (12/worker), workers 32×CPU 2, teacher false, symbolic 8, staleness 3, routes 16+16, EP16/seq64/HBM 0.85/batch 8192.
+- External inputs and artifact references: worker readout over Rhizome (~03:0x UTC) [R]; proof `training-live-gate-event-receipt.json` (actual run, not CPU schema test); receipts `training-startup-qualified-receipt.json`, `training-native-gates-2008.jsonl`, `training-startup-2008.jsonl`, `training-first-rollout-2009.jsonl`.
+- Environment and hardware when relevant: training 64 + FP8 60 = 124 GPU; A13 (64) next after FP8's measured release; A12 offload paused.
+- Result, including failure or restart: QUALIFIED/LIVE — CUDA graphs captured 19:58; actual rollout start 20:01:42.198 UTC; the first-25min readout ends 20:26:42.198 UTC and is NOT a cancel deadline for the 32-step run. Runtime 20:05:28 gate = batch_lookahead (policy_step 1, leased 124): semantic lookahead, not max_in_flight 1024, blocks admission — the 192 cap alone cannot raise the 128 effective. Generation/running telemetry flowing; Hermes JSONDecodeErrors in bounded logs while generation continues; 0 CUDA OOM/RuntimeError in the retained sample, no engine-fatal claim.
+- Evidence: live-gate receipt [R]; runtime gate event [R].
+- Interpretation and limitations: the campaign's selected configuration is training live with verified gates. The 25-min readout is observational, not a cancel deadline; Hermes tool-decode errors occur while generation continues (no engine-fatal claim).
+- Decision and next action: capture the first-25min training readout (ends 20:26:42.198 UTC) and the first optimizer update; A11's window, then A13; the Conclusion follows once the run is verified past its first update.
