@@ -547,3 +547,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: startup diagnostics receipts [R].
 - Interpretation and limitations: startup-only state; no throughput claim. The empty-regional-Finelog vs Iris-retained-progress discrepancy is a monitoring gap, not engine evidence.
 - Decision and next action: A10's 15-min qualification gate near 18:57 UTC; capture both native windows when they start; selection 19:30 UTC, training 19:45 UTC.
+
+### 2026-11-21 22:35 UTC - A9 window defined (ends 19:13:18.607 UTC); HTTP join confirmed working; hub-vs-regional monitoring note
+
+- Question or hypothesis and reason for trying it: pin A9's measurement window and confirm the request-ID fix works before the 19:30 selection.
+- Published source revision: both arms on `858ab5d15bf3118ae0358ff79569ec6b33320a68`.
+- Command or material configuration: A9 first native async config 18:48:18.509 UTC (rollout_wait 18:48:18.607); exact 25-min window ends 19:13:18.607 UTC.
+- External inputs and artifact references: worker readout over Rhizome (~22:3x UTC) [R]; receipts `a9-native-first-rollout-1849.jsonl`, `a9-first-request-error-1850.txt`, `a10-first-request-startup-1850.txt`, `sprint-wake-fired-1848.json`.
+- Environment and hardware when relevant: 128 GPU total (64 each); Harbor 384 per job; graphs on; r136 excluded. A10 still engine-initializing (bounded 70 lines clean).
+- Result, including failure or restart: FlashAttention AuxData message in A9 was a UserWarning, not fatal; bounded next 120 lines show successful first_token + ended numeric prompt/context records, 0 Traceback/RuntimeError/OOM. Sample prompts 1711/1742/2367 tokens demonstrate the HTTP join working on actual turns; full coverage to be measured from all 16 raw actors (not claimed 100%).
+- Evidence: native first-rollout receipt [R]; startup receipts [R].
+- Interpretation and limitations: the native hub (marin) has fresh 16-engine rows while the 08a regional query was empty — A9 measurements must use the hub with full-series identity/cluster preserved; the <1-min ramp is not a stable-throughput claim.
+- Decision and next action: A9's window ends 19:13:18.607 UTC — before the 19:30 selection, so its final can inform the choice; A10's window follows; record both finals.
