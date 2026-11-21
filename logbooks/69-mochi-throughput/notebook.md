@@ -847,3 +847,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: through-2109 analysis receipts [R].
 - Interpretation and limitations: the cumulative rate recovered slightly at lower occupancy (79.31 → 79.47; latest-10min 63.02 → 80.99) — observational; no context/config causal claim. Harbor 363 blocked entries / 259 resumptions, cumulative resumed wait 660,611.087 s (mean 2550.622 s; pending/cancelled censored); no trajectory_tasks events (not proof never-blocks).
 - Decision and next action: one 21:22:30 UTC checkpoint; record the completed update when it lands; then the Conclusion.
+
+### 2026-11-22 05:45 UTC - First-update watch through 21:22:43 UTC: no completed update after ~81min; so-far 76.26/GPU
+
+- Question or hypothesis and reason for trying it: continue the first-update watch with bounded incremental capture.
+- Published source revision: `.115` root 49544525 at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`.
+- Command or material configuration: all-16 native counters fresh through 21:22:40.573 UTC (~81 min).
+- External inputs and artifact references: worker readout over Rhizome (~05:4x UTC) [R]; receipts `training-through-2122-analysis.json`, `training-first-update-watch-2122-receipt.json`, `training-update-and-gate-2122.jsonl`, `training-worker-gates-2122.jsonl` (bounded raw 869.006 s; all prior inputs retained/indexed).
+- Environment and hardware when relevant: training unchanged at 64 GPU; all probes retired.
+- Result, including failure or restart: 5,927,994 generated tokens — 1220.15690 aggregate / **76.25981 tok/s/rollout-GPU**; 18.1534/64 running + 0.00770 waiting; KV 52.265% mean / 94.221% max; prefix 88.968%; 0 preemptions/resets; latest 10 min 60.09169/GPU, 9.8688 running, near-zero queue. Still NO completed optimizer/training-step/training-weight-update; time/update unavailable after ~81 min generation.
+- Evidence: through-2122 analysis receipts [R].
+- Interpretation and limitations: the cumulative rate declines further as contexts lengthen (79.47 → 76.26; latest-10min 60.09 at 9.87 running — occupancy falling toward the underfilled regime seen in A7/A10). Harbor 363 blocked entries / 293 resumptions, cumulative resumed wait 788,142.138 s (mean 2689.905 s; pending/cancelled censored); no trajectory_tasks events (not proof never-blocks).
+- Decision and next action: one 21:36 UTC checkpoint; record the completed update when it lands; then the Conclusion.
