@@ -655,3 +655,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: retained-data analyses [R].
 - Interpretation and limitations: descriptive, not causal; the residual difference needs a future engine profile, not unmeasured config changes before launch.
 - Decision and next action: capture the 19:45 UTC training launch, verify past the first update, then close the records.
+
+### 2026-11-22 00:45 UTC - Prelaunch guard verified; CUDA-graph receipt and sampling parity added to the record
+
+- Question or hypothesis and reason for trying it: confirm the launch prerequisites before the 19:45 UTC `--run`.
+- Published source revision: working tree clean at `5957d8bbcf0cd945243cdd544eb4433f7e36ac88`; no config change.
+- Command or material configuration: guard checks — single loaded timer (main self-wake == launch JSON; `sprint-training-submission.log` absent), no duplicate timer, no old-arm resubmission.
+- External inputs and artifact references: worker readout over Rhizome (~00:4x UTC) [R]; receipts `a10-cuda-graph-capture-receipt.txt` (18:54:36/18:55:16 "Graph capturing finished", 16 rank repeats), `sprint-launch-wake.json`.
+- Environment and hardware when relevant: lane at 0 GPU; all A/B probes measured/cancelled; actual A-job Daytona peaks unavailable (B all 0).
+- Result, including failure or restart: guard verified. Sampling parity: pure-B and RL both temperature 0.7 / top_p 1, logprobs true (top-0), routed-expert capture ON — not a greedy benchmark shortcut. Residual serving-vs-real workload differences (fixed 32-shared-prompt pool / 1024 ignore-EOS / post-120s warmup vs fresh variable-length RL contexts / EOS / first-25min window) mean the residual gap is not an isolated kernel cause.
+- Evidence: guard receipts [R]; CUDA-graph receipt [R].
+- Interpretation and limitations: prerequisites hold; the residual gap analysis remains descriptive.
+- Decision and next action: capture the training root ID at 19:45 UTC, verify past the first update, then close the records.
