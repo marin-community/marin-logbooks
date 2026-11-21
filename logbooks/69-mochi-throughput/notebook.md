@@ -415,3 +415,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final receipts (kv90 831.73 vs batch4096 751.05) [R]; A7 startup bounded logs [R].
 - Interpretation and limitations: the kv90 provisional 844.22 overstated its final 831.73, but the final still leads batch4096; the real-RL winner is still pending A7/A9 windows. A9 replaces A7 after its window per the GPU-cap sequencing.
 - Decision and next action: kv90 is the leading one-knob B candidate for the real-rollout follow-up; record A7/A8 windows next.
+
+### 2026-11-21 20:30 UTC - A7 early native window: 112.83/GPU at 5.28 min — below age-aligned A5; no gain claim
+
+- Question or hypothesis and reason for trying it: first live comparison of the EP16 rollout geometry (A7) against A5 under native counters, age-aligned.
+- Published source revision: A7 at `8b1e1686a985691f9454ed2c01c757c79f3ec736`.
+- Command or material configuration: native window over the first 5.28 min (from 18:02:04.921 UTC start; 25-min deadline 18:27:04.921); age-aligned A5 comparison at the first same 316.9 s.
+- External inputs and artifact references: worker readout over Rhizome (~20:2x UTC) [R]; receipts `a7-native-partial-1806-analysis.json`, `a7-vs-a5-matched-early-analysis.json` in /experiments/active/mochi-throughput/ [R].
+- Environment and hardware when relevant: A7 64 GPU (16 rollout ranks); A8 initializing its 12 engines with 0 errors; A7+A8 = 124 GPU; B paused; A9 (`.113`, HBM 0.90) ready to replace A7 after its window.
+- Result, including failure or restart: A7 early 1805.21 aggregate / 112.83 tok/s/GPU, 37.43/64 running + 0.43 waiting, KV 27.01%, prefix 75.51%, 0 preemptions, request 2.72, TTFT 4.39 s. Age-aligned A5: 1958.59 aggregate / 163.22/GPU, 31.03/32 running, 18.32 waiting, KV 29.82%. A7 early is −30.9% per-GPU / −7.8% aggregate.
+- Evidence: native partial analyses [R].
+- Interpretation and limitations: NO gain claim — await the 25-min window. Mechanistic read: demand (~600 requests aggregated in both) is spread by EP16/cap-64 with almost no queue, versus A5's 18-waiting queue at cap 32. Confound: A7 restores staleness 3 vs A5's actual 11 (lease-lookahead difference), so the engine-geometry effect is not isolated.
+- Decision and next action: record A7's 25-min final and the A5-vs-A7 verdict when it lands (18:27:04.921 UTC); A9 replaces A7 after the window unless new steering arrives.
