@@ -967,3 +967,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission + native receipts [R].
 - Interpretation and limitations: the correction chain (17:25 fail-closed → `.119` → 17:50 default-scoring → `.120`) is complete in the record; the first-update watch now applies to `.120`.
 - Decision and next action: record `.120`'s startup/qualification and first-update watch; the Conclusion then covers the full launch chain.
+
+### 2026-11-22 08:45 UTC - `.120` full launch record received (complete timeout/gate configuration)
+
+- Question or hypothesis and reason for trying it: capture the complete launched configuration of the corrected training run.
+- Published source revision: `.120` at `6a118946e605a3eba586b0d256139a6690a859cc` (recipe v2026.11.21.120).
+- Command or material configuration: cap scoring = DEFAULT verifier on the final state after timeout (no rejection; cap-scoring files reverted exactly to the pre-relaunch base); Harbor grant order = lowest-waiting lease.batch_id per worker, FIFO ties, no preemption of active slots. Active-path timeouts (task_spec.session.*; legacy environment.task_sessions.session.* inactive for the canonical task compendium): model_turn 1800, tool_turn 90, total_turn 1800, attempt 2280, verifier 300, cleanup 120, command 30; Harbor overrides 1800/2280(eval)/900(verifier); installed agent 360/1800/120; engine init 1800; expert-block sync 600; trajectory publish 120; progress 43200; placement 180; worker collective 1800; admission stall 18000. Execution: coordinator_timeout_hours 96, job_timeout_seconds 172800. All gates/semantics match the recorded launch values.
+- External inputs and artifact references: worker launch record over Rhizome (~08:4x UTC) [R]; receipts `relaunch-30m-120-submission-receipt.json`, native preflight receipt as recorded.
+- Environment and hardware when relevant: 64 GB200 (48 trainer + 16 rollout), PRODUCTION 08a, r136 excluded, graphs/compilation on.
+- Result, including failure or restart: record complete; no new events.
+- Evidence: worker launch record [R].
+- Interpretation and limitations: the legacy session-timeout keys are inactive for the canonical task compendium — the active path is task_spec.session.*; the full dictionary is retained in the worker's REPORT/STATUS and receipts.
+- Decision and next action: the first-update watch applies to `.120`; the Conclusion follows.
