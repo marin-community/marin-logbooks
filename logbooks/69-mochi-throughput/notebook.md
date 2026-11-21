@@ -931,3 +931,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission receipt [R].
 - Interpretation and limitations: `.115` ran ~2.4 h without a completed update (its final so-far window is retained in the record); the batch-priority and fail-closed changes target the observed Harbor waits and the post-timeout reward hazard; geometry unchanged, so rates remain comparable. The first-update watch carries over to `.119`.
 - Decision and next action: record `.119`'s startup/qualification and first-update watch; the Conclusion then covers both launches.
+
+### 2026-11-22 08:00 UTC - Correction: 17:50 EST BRIEF supersedes the fail-closed scoring; fresh version in preparation while `.119` runs
+
+- Question or hypothesis and reason for trying it: the worker found a newer BRIEF instruction that changes the timeout-scoring semantics after `.119` was submitted.
+- Published source revision: `.119` submitted 22:49:19 UTC at `ccf0bdc3561be7b3a6d407b3c95af03fbf37f2c4` (includes the superseded fail-closed cap scoring from the 17:25 instruction); `.115` cancellation confirmed 22:50:14 (receipt `relaunch-30m-old115-cancellation.log`); fresh version in preparation (removing the scoring addition; retaining 30-min timeouts + batch-priority).
+- Command or material configuration: correction = preserve default verifier scoring on timeout; NO timeout/length rejection.
+- External inputs and artifact references: worker readout over Rhizome (~08:0x UTC) [R]; receipts as above.
+- Environment and hardware when relevant: `.119` (64 GPU) is preserved until the replacement submission, then cancel-own; no probes.
+- Result, including failure or restart: correction chain — 17:25 instruction (fail-closed) → `.119` submitted with it → 17:50 correction found → scoring addition being removed.
+- Evidence: worker readout [R]; receipts [R].
+- Interpretation and limitations: the record keeps both instructions with their timestamps; the fresh version's landing/preflight and submission will be recorded when they occur.
+- Decision and next action: record the fresh version's landing/submission and the `.119` cancellation; the Conclusion then covers the full relaunch chain.
