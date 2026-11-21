@@ -355,3 +355,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final 25-min analysis receipts [R].
 - Interpretation and limitations: matched-method comparisons — A5 raw console first-20 ~133.01/GPU vs A3 raw 134.876 (−1.4%, no gain); A5 raw first-25 127.35 vs A3 console 127.22 (~flat, baseline driver-dedup). More Harbor capacity did not improve early-25min throughput; engines were already full/queued, so the Harbor-slot knob is saturated at this operating point. The provisional 134.13 first-17.6min figure overstated the final rate (early-window bias now quantified).
 - Decision and next action: A7's EP16 window is the remaining decisive A comparison; record it when it lands; A8 launch ~17:51 UTC; report 19:30 UTC; real training 19:45 UTC.
+
+### 2026-11-21 19:45 UTC - Linked: rollout concurrency-limits design issue marin#11957
+
+- Question or hypothesis and reason for trying it: the coordinator directed (user request) that the new rollout concurrency-limits design issue be linked from this campaign's records.
+- Published source revision: n/a (design issue, not a measured arm).
+- Command or material configuration: n/a.
+- External inputs and artifact references: [marin#11957](https://github.com/marin-community/marin/issues/11957) — "[skyrl] Unify the rollout concurrency limits into one explicit budget"; the table of every admission limit (Harbor slots, task slots, dispatch, route quotas, staleness lease range) and which one bound in each Mochi arm of this sprint.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: linked from marin#11954 (one 🤖 comment + the Related list) and recorded here.
+- Evidence: issue exists (OPEN) — verified via the GitHub API [R].
+- Interpretation and limitations: the design issue consumes the binding-behavior evidence this sprint produced (A5 Harbor saturation, batch4096 cache fit, staleness lease semantics, quota-off root cause); this notebook's code-trace section feeds it.
+- Decision and next action: keep the per-arm "which limit bound" facts flowing to #11957 as arms land.
