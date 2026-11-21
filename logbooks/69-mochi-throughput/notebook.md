@@ -403,3 +403,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: loop-push landing receipts [R]; worker readout [R].
 - Interpretation and limitations: A9 completes the one-knob HBM sweep on the real-rollout lane (0.85→0.90), mirroring the kv90 serving arm (which finished below batch4096 as a serving config); its rollout rate will show whether KV headroom helps real rollouts.
 - Decision and next action: record A9's preflight and launch when they occur; A7/A8 windows are the current decisive evidence.
+
+### 2026-11-21 20:15 UTC - Correction: kv90 831.73/GPU IS the best valid long-B (earlier "below batch4096" was wrong); A9 preflight confirmed; A7 startup healthy
+
+- Question or hypothesis and reason for trying it: the worker's latest readout states the best valid long-B is kv90 at 831.73/GPU, contradicting this notebook's 19:55 interpretation; also confirms A9 readiness and A7 startup health.
+- Published source revision: A9 `.113` at `f26fc27bcd86dac16bcf867435f72ef9166cf463` (preflight receipt `sprint-real-ep16-kv90-validation/*/receipt.json`); A7 at `8b1e1686a9…` (startup logs `a7-startup-1802.jsonl`).
+- Command or material configuration: A9 = `rounds/mochi-throughput-ep16-seqs64-kv90.yaml`, ONLY HBM 0.85→0.90 vs A7, 64 GPU; native preflight confirmed 64 GPU/seq64/staleness 3/HBM 0.90.
+- External inputs and artifact references: worker readout over Rhizome (~20:1x UTC) [R]; receipts as above [R].
+- Environment and hardware when relevant: A7+A8 = 124 GB200 running; A9 replaces A7 after its 25-min window (not concurrent).
+- Result, including failure or restart: CORRECTION — the 19:55 entry said kv90 (831.73/GPU) "does not beat" batch4096 (751.05/GPU); that was an arithmetic misreading: 831.73 > 751.05, so **kv90 is the best valid long-B**. A7 startup gate HEALTHY: graphs 17:59 UTC across 16 ranks, initial weight sync 18:02:04.827 UTC, zero Traceback/RuntimeError/OOM in bounded logs.
+- Evidence: final receipts (kv90 831.73 vs batch4096 751.05) [R]; A7 startup bounded logs [R].
+- Interpretation and limitations: the kv90 provisional 844.22 overstated its final 831.73, but the final still leads batch4096; the real-RL winner is still pending A7/A9 windows. A9 replaces A7 after its window per the GPU-cap sequencing.
+- Decision and next action: kv90 is the leading one-knob B candidate for the real-rollout follow-up; record A7/A8 windows next.
