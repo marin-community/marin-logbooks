@@ -2221,3 +2221,18 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: commits above; landing timestamps in the local atlas-push log [R].
 - Interpretation and limitations: code/landings only.
 - Decision and next action: next hourly check watches for the difficulty-controller outcomes.
+
+### 2026-11-21 01:40 UTC - Hourly catch-up (00:40–01:40 UTC window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: branch `atlas-env-audit` advanced from `18096fa213…` (00:24:31 UTC) to head `681a339d9c5a82a6a8534050c01a6fb902f59e19`, landed 01:25:58 UTC (~6 landings 00:41–01:25 UTC incl. one coordinator landing).
+- Command or material configuration: evidence: landings.jsonl tail; `git log 18096fa2..681a339d` (fetched).
+- External inputs and artifact references: landing records as above.
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: material changes in the window:
+  - **Preview revision 36**: Atlas docs synced to preview revision 36 (`681a339d9c…`, head).
+  - **LOCAL uploads**: nanosecond timestamps preserved in LOCAL uploads (`46051d7d81…`).
+  - **Curriculum/catalog bounds**: retained confidence checksums bounded by curriculum load (`f34e6a7664…`); catalog batching tested against the response byte limit (`7cc01cd80e…`); catalog response sizes bounded within a frozen declaration load (`54bfd58571…`); the shared DATA inventory gate used for difficulty attempts (`d4e5ffde31…`).
+- Evidence: commits above; landing timestamps in the local atlas-push log [R].
+- Interpretation and limitations: code/landings; rev-36 hosted verification remains preview-lane evidence [M].
+- Decision and next action: next hourly check watches for rev-36 hosted verification and the DATA-gate outcomes.
