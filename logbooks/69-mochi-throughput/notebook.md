@@ -955,3 +955,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: landing/preflight receipts [R]; `.115` final query receipt [R].
 - Interpretation and limitations: `.115` never completed an update in ~2.4 h (its cancellation was a planned replacement, not a failure); the `.119` run is a temporary pre-correction state.
 - Decision and next action: record the exact `.120` submission and the `.119` cancellation; the Conclusion covers the full chain (`.115` → `.119` → `.120`).
+
+### 2026-11-22 08:30 UTC - Corrected `.120` training SUBMITTED; superseded `.119` cancelled
+
+- Question or hypothesis and reason for trying it: launch the corrected training recipe (default verifier scoring on timeout per the 17:50 correction).
+- Published source revision: `.120` at `6a118946e605a3eba586b0d256139a6690a859cc`.
+- Command or material configuration: 64 GB200 / 32 steps / 10 h / PRODUCTION 08a / r136 excluded / graphs ON; default verifier scoring preserved after execution caps; 1800 s execution / 2280 s attempt + lowest-waiting-lease-batch Harbor priority.
+- External inputs and artifact references: worker submission notice over Rhizome (~08:3x UTC) [R]; receipts `relaunch-30m-120-submission.log`, `relaunch-30m-default-score-validation/8963e24b8a23bac3ec4d9bbb1b9cedfbbb037a71c0dd673df2c14114b04eff94/receipt.json`.
+- Environment and hardware when relevant: root `/benfeuer/long-loop-mochi-throughput-train-30m-2026.11.21.120-coordinator-0b9c186a`; only the superseded `.119` cancelled after the confirmed new submission; `.115` already cancelled with receipts retained.
+- Result, including failure or restart: `.120` submitted; `.119` cancelled.
+- Evidence: submission + native receipts [R].
+- Interpretation and limitations: the correction chain (17:25 fail-closed → `.119` → 17:50 default-scoring → `.120`) is complete in the record; the first-update watch now applies to `.120`.
+- Decision and next action: record `.120`'s startup/qualification and first-update watch; the Conclusion then covers the full launch chain.
