@@ -1255,3 +1255,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: prompt-mix analysis receipt with SHA-verified bodies [R].
 - Interpretation and limitations: task-format/source-mix differences, not phase-specific engine/sampler settings; the matched same-blend train sample is small (26 prompts) and its component mix differs from eval — the residual 5.19 points is not fully attributed.
 - Decision and next action: analysis only; feeds the fix-plan review (eval budgets should be compared against matched task mixes, not raw training blends).
+
+### 2026-11-22 17:00 UTC - Post-conclusion addendum: b-cohort progress + paired 32k excerpt audit (same-prompt diverges, cap effects visible)
+
+- Question or hypothesis and reason for trying it: record b-cohort progress and the paired 32k diagnostic (does the cap itself change outputs on identical prompts?).
+- Published source revision: b roots unchanged (32 source `1952e3d954`, 64/96 source `602ed34a6f`); no new jobs/config/code.
+- Command or material configuration: raw receipt `context-cap-bounded-1515.json`; paired excerpt audit on the same 12 oversampled 16k identities with full outputs + exact IDs.
+- External inputs and artifact references: worker readout over Rhizome (~17:0x UTC) [R]; receipts `context-cap32-paired-manual-audit-1517.json`, `context-cap32-paired-manual-samples-1516.json` [R].
+- Environment and hardware when relevant: 48 GPU serving; all runtime qualifications passed.
+- Result, including failure or restart: progress — 32k-b 3,016/3,040 (conservative FINAL length-stop bounds 13.125–13.914%), 64k-b 2,601/3,040 (0–14.441%), 96k-b 2,649/3,040 (0–12.862%); 0 failures; all incomplete. Paired audit: some previously capped cases reach code/final beyond 16k (eval 24,580; train 21,824 tokens), while acid-rechecking/unscrambling/calendar-format repetition persists at 32,768; a formerly natural-stop calendar control now caps. **Same prompt/seed is NOT exact continuation: 11/12 generated prefixes diverge after 44–284 tokens (one 551-token short response identical)** — so no individual causal cap-effect or population-loop-rate claim.
+- Evidence: paired audit + bounded receipts [R].
+- Interpretation and limitations: sampling stochasticity limits per-case causal claims, but the cohort-level signal (capped cases completing beyond 16k, while genuine repetition persists) supports the cap-choice review once finals land.
+- Decision and next action: final uncensored comparisons when the b-cohorts complete; the cap choice feeds the fix-plan review.
