@@ -155,3 +155,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: REPORT.md row + native counters [R].
 - Interpretation and limitations: raising the demand gates cut the update time 2.47x and doubled per-GPU generation — confirming the coordinator's demand-limited diagnosis. The checkpoint fix eliminated the host OOM. The saturation criterion (wait near 0) is not yet met at 76.3%, so the engine shrink stays paused; R3 continues for more clean steps + the step-6 checkpoint.
 - Decision and next action: record further R3 clean steps and the step-6 checkpoint; shrink only when the criterion is met.
+
+### 2026-11-22 14:30 UTC - R3 cancelled after measurement; R4 raises rollout workers 4→16 (demand ladder)
+
+- Question or hypothesis and reason for trying it: with the bottleneck demand-limited (76.3% buffer wait at median 3.78 running/rank), raise client-side parallelism instead of changing engines.
+- Published source revision: `be5d9a159d75ec9567f3551b61c1c8ac54aa31d8` via loop-push ("Raise rollout workers to sixteen for the demand-limited ladder" + "Declare the evaluation drain policy for the workers arm"); round `rounds/snowball-resize-rl-gb200-4eng-workers16.yaml` v2026.11.22.5.
+- Command or material configuration: one knob — rollout workers 4→16 at cpus_per_worker 7 (16×7 = 112 ≤ driver CPU 120; Harbor 384 total = 24/worker); staleness 2 kept; engine geometry unchanged (4 engines × DP8/EP8, HBM 0.90 = 64 GB200); no engine ladder until rollout wait near 0.
+- External inputs and artifact references: worker readout over Rhizome [R]; REPORT.md updated with the R3 measured row + R4 [R].
+- Environment and hardware when relevant: PRODUCTION 08a; R3 cancelled with iris-cancel-own after measurement (step 2 clean 687.1 s, 76.3% wait, checkpoint survived).
+- Result, including failure or restart: R4 submitted ~14:15 UTC (`/benfeuer/snowball-resize-rl-gb200-4eng-workers16-2026.11.22.5-coordinator-3d07d913`).
+- Evidence: submission via loop-push [R]; R3 measured row [R].
+- Interpretation and limitations: the demand-limited diagnosis says the engines are starved by client concurrency — 16 workers × Harbor 24 each should raise admitted demand ~4x if the worker count was the constraint. Failure classes for 132/512: TrialTimeoutError, AgentTimeoutError, VerifierRuntimeError-prepare, Unknown × Daytona sandbox lifecycle; verifier coverage 93.9%; retries 0.30/task.
+- Decision and next action: record R4's step timings; if rollout wait approaches 0 with engines busy, the engine ladder 6→4→3→2 becomes measurable.
