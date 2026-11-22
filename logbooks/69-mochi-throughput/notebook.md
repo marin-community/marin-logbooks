@@ -7,7 +7,7 @@ related_issues:
 research_branch: "codex/69-mochi-throughput"
 marin_base_revision: "cb991a5a5c8af4d670d56757eeae3e59edd4a778"
 archive_template_revision: "fc1cb30da0967f6ab78ffd47444ed9144f50cba9"
-status: active
+status: complete
 ---
 
 # Mochi RL throughput campaign
@@ -86,11 +86,11 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 
 ## Final decision
 
-- Selected approach and evidence:
-- Rejected alternatives and why:
-- Marin contribution PRs:
-- Reproduction instructions:
-- Remaining uncertainty:
+- Selected approach and evidence: **EP16/DP16/TP1, seq64, HBM 0.85, batch 8192 (BF16), 48 trainer + 16 rollout = 64 GB200**, launched as REAL 32-step training (`.120`, source `6a118946e605a3eba586b0d256139a6690a859cc`, root `/benfeuer/long-loop-mochi-throughput-train-30m-2026.11.21.120-coordinator-0b9c186a`; 30-min model-turn budget, Harbor 384 with per-worker lease-batch priority, staleness 3, routes 16+16, full_batch, all cf7 gates, teacher disabled). Evidence: the measured arm table (the `.103` control 55.90/GPU console; A-series admission sweeps; the B decode lane), selection at 2.169x per-GPU / 2.892x aggregate vs `.103`, live native gates verified at rollout start, and the **first policy update completed 2026-11-22 00:50:23.475 UTC** (Training step 5,869.202 s; optimizer 519.148 s / 256 sequences; weights reason `training_step`) with the full-update record (6,890,762 tokens; 1174.05 aggregate / 73.378 tok/s/rollout-GPU time-weighted; 0 preemptions/resets) and measured correctness (mean |trainer−rollout logprob| 0.01199 pooled+staleness-0, p99 0.185; 210,644/210,644 selected tokens finite; ratio outside [0.5,2] = 0.00902%; average final reward 0.521154; no `training_nonfinite` events).
+- Rejected alternatives and why: HBM 0.90 (A9 108.73 ≈ A7's 107.38; 0.85 measured 11.53% above); A8 quota-off (0 consumed batches, mix unknown — not eligible like-for-like; 16/16 routes retained); A3/A5 staleness-11 (not retained; no causal staleness gain); A6 workers-128 (retired — client already fills engines, non-GIL CPU profile); A12 offload / A13 Harbor-512 (retired unlaunched; layout/occupancy questions open); pure-decode serving configs as training rates (EP16 serving bounds 552–831 tok/s/GPU did not transfer — A7 per-GPU below A5; fixed-prompt-pool cache fit is an upper bound).
+- Marin contribution PRs: none from this campaign; durable outputs are this record, the binding-limits table on [marin#11957 (comment)](https://github.com/marin-community/marin/issues/11957#issuecomment-7069089571), and the running training (branch `benfeuer/mochi-throughput` lineage; loop-push landings in `secretary-arm-provenance-20261121.json`).
+- Reproduction instructions: see marin#11954's Reproduction section (branches/SHAs per arm, `rounds/mochi-throughput-*.yaml` incl. `train-30m.yaml` v2026.11.21.120, both launch commands, Iris job index, S3/Filer receipts, the Finelog counter method) and `secretary-arm-provenance-20261121.json` under `/Users/benfeuer/Documents/experiments/active/mochi-throughput/` (worker REPORT.md/STATUS.md are authoritative running records).
+- Remaining uncertainty: the run continues (32 steps / 10 h) — update cadence and wall-clock beyond update 1 are unproven; the serving-vs-real gap decomposition is descriptive, not causal (needs a future engine profile); the consumed-batch agentic share was never measured; A12's offload layout and A13's Harbor-512 occupancy questions were retired unlaunched; A5's staleness-11 history remains a comparison caveat.
 
 ### 2026-11-21 17:25 UTC - Client-cap measurement on A3; Harbor384 in flight
 
@@ -1123,3 +1123,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: diagnosis receipts [R].
 - Interpretation and limitations: the delay is a workload-composition effect (rejection/replacement), not an admission bug; the final straggler finished on its first attempt (0 retries). CURRENT PHASE: TRAINER FORWARD — 48 MegatronPolicyWorkerBase.forward tasks RUNNING since 00:35:10 — the first policy update is in progress.
 - Decision and next action: watch for the completed optimizer/training-step marker; then the Conclusion and close-out.
+
+### 2026-11-22 13:00 UTC - CAMPAIGN CONCLUDED: first policy update completed 00:50:23.475 UTC; records closed
+
+- Question or hypothesis and reason for trying it: the campaign's close-out criterion — the training config chosen and the real run verified past its first update.
+- Published source revision: `.120` root 0b9c186a, child a86b6691860a, at `6a118946e605a3eba586b0d256139a6690a859cc` (32 steps / 10 h continue under the normal terminal watchdog).
+- Command or material configuration: n/a — conclusion record.
+- External inputs and artifact references: worker first-update-final readout over Rhizome (~12:5x UTC) [R]; receipts `first-update-final-receipt.json`, `first-update-final-analysis.json`, `first-update-final-correctness.jsonl`, `first-update-final-gates.jsonl`, `first-update-final-output-signals.jsonl`, `completion-markers-0059.jsonl`.
+- Environment and hardware when relevant: only `.120` (64 GPU); self-wake chain stopped (no future own labels); normal terminal watchdog unchanged; no probes.
+- Result, including failure or restart: **FIRST POLICY UPDATE COMPLETE — step 1 at 00:50:23.475 UTC**: Training step 5,869.202 s (97 m 49.2 s); Optimizer step 00:50:17.309 (256 sequences, 519.148 s); weights published 00:50:23.191 reason=training_step. Full-update throughput record: rollout start 23:12:34.129 → completion, 6,890,762 generated tokens, 1174.05 aggregate / **73.378 tok/s/rollout-GPU** time-weighted, 13.144/64 running, KV 35.835%/94.123%, prefix 90.787%, 0 preemptions/resets; request decode 5.513, TTFT 1.586 s. CORRECTNESS MEASURED: pooled+staleness-0 mean |trainer−rollout logprob| 0.01199299 (p99 0.185, max 3.144); 210,644/210,644 selected tokens finite (100%); ratio outside [0.5,2] 0.00902% (19 tokens); legacy ratio 1.001587 (parity 1); average final reward 0.521154; no training_nonfinite events.
+- Evidence: first-update-final receipts [R].
+- Interpretation and limitations: the close-out criterion is met; the run continues beyond update 1 with unproven cadence/wall-clock; the gap decomposition remains descriptive; the consumed-batch agentic share was never measured.
+- Decision and next action: marin#11954 closed with its final Conclusion; this logbook closed; index record updated to Complete.
