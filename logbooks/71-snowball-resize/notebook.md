@@ -9,7 +9,7 @@ related_issues:
 research_branch: "codex/71-snowball-resize"
 marin_base_revision: "cd0e932c780e0171c5612658faa0f180a851569e"
 archive_template_revision: "fc1cb30da0967f6ab78ffd47444ed9144f50cba9"
-status: active
+status: complete
 ---
 
 # Snowball RL resizing campaign
@@ -54,11 +54,11 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 
 ## Final decision
 
-- Selected approach and evidence:
-- Rejected alternatives and why:
-- Marin contribution PRs:
-- Reproduction instructions:
-- Remaining uncertainty:
+- Selected approach and evidence: **RIGHT-SIZED SNOWBALL RL LAYOUT (measured): 64 GB200 — trainer 8×4 nodes (Megatron PP2/CP4/EP4 all_gather, `dp_reshardable` checkpoints) + 4 rollout engines × DP8/EP8 at HBM 0.90, seqs 128, batched 8192; 16 rollout workers; all demand gates open (in-flight 1024, Harbor 384, verifier 384, tasks 2048, executor 384); staleness 2; curriculum-derived quotas 22/42; cadence-3; 30-min trajectory budgets — ~0.96 GPU-hour per update at batch 64.** Evidence chain: phase-1 decode sweeps (HBM 0.75→0.90 = 5.11× to 1,618.9 tok/s/GPU at the 65k window; seqs 64→128 = +16.5% to 1,886.4; KV must hold the shared-prompt working set); the phase-2 ladder on real rollouts (4 workers + closed gates 1,695.4 s at 90.2% wait → gates open 687.1 s → 16 workers **195.0 s/update at 13.4% wait**, 710.7 gen tok/s/GPU step-average, mismatch healthy) → **3 engines REGRESSED** (513.1 s at 72.8%) → **trainer-shrink does not fit** (~269 GB/rank vs 192 GB HBM). Both 32-GPU floors probed and held.
+- Rejected alternatives and why: the nominal 256-GPU H100 layout (never completed an update; protecting Exp5 SFT) — measured on GB200 instead; 3 rollout engines (72.8% wait regression); 16 trainer ranks (~269 GB/rank > 192 GB HBM); HBM 0.75 (KV thrash, prefix 9.5%); seqs 64 at HBM 0.90 (slot-cap-bound).
+- Marin contribution PRs: none from this campaign; durable outputs are this record, the curriculum-owned-holdout + derived-quota migration for the whole long loop (commit `12d161687e`), and the built/published exp4 rl-pools artifact (200-prompt curriculum holdout, 160,561 train rows).
+- Reproduction instructions: marin#11969's Reproduction section (branches/SHAs per arm, `rounds/snowball-resize-rl-*.yaml` + `specs/snowball-decode-*.json`, launch commands, Iris job index, S3/Filer receipts) plus `secretary-arm-provenance-20261121.json` and worker REPORT.md/STATUS.md under `/Users/benfeuer/Documents/experiments/active/snowball-resize/`.
+- Remaining uncertainty: all phase-2 numbers are GB200 — the H100-equivalent layout needs one confirming run on cw-rno2a when the reserved fleet frees; the curriculum handoff's broader sweep + rl-pools landing was in progress at close; the per-step split beyond step 2 (eval/checkpoint share) was not yet measured on the right-sized layout.
 
 ### 2026-11-22 00:50 UTC - Milestone 1: baseline RECORDED (256 GPUs); arms S1/S2 declared
 
