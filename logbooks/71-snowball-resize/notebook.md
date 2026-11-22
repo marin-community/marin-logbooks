@@ -179,3 +179,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: native counters + REPORT row [R].
 - Interpretation and limitations: workers 16 cut rollout wait 76.3%→13.4% and tripled per-GPU generation — the demand-limited diagnosis is fully confirmed, and per-update time is now optimizer-dominated (67%). The engine ladder (4→3) is now measurable with near-zero wait. Curriculum handoff: 15 fixture failures fixed, 16/16 green; broader sweep + rl-pools build next.
 - Decision and next action: R5's step timings decide whether 3 engines keep wait near 0; the ladder continues to 2 if so.
+
+### 2026-11-22 17:15 UTC - R5 VERDICT: 3 engines REGRESS — the right-sized rollout width is 4 engines (32 GPUs)
+
+- Question or hypothesis and reason for trying it: the engine ladder's decisive step — can 3 engines (24 rollout GPUs) hold wait near 0 at 16 workers + gates open?
+- Published source revision: `ed6341a535…` ("Bind the three-engine round to the pinned train and validation pools"); round v2026.11.22.6.
+- Command or material configuration: one knob engines 4→3 (24 rollout GPUs, 56 GB200 total); everything else at the R4 configuration.
+- External inputs and artifact references: worker readout over Rhizome [R]; REPORT.md updated (R5 measured + verdict row) [R].
+- Environment and hardware when relevant: PRODUCTION 08a; 56 GB200.
+- Result, including failure or restart: STEP 2 CLEAN 16:59:03 UTC — **513.1 s/update** (vs 195.0 at 4 engines); rollout wait 373.5 s = **72.8%** (was 13.4%); optimizer 97.9 s; engines median 1.88 running/rank, gen 157.6 tok/s/rank median, 3 preemptions, prefix median 82.9%; 2,978,197 tokens = 241.9 gen tok/s/GPU step-average (response basis 204.2/GPU); mismatch healthy; 94/512 failed. Cancelled after measurement.
+- Evidence: native counters + REPORT row [R].
+- Interpretation and limitations: the ladder verdict is clean — at 16 workers + gates open + batch 64, 24 rollout GPUs starve the trainer; the minimum width holding wait near 0 is 4 engines (32 GPUs). Right-sized candidate: 8×4 GB200 trainer + 4 engines = 64 GB200, 195.0 s/update measured, 710.7 gen tok/s/GPU. Remaining: the trainer-shrink test (PP2/CP4/EP2 or PP1 variants) proposed to the coordinator pending per-rank memory fit. Exp5 pools migration reassigned to Exp2; curriculum landing 12d161687e verified — the next arm rebases onto it.
+- Decision and next action: coordinator decision on the trainer-shrink arm; then the right-sized layout is complete.
