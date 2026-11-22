@@ -1315,3 +1315,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: metrics receipt + analysis artifacts [R].
 - Interpretation and limitations: serving-wall times for 32k-capped long outputs already overshoot the 1800 s agent budget — a material datum for the eval-budget review, explicitly not an RL projection.
 - Decision and next action: 64b/96b finals; the budget/cap trade-off goes to the fix-plan review.
+
+### 2026-11-22 18:40 UTC - Post-conclusion addendum: 64k/96k late windows show KV pressure limiting active concurrency
+
+- Question or hypothesis and reason for trying it: explain the late-window rate decline in the 64k/96k b-cohorts.
+- Published source revision: b roots unchanged (source `602ed34a6f…`); no engine change/cap choice/new jobs.
+- Command or material configuration: last-10-min windows with prompt-token delta 0 (no new prefill pressure).
+- External inputs and artifact references: worker readout over Rhizome (~18:4x UTC) [R]; receipts `context-cap-bounded-metrics-1600.json`, `context-cap-last10-1600.json` [R].
+- Environment and hardware when relevant: 32 GPU serving; 64b 2,675/3,040, 96b 2,702/3,040 (0 recorded failures; 365/338 pending censored).
+- Result, including failure or restart: last ~10 min — 64k 132.856 tok/s/GPU with 13.892 running + 9.126 waiting per engine at KV 94.772% (18 preemptions); 96k 135.686 tok/s/GPU with 9.949 running + 11.512 waiting at KV 94.618% (15 preemptions). **KV pressure is limiting active concurrency: the measured 597,351 KV tokens/engine can hold at most ~9 full 64k or ~6 full 96k outputs before prompts/overhead — a capacity upper bound, not recorded active context lengths.** Whole-cohort partials 271.5/317.6 tok/s/GPU; stop bounds 0–12.0%/0–11.1%.
+- Evidence: last-10 metrics receipts [R].
+- Interpretation and limitations: the capacity arithmetic (9×64k / 6×96k outputs per engine KV budget) matches the Mochi lesson that KV headroom governs long-context concurrency; it is an upper-bound computation, not measured active lengths.
+- Decision and next action: 64b/96b finals; the KV-capacity arithmetic feeds the cap-choice review.
