@@ -131,3 +131,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: submission log + test receipts [R].
 - Interpretation and limitations: the fail-fast partition check prevents silent quota drift; the 22/42 split matches the Exp4 curriculum the shrink ladder will run against.
 - Decision and next action: record the resubmission's rollout wait/time-per-update/occupancy/step-split; then the 6→4→3→2 shrink ladder.
+
+### 2026-11-22 13:00 UTC - Milestones 5-7: GB200 migration; R1 two clean steps + checkpoint OOM; R3 gates-open
+
+- Question or hypothesis and reason for trying it: right-size the RL job on real rollouts; the H100 path was quota-blocked, so phase 2 migrated to the qualified GB200 acceptance shape.
+- Published source revision: `97d290cc45…` (R1/R2), `6ecac3cceb` (3-engine role-plan fix), `128acb466b` ("Raise the rollout demand gates and reshard the checkpoint save" — `optimizer_checkpoint_sharding_type: dp_reshardable`).
+- Command or material configuration: R1 = `.305` trainer shape (8 nodes × 4 GB200, PP2/CP4/EP4, all_gather) + 4 engines × DP8/EP8 HBM 0.90 = 64 GB200; cadence-3, staleness 2, quotas 22/42, Harbor 256, 30-min budgets, r136 excluded, max_steps 32.
+- External inputs and artifact references: worker milestones 5-7 over Rhizome/STATUS [R]; ray logs `s3://marin-us-east-08a/tmp/ttl=14d/skyrl/…/2026.11.22.2/attempts/ray-logs/rank0-s2lrxs64` (276 files) [R].
+- Environment and hardware when relevant: PRODUCTION 08a; 2-rack cap alongside Mochi's 64.
+- Result, including failure or restart: R1 step 1 = 3,927.6 s (93.1% buffer wait = initial fill; 33.3 gen tok/s/GPU step-avg; mismatch 0.0053); step 2 FINAL CLEAN = 1,695.4 s (admission 1,528.4 s; 82.8 gen tok/s/GPU step-avg; mismatch 0.0062; 113/512 failed); FAILED at step 3 — first cadence-3 checkpoint save OOM'd a host (full optimizer-shard gather ~200 GB × 4 workers). Coordinator: step 2's 90% buffer wait is DEMAND-limited → 3-engine arm cancelled before admission. Fixes: `dp_reshardable` + raised demand gates. R3 gates-open submitted (75e54766).
+- Evidence: REPORT.md rows + ray logs [R].
+- Interpretation and limitations: step 1's 93.1% wait is the initial 64-group fill; step 2's 90.2% wait is demand-limited (engines median 2.25 running/rank), so shrinking engines before raising gates would have misattributed the bottleneck; the OOM is a save-sharding problem, not a training problem. H100 equivalence deferred.
+- Decision and next action: R3 gates-open decides whether demand gates or engines bound; only then does the engine shrink resume.
