@@ -1147,3 +1147,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final timing receipts [R].
 - Interpretation and limitations: on the eval-bearing step, eval+checkpoint are 96.7% of wall time (5,302.9 s of 5,483.4 s) while rollout wait stays ~0.15 s and optimizer ~2 m 12 s — quantifying the BRIEF's checkpoint/eval-dominates-wall-time lesson and the cadence-3 rationale. Rollout wait = learner blocking; generation overlaps prior steps; nested components are disjoint (not double-counted).
 - Decision and next action: addendum only — the campaign record remains closed; the worker's timing wake chain is stopped after this delivery.
+
+### 2026-11-22 13:30 UTC - Post-conclusion addendum: `.120` ended by the user; pre-relaunch fix plan retained
+
+- Question or hypothesis and reason for trying it: record the run's end state after the campaign closed (coordinator request).
+- Published source revision: `.120` root `…-0b9c186a` at `6a118946e6…` — **ended by the user** (no secretary/worker cancellation); the pre-relaunch fix plan lives at `/Users/benfeuer/Documents/experiments/active/mochi-fixes/PLAN.md` (coordinator-authored, 2026-11-22: Track 1 no-regret items — checkpoint-reuse `fb7c31d1a1` already landed, checkpoint/eval overlap, pause-dispatch-at-eval-start, cadence 3, step-0 baseline eval, scoring fixes per #10197; rejected: eval-only budget/cap changes that would decouple eval from the training construct; do NOT relaunch until the coordinator reviews the implementation receipt).
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator request [R]; `/experiments/active/mochi-fixes/PLAN.md` + RECOMMENDATION-A/B/C [R].
+- Environment and hardware when relevant: n/a (run ended; no GPUs held).
+- Result, including failure or restart: run ended by user decision; the measured first-update record and correctness in the Conclusion stand as the campaign's final training evidence.
+- Evidence: PLAN.md [R].
+- Interpretation and limitations: the fix plan targets eval-step wall time (checkpoint/eval overlap, cadence) and scoring defects — consistent with the step-3/4 split addendum (eval+checkpoint = 96.7% of the eval-bearing step).
+- Decision and next action: none for this record — the campaign remains closed; any relaunch would be a new decision.
