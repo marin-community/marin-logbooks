@@ -95,3 +95,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: result receipt + raw window [R].
 - Interpretation and limitations: the first measured decode anchor at 65k context; running is cap-bound at 62.3/64 (p95 64) — so the concurrency-512 demand saturates the 64-slot engine and the next lever is sequence capacity (S3: seqs 64→128, concurrency 1024, landing via loop-push). S1 (HBM 0.75) still running — the HBM delta will be read from the S1-vs-S2 pair.
 - Decision and next action: record S1's window and S3's landing/submission; iterate phase-1 knobs from the measured winner.
+
+### 2026-11-22 05:50 UTC - S1 BASELINE FINAL: 316.9 tok/s/GPU at HBM 0.75 — the HBM knob gives 5.11x; S3 submitted
+
+- Question or hypothesis and reason for trying it: complete the S1-vs-S2 single-knob HBM pair on the exact RL engine shape at the 65k window.
+- Published source revision: `benfeuer/long-loop-prototype` at `1e4a1890ff75fe82d744fc1cd942350ea36b137a` (spec `specs/snowball-decode-baseline.json`).
+- Command or material configuration: exact RL engine shape (TP1/DP8/EP8, BF16, seqs 64/rank, batched 8192, prefix caching, chunked prefill, PIECEWISE graphs, max_model_len 102400) at HBM 0.75; same 65k workload as S2.
+- External inputs and artifact references: worker result cc over Rhizome [R]; receipts `s1-baseline-result.json`, `s2-kv90-result.json`; raw windows `s3://marin-us-east-08a/marin/users/benfeuer/snowball-resize/decode/{baseline-kv75,kv90}-20261122a/` [R].
+- Environment and hardware when relevant: 8 H100, PRODUCTION, federated cw-rno2a; self-shutdown.
+- Result, including failure or restart: FINAL valid 1500 s window — aggregate 2,535.1 gen tok/s; **316.9 tok/s/GPU**; request decode 10.47 tok/s (TPOT 98.9 ms); TTFT 104.7 s mean / 138.6 s p99; running 32.2/64 mean + waiting 31.6; KV 95.6% mean / 99.97% max; prefix hit 9.50%; 3,788/3,788 succeeded; no preemption/OOM.
+- Evidence: result receipts + raw windows [R].
+- Interpretation and limitations: vs S2 (one knob, HBM 0.90): per-GPU **5.11x** (1,618.9), per-request **2.5x** (26.03), TTFT 1.06 s, prefix 99.97%, waiting 0.30, KV 70.3%. At 0.75 the KV budget cannot hold the concurrent shared-prompt working set at the 65k window — requests re-prefill ~64k tokens and decode collapses; at 0.90 the working set fits and the seqs-64 slot cap binds. Synthetic closed-loop prefix residency is friendlier than real RL — phase-2 real rollouts will confirm the RL-side gain. S3 (S2 + seqs 128, concurrency 1024) submitted 23:38:15 UTC.
+- Decision and next action: record S3's window; then the seqs/KV balance determines the next knob.
