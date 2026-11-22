@@ -1171,3 +1171,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: implementation + native receipts [R].
 - Interpretation and limitations: implementation ready for coordinator review; Track 3 (serving-only caps 16/32/64/96k on the current SFT, ≤64 GPU, no RL relaunch before review) proceeding.
 - Decision and next action: none for this record beyond the addendum; relaunch remains gated on the coordinator's review.
+
+### 2026-11-22 16:20 UTC - Post-conclusion addendum: checkpoint-cache integration LANDED (c3877be94f); review receipt issued
+
+- Question or hypothesis and reason for trying it: record the landed checkpoint-cache integration (part of the fix-plan review package; no RL launch).
+- Published source revision: `c3877be94f1f028fe3d45da8acec5d83efef6d0c` via loop-push, on top of drain `69ca69dc89` / scoring-overlap `d4197036d6`.
+- Command or material configuration: persistent DirectS3+FullyParallel strategies cache validated logical plans/metadata/distribution and BF16→FP32 aliases; fresh writer/current payloads per save; any-rank structure change/failure invalidates caches collectively; global alias hook enabled.
+- External inputs and artifact references: worker readout over Rhizome (~16:2x UTC) [R]; review receipt `checkpoint-cache-implementation-receipt.json` [R].
+- Environment and hardware when relevant: exact pinned Torch 2.14.1+cu132 / MCore 0.18 Linux CPU: 11 PASS / 0 skip (8 consecutive saves, byte-exact model+optimizer/common/RNG/model-only restores incl. signed zero, key/shape/dtype changes, 2-rank one-rank-only invalidation); native `.122` no-submit preflight PASS; root-affected 1 PASS; safe CPU 245 PASS (same 14 previously reproduced Pi fails); lint/types PASS.
+- Result, including failure or restart: LANDED and validated; per-rank native timing events now split state/preprocess/distribution/translation/planning/writing and log cache-enabled/validated/reused/invalidated.
+- Evidence: implementation receipt + native proof [R].
+- Interpretation and limitations: the first REAL `.122` cold-vs-later timing and targeted py-spy remain pending the authorized launch — no production gain claimed.
+- Decision and next action: none for this record beyond the addendum; relaunch remains gated on the coordinator's review.
