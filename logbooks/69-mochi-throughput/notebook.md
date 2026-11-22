@@ -1135,3 +1135,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: first-update-final receipts [R].
 - Interpretation and limitations: the close-out criterion is met; the run continues beyond update 1 with unproven cadence/wall-clock; the gap decomposition remains descriptive; the consumed-batch agentic share was never measured.
 - Decision and next action: marin#11954 closed with its final Conclusion; this logbook closed; index record updated to Complete.
+
+### 2026-11-22 05:20 UTC - Post-conclusion addendum: `.120` step-3/4 definitive wall-time split (run continues; campaign record closed)
+
+- Question or hypothesis and reason for trying it: the worker's final timing delivery for the still-running `.120` — retained as an addendum to the concluded campaign record (no re-opening; the Conclusion stands).
+- Published source revision: `.120` unchanged at `6a118946e605a3eba586b0d256139a6690a859cc` (config `rounds/mochi-throughput-train-30m.yaml`, root `…-0b9c186a`).
+- Command or material configuration: disjoint wall-time split from explicit log timers/completion/admission summary (native exact-filter timing query returned 0 rows).
+- External inputs and artifact references: worker final timing readout over Rhizome (~05:2x UTC) [R]; receipts `training120-step3-4-final-timing-receipt.json`, `training120-step-splits-0433.jsonl`, `training120-step4-eval-boundaries.jsonl`.
+- Environment and hardware when relevant: run untouched; the cadence-3 recipe `2ca1e82187…` remains prepared/preflighted/NOT launched; no GPU actions.
+- Result, including failure or restart: step 3 (no eval; completed 02:56:34.806 UTC) total 178.484 s = rollout-wait 0.137 + optimizer 132.076 + checkpoint 0 + eval 0 + other 46.271 (forward 37.10, sync 5.883, dump 2.59). Step 4 (with eval; completed 04:27:58.269 UTC) total 5,483.380 s (91 m 23.4 s) = rollout-wait 0.154 + optimizer 132.118 + checkpoint 1,033.19 + eval incl drain 4,269.71 (2,257.08 drain + 2,011.35 for the 120-trial pool + ~1.28 bookkeeping) + other 48.208 (forward 38.23, sync 6.644, dump 2.59); optimizer 2 m 12.1 s.
+- Evidence: final timing receipts [R].
+- Interpretation and limitations: on the eval-bearing step, eval+checkpoint are 96.7% of wall time (5,302.9 s of 5,483.4 s) while rollout wait stays ~0.15 s and optimizer ~2 m 12 s — quantifying the BRIEF's checkpoint/eval-dominates-wall-time lesson and the cadence-3 rationale. Rollout wait = learner blocking; generation overlaps prior steps; nested components are disjoint (not double-counted).
+- Decision and next action: addendum only — the campaign record remains closed; the worker's timing wake chain is stopped after this delivery.
