@@ -59,3 +59,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Marin contribution PRs:
 - Reproduction instructions:
 - Remaining uncertainty:
+
+### 2026-11-22 00:50 UTC - Milestone 1: baseline RECORDED (256 GPUs); arms S1/S2 declared
+
+- Question or hypothesis and reason for trying it: establish the measured starting point for the resizing sprint.
+- Published source revision: worktree `benfeuer/snowball-resize` from the long-loop tip; loop-push onto `benfeuer/long-loop-prototype` only.
+- Command or material configuration: baseline = Snowball RL **256 GPUs** from the frozen `.51` restart reference (`s3://marin-us-east-08a/marin/users/benfeuer/long-loop-exp3/evidence/restart53/frozen51-reference.json`, sha256 `897f22035802380a63fb748739ae8a66ef208ea67f1fe1e5470bbec417b3e1bb`; consumed by `experiments/post_training/long_loop/exp4.py` `restart_recipe`, mirrored in `specs/rl.yaml`). Layout: policy+ref 10 nodes × 8 H100 (Megatron TP1/PP2/CP5(a2a)/EP8/ETP1) + rollout 22 vLLM engines × TP1/PP1/DP8 (EP8 inside each DP8) = 176 rollout GPUs. Engine: BF16, FLASH_ATTN, triton MoE, seqs 64/rank, batched tokens 8192, HBM 0.75, prefix caching + chunked prefill + CUDA graphs, max_model_len 102400, hermes parser, enable_thinking, routed-expert capture. Gates: full_batch, staleness 2, max_in_flight 32, quotas 32/32 (Exp4 plan 22/42), Harbor 256, checkpoint/eval every 2 steps.
+- External inputs and artifact references: worker milestone-1 cc over Rhizome (session `ses_dfe9b2626ffeHwqZI0Gd8yCX2L`) [R]; receipts `REPORT.md`, `STATUS.md`, `frozen51-reference-20261122.json` under /experiments/active/snowball-resize/ [R].
+- Environment and hardware when relevant: cw-rno2a H100; Exp5 SFT job `/benfeuer/mochi-exp5-2026.11.21.113` running untouched.
+- Result, including failure or restart: baseline recorded; **no baseline measurement exists** (`.51` RL attempt failed 2026-11-17; Exp4/Exp5 RL never launched). Arms declared: **S1 control** (8 H100, exact RL engine shape as a pure serving benchmark: TP1/DP8/EP8, seqs 64, batched 8192, HBM 0.75; synthetic 65,536-token-window prompts, group size 8, output 1024, concurrency 512, warmup 120 s, measure 1500 s) and **S2** (S1 + HBM 0.90). Config lands via loop-push; submission via the standard Iris CLI, PRODUCTION on cw-rno2a; each arm cancelled after its measured window.
+- Evidence: frozen-reference receipt + worker REPORT/STATUS [R].
+- Interpretation and limitations: the layout is recorded from the frozen reference, not measured — phase-2 comparisons will use the sprint's own measured baseline arms; the S1 control provides the first measured anchor at 1/32nd of the rollout fleet.
+- Decision and next action: record S1/S2 submissions and job IDs; measure both 25-min windows; then iterate phase-1 knobs (per Mochi lessons: HBM, sequences, EP, batched tokens).
