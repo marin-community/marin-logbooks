@@ -1099,3 +1099,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: watch receipts [R].
 - Interpretation and limitations: NEW group-eligibility evidence — 131 task_group_completed events, 127 buffer-generated work events / 1,016 rollouts across ALL lookahead batches at weights_step 1; dispositions 20 fully_masked + 8 below_minimum_group_size, NO consumed disposition observed (rejected results + outstanding work, not straggler/reward-collapse proof; source_unknown). Harbor 325 blocked / 325 resumed, 607,497.665 s observed (equal counts not UID-matched; no current-saturation proof); batch 1=2/2, 2=67/67, 3=128/128, 4=128/128. Buffer 00:18:11 None/leased 28 → batch_lookahead 29. Correctness: 38 Hermes headings / 15,682 lines, 0 NaN/nonfinite/degenerate/OOM; 27 RuntimeErrors = Daytona/machine-closed class.
 - Decision and next action: 00:36 UTC checkpoint; the Conclusion awaits the completed update.
+
+### 2026-11-22 12:15 UTC - Priority diagnosis: live buffer snapshot shows batch 1 fully admitted (all 32 groups)
+
+- Question or hypothesis and reason for trying it: diagnose the earlier 71-min first-batch delay with a live read-only buffer snapshot.
+- Published source revision: `.120` unchanged (root 0b9c186a, child a86b6691860a, source 6a118946e6); run untouched.
+- Command or material configuration: read-only buffer snapshot at 00:36:57 UTC.
+- External inputs and artifact references: worker readout over Rhizome (~12:1x UTC) [R]; snapshot receipt `diagnosis-buffer-state-0040.txt` (filename label; actual 00:36:57).
+- Environment and hardware when relevant: only `.120` runs (64 GPU); the pending throughput timer was retired.
+- Result, including failure or restart: **batch 1 is TAKEN — all 32 groups admitted (16/16) with zero uncommitted batch-1 leases**; remaining leases are batches 2–4. Tracing the last admitted group(s) and retry history to explain the 71-min delay; trainer phase being checked.
+- Evidence: live snapshot receipt [R].
+- Interpretation and limitations: the snapshot shows current admission state, not the cause of the delay; the retry-history trace is in progress.
+- Decision and next action: record the trace result when the worker reports; the run remains untouched.
