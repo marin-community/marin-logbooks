@@ -1267,3 +1267,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: paired audit + bounded receipts [R].
 - Interpretation and limitations: sampling stochasticity limits per-case causal claims, but the cohort-level signal (capped cases completing beyond 16k, while genuine repetition persists) supports the cap-choice review once finals land.
 - Decision and next action: final uncensored comparisons when the b-cohorts complete; the cap choice feeds the fix-plan review.
+
+### 2026-11-22 17:30 UTC - Post-conclusion addendum: high-occupancy window analysis separates draining tails from rates
+
+- Question or hypothesis and reason for trying it: distinguish falling-tail concurrency from steady-state rate in the b-cohort partials (a fairer cross-cap read).
+- Published source revision: b roots unchanged (32 source `1952e3d954`, 64/96 source `602ed34a6f`); no new jobs/config/code.
+- Command or material configuration: longest contiguous full-16 series window with mean running ≥ 57.6/64 per arm.
+- External inputs and artifact references: worker readout over Rhizome (~17:3x UTC) [R]; receipts `context-cap-high-occupancy-partial-1519.json`, `context-cap-bounded-1518.json` [R].
+- Environment and hardware when relevant: 48 GPU serving; all qualifications passed.
+- Result, including failure or restart: counts 32b 3,025/3,040, 64b 2,613, 96b 2,652 successful, 0 recorded failed (15/427/388 pending censored; no final cohort.json). **High-occupancy windows (mean running ≥ 57.6/64): 16k FINAL 790.2 s @ 606.308 tok/s/GPU; 32b 823.4 s @ 595.557; 64b 1,112.7 s @ 435.594; 96b 800.9 s @ 597.786** — naturally observed windows with differing live context mix, NOT controlled causal cap gains or a final cap choice. Whole-cohort 16k FINAL 403.716 unchanged.
+- Evidence: high-occupancy + bounded receipts [R].
+- Interpretation and limitations: at matched high occupancy, 16k/32b/96b hold ~595-606 tok/s/GPU while 64b reads 435.6 — suggestive but observational (differing live context mix); the final uncensored comparison remains the decision basis.
+- Decision and next action: b-cohort finals; the cap choice feeds the fix-plan review. Curriculum holdout + derived quotas still required pre-`.122` launch.
