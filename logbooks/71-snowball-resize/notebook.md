@@ -215,3 +215,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: admission state [R].
 - Interpretation and limitations: the GB200-measured layout is the prior; the H100 analogue tests whether the same shape (112 H100 vs 64 GB200) holds wait near 0 — then the ladder 4→3→2 and trainer shrink if arithmetic allows.
 - Decision and next action: arm-table rows hourly; ladder per the wait criterion; the H100 layout concludes the extension.
+
+### 2026-11-23 03:00 UTC - H100 H1 MEASURED: 687.6 s/update at 4 workers — near-identical to GB200 (demand-limited on both); H2 submitted
+
+- Question or hypothesis and reason for trying it: does the GB200-measured right-sized layout hold on H100? The first datapoint (4 workers, gates open).
+- Published source revision: `85ab0b6630…` (H100 analogue round) + `f8591a37df` ("Alias raw row sources to teacher routes in adopted rounds" — fixed the first submission's driver-startup route-classification death); H2 source `dbdd8bc83b…` ("Raise the H100 analogue to sixteen rollout workers").
+- Command or material configuration: trainer 10×8 H100 (80 GPUs, TP1/PP2/CP5/EP8/ETP1, ~21 GB/rank) + 4 engines × DP8/EP8 (32 GPUs, HBM 0.90) = 112 H100; 16-worker intent but the round carried a stale 4-worker value.
+- External inputs and artifact references: worker readout over Rhizome (~03:0x UTC) [R]; REPORT.md H100 arm table section [R].
+- Environment and hardware when relevant: PRODUCTION cw-rno2a; first submission died at driver startup; corrected root admitted.
+- Result, including failure or restart: corrected root `…-75ef1aeb`: step 1 fill 3,627.6 s (19:59:07 UTC); **step 2 CLEAN 687.6 s (20:10:35 UTC)**; step-3 checkpoint survived (117.3 s); cancelled after measurement. Step-2 split: rollout wait 588.0 s = **85.5%**, optimizer 65.6 s (9.5%), prep 29.5 s, sync 1.06 s; engines median 2.78 running/rank, gen 217.7 tok/s/rank median, 28 preemptions, prefix 98.7%; **250.9 gen tok/s/GPU step-average** (response basis 115.5); mismatch 0.0051; 84/512 failed.
+- Evidence: native counters + REPORT row [R].
+- Interpretation and limitations: KEY finding — the round carried a stale 4-worker value, so H1 measured the 4-worker H100 datapoint: **687.6 s vs GB200's 4-worker 687.1 s (near-identical; demand-limited on both)**. The workers-16 knob (H2) is the H100 analogue of the GB200 R4 step.
+- Decision and next action: H2's step timings complete the H100/GB200 comparison at the workers-16 point.
