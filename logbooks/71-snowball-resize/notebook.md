@@ -191,3 +191,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: native counters + REPORT row [R].
 - Interpretation and limitations: the ladder verdict is clean — at 16 workers + gates open + batch 64, 24 rollout GPUs starve the trainer; the minimum width holding wait near 0 is 4 engines (32 GPUs). Right-sized candidate: 8×4 GB200 trainer + 4 engines = 64 GB200, 195.0 s/update measured, 710.7 gen tok/s/GPU. Remaining: the trainer-shrink test (PP2/CP4/EP2 or PP1 variants) proposed to the coordinator pending per-rank memory fit. Exp5 pools migration reassigned to Exp2; curriculum landing 12d161687e verified — the next arm rebases onto it.
 - Decision and next action: coordinator decision on the trainer-shrink arm; then the right-sized layout is complete.
+
+### 2026-11-22 17:30 UTC - CAMPAIGN CONCLUDED: right-sized layout chosen (64 GB200, ~0.96 GPU-hour/update); records closed
+
+- Question or hypothesis and reason for trying it: the campaign's deliverable — the right-sized Snowball RL layout with measured evidence.
+- Published source revision: final arm R5 at `ed6341a535…`; the ladder spans `97d290cc45…` → `128acb466b…` → `be5d9a159d…` → `ed6341a535…`.
+- Command or material configuration: **RIGHT-SIZED LAYOUT: 64 GB200 — trainer 8×4 (PP2/CP4/EP4 all_gather, dp_reshardable checkpoints) + 4 engines × DP8/EP8 at HBM 0.90 (seqs 128, batched 8192); 16 rollout workers; gates open (in-flight 1024, Harbor 384, verifier 384, tasks 2048, executor 384); staleness 2; quotas 22/42; cadence-3; 30-min budgets — ~0.96 GPU-hour per update at batch 64.**
+- External inputs and artifact references: worker closing summary over Rhizome (~17:2x UTC) [R]; full arm table + receipts in worker REPORT.md/STATUS.md; artifacts under `s3://marin-us-east-08a/marin/users/benfeuer/{snowball-resize,long-loop-exp4}/` [R].
+- Environment and hardware when relevant: PRODUCTION 08a (GB200); all arms iris-cancel-own after measurement; no Exp5/Mochi jobs touched.
+- Result, including failure or restart: PHASE 1 — HBM 0.75→0.90 = 5.11× (1,618.9 tok/s/GPU at 65k window); seqs 128 +16.5% (1,886.4). PHASE 2 ladder — 4 workers + closed gates 1,695.4 s at 90.2% wait (demand-limited) → gates open 687.1 s → 16 workers 195.0 s at 13.4% wait (710.7 gen tok/s/GPU; mismatch healthy) → 3 engines REGRESSED (513.1 s at 72.8%). TRAINER-SHRINK DOES NOT FIT (16 ranks ≈ 269 GB/rank vs 192 GB HBM). Both 32-GPU floors held.
+- Evidence: the full measured ladder [R].
+- Interpretation and limitations: CAVEAT — all phase-2 numbers are GB200; the H100-equivalent layout needs one confirming run on cw-rno2a when the reserved fleet frees (the nominal 256-H100 layout never completed an update). SIDE DELIVERABLE: the curriculum-owned-holdout + derived-quota migration (12d161687e) + the exp4 rl-pools artifact. INCIDENCES: one checkpoint-save OOM (fixed), one Kueue quota stall, one premature engine-count arm (corrected by the coordinator).
+- Decision and next action: marin#11969 closed with the Conclusion; this logbook closes; index record updated to Complete.
