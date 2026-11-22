@@ -143,3 +143,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: REPORT.md rows + ray logs [R].
 - Interpretation and limitations: step 1's 93.1% wait is the initial 64-group fill; step 2's 90.2% wait is demand-limited (engines median 2.25 running/rank), so shrinking engines before raising gates would have misattributed the bottleneck; the OOM is a save-sharding problem, not a training problem. H100 equivalence deferred.
 - Decision and next action: R3 gates-open decides whether demand gates or engines bound; only then does the engine shrink resume.
+
+### 2026-11-22 14:00 UTC - R3 STEP 2 CLEAN: 687.1 s/update (2.47x faster than R1); checkpoint fix survived step 3
+
+- Question or hypothesis and reason for trying it: the gates-open arm tests whether demand gates (not engines) bound the phase-2 baseline.
+- Published source revision: `128acb466b…` (demand gates raised + `dp_reshardable` checkpoint sharding).
+- Command or material configuration: R1 geometry unchanged (4 engines × DP8/EP8, HBM 0.90 = 64 GB200); in-flight 1024, Harbor 384, verifier 384, tasks 2048, executor 384, progress 43200; staleness 2, quotas 22/42.
+- External inputs and artifact references: worker readout over Rhizome [R]; REPORT.md arm table [R].
+- Environment and hardware when relevant: PRODUCTION 08a; step 1 fill 4,039.1 s (13:26:37 UTC).
+- Result, including failure or restart: STEP 2 CLEAN 13:38:05 UTC — **687.1 s/update vs R1's 1,695.4 s (2.47x)**; rollout wait 523.9 s = 76.3% (was 90.2%), optimizer 117.5 s (17.1%), training-prep 42.3 s, weight-sync 0.96 s; engines median 3.78 running/rank (peak 398/32), waiting median 0, median gen 221.2 tok/s/rank (peak 545), 19 preemptions, prefix median 98.6%; 214.5 gen tok/s/GPU step-average (response basis 96.39/GPU vs 39.64); mismatch 0.0061; staleness max 1; routes exactly 22/42; 132/512 failed (25.8%), 31 masked. STEP-3 CADENCE CHECKPOINT SURVIVED with dp_reshardable (save 125.5 s, no OOM).
+- Evidence: REPORT.md row + native counters [R].
+- Interpretation and limitations: raising the demand gates cut the update time 2.47x and doubled per-GPU generation — confirming the coordinator's demand-limited diagnosis. The checkpoint fix eliminated the host OOM. The saturation criterion (wait near 0) is not yet met at 76.3%, so the engine shrink stays paused; R3 continues for more clean steps + the step-6 checkpoint.
+- Decision and next action: record further R3 clean steps and the step-6 checkpoint; shrink only when the criterion is met.
