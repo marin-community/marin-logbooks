@@ -2077,3 +2077,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: prior addenda [R].
 - Interpretation and limitations: quiet window for this record.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-22 14:16 UTC - Hourly catch-up (post-conclusion watch)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: no new exp3/exp4 evidence; Exp5 SFT untouched; prior addenda stand (Mochi fix-plan Track 1 complete; Track-3 cap arms in flight).
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator hourly request [R]; prior addenda [R].
+- Environment and hardware when relevant: Exp5 SFT holds 256 H100 on cw-rno2a (untouched).
+- Result, including failure or restart: no new long-loop evidence this window.
+- Evidence: prior addenda [R].
+- Interpretation and limitations: quiet window for this record.
+- Decision and next action: hourly checks continue.
