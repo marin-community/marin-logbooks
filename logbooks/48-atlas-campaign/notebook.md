@@ -2368,3 +2368,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git rev-parse origin/atlas-env-audit` = `12c730dfb7757…` and `git ls-remote` agree [R].
 - Interpretation and limitations: quiet-window conclusions for other sources (Iris job lists) were re-checked live each cycle and stand; only the git-head claim was stale.
 - Decision and next action: always run `git fetch` before reading any head (now a standing step in every cycle, per the coordinator's instruction).
+
+### 2026-11-22 12:15 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `12c730dfb7…` to `4689abce0e…` — five new curation commits: `4689abce0e` [curation] Admit the qualified Forge main release; `85e602928e` [curation] Record Forge retention and SAMPLE results; `bcab0f48ca` [curation] Bind review results to the requested task; `8ce4c5ae87` [curation] Retry inconclusive quality reviews; `734f7e0481` [curation] Record the selected Forge release license.
+- Command or material configuration: `git fetch origin` + `git log 12c730dfb7..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five Forge-curation landings admitted/recorded on the branch since the last fetch.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: curation-side progress (Forge release admission); no campaign-state change evident from commit titles alone.
+- Decision and next action: continue fetch-first hourly checks.
