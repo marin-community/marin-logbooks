@@ -2392,3 +2392,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: robustness/curation-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-22 14:16 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `ac1206d11e…` to `f14b9ea887…` — one new commit: `f14b9ea887` [taskcompendium] Rule revision 2: build-time Dockerfile evidence and honest residual.
+- Command or material configuration: `git fetch origin` + `git log ac1206d11e..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one taskcompendium landing (rule revision 2 with build-time Dockerfile evidence and an honest residual).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: taskcompendium-side progress; no campaign-state change evident from the title alone.
+- Decision and next action: continue fetch-first hourly checks.
