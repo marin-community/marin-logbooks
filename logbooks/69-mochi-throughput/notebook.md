@@ -1339,3 +1339,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: 64k final + prep readout [R].
 - Interpretation and limitations: the 96k/131k window would multiply decode wall-time far beyond the current budget and the KV qualification is open — the prep is deliberately halted on a ruling before any launch.
 - Decision and next action: 64k final analysis; 96b completion; the `.122` 96k/131k decision awaits the coordinator's ruling + the grader-fixed pools.
+
+### 2026-11-22 19:50 UTC - Post-conclusion addendum: 96k/131k/Pi config LANDED (f5f983008e); 64b FINAL reconciliation (41.88% of long outputs finish naturally before 64k)
+
+- Question or hypothesis and reason for trying it: record the landed `.122` 96k/131k prep config and the completed 64k bimodality reconciliation.
+- Published source revision: `f5f983008e…` via loop-push (context 96k/131k/Pi fields + train/eval sampler parity; 13 artifact tests + lint/types PASS; 1,494 broad PASS/9 skip/2 fails reproduced clean on `12d161687e`). Exact fresh native preflight pending the new grader-fixed Exp4 pool manifest (helper confirms PLANNED.2026.11.22.2 after the grader merge + regional CPU build, ~1 h or less, not published yet). `.122` derives 11/21 at 32 groups / 200 val / min 180 / seed 20261020. Current budgets 1800/2280/HBM 0.85 retained for review.
+- Command or material configuration: n/a for the prep (consequences previously flagged: 96k at 5–6 tok/s = 4.55–5.46 h vs the 1800 s budget; Pi 32k headroom/16k keepRecent/78k summary cap; KV 393,561 old-0.85 vs 597,351 sweep-0.90 is a profile comparison, not a new capacity measurement).
+- External inputs and artifact references: worker readout over Rhizome (~19:5x UTC) [R]; receipts `mochi122-96k-{preparation-receipt,consequences,source-config-diff}.json` [R].
+- Environment and hardware when relevant: only the 96b arm still runs (3,026/3,040, 0 failed, 14 censored at 18:18; 16 GPU active).
+- Result, including failure or restart: 64k FINAL retained/cancelled — 3,040/3,040, 9.770% cap, 154.594 tok/s/GPU, 214 preemptions; all 1,186 snapshots × 16 series/reset 0; token reconciliation 33,151,287. Natural >16k before 64k: **41.879% of the 511 long outputs finish naturally**; long hard-loop 10.176% vs 0 short. Plots/JSON now complete for 16/32/64.
+- Evidence: prep receipts + 64k final analysis + bimodality JSON [R].
+- Interpretation and limitations: the 96k/131k decision remains held pending the pool manifest + coordinator review; the bimodality picture now spans three caps (16k 16.2% → 32k 13.9% → 64k 9.8% stops, with 41.9% of 64k-long outputs finishing naturally).
+- Decision and next action: 96b final; then the cap-choice analysis feeds the fix-plan review.
