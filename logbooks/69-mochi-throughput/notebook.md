@@ -1159,3 +1159,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: PLAN.md [R].
 - Interpretation and limitations: the fix plan targets eval-step wall time (checkpoint/eval overlap, cadence) and scoring defects — consistent with the step-3/4 split addendum (eval+checkpoint = 96.7% of the eval-bearing step).
 - Decision and next action: none for this record — the campaign remains closed; any relaunch would be a new decision.
+
+### 2026-11-22 14:00 UTC - Post-conclusion addendum: fix-plan Track 1 COMPLETE for review (no RL launch)
+
+- Question or hypothesis and reason for trying it: record the fix-plan implementation status (coordinator review pending per PLAN.md).
+- Published source revision: landed commits `d4197036d6` (overlap/scoring), `69ca69dc89` (wait|abort drain), `39cd81a63ef9bcfb26f0b2d10a9f29575e20f138` (explicit wait in a Snowball round added during rebase); current `.122` = `rounds/mochi-throughput-train-track1.yaml` with eval_drain=abort; all 23 adopted rounds + 2 base specs explicitly choose their strategy; no running jobs changed.
+- Command or material configuration: abort revokes leases before cancellation, ignores late commits, rejects late RPC arrivals, waits remote-cancellation-safe sandbox cleanup, requeues without stale retries; aborted groups never enter training/score metrics; finished future groups/current batch preserved; AgentTimeout verifier policy unchanged; startup logs strategy, abort events log counts. Vendor pause/resume inspected — per-RPC cancellation/Harbor cleanup reused instead.
+- External inputs and artifact references: worker readout over Rhizome (~14:0x UTC) [R]; receipts `drain-implementation-receipt.json`, `drain-resolved-config-diff.json`, native PASS `drain-native-validation/40d7ed98…/receipt.json`, `cached-planning-investigation-receipt.json` [R].
+- Environment and hardware when relevant: no RL launch; tests only.
+- Result, including failure or restart: Track 1 COMPLETE — exact-source 19 schema/round + 28 drain/scoring/quota + 6 Harbor-cleanup tests PASS; lint/types/native PASS; broad 1,503 pass / 2 previous-baseline fails; safe-SkyRL 244 pass / 14 previous-Pi baseline fails. Track 2 CANCELLED (`.120` val unchanged). MCore cached-planning investigation: direct S3 bypasses the cache (warm 139 ms → 0.19 ms probe ~735x); naive caching FAILED restores on saves 3/4; alias-carrying prototype restored all tensors — production caching NOT enabled.
+- Evidence: implementation + native receipts [R].
+- Interpretation and limitations: implementation ready for coordinator review; Track 3 (serving-only caps 16/32/64/96k on the current SFT, ≤64 GPU, no RL relaunch before review) proceeding.
+- Decision and next action: none for this record beyond the addendum; relaunch remains gated on the coordinator's review.
