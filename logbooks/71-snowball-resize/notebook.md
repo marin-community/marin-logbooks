@@ -167,3 +167,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: submission via loop-push [R]; R3 measured row [R].
 - Interpretation and limitations: the demand-limited diagnosis says the engines are starved by client concurrency — 16 workers × Harbor 24 each should raise admitted demand ~4x if the worker count was the constraint. Failure classes for 132/512: TrialTimeoutError, AgentTimeoutError, VerifierRuntimeError-prepare, Unknown × Daytona sandbox lifecycle; verifier coverage 93.9%; retries 0.30/task.
 - Decision and next action: record R4's step timings; if rollout wait approaches 0 with engines busy, the engine ladder 6→4→3→2 becomes measurable.
+
+### 2026-11-22 16:45 UTC - R4 STEP 2 CLEAN: 195.0 s/update, rollout wait 13.4% — demand diagnosis confirmed; R5 shrinks to 3 engines
+
+- Question or hypothesis and reason for trying it: the workers-16 knob tests whether client-side parallelism was the binding constraint (76.3% buffer wait on R3).
+- Published source revision: `be5d9a159d…` (workers-16 ladder) for R4; `ed6341a535…` ("Bind the three-engine round to the pinned train and validation pools") for R5.
+- Command or material configuration: R4 = R3 geometry + rollout workers 4→16 (cpus/worker 7; Harbor 384 = 24/worker). R5 = one knob engines 4→3 (24 rollout GPUs, 56 GB200 total; old train/validation pins + expected_tasks 120 + eval_drain wait).
+- External inputs and artifact references: worker readout over Rhizome [R]; REPORT.md updated (R4 measured row + R5) [R].
+- Environment and hardware when relevant: PRODUCTION 08a; 64 GB200 (R4) → 56 GB200 (R5); 2-rack cap.
+- Result, including failure or restart: R4 STEP 2 CLEAN 15:28:31 UTC — **195.0 s/update** (R3 687.1 → 3.5x; R1 1,695.4 → 8.7x); rollout wait 26.0 s = **13.4%** (was 76.3%); optimizer 130.8 s (67%); engines median 7.31 running/rank (peak 377), gen 320.3 tok/s/rank median (peak 628), 2 preemptions, prefix 97.1%; **710.7 gen tok/s/GPU step-average** (response basis 356.5/GPU); mismatch 0.0060; step-3 checkpoint survived (113.9 s). R5 submitted ~16:10 UTC.
+- Evidence: native counters + REPORT row [R].
+- Interpretation and limitations: workers 16 cut rollout wait 76.3%→13.4% and tripled per-GPU generation — the demand-limited diagnosis is fully confirmed, and per-update time is now optimizer-dominated (67%). The engine ladder (4→3) is now measurable with near-zero wait. Curriculum handoff: 15 fixture failures fixed, 16/16 green; broader sweep + rl-pools build next.
+- Decision and next action: R5's step timings decide whether 3 engines keep wait near 0; the ladder continues to 2 if so.
