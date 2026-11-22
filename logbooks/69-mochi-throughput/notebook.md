@@ -1363,3 +1363,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: landing + sizing receipts [R].
 - Interpretation and limitations: the 128-GPU candidate is landed and sized but NOT launched; the budget decision (30-min vs full 96k completion, ~122-min wall for cap-hitters) belongs to the user; the pool manifest + fresh preflight remain the launch gate.
 - Decision and next action: coordinator decision on the candidate + budget; then the launch chain resumes.
+
+### 2026-11-22 20:45 UTC - Post-conclusion addendum: `.122` 80-tok/s feasibility packet — NO measured operating point reaches 80; layout math quantified
+
+- Question or hypothesis and reason for trying it: answer the 80-tok/s-per-request feasibility question for the `.122` 96k/131k window with measured decode-vs-concurrency data.
+- Published source revision: analysis only — NO launch/config/job changes; candidate `beba3be775…` preserved.
+- Command or material configuration: observed decode vs running/DP-rank in prefill-quiet/queue-free stable intervals (32k/64k/96k arms); exact whole-EP16-group single-stream evidence (32k 14.785 tok/s over 72.24 s at context 31.7–32.6k; 64k 10.053 over 51.63 s at context 65.8–66.2k); layout arithmetic for one-request-per-rank and per-group scenarios.
+- External inputs and artifact references: worker feasibility packet over Rhizome (~20:4x UTC) [R]; `mochi122-80tps-feasibility.json`, `mochi122-80tps-review-receipt.json`, `mochi122-decode-speed-vs-concurrency.png`, `analyze_mochi_decode_ceiling.py` [R].
+- Environment and hardware when relevant: only the 96b 16-GPU serving arm active; new grader-fixed pool manifest/fresh native preflight still pending.
+- Result, including failure or restart: **NO measured operating point reaches 80 tok/s.** Highest isolated long-context single-stream evidence: 32k 14.785, 64k 10.053 tok/s (96k sole-stream not yet observed; highest individual intervals 15.33/10.20). Exact 98,304/1,200 s needs 81.92 tok/s — a 5.5–8.1x per-token latency reduction from measured isolated points. Replicas alone cannot meet 80; one request/DP-rank needs 256 seq train batch → 16 EP16 groups / 304 GPU (1,024 lookahead: 64 groups / 1,072; 200 eval separate: 13 groups / 256) — and still ~10–15 tok/s. One request per entire EP16 group: 256 groups / 4,144 GPUs, still 10–15. Layout: 144 allocated GPUs (48+6×16) needs 3 domains (current locality packs 64+64+16 across three); strict 2 domains max = 5 groups/80 rollout + 48 trainer = 128 GPU. Budget 1800/2280 UNCHANGED/user decision (96k still 117–182 min decode).
+- Evidence: feasibility packet + analyzer [R].
+- Interpretation and limitations: 80 tok/s is above the observed long-context envelope — not proven a universal hardware ceiling, but no measured point supports it; serving reduced-load envelope ~9–14 tok/s, real RL could be lower (`.120` first-25 4.76 at 24.39 running/rank); neither large-layout RL rate is measured.
+- Decision and next action: coordinator/user decision on the 80-tok/s target and budget; candidate `beba3be775` preserved; pool manifest + fresh preflight still gate any launch.
