@@ -1111,3 +1111,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: live snapshot receipt [R].
 - Interpretation and limitations: the snapshot shows current admission state, not the cause of the delay; the retry-history trace is in progress.
 - Decision and next action: record the trace result when the worker reports; the run remains untouched.
+
+### 2026-11-22 12:30 UTC - 71-min delay EXPLAINED: unusable-group rejection/replacement; TRAINER FORWARD started
+
+- Question or hypothesis and reason for trying it: identify the cause of the 82-minute first-batch admission on the `.120` training run.
+- Published source revision: `.120` unchanged; run untouched.
+- Command or material configuration: live buffer snapshot + group-identity/retry trace + trainer-phase check.
+- External inputs and artifact references: worker readout over Rhizome (~12:3x UTC) [R]; receipts `diagnosis-buffer-state-0040.txt`, `diagnosis-batch1-committed-inventory.json`, `diagnosis-group-identities-0038.jsonl`, `diagnosis-trainer-phase-0039.txt`.
+- Environment and hardware when relevant: only `.120` runs (64 GPU).
+- Result, including failure or restart: batch 1 CLOSED at 00:35:04.473 UTC (82m30s after rollout start) — all 32 groups admitted (16/16), zero uncommitted leases. Final straggler UID 733 (agentic, long-loop-smartie-swesmith): execution 00:15:29.604–00:35:04.457 (1,174.85 s), 0 retries, 0 masked; now finished+committed+consumed. CAUSE: unusable-group rejection/replacement extends the batch beyond one trajectory budget — UID 2122 rejected below_minimum_group_size at 00:15:29.602, UID 2433 fully_masked at 00:15:29.291, replacements receive fresh execution budgets. UID 1407 lengthened by retries (3,742.47 s, mean retry 0.125 — one of 8).
+- Evidence: diagnosis receipts [R].
+- Interpretation and limitations: the delay is a workload-composition effect (rejection/replacement), not an admission bug; the final straggler finished on its first attempt (0 retries). CURRENT PHASE: TRAINER FORWARD — 48 MegatronPolicyWorkerBase.forward tasks RUNNING since 00:35:10 — the first policy update is in progress.
+- Decision and next action: watch for the completed optimizer/training-step marker; then the Conclusion and close-out.
