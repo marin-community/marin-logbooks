@@ -2404,3 +2404,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: taskcompendium-side progress; no campaign-state change evident from the title alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 20:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `f14b9ea887…` to `8f5dbf34a9…` — four new commits: `8f5dbf34a9` Recognize Lego-X in typed source declarations; `36a515dc95` Keep deduplication payloads outside SQLite; `f8c1039f59` Preserve TerminalWorld native prompt line endings; `3b1eaed9d8` [difficulty] Pin composed grader images by digest for LOCAL grader machines.
+- Command or material configuration: `git fetch origin` + `git log f14b9ea887..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: four landings — typed-source recognition, dedup payload storage, prompt line-ending preservation, and digest-pinned grader images for LOCAL grader machines.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: engine/robustness-side progress; digest-pinned grader images is notable for LOCAL grader reproducibility.
+- Decision and next action: continue fetch-first hourly checks.
