@@ -1195,3 +1195,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: bounded-readout artifacts + cohort receipt [R].
 - Interpretation and limitations: the hard-loop detector misses circular reasoning (stratified audit pending); no final cap choice before uncensored comparisons across all four caps.
 - Decision and next action: record the remaining caps' finals; the cap choice feeds the fix-plan review.
+
+### 2026-11-22 14:20 UTC - Post-conclusion addendum: T3 failure investigation complete — one metrics-observer ReadTimeout killed 32a/64a/96a
+
+- Question or hypothesis and reason for trying it: attribute the terminal failures of the 32k-a/64k-a/96k-a cap arms before rerunning them.
+- Published source revision: unchanged (repair remains the landed harness scrape 30 s, `1952e3d954`); no engine/TP/rope/quant change.
+- Command or material configuration: all-rank logs + 12 exact attempt/node records; resolved-engine comparison across caps.
+- External inputs and artifact references: worker investigation readout over Rhizome (~14:2x UTC) [R]; receipt `context-cap-failure-investigation-1406.json` [R].
+- Environment and hardware when relevant: node/rank-group inventory retained (32a/64a/96a each spanning 4 node groups).
+- Result, including failure or restart: the terminal cause of 32a/64a/96a is ONE TaskGroup subexception in the metrics observer — `requests.ReadTimeout` 5 s in `to_thread(snapshot)/scraper.scrape`; engines received SIGTERM at 13:15:38/13:51:27/13:51:19 UTC with TCPStore warnings following. No earlier selected non-repo OOM/NaN/assert/Xid/Traceback on any task; tokenizer repo-utils startup retries also occur in the qualified successful 16k (not fatal). Resolved engines match across caps: 131,072 window, 8,192 batched, 64 seqs, 58.46 GiB/597,351-token KV, graphs 1..128, EP16 AgRs (384 experts/24 local/top-8), TP1/BF16 KV auto, quant None — no cap-specific parallelism/buffer/rope change. Base config `GrugMoeForCausalLM` max_position_embeddings 262,144, rope_theta 10000, no rope scaling; requested 131,072 is below native and worst prompt+96k = 104,248 < window (does not establish trained-context quality). Aborts at ~10.68/46.63/46.69 min of generation; 64a 2,619 complete/421 censored, 96a 2,571/469 (completed p99 ~27,418/19,481); in-flight length-at-death not persisted, so no threshold correlation. 16k gauge coverage corrected (first ~10 s, 5 ranks excluded): running 36.475, KV 47.856% over 2,212.3 s — rate 403.716/GPU unchanged.
+- Evidence: investigation receipt + all-rank logs [R].
+- Interpretation and limitations: the failures were harness-side (observer scrape timeout), not engine/model failures; why the endpoint exceeds 5 s is not yet attributed (not called a random NCCL flake). Repair = the landed 30 s scrape; failed 64/96 will be retained/cancelled and repeated as fresh b cohorts on the same 3,040 inputs/seeds; 32b already submitted.
+- Decision and next action: b-cohort results; no final cap choice, no RL, no Snowball cache port before the battle-tested `.122`.
