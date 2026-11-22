@@ -119,3 +119,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: result + submission receipts [R].
 - Interpretation and limitations: seqs 128 lifted the cap-bound S2 by 16.5% (running 124.1/128 — still cap-bound, so capacity now binds at seqs 128). Phase-2 baseline halves the recorded plan's GPU count (128 vs 256) with a colocated ref; the shrink ladder 6→4→3→2 engines will find the saturation floor.
 - Decision and next action: record the P2 baseline's rollout wait/time-per-update/occupancy/step-split; then shrink steps.
+
+### 2026-11-22 07:00 UTC - Phase-2 resubmission: quotas corrected to the Exp4-faithful 22/42 per the coordinator ruling
+
+- Question or hypothesis and reason for trying it: the phase-2 baseline must carry the curriculum's real route mix, not a placeholder 32/32 split.
+- Published source revision: fix `43f9042f3c30a49a9e34a5ef2cecc62a880d58aa` ("Honor declared route quotas in adopted RL rounds") on top of `ff7276355e…`.
+- Command or material configuration: `build_run` preserves the round's declared `consumed_route_quotas`; smoke derives quotas from its shrunken batch; full runs fail fast unless the declaration partitions the batch (mirroring vendor/skyrl `RolloutBufferConfig.__post_init__`). Resubmission quotas 22/42 + Exp4 source routes (incl. nvidia/Llama-Nemotron-Post-Training-Dataset → nonagentic); same 128-GPU geometry (trainer 10×8 + 6 engines DP8/EP8, HBM 0.90, cadence-3, staleness 2, max_steps 32).
+- External inputs and artifact references: worker cc over Rhizome [R]; submission log `rl-6eng-submission-22-42.log` [R].
+- Environment and hardware when relevant: PRODUCTION cw-rno2a; the first submission (`…-d7d61d95`) was cancelled during startup — no rollout time lost.
+- Result, including failure or restart: resubmitted ~06:55 UTC as `/benfeuer/snowball-resize-rl-6eng-cadence3-2026.11.22.1-coordinator-fcc10dd2`. Tests: 32 passed incl. `test_round_preserves_explicit_route_quotas` (11/21 preserved) and `test_round_rejects_route_quotas_that_do_not_partition_the_batch`; the pre-existing Snowball smoke geometry test passes again.
+- Evidence: submission log + test receipts [R].
+- Interpretation and limitations: the fail-fast partition check prevents silent quota drift; the 22/42 split matches the Exp4 curriculum the shrink ladder will run against.
+- Decision and next action: record the resubmission's rollout wait/time-per-update/occupancy/step-split; then the 6→4→3→2 shrink ladder.
