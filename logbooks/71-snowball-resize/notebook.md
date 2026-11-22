@@ -203,3 +203,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: the full measured ladder [R].
 - Interpretation and limitations: CAVEAT — all phase-2 numbers are GB200; the H100-equivalent layout needs one confirming run on cw-rno2a when the reserved fleet frees (the nominal 256-H100 layout never completed an update). SIDE DELIVERABLE: the curriculum-owned-holdout + derived-quota migration (12d161687e) + the exp4 rl-pools artifact. INCIDENCES: one checkpoint-save OOM (fixed), one Kueue quota stall, one premature engine-count arm (corrected by the coordinator).
 - Decision and next action: marin#11969 closed with the Conclusion; this logbook closes; index record updated to Complete.
+
+### 2026-11-22 19:30 UTC - H100 EXTENSION opened (user directive): H1 submitted and ADMITTED on cw-rno2a
+
+- Question or hypothesis and reason for trying it: the GB200 ladder answered the right-size question on GB200; the user directive extends the campaign to deliver the H100 arm table and the smallest saturated H100 layout (the GB200 Conclusion's open caveat).
+- Published source revision: `85ab0b663021ed89fd99286d5527030a75a6253b` (loop-push "Add the H100 analogue of the right-sized Snowball layout"; round `rounds/snowball-resize-rl-h100-4eng.yaml` v2026.11.22.7, pools-form on curriculum landing `12d161687e`).
+- Command or material configuration: H1 = trainer 10×8 H100 = 80 GPUs (baseline Megatron TP1/PP2/CP5/EP8/ETP1, a2a at CP5; per-rank steady ~21 GB of 80 GB) + 4 engines × DP8/EP8 (32 GPUs, HBM 0.90) = **112 H100**; 16 rollout workers; gates open; staleness 2; derived quotas; cadence-3 + dp_reshardable; 30-min budgets; window 102,400; max_steps 32.
+- External inputs and artifact references: worker extension cc over Rhizome (~19:3x UTC) [R].
+- Environment and hardware when relevant: PRODUCTION cw-rno2a; Exp5 SFT finished (256 H100 free); capacity verified (karan 8-task c150 + ~20 small root/gbr remain). Up to 6 more hours.
+- Result, including failure or restart: H1 submitted ~19:05 UTC and ADMITTED — all 18 child tasks running, no gate (`/benfeuer/snowball-resize-rl-h100-4eng-2026.11.22.7-coordinator-21aebbdf`).
+- Evidence: admission state [R].
+- Interpretation and limitations: the GB200-measured layout is the prior; the H100 analogue tests whether the same shape (112 H100 vs 64 GB200) holds wait near 0 — then the ladder 4→3→2 and trainer shrink if arithmetic allows.
+- Decision and next action: arm-table rows hourly; ladder per the wait criterion; the H100 layout concludes the extension.
