@@ -2065,3 +2065,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: STATUS/PLAN references [R].
 - Interpretation and limitations: the closed campaign records are unaffected; the fix plan targets eval-step wall time and scoring defects for any future relaunch.
 - Decision and next action: none for this record; hourly checks continue.
+
+### 2026-11-22 13:15 UTC - Hourly catch-up (post-conclusion watch)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: no new exp3/exp4 evidence; Exp5 SFT `/benfeuer/mochi-exp5-2026.11.21.113` continues untouched; the Mochi fix-plan addenda (Track 1 complete for review; Track-3 cap arms in flight) are recorded in the #69 notebook.
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator hourly request [R]; prior #69 addenda [R].
+- Environment and hardware when relevant: Exp5 SFT holds 256 H100 on cw-rno2a (untouched).
+- Result, including failure or restart: no new long-loop evidence this window.
+- Evidence: prior addenda [R].
+- Interpretation and limitations: quiet window for this record.
+- Decision and next action: hourly checks continue.
