@@ -1399,3 +1399,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: bring-up packet + Pi trace [R].
 - Interpretation and limitations: the final review packet is PENDING data + fresh preflight — not launch-ready. Only the 96b 16-GPU serving arm remains (19:15: 3,038/3,040, 2 censored, 247 caps → bounds 8.125–8.191%, not final; latest-10 30.50 tok/s aggregate / 2 running total / 0 queue — not stalled).
 - Decision and next action: curriculum merge + regional build → land the pool pin → fresh preflight → coordinator review → launch decision.
+
+### 2026-11-22 22:00 UTC - Post-conclusion addendum: 96k-b FINISHED — all four cap arms now measured/cancelled; serving lane at 0 GPU
+
+- Question or hypothesis and reason for trying it: complete the Track-3 cap sweep's final arm.
+- Published source revision: 96b root cancelled exact (`…-context-cap96k-20261122b`) at source `602ed34a6f…` (spec `specs/mochi-context-cap-96k.json`).
+- Command or material configuration: whole-cohort window; token reconciliation exact (42,476,700 request tokens = counter delta).
+- External inputs and artifact references: worker readout over Rhizome (~22:0x UTC) [R]; receipts `context-cap96b-final.json`, `context-cap96b-final-metrics-analysis.json`, raw `context-cap96b-retained-metrics-1930.json`, cancellation proof `context-cap96b-measured-cancellation.log` [R].
+- Environment and hardware when relevant: all serving arms now measured/cancelled — **0 GPU active in this lane**; the four bimodality/lexical/paired-manual final analyses are running; the serving wake chain stops after the full table.
+- Result, including failure or restart: 96k-b FINISHED — 3,040/3,040 successful, 0 failed/censored; **249 caps = 8.190789% length-stops** (p50/p90/p99 = 1,727/67,669.3/98,304); whole-cohort 2,277.106 aggregate / **142.319 tok/s/GPU**; all 16 generation series 1,644 snapshots/reset 0; time-weighted running 11.379/rank, KV 54.749% mean / 99.977% max, 308 preemptions, prefix 22.678%.
+- Evidence: final receipts + exact token reconciliation [R].
+- Interpretation and limitations: the cap-choice table is now measurable across all four caps — 16k 16.217% / 32k 13.914% / 64k 9.770% / 96k 8.191% stops, with per-GPU rates 403.7 / 302.6 / 154.6 / 142.3 — the longer the cap, the fewer stops and the lower the rate (throughput/cap trade-off quantified). Helper reports merge `0c64090a57` in loop-push (landing not yet verified; remote fetch still `beba`); new pools not published.
+- Decision and next action: full four-cap table + bimodality finals, then the serving wake chain stops; the `.122` chain stays gated on the curriculum holdout/quotas/review.
