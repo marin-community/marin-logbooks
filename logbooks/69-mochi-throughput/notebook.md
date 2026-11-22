@@ -1303,3 +1303,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: bimodality artifacts + analysis receipt [R].
 - Interpretation and limitations: the long-output population is seed-variable within the same prompt (not deterministic), and the lexical-recheck signal scales with length — both caveats bound any "semantic loop" claim; the cap-choice review gets the paired-seed evidence.
 - Decision and next action: 64b/96b finals, then the cap-choice analysis; plots/JSON retained for the review.
+
+### 2026-11-22 18:20 UTC - Post-conclusion addendum: per-mode decode/wall percentiles — 32k long outputs exceed the 1800 s budget in serving
+
+- Question or hypothesis and reason for trying it: quantify what the 32k cap buys in decode time per long output (informs the eval-budget question in the fix-plan review).
+- Published source revision: b roots unchanged (source `602ed34a6f…`); no job/config change.
+- Command or material configuration: completed 16/32 bimodality analysis extended with per-mode decode/wall percentiles (script SHA/receipt updated).
+- External inputs and artifact references: worker readout over Rhizome (~18:2x UTC) [R]; `context-cap-bounded-metrics-1547.json`; `analyze_context_bimodality.py` / `context-cap-bimodality-analysis.json` / `context-cap-bimodality-1536-receipt.json` [R].
+- Environment and hardware when relevant: 32 GPU serving; 64b 2,661/3,040, 96b 2,688/3,040 (0 recorded failures; 379/352 pending censored); stop bounds 0-12.5%/0-11.6%.
+- Result, including failure or restart: 32k long (≥16k) outputs — median decode 12.503 tok/s (p10/p90 11.110/13.367); 32,768 tokens at the median rate implies **43.679 min of decode before TTFT/queue**; actual long-request wall p50/p90/p99 = 2,574.115/2,891.815/3,628.927 s. The 16k median-cap decode is 21.926 min. **These SERVING measurements exceed the 1800 s budget for many 32k long outputs — NOT a measured real-RL projection or an authorized budget change.**
+- Evidence: metrics receipt + analysis artifacts [R].
+- Interpretation and limitations: serving-wall times for 32k-capped long outputs already overshoot the 1800 s agent budget — a material datum for the eval-budget review, explicitly not an RL projection.
+- Decision and next action: 64b/96b finals; the budget/cap trade-off goes to the fix-plan review.
