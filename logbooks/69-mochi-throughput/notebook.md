@@ -1327,3 +1327,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: last-10 metrics receipts [R].
 - Interpretation and limitations: the capacity arithmetic (9×64k / 6×96k outputs per engine KV budget) matches the Mochi lesson that KV headroom governs long-context concurrency; it is an upper-bound computation, not measured active lengths.
 - Decision and next action: 64b/96b finals; the KV-capacity arithmetic feeds the cap-choice review.
+
+### 2026-11-22 19:50 UTC - Post-conclusion addendum: 64k-b FINAL (154.6 tok/s/GPU, 9.77% stops); `.122` 96k/131k prep flags budget/KV consequences
+
+- Question or hypothesis and reason for trying it: the 64k cap arm's final window, and the `.122` 96k/131k preparation's budget consequences.
+- Published source revision: 64b root cancelled via iris-cancel-own after retention (3,040/3,040); `.122` prep on `12d161687e…` — no RL launch.
+- Command or material configuration: 64b spec `specs/mochi-context-cap-64k.json`; `.122` prep = exact 96k cap / 131k train+eval config, awaiting the grader-fixed-pools helper version.
+- External inputs and artifact references: worker readout over Rhizome (~19:5x UTC) [R]; final 64 analysis underway (full receipt packet to follow) [R].
+- Environment and hardware when relevant: 96b 3,013/3,040 (27 censored) still running; 32 GPU requested.
+- Result, including failure or restart: 64k-b FINAL — 3,040/3,040 successful; **9.770% length-stops**; whole-cohort **154.594 tok/s/GPU**; retained/cancelled. `.122` prep consequences sent to the coordinator: at 5–6 tok/s decode, a 96k/131k window implies 4.55–5.46 h decode vs the 1,800 s budget (~9–11k tokens); the six-hour variant needs attempt/progress/stall/10-h run-budget review. **Important KV discrepancy: the sweep's HBM 0.90 = 597,351 tokens vs baseline `.122` HBM 0.85 (old `.120` measured 393,561/50 GiB); the new 131k window is unqualified** — Pi's 131,072 input-window/98,304 output-reserve leaves 32,768 input and 16,384 keepRecent. Existing budgets/HBM 0.85 kept pending a new ruling.
+- Evidence: 64k final + prep readout [R].
+- Interpretation and limitations: the 96k/131k window would multiply decode wall-time far beyond the current budget and the KV qualification is open — the prep is deliberately halted on a ruling before any launch.
+- Decision and next action: 64k final analysis; 96b completion; the `.122` 96k/131k decision awaits the coordinator's ruling + the grader-fixed pools.
