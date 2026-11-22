@@ -2380,3 +2380,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: curation-side progress (Forge release admission); no campaign-state change evident from commit titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-22 13:15 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `4689abce0e…` to `ac1206d11e…` — three new commits: `ac1206d11e` swe-repair: the sandbox-death failures retry (Machine is closed → transient); `61f977fa30` [atlas] Waive the served-catalog lag for the r39-pending admissions; `dc41739140` [taskcompendium] Backfill declared task requirements from the task's own files.
+- Command or material configuration: `git fetch origin` + `git log 4689abce0e..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: three landings — a swe-sandbox-death retry repair, an admissions-lag waiver for r39-pending items, and taskcompendium requirement backfill.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: robustness/curation-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
