@@ -1279,3 +1279,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: high-occupancy + bounded receipts [R].
 - Interpretation and limitations: at matched high occupancy, 16k/32b/96b hold ~595-606 tok/s/GPU while 64b reads 435.6 — suggestive but observational (differing live context mix); the final uncensored comparison remains the decision basis.
 - Decision and next action: b-cohort finals; the cap choice feeds the fix-plan review. Curriculum holdout + derived quotas still required pre-`.122` launch.
+
+### 2026-11-22 17:45 UTC - Post-conclusion addendum: 32k-b FINAL (302.6 tok/s/GPU; 13.914% length-stops); bimodality analysis underway
+
+- Question or hypothesis and reason for trying it: the 32k cap arm's final window and the emerging output-length bimodality question.
+- Published source revision: `…-20261122b` at source `1952e3d954…` (spec `specs/mochi-context-cap-32k.json`); exact root cancelled via iris-cancel-own after retention (proof `context-cap32b-measured-cancellation.log`).
+- Command or material configuration: whole-cohort 4,615.10 s window; same 3,040 paired cohort/engine/sampling/cap as 16k.
+- External inputs and artifact references: worker readout over Rhizome (~17:4x UTC) [R]; final `context-cap32b-final.json` [R].
+- Environment and hardware when relevant: 16 GB200; PRODUCTION 08a, r136 excluded.
+- Result, including failure or restart: 32k-b FINAL — 3,040/3,040 successful, 0 failed/censored; **423/3,040 = 13.914% length-stops** (p50/p90/p99 = 1,814/32,768/32,768); whole-cohort **302.574 tok/s/GPU** over 4,615.10 s. Bimodality analysis underway on existing cohorts: 99 natural finishes in (16k, 32k) = 3.257% of all / 18.966% of the 522 outputs >16k; the remaining 423 hit the cap; mixed <4k AND ≥16k seeds on 80/380 same prompts. 64b 2,641/3,040 and 96b 2,670/3,040 still partial/0 failed (not final stop fractions).
+- Evidence: final receipt + cancellation proof [R].
+- Interpretation and limitations: length-stop fraction at 32k (13.9%) sits between 16k (16.2%) and the 64k/96k bounds (≤15.1%/≤12.9%) — consistent with the cap removing some stopping pressure; the bimodal output distribution (natural finishes vs cap-hits) is under analysis; no cap choice yet.
+- Decision and next action: 64b/96b finals; bimodality plots + lexical/hard-loop analysis; the cap choice feeds the fix-plan review.
