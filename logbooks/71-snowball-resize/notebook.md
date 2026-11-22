@@ -107,3 +107,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: result receipts + raw windows [R].
 - Interpretation and limitations: vs S2 (one knob, HBM 0.90): per-GPU **5.11x** (1,618.9), per-request **2.5x** (26.03), TTFT 1.06 s, prefix 99.97%, waiting 0.30, KV 70.3%. At 0.75 the KV budget cannot hold the concurrent shared-prompt working set at the 65k window — requests re-prefill ~64k tokens and decode collapses; at 0.90 the working set fits and the seqs-64 slot cap binds. Synthetic closed-loop prefix residency is friendlier than real RL — phase-2 real rollouts will confirm the RL-side gain. S3 (S2 + seqs 128, concurrency 1024) submitted 23:38:15 UTC.
 - Decision and next action: record S3's window; then the seqs/KV balance determines the next knob.
+
+### 2026-11-22 06:30 UTC - S3 FINAL (+16.5%); PHASE 2 opens: 128-GPU baseline round submitted (6 engines)
+
+- Question or hypothesis and reason for trying it: complete phase 1 (seqs knob) and open phase 2 (right-size the RL job).
+- Published source revision: S3 spec at `e00de8519b…` (seqs 128); phase-2 round `rounds/snowball-resize-rl-6eng-cadence3.yaml` v2026.11.22.1 at `ff7276355ed1efa7b125726379c5b8713f8dd017` (loop-push "Adopt the Snowball SFT handoff in RL rounds" + adopted-round gate fix: schema-1 handoff acceptance, `build_run` gpu_variant; 10 focused tests; broad-suite harbor failures baseline-matched on the clean parent).
+- Command or material configuration: S3 = S2 + seqs 64→128 (8 H100, concurrency 1024). P2 baseline = 10×8 trainer (TP1/PP2/CP5/EP8/ETP1, ref colocated) + 6 rollout engines DP8/EP8 (HBM 0.90, seqs 64, batched 8192) = 128 GPUs; cadence-3, staleness 2, full_batch, in-flight 1024, quotas 32/32, Harbor 256, 30-min budgets, window 102400, max_steps 32; adopted model Exp4 round-4 handoff 2026.11.18.76 (step 157000); canonical round-runner `--run`.
+- External inputs and artifact references: worker cc over Rhizome [R]; receipts `s3-seqs128-result.json`, `rl-6eng-submission.log`, preflight `/tmp/snowball-6eng-preflight` [R].
+- Environment and hardware when relevant: PRODUCTION cw-rno2a; 128 GPUs vs the recorded 256-GPU plan.
+- Result, including failure or restart: S3 FINAL — 15,091.2 aggregate / **1,886.4 tok/s/GPU** (+16.5% vs S2); request decode 15.33 (TPOT 65.3 ms); TTFT 2.08/1.75/7.36 s; running 124.1/128 cap-bound; KV 83.5%/89.6%; prefix 99.97%; 22,465/0 failed. P2 baseline submitted ~06:20 UTC.
+- Evidence: result + submission receipts [R].
+- Interpretation and limitations: seqs 128 lifted the cap-bound S2 by 16.5% (running 124.1/128 — still cap-bound, so capacity now binds at seqs 128). Phase-2 baseline halves the recorded plan's GPU count (128 vs 256) with a colocated ref; the shrink ladder 6→4→3→2 engines will find the saturation floor.
+- Decision and next action: record the P2 baseline's rollout wait/time-per-update/occupancy/step-split; then shrink steps.
