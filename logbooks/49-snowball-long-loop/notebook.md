@@ -2089,3 +2089,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: prior addenda [R].
 - Interpretation and limitations: quiet window for this record.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-23 20:14 UTC - Hourly catch-up (post-conclusion watch)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: no new exp3/exp4 evidence; Exp5 SFT finished (fleet freed for the Snowball-resize H100 extension); prior addenda stand (Mochi Track 3 FINAL; `.122` gated on the curriculum holdout/quotas/review).
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator hourly request [R]; prior addenda [R].
+- Environment and hardware when relevant: cw-rno2a H100 fleet now serving the Snowball-resize H100 extension (H1 admitted).
+- Result, including failure or restart: no new long-loop evidence this window.
+- Evidence: prior addenda [R].
+- Interpretation and limitations: quiet window for this record; fleet repurposing tracked in the Snowball-resize logbook.
+- Decision and next action: hourly checks continue.
