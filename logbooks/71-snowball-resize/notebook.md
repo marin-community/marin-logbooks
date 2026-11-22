@@ -83,3 +83,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: submission logs [R]; landing commit [R].
 - Interpretation and limitations: in-flight; measured windows follow; arms get iris-cancel-own after measurement. Single-knob design gives a clean HBM read.
 - Decision and next action: record both measured windows when they land; iterate phase-1 knobs from the winner.
+
+### 2026-11-22 05:30 UTC - S2 RESULT: 1,618.9 tok/s/GPU at 65k context (HBM 0.90) — first measured decode anchor
+
+- Question or hypothesis and reason for trying it: does raising HBM 0.75→0.90 lift Snowball decode at the 65,536-token window? (Mochi's winning knob.)
+- Published source revision: `benfeuer/long-loop-prototype` at `1e4a1890ff75fe82d744fc1cd942350ea36b137a` (spec `specs/snowball-decode-kv90.json`).
+- Command or material configuration: exact RL engine shape (8 H100 TP1/DP8/EP8, BF16, FLASH_ATTN, triton MoE, seqs 64/rank, batched 8192, prefix caching, chunked prefill, PIECEWISE graphs, hermes, thinking, top-0 logprobs, max_model_len 102400), HBM 0.90; synthetic 65k-window prompts (mean 64,139 tokens measured), group size 8, output 1024, closed-loop concurrency 512, warmup 120 s, measure 1500 s, request timeout 1200 s.
+- External inputs and artifact references: worker result cc over Rhizome [R]; receipt `s2-kv90-result.json`; raw window `s3://marin-us-east-08a/marin/users/benfeuer/snowball-resize/decode/kv90-20261122a/` [R].
+- Environment and hardware when relevant: 8 H100, PRODUCTION, federated cw-rno2a; job succeeded in 33 m 32 s (self-shutdown).
+- Result, including failure or restart: FINAL valid 1500 s window — aggregate 12,951.2 gen tok/s; **1,618.9 tok/s/GPU**; request decode 26.03 tok/s mean (TPOT 38.4 ms); TTFT 1.06 s mean / 0.79 p50 / 4.10 p99; running 62.3/64 mean (cap-bound, p95 64); waiting 0.30; KV 70.3% mean / 81.0% max; prefix hit 99.97%; 18,802 succeeded / 0 failed; no preemption/eviction/OOM in task-0-vllm.log; PIECEWISE graph capture observed (16 lines).
+- Evidence: result receipt + raw window [R].
+- Interpretation and limitations: the first measured decode anchor at 65k context; running is cap-bound at 62.3/64 (p95 64) — so the concurrency-512 demand saturates the 64-slot engine and the next lever is sequence capacity (S3: seqs 64→128, concurrency 1024, landing via loop-push). S1 (HBM 0.75) still running — the HBM delta will be read from the S1-vs-S2 pair.
+- Decision and next action: record S1's window and S3's landing/submission; iterate phase-1 knobs from the measured winner.
