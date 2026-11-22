@@ -71,3 +71,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: frozen-reference receipt + worker REPORT/STATUS [R].
 - Interpretation and limitations: the layout is recorded from the frozen reference, not measured — phase-2 comparisons will use the sprint's own measured baseline arms; the S1 control provides the first measured anchor at 1/32nd of the rollout fleet.
 - Decision and next action: record S1/S2 submissions and job IDs; measure both 25-min windows; then iterate phase-1 knobs (per Mochi lessons: HBM, sequences, EP, batched tokens).
+
+### 2026-11-22 01:10 UTC - Arms S1/S2 submitted (23:02 UTC); decode-baseline specs landed via loop-push
+
+- Question or hypothesis and reason for trying it: first measured anchor — the exact RL rollout engine shape as a pure serving benchmark, plus the HBM knob that won in Mochi.
+- Published source revision: `benfeuer/long-loop-prototype` at `1e4a1890ff75fe82d744fc1cd942350ea36b137a` ("Add Snowball decode serving specs for the RL resize baseline"; lint + author tests pass).
+- Command or material configuration: specs `experiments/post_training/long_loop/specs/snowball-decode-baseline.json` and `snowball-decode-kv90.json`; engine TP1/DP8/EP8, BF16, FLASH_ATTN, triton MoE, seqs 64/rank, batched 8192, prefix caching, chunked prefill, PIECEWISE graphs, hermes, thinking, top-0 logprobs, max_model_len 102400; workload ~64.5k-token prompts (65,536 window), output 1024, group size 8, closed-loop concurrency 512, warmup 120 s, measure 1500 s, request timeout 1200 s. S2 differs by one knob: gpu_memory_utilization 0.75→0.90.
+- External inputs and artifact references: worker cc over Rhizome [R]; submission logs `s1-baseline-submission.log`, `s2-kv90-submission.log` under /experiments/active/snowball-resize/ [R].
+- Environment and hardware when relevant: PRODUCTION, federated cw-rno2a, 8 H100, 1 task per arm.
+- Result, including failure or restart: S1 `/benfeuer/snowball-resize-decode-baseline-20261122a` submitted 23:02:24 UTC; S2 `/benfeuer/snowball-resize-decode-kv90-20261122a` submitted 23:02:25 UTC. Outputs will land under `s3://marin-us-east-08a/marin/users/benfeuer/snowball-resize/decode/{baseline-kv75,kv90}-20261122a`.
+- Evidence: submission logs [R]; landing commit [R].
+- Interpretation and limitations: in-flight; measured windows follow; arms get iris-cancel-own after measurement. Single-knob design gives a clean HBM read.
+- Decision and next action: record both measured windows when they land; iterate phase-1 knobs from the winner.
