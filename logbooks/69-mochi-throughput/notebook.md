@@ -1207,3 +1207,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: investigation receipt + all-rank logs [R].
 - Interpretation and limitations: the failures were harness-side (observer scrape timeout), not engine/model failures; why the endpoint exceeds 5 s is not yet attributed (not called a random NCCL flake). Repair = the landed 30 s scrape; failed 64/96 will be retained/cancelled and repeated as fresh b cohorts on the same 3,040 inputs/seeds; 32b already submitted.
 - Decision and next action: b-cohort results; no final cap choice, no RL, no Snowball cache port before the battle-tested `.122`.
+
+### 2026-11-22 14:50 UTC - Post-conclusion addendum: Track-3 review handoff + Snowball cache embargo implemented
+
+- Question or hypothesis and reason for trying it: record the Track-3/current review handoff and the cache-embargo implementation (per the updated PLAN).
+- Published source revision: combined review source `c7d7cd084f4287b0d20d8652d93054b5e228d8df` via loop-push (runtime opt-in `9dcb51869a…` + schema follow-up): `trainer.policy.megatron_config.checkpoint_plan_cache=false` by default; ONLY the prepared Mochi `.122` sets true; other plans instantiate fresh uncached DirectS3/FullyParallel each save.
+- Command or material configuration: exact Torch 2.14.1/MCore 0.18 Linux CPU `e`: 14 PASS/0 skip (cached+uncached 8-save key/shape/dtype parity, two-rank invalidation); 285 affected PASS/2 skip; 7 author + 2 generator PASS; lint/types/vendor lint PASS; native `.122` NO-SUBMIT preflight PASS 48+16 on source `c7` with compiled cache True (the schema field had to be generated; canonical annotations repaired, no validator relaxation).
+- External inputs and artifact references: worker handoff over Rhizome (~14:5x UTC) [R]; receipts `checkpoint-cache-optin-receipt.json`, native `checkpoint-cache-optin-native-validation/1728c00e…/receipt.json`, resolved diff `checkpoint-cache-optin-resolved-config-diff.json` (only additional compiled change vs the prepared drain is cache True) [R].
+- Environment and hardware when relevant: 32k-b qualified (load+graphs+exact streaming IDs) with 1,171/3,040 successful at bounded 14:17, 0 observed failed, incomplete; 64k-b/96k-b submitted 14:08:59/14:09:18 (48 GPU total); no more engine changes; 16k FINAL 403.716 tok/s/GPU / 16.217% length-stop stands.
+- Result, including failure or restart: review handoff assembled; Snowball cache embargo implemented per PLAN; first real `.122` planning/restore/py-spy still PENDING authorized launch; Snowball qualification afterward.
+- Evidence: opt-in receipt + native validation [R].
+- Interpretation and limitations: the cache is opt-in and battle-testing (the real `.122` save) precedes any Snowball port. The 14:12 self-wake failed (launchd PATH lacked node); failure proof retained, label removed, PATH fixed, one 14:24 wake armed — no claim that the failed wake exited 0.
+- Decision and next action: none for this record beyond the addendum; the coordinator reviews the handoff.
