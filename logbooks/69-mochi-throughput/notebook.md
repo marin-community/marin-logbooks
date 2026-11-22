@@ -1219,3 +1219,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: opt-in receipt + native validation [R].
 - Interpretation and limitations: the cache is opt-in and battle-testing (the real `.122` save) precedes any Snowball port. The 14:12 self-wake failed (launchd PATH lacked node); failure proof retained, label removed, PATH fixed, one 14:24 wake armed — no claim that the failed wake exited 0.
 - Decision and next action: none for this record beyond the addendum; the coordinator reviews the handoff.
+
+### 2026-11-22 15:10 UTC - Post-conclusion addendum: b-cohort partials + manual diagnostic excerpt audit
+
+- Question or hypothesis and reason for trying it: record the replacement b-cohort partials and the first manual excerpt audit of the 16k hard-loop signal.
+- Published source revision: `.115`-line serving unchanged (32 source `1952e3d954`, 64/96 source `602ed34a6f`); cache source `c7d7cd084f…` already landed (cache c387 + Mochi-only opt-in 9dcb + author-schema c7); `.122` NOT launched.
+- Command or material configuration: bounded partial windows through 14:26 UTC (ages differ, not final cap comparisons); 16k manual diagnostic excerpt audit (seed 1729, 2 per 6 strata, 12 trajectories).
+- External inputs and artifact references: worker readout over Rhizome (~15:1x UTC) [R]; receipts `context-cap-bounded-1426.json`, `context-cap-b-metrics-partial-1428.json`, `context-cap16-manual-excerpt-audit.json` [R].
+- Environment and hardware when relevant: 48 GPU serving (32b+64b+96b); all b-arms qualified load+graphs+exact streaming IDs.
+- Result, including failure or restart: PARTIAL metrics — 32b 9,619.923 agg / 601.245 tok/s/GPU (992.06 s window, running 60.806/64, KV 59.483%/93.125%); 64b 5,493.205 / 343.325 (438.84 s, running 63.463/64, KV 40.125%/61.663%); 96b 7,952.209 / 497.013 (447.08 s, running 63.332/64, KV 42.967%/66.585%); 0 preemptions; counts bounded 14:25: 32b 2,244/3,040, 64b 738/3,040, 96b 1,049/3,040 successful, 0 observed failed — INCOMPLETE. 16k manual excerpt audit: 4 hard-loop controls visibly repeat; 3 of 4 detector-negative length-stop samples are semantic-recheck/circularity candidates, 1 mixed unfinished exploration; 4 natural-stop controls show visible final answers — hard periodic 1.217% alone is NOT a semantic-loop floor.
+- Evidence: bounded metrics + excerpt audit receipts [R].
+- Interpretation and limitations: partials with differing ages — no final cap comparison; finished-request speed/stop fractions are completion-biased. All 16 generation series present in every retained snapshot (no resets/identity loss).
+- Decision and next action: final uncensored comparisons when the b-cohorts complete; the cap choice feeds the fix-plan review.
