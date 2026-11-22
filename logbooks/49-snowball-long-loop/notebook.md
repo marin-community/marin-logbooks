@@ -2053,3 +2053,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job list [R]; landing records [R].
 - Interpretation and limitations: quiet window; the rescore's scored outcome remains pending.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-22 12:15 UTC - Hourly catch-up (post-conclusion watch)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; the long-loop campaign record is closed, so this entry covers only new primary evidence affecting the record.
+- Published source revision: Exp5 SFT `/benfeuer/mochi-exp5-2026.11.21.113` continues untouched (per the Snowball-resize worker); Mochi `.120` was ended by the user (post-conclusion addendum in the #69 notebook and a post-close note on #11954); the Mochi pre-relaunch fix plan lives at `/experiments/active/mochi-fixes/PLAN.md` (coordinator-authored: checkpoint/eval overlap, pause-dispatch-at-eval-start, cadence 3, step-0 baseline eval, scoring fixes per #10197).
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator hourly request [R]; `/experiments/active/mochi-fixes/PLAN.md` [R]; Snowball-resize STATUS (Exp5 note) [R].
+- Environment and hardware when relevant: Exp5 SFT holds 256 H100 on cw-rno2a (untouched by the resizing sprint).
+- Result, including failure or restart: no new exp3/exp4 evidence this window; Exp5 SFT unaffected.
+- Evidence: STATUS/PLAN references [R].
+- Interpretation and limitations: the closed campaign records are unaffected; the fix plan targets eval-step wall time and scoring defects for any future relaunch.
+- Decision and next action: none for this record; hourly checks continue.
