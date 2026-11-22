@@ -1183,3 +1183,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: implementation receipt + native proof [R].
 - Interpretation and limitations: the first REAL `.122` cold-vs-later timing and targeted py-spy remain pending the authorized launch — no production gain claimed.
 - Decision and next action: none for this record beyond the addendum; relaunch remains gated on the coordinator's review.
+
+### 2026-11-22 17:30 UTC - Post-conclusion addendum: Track-3 cap16k FINAL (403.7 tok/s/GPU; 3,040/3,040); other caps pending
+
+- Question or hypothesis and reason for trying it: the fix-plan Track-3 serving probe — does the context cap change eval/decode behavior on the frozen cohort? (First final arm.)
+- Published source revision: `be08ef3e36…` (spec `specs/mochi-context-cap-16k.json`); 16 GB200, TP1/BF16, EP16 seq64, HBM 0.90, window 131072; frozen 380×GS8 cohort.
+- Command or material configuration: 8-h upper budget; unfinished requests censored with bounds (no length stops); no 25-min cancellation; 16k exact root cancelled after measurement.
+- External inputs and artifact references: worker bounded readout over Rhizome (~17:3x UTC) [R]; artifacts `context-cap-bounded-1345.json`, `context-cap-bounded-1359.json`, 16k final `s3://marin-us-east-08a/marin/users/benfeuer/mochi-throughput/context-cap/16k-20261122a/cohort.json` [R].
+- Environment and hardware when relevant: PRODUCTION 08a, r136 excluded, graphs ON.
+- Result, including failure or restart: 16k FINAL — 3,040/3,040 complete, 0 fail; **403.716 tok/s/GPU** (6,459.45 aggregate); running 36.306/64; KV 47.649%/99.919%; length-stop 16.217% (eval 35%, train 11.208%); lengths p50/p90/p99 = 1,760/16,384/16,384 (eval 6,041.5/16,384; train 1,513/16,384); median request 10.625 tok/s, 12 preemptions, prefix 19.954%; hard periodic loops 1.217%. Explicit final marker 78.783%; marker+source-parse+non-length 78.421% (raw boxed-fallback parseability is NOT final-answer success). 32k-a censored at 1,496/3,040 (observer ReadTimeout; retained/cancelled); 32k-b retry submitted 13:58:30; 64k-a 2,619/3,040 and 96k-a 2,571/3,040 pending.
+- Evidence: bounded-readout artifacts + cohort receipt [R].
+- Interpretation and limitations: the hard-loop detector misses circular reasoning (stratified audit pending); no final cap choice before uncensored comparisons across all four caps.
+- Decision and next action: record the remaining caps' finals; the cap choice feeds the fix-plan review.
