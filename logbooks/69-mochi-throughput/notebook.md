@@ -1231,3 +1231,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: bounded metrics + excerpt audit receipts [R].
 - Interpretation and limitations: partials with differing ages — no final cap comparison; finished-request speed/stop fractions are completion-biased. All 16 generation series present in every retained snapshot (no resets/identity loss).
 - Decision and next action: final uncensored comparisons when the b-cohorts complete; the cap choice feeds the fix-plan review.
+
+### 2026-11-22 15:40 UTC - Post-conclusion addendum: T3 five-point analysis (failure attribution closed)
+
+- Question or hypothesis and reason for trying it: close the failure-attribution question for the 32a/64a/96a arms before any resubmission decision.
+- Published source revision: unchanged — Snowball cache remains OFF until the real Mochi `.122` battle-test (explicit opt-in guard `c7d7cd084f…`).
+- Command or material configuration: five-point audit (first error / config / architecture / death lengths / fix).
+- External inputs and artifact references: worker analysis over Rhizome (~15:4x UTC) [R]; `context-cap-five-point-analysis-1442.json`, GPU inventories `context-cap{32,64,96}-gpu-inventory-1434.jsonl`, device logs, failed-response headers/summary [R].
+- Environment and hardware when relevant: 48 GPU serving unchanged; no new launch from this message.
+- Result, including failure or restart: (1) FIRST ERROR: each arm has exactly one terminal TaskGroup subexception — metrics-observer `requests.ReadTimeout` (5 s) in `to_thread(snapshot)/scraper.scrape`; no earlier selected device/numeric/worker-death signal in all-rank task logs; Xid gauges unchanged per GPU across the launch window; sampled free HBM >14 GiB on all 48. (2) CONFIG: 16/32/64/96 identical (TP1/BF16+KV auto/quant None, EP16/DP16, seq 64, batched 8192, HBM 0.90, window 131,072, graphs 1..128); no cap-specific engine/buffer knob found. (3) ARCHITECTURE: 131,072 is below the native 262,144; max input 5,944 + 96k = 104,248 < window (no over-native override; does not prove trained long-context quality). (4) DEATH LENGTHS: aborts at 10.68/46.63/46.69 min; reconstructed per-response metadata gives 1,625/2,619/2,574 successful (supersedes the earlier lower bounds); max completed output 5,051/34,909/25,172 — 64k completed 35,457 prompt+output is inconsistent with a universal 32k crash boundary; in-flight lengths at death were never flushed, so threshold correlation remains unavailable. (5) FIX: the config-first scrape 5→30 s targets the observed fatal deadline; endpoint latency itself not fully profiled; no TP/rope/quant/KV change justified by evidence.
+- Evidence: five-point analysis + inventories [R].
+- Interpretation and limitations: failure attribution closed — a single harness-side observer deadline, not engine/model/cap behavior; qualified b-runs remain unchanged; no further resubmission before this analysis.
+- Decision and next action: none for this record beyond the addendum; b-cohort finals pending.
