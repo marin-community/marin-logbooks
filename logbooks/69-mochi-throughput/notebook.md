@@ -1831,3 +1831,14 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: parsed receipts + bootstrap/cancellation evidence [R].
 - Interpretation and limitations: weights frozen across evals confirms the fence works at scale; the remaining gates are the background-training proof and the wait-arm comparison.
 - Decision and next action: background-training proof + wait-208 comparison → then the conditional `.125` launch chain.
+
+### 2026-11-23 17:20 UTC - Post-conclusion addendum: H100 PRIORITY CONTROL QUALIFIED — 8 full steps, 3 scored evals, weights frozen, background-generation proof
+
+- Question or hypothesis and reason for trying it: complete the priority arm's qualification (≥6 full steps + scored evals + background-generation proof).
+- Published source revision: priority-205 completed **8 FULL steps**, evals 2/4/6 each 2,048 scored with zero infra+rollout failures; eval walls 400.577/413.639/388.434 s, **weights frozen throughout**; admission-fence waits 400.579/413.639 s; full post-eval steps 3/5 = 405.391/417.288 s, buffer wait 0.0556/0.0123 s. **376 TRAIN requests wholly inside eval-2 generated 51,456 tokens (session-id–source join) — the background-generation direct proof.** Abort-206 full steps 1–7; evals 2/4 = 385.338/383.741 s, post-evals 3/5 = 3.618/3.423 s, rollout wait 0.0109/0.0124 s, drain 0.00166/0.00244 s (eval blocks the prior step — no speedup claim from moving cost). Wait-207 bootstrap failed before training, cancelled; the exact-same-config fresh **wait-208 root `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-wait-2026.11.23.208-coordinator-61d6e82e` is the only active arm (2 H100)**. Await its comparison; `.125` NOT launched/`.123` untouched; source `4faf9d1d3e…`, recipe `priority-drain-h100.yaml`.
+- External inputs and artifact references: worker readout over Rhizome (~17:2x UTC) [R]; receipts `priority-debug-priority-abort-qualification-receipt.json`, `priority-debug-205-background-generation-proof.json`, `priority-debug-measured-205-206-cancellation.log`, `priority-debug-wait208-{preflight,submission}.log` [R].
+- Environment and hardware when relevant: measured 205/206 cancelled whole-tree 15:35:59 (iris-cancel-own proof retained); max 6 H100.
+- Result, including failure or restart: PRIORITY QUALIFIED (8 steps, 3 scored evals, frozen weights, background proof).
+- Evidence: qualification + background-proof receipts [R].
+- Interpretation and limitations: the fence holds under load at scale (weights frozen, 51,456 background tokens during eval-2); abort-drain shows eval blocking the prior step (no speedup claim from moving cost); the wait comparison is the last gate.
+- Decision and next action: wait-208 comparison → then the conditional `.125` launch chain.
