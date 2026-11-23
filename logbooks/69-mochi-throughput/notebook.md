@@ -1471,3 +1471,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission notice [R].
 - Interpretation and limitations: the review→launch chain is complete; startup/first-update evidence follows.
 - Decision and next action: record startup/first-update when the readouts land.
+
+### 2026-11-23 04:00 UTC - Post-conclusion addendum: `.122` APPROVED LAUNCH RECORD (submitted source 414c84fbd6 on the reviewed basis)
+
+- Question or hypothesis and reason for trying it: record the approved launch record distinguishing the submitted source from the reviewed one.
+- Published source revision: **submitted at source `414c84fbd66eeae867ec4ecd621d3c8fbd42c18a`** (landed via loop-push; 16 native-compiled adopted-round tests PASS 25.90 s + lint); review basis was `5ea71b9c8c…`.
+- Command or material configuration: requested 128 GB200 (48+80/5 EP16), TP1 BF16, PRODUCTION 08a/r136 excluded. **Both confirmations recorded**: absent/null temperature resolves generator T.7; an explicit mismatch is rejected for behavior logprobs; max_turns null does NOT remove the 1800 s agent async deadline/Harbor phase timeout (outer attempt 2280, default verifier score). Overlong lmax 98,304/lcache 16,384 via owned context fractions .75/1/.6 (the old 65,536 generic default was not deliberate); penalty scale 0 PRESERVED. **No other compiled change vs the reviewed `5ea`.**
+- External inputs and artifact references: worker launch record over Rhizome (~04:0x UTC) [R]; full record `mochi122-approved-launch-record.json`; submission receipt/log `mochi122-submission-receipt.json`/`.log`; confirmations `mochi122-runtime-confirmations.json`; exact review diff `mochi122-approved-diff-vs-reviewed.json`; fresh native receipt `mochi122-approved-native-validation/f581b625…/receipt.json`; compiled SHA `3fb8d6689627382025afb5ad02cbe19e5714240a748441630193cb1ff5445cca` [R].
+- Environment and hardware when relevant: canonical Iris runtime placeholders filled from the execution plan at submit; priority/cluster/exclusion preserved; no GPU startup-qualification claim yet (watchdog has the root).
+- Result, including failure or restart: launch record complete; all 200 val/derived 11+21/96k-131k/1800-2280/16 workers/Harbor 384/abort drain/cadence 3/cache/baseline eval unchanged.
+- Evidence: launch record + native validation [R].
+- Interpretation and limitations: awaiting startup + real cache/timing/numeric evidence; no job-status polling/new probes/duplicate/future own wake.
+- Decision and next action: record startup/first-update evidence when readouts land.
