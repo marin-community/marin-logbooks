@@ -1543,3 +1543,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: timing receipt [R].
 - Interpretation and limitations: measurement only — the 11:45 UTC wake sits near the baseline first-30-min budget boundary and is never a cancellation deadline.
 - Decision and next action: 11:45 UTC measurement wake; both runs untouched.
+
+### 2026-11-23 11:50 UTC - Post-conclusion addendum: `.124` STEP-0 eval 180/200 through 11:45:32 UTC
+
+- Question or hypothesis and reason for trying it: read-only timing checkpoint at the baseline 30-min budget boundary.
+- Published source revision: root `…-124-coordinator-d5cfb839` / child `…-afeb88567c0d` at source `64b10eb79199fb1f738a3433851af59cc67d27a4` (config unchanged).
+- Command or material configuration: read-only; neither run touched; `.123` untouched.
+- External inputs and artifact references: worker readout over Rhizome (~11:5x UTC) [R]; receipt `mochi124-timing-1145-receipt.json` + adjacent completion/native/errors SQL+JSONL and window.json [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: baseline STEP 0 reached **180/200 completion progress at 11:45:32.653 UTC (1,835 s)** — not scored coverage or periodic eval-3. No optimizer/full Training step/periodic-eval completion or weight update in the bounded interval; selected native timing observations 0; eval-3 wall / next-sync wait / full post-eval-4–5/refill timing remain UNAVAILABLE vs the `.123` full-step controls (2,254 s / 3,625 s). The initial baseline and 30-min boundary are not that comparison or cancellation deadlines. Error query 23 rows: 19 prospective all-output-loss-masked warnings ("may lead to NaN loss"), 2 Hermes tool-call extraction headings, 2 traceback headings; no observed NaN/RuntimeError/OOM in selection; rows/Ray dedup are not distinct failures or failure fractions.
+- Evidence: timing receipt [R].
+- Interpretation and limitations: measurement only; the 12:00 UTC wake is a normal-watchdog-aligned checkpoint.
+- Decision and next action: 12:00 UTC wake; both runs untouched.
