@@ -1591,3 +1591,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: timing receipt [R].
 - Interpretation and limitations: the learner is now in its post-rollout phase (forward/optimizer); the update-completion marker is the next watch item. The 1,949 s learner wait at 32 groups is below `.120`'s fill (82 m 30 s) but above the steady-state `.123` step-3 wait (0.137 s) — the fill/learner split will be separated when the update completes.
 - Decision and next action: 12:45 UTC wake; both runs untouched.
+
+### 2026-11-23 12:50 UTC - Post-conclusion addendum: `.124` FIRST FULL STEP-1 completed (2,868.8 s total; 3 native phase observations)
+
+- Question or hypothesis and reason for trying it: the first full training step on `.124` is the qualification milestone.
+- Published source revision: root `…-124-coordinator-d5cfb839` / child `…-afeb88567c0d` at source `64b10eb79199fb1f738a3433851af59cc67d27a4` (recipe unchanged).
+- Command or material configuration: read-only; `.123` untouched.
+- External inputs and artifact references: worker readout over Rhizome (~12:5x UTC) [R]; receipt `mochi124-timing-1245-receipt.json` + adjacent SQL/JSONL/window/fired proof [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **FIRST FULL STEP 1 completed 12:37:23.704 UTC — total 2,868.793 s; rollout wait 1,949.285 s; optimizer 501.520 s (completed 12:37:15.121); serving weight sync 7.890 s / model 1 / reason `training_step` at 12:37:23.012.** Native 3 individual `phase_duration_seconds` observations confirm full-step/wait/sync. Step-2 rollout batch started 12:37:23.711 (32 groups required). Bounded evidence through 12:45:30.116 UTC; periodic eval-3 wall/next-sync wait/full post-eval-4/5+refill still UNAVAILABLE vs `.123` FULL STEP-3 = 2,254 s / FULL STEP-5 = 3,625 s (step-1/baseline-0 are not that comparison; async overlap will be separated). Error query 40 rows: 5 Hermes / 35 tracebacks, 0 loss-masked warnings/NaN/RuntimeError/OOM; chains not classified.
+- Evidence: timing receipt [R].
+- Interpretation and limitations: the first full step's split — rollout wait 68%, optimizer 17.5%, sync 0.3% — is consistent with `.124`'s fresh-fill regime; the steady-state comparison against `.123` (rollout wait 0.137 s) comes with later steps once the fill amortizes.
+- Decision and next action: 13:00 UTC wake; both runs untouched.
