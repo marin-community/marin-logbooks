@@ -1902,3 +1902,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission + compiled receipts [R].
 - Interpretation and limitations: the conditional launch executed exactly per the approval chain (H100 gate → priority → loop-push → preflight → submit).
 - Decision and next action: startup qualification, then the first-update watch.
+
+### 2026-11-23 18:50 UTC - Post-conclusion addendum: `.125` GPU child identified (pending on peer 08a in the initial snapshot)
+
+- Question or hypothesis and reason for trying it: track `.125`'s GPU child identity.
+- Published source revision: GPU child `/benfeuer/long-loop-mochi-throughput-train-track1-2026.11.23.125-coordinator-1c7e2129/long-loop-mochi-throughput-train-track1-2026.11.23.125-a0201dbc52df` — submitted 16:22:22.887 UTC, pending on peer 08a in ONE initial snapshot 16:22:27. Root running; GPU startup/admission not yet qualified.
+- Command or material configuration: no second job tree/status poll planned.
+- External inputs and artifact references: worker cc over Rhizome (~18:5x UTC) [R]; launch record `mochi125-launch-record.json`; timeouts/gates `mochi125-timeouts-gates.json`; native preflight `mochi125-priority-native-validation/6463a26d…/receipt.json`; compiled SHA `357e5f4700…`; source `520b8829a8…` [R].
+- Environment and hardware when relevant: `.123` untouched.
+- Result, including failure or restart: child identified, pending admission.
+- Evidence: launch record [R].
+- Interpretation and limitations: single bounded startup read planned 16:36 UTC (queueing allowed).
+- Decision and next action: record the startup qualification when it lands.
