@@ -1639,3 +1639,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: failure receipt + admission-error context + remote exception [R].
 - Interpretation and limitations: the directive's prerequisites (eval-3 completion + next-sync + post-eval/refill) were NOT met — the run self-terminated first, so no cancellation was needed and the comparison is partial (step-3 only). The control-flow regression (publish deferred during eval vs next_batch admission) must be fixed before any `.125` relaunch; the numeric evidence (mismatch 0.0051-era, correct gates) is unaffected.
 - Decision and next action: coordinator decides on the control-flow fix + relaunch; the partial step-3 comparison is retained as evidence.
+
+### 2026-11-23 13:45 UTC - Post-conclusion addendum: `.124` terminal FAILED confirmed; admission-fence fix verified against the reproduced error
+
+- Question or hypothesis and reason for trying it: confirm the terminal state and the fix's coverage of the reproduced admission-fence regression.
+- Published source revision: `.124` root and GPU child terminal FAILED (root 1 failed task; child 1 failed + 31 cosched_failed; GPU driver exit 1) — no cancellation was necessary; `.123` untouched. Receipt `mochi124-stop-confirmation-receipt.json`.
+- Command or material configuration: the admission-fence regression was reproduced with the exact already-taken error pre-fix and now **passes both eval-success and eval-failure cases**; 14 targeted native tests pass; required lint/types and vendor Ruff pass; broader failures are being checked against the clean landed parent before loop-push.
+- External inputs and artifact references: worker cc over Rhizome (~13:4x UTC) [R]; stop-confirmation receipt [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: terminal state confirmed; the partial comparison (full step-3 1,142 s vs `.123` 2,254 s; eval wall/next-sync/post-eval-refill unmeasured, no gain claim) is recorded in the worker REPORT.
+- Evidence: stop-confirmation receipt [R].
+- Interpretation and limitations: the fix is unit-verified against the reproduced failure; the broader-suite check gates the loop-push.
+- Decision and next action: loop-push after the broader check; the coordinator's sign-off gate is retained.
