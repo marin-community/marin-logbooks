@@ -1459,3 +1459,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final review packet + native validation + resolved config [R].
 - Interpretation and limitations: the HF credential exposure was already reported — producer redacted record, **token still needs user rotation**; no credential bytes in the packet.
 - Decision and next action: coordinator review of the packet → launch decision (no RL launch before review).
+
+### 2026-11-23 03:50 UTC - Post-conclusion addendum: `.122` SUBMITTED (root …-122-coordinator-2f429993) after the coordinator's approval
+
+- Question or hypothesis and reason for trying it: launch the reviewed `.122` (96k/131k window, 128 GB200) after the coordinator's approval over the long-tail fix and both confirmations.
+- Published source revision: submitted at source `414c84fbd66eeae867ec4ecd621d3c8fbd42c18a` (recipe `rounds/mochi-throughput-train-track1.yaml` v2026.11.22.122; review source was `5ea71b9c8c…`).
+- Command or material configuration: 128 GB200 (48 trainer + 80 rollout, 5×TP1/DP16/EP16); 96k/131k TP1 BF16; PRODUCTION 08a; the approved overlong fix + both confirmations complete.
+- External inputs and artifact references: worker submission notice over Rhizome (~03:5x UTC) [R].
+- Environment and hardware when relevant: root `/benfeuer/long-loop-mochi-throughput-train-track1-2026.11.22.122-coordinator-2f429993`; watchdog root ID.
+- Result, including failure or restart: **SUBMITTED** — the reviewed `.122` is launched.
+- Evidence: submission notice [R].
+- Interpretation and limitations: the review→launch chain is complete; startup/first-update evidence follows.
+- Decision and next action: record startup/first-update when the readouts land.
