@@ -1735,3 +1735,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission log [R].
 - Interpretation and limitations: the three-arm comparison (unfixed/fixed/abort) is assembling.
 - Decision and next action: record the abort arm's behavior; then the wait arm.
+
+### 2026-11-23 15:35 UTC - Post-conclusion addendum: H100 wait control submitted (fourth debug arm; all three drain modes + unfixed control now staged)
+
+- Question or hypothesis and reason for trying it: the wait control completes the drain-mode A/B/C/D set.
+- Published source revision: `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-wait-2026.11.23.204-coordinator-f5d8253d` — two H100, INTERACTIVE cw-us-east-02a, source `e166630a4e…`; same cohort/config as fixed-priority and abort except drain/derived scheduler.
+- Command or material configuration: submission log `priority-debug-wait-submission.log`.
+- External inputs and artifact references: worker cc over Rhizome (~15:3x UTC) [R].
+- Environment and hardware when relevant: `.202` + `.203` + `.204` request six H100s total, below 16. The negative `.201` reproduced the exact already-taken failure and was cancelled.
+- Result, including failure or restart: wait control submitted.
+- Evidence: submission log [R].
+- Interpretation and limitations: all arms staged; results determine the drain-mode sign-off.
+- Decision and next action: record the wait arm's behavior alongside fixed/abort.
