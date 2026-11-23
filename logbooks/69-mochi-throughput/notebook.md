@@ -1651,3 +1651,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: stop-confirmation receipt [R].
 - Interpretation and limitations: the fix is unit-verified against the reproduced failure; the broader-suite check gates the loop-push.
 - Decision and next action: loop-push after the broader check; the coordinator's sign-off gate is retained.
+
+### 2026-11-23 14:00 UTC - Post-conclusion addendum: admission-fence fix LANDED (b6cb142750) — shared `_admission_window` joins priority eval before admission
+
+- Question or hypothesis and reason for trying it: land the control-flow fix for the `.124` fatal failure.
+- Published source revision: **fix LANDED via loop-push: `b6cb1427505405e651ea2e7b5e91b102c1e7956e`** (github commit/link on file). Shared `_admission_window` joins priority eval before `next_batch`/`next_batch_metadata`; eval completes the deferred context.publish before admission resumes; the weight-sync fence is retained; a failed eval prevents consumption/publication; both batch builders covered; wait/abort unchanged. No recipe changes.
+- Command or material configuration: regression uses real RolloutBuffer consumed+prefilled batches across an active eval — the exact already-taken error reproduced pre-fix; success/failure cases pass post-fix. 14 targeted tests PASS on the landing head; required lint/types, vendor Ruff, docs links PASS. Broader native 17 pass/4 fail and affected-root 37 pass/2 fail — **all 6 failures independently reproduce on the clean `e45e8b7a6b67` parent** (4 existing checkpoint fixtures, 2 preset fingerprints); no tolerance/expectation weakening.
+- External inputs and artifact references: worker cc over Rhizome (~14:0x UTC) [R]; implementation receipt `mochi124-priority-admission-fix-receipt.json` (commits/tests/baseline/landing logs + terminal evidence); source paths `vendor/skyrl/skyrl-train/skyrl_train/trainer.py`, `tests/cpu/test_best_checkpoint_selection.py` [R].
+- Environment and hardware when relevant: no self-wakes; no job submitted; **no new priority Mochi run without the coordinator's sign-off**.
+- Result, including failure or restart: REPORT records `.124` full step-3 = 1,142 s (exact 1,142.180678) vs `.123` 2,254 s; eval wall/next-sync wait/post-eval-refill UNMEASURED after the step-4 failure; no gain claim.
+- Evidence: implementation receipt + test/landing logs [R].
+- Interpretation and limitations: the fix is landed with the regression reproduced pre-fix and green post-fix; the 6 broader-suite failures are all independently reproduced on the clean parent (pre-existing, not introduced).
+- Decision and next action: coordinator sign-off gates any new priority Mochi run; the fix awaits that decision.
