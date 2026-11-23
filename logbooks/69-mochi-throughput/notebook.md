@@ -1723,3 +1723,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: normalization receipt + capacity/clipping analyses [R].
 - Interpretation and limitations: the KV estimate (46.7k/seq at 2× batch) quantifies why 96k does not fit at the doubled batch — consistent with the sweep's KV-pressure findings.
 - Decision and next action: H100 fixed-priority proof, then the coordinator's sign-off gates any RL launch.
+
+### 2026-11-23 15:25 UTC - Post-conclusion addendum: H100 abort control submitted (third debug arm)
+
+- Question or hypothesis and reason for trying it: the abort-drain control completes the A/B/C comparison across drain modes.
+- Published source revision: `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-abort-2026.11.23.203-coordinator-c6b6c598` — two H100, INTERACTIVE cw-us-east-02a, source `e166630a4e…`; same cohort/config as fixed-priority except drain and derived scheduler.
+- Command or material configuration: submission log `priority-debug-abort-submission.log`.
+- External inputs and artifact references: worker cc over Rhizome (~15:2x UTC) [R].
+- Environment and hardware when relevant: fixed-priority + abort request four H100s total; wait arm next, then six total. No `.123` changes.
+- Result, including failure or restart: abort control submitted.
+- Evidence: submission log [R].
+- Interpretation and limitations: the three-arm comparison (unfixed/fixed/abort) is assembling.
+- Decision and next action: record the abort arm's behavior; then the wait arm.
