@@ -1519,3 +1519,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: coordinator logs [R].
 - Interpretation and limitations: `.124` is a separate concurrent run — its relationship to `.123` (replacement vs parallel) is governed by the coordinator's approvals, not inferred here.
 - Decision and next action: record qualification evidence when it lands; `.123` remains the recorded approved launch.
+
+### 2026-11-23 11:20 UTC - Post-conclusion addendum: `.124` startup readout — graphs captured, baseline eval STEP 0 began
+
+- Question or hypothesis and reason for trying it: record `.124`'s startup qualification from bounded MARINhub evidence.
+- Published source revision: GPU child `…-124-afeb88567c0d` active; historical SchedulingGated 10:57 is NOT current queue state. Source `64b10eb79199fb1f738a3433851af59cc67d27a4`, recipe `rounds/mochi-throughput-train-track1.yaml` (approved 128 GPU 48+80).
+- Command or material configuration: actual engine TP1/DP16/bfloat16/quantization None/KV auto/window 131,072; priority in live driver config. Graph completion messages 11:11–11:12 (Ray-dedup coverage, not an independent 80-engine count). Initial sync step0/model0/reason initial 11:14:57.092 UTC (5.696 s); native gates 11:14:57.095 confirm eval_drain priority, 16 workers, Harbor 384, 11/21, stale 3, max_in_flight 1024.
+- External inputs and artifact references: worker readout over Rhizome (~11:2x UTC) [R]; receipts `mochi124-startup-1111-receipt.json`, `mochi124-live-concurrency-event-receipt.json`, full launch record `mochi124-launch-record.json`, review/CPU-preflight/104-checks packet `mochi124-priority-review-packet.json` [R].
+- Environment and hardware when relevant: one logged Hermes malformed-tool-JSON traceback in baseline; 16 config-probe error headings followed by successful load/graphs/sync. No selected RuntimeError/OOM/NaN; not a failure fraction/full output audit. Trainer-vs-rollout mismatch unavailable before trainer metrics.
+- Result, including failure or restart: **baseline eval STEP 0 began 11:14:57.511 UTC**. Periodic-eval-3 wall / next-sync wait / full post-eval 4–5+refill wall all UNAVAILABLE, not zero; `.123` references 2,254 s (step 3) / 3,625 s (step 5). No completed-update or periodic-policy-fence claim yet.
+- Evidence: startup + gate receipts [R].
+- Interpretation and limitations: startup qualified through graphs/sync/STEP-0 eval start; no throughput claim yet.
+- Decision and next action: one timing wake 11:37 UTC; `.123` untouched; no job/code/config mutations.
