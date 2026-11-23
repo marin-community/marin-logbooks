@@ -1495,3 +1495,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission notice [R].
 - Interpretation and limitations: supersedes the `.122` submission (which presumably hit the tokenizer-root issue); startup/first-update evidence follows.
 - Decision and next action: record startup/first-update when readouts land.
+
+### 2026-11-23 04:00 UTC - Post-conclusion addendum: `.123` LAUNCH RECORD — tokenizer root fix + JSON protocol follow-up; compiled config exactly matches the approved `.122`
+
+- Question or hypothesis and reason for trying it: record the `.123` launch record — the root fix and its verification.
+- Published source revision: fresh `.123` submitted (exit 0) at source `06c18421506efac5691131dcdcf5467dd2baf4c3`; **root fix `20b44617c6`** + JSON-protocol follow-up `06c1842150` landed via loop-push. The checkpoint-side export was model-only (no JSON/tokenizer assets); the pinned fast source is unchanged `marin-community/marin-tokenizer-tools@3f6879ac…`; isolated local metadata binding with provenance; the original export is untouched, streaming weights remote, no sentencepiece; embedded-checkpoint mismatch guards kept.
+- Command or material configuration: **MANDATORY native CPU vocabulary preflight PASS — the actual 128,256-token map, head 128,256, fingerprint sha256 `9e4b1007ef95…`**; native receipt `mochi123-native-validation/297d3cb1…/receipt.json`; compiled.yaml SHA `83d19e842d…`.
+- External inputs and artifact references: worker launch record over Rhizome (~04:0x UTC) [R]; full record `mochi123-launch-record.json`; submission receipt `mochi123-submission-receipt.json`; fix evidence `mochi123-implementation-receipt.json`; config parity `mochi123-approved-config-parity.json` [R].
+- Environment and hardware when relevant: native compiled config **EXACTLY matches the approved `.122` after only version normalization** (128 GPU 48+80, TP1 BF16, 96k/131k, 1800/2280, default verifier, 200 val/11+21, Harbor 384/workers 16, graphs/HBM 0.90, abort drain/cadence 3/cache/baseline eval). 51 long-loop + 26 targeted tests PASS; follow-up 16 adopted + 4 protocol/vocab PASS; lint/docs/vendor Ruff PASS; the existing stale consumed-config-path test failure independently reproduced at the `414` baseline (unchanged). `.122` failed receipts kept.
+- Result, including failure or restart: admission/startup not yet qualified; watchdog has the root; no job-status poll/future own wake.
+- Evidence: launch record + preflight + parity receipts [R].
+- Interpretation and limitations: the tokenizer-root fix + vocabulary preflight close the launch-blocking issue; the compiled-config parity proves the only delta is the version.
+- Decision and next action: admission/startup qualification next; first-update evidence follows.
