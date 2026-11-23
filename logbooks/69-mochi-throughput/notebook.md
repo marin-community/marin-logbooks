@@ -1579,3 +1579,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: timing receipt [R].
 - Interpretation and limitations: the fill continues with no update markers yet — consistent with the 32-group batch budget.
 - Decision and next action: 12:30 UTC wake; watchdog unchanged.
+
+### 2026-11-23 12:35 UTC - Post-conclusion addendum: `.124` STEP-1 ROLLOUT BATCH completed (32 groups / 256 trajectories, 1,949.3 s learner wait)
+
+- Question or hypothesis and reason for trying it: the step-1 rollout-batch completion is the first major fill datum on `.124`.
+- Published source revision: root `…-124-coordinator-d5cfb839` / child `…-afeb88567c0d` at source `64b10eb79199fb1f738a3433851af59cc67d27a4` (recipe unchanged).
+- Command or material configuration: read-only; no job/code/config changes or status polls; `.123` untouched.
+- External inputs and artifact references: worker readout over Rhizome (~12:3x UTC) [R]; receipt `mochi124-timing-1230-receipt.json` + adjacent bounded SQL/JSONL/window/fired proof [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **STEP-1 ROLLOUT BATCH completed 12:22:05.338 UTC — 32 groups / 256 trajectories / 1,678,450 response tokens, staleness 0, duration 1,949.285 s (learner rollout wait, not full-step/optimizer duration).** No optimizer/full Training step/periodic-eval completion or weight update observed; selected native timing rows 0; the subsequent instantaneous learner phase not established. Baseline 0 (2,077.268 s) is not periodic eval-3. Eval-3 wall/next-sync wait/full post-eval-4/5+refill remain UNAVAILABLE vs `.123` FULL STEP-3 = 2,254 s / FULL STEP-5 = 3,625 s; async overlap will be separated. Error query 71 selected rows: 8 Hermes headings / 63 traceback headings, 0 loss-masked warnings, 0 selected observed NaN/RuntimeError/OOM; new traceback chains not classified (Ray dedup/rows are not distinct failure counts/fractions or a full output audit).
+- Evidence: timing receipt [R].
+- Interpretation and limitations: the learner is now in its post-rollout phase (forward/optimizer); the update-completion marker is the next watch item. The 1,949 s learner wait at 32 groups is below `.120`'s fill (82 m 30 s) but above the steady-state `.123` step-3 wait (0.137 s) — the fill/learner split will be separated when the update completes.
+- Decision and next action: 12:45 UTC wake; both runs untouched.
