@@ -1771,3 +1771,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission log [R].
 - Interpretation and limitations: the min_tokens-0 correction addresses the eval-2 guard failure; the abort/wait arms follow the same pattern.
 - Decision and next action: record the repaired arm's behavior; then the corrected abort/wait arms.
+
+### 2026-11-23 16:25 UTC - Post-conclusion addendum: repaired abort control submitted (`…-206-coordinator-1192915d`)
+
+- Question or hypothesis and reason for trying it: the corrected abort-drain arm (same min_tokens-0 fix).
+- Published source revision: `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-abort-2026.11.23.206-coordinator-1192915d` — two H100, INTERACTIVE 02a, source `4faf9d1d3e…`; same revised cohort 2048/min_tokens 0/cap 256/config as priority-205 except drain and derived scheduler; native preflight and parity PASS.
+- Command or material configuration: submission log `priority-debug-repaired-abort-submission.log`.
+- External inputs and artifact references: worker cc over Rhizome (~16:2x UTC) [R].
+- Environment and hardware when relevant: prior failed controls cancelled; `.123` untouched/`.125` unlaunched.
+- Result, including failure or restart: repaired abort control submitted.
+- Evidence: submission log [R].
+- Interpretation and limitations: the corrected A/B/C set (fixed-205/abort-206/wait pending) is assembling.
+- Decision and next action: record the corrected arms' behavior.
