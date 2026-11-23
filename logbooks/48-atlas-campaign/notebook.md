@@ -2464,3 +2464,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: grader-path clarification; no campaign-state change evident from the title alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 06:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `4e08cfd722…` to `047bc68189…` — four new commits: `047bc68189` [difficulty] Let the composed toolchain image satisfy a declared packages lock; `8693d6c1ea` Admit the qualified Terminal-Lego root-delivery release; `df4133fc8e` Count delivery contracts in the shared grading census; `527accdd66` [curation] Declare the requirement-backfill variants and register their dedup receipts.
+- Command or material configuration: `git fetch origin` + `git log 4e08cfd722..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: four landings — a composed-toolchain packages lock, a Terminal-Lego root-delivery release admission, grading-census delivery-contract counting, and requirement-backfill variant declarations with dedup receipts.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: curation/difficulty-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
