@@ -2452,3 +2452,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: robustness-side progress; no campaign-state change evident from the title alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 03:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `9286de783c…` to `4e08cfd722…` — one new commit: `4e08cfd722` [difficulty] Use the native lock-runtime grader path on LOCAL; composed images are Daytona-only.
+- Command or material configuration: `git fetch origin` + `git log 9286de783c..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one difficulty-side landing (LOCAL uses the native lock-runtime grader path; composed images remain Daytona-only).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: grader-path clarification; no campaign-state change evident from the title alone.
+- Decision and next action: continue fetch-first hourly checks.
