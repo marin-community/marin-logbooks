@@ -1687,3 +1687,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission log [R].
 - Interpretation and limitations: reproduction evidence gates the remaining arms.
 - Decision and next action: record the reproduction result and the fixed/abort/wait arm launches.
+
+### 2026-11-23 14:45 UTC - Post-conclusion addendum: H100 negative-control GPU child FAILED before reproduction (driver error being read); `.125` correction landed
+
+- Question or hypothesis and reason for trying it: the negative-control's GPU child failed before the admission-fence reproduction was established.
+- Published source revision: GPU child `…-201-a21e3d4b4625`; regional CPU preflight PASS 14:24 UTC, GPU submitted 14:25:30, root reported child FAILED 14:30:44. The first GPU driver error is being read — not yet called the already-taken reproduction. Separately: a `.125` correction `8f91ddf738` landed, restoring the learning rates exactly to `.123`; fresh no-run/diff underway, no launch.
+- Command or material configuration: n/a.
+- External inputs and artifact references: worker cc over Rhizome (~14:4x UTC) [R].
+- Environment and hardware when relevant: no fixed/abort/wait launch; no `.123` changes.
+- Result, including failure or restart: negative-control GPU child FAILED pre-reproduction (debug-harness issue, attribution in progress).
+- Evidence: worker readout [R].
+- Interpretation and limitations: the debug itself needs its own repair before it can reproduce the fence failure.
+- Decision and next action: driver-error attribution; `.125` correction diff recorded when it lands.
