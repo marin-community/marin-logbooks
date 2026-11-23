@@ -1507,3 +1507,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: launch record + preflight + parity receipts [R].
 - Interpretation and limitations: the tokenizer-root fix + vocabulary preflight close the launch-blocking issue; the compiled-config parity proves the only delta is the version.
 - Decision and next action: admission/startup qualification next; first-update evidence follows.
+
+### 2026-11-23 11:15 UTC - Post-conclusion addendum: `.124` GPU child admitted-shape observation (`.123` untouched)
+
+- Question or hypothesis and reason for trying it: track the concurrently submitted `.124` run's child identity (a separate lane from `.123`).
+- Published source revision: `.124` root `/benfeuer/long-loop-mochi-throughput-train-track1-2026.11.23.124-coordinator-d5cfb839` — GPU child `…-124-afeb88567c0d`; coordinator logs confirm submission 10:57:10.746 UTC, 32 replicas, nvlink.domain.
+- Command or material configuration: coordinator-log observation only.
+- External inputs and artifact references: worker cc over Rhizome (~11:1x UTC) [R].
+- Environment and hardware when relevant: admission/qualification still unconfirmed; `.123` untouched.
+- Result, including failure or restart: child identified; no qualification claim.
+- Evidence: coordinator logs [R].
+- Interpretation and limitations: `.124` is a separate concurrent run — its relationship to `.123` (replacement vs parallel) is governed by the coordinator's approvals, not inferred here.
+- Decision and next action: record qualification evidence when it lands; `.123` remains the recorded approved launch.
