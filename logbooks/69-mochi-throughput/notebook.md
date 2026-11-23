@@ -1555,3 +1555,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: timing receipt [R].
 - Interpretation and limitations: measurement only; the 12:00 UTC wake is a normal-watchdog-aligned checkpoint.
 - Decision and next action: 12:00 UTC wake; both runs untouched.
+
+### 2026-11-23 12:05 UTC - Post-conclusion addendum: `.124` BASELINE 0 finished (200/200, wall 2,077 s); training batch 1 started
+
+- Question or hypothesis and reason for trying it: read-only checkpoint at the baseline/rollout transition.
+- Published source revision: root `…-124-coordinator-d5cfb839` / child `…-afeb88567c0d` at source `64b10eb79199fb1f738a3433851af59cc67d27a4` (config unchanged).
+- Command or material configuration: read-only; neither run touched; `.123` untouched.
+- External inputs and artifact references: worker readout over Rhizome (~12:0x UTC) [R]; receipt `mochi124-timing-1200-receipt.json` + adjacent completion/native/errors/context SQL+JSONL [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **BASELINE 0 finished 200/200 completion progress at 11:49:32.968 UTC; final startup/eval_before_train wall 2,077.268 s at 11:49:34.779 UTC.** Completion progress is not scored coverage and the baseline is NOT periodic eval-3. **Training batch 1 started 11:49:34.786 UTC, requiring 32 groups.** No optimizer/full Training step/periodic-eval completion or weight update in the interval; selected native timing observations 0; eval-3 wall/next-sync wait/full post-eval-4/5+refill wall still UNAVAILABLE vs `.123` FULL STEP-3 = 2,254 s / FULL STEP-5 = 3,625 s. Overlap-inclusive error query 72 rows: 35 prospective loss-masked warnings, 9 Hermes extraction headings, 28 traceback headings; no selected observed NaN/RuntimeError/OOM; two sampled bounded contexts identify an 11:46 ReadError/CancelledError + AgentTimeoutError and an 11:50 ASGI lifespan GeneratorExit/pending task — not all traceback chains classified; no numeric-regression/fatal conclusion (Ray dedup/log rows are not distinct failures or failure fractions).
+- Evidence: timing receipt [R].
+- Interpretation and limitations: the baseline eval finished within the 30-min budget (~34.6 min wall vs the 1,800 s per-turn budget boundary context); batch 1 is now filling.
+- Decision and next action: 12:15 UTC wake; both runs untouched.
