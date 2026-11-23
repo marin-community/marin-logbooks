@@ -1854,3 +1854,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: local Ray log receipts [R].
 - Interpretation and limitations: FULL step 1 at 8.185 s shows the wait arm's near-zero wait immediately — consistent with wait-drain preserving admitted batches; eval-2/step-2 continue.
 - Decision and next action: single bounded checkpoint 16:00 UTC to retain both measured cycles; no job-status polling.
+
+### 2026-11-23 18:10 UTC - Post-conclusion addendum: H100 priority-drain debug COMPLETE — final comparison table; the conditional `.125` gate is SATISFIED
+
+- Question or hypothesis and reason for trying it: complete the H100 drain-mode comparison (the gate for the conditional `.125` approval).
+- Published source revision: all arms at source `4faf9d1d3e…`, recipe `priority-drain-h100.yaml`; 205/206 cancelled 15:35:59, 208 cancelled 16:01:19 after retention (iris-cancel-own proofs retained). Debug wake chain STOPPED.
+- Command or material configuration: final comparison (eval-2/eval-4 seconds): **priority .205** eval 400.577/413.639, admission fence 400.579/413.639, FULL post-eval steps 3/5 = 405.391/417.288, buffer wait 0.05558/0.01228; **abort .206** eval 385.338/383.741, FULL post-eval 3/5 = 3.618/3.423, buffer wait 0.01091/0.01237, drain 0.001655/0.002437; **wait .208** eval 371.171/392.080, FULL post-eval 3/5 = 2.983/3.363, buffer wait 0.00803/0.01157, drain 0.000095/0.000090. Full step-2+3/4+5 totals: priority 408.113/421.365, abort 391.923/390.245, wait 376.792/398.726.
+- External inputs and artifact references: worker debug-complete readout over Rhizome (~18:1x UTC) [R]; receipts `priority-drain-h100-final-comparison.json`, `priority-debug-wait208-local-1600-parsed.json`, `priority-debug-205-background-generation-proof.json`, `priority-debug-measured-208-cancellation.log` [R].
+- Environment and hardware when relevant: both eval cycles in ALL modes scored 2,048/2,048 with zero reported infra/rollout failures; wait generated 385,069/379,674 tokens; fixed priority passed 8 FULL steps with frozen eval-2/4/6 serving weights, no re-taken batches; 376 training requests wholly during eval-2 generated 51,456 tokens.
+- Result, including failure or restart: the comparison is complete and **the H100 evidence gate for the conditional `.125` approval is SATISFIED**. `.123` untouched; no `.125`/GB200 launch/config change in this checkpoint per its latest restriction.
+- Evidence: final-comparison receipt + per-arm parsed logs [R].
+- Interpretation and limitations: priority moves the eval wait into the next admission (no speedup claim); the buffer was prefilled, so the tiny-debug refill is not real-Mochi refill evidence. The A/B/C comparison (unfixed reproduces / fixed holds / abort and wait drain cleanly) is complete.
+- Decision and next action: the conditional `.125` launch chain can execute per the approval (enable priority → loop-push → exact-source preflight → PRODUCTION 08a).
