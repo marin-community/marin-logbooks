@@ -1878,3 +1878,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: published-issue receipt [R].
 - Interpretation and limitations: training progress curves only — no performance/correctness claims.
 - Decision and next action: the user verifies; the curves update with further training.
+
+### 2026-11-23 18:30 UTC - Post-conclusion addendum: `.208` cancellation clarified (intentional, post-retention); `.125` launch proceeding per the explicit direction
+
+- Question or hypothesis and reason for trying it: clarify that `.208`'s cancellation was intentional post-retention (the summary wording may have read otherwise), and record the `.125` launch start.
+- Published source revision: `.208` was intentionally cancelled with iris-cancel-own at 16:01:19 UTC AFTER retaining successful eval-2/4 (2,048/2,048 scored each) and full post-evals 3/5 (log `priority-debug-measured-208-cancellation.log`). All measured roots cancelled; fixed-priority passed 8 FULL steps, frozen eval-2/4/6 weights, 376 training requests wholly inside eval-2 / 51,456 tokens. Two-step totals (2+3 / 4+5): priority 408.113/421.365, abort 391.923/390.245, wait 376.792/398.726 — wait moves between steps, no speedup claim. Final receipt `priority-drain-h100-final-comparison.json`.
+- Command or material configuration: **proceeding with the explicit `.125` launch direction**: priority setting, loop-push, fresh native preflight, single PRODUCTION 08a submission; `.123` untouched.
+- External inputs and artifact references: worker cc over Rhizome (~18:3x UTC) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: launch chain started.
+- Evidence: final-comparison receipt [R].
+- Interpretation and limitations: all three drain modes validated; the launch is now authorized and executing.
+- Decision and next action: record the `.125` landing/preflight/submission.
