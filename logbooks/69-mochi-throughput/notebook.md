@@ -1914,3 +1914,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: launch record [R].
 - Interpretation and limitations: single bounded startup read planned 16:36 UTC (queueing allowed).
 - Decision and next action: record the startup qualification when it lands.
+
+### 2026-11-23 19:00 UTC - Post-conclusion addendum: `.125` bounded startup — runtime initialized, graphs captured, FlashInfer autotuning fresh
+
+- Question or hypothesis and reason for trying it: `.125`'s bounded startup qualification (marin hub, exact child `…-125-a0201dbc52df`).
+- Published source revision: GPU startup ACTIVE (not queued in this window); runtime cores initialize 16:28:24–32 UTC with TP1/DP16/BF16/quantization None/KV auto/window 131,072/graphs PIECEWISE; graph completions 16:36:08/11/17 (22/22/27 s, .79 GiB, Ray repeat 47/32 — not unique-engine identity coverage); FlashInfer autotuning fresh 16:36:31.
+- Command or material configuration: initial policy sync / effective native concurrency event / baseline eval / completed update NOT YET observed — UNAVAILABLE, not zero. Selected error query has only printed max_consecutive_nonfinite_steps: 3; no selected actual Traceback/RuntimeError/OOM/NaN. Native gate query 0 rows.
+- External inputs and artifact references: worker readout over Rhizome (~19:0x UTC) [R]; receipt `mochi125-startup-1636-receipt.json` + retained SQL/JSONL [R].
+- Environment and hardware when relevant: no run/code/config changes; `.123` untouched. Source `520b8829a8…`, recipe `rounds/mochi-throughput-train-track1.yaml`.
+- Result, including failure or restart: startup progressing (runtime init + graphs + autotuning); the 16:36 timer verified 1 run/exit 0/empty stderr and removed; one bounded initial-sync follow-up planned 16:44 UTC, then the startup chain stops when qualified.
+- Evidence: startup receipt [R].
+- Interpretation and limitations: startup-only state — no throughput/update claims.
+- Decision and next action: 16:44 UTC initial-sync follow-up; then qualification.
