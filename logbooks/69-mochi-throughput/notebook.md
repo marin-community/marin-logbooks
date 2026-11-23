@@ -1423,3 +1423,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: all-final receipt + plots + manual audits [R].
 - Interpretation and limitations: the cap sweep quantifies the throughput/length-stop/decode-time trade-off end-to-end — the cap choice (16k fastest vs 96k fewest stops at ~2.8x the wall time) now has complete measured evidence for the fix-plan review.
 - Decision and next action: serving wake chain STOPPED; `.122` UNLAUNCHED pending the published grader-fixed pools + pin landing + fresh native preflight + coordinator review (helper merge `0c64090a57` reported, landing unverified; old `.1` not used; no Snowball cache port).
+
+### 2026-11-23 03:20 UTC - Post-conclusion addendum: SECURITY finding — HF OAuth token exposed in a published artifact (user rotation required); `.122` data-pin landing underway
+
+- Question or hypothesis and reason for trying it: record a security finding surfaced by the helper during pools verification.
+- Published source revision: pools2 manifest `4110aa66…` and val `9210cfa…` retained/verified; the `.122` one-line data-pin landing is underway (approved 128 GPU / 96k / budgets unchanged); fresh no-run native preflight follows on the clean landed source.
+- Command or material configuration: n/a.
+- External inputs and artifact references: worker cc over Rhizome (~03:2x UTC) [R]; helper confirmation that the **HF OAuth token was exposed in the published `.artifact.json` `provenance.command_line` and has now been REDACTED** (new artifact SHA `a6dbc2d5…`); source-artifact fingerprint `8e25f661` preserved [R].
+- Environment and hardware when relevant: no token bytes in the message/review packet.
+- Result, including failure or restart: **the exposed token requires USER ROTATION** — the redaction fixes the artifact, not the credential.
+- Evidence: helper confirmation [R].
+- Interpretation and limitations: provenance.command_line captured the token when the helper's pipeline embedded its command line; rotation is a user action outside the record's scope.
+- Decision and next action: flag rotation to the coordinator/user; the `.122` chain proceeds with the data pin + fresh preflight.
