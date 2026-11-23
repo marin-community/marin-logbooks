@@ -1699,3 +1699,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker readout [R].
 - Interpretation and limitations: the debug itself needs its own repair before it can reproduce the fence failure.
 - Decision and next action: driver-error attribution; `.125` correction diff recorded when it lands.
+
+### 2026-11-23 15:00 UTC - Post-conclusion addendum: reproduction ACHIEVED (unfixed 201 exactly reproduced already-taken step 3); FIXED-priority debug submitted
+
+- Question or hypothesis and reason for trying it: the unfixed negative control reproduced the fence failure; the fixed arm is the A/B confirmation.
+- Published source revision: unfixed root `…-201-coordinator-014da4be` cancelled (iris-cancel-own, exit 0; log `priority-debug-unfixed-cancellation.log`) after it **exactly reproduced the already-taken step-3 error**; FIXED-priority H100 debug submitted `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-priority-2026.11.23.202-coordinator-1c08c2cc` (2 H100 INTERACTIVE 02a, source `e166630a4e…`).
+- Command or material configuration: matched to the unfixed run; fixed-mode step/eval weight fence + background training proof pending.
+- External inputs and artifact references: worker cc over Rhizome (~15:0x UTC) [R]; log `priority-debug-fixed-priority-submission.log` [R].
+- Environment and hardware when relevant: `.123` untouched.
+- Result, including failure or restart: reproduction ACHIEVED on the unfixed control; fixed arm in flight.
+- Evidence: cancellation log + submission log [R].
+- Interpretation and limitations: the A/B pair (unfixed reproduces / fixed passes) is the clean validation the sign-off needs.
+- Decision and next action: record the fixed arm's step/eval/fence behavior.
