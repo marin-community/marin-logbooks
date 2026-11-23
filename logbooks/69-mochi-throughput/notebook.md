@@ -1759,3 +1759,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: worker reconciliation + CPU replay [R].
 - Interpretation and limitations: the min_tokens=256 default was authored into the eval request and conflicts with logprob serving — a debug-recipe defect, not an engine failure; the fix is config-level.
 - Decision and next action: corrected fixed/abort/wait arms after tests/preflight; the reproduction evidence stands.
+
+### 2026-11-23 16:15 UTC - Post-conclusion addendum: repaired fixed-priority arm submitted (`…-205-coordinator-94dc8bc1`; min_tokens 0 both phases)
+
+- Question or hypothesis and reason for trying it: relaunch the fixed-priority arm with the serving-guard correction.
+- Published source revision: `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-priority-2026.11.23.205-coordinator-94dc8bc1` — two H100, INTERACTIVE 02a, source `4faf9d1d3e7814f393af42530c775f3938ae8b39`. Both phases min_tokens 0; new immutable 2,048-task eval cohort at concurrency 2/cap 256. Exact runtime sampling-guard regression + native preflight PASS; graphs remain ON.
+- Command or material configuration: former `.202`/`.203`/`.204` failed/cancelled; the `.201` exact unfixed reproduction retained.
+- External inputs and artifact references: worker cc over Rhizome (~16:1x UTC) [R]; log `priority-debug-repaired-priority-submission.log` [R].
+- Environment and hardware when relevant: no `.123`/`.125` launch or change.
+- Result, including failure or restart: repaired fixed-priority arm submitted.
+- Evidence: submission log [R].
+- Interpretation and limitations: the min_tokens-0 correction addresses the eval-2 guard failure; the abort/wait arms follow the same pattern.
+- Decision and next action: record the repaired arm's behavior; then the corrected abort/wait arms.
