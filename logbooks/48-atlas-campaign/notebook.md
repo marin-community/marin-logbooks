@@ -2440,3 +2440,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: quiet window.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 01:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `5cc35ad9d…` to `9286de783c…` — one new commit: `9286de783c` [difficulty] Fix the digest pin for the wave's skopeo and surface its errors.
+- Command or material configuration: `git fetch origin` + `git log 5cc35ad9dc..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one difficulty-side landing (digest-pin fix + error surfacing for the wave's skopeo).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: robustness-side progress; no campaign-state change evident from the title alone.
+- Decision and next action: continue fetch-first hourly checks.
