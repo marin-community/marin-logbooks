@@ -2524,3 +2524,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: security/robustness-side progress (credential handling); no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 14:12 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `0c1a23c597…` to `233a56bdd9…` — five new commits: `233a56bdd9` [difficulty] Project the declared judge's base URL through the environment config's persistent env; `b45c1e42c3` [difficulty] Regression: the runtime's import graph must not need Harbor; `430cd75550` [difficulty] Keep declared-judge detection out of Harbor-dependent modules; `744391525b` [difficulty] Serve a frozen bundle's own declared judge on the shared Together route; `d66db0f7fc` [atlas] Type Use, Method and Format and compute a PendingStage for every Pending source.
+- Command or material configuration: `git fetch origin` + `git log 0c1a23c597..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — declared-judge routing/decoupling (base-URL projection, import-graph decoupling from Harbor, frozen-bundle judge serving on the shared Together route) and typed Atlas source staging (Use/Method/Format + PendingStage computation).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: architecture/robustness-side progress (judge plumbing decoupled from Harbor); no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
