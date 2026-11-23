@@ -12,3 +12,9 @@ uv run python -m experiments.evaluation.knotmeter.cli run \
   --stage probe --profile "$inputs/snowball-bf16-c128.yaml" \
   --campaign da6-fp8-confirm-01a1f7c4 --priority interactive
 ```
+
+## Capture path
+
+Both Snowball Probes finished with full checks and native archives on runner `4546acc39a32a528841bcdc22b20e744ada0265b`. Snowball Confirm uses the same runner. Both Mochi Probes also start on that revision. Mochi Confirm uses DA5's `8689b72dd46abe09b3be3c58cea155387870bf11`, which fixes coordinated follower shutdown and retains a leader snapshot before shutdown. It changes result capture and accounting after the timed window. The serving profiles, checker, goldens, limits and AgentX protocol are identical across these runner revisions.
+
+The existing capture, trial and follower tests passed 67 cases on the Mochi launch checkout. A small CPU fixture used the exact capture helper to publish and read back two checksum-verified archive paths in the target S3 bucket. The normal path replaced the receipt with its final archive while keeping the earlier archive readable. The test without a final writer kept the before-shutdown receipt. These fixtures have no GPU measurements. [Storage receipts](s3://marin-us-east-02a/marin/knotmeter/campaigns/da6-fp8-confirm-01a1f7c4/capture-validation/8608046f605a/)
