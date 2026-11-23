@@ -1483,3 +1483,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: launch record + native validation [R].
 - Interpretation and limitations: awaiting startup + real cache/timing/numeric evidence; no job-status polling/new probes/duplicate/future own wake.
 - Decision and next action: record startup/first-update evidence when readouts land.
+
+### 2026-11-23 03:40 UTC - Post-conclusion addendum: `.123` SUBMITTED (fresh relaunch; tokenizer root fix + mandatory CPU vocabulary preflight)
+
+- Question or hypothesis and reason for trying it: a fresh `.123` relaunch on the reviewed configuration — the tokenizer root fix was needed before launch.
+- Published source revision: fresh `.123` at source `06c18421506efac5691131dcdcf5467dd2baf4c3` (approved configuration unchanged apart from version).
+- Command or material configuration: PRODUCTION 08a, 128 GB200 (48+80); **tokenizer root fix + mandatory CPU vocabulary preflight PASS (128,256 tokens)**.
+- External inputs and artifact references: worker submission notice over Rhizome (~03:4x UTC) [R].
+- Environment and hardware when relevant: root `/benfeuer/long-loop-mochi-throughput-train-track1-2026.11.23.123-coordinator-fd68400d`; watchdog root ID.
+- Result, including failure or restart: **SUBMITTED** — the tokenizer-root-fixed `.123` is launched.
+- Evidence: submission notice [R].
+- Interpretation and limitations: supersedes the `.122` submission (which presumably hit the tokenizer-root issue); startup/first-update evidence follows.
+- Decision and next action: record startup/first-update when readouts land.
