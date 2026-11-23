@@ -1675,3 +1675,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: plan cc [R].
 - Interpretation and limitations: a small-scale reproduction isolates the control-flow path from the production-scale variables; the immutable-parent technique keeps the unfixed/fixed comparison honest.
 - Decision and next action: record the three arm launches/results; the debug supports the coordinator's sign-off on the fix.
+
+### 2026-11-23 14:30 UTC - Post-conclusion addendum: debug UNFIXED negative control submitted (`…-priority-2026.11.23.201-coordinator-014da4be`)
+
+- Question or hypothesis and reason for trying it: reproduce the `.124` admission-fence failure at small scale (unfixed negative control).
+- Published source revision: source `9dbc68f66ece2f1c245dbdd58edd18e4f0414039` (pre-fix parent); recipe `experiments/post_training/long_loop/rounds/priority-drain-h100.yaml`.
+- Command or material configuration: `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-priority-2026.11.23.201-coordinator-014da4be` — INTERACTIVE cw-us-east-02a, 2 H100 (1 trainer + 1 vLLM), Qwen3-0.6B; regional CPU task-input preflight precedes GPU allocation.
+- External inputs and artifact references: worker cc over Rhizome (~14:3x UTC) [R]; root receipt/log `priority-debug-unfixed-submission.log` [R].
+- Environment and hardware when relevant: fixed/abort/wait arms NOT submitted until reproduction evidence; `.123` untouched.
+- Result, including failure or restart: UNFIXED negative control submitted.
+- Evidence: submission log [R].
+- Interpretation and limitations: reproduction evidence gates the remaining arms.
+- Decision and next action: record the reproduction result and the fixed/abort/wait arm launches.
