@@ -1926,3 +1926,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: startup receipt [R].
 - Interpretation and limitations: startup-only state — no throughput/update claims.
 - Decision and next action: 16:44 UTC initial-sync follow-up; then qualification.
+
+### 2026-11-23 19:10 UTC - Post-conclusion addendum: `.125` STARTUP QUALIFIED — priority gates confirmed live (22/42 quotas, 16 workers, Harbor 384)
+
+- Question or hypothesis and reason for trying it: `.125`'s startup qualification with priority drain (read-only; no run changes).
+- Published source revision: exact child `…-125-a0201dbc52df`, source `520b8829a8…`, recipe `rounds/mochi-throughput-train-track1.yaml`.
+- Command or material configuration: (1) initial step0/model0/reason-initial publication 16:40:01.526 UTC, sync 5.825 s. (2) **Native rollout_concurrency_configuration 16:40:01.528 confirms priority, full_batch, quota 22/42, GS 8, stale 3, semantic/effective 256 groups vs max_in_flight 1024; workers 16/tasks 1024/executor 256/verifier 256/bound 128 per worker; Harbor 384/24 per worker; TP1/DP16/EP16/HBM 0.90/seq 64/batch 8192/attempt 2280/progress 43200.** (3) Baseline-0 session 16:40:01.937; 60/200 completion at 16:44:05.191 (completion progress, NOT scored coverage). No completed training update observed. (4) Prior runtime BF16/no-quant/KV-auto/131,072/PIECEWISE/graph-completion evidence retained; 0 selected actual error rows in this window (CuTeDSL aux_data/JIT latency warnings coexist with progressing requests — no numeric-correctness claim).
+- External inputs and artifact references: worker readout over Rhizome (~19:1x UTC) [R]; receipts `mochi125-startup-qualified-receipt.json`, `mochi125-live-gate-event-receipt.json`, `mochi125-startup-1644-{phase,errors,native-gates}.jsonl`; launch record updated [R].
+- Environment and hardware when relevant: fired 16:44 timer verified 1 run/exit 0/empty stderr/removed; the startup wake chain is STOPPED (zero future own wakes). `.123` untouched; the normal terminal watchdog is unchanged.
+- Result, including failure or restart: STARTUP QUALIFIED with the priority gates live.
+- Evidence: startup-qualified + live-gate receipts [R].
+- Interpretation and limitations: the priority-drain configuration is confirmed in the running process — the launched run matches the approved design.
+- Decision and next action: first-update watch proceeds under the normal terminal watchdog.
