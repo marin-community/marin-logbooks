@@ -1663,3 +1663,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: implementation receipt + test/landing logs [R].
 - Interpretation and limitations: the fix is landed with the regression reproduced pre-fix and green post-fix; the 6 broader-suite failures are all independently reproduced on the clean parent (pre-existing, not introduced).
 - Decision and next action: coordinator sign-off gates any new priority Mochi run; the fix awaits that decision.
+
+### 2026-11-23 14:20 UTC - Post-conclusion addendum: authorized small control-flow debug started (Qwen3-0.6B smoke, 3 drain-mode arms on 02a INTERACTIVE)
+
+- Question or hypothesis and reason for trying it: reproduce the `.124` admission-fence failure at small scale to validate the fix's behavior across drain modes.
+- Published source revision: existing Qwen3-0.6B native Megatron smoke; separate 1-trainer + 1-rollout H100 per arm on 02a INTERACTIVE (2 GPU/run; even fixed+abort+wait parallel = 6 ≤ 16). The fixed integration tip is preserved: the debug artifact entrypoint lands on the pre-fix parent and merges into the fixed branch, so an immutable historical commit reproduces unfixed code without reintroducing a disable flag or reverting the integration tip.
+- Command or material configuration: short 256-token cap, 4 prompt groups × 2 samples, 8 steps / eval every 2, sequential ~256-prompt eval with 256 minimum decode tokens to span boundaries; identical controls across drain modes (unfixed negative control first, then fixed/abort/wait).
+- External inputs and artifact references: worker cc over Rhizome (~14:2x UTC) [R].
+- Environment and hardware when relevant: canonical long-loop artifact validation/skyrl_step path; no custom scheduler/launcher; `.123` and GB200 runs untouched; no Mochi GB200 relaunch.
+- Result, including failure or restart: plan declared; first launch (unfixed negative control) will send its ID immediately.
+- Evidence: plan cc [R].
+- Interpretation and limitations: a small-scale reproduction isolates the control-flow path from the production-scale variables; the immutable-parent technique keeps the unfixed/fixed comparison honest.
+- Decision and next action: record the three arm launches/results; the debug supports the coordinator's sign-off on the fix.
