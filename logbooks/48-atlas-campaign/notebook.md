@@ -2500,3 +2500,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: quiet window.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 11:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `48a1d5796a…` to `6804f5d64f…` — two new commits: `6804f5d64f` [difficulty] Name the missing Daytona connection field at the wave boundary; `5e16f19fa2` [difficulty] Read the action's daytona account with .get: LOCAL-planned batches omit it.
+- Command or material configuration: `git fetch origin` + `git log 48a1d5796a..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: two difficulty-side landings (Daytona connection-field naming at the wave boundary; `.get`-based account access for LOCAL-planned batches that omit it).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: robustness-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
