@@ -1,0 +1,54 @@
+{
+  "source_commit": "e9dfdd2b94827b8f0f9ae4d21fff5f1a2a5dc796",
+  "source_date_epoch": 1795410953,
+  "compiled_base": "47a8e415bff17b9376f02d9b92edcc67e962eaee",
+  "architecture": "aarch64",
+  "cluster": "cw-us-east-08a",
+  "archive_uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/da6-fp8-confirm-01a1f7c4/builds/e9dfdd2b9482/source.tar.gz",
+  "archive_sha256": "faa2eef6ce8ba147b784bcbc2ae6a0a7c49e4b31df0e67f4f8143b3d0def9e4b",
+  "base_wheel_url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261118-47a8e415bff1/vllm-0.0.0.dev20261118%2Bmarin.47a8e415bff1.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+  "base_wheel_sha256": "d013b4815e17d0e642ec5965c09f73fc8703f068010240c9e0457d989768db17",
+  "python_hashes": {
+    "vllm/model_executor/layers/fused_moe/experts/marlin_moe.py": "b2b14344784239fb9d9ea55e136eff8dfc16615ce149b42e3edece7588905203",
+    "vllm/model_executor/layers/fused_moe/experts/triton_moe.py": "69773491f743203965d8ceaf23b5a183f187fecb2835c8c408b05d02ec750d41",
+    "vllm/model_executor/layers/fused_moe/layer.py": "2a64822a1ebf27f656bee4eb0fd61cf1a6d5a7f82ffdce0b8cb78df9cb642ab0",
+    "vllm/model_executor/layers/fused_moe/modular_kernel.py": "3d75075cae6e5881a09b0ca9cd9d19fb4f19bf3aec63d68171810ecb16b01724",
+    "vllm/model_executor/layers/fused_moe/prepare_finalize/naive_dp_ep.py": "665e51c70e4387236b1dbec7294ddc5938c70704a7baf38c23477ff51a177b66",
+    "vllm/model_executor/models/grugmoe.py": "5cafb73e3b5480822a9fb37f67663c0f3b50757bb28d0ee09db476658bf4fce4"
+  },
+  "model_sha256": "5cafb73e3b5480822a9fb37f67663c0f3b50757bb28d0ee09db476658bf4fce4",
+  "marlin_sha256": "b2b14344784239fb9d9ea55e136eff8dfc16615ce149b42e3edece7588905203",
+  "factory_sha256": "2a64822a1ebf27f656bee4eb0fd61cf1a6d5a7f82ffdce0b8cb78df9cb642ab0",
+  "bootstrap": "logbooks/57-inference-perfmax/analysis/da6-fp8-confirm-01a1f7c4/wheel_pytest.py",
+  "bootstrap_sha256": "a49c54533f961e00971bdbfa1c3112f1f377fefdf8d187a6a7a59145358a5755",
+  "uri": "s3://marin-us-east-02a/marin/knotmeter/campaigns/da6-fp8-confirm-01a1f7c4/builds/e9dfdd2b9482/aarch64/checks/focused-a1",
+  "version": "0.0.0.dev20261123+marin.e9dfdd2b9482.cu132",
+  "release_tag": "experimental-grug-fp8-e9dfdd2b9482-01a1f7c4",
+  "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+  "mode": "component",
+  "job_name": "da6-fp8-focused-gb200-01a1f7c4-a1",
+  "gpu_type": "GB200",
+  "memory": "64GB",
+  "candidate_manifest": {
+    "release_tag": "experimental-grug-fp8-e9dfdd2b9482-01a1f7c4",
+    "source_commit": "e9dfdd2b94827b8f0f9ae4d21fff5f1a2a5dc796",
+    "version": "0.0.0.dev20261123+marin.e9dfdd2b9482.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "s3://marin-us-east-02a/marin/knotmeter/campaigns/da6-fp8-confirm-01a1f7c4/builds/e9dfdd2b9482/aarch64/vllm-0.0.0.dev20261123+marin.e9dfdd2b9482.cu132-cp312-cp312-linux_aarch64.whl",
+        "sha256": "dce5545688f759bba616afce3d32bd387c8a26d0a59d829ce26527ed6f8256b7"
+      }
+    ]
+  },
+  "pytest_paths": [
+    "tests/models/test_grugmoe.py",
+    "tests/kernels/moe/test_moe.py"
+  ],
+  "pytest_selection": "online_fp8_loading_matches_vllm or quantization_platform_support or hero_online_quantization_preserves_latent_and_shared_outputs or router_padding_ids_ignore_stale_logits or canonicalize_marlin_moe_token_order"
+}
