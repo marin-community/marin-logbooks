@@ -47,6 +47,10 @@ configuration the best applicable baseline.
 Identify a plausible bottleneck, predict what a change should affect and seek
 evidence that could reject the hypothesis. Separate a measured cause from a
 correlation. Use profiles and controlled changes when they can resolve that gap.
+For an unexplained serving bottleneck or custom model/kernel work, use the
+[vLLM diagnostic reference](references/vllm-diagnostics.md). Choose tools for
+the hypothesis and record what each test establishes. Confirm gains with
+unprofiled serving measurements.
 When prefix reuse is poor, compare AgentX's reported actual and theoretical hit rates.
 Check KV use and routing across data-parallel engines before blaming cache capacity.
 
@@ -74,8 +78,9 @@ Coordinate shared GPU capacity through your team's process and read
 concurrent ceilings across trials and retries. Let the runner's CPU coordinator
 prepare uncached data before GPU allocation. Release idle resources and count setup, compilation, warmup, drain
 and failed allocations. Prioritize GPU efficiency over elapsed time.
-Keep `run` attached to track allocation cost. Detached runs may lose required
-timestamps after Pod cleanup; incomplete cost blocks recommendations.
+Keep `run` attached to track allocation cost. Detached runs may lose timestamps
+after Pod cleanup. Retain known usage and label estimates and unknowns;
+incomplete cost alone does not block a recommendation.
 
 ## Measure and return the result
 
@@ -85,9 +90,16 @@ a fresh server. Startup, checks, warmup and drain fall outside measured time.
 
 Use the preset's [shared checks](../../../experiments/evaluation/inference_correctness/README.md)
 against the actual settings. Reuse its immutable goldens across runtime changes.
+For a numerical failure, align raw token scores with the golden and a passing
+BF16 control. Check token IDs and score positions. See whether the limit is
+crossed by an observed probability gap or only by the top-k bound.
+Exercise new checks against retained responses before loading another model.
 For quantization, verify loaded weight storage and record activation and KV precision separately.
+For a memory claim, report stored parameter bytes or usable KV capacity with
+topology and throughput for both configurations. Label any load-time memory
+measurement separately.
 The runner checks before AgentX and resets caches before native warmup. Retain
-failed observations; missing evidence and failed checks block recommendations.
+failed observations; missing required correctness evidence and failed checks block recommendations.
 They stop traffic unless `--measure-failed-checks` explicitly permits diagnostics.
 Use the agreed policy, including its provisional status. Change bounds only with
 recorded evidence and delegated authority. These checks do not qualify RL learning
