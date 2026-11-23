@@ -239,3 +239,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: REPORT rows + milestones [R].
 - Interpretation and limitations: the GB200↔H100 pair is now measured at workers-16: GB200 195.0 s/13.4% wait vs H100 170.4 s/42.5% wait — H100 is faster in wall time but still demand/supply-hungry; the smallest saturated H100 layout needs H3 (6 engines), which is blocked on the helper's pools regeneration fix.
 - Decision and next action: H3 submits when the pools rebuild is fixed; the H100 layout concludes then. Relayed to #11969 per the coordinator (worker messages bounced).
+
+### 2026-11-23 03:20 UTC - H100 LADDER COMPLETE: H3 regressed (544.8 s) — smallest measured-saturated H100 layout is 112 H100 (170.4 s/update)
+
+- Question or hypothesis and reason for trying it: the ladder's decisive step — do 6 engines help when 4 engines still hold 42.5% wait?
+- Published source revision: `e84647ad44…` (6-engine round); pools rebuild completed since the earlier failure.
+- Command or material configuration: H3 = 16 workers / 6 engines = 128 H100; everything else at the H2 configuration.
+- External inputs and artifact references: worker ladder-complete readout over Rhizome (~03:2x UTC) [R]; REPORT.md H100 section [R].
+- Environment and hardware when relevant: PRODUCTION cw-rno2a; cancelled at the coordinator's order because its 128 H100 gated the queued Exp5 RL `.133` (Exp5's 256 H100 released).
+- Result, including failure or restart: H3 step-1 fill 2,707.9 s; step 2 clean **544.8 s** (step-2-only measurement) — **REGRESSED 3.2x vs H2's 170.4 s**: rollout wait 72.8%; the wider rollout side starved per-engine batch and decode efficiency while the 80-GPU trainer was already binding. Ladder: H1 (4 workers) 687.6 s/85.5% → H2 (16 workers) **170.4 s/42.5%, 909.9 gen tok/s/GPU — BEST MEASURED POINT** → H3 regress.
+- Evidence: native counters + REPORT rows [R].
+- Interpretation and limitations: **SMALLEST MEASURED-SATURATED H100 LAYOUT: 112 H100** (trainer 10×8 + 4 engines DP8/EP8 HBM 0.90; 16 workers ×7 CPU; gates open; staleness 2; derived quotas; cadence-3 + dp_reshardable; 30-min budgets) — **170.4 s per update at batch 64 (~5.2 GPU-hours/update)**. The residual 42.5% wait is the worker's read: the H100 decode-speed tax vs GB200 (170.4 vs 195.0 s at the same config), not a sizing error. No further rno2a arms while Exp5 RL .133 is queued/running.
+- Decision and next action: the H100 arm table + smallest saturated layout are delivered to #11969 (closed with the H100 closing comment); the extension concludes.
