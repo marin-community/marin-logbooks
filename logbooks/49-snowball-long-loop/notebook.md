@@ -2149,3 +2149,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: prior addenda [R].
 - Interpretation and limitations: quiet window for this record.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-23 06:13 UTC - Hourly catch-up (post-conclusion watch)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: no new exp3/exp4 evidence; the fleet serves the Snowball-resize H100 extension (H1/H2 measured, H3 verdict delivered; no further rno2a arms while Exp5 RL `.133` runs).
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator hourly request [R]; prior addenda [R].
+- Environment and hardware when relevant: Exp5 RL `.133` queued/running on the released 256 H100.
+- Result, including failure or restart: no new long-loop evidence this window.
+- Evidence: prior addenda [R].
+- Interpretation and limitations: quiet window for this record.
+- Decision and next action: hourly checks continue.
