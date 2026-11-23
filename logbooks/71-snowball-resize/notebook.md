@@ -227,3 +227,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: native counters + REPORT row [R].
 - Interpretation and limitations: KEY finding — the round carried a stale 4-worker value, so H1 measured the 4-worker H100 datapoint: **687.6 s vs GB200's 4-worker 687.1 s (near-identical; demand-limited on both)**. The workers-16 knob (H2) is the H100 analogue of the GB200 R4 step.
 - Decision and next action: H2's step timings complete the H100/GB200 comparison at the workers-16 point.
+
+### 2026-11-23 00:20 UTC - H100 6-hour window CLOSED: H2 170.4 s (42.5% wait, best H100 point); H3 staged but pools-rebuild blocked
+
+- Question or hypothesis and reason for trying it: complete the H100 ladder within the 6-hour directive (H2 = the GB200 R4 analogue; H3 widens engines since wait still dominates).
+- Published source revision: H2 `dbdd8bc83b…`; H3 `e84647ad44…` ("Widen the H100 analogue to six engines").
+- Command or material configuration: H2 = R4 analogue (16 workers × 7 CPU; 4 engines DP8/EP8, HBM 0.90). H3 = engines 4→6 (48 rollout GPUs, 128 total).
+- External inputs and artifact references: worker milestones 16-17 over Rhizome (secretary sends bounced; content relayed by the coordinator) [R]; REPORT.md H100 table [R].
+- Environment and hardware when relevant: PRODUCTION cw-rno2a; pools rebuild `/benfeuer/snowball-resize-pools-20261122b` FAILED in the helper's stamp code (regeneration kept 5,181 rows / 0 rejections vs adopted 20,800 — helper's lane).
+- Result, including failure or restart: H2 STEP 2 CLEAN — **170.4 s** / **42.5% wait** / **909.9 gen tok/s/GPU step-average** (optimizer 38%, engines 6.09 median running/rank, 0 preemptions, prefix 97.4%, mismatch 0.0049); step-3 checkpoint OK; cancelled after measurement — best measured H100 point, NOT saturated. H3 staged (one pools-pin update + resubmission away).
+- Evidence: REPORT rows + milestones [R].
+- Interpretation and limitations: the GB200↔H100 pair is now measured at workers-16: GB200 195.0 s/13.4% wait vs H100 170.4 s/42.5% wait — H100 is faster in wall time but still demand/supply-hungry; the smallest saturated H100 layout needs H3 (6 engines), which is blocked on the helper's pools regeneration fix.
+- Decision and next action: H3 submits when the pools rebuild is fixed; the H100 layout concludes then. Relayed to #11969 per the coordinator (worker messages bounced).
