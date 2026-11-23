@@ -1807,3 +1807,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: conditional-approval receipt [R].
 - Interpretation and limitations: the launch is conditionally authorized — the H100 fixed-priority run with 6+ clean spanning evals plus the completed abort/wait comparison is the gate.
 - Decision and next action: record the H100 proof when it lands; then the `.125` launch chain executes.
+
+### 2026-11-23 17:00 UTC - Post-conclusion addendum: repaired priority-205 passed eval-2 + full step-3 (405.4 s); abort-206 through steps 2/4; wait-207 FAILED in Ray bootstrap (port collision suspected)
+
+- Question or hypothesis and reason for trying it: the repaired fixed-priority arm's progress and the abort/wait control states.
+- Published source revision: all arms at source `4faf9d1d3e…`; no `.125` launch; `.123` untouched.
+- Command or material configuration: priority-205 completed eval-2 in 400.577 s with admission-fence wait 400.579 s, then **full step-3 = 405.391 s**; eval-4 active at last capture. Abort-206 completed full steps 2/4 in 388.305/386.822 s and post-eval-3/5 in 3.618/3.423 s. Wait-207 **FAILED before model/training during Ray worker bootstrap** on g73a62a (rank-1 node startup timeout): preserved head GCS starts on 39,593 and worker `--node-manager-port` also 39,593 on the same IP — a potential port collision being checked, not proven transient/GCS overload.
+- External inputs and artifact references: worker readout over Rhizome (~17:0x UTC) [R]; receipts `priority-debug-207-worker-attempt.txt`, `priority-debug-1520-live-local-log-read.txt`, `priority-debug-1520-abort-local-log-read.txt` [R].
+- Environment and hardware when relevant: qualification not declared — needs ≥6 priority full steps + scored eval/background-generation proof.
+- Result, including failure or restart: priority-205 is healthy through eval-2/full-step-3; abort-206 completes full steps and post-evals; wait-207 failed at bootstrap (port-collision suspect).
+- Evidence: per-arm receipts [R].
+- Interpretation and limitations: the fixed-priority arm is behaving correctly (eval-2 400.6 s with admission-fence wait matching, then a normal 405.4 s step); the abort-drain arm runs without priority; the wait arm's bootstrap failure is infrastructure-side (port collision suspected).
+- Decision and next action: ≥6 clean priority steps + control comparison → then the conditional `.125` launch chain.
