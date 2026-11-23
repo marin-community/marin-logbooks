@@ -1603,3 +1603,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: timing receipt [R].
 - Interpretation and limitations: the first full step's split — rollout wait 68%, optimizer 17.5%, sync 0.3% — is consistent with `.124`'s fresh-fill regime; the steady-state comparison against `.123` (rollout wait 0.137 s) comes with later steps once the fill amortizes.
 - Decision and next action: 13:00 UTC wake; both runs untouched.
+
+### 2026-11-23 13:00 UTC - Post-conclusion addendum: user directive recorded — let `.124` complete the eval-3/next-sync/post-eval comparison vs `.123`, then cancel only `.124`
+
+- Question or hypothesis and reason for trying it: the user's directive sets `.124`'s termination policy — measure the requested comparisons, then cancel.
+- Published source revision: root `…-124-coordinator-d5cfb839` at source `64b10eb791…`; recipe `rounds/mochi-throughput-train-track1.yaml`. `.123` stays untouched.
+- Command or material configuration: let `.124` complete the requested **periodic eval-3 wall + next-sync wait + full post-eval/refill comparison against `.123` FULL STEP-3 = 2,254 s / FULL STEP-5 = 3,625 s**, retain evidence, then cancel **ONLY `.124`'s whole tree with iris-cancel-own** and report the comparison/cancellation proof. No early cancellation or other job/config/code actions.
+- External inputs and artifact references: worker directive cc over Rhizome (~13:0x UTC) [R]; receipt `mochi124-measure-then-cancel-directive-receipt.json`; updated `mochi124-launch-record.json` termination_policy; the ONE existing 13:00 UTC wake preserved with the superseding instruction [R].
+- Environment and hardware when relevant: latest retained evidence remains step-1 complete / step-2 batch started; periodic measurements pending.
+- Result, including failure or restart: directive recorded; BRIEF/STATUS/REPORT updated.
+- Evidence: directive receipt [R].
+- Interpretation and limitations: the comparison completes when periodic eval-3 and the post-eval/refill transitions are observed on `.124`; only then is the tree cancelled.
+- Decision and next action: hourly/periodic wakes continue until the comparison is captured; cancellation proof follows.
