@@ -1567,3 +1567,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: timing receipt [R].
 - Interpretation and limitations: the baseline eval finished within the 30-min budget (~34.6 min wall vs the 1,800 s per-turn budget boundary context); batch 1 is now filling.
 - Decision and next action: 12:15 UTC wake; both runs untouched.
+
+### 2026-11-23 12:20 UTC - Post-conclusion addendum: `.124` timing checkpoint through 12:16:42 UTC — batch 1 fill continues, zero update markers
+
+- Question or hypothesis and reason for trying it: read-only timing checkpoint during the batch-1 fill.
+- Published source revision: root `…-124-coordinator-d5cfb839` / child `…-afeb88567c0d` at source `64b10eb79199fb1f738a3433851af59cc67d27a4` (recipe unchanged).
+- Command or material configuration: read-only; no job/code/config changes or status polls; `.123` untouched.
+- External inputs and artifact references: worker readout over Rhizome (~12:2x UTC) [R]; receipt `mochi124-timing-1215-receipt.json` + adjacent bounded SQL/JSONL/window and fired-label proof [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no new completion-query rows — no optimizer/full Training step/periodic-eval completion or weight update observed; selected native timing rows 0. Last observed learner phase remains step-1 rollout batch begun 11:49:34.786 UTC (32 groups required; not a current queue snapshot). Baseline 0 completed earlier in 2,077.268 s / 200 completion, NOT scored coverage or periodic eval-3. Eval-3 wall/next-sync wait/full post-eval-4/5+refill timing remain UNAVAILABLE vs `.123` FULL STEP-3 = 2,254 s / FULL STEP-5 = 3,625 s; async eval/optimizer overlap will be separated. Bounded error query 31 rows: 11 Hermes extraction headings / 20 traceback headings, 0 loss-masked warnings, 0 selected observed NaN/RuntimeError/OOM; the new traceback chains are not classified (earlier sampled context does not classify them); Ray dedup/rows are not distinct failure counts/fractions or a full output audit.
+- Evidence: timing receipt [R].
+- Interpretation and limitations: the fill continues with no update markers yet — consistent with the 32-group batch budget.
+- Decision and next action: 12:30 UTC wake; watchdog unchanged.
