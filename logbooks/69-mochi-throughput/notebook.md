@@ -1435,3 +1435,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: helper confirmation [R].
 - Interpretation and limitations: provenance.command_line captured the token when the helper's pipeline embedded its command line; rotation is a user action outside the record's scope.
 - Decision and next action: flag rotation to the coordinator/user; the `.122` chain proceeds with the data pin + fresh preflight.
+
+### 2026-11-23 03:30 UTC - Post-conclusion addendum: fresh published-pool pin LANDED (12ceed025f); preflight caught a semantic cap bug
+
+- Question or hypothesis and reason for trying it: the `.122` data-pin landing on the newly published pools.
+- Published source revision: `12ceed025f…` via loop-push (13 tests/lint PASS) — fresh published pool pin (manifest `4110aa66…`/val `9210cfa…`).
+- Command or material configuration: independent all-8-file SHA scan: 161,300 train / 200 val verifies 0 ID/hash overlap + exact seed 20261020 replay; quotas 11/21, expected 200, min 180.
+- External inputs and artifact references: worker cc over Rhizome (~03:3x UTC) [R].
+- Environment and hardware when relevant: no RL launch.
+- Result, including failure or restart: **native structural PASS caught a semantic bug: `nvl72.build_run`'s default 16k silently overrides the authored 96k/Pi cap** — fixing the round_runner explicit-cap handoff + behavior regression, then loop-push/fresh preflight. Full review packet follows.
+- Evidence: landing + SHA-scan receipts [R].
+- Interpretation and limitations: the structural preflight is doing its job — an authored-cap override would have silently shrunk the window.
+- Decision and next action: cap-handoff fix lands → fresh preflight → review packet → launch decision.
