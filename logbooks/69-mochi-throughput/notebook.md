@@ -1866,3 +1866,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final-comparison receipt + per-arm parsed logs [R].
 - Interpretation and limitations: priority moves the eval wait into the next admission (no speedup claim); the buffer was prefilled, so the tiny-debug refill is not real-Mochi refill evidence. The A/B/C comparison (unfixed reproduces / fixed holds / abort and wait drain cleanly) is complete.
 - Decision and next action: the conditional `.125` launch chain can execute per the approval (enable priority → loop-push → exact-source preflight → PRODUCTION 08a).
+
+### 2026-11-23 18:20 UTC - Post-conclusion addendum: fresh reward-curves issue #12119 posted (Mochi `.123` training progress, open for user verification)
+
+- Question or hypothesis and reason for trying it: the user requested fresh reward curves for the running Mochi `.123`.
+- Published source revision: `.123` continues (32 steps / 10 h); no run changes.
+- Command or material configuration: Finelog marin-hub snapshot through 2026-11-23 16:10 UTC — train updates 1–17 and holdout evals 0/3/6/9/12/15, all 8 domain curves plus overall; tables reproduce the plotted numbers. Body notes the 200-prompt holdout, policy-update x-axis, and 165–176 scored/eval.
+- External inputs and artifact references: worker cc over Rhizome (~18:2x UTC) [R]; issue https://github.com/marin-community/marin/issues/12119 (OPEN, labels agent-generated + experiment; matplotlib PNGs attached via gh issue create --attach, published image references verified); receipts `mochi123-reward-curves/{plotted-data.json,issue-creation-receipt.json,published-issue.json}` [R].
+- Environment and hardware when relevant: no personal identifiers in body/plots.
+- Result, including failure or restart: issue posted and left open for user verification.
+- Evidence: published-issue receipt [R].
+- Interpretation and limitations: training progress curves only — no performance/correctness claims.
+- Decision and next action: the user verifies; the curves update with further training.
