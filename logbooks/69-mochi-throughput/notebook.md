@@ -1747,3 +1747,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission log [R].
 - Interpretation and limitations: all arms staged; results determine the drain-mode sign-off.
 - Decision and next action: record the wait arm's behavior alongside fixed/abort.
+
+### 2026-11-23 16:00 UTC - Post-conclusion addendum: H100 controls .202/.203/.204 terminal FAILED at eval-2 — serving guard forbids min_tokens=256 with logprobs; correction planned
+
+- Question or hypothesis and reason for trying it: the three fixed-mode/abort/wait H100 controls failed identically at eval-2; root-cause before relaunch.
+- Published source revision: all three terminal FAILED (one-time reconciliation retained). Cause: **AttributeError: ModelServerError has no `.message`** masking an underlying model request rejection; the exact CPU replay of the authored eval request reproduces the serving guard — **min_tokens=256 is forbidden when logprobs are requested (required 0)**; the original raw server message was not retained.
+- Command or material configuration: keep the guard; set eval min_tokens 0; enlarge the cohort 512→2048 for a several-minute eval; fix the one-line interruption diagnostic to use `str(error)`, with a regression. Fresh fixed/abort/wait versions only after tests/preflight; the exact unfixed `.201` reproduction remains valid/retained. Failed trees cancelled now.
+- External inputs and artifact references: worker cc over Rhizome (~16:0x UTC) [R].
+- Environment and hardware when relevant: no `.123`/`.125`/GB200 launch or priority enablement.
+- Result, including failure or restart: all three controls failed at eval-2 from the same serving-guard interaction (the authored eval used min_tokens=256 with logprobs requested).
+- Evidence: worker reconciliation + CPU replay [R].
+- Interpretation and limitations: the min_tokens=256 default was authored into the eval request and conflicts with logprob serving — a debug-recipe defect, not an engine failure; the fix is config-level.
+- Decision and next action: corrected fixed/abort/wait arms after tests/preflight; the reproduction evidence stands.
