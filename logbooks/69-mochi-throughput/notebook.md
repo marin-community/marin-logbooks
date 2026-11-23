@@ -1615,3 +1615,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: directive receipt [R].
 - Interpretation and limitations: the comparison completes when periodic eval-3 and the post-eval/refill transitions are observed on `.124`; only then is the tree cancelled.
 - Decision and next action: hourly/periodic wakes continue until the comparison is captured; cancellation proof follows.
+
+### 2026-11-23 13:20 UTC - Post-conclusion addendum: `.124` PERIODIC EVAL 3 STARTED 13:12:49.164 UTC (70/200 at 13:15:19); step 2 FULL + step 3 wait/opt observed
+
+- Question or hypothesis and reason for trying it: the requested comparison series is progressing — periodic eval-3 has begun.
+- Published source revision: root `…-124-coordinator-d5cfb839` / child `…-afeb88567c0d` at source `64b10eb791…` (recipe unchanged).
+- Command or material configuration: read-only; `.123` untouched.
+- External inputs and artifact references: worker readout over Rhizome (~13:2x UTC) [R]; receipt `mochi124-timing-1315-receipt.json` + adjacent SQL/JSONL/window/fired proof [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: **PERIODIC EVAL 3 STARTED 13:12:49.164 UTC after model-3 weights published 13:12:48.703 (sync 6.503 s); progress 70/200 completion at 13:15:19.160 (150 s), not scored coverage.** No Policy-weights-updated after eval start in the retained window through 13:15:24.929; the final entire-eval fence check is pending. **Step 2 FULL completed 13:10:04.442 — total 1,960.569 s, wait 1,801.500 s, opt 113.383 s, sync 6.609 s (3 individual native phase observations confirm step/wait/sync).** Step 3: wait 0.226 s, opt 116.411 s (completed 13:12:42.199); full step 3 not yet observed. Compare only the final periodic/post-eval against `.123` FULL STEP-3 = 2,254 s / FULL STEP-5 = 3,625 s, accounting for async overlap; no gain claim. Eval wall/next-sync/full post-eval-4/5 still pending — **do NOT cancel before the comparison.** Error query 43 rows: 7 Hermes / 36 tracebacks, 0 loss-masked/NaN/RuntimeError/OOM; chains not classified.
+- Evidence: timing receipt [R].
+- Interpretation and limitations: step 3's wait (0.226 s) already shows the fill amortizing toward `.123`'s steady state (0.137 s); the eval-3 wall measurement completes the requested set.
+- Decision and next action: eval-3 completion + next-sync wait + post-eval-4/5, then the directive's cancellation step.
