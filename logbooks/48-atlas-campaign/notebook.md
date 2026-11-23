@@ -2512,3 +2512,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: robustness-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 12:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `6804f5d64f…` to `0c1a23c597…` — three new commits: `0c1a23c597` [difficulty] Match the credential-file test to file-supplied keys; `6c1a64f2a8` [difficulty] Preserve Daytona authority across concurrent trials; `c66a83e263` [difficulty] Grant guests Harbor's dummy provider credentials, never resolved values.
+- Command or material configuration: `git fetch origin` + `git log 6804f5d64f..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: three difficulty-side landings — credential-file test alignment, Daytona authority preservation across concurrent trials, and guest credential handling (dummy provider credentials, never resolved values).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: security/robustness-side progress (credential handling); no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
