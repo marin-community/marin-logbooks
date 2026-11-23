@@ -1783,3 +1783,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission log [R].
 - Interpretation and limitations: the corrected A/B/C set (fixed-205/abort-206/wait pending) is assembling.
 - Decision and next action: record the corrected arms' behavior.
+
+### 2026-11-23 16:35 UTC - Post-conclusion addendum: repaired wait control submitted (`…-207-coordinator-21af5a42`) — corrected A/B/C set complete
+
+- Question or hypothesis and reason for trying it: complete the corrected drain-mode control set.
+- Published source revision: `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-wait-2026.11.23.207-coordinator-21af5a42` — two H100, INTERACTIVE 02a, source `4faf9d1d3e…`; same 2,048-task eval cohort, min_tokens 0, cap 256 as priority-205/abort-206; preflight/parity PASS.
+- Command or material configuration: three fresh controls request six H100s total; old `.202`–`.204` cancelled; the exact unfixed `.201` reproduction retained.
+- External inputs and artifact references: worker cc over Rhizome (~16:3x UTC) [R]; log `priority-debug-repaired-wait-submission.log` [R].
+- Environment and hardware when relevant: no `.123` change/`.125` launch.
+- Result, including failure or restart: repaired wait control submitted — the corrected fixed-205/abort-206/wait-207 set is complete.
+- Evidence: submission log [R].
+- Interpretation and limitations: all three corrected arms now run; their behavior determines the drain-mode sign-off.
+- Decision and next action: record the three arms' behavior.
