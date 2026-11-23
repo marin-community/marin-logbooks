@@ -2476,3 +2476,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: curation/difficulty-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-23 08:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `047bc68189…` to `48a1d5796a…` — one new commit: `48a1d5796a` [difficulty] Route privilege-dropping graders up to Daytona on the tier ladder.
+- Command or material configuration: `git fetch origin` + `git log 047bc68189..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one difficulty-side landing (privilege-dropping graders routed up to Daytona on the tier ladder).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: grader-placement progress; no campaign-state change evident from the title alone.
+- Decision and next action: continue fetch-first hourly checks.
