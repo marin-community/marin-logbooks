@@ -1842,3 +1842,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: qualification + background-proof receipts [R].
 - Interpretation and limitations: the fence holds under load at scale (weights frozen, 51,456 background tokens during eval-2); abort-drain shows eval blocking the prior step (no speedup claim from moving cost); the wait comparison is the last gate.
 - Decision and next action: wait-208 comparison → then the conditional `.125` launch chain.
+
+### 2026-11-23 17:50 UTC - Post-conclusion addendum: wait-208 startup QUALIFIED via local Ray logs (FULL step 1 = 8.185 s)
+
+- Question or hypothesis and reason for trying it: wait-208's startup qualification via read-only local Ray logs (regional Finelog fails No-Route-To-Host; direct task-exec recovered progress).
+- Published source revision: exact child `…-208-a848ed37ce35` submitted 15:39:33.351 UTC; initial policy 15:43:27.955; **FULL step 1 = 8.184936 s at 15:43:36.172**; serving step 2 published 15:43:38.802 / eval-2 began 15:43:38.813.
+- Command or material configuration: capture through 15:49:01.560 UTC — eval-2/full-step-2 not yet completed; eval wall/scored counts/post-eval-3/5 UNAVAILABLE, pending.
+- External inputs and artifact references: worker readout over Rhizome (~17:5x UTC) [R]; receipts `priority-debug-wait208-startup-1548-receipt.json`, `priority-debug-wait208-local-1548-parsed.json` [R].
+- Environment and hardware when relevant: only 2 H100 INTERACTIVE 02a; same 4faf source/config/cohort.
+- Result, including failure or restart: startup QUALIFIED; no `.125`/GB200 launch; `.123` untouched.
+- Evidence: local Ray log receipts [R].
+- Interpretation and limitations: FULL step 1 at 8.185 s shows the wait arm's near-zero wait immediately — consistent with wait-drain preserving admitted batches; eval-2/step-2 continue.
+- Decision and next action: single bounded checkpoint 16:00 UTC to retain both measured cycles; no job-status polling.
