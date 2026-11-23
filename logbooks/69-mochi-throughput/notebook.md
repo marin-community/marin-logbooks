@@ -1795,3 +1795,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: submission log [R].
 - Interpretation and limitations: all three corrected arms now run; their behavior determines the drain-mode sign-off.
 - Decision and next action: record the three arms' behavior.
+
+### 2026-11-23 16:50 UTC - Post-conclusion addendum: CONDITIONAL `.125` launch approval recorded (gated on the H100 fixed-priority proof)
+
+- Question or hypothesis and reason for trying it: the coordinator/user approval conditions for the `.125` launch are now explicit.
+- Published source revision: unchanged — `.125` NOT submitted; `.123` untouched.
+- Command or material configuration: **conditional approval**: once the fixed H100 priority arm has **6+ full steps with clean spanning evals** and the abort/wait controls finish the comparison, **enable priority, land via loop-push, run the exact-source no-run preflight, then launch PRODUCTION 08a.** No further GB200 smoke or review round. min_tokens-0/str(error) repairs approved.
+- External inputs and artifact references: worker cc over Rhizome (~16:5x UTC) [R]; approval receipt `mochi125-conditional-launch-approval.json` [R].
+- Environment and hardware when relevant: current 205/206/207 proof pending; one 15:20 UTC debug checkpoint preserved.
+- Result, including failure or restart: approval recorded; the H100 debug gates the launch.
+- Evidence: conditional-approval receipt [R].
+- Interpretation and limitations: the launch is conditionally authorized — the H100 fixed-priority run with 6+ clean spanning evals plus the completed abort/wait comparison is the gate.
+- Decision and next action: record the H100 proof when it lands; then the `.125` launch chain executes.
