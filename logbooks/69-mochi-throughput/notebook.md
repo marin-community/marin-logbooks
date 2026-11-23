@@ -1819,3 +1819,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: per-arm receipts [R].
 - Interpretation and limitations: the fixed-priority arm is behaving correctly (eval-2 400.6 s with admission-fence wait matching, then a normal 405.4 s step); the abort-drain arm runs without priority; the wait arm's bootstrap failure is infrastructure-side (port collision suspected).
 - Decision and next action: ≥6 clean priority steps + control comparison → then the conditional `.125` launch chain.
+
+### 2026-11-23 17:10 UTC - Post-conclusion addendum: priority-205 reached 6 full steps (evals 2/4 scored 2048/2048, weights frozen); fresh wait-208 submitted
+
+- Question or hypothesis and reason for trying it: the priority arm's 6-step qualification and the wait-control retry.
+- Published source revision: wait-208 `/benfeuer/users-benfeuer-long-loop-priority-drain-debug-wait-2026.11.23.208-coordinator-61d6e82e` (source `4faf9d1d3e…`, 2 H100 INTERACTIVE 02a, native no-run PASS; `.207`'s exact failed root cancelled 15:32:34 after Ray-bootstrap evidence was retained).
+- Command or material configuration: priority-205 now has **6 full steps with evals 2/4 scored 2,048/2,048** (tokens 377,878/374,357), infra/rollout failures 0, **weights frozen across both evals** (400.577/413.639 s); abort-206 evals 2/4 scored 2,048 each, full post-evals 3/5 = 3.618/3.423 s.
+- External inputs and artifact references: worker cc over Rhizome (~17:1x UTC) [R]; receipts `priority-debug-1534-{priority,abort}-parsed.json`, `priority-debug-207-bootstrap-failure-receipt.json`, `priority-debug-207-cancellation.log`, `priority-debug-wait208-{preflight,submission}.log` [R].
+- Environment and hardware when relevant: max 6 H100; no model/sampling/runtime change on 208.
+- Result, including failure or restart: the priority-6-step requirement is met on the scored-eval side; **training-background direct proof and the wait comparison remain before `.125`**.
+- Evidence: parsed receipts + bootstrap/cancellation evidence [R].
+- Interpretation and limitations: weights frozen across evals confirms the fence works at scale; the remaining gates are the background-training proof and the wait-arm comparison.
+- Decision and next action: background-training proof + wait-208 comparison → then the conditional `.125` launch chain.
