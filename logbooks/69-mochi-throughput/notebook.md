@@ -1890,3 +1890,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: final-comparison receipt [R].
 - Interpretation and limitations: all three drain modes validated; the launch is now authorized and executing.
 - Decision and next action: record the `.125` landing/preflight/submission.
+
+### 2026-11-23 18:40 UTC - Post-conclusion addendum: `.125` SUBMITTED with priority drain (root …-125-coordinator-1c7e2129)
+
+- Question or hypothesis and reason for trying it: execute the conditional `.125` launch — priority drain enabled after the H100 evidence gate was satisfied.
+- Published source revision: **`.125` SUBMITTED: `/benfeuer/long-loop-mochi-throughput-train-track1-2026.11.23.125-coordinator-1c7e2129` — PRODUCTION cw-us-east-08a, 128 GB200 (48 trainer + 80 rollout), priority drain. Source `520b8829a8d5c4da04ef65eebbca64bc8f1f9f55`; exact native no-run/preflight + vocabulary/parity PASS.**
+- Command or material configuration: H100 debug passed and all measured controls cancelled; `.123` untouched.
+- External inputs and artifact references: worker submission cc over Rhizome (~18:4x UTC) [R]; submission receipt `mochi125-submission-receipt.json`; compiled receipt `mochi125-priority-parity.json` [R].
+- Environment and hardware when relevant: startup qualification pending; watchdog root ID registered.
+- Result, including failure or restart: submitted with priority drain enabled.
+- Evidence: submission + compiled receipts [R].
+- Interpretation and limitations: the conditional launch executed exactly per the approval chain (H100 gate → priority → loop-push → preflight → submit).
+- Decision and next action: startup qualification, then the first-update watch.
