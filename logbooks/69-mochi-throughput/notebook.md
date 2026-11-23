@@ -1711,3 +1711,15 @@ Secretary record (evidence-backed logbook) for the 6-hour Mochi decode/rollout t
 - Evidence: cancellation log + submission log [R].
 - Interpretation and limitations: the A/B pair (unfixed reproduces / fixed passes) is the clean validation the sign-off needs.
 - Decision and next action: record the fixed arm's step/eval/fence behavior.
+
+### 2026-11-23 15:15 UTC - Post-conclusion addendum: `.125` corrected normalization LANDED (8f91ddf738 = c472 + LR correction); abort drain kept until H100 priority passes
+
+- Question or hypothesis and reason for trying it: record the landed `.125` normalization/LR correction in full.
+- Published source revision: **`8f91ddf7380f98edafe18365bacaf6a051f1f538` (c472 + LR correction 8f91) LANDED via loop-push; NO LAUNCH; `.123` untouched.**
+- Command or material configuration: resolved — train 64 / minibatch 64×8 = 512, clip 0.5, staleness 3, 96k/131k, derived 22/42; **latest option (c) preserves MuonH lr 1e-5 / Adam fallback 2.307692307692308e-6 EXACTLY**. Abort drain kept until the H100 priority debug passes. Native no-run/vocab PASS; compiled SHA `a03a46e9fc…`; 27 native compiled adopted-round tests/lint PASS.
+- External inputs and artifact references: worker cc over Rhizome (~15:1x UTC) [R]; receipts `mochi125-normalization-receipt.json`, resolved diff `mochi125-resolved-diff-vs123.json`, actual compiled `mochi125-corrected-native-validation/a5d89d12…/compiled.yaml` (receipt beside it), capacity `mochi125-rollout-capacity.json`, clipping verification `mochi125-clipping-source-verification.json` [R].
+- Environment and hardware when relevant: capacity 2× batch 1,024 seqs vs 5,120 slots / 352 agentic vs Harbor 384; worker pure gates open. KV estimate 46.7k tokens/seq at 2× batch means not all 96k fits — no GPU memory claim. Full diff includes identity-only nullable certification/model-adoption changes; actual weight/tokenizer/data pins unchanged.
+- Result, including failure or restart: landed and validated; Megatron `max_grad_norm` maps to clip_grad (positive 0.5 calls global-norm clip before the optimizer step; 0 disables).
+- Evidence: normalization receipt + capacity/clipping analyses [R].
+- Interpretation and limitations: the KV estimate (46.7k/seq at 2× batch) quantifies why 96k does not fit at the doubled batch — consistent with the sweep's KV-pressure findings.
+- Decision and next action: H100 fixed-priority proof, then the coordinator's sign-off gates any RL launch.
