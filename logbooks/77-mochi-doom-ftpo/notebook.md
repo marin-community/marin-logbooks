@@ -41,10 +41,6 @@ The task explicitly forbids AGENTS and skill edits, so the archive does not add 
 
 Next: validate the CPU publication path and baseline presets locally, publish source, build cohorts on an 08a CPU worker, then submit S0. The full experiment is still pending; source recovery and passing detector tests do not establish a baseline loop rate.
 
-## Final decision
-
-Pending measured baseline and candidate results.
-
 ### 2026-11-24 18:05 EST — Submit the cohort build
 
 Published source: `2678348b6b` on `benfeuer/mochi-doom-ftpo`. Submitted `/benfeuer/mochi-doom-cohorts-20261124a` to cw-us-east-08a with 16 CPUs, 96 GB memory, 64 GB disk, production priority, and a 72-hour runtime ceiling. The executor's 48-hour deadline still applies. Command: `uv run iris --cluster cw-us-east-08a job run --job-name mochi-doom-cohorts-20261124a --no-wait --enable-extra-resources --cpu 16 --memory 96GB --disk 64GB --priority production --timeout 259200 -e PYTHONPATH vendor/skyrl/skyrl-train:vendor/skyrl/skyrl-gym:vendor/skyrl -- python -m experiments.post_training.mochi_doom_ftpo.cohorts`. HF and storage credentials were forwarded through Iris secret delivery; no credentials are in source.
@@ -58,3 +54,29 @@ The first CPU build reached cohort freezing and failed because only 79 admitted 
 Published fix: `7c4069cce5`. Replacement CPU job `/benfeuer/mochi-doom-cohorts-20261124b` was submitted on 08a at 18:12 EST with the same resources. No previous GPU work or model checkpoint is involved. The detector suite now has 12 passing cases, including open thinking spans begun in the rendered prompt; the cohort/publication suite has four passing cases. All four broad-suite failures also reproduce on the clean base `f9fe837d6398cf27355b1f34ccba997fafd67ef1`.
 
 W&B credentials are absent from this shell's usual stores. Baseline generation will retain console and native records so measurement can proceed while the credential-location question is pending. Training retains its W&B backend pending resolution. S0 evaluates the math16k cohort, greedy 32K panel, and temperature-0.7 panel in one saved-model workload to share the model startup; this differs from the design's three engine partitions but preserves each sampling and budget contract.
+
+### 2026-11-24 18:51 EST — Freeze cohorts and submit S0
+
+The cohort build succeeded at 18:21 EST. All 512 recovered DAPO validation prompts survived the prompt cap. The six 32K domains each contain 128 initial rows and 128 disjoint reserve rows. The manifest records the source versions, dropped prompts, row hashes, and cohort hashes; its SHA-256 is `839713ba2fd14bd755f6600782ed1fac7ca60258d7a7416ddc590de1015b345e`. See [the frozen manifest](cohorts-manifest.json). The published selection contains 183,167 eligible training candidates; these are raw source pools, not the final S3 sampling mix. The mixed round will select only baseline-qualified target domains and set their weights explicitly.
+
+| Cohort | Initial N | Cohort SHA-256 |
+| --- | ---: | --- |
+| math16k | 512 | `44ac92e7cc75a29872a47fd2a8e9544192548badef31088ea2773d6eb6700253` |
+| math32k | 128 | `b5f9113c9d7518b5faa91a6d8e22b30966fcec376c2bc8040ecf9f4de2bd48cf` |
+| if32k | 128 | `9fb017a9e7505e9e207ec94b91d4a64f6648eb9afb1570c1c8bc0f480973a3e7` |
+| code32k | 128 | `2740f1718525d4a8d1286c9079429c9c3554a07b84e4519602f572d902d7004e` |
+| rgym32k | 128 | `4d542fd4d284a4c90894395b984439216282df8c3b01f633ccd2fbdd3a3b52d4` |
+| mcq32k | 128 | `4aa9ec654df306747ef0838df0fd1105efef153dfcdc369793bf3ae59b99f152` |
+| struct32k | 128 | `d53d6935d682ed937dd98fc4dcf607c7cede9bf06ae7a7216e0cc5036e196bbb` |
+
+Published source: `a620d5ce2e`. All 11 presets pass local preflight, including explicit in-region durable outputs and temporary checkpoint roots. Generation uses TP1/BF16 and CUDA graphs. The baseline disables routed-expert capture because it does not train; S1 will test R3 together with top-32 logprobs. Native FTPO pilots select the lowest loop upper bound, break ties by correctness, and stop after two non-improving pilots or a correctness loss above five percentage points. These controls do not change the FTPO loss or detector.
+
+S0 was submitted at 18:51 EST, version `2026.11.24.2`, 128 GB200 at production priority. The hub coordinator is `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-64eac6dcb0-in-5c5ccf7a-2026.11.24.2-coordinator-56b5c94e`. Its GPU child, submitted at 18:52:30 EST, appends `/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-64eac6dcb0-in-5c5ccf7a-2026.11.24.2-a023f5fa9de9`. Parent and child are running; no incidence is measured yet and no training has started.
+
+The W&B credential is now available for training. S0 retains console and native records. An advisory review and a refreshed affected-test run are in progress against this committed source. Previously observed macOS-only test failures reproduce on the clean base; new failures will be investigated separately.
+
+Next: audit exact saved token IDs, extend any 32K domain with fewer than ten confirmed loops to its fixed reserve, and seal the target set before S1.
+
+## Final decision
+
+Pending measured baseline and candidate results.
