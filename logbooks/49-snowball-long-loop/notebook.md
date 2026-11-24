@@ -2329,3 +2329,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: restart-analysis receipt + published S3 evidence [R].
 - Interpretation and limitations: recommendation (no live changes applied) — KEEP this run's 30-min checkpoint cadence; planned maintenance should wait for a verified fresh checkpoint before preempting the CPU coordinator / cascading GPUs; a future grace needs full update + ~72 s write + margin (~110 s planning), not cadence alone. Tightening to 15/10 min adds I/O (7.8/11.7% upper-bound write occupancy vs 3.9% at 30 min if fully blocking) and does not remove the ~24-min recovery initialization.
 - Decision and next action: no config change; the run continues (callback 1325 retained); future maintenance windows should respect the fresh-checkpoint wait.
+
+### 2026-11-24 22:13 UTC - Hourly catch-up (Iris primary evidence)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence per the practice correction.
+- Published source revision: unchanged since the last check.
+- Command or material configuration: `iris --cluster=marin job list` for /benfeuer/mochi-exp6 and /benfeuer/mochi-sft-exp3-v5-bankadam (22:13 UTC).
+- External inputs and artifact references: Iris job lists [R]; coordinator correction (4fe401aeee) [R]; V5 restart diagnosis addendum (c64b0c4bfe) [R].
+- Environment and hardware when relevant: Exp6 SFT running (sft task since 04:17:01); V5 bankadam-128 running (grug-train since 10:30:11; GPU attempt 0 clean per the restart diagnosis; callback 1325 retained).
+- Result, including failure or restart: both running jobs confirmed live by Iris; unchanged states.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: no state change this window.
+- Decision and next action: hourly checks continue.
