@@ -2317,3 +2317,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: no state change this window.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-24 21:10 UTC - Addendum: V5 bankadam-128 SFT restart diagnosis — two CPU-coordinator preemptions cascaded to the GPU child; keep the 30-min checkpoint cadence
+
+- Question or hypothesis and reason for trying it: diagnose the V5 SFT restart behavior (read-only; run unchanged) after observed worker recreation.
+- Published source revision: root `/benfeuer/mochi-sft-exp3-v5-bankadam-128-20261124a` — regional CPU coordinator attempts 0 and 1 explicitly PREEMPTED with reason "CPU node ncore update", at 19:18:41.816 and 20:28:13.960 UTC (14:18/15:28 EST); both cascaded to the GPU child, killed/recreated under the same name. Current GPU attempt 0 has 0 failures/preemptions; the regional CPU history has two actual preemptions. This was not a spontaneous in-process restart or an established Finelog-induced crash.
+- Command or material configuration: second-event Kubernetes records — containers stopping 20:28:23, coordinator TaintManagerEviction 20:28:38, new GPU pods 20:29:51–52. First-event pod history unavailable; the persisted regional attempt and the original coordinator traceback prove the same maintenance reason.
+- External inputs and artifact references: worker diagnosis cc over Rhizome (~21:1x UTC) [R]; receipt `mochi-sft-v5-bankadam128/restarts-20261124/restart-analysis-receipt.json`; incident wiki 1064; published evidence `s3://marin-us-east-08a/marin/users/benfeuer/mochi-sft-preparation/bankadam128-20261124/restarts-20261124/` [R].
+- Environment and hardware when relevant: GPU pod grace 65 s (CPU 15 s) vs measured checkpoint writes 68–72 s — final saves 1210/1315 began but retries loaded older rolling checkpoints.
+- Result, including failure or restart: cost of the two preemptions — last completed native state 1210 → restored 1209 = 1 replayed update; 1315 → restored 1306 = 9 (callback labels one less than the returned state); first resumed losses 19:42:35.951 / 20:52:42.538; last-loss→first-resumed-loss gaps 23m42.767s / 24m16.156s (47m58.923s total); ten replayed updates ≈ 3m58s at the 23.824s median ordinary interval. Latest retained callback 1325 at 21:00:41.662 confirms resumed progress.
+- Evidence: restart-analysis receipt + published S3 evidence [R].
+- Interpretation and limitations: recommendation (no live changes applied) — KEEP this run's 30-min checkpoint cadence; planned maintenance should wait for a verified fresh checkpoint before preempting the CPU coordinator / cascading GPUs; a future grace needs full update + ~72 s write + margin (~110 s planning), not cadence alone. Tightening to 15/10 min adds I/O (7.8/11.7% upper-bound write occupancy vs 3.9% at 30 min if fully blocking) and does not remove the ~24-min recovery initialization.
+- Decision and next action: no config change; the run continues (callback 1325 retained); future maintenance windows should respect the fresh-checkpoint wait.
