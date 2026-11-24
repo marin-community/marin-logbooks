@@ -2293,3 +2293,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: no state change this window.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-24 19:13 UTC - Hourly catch-up (Iris primary evidence)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence per the practice correction.
+- Published source revision: unchanged since the last check.
+- Command or material configuration: `iris --cluster=marin job list` for /benfeuer/mochi-exp6 and /benfeuer/mochi-sft-exp3-v5-bankadam (19:13 UTC).
+- External inputs and artifact references: Iris job lists [R]; coordinator correction (4fe401aeee) [R].
+- Environment and hardware when relevant: Exp6 SFT running (sft task since 04:17:01); V5 bankadam-128 running (grug-train since 10:30:11).
+- Result, including failure or restart: both running jobs confirmed live by Iris; unchanged states.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: no state change this window.
+- Decision and next action: hourly checks continue.
