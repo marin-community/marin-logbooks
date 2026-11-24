@@ -2536,3 +2536,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: architecture/robustness-side progress (judge plumbing decoupled from Harbor); no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-24 12:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `6804f5d64f…` to `c466764d63…` — five new commits: `c466764d63` Fix the R40 plan's load IDs to proper 32-hex; `945156aa9e` Add the R40 release plan for the pipeline cut; `11540853e0` Readmit the repaired identity-following variant at its pinned private release; `beb4ba5b37` Add the R40 release plan for the pipeline cut; `4cc398fdab` Re-pin the compose receipt to the Lego-X-only survey.
+- Command or material configuration: `git fetch origin` + `git log 6804f5d64f..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — the R40 release-plan preparation (plan commits, load-ID hex fix, compose-receipt re-pin) and a repaired identity-following variant readmitted at its pinned private release.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: release-pipeline-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
