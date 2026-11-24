@@ -2221,3 +2221,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: prior addenda [R].
 - Interpretation and limitations: quiet window for this record.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-24 12:13 UTC - Hourly catch-up (post-conclusion watch)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief.
+- Published source revision: no new exp3/exp4 evidence; Exp5 RL `.133` holds the fleet; Mochi `.125` startup-qualified with priority gates live (baseline-0 in progress).
+- Command or material configuration: n/a.
+- External inputs and artifact references: coordinator hourly request [R]; prior addenda [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no new long-loop evidence this window.
+- Evidence: prior addenda [R].
+- Interpretation and limitations: quiet window for this record.
+- Decision and next action: hourly checks continue.
