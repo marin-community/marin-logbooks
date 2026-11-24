@@ -2560,3 +2560,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: R40-pipeline and curation-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-24 15:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `9b19d2ddfe…` to `abcef25885…` — five new commits: `abcef25885` Add the cohort conversion release stage and its in-region launcher; `32e4829b98` Re-pin the R40 plan for the cut-v4 attempt; `dc50672e25` Produce the release's snapshot-bound evidence in the graph; `a82aa04678` Convert native Harbor cohort rows into executable TaskSpecs behind the package's own harness; `f4d4027fe2` Supersede the calibforge shared Harbor cohort with its rebuilt TaskSpec variant.
+- Command or material configuration: `git fetch origin` + `git log 9b19d2ddfe..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — cohort conversion to executable TaskSpecs (with its release stage/launcher), the R40 cut-v4 re-pin, snapshot-bound evidence in the graph, and the calibforge cohort superseded by its rebuilt TaskSpec variant.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: R40-pipeline-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
