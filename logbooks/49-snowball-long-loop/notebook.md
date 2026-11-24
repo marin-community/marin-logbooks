@@ -2245,3 +2245,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: coordinator correction [R].
 - Interpretation and limitations: the standing-watch claims in the 12:13 entry were built from older logbook text; primary-evidence checking is now the mandated practice.
 - Decision and next action: corrected hourly entries from primary evidence going forward.
+
+### 2026-11-24 13:13 UTC - Hourly catch-up (Iris/Finelog primary evidence)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; entries built from Iris primary evidence per the coordinator's practice correction.
+- Published source revision: Exp5 is sealed (RL +7.0 pp vs SFT; HF Round5-2026.11.23.140-step22); Mochi `.125` cancelled 11/23 5:06 PM (priority drain + rolling batch now defaults, v2026.11.23.126).
+- Command or material configuration: `iris --cluster=marin job list` for /benfeuer/mochi-exp6 and /benfeuer/mochi-sft-exp3-v5 (13:13 UTC).
+- External inputs and artifact references: Iris job lists [R]; coordinator correction (4fe401aeee) [R].
+- Environment and hardware when relevant: Exp6 SFT `/benfeuer/mochi-exp6-2026.11.24.157` running (root submitted 04:14:07, sft task 04:17:01, verify_inputs succeeded; 256 H100 rno2a; ~update 213/1,893 per the coordinator). Mochi V5 SFT `/benfeuer/mochi-sft-exp3-v5-bankadam-128-20261124a` running (root 10:29:21, grug-train task 10:30:11; 128 GB200 08a; ~update 160/2,100); the earlier v5-128-20261124b has a worker_failed grug-train task (scipy.linalg import chain).
+- Result, including failure or restart: both running jobs confirmed live by Iris.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: the v5-128 (non-bankadam) attempt's worker failure is the reason the bankadam-128 relaunch exists.
+- Decision and next action: hourly checks continue.
