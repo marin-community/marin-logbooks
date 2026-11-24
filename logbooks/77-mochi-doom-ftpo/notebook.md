@@ -44,3 +44,9 @@ Next: validate the CPU publication path and baseline presets locally, publish so
 ## Final decision
 
 Pending measured baseline and candidate results.
+
+### 2026-11-24 18:05 EST — Submit the cohort build
+
+Published source: `2678348b6b` on `benfeuer/mochi-doom-ftpo`. Submitted `/benfeuer/mochi-doom-cohorts-20261124a` to cw-us-east-08a with 16 CPUs, 96 GB memory, 64 GB disk, production priority, and a 72-hour runtime ceiling. The executor's 48-hour deadline still applies. Command: `uv run iris --cluster cw-us-east-08a job run --job-name mochi-doom-cohorts-20261124a --no-wait --enable-extra-resources --cpu 16 --memory 96GB --disk 64GB --priority production --timeout 259200 -e PYTHONPATH vendor/skyrl/skyrl-train:vendor/skyrl/skyrl-gym:vendor/skyrl -- python -m experiments.post_training.mochi_doom_ftpo.cohorts`. HF and storage credentials were forwarded through Iris secret delivery; no credentials are in source.
+
+The 10 detector tests and four cohort/publication tests pass locally. All-file pre-commit and standalone Pyrefly pass. The affected safe suite reports 1,416 passes, five skips, and four failures in unchanged task-curation tests: two macOS Bash array failures, one code-runner reward failure, and a Linux-only bubblewrap backend call. Baseline replication of those failures is pending. No GPU job has been submitted, and no loop-incidence result is available.
