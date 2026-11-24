@@ -2596,3 +2596,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: acceptance-infrastructure and R40-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-24 19:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `1088db078b…` to `0e16655a71…` — five new commits: `0e16655a71` Rebuild inference pools after broker preemption; `73629285cc` Deliver the acceptance job's Daytona and judge keys through the job environment; `135efc1958` Resume by verifying and adopting already-pushed tags, with bounded registry backoff; `257f1a96f3` Authenticate the acceptance Daytona factory through the explicit RL-org connection; `a519360992` Materialize the acceptance build context with the canonical byte-and-metadata-preserving helper.
+- Command or material configuration: `git fetch origin` + `git log 1088db078b..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — inference-pool rebuild after broker preemption; acceptance-job key delivery, tag-adoption resume with bounded registry backoff, RL-org factory authentication, and canonical build-context materialization.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: R40/acceptance-infrastructure progress (a broker preemption forced a pools rebuild); no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
