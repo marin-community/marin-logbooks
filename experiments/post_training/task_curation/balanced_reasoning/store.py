@@ -237,8 +237,10 @@ def build_store(
     store_dir = f"{run_root.rstrip('/')}/store"
     fsspec.filesystem(url_protocol(run_root)).makedirs(store_dir, exist_ok=True)
     rows: list[dict] = []
-    dropped = 0
-    drop_reasons: dict[str, int] = {}
+    decon_dropped = 0
+    decon_reasons: dict[str, int] = {}
+    unsolved_no_row = 0
+    unsolved_reasons: dict[str, int] = {}
     resolutions: dict[str, int] = {}
     for entry in selected:
         attempt_path = f"{run_root.rstrip('/')}/tasks/{entry.task.task_id}/attempt.json"
@@ -251,10 +253,16 @@ def build_store(
         outcome = outcome_from_document(json.loads(document))
         contributed, drop_reason = outcome_rows(outcome, receipt_root=receipt_root, blend=blend)
         rows.extend(contributed)
-        if drop_reason is not None:
-            dropped += 1
-            drop_reasons[drop_reason] = drop_reasons.get(drop_reason, 0) + 1
-        resolutions[outcome.resolution_kind] = resolutions.get(outcome.resolution_kind, 0) + 1
+        if drop_reason is None:
+            resolutions[outcome.resolution_kind] = resolutions.get(outcome.resolution_kind, 0) + 1
+        elif drop_reason.startswith("blend overlap"):
+            decon_dropped += 1
+            decon_reasons[drop_reason] = decon_reasons.get(drop_reason, 0) + 1
+        else:
+            # No passing attempt: the task contributes no row, but nothing was decontaminated away.
+            unsolved_no_row += 1
+            unsolved_reasons[drop_reason] = unsolved_reasons.get(drop_reason, 0) + 1
+            resolutions[outcome.resolution_kind] = resolutions.get(outcome.resolution_kind, 0) + 1
     table = pa.Table.from_pylist(rows, schema=BALANCED_CHAT_SCHEMA)
     rows_path = f"{store_dir}/rows.parquet"
     with fsspec.open(rows_path, "wb") as sink:
@@ -272,8 +280,10 @@ def build_store(
         "source": BALANCED_SOURCE,
         "selection_digest": digest_value,
         "rows": len(rows),
-        "dropped_by_decontamination": dropped,
-        "drop_reasons": drop_reasons,
+        "dropped_by_decontamination": decon_dropped,
+        "decontamination_drop_reasons": decon_reasons,
+        "unsolved_no_row": unsolved_no_row,
+        "unsolved_no_row_reasons": unsolved_reasons,
         "resolutions": resolutions,
         "selection_census": census,
         "schema": "marin CHAT_SCHEMA + balanced-reasoning metadata columns (BALANCED_CHAT_SCHEMA)",
@@ -301,7 +311,14 @@ def build_store(
     manifest_path = f"{store_dir}/manifest.json"
     with open_url(manifest_path, "wt") as sink:
         sink.write(json.dumps(manifest, indent=2, sort_keys=True))
-    logger.info("STORE %s rows=%d dropped=%d resolutions=%s", rows_path, len(rows), dropped, sorted(resolutions.items()))
+    logger.info(
+        "STORE %s rows=%d decon_dropped=%d unsolved_no_row=%d resolutions=%s",
+        rows_path,
+        len(rows),
+        decon_dropped,
+        unsolved_no_row,
+        sorted(resolutions.items()),
+    )
     return manifest
 
 

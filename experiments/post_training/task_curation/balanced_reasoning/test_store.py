@@ -79,6 +79,8 @@ def test_build_store_rows_and_schema(tmp_path: Path) -> None:
     manifest = build_store(str(run_root), selection_path=str(selection_path))
     assert manifest["rows"] == 1
     assert manifest["resolutions"] == {"solved_shortest": 1}
+    assert manifest["unsolved_no_row"] == 0
+    assert manifest["dropped_by_decontamination"] == 0
     table = pq.read_table(run_root / "store" / "rows.parquet")
     assert table.schema == BALANCED_CHAT_SCHEMA
     row = table.to_pylist()[0]
@@ -100,6 +102,7 @@ def test_build_store_drops_blend_overlap(tmp_path: Path) -> None:
     manifest = build_store(str(run_root), selection_path=str(selection_path), blend=blend)
     assert manifest["rows"] == 0
     assert manifest["dropped_by_decontamination"] == 1
+    assert manifest["unsolved_no_row"] == 0
 
 
 def test_run_command_refuses_without_the_live_gate(tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
