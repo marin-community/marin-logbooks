@@ -2608,3 +2608,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: R40/acceptance-infrastructure progress (a broker preemption forced a pools rebuild); no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-24 20:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `0e16655a71…` to `f798f56c75…` — five new commits: `f798f56c75` Protect serving CPU parents from evaluation preemption; `c68905b6ed` Re-pin the R40 plan for the cut-v8 attempt; `12c3b6ba2d` Adopt an existing release repo on conversion retry; `e370e1e9e2` Re-pin the R40 plan for the cut-v7 attempt; `f1cac216a2` Export the staged QC panel documents from the prior load's review tables.
+- Command or material configuration: `git fetch origin` + `git log 0e16655a71..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — serving-CPU-parent preemption protection, the R40 cut-v7 and cut-v8 re-pins, release-repo adoption on conversion retry, and staged QC-panel document export from the prior load's review tables.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: R40-pipeline and serving-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
