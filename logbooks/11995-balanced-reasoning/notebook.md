@@ -69,3 +69,25 @@ This branch preserves the source tree of draft marin#11997 as a durable experime
 - External inputs and artifact references: store `s3://marin-us-east-02a/marin/users/benfeuer/balanced-reasoning/v1-store-2026.11.24.2/` (rows and receipts byte-identical to .1, manifest corrected: dropped_by_decontamination 0, unsolved_no_row 403); dataset [open-athena/balanced-reasoning-v1](https://huggingface.co/datasets/open-athena/balanced-reasoning-v1) commit c16c3bf8 adds the first-party OpenMDW 1.1 LICENSE (official text, sha256 2ab44b68…) and the license card metadata; the dataset stays private.
 - Result, including failure or restart: the store is ready as an SFT-mix candidate; the coordinator takes it to the user for the next mix. No queue filing is needed.
 - Evidence: manifest.json at the .2 prefix; the dataset card and LICENSE on the Hub commit above.
+
+### 2026-11-24 18:00 UTC - v1 cohort analysis: token counts, selection basis, and why it misses the target
+
+- Question or hypothesis and reason for trying it: how large is the v1 store, how was its cohort chosen, and does it address the overthinking it was built for?
+- Published source revision: 199b518b2d (this branch)
+- Command or material configuration: sums and counts over `rows.parquet` from the published store (`assistant_tokens`, `prompt_tokens`, `reasoning_tokens`, `band`, `source_id`, `difficulty_basis`).
+- External inputs and artifact references: `s3://marin-us-east-02a/marin/users/benfeuer/balanced-reasoning/v1-store-2026.11.24.2/rows.parquet` (sha256 6b5dc656130f4f946a793172ef4495d75f67c1d26e30ad813d0b42e3756ec9be); selection digest 294186df.
+- Environment and hardware when relevant: local read of the published store.
+- Result, including failure or restart:
+  - Size: 7,728 rows; 5,827,840 prompt tokens and 2,584,496 assistant tokens (905,677 of them reasoning), about 8.4M tokens in total. The run generated 33.7M output tokens, about 13x the retained assistant tokens, because only the shortest correct trace per task is kept. Against an SFT mix of about 134B tokens (V9), the store is about 0.002% of trainable tokens.
+
+    | Band | Rows | Prompt tokens | Assistant tokens | Reasoning tokens | Mean assistant tokens |
+    |---|---:|---:|---:|---:|---:|
+    | easy | 3,917 | 1,763,602 | 897,855 | 254,265 | 229 |
+    | medium | 3,695 | 3,668,217 | 1,644,879 | 637,855 | 445 |
+    | hard | 64 | 130,455 | 25,370 | 9,774 | 396 |
+    | unsolved | 52 | 265,566 | 16,392 | 3,783 | 315 |
+
+  - Selection: candidates were Atlas census TaskSpecs whose graders run on the lane's machines (4,701 tasks were excluded because their graders need container images the specs lack). Each candidate was joined by task id to the difficulty ledger. With about one attempt per task, the lane pooled the four pinned solvers, then fell back to the source's average solve rate (DESIGN S0 ladder, level 3). 539 rows (7%) carry per-task difficulty (`ledger:pooled`); 7,189 rows (93%) carry the source average (`source:pooled`). Bands were filled against quotas of 4,000 / 4,000 / 2,500 / 1,500 in digest order, with the shortfall reported, not rebalanced.
+  - Composition: every row is a math word problem. Easy is mostly hendrycks_math (1,558), rlvr_math (1,526) and gsm8k (647); medium is numina_math (1,387), dapo_math (1,357), svamp (613) and asdiv (331); hard (64) and unsolved (52) come from the same math sources through their per-task ledger rows.
+- Evidence: the counts above, from the store's rows.parquet.
+- Conclusion: v1 does not address the motivating failure. The overthinking it targets appears on competitive-programming and Nemotron-style prompts, and the cohort contains no code, instruction-following or agentic tasks. Because 93% of rows use a source-average difficulty, the bands mostly reflect which source a task came from, which leaves the hard and unsolved bands nearly empty. A useful v2 would need graders that run code, instruction-following and agentic tasks (the specs missing images fixed), per-task difficulty from denser difficulty waves or the lane's own k-attempt solve rates, and quotas filled only from per-task difficulty. No v2 is planned at this point.
