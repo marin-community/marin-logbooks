@@ -2572,3 +2572,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: R40-pipeline-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-24 17:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `abcef25885…` to `ff2a4448f2…` — five new commits: `ff2a4448f2` Resolve the judge key from GSM in the acceptance launcher; `52709287cf` Add the acceptance-control stage replaying recorded bug controls against converted graders; `4fd9e9aa82` Bind the mimo general conversion release to its original upstream license; `b1ab379ae0` Bind the swesmith and mimo-music conversion releases to their original upstream licenses; `9cd8aa52dd` Add the release license rebind for repackager-escalated cohort conversions.
+- Command or material configuration: `git fetch origin` + `git log abcef25885..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — GSM-resolved judge key in the acceptance launcher, an acceptance-control stage replaying recorded bug controls, and three upstream-license rebinds (mimo general, swesmith/mimo-music, repackager-escalated cohort conversions).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: acceptance/license-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
