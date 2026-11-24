@@ -2233,3 +2233,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: prior addenda [R].
 - Interpretation and limitations: quiet window for this record.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-24 12:20 UTC - CORRECTION (coordinator): the 12:13 entry's MOCHI/SNOWBALL lines were stale
+
+- Question or hypothesis and reason for trying it: the coordinator corrected the 12:13 EST hourly entry — its MOCHI and SNOWBALL lines were stale.
+- Published source revision: per the coordinator: **Mochi `.125` was CANCELLED on 11/23 at 5:06 PM; priority drain + rolling batch became the DEFAULTS (config v2026.11.23.126)**. **Exp5 is SEALED — RL +7.0 pp vs SFT; HF `open-athena/Snowball-LongLoop-Round5-2026.11.23.140-step22`** — not holding the fleet. **Running now: Exp6 SFT `/benfeuer/mochi-exp6-2026.11.24.157` (256 H100 rno2a, ~update 213/1,893, 20 h cap) and Mochi V5 SFT `/benfeuer/mochi-sft-exp3-v5-bankadam-128-20261124a` (128 GB200 08a, ~update 160/2,100).** R40 is being cut by the in-repo pipeline (cold-read PASS).
+- Command or material configuration: build future entries from Iris/Finelog primary evidence, not older logbook text.
+- External inputs and artifact references: coordinator correction [R].
+- Environment and hardware when relevant: Exp6 SFT holds the 256 H100 on rno2a; Mochi V5 SFT holds 128 GB200 on 08a.
+- Result, including failure or restart: this entry supersedes the stale lines in the 12:13 entry; no deletion (append-only).
+- Evidence: coordinator correction [R].
+- Interpretation and limitations: the standing-watch claims in the 12:13 entry were built from older logbook text; primary-evidence checking is now the mandated practice.
+- Decision and next action: corrected hourly entries from primary evidence going forward.
