@@ -2584,3 +2584,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: acceptance/license-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-24 18:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `ff2a4448f2…` to `1088db078b…` — five new commits: `1088db078b` Admit NeMo structured outputs and the qualified TerminalWorld subset; `5e5e09de40` Open the acceptance exit stack asynchronously; `467225ee1b` Allow the Daytona prerelease resolution in the acceptance job environment; `ddf84f24e6` Carry the Daytona SDK and the rollout engine in the acceptance job environment; `c4a17640c8` Re-pin the R40 plan for the cut-v6 attempt.
+- Command or material configuration: `git fetch origin` + `git log ff2a4448f2..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — NeMo structured outputs + the qualified TerminalWorld subset admitted; the acceptance exit stack opened asynchronously; Daytona prerelease resolution and SDK/rollout-engine carriage in the acceptance environment; the R40 cut-v6 re-pin.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: acceptance-infrastructure and R40-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
