@@ -2548,3 +2548,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: release-pipeline-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-24 13:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `c466764d63…` to `9b19d2ddfe…` — five new commits: `9b19d2ddfe` Re-pin the R40 plan for the cut-v2 attempt; `4c4354af37` Stage the repaired identity-following variant for intake, out of the served declarations; `1d6a04c3c5` Resolve the stage dispatch receipt key from its spec; `58234531c8` Reference the identity-repair license receipt shards in the committed index; `029dd3f445` Fix the lean acceptance registry reads and the stale declaration fixtures.
+- Command or material configuration: `git fetch origin` + `git log c466764d63..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: five landings — the R40 cut-v2 re-pin, identity-variant intake staging, dispatch-receipt key resolution, license-receipt shard references, and lean-acceptance registry fixes.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: R40-pipeline and curation-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
