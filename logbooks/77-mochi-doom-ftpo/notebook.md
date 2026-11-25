@@ -356,6 +356,12 @@ Evidence:
 
 S2 is complete with a correctness-stop result. No further FTPO round has started.
 
+### 2026-11-25 12:15 EST — Preserve the complete small trajectory evidence
+
+Evidence preservation is complete. The permanent08a copies contain all512 S1 retained records and448 S2 retained records, plus the S1 raw pilot dumps. Destination object counts and byte totals match the sources; both retention ledgers match byte-for-byte and have recorded SHA-256 digests. S2's raw pilot dumps were already permanent. No model weights were copied or converted during this preservation.
+
+Receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/evidence-preservation-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fevidence-preservation-receipt.json)). Source and experimental archive remain on their owned branches; main is clean. S2's correctness-stop result is sealed, with no experiment compute running and no downstream FTPO round started.
+
 ## Final decision
 
-The baseline is sealed. S1 passed hardware/export qualification but worsened its32K pilot. S2 ended at native step3 on the declared correctness guard, after two actual optimizer updates and one empty batch. No target-domain loop reduction was demonstrated; the selected model remains the original SFT export. S3/S4 have not started. The campaign continuation decision remains open.
+The baseline is sealed. S1 passed hardware/export qualification but worsened its32K pilot. S2 ended at native step3 on the declared correctness guard, after two actual optimizer updates and one empty batch. No FTPO target-domain loop reduction was demonstrated; the selected model remains the original SFT export. S3/S4 have not started. The campaign continuation decision remains open.
