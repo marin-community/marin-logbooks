@@ -13,10 +13,11 @@ import time
 from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from pathlib import Path
+from uuid import uuid4
 
 import torch
 from datasets import load_dataset
-from daytona import CreateSandboxFromImageParams, Daytona, DaytonaConfig, Image
+from daytona import CreateSandboxFromImageParams, Daytona, DaytonaConfig, DaytonaConflictError, DaytonaError, Image
 from huggingface_hub import snapshot_download
 from swebench.harness.grading import get_eval_report
 from swebench.harness.test_spec.test_spec import make_test_spec
@@ -35,6 +36,8 @@ OUTPUT_CHARS = 6000
 MAX_INPUT_TOKENS = 32000
 MAX_ACTION_TOKENS = 1024
 MAX_PATCH_BYTES = 200000
+GATEWAY_ERRORS = {502, 503, 504}
+SANDBOX_CREATION_DELAYS = (4, 8, 16)
 ACTIVATE_TESTBED = "source /opt/miniconda3/bin/activate testbed && "
 ACTOR_INSTRUCTIONS = (
     "You are taking over a software-maintenance task. Inspect the current code or diff and make a focused fix. "
@@ -63,6 +66,28 @@ class Replayed:
     diff_sha256: str
 
 
+def create_workspace(client: Daytona, params: CreateSandboxFromImageParams):
+    """Use the same workspace name on gateway retries to avoid duplicate sandboxes."""
+    name = params.name
+    if name is None:
+        raise ValueError("workspace creation retries require a name")
+    delays = iter(SANDBOX_CREATION_DELAYS)
+    while True:
+        try:
+            try:
+                return client.create(params, timeout=240)
+            except DaytonaConflictError:
+                workspace = client.get(name, request_timeout=30)
+                workspace.wait_for_sandbox_start(timeout=240)
+                return workspace
+        except DaytonaError as error:
+            delay = next(delays, None)
+            if error.status_code not in GATEWAY_ERRORS or delay is None:
+                raise
+            print(f"Workspace gateway returned HTTP {error.status_code}. Retrying in {delay}s.", flush=True)
+            time.sleep(delay)
+
+
 def scenario_prefix(record: dict) -> Prefix:
     """Load a private prefix manifest whose placeholder outcome carries no grader data."""
     episode = Episode(**record["episode"])
@@ -86,13 +111,15 @@ def sandbox(client: Daytona, image: str, base_commit: str):
     """Allocate a private, network-blocked workspace at the benchmark base commit."""
     params = CreateSandboxFromImageParams(
         image=Image.base(image),
+        name=f"value-resampling-{uuid4().hex}",
         public=False,
         ephemeral=True,
         network_block_all=True,
         auto_stop_interval=10,
+        ttl_minutes=30,
         labels={"purpose": "swebench-prefix-resampling"},
     )
-    workspace = client.create(params, timeout=240)
+    workspace = create_workspace(client, params)
     try:
         base = shlex.quote(base_commit)
         checkout = workspace.process.exec(
@@ -373,6 +400,10 @@ def main():
                 result = run_case(client, instance, prefixes, scorer, args, actor)
             except ReplayMismatch as error:
                 result = {"issue": instance["instance_id"], "replay_error": str(error)}
+            except DaytonaError as error:
+                if error.status_code not in GATEWAY_ERRORS:
+                    raise
+                result = {"issue": instance["instance_id"], "environment_error": f"Daytona HTTP {error.status_code}"}
             payload = json.dumps(result)
             handle.write(payload + "\n")
             handle.flush()

@@ -15,7 +15,7 @@ def summarize(rows: list[dict], seeds: int, actions: int, tokens: int) -> dict:
         raise ValueError("expected one result per issue")
     complete = []
     for row in rows:
-        if "replay_error" in row:
+        if "replay_error" in row or "environment_error" in row:
             continue
         pairs = list(row["continuations"].values())
         choice = row["guided_branch"]
@@ -32,6 +32,9 @@ def summarize(rows: list[dict], seeds: int, actions: int, tokens: int) -> dict:
         guided = [pair[choice]["pass"] if choice is not None else mean(x["pass"] for x in pair) for pair in pairs]
         uniform = [mean(x["pass"] for x in pair) for pair in pairs]
         mixed = [len({pair[index]["pass"] for pair in pairs}) == 2 for index in (0, 1)]
+        branch_passes = [sum(pair[index]["pass"] for pair in pairs) for index in (0, 1)]
+        first, second = (2 * probability * (1 - probability) for probability in row["values"])
+        mixed_choice = int(second > first) if abs(first - second) > 1e-6 else None
         usage = {}
         for field in (
             "prompt_tokens",
@@ -48,12 +51,16 @@ def summarize(rows: list[dict], seeds: int, actions: int, tokens: int) -> dict:
             {
                 "issue": row["issue"],
                 "value_scores": row["values"],
-                "branch_passes": [sum(pair[index]["pass"] for pair in pairs) for index in (0, 1)],
+                "branch_passes": branch_passes,
                 "guided_branch": choice,
                 "guided_pass_rate": mean(guided),
                 "uniform_pass_rate": mean(uniform),
                 "guided_mixed_probability": float(mixed[choice]) if choice is not None else mean(mixed),
                 "uniform_mixed_probability": mean(mixed),
+                "predicted_mixed_choice": mixed_choice,
+                "predicted_mixed_policy_mixed_rate": (
+                    float(mixed[mixed_choice]) if mixed_choice is not None else mean(mixed)
+                ),
                 "discordant_seed_pairs": sum(pair[0]["pass"] != pair[1]["pass"] for pair in pairs),
                 "usage": usage,
                 "empty_patches": sum(branch["patch_bytes"] == 0 for pair in pairs for branch in pair),
@@ -65,6 +72,7 @@ def summarize(rows: list[dict], seeds: int, actions: int, tokens: int) -> dict:
         "issues_observed": len(rows),
         "issues_graded": len(complete),
         "excluded_replays": [row for row in rows if "replay_error" in row],
+        "excluded_environment_errors": [row for row in rows if "environment_error" in row],
         "seeds_per_branch": seeds,
         "allocated_limits_per_continuation": {"actor_calls": actions, "generated_tokens": tokens},
         "issues": complete,
@@ -83,6 +91,7 @@ def summarize(rows: list[dict], seeds: int, actions: int, tokens: int) -> dict:
             issues_with_loss=sum(x < 0 for x in delta),
             guided_mixed_fraction=mean(row["guided_mixed_probability"] for row in complete),
             uniform_mixed_fraction=mean(row["uniform_mixed_probability"] for row in complete),
+            predicted_mixed_policy_mixed_fraction=mean(row["predicted_mixed_policy_mixed_rate"] for row in complete),
             discordant_seed_pairs=sum(row["discordant_seed_pairs"] for row in complete),
             empty_patches=sum(row["empty_patches"] for row in complete),
             explicit_submissions=sum(row["explicit_submissions"] for row in complete),

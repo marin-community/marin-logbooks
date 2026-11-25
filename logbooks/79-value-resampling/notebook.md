@@ -52,3 +52,9 @@ The initial comparison exercised the patch grader. Public reference fixes passed
 The second pilot runs two seeds on each branch with the same frozen actor and caps. It enables the actor's reasoning mode and activates the benchmark Python environment in its shell. It records parse failures, command failures, submission status, and patch size alongside token consumption. The head selects one branch per issue. The uniform baseline is the mean outcome across the two branches for each seed. The guided arm uses the same one-branch continuation allocation per seed. Evaluating both branches measures the uniform policy's expectation directly and also exposes the frequency of mixed outcomes across seeds.
 
 Run the current launcher with the same manifest and head. The initial one-seed, non-reasoning sample remains reproducible at the source revision of that run.
+
+### 2026-11-25 UTC — Resume after a sandbox gateway error
+
+The sandbox provider returned an HTTP 502 during the paired run. The runner now retries workspace creation with the same sandbox name and bounded backoff. An exhausted gateway error becomes an explicit infrastructure exclusion. Preserve completed issues and resume only the unscored cases, with identical seeds, actor, context, and budgets.
+
+The paired estimator also measures whether selecting the higher predicted `2p(1 - p)` increases the fraction of two-rollout groups with one pass and one failure. Both policies and the uniform baseline use one starting branch for each two-rollout group.
