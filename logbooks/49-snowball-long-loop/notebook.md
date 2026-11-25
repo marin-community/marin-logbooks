@@ -2521,3 +2521,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: preflight receipt + resolved diff [R].
 - Interpretation and limitations: all CPU-side gates pass; the GPU-side strict gate decides launchability.
 - Decision and next action: one next qualification wake 10:50 UTC; no `.129` changes or wake-chain restart.
+
+### 2026-11-25 11:15 UTC - Addendum: DSpark Exp4 correction `7aa1598b` applied — original Exp4.71 input bytes, new 200-holdout identity `cde16ecb`; no RL launch
+
+- Question or hypothesis and reason for trying it: record the Exp4 correction (original input bytes + new holdout identity) over the earlier prepared state.
+- Published source revision: **correction `7aa1598b` applied** — V5 SFT2100 initializer, unchanged 766M step400407 draft (4 proposals / 0.775), **ORIGINAL Snowball Exp4.71 input bytes**, **NEW 200-holdout / min-180 / new identity derived `cde16ecb`**. No RL launch; `.129` untouched.
+- Command or material configuration: original agentic URI `s3://marin-us-east-08a/marin/users/benfeuer/long-loop-exp4/long-loop-exp4/rl-pool-agentic/2026.11.18.71/train.parquet` (SHA `ad435c5b…`); nonagentic sibling `rl-pool-nonagentic/2026.11.18.71/train.parquet` (SHA `4cb4fd82…`); pinned curriculum record `s3://marin-us-east-08a/marin/long-loop/config/2026.11.19/exp4-recovery82-plan.json` (curriculum `cde16ecb`, verified SHA `a0ddb064…`); footer confirms 5,608 + 154,953 original rows.
+- External inputs and artifact references: worker cc over Rhizome (~11:1x UTC) [R]; records under `mochi-fixes/mochi-exp4-dspark/` [R].
+- Environment and hardware when relevant: a new CPU-only preparer removes 200 and preserves every serialized TaskSpec string/scorer — expected 160,361 train; no `.22.2` grader repairs or 191 Codeio exclusions. Known comparison differences: original 120-seed-20261109 validation → new 200-seed-20261020 plus 200 removed train. 31 focused tests/lint/types PASS; landing review active.
+- Result, including failure or restart: the superseded step400407 serving check was cancelled via iris-cancel-own (own future timer removed). Strict V5 plain → unchanged DSpark → V5 plain-rescore prepared; numerical limits unchanged / negative control PASS; the corrected regional gate is pending.
+- Evidence: correction revision + pinned curriculum record + pool SHAs [R].
+- Interpretation and limitations: the correction restores the original data bytes while carrying a fresh holdout identity; gates remain pending before any submission.
+- Decision and next action: record the corrected regional gate outcome.
