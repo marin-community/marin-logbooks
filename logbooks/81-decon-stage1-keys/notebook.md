@@ -475,6 +475,16 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   dropped question-key pair (both DROP items, a family at 0.35 removal precision in set 20). The drop loses
   0.15% of the removals there and 76.9% of the pairs.
 
+### 2026-11-25 13:15 UTC - Width 16 on edited copies (review points 1 and 5; F10, F17)
+
+- Keys rebuilt at width 16 with the production settings (template-free windows, shared tie order; F10 jobs
+  `decon-w16-{prepare,count2-p*,choose,planted}`), planted check with the edit forms on the same 41,151 items.
+- Result (width 20 / 16): layouts 0.960 / 0.968; typo in 1 word 0.869 / 0.899; typos in 3 words 0.701 / 0.737;
+  1 word changed 0.845 / 0.873; 3 words changed 0.685 / 0.717; 10% of words deleted 0.740 / 0.785. Load proxy,
+  reference records holding the chosen keys: 344,682 / 1,236,761 (3.6x).
+- Interpretation: width 16 adds 3-5 points on edits for 3.6x the candidates; the spread key set adds 15-30
+  points on the same edits (632-item sample) at 0.76x the pairs. Keep width 20 and add the key set.
+
 ## Scripts
 
 | Entry | Scripts |
@@ -495,6 +505,7 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
 | F8 regression set | `f8_regression.py` |
 | F9, F12 fresh-shard retest; F13 set 29 | `f9_fresh_pairs.py`, `f12_fresh_eval.py`, `f12b_fresh_weighted.py`, `f12c_exclusions.py`, `f12d_qdrop_loss.py`, `f13_set29.py`, `f13b_set29_eval.py` |
 | F10, F11, F15 key builds at other widths, CJK | `f10_keys_width.py`, `f11_cjk_items.py`, `f15_cjk_eval.py` |
+| F17 width 16 | `f17_width16.py` |
 | F14, F16 counts without copies | `f14_nocopy_keysets.py`, `f16_nocopy_eval.py` (survey option `key_set_survey count --exclude-copies`) |
 
 ## Final decision
@@ -510,7 +521,7 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
      Set 29: added removals 0.784 [0.742] family-weighted with every family (passes the floor), 0.974
      record-weighted without the excluded families. Added removals (every family): +168,001 catalog records,
      5-95% 100,506 - 243,658 (+39% to +84% of v11's).
-  3. Key CJK streams at width 10 (planted 0.834 -> 0.963, ZhoBLiMP 0.734 -> 0.942, no measurable load) or 8.
+  3. Keep width 20 (width 16: +3-5 points on edits for 3.6x the candidates). Key CJK streams at width 10 (planted 0.834 -> 0.963, ZhoBLiMP 0.734 -> 0.942, no measurable load) or 8.
   4. Optional: signature-gated URL and HTML decodings (about 2,000 catalog records).
   The regression set (F8) checks any of these: v11 key 1 finds 0.970 of judged copies and 0.871 of judged
   edited copies; the proposed key set 0.989 and 0.917.
@@ -533,4 +544,3 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
     or sentence counts as contamination is a policy question.
   - Set 29 has 9-35 judged records per family; the added-removal count rests on few records of large sources.
   - 32 small sources (NuminaMath 1.5 among them) had no fresh shard.
-  - Width 16 on edited copies: WIDTH16_PLACEHOLDER
