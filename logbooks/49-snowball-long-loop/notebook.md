@@ -2581,3 +2581,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: preflight + gate-submission receipts [R].
 - Interpretation and limitations: CPU-side gates pass at the exact corrected source; the GPU-side strict gate decides progression.
 - Decision and next action: record the logprob validation's terminal outcome when it lands.
+
+### 2026-11-25 12:15 UTC - Addendum: Exp4 `.131` preparation checkpoint — 45-field resolved diff clean (no initializer change); logprob validation executing on the pinned Nov-24 runtime
+
+- Question or hypothesis and reason for trying it: consolidation checkpoint on the corrected `.131` preparation (config recap + diff verification).
+- Published source revision: landed `20c8baeebe03f86e3119fee355407b7a7cc81673` — V5 SFT2100 EXACT `.129` initializer; original `.71` task strings/entries preserved with the new 200/min-180 holdout and new `d143fff8` identity; unchanged 400407-trained 766M draft (four proposals / 0.775).
+- Command or material configuration: native + regional real-agent preflight PASS; **45-field resolved diff has NO initializer change and only the intended data/route-quota/draft/HBM/identity changes.** Readout `s3://marin-us-east-08a/marin/users/benfeuer/mochi-exp4-dspark/2026.11.25.131/preparation/readout-v5-original.json`; `preflight-v5-original-receipt.json` and `resolved-v5-original-diff-vs129.json` alongside.
+- External inputs and artifact references: worker cc over Rhizome (~12:1x UTC) [R].
+- Environment and hardware when relevant: the active 16-GB200 serving-only logprob validation has four tasks executing on the pinned Nov-24 runtime; the strict actual result is PENDING — no launchability claim. Acceptance/full-update timing is instrumented for future training; actual training metrics UNAVAILABLE.
+- Result, including failure or restart: unchanged from the prior record — no RL launch regardless of validation PASS; the user decides. Next bounded qualification wake 11:41 UTC (GPU start + 15 min).
+- Evidence: readout + receipts [R].
+- Interpretation and limitations: PR 12239's 1.593× warm reference on 400407/60-GPU is not a V5 prediction; `.129` untouched.
+- Decision and next action: record the strict logprob result when it lands.
