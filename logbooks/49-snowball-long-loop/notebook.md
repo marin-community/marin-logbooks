@@ -2545,3 +2545,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission cc + landed source + S3 output prefix [R].
 - Interpretation and limitations: preparer-only stage; the pools publication gates the corrected round and gates.
 - Decision and next action: record the pools publication and the corrected gate outcomes when they land.
+
+### 2026-11-25 11:13 UTC - Hourly catch-up (Iris primary evidence): RL129/Exp6 running; Exp4 preparer running, superseded logprob validation killed
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence per the practice correction.
+- Published source revision: RL129 running (root 04:38:01, GPU child 04:40:07; training update 1 qualified 07:07); Exp6 `.158` RL checkpoint + retrieval running; **Exp4**: original-pools CPU preparer `/benfeuer/mochi-exp4-original-pools-20261125a` running (11:10:23), the superseded `mochi-exp4-dspark-logprob-20261125a` **killed by user** (10:34:26; matches the recorded superseded-gate cancellation), real-agent preflight succeeded (10:29:21).
+- Command or material configuration: `iris --cluster=marin job list` for /benfeuer/long-loop-mochi-v5-exp3-rl, /benfeuer/mochi-exp6, /benfeuer/mochi-exp4 (11:13 UTC).
+- External inputs and artifact references: Iris job lists [R]; Exp4 addenda (2fbf11f8f9, 87fb10c8a6, f695c9cb71) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: running states confirmed; the logprob kill is consistent with the corrected original-bytes flow superseding the earlier validation.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only; gate outcomes come from worker cc's.
+- Decision and next action: hourly checks continue; watch the pools preparer publication.
