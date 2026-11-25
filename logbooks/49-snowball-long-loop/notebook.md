@@ -2425,3 +2425,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step-0619 receipt + published S3 evidence [R].
 - Interpretation and limitations: step-1 admission has been the last learner marker for ~26 min; longer batch formation/verifier work is possible — no stall inference drawn.
 - Decision and next action: one next absolute-PATH wake 06:34 UTC; continue only the first-finite-optimizer/full-update qualification.
+
+### 2026-11-25 06:45 UTC - Addendum: V5 exp3 RL `.129` 06:34 check — step-1 admission still the last marker; 13 CancelledError rows + 1 Harbor EnvironmentStartTimeout among selected worker headings
+
+- Question or hypothesis and reason for trying it: continued read-only RL checkpoint on `.129` during the step-1 wait.
+- Published source revision: unchanged — source `fe606ec554…`, recipe `rounds/mochi-v5-exp3-rl.yaml` version 2026.11.25.129.
+- Command or material configuration: through 06:34:36.762 UTC — no optimizer/full training step, new publication, or first-train WANDB_MIRROR; refined native completion query 0 rows (finite-loss evidence UNAVAILABLE, not zero). Last retained marker: step-1 batch admission 05:53:37.685 (required 64 groups), not an instantaneous queue/learner phase.
+- External inputs and artifact references: worker cc over Rhizome (~06:4x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0634-receipt.json` (numeric window + SQL/JSONL/error contexts); permanent S3 prefix [R].
+- Environment and hardware when relevant: 15 new selected traceback headings — 1 Hermes JSONDecodeError InvalidControlCharacter; 14 worker headings whose terminal selection contains **13 CancelledError rows and 1 Harbor EnvironmentStartTimeoutError: "Public fixture initialization timed out" at 06:30:49.352 UTC (worker 23671)**, with the first ASGI context and the fixture 9-row chain (run → _prepare → _await_phase → timeout_error) retained; Ray-repeat annotations not expanded to unique failures. These are individual exceptions, NOT 15 distinct failed tasks/groups or root fatal proof; no selected RuntimeError/OOM/CUDA/NCCL.
+- Result, including failure or restart: baseline-0 stands (200/189/11 = 94.5%, min-180 met, no override, pass@1 0.6878306878). No fix/retry/proposal or run/config/code/checkpoint changes.
+- Evidence: rl-first-step-0634 receipt + published S3 evidence [R].
+- Interpretation and limitations: ~41 min since step-1 admission with no finite loss yet; the Harbor fixture-init timeout is a single worker event within normal retry policy — no stall inference drawn.
+- Decision and next action: one next native wake 06:49 UTC; continue only the first-finite-optimizer/full-update qualification.
