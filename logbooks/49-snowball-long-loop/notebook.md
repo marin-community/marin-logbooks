@@ -2485,3 +2485,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only; per-update RL progress comes from the worker checkpoints.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-25 10:30 UTC - Addendum: DSpark Exp4 preparation LANDED (10246164dd) — RL UNSUBMITTED; CPU validation preflight staged
+
+- Question or hypothesis and reason for trying it: record the DSpark Exp4 round preparation following the campaign's Exp5/Exp6 arc.
+- Published source revision: **preparation LANDED at `10246164ddcf5317de0e6881255138b468cb87f5`; RL UNSUBMITTED and `.129` untouched.** Round `rounds/mochi-exp4-dspark-rl.yaml` `.130` — exact Exp4 35/15/50 → 22+42 quotas; step400407-matched interleaved 766M draft / 4 proposals / 0.775.
+- Command or material configuration: CPU validation ID `/benfeuer/mochi-exp4-dspark-real-agent-preflight-20261125a` (4 CPU / 16 GiB / 0 GPU, PRODUCTION 08a).
+- External inputs and artifact references: worker cc over Rhizome (~10:3x UTC) [R]; records under `mochi-fixes/mochi-exp4-dspark/` [R].
+- Environment and hardware when relevant: native no-run complete; the actual-agent and strict sampled-token gates are pending.
+- Result, including failure or restart: preparation landed; no run submitted.
+- Evidence: landed revision + preflight records [R].
+- Interpretation and limitations: gate-pending state — the actual-agent and strict sampled-token gates must pass before any RL submission; no `.129` interference.
+- Decision and next action: record the gate outcomes when they land.
