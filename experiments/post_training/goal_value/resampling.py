@@ -7,7 +7,6 @@ import argparse
 import hashlib
 import json
 import os
-import random
 import shlex
 import tempfile
 import time
@@ -34,12 +33,15 @@ WORKDIR = "/testbed"
 CUT = 4
 OUTPUT_CHARS = 6000
 MAX_INPUT_TOKENS = 32000
-MAX_ACTION_TOKENS = 384
+MAX_ACTION_TOKENS = 1024
 MAX_PATCH_BYTES = 200000
+ACTIVATE_TESTBED = "source /opt/miniconda3/bin/activate testbed && "
 ACTOR_INSTRUCTIONS = (
-    "Fix the reported repository issue in /testbed. Use the prior actions and observations as context. "
-    'Reply with exactly one JSON object: {"command":"shell command"} to act or {"submit":true} to finish. '
-    "Commands run in a fresh shell in /testbed. Run local checks as needed. Keep the patch focused on the issue."
+    "You are taking over a software-maintenance task. Inspect the current code or diff and make a focused fix. "
+    "Use the available actions to edit the repository and check your fix. Use a short private analysis for each step. "
+    'After that, return {"command":"shell command"} to act or {"submit":true} after confirming the fix. '
+    "Commands run in a fresh shell in /testbed with the testbed Python environment active. "
+    "If a command fails, read the output and change your approach."
 )
 
 
@@ -94,7 +96,7 @@ def sandbox(client: Daytona, image: str, base_commit: str):
     try:
         base = shlex.quote(base_commit)
         checkout = workspace.process.exec(
-            f"git diff --quiet {base} -- . && git checkout --quiet --detach {base} && git rev-parse HEAD",
+            f"git checkout --quiet --detach {base} && git diff --quiet HEAD -- . && git rev-parse HEAD",
             cwd=WORKDIR,
             timeout=30,
         )
@@ -188,7 +190,7 @@ class Actor:
                 messages,
                 tokenize=True,
                 add_generation_prompt=True,
-                enable_thinking=False,
+                enable_thinking=True,
             )
             if len(ids) <= MAX_INPUT_TOKENS:
                 break
@@ -198,12 +200,15 @@ class Actor:
         torch.manual_seed(seed)
         generated = self.model.generate(
             input_ids=inputs,
+            attention_mask=torch.ones_like(inputs),
             max_new_tokens=tokens,
             do_sample=True,
             temperature=0.7,
             top_p=0.9,
         )[0, len(ids) :]
-        return self.tokenizer.decode(generated, skip_special_tokens=True), len(generated), len(ids)
+        raw = self.tokenizer.decode(generated, skip_special_tokens=False)
+        _, separator, response = raw.partition("</think>")
+        return (response if separator else ""), len(generated), len(ids)
 
 
 def parse_action(text: str) -> dict:
@@ -225,6 +230,9 @@ def continue_branch(workspace, actor, prefix, state, seed, actions, token_budget
     commands = 0
     prompt_tokens = 0
     attempted_actions = 0
+    malformed_actions = 0
+    failed_commands = 0
+    submitted = False
     for action_index in range(actions):
         if tokens >= token_budget:
             break
@@ -236,12 +244,15 @@ def continue_branch(workspace, actor, prefix, state, seed, actions, token_budget
         attempted_actions += 1
         action = parse_action(text)
         if action == {"submit": True}:
+            submitted = True
             break
-        history.append({"role": "assistant", "content": text})
+        history.append({"role": "assistant", "content": json.dumps(action) if action else text[-500:]})
         if "command" in action:
             commands += 1
-            code, output = tool_action(workspace, action["command"])
+            code, output = tool_action(workspace, ACTIVATE_TESTBED + action["command"])
+            failed_commands += int(code != 0)
         else:
+            malformed_actions += 1
             code, output = 2, "Expected a command or submit JSON object"
         history.append({"role": "tool", "returncode": code, "output": output})
     return patch(workspace), {
@@ -249,6 +260,9 @@ def continue_branch(workspace, actor, prefix, state, seed, actions, token_budget
         "prompt_tokens": prompt_tokens,
         "commands": commands,
         "actor_calls": attempted_actions,
+        "malformed_actions": malformed_actions,
+        "failed_commands": failed_commands,
+        "explicit_submit": submitted,
     }
 
 
@@ -291,23 +305,22 @@ def run_case(client, instance, prefixes, scorer, args, actor):
         scoring_seconds += time.monotonic() - start
 
     issue_seed = stable_hash("resampling-seed", spec.instance_id) % (2**31)
-    random_branch = random.Random(issue_seed).randrange(2)
-    selected = int(values[1] > values[0]) if abs(values[0] - values[1]) > 1e-6 else random_branch
+    selected = int(values[1] > values[0]) if abs(values[0] - values[1]) > 1e-6 else None
     print(f"Case replay complete with two live scores and {args.replicates} paired seeds", flush=True)
     results = {}
     for offset in range(args.replicates):
         seed = issue_seed + offset * (args.actions + 1)
-        by_branch = {}
-        for branch in sorted({selected, random_branch}):
+        by_branch = []
+        for branch, prefix in enumerate(prefixes):
             with sandbox(client, image, instance["base_commit"]) as workspace:
-                restored = replay(workspace, prefixes[branch])
+                restored = replay(workspace, prefix)
                 reference = outputs[branch]
                 if (restored.exit_codes, restored.diff_sha256) != (reference.exit_codes, reference.diff_sha256):
                     raise ReplayMismatch("replaying a branch changed its workspace patch or tool exit codes")
                 proposed, usage = continue_branch(
                     workspace,
                     actor,
-                    prefixes[branch],
+                    prefix,
                     reference,
                     seed,
                     args.actions,
@@ -315,15 +328,14 @@ def run_case(client, instance, prefixes, scorer, args, actor):
                 )
             with sandbox(client, image, instance["base_commit"]) as workspace:
                 outcome = verify(workspace, spec, proposed)
-            by_branch[branch] = {"pass": outcome, **usage}
-        results[str(seed)] = {"guided": by_branch[selected], "random": by_branch[random_branch]}
-        print(f"Both arms completed one paired continuation for seed {offset + 1}", flush=True)
+            by_branch.append({"pass": outcome, "patch_bytes": len(proposed.encode()), **usage})
+        results[str(seed)] = by_branch
+        print(f"Both branches completed paired continuations for seed {offset + 1}", flush=True)
     return {
         "issue": spec.instance_id,
         "values": values,
         "scoring_seconds": scoring_seconds,
         "guided_branch": selected,
-        "random_branch": random_branch,
         "continuations": results,
     }
 

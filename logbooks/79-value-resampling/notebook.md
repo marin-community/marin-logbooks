@@ -40,3 +40,11 @@ The pilot manifest selects at most six issues by a fixed issue hash from the eli
 ### 2026-11-25 UTC — Restore the benchmark commit explicitly
 
 The first setup run reached the workspace revision check. The public SWE-bench image starts at a packaging commit titled `SWE-bench`. A fresh sandbox probe found the benchmark commit in that image and verified that it has the same tracked file tree. The detached checkout succeeded. The runner now verifies tree equivalence and checks out the benchmark commit before replay. It also records prompt tokens and time spent scoring prefixes. Budgets and case selection stay fixed for the retry.
+
+### 2026-11-25 UTC — Check grading and evaluate both branches
+
+The initial comparison exercised the patch grader. Public reference fixes passed as positive controls in two disposable verifier workspaces. Some image packaging commits included executable-bit differences. A detached checkout restored the exact benchmark revision with a clean working tree. The runner checks cleanliness after that checkout.
+
+The second pilot runs two seeds on each branch with the same frozen actor and caps. It enables the actor's reasoning mode and activates the benchmark Python environment in its shell. It records parse failures, command failures, submission status, and patch size alongside token consumption. The head selects one branch per issue. The uniform baseline is the mean outcome across the two branches for each seed. The guided arm uses the same one-branch continuation allocation per seed. Evaluating both branches measures the uniform policy's expectation directly and also exposes the frequency of mixed outcomes across seeds.
+
+Run the current launcher with the same manifest and head. The initial one-seed, non-reasoning sample remains reproducible at the source revision of that run.
