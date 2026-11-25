@@ -2497,3 +2497,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: landed revision + preflight records [R].
 - Interpretation and limitations: gate-pending state — the actual-agent and strict sampled-token gates must pass before any RL submission; no `.129` interference.
 - Decision and next action: record the gate outcomes when they land.
+
+### 2026-11-25 10:45 UTC - Addendum: DSpark Exp4 logprob validation job submitted (serving-only, 16 GB200; strict frozen-logprob gate pending)
+
+- Question or hypothesis and reason for trying it: the DSpark Exp4 logprob gate validation is submitted following the landed preparation (10246164dd).
+- Published source revision: `/benfeuer/mochi-exp4-dspark-logprob-20261125a` SUBMITTED 10:34:26Z — **16 GB200 serving-only / 0 trainer, PRODUCTION 08a, r136 excluded, 2 h cap, 0 retry**; flow plain → DSpark → plain-rescore; **no throughput benchmark, NO RL launch, `.129` untouched**. Landed source `10246164dd`.
+- Command or material configuration: regional real-agent CPU + vocabulary PASS 10:30:40; native no-run PASS.
+- External inputs and artifact references: worker cc over Rhizome (~10:4x UTC) [R]; receipts `mochi-fixes/mochi-exp4-dspark/{regional-cpu-receipt.json,logprob-gate-submission-receipt.json}` [R].
+- Environment and hardware when relevant: strict frozen-logprob qualification pending.
+- Result, including failure or restart: validation job submitted.
+- Evidence: regional-CPU + gate-submission receipts [R].
+- Interpretation and limitations: gate-pending state — the strict frozen-logprob qualification must pass before the actual-agent gate chain proceeds; no RL submission yet.
+- Decision and next action: record the logprob gate outcome when it lands.
