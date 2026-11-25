@@ -2593,3 +2593,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: readout + receipts [R].
 - Interpretation and limitations: PR 12239's 1.593× warm reference on 400407/60-GPU is not a V5 prediction; `.129` untouched.
 - Decision and next action: record the strict logprob result when it lands.
+
+### 2026-11-25 12:30 UTC - Addendum: Exp4 initializer-equality PASS — `.131` model EXACTLY EQUAL to `.129`; the earlier "initializer changed" diff belonged to superseded `.130`
+
+- Question or hypothesis and reason for trying it: resolve the initializer question definitively and record the current critical-diff scope.
+- Published source revision: **initializer check PASS** — the earlier "initializer changed" diff was obsolete `.130`/`10246164dd` (superseded; its 400407 gate intentionally cancelled). **Current `.131`/`20c8baeebe03f86e3119fee355407b7a7cc81673`: the authored Model AND the entire compiled `inputs.model` compare EXACTLY EQUAL to `.129`.**
+- Command or material configuration: the active logprob validation `/benfeuer/mochi-exp4-v5-dspark-logprob-20261125a` targets the same V5 URI `s3://marin-us-east-08a/marin/users/benfeuer/mochi-long-loop/long-loop-mochi-sft-exp3-v5-bankadam-128/sft/2026.11.24.128/exports/step-2100` (export manifest SHA `b4b8316a9b74556543e2eb4ed433436e31dd0d9b93c1f888d3ee0cd3b2ee01b1`). **Current critical diff: only train/val data + sampling / derived 22+42 routes, the DSpark block / 0.775, the required Nov-24 DSpark wheel, and run/output identities; optimizer/batch/context/budget unchanged.** Draft remains 400407-fitted as-is.
+- External inputs and artifact references: worker cc over Rhizome (~12:3x UTC) [R]; proof `mochi-fixes/mochi-exp4-dspark/initializer-equality-proof.json`; `LATEST.json` marks 131; generic local diff names now current, old `.130` diffs archived as `superseded-130-*`; the S3 old-130 prefix marked SUPERSEDED so no wrong-target gate counts [R].
+- Environment and hardware when relevant: native + real-agent CPU PASS; the numerical gate is pending; no RL launch; `.129` untouched.
+- Result, including failure or restart: n/a (evidence consolidation).
+- Evidence: initializer-equality proof + manifest SHA [R].
+- Interpretation and limitations: the `.131` round is now proven model-identical to `.129` — the only intended differences are data/routes/draft/wheel/identities.
+- Decision and next action: numerical gate outcome when it lands.
