@@ -2437,3 +2437,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step-0634 receipt + published S3 evidence [R].
 - Interpretation and limitations: ~41 min since step-1 admission with no finite loss yet; the Harbor fixture-init timeout is a single worker event within normal retry policy — no stall inference drawn.
 - Decision and next action: one next native wake 06:49 UTC; continue only the first-finite-optimizer/full-update qualification.
+
+### 2026-11-25 07:00 UTC - Addendum: V5 exp3 RL `.129` STEP-1 ROLLOUT BATCH COMPLETED — 64 groups / 512 trajectories / 5,735,844 response tokens / staleness 0, in 3,314.99 s
+
+- Question or hypothesis and reason for trying it: the `.129` step-1 rollout batch completed; record its measured shape ahead of the first optimizer step.
+- Published source revision: unchanged — source `fe606ec554…`, recipe `rounds/mochi-v5-exp3-rl.yaml` version 2026.11.25.129.
+- Command or material configuration: **step-1 ROLLOUT BATCH COMPLETED 06:48:56.665 UTC — 64 groups / 512 trajectories / 5,735,844 response tokens / staleness mean 0 max 0 / duration_seconds 3,314.987.** Batch completion is NOT the optimizer/full training step; through 06:49:37.173 UTC no optimizer/full step/new publication/first-train WANDB_MIRROR (native completion-only 0 rows; finite-loss evidence UNAVAILABLE, not zero).
+- External inputs and artifact references: worker cc over Rhizome (~07:0x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0649-receipt.json` (numeric window + completion/errors/native/firsttrain/terminal SQL/JSONL); permanent S3 prefix [R].
+- Environment and hardware when relevant: error selection 20 overlap-inclusive headings (18 timestamps newer than the previous END); refined terminal 22 rows — **19 CancelledError, linked httpcore.ReadError → httpx.ReadError, 1 Hermes JSONDecodeError ExpectingComma**; not 20 distinct failures/groups/fraction or run-fatal proof; no selected RuntimeError/OOM/CUDA/NCCL; the previous public fixture timeout retained separately.
+- Result, including failure or restart: rollout batch complete; optimizer step pending; no run/config/code/checkpoint changes or fix/retry proposed. Baseline-0 stands (200 complete, 189/11 scored split = 94.5%, min-180 met, no override, pass@1 0.6878306878, wall 3,258.588 s).
+- Evidence: rl-first-step-0649 receipt + published S3 evidence [R].
+- Interpretation and limitations: the 64-group/512-trajectory batch at zero staleness matches the admission requirement; the first finite optimizer/full update remains the qualification gate.
+- Decision and next action: one next native wake 07:04 UTC; watch for the optimizer/full step.
