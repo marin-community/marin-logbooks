@@ -166,6 +166,12 @@ New coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-base
 
 No training has started. Domain qualification waits for this fixed-token rerun. The 48-hour clock remains anchored at November 24 17:46 EST.
 
+### 2026-11-24 23:09 EST — Verify the fixed-token runtime and pilot safeguards
+
+The first completed v5 trajectory reproduces its frozen native prompt hash exactly (`00083ab5d418cd06098d20c7d36cdb8d8e016583e3acc73a8e3e8211eec76e78`). The retained request confirms temperature 0, top-p 1, top-k -1, the 32,768-token cap, both Mochi stop IDs and unstripped special tokens. Receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.24/native-prompt-v5-check.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.24%2Fnative-prompt-v5-check.json)). This bounded integrity check is not an incidence sample. At 23:03:53 EST the initial greedy profile had completed 281/768 prompts; the coordinator remained running without failures or preemptions.
+
+Source through `9de9bd7ebb` includes the targeted advisory-review fixes. Shared protocol constants and separate generation/training builders preserve all six complete configuration snapshots exactly. The pilot and checkpoint selector now admit a loss of exactly five percentage points without binary-subtraction rounding, and missing stage state raises through the callback handler. Pilot state is persisted as a typed stage record. The native guard/audit suite passed 28 tests, the rendering/publication/selection suite passed five, and required lint/type checks passed. Qualified selections now declare their held-out exclusion URIs. Their actual family quotas, filtered pilot and effective saved-model panels will be bound only after the baseline is sealed.
+
 ## Final decision
 
 Pending measured baseline and candidate results.
