@@ -406,7 +406,9 @@ supersede earlier statements without rewriting them.
      inherited from the reference record, not restated in the round yaml. The
      run receipt records logical batch 32 = physical batch 32, one microbatch,
      vocab 128,256, packing cap 262,144 with no lookahead, and the excluded
-     NVLink domain `dh1-r136-us-east-08a`.
+     NVLink domain `dh1-r136-us-east-08a`. (The warmup half of that sentence
+     is corrected in the 19:19 entry below: warmup is retained, only decay is
+     scaled.)
   7. **Micro210 policy definition added** to the Baseline section above (row
      table, judge, #10197 classification, pass@1 vs pooled mean, length stops,
      unknown overlap check). The 2026.11.20-together provenance is now scoped
@@ -512,6 +514,30 @@ supersede earlier statements without rewriting them.
 - Evidence: [cold-read-responses.md](cold-read-responses.md) round 3.
 - Interpretation and limitations: none; the comparison is unchanged.
 - Decision and next action: cold-read round 4.
+
+### 2026-11-25 19:19 UTC - Cold-read round 5: warmup provenance correction
+
+- Question or hypothesis and reason for trying it: the fifth cold read
+  verified the scores, coverage, source-copy fidelity, manifest hashes,
+  exposure counts, the 12.35% epoch fraction, and the ~18.1× token ratio, and
+  raised one provenance correction.
+- Published source revision: unchanged — `a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9`.
+- Command or material configuration: re-read of
+  `experiments/post_training/long_loop/mochi_sft.py` lines 199-208 at that
+  commit.
+- Correction: round-1 correction item 6 says "warmup 5 and decay 210 scale
+  the reference's fractions". For the fresh-optimizer arm the code retains
+  the reference's warmup unchanged (`expected_warmup = hero_optimizer["warmup"]`)
+  and scales only the decay tail (`round(hero_optimizer["decay"] ×
+  schedule.updates / hero_updates)` = round(3400/34000 × 2,100) = 210). The
+  corrected statement: **the five-update warmup is retained from the
+  reference; the decay tail is scaled to 210 updates.** The round-1 entry
+  above now carries a pointer note; its original wording is preserved.
+- Result: notebook updated; no numeric settings or headline results change.
+- Evidence: [cold-read-responses.md](cold-read-responses.md) round 5.
+- Interpretation and limitations: none; the comparison is unchanged.
+- Decision and next action: synchronize entry-point pins and run cold-read
+  round 6.
 
 ## Known limits
 

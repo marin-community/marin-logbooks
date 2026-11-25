@@ -55,4 +55,28 @@ checked the arithmetic and hashes and found no public-safety exposures.
 
 No notes declined in round 3.
 
+## Round 4 — PR #85, 2026-11-25, verdict NOTES
+
+Reader report: `85-r4-20261125T190516` (private working directory). The reader
+verified the public scores against the eval posts, the receipt arithmetic
+(968,596 SFT packs; 53,774 + 13,426 draws; 319,085,871,104 vs
+17,616,076,800 packed-slot tokens, 18.11×; 2,100/17,010 = 12.35%) and the four
+published artifact hashes.
+
+| # | Note (summary) | Disposition |
+|---|---|---|
+| 1 | Entry-point pins lag: PR #85 body and issue #83 Status/Links/Conclusion still point to older notebook commits | Accepted — PR #85 body, issue #83 Status/Links/Conclusion, and the index record all re-pinned to the then-current head; dated milestone comments preserved as history. |
+
+## Round 5 — PR #85, 2026-11-25, verdict NOTES
+
+Reader report: `85-r5-20261125T191234` (private working directory). Scores,
+coverage, source-copy checks, manifest hashes, exposure counts, the 12.35%
+epoch fraction, and the ~18.1× token ratio verified; no other actionable
+notes.
+
+| # | Note (summary) | Disposition |
+|---|---|---|
+| 1 | Round-1 correction item 6 says warmup and decay are scaled; the fresh-optimizer code retains warmup at 5 and scales only decay to 210 | Accepted — dated correction entry added (warmup retained, decay scaled); item 6 carries a pointer note, original wording preserved. |
+
+
 
