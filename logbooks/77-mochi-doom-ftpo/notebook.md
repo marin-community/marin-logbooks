@@ -296,6 +296,18 @@ The only S2 configuration adjustment is existing periodic checkpoint retention a
 
 The account-change interruption touched no Iris jobs. Submission does not wait on V5 or other jobs; Kueue schedules/preempts. The deadline remains November26 17:46 EST.
 
+### 2026-11-25 08:56 EST — Scope S2 memory from the measured smoke peak
+
+S2 was resubmitted at **08:54:48 EST November 25** with a measured **720 GiB per-pod memory request**, **112 GB200 at production priority on cw-us-east-08a**. New coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-math-1a818f5cdd-in-728208ba-2026.11.25.3-coordinator-0fc0c701`. Admission time is pending.
+
+The original 900 GiB request could not fit under Kueue's placement constraints. Finelog `marin`, namespace `iris.task`, origin `cw-us-east-08a`, over 07:00–11:33 UTC confirms all 28 S1 task attempts: the maximum per-attempt cumulative peak was **645,839 MiB = 630.702 GiB**, on task10. The revised request adds **89.298 GiB (14.16%) headroom** above the harder 32K smoke; the basis is in the config comment and private status. Regional rows had already forwarded, so the measurement uses the hub's retained samples.
+
+Only S2's host request and runtime version change. All sixteen presets retain byte-identical native model/training configurations; other presets' layouts and revisions are unchanged. Six training native preflights and required lint/type checks pass. Source `3f18f0b54c`, runtime `2026.11.25.3`, qualified dataset version `2026.11.25.2`. Model, prompt cohorts, optimizer, batch, budget, guards and checkpoint retention remain unchanged.
+
+Immediately before cancellation, all 28 old replicas were still `SchedulingGated`. Guarded exact cancellation targeted only owned root `ded73123` and child `a4bb7ce51fa7`; both are now confirmed killed. They performed no training. Other jobs were untouched; Kueue owns scheduling and preemption for the replacement.
+
+Measurement and full-config proof: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-memory-planning-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-memory-planning-receipt.json)).
+
 ## Final decision
 
-The baseline and target set are sealed. S1 completed with a pilot regression and a verified export. S2 is submitted from fresh SFT; no trained candidate has completed the paired full-panel gate.
+The baseline and target set are sealed. S1 completed with a pilot regression and a verified export. S2 v3 is submitted from fresh SFT with a measured memory request; no trained candidate has completed the paired full-panel gate.
