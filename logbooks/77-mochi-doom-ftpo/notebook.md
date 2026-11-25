@@ -314,6 +314,48 @@ S2 v3 was admitted by **08:56:23 EST November 25**: task0 changed from Schedulin
 
 The actual cloud config confirms720GiB per pod, fresh SFT400407,16384 generated/2048 prompt/18432 model window, mathbatch64, MuonH3e-6, R3/top32 and the pilot/retention guards. Resolved SHA-256 `def57cd5162afd8037e4f29107aab17ae39f1676f18fab54eb70d521ea4fd9ff`. Runtime receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-v3-runtime-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-v3-runtime-receipt.json)).
 
+### 2026-11-25 12:12 EST — S2 stops on paired correctness regression
+
+S2 stopped at **native step3** because its declared correctness guard fired. The GPU child finished at **12:01:36 EST November25**; coordinator and all28 replicas report succeeded, with zero failures/preemptions. There is no live owned compute and no S3/S4 run.
+
+The native offline audit verifies **the same128 frozen task IDs and exact prompt-token hashes** at pilot0 and3. Every response is assessed; correctness unavailable and errors are zero. All cohorts in this table use the **16K S2 pilot budget**; the family names do not imply32K measurements.
+
+| Pilot family | N | Loops / UB, start → step3 | Full-credit passes, start → step3 |
+| --- | ---: | ---: | ---: |
+| math | 64 | 1 → 2 | 53 → 49 |
+| coding | 16 | 2 → 3 | 0 → 1 |
+| reasoning_gym | 16 | 1 → 3 | 4 → 4 |
+| structured | 16 | 0 → 1 | 8 → 6 |
+| STEM MCQ | 16 | 2 → 2 | 10 → 6 |
+| all | 128 | 6 → 11 | 75 → 66 |
+
+Overall correctness fell **7.03125 percentage points** (75/128→66/128); math fell **6.25 points** (53/64→49/64). Both exceed the stated5pp limit. The final pilot took1,888.49s; checkpoint3 saved in971.28s. This is an observed paired regression; do not rerun it or disable the guard to force an update6 measurement.
+
+Only **two real optimizer updates** applied: native steps1 and3. Native step2 had no FTPO targets and applied no update.
+
+| Native batch | Prompts | Exact tail loops | Selected boundaries | Chosen token alternatives | Applied updates | Length caps |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 64 | 2 | 2 | 7 | 1 | 10 |
+| 2 | 64 | 0 | 0 | 0 | 0 | 15 |
+| 3 | 64 | 1 | 1 | 7 | 1 | 16 |
+
+All192 retained training records were matched against their retention-ledger IDs and replayed through the unchanged native tail detector. There were3 exact loops and41 length caps, of which38 had no exact suffix loop. Every capped response left thinking open. The zero-target batch therefore had no exact detected cycle; candidate filtering did not lose a detected loop in these three batches. The working hypothesis is sparse exact-loop signal in uniform64-prompt math batches at16K, while much length-capped reasoning is outside this objective. This does not establish the cause of every correctness regression and does not justify widening the detector.
+
+`chosen_win` was0 on both active batches, but it is measured before the optimizer update on fresh greedy rollouts. Under exact serving/training agreement, the rejected generated token is the argmax, so alternatives cannot already beat it. Zero is not independent evidence of no learning; the paired pilot is the relevant outcome.
+
+The best-checkpoint record retained **global step0: the original SFT export**. No trained model was promoted, and no new HF conversion was needed. Its full-panel result is exactly the sealedS0 audit, reused by identical model identity: the50% target is unmet in every target cohort. S1 had also regressed on its separate32K smoke pilot (13loops/80passes→18loops/72passes outof128).
+
+Run: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-math-1a818f5cdd-in-728208ba-2026.11.25.3-coordinator-0fc0c701`, GPU child `ae1aa30c1c31`, source `3f18f0b54c`, qualified data2026.11.25.2, runtime2026.11.25.3. The720GiB request passed training and checkpointing; peak through checkpoint3 was613.146GiB across28 task attempts. Other jobs were untouched.
+
+Evidence:
+
+- Paired native pilot audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-v3-paired-pilot-audit.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-v3-paired-pilot-audit.json)).
+- Training-target replay and archive SHA inventory: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-v3-train-target-incidence-steps1-3.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-v3-train-target-incidence-steps1-3.json)).
+- Final committed metrics: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-v3-final-metric-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-v3-final-metric-receipt.json)).
+- Terminal selection: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-v3-terminal.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-v3-terminal.json)).
+
+S2 is complete with a correctness-stop result. No further FTPO round has started.
+
 ## Final decision
 
-The baseline and target set are sealed. S1 completed with a pilot regression and a verified export. S2 v3 is submitted from fresh SFT with a measured memory request; no trained candidate has completed the paired full-panel gate.
+The baseline is sealed. S1 passed hardware/export qualification but worsened its32K pilot. S2 ended at native step3 on the declared correctness guard, after two actual optimizer updates and one empty batch. No target-domain loop reduction was demonstrated; the selected model remains the original SFT export. S3/S4 have not started. The campaign continuation decision remains open.
