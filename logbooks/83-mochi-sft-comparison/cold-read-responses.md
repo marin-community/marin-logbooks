@@ -43,3 +43,16 @@ public-safety exposures identified.
 
 No notes declined in round 2.
 
+## Round 3 — PR #85, 2026-11-25, verdict NOTES
+
+Reader report: `85-r3-20261125T185744` (private working directory). The reader
+checked the arithmetic and hashes and found no public-safety exposures.
+
+| # | Note (summary) | Disposition |
+|---|---|---|
+| 1 | Qualify KV heads: 12 local-attention KV heads, 6 global-attention KV heads, 12 is the stored maximum | Accepted — Question section updated with the heuristic.py fields. |
+| 2 | Preserve the full-SFT absence breakdown (12 infra errors + 5 unavailable) instead of asserting all 17 absent rows are failures | Accepted — verification entry and Known limits now carry each record's own breakdown; older runs' absences marked as not broken down. |
+
+No notes declined in round 3.
+
+

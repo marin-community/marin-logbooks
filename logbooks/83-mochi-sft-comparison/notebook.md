@@ -27,7 +27,8 @@ status: active
   `2026.08.19.2`, checkpoint step 393491). Architecture per `HERO_MODEL` in
   `experiments/grug/moe_hero_ep/heuristic.py` (Marin `main`): 48 layers,
   hidden 6,144, vocab 128,256, 384 routed experts with 8 active per token plus
-  2 shared experts, 48 heads (head_dim 128, 12 KV heads), sliding window 2,048
+  2 shared experts, 48 query heads (head_dim 128), 12 local-attention KV heads
+  and 6 global-attention KV heads (stored maximum 12), sliding window 2,048
   with global attention every fourth layer, context 262,144. This record does
   not restate total or active parameter counts.
 - Vocabulary: "hero" names that pretraining ladder and its recipe family;
@@ -135,10 +136,13 @@ supersede earlier statements without rewriting them.
 | V5 SFT step 2100 | 2026.11.23 | 0.5819 pass@1 (245/421) | 421/434 scored | 0.5693 |
 
 - Interpretation and limitations: scored-row counts differ per run because
-  unscored rows are infrastructure failures (12 absent for base, 17 for full
-  SFT, 13 for V5 on the 2026.11.23 policy); the 2026.11.20-together base run
-  combines the original .7 dump with an authorized 95-row .9 recovery. The
-  policy description strings in `record.json` carry these details.
+  unscored rows are absent, not zero: on the 2026.11.23 policy the base has
+  12 infra trials absent, full SFT has 12 infra errors plus 5 unavailable
+  trials (the record's own breakdown), and V5 has 13 infra trials absent; on
+  the 2026.11.20-together policy the base run combines the original .7 dump
+  with an authorized 95-row .9 recovery, and the absence breakdowns for both
+  older runs are not stated in the archived records. The policy description
+  strings in `record.json` carry these details.
 - Decision and next action: numbers verified; document the two arms' configs
   and data mixes.
 
@@ -485,6 +489,30 @@ supersede earlier statements without rewriting them.
   headline comparison or the corrected V5 consumption picture.
 - Decision and next action: cold-read round 3 against the new index-record PR.
 
+### 2026-11-25 19:05 UTC - Cold-read round 3: two small clarifications
+
+- Question or hypothesis and reason for trying it: the third cold read checked
+  the arithmetic and hashes, found no public-safety exposures, and raised two
+  small clarifications.
+- Published source revision: unchanged.
+- Command or material configuration: none (text-only fixes); architecture
+  fields re-read from `experiments/grug/moe_hero_ep/heuristic.py` at
+  `dca3b9c0eb` (`num_kv_heads=12`, `local_kv_heads=12`, `global_kv_heads=6`).
+- Refinements:
+  1. **KV-head qualification.** The architecture summary now reads "48 query
+     heads (head_dim 128), 12 local-attention KV heads and 6
+     global-attention KV heads (stored maximum 12)" instead of "12 KV heads".
+  2. **Absence breakdown preserved.** The verification entry and Known limits
+     now carry the archived records' own breakdown — 2026.11.23: base 12
+     infra trials absent, full SFT 12 infra errors plus 5 unavailable trials,
+     V5 13 infra trials absent — instead of collapsing full SFT's 17 absent
+     rows into one label; the older runs' 11 and 27 absences are marked as
+     not broken down in the archived records.
+- Result: notebook updated.
+- Evidence: [cold-read-responses.md](cold-read-responses.md) round 3.
+- Interpretation and limitations: none; the comparison is unchanged.
+- Decision and next action: cold-read round 4.
+
 ## Known limits
 
 - Token figures (≈319.1B and ≈17.6B) are packed-slot upper bounds: sequence
@@ -505,8 +533,11 @@ supersede earlier statements without rewriting them.
 - Micro210 scores come from one sealed policy per date with single-seed
   sampling; 2026.11.20-together numbers exist only for the base and full-SFT
   arms, and the two policies are not comparable to each other. Unscored rows
-  (11–27 per run) are infrastructure failures counted as missing, not zero.
-  Whether benchmark rows overlap training data was not checked.
+  are absent trials counted as missing, not zero (2026.11.23: base 12 infra
+  trials absent, full SFT 12 infra errors plus 5 unavailable, V5 13 infra
+  trials absent; the older runs' 11 and 27 absences are not broken down in
+  the archived records). Whether benchmark rows overlap training data was
+  not checked.
 - The full-SFT replay fraction realized is 20.43% vs the 0.2035 target; the
   notebook shows the derivation.
 - The 2026.11.23-policy judge identity is not recorded in the archived eval
