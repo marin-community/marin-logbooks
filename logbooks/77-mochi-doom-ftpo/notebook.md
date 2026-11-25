@@ -21,11 +21,11 @@ Use up to 128 GB200 on cw-us-east-08a at production priority. Submit stages when
 
 ## Baseline
 
-V2 cohorts are published and [the complete native-rendered manifest](cohorts-manifest-v2.json) is verified. Corrected S0 was submitted at 19:45:04 EST on November 24; its 128-GPU child is running. No valid loop-incidence counts are available yet.
+The valid math16k baseline has 12 confirmed loops / 512 (2.34375%), zero unassessed responses and 390 native full-credit passes / 512 (76.171875%). The 32K greedy and temperature-0.7 panels are running; no training has started. The required math target is candidate UB ≤ 6 with at least 365 passes.
 
-The first S0 attempt was cancelled at 19:25 EST: preparation hashed source conversations while the native harness also appended answer-format instructions. Its outputs and v1 hash table are excluded from measurement. Cohort v2 is being rebuilt with the native renderer; no valid loop-incidence counts are available.
+V2 cohorts use the complete native-rendered manifest. The first S0 attempt was cancelled at 19:25 EST because its preparer omitted native answer-format instructions from the prompt hashes; its outputs and v1 hashes are excluded. Corrected S0 was submitted at 19:45:04 EST on November 24, runtime 2026.11.24.4. Its first live prompt matches the v2 hash exactly.
 
-Pending the fixed-cohort greedy generation audit. Temperature 0.7 is reported separately. The detector is SkyRL's `tail_loop`, requiring eight exact suffix copies, with full-window search and period caps of 2,048 at 16K and 4,096 at 32K. Missing or damaged responses enter the upper bound and do not count as correctness passes.
+The detector remains SkyRL's `tail_loop`, requiring eight exact suffix copies, with full-window search and period caps of 2048 at 16K and 4096 at 32K. Missing or damaged responses enter the loop upper bound. Correctness uses explicit native full-credit pass flags; the metadata repair and immutable input hashes are recorded below.
 
 ## Entries
 
@@ -130,6 +130,18 @@ Published source: `1661a15e9f`; native-renderer implementation: `5f2b2f931c`. Th
 Coordinator (marin hub): `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-cc75b435e5-in-7985a1b9-2026.11.24.4-coordinator-6bbb3801`. GPU child appends `/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-cc75b435e5-in-7985a1b9-2026.11.24.4-a8f0fc0dbf9a`, submitted at 19:46:03 EST, 32 replicas with NVLink-domain placement. Parent and child are running. The watchdog is registered and validated.
 
 Next: check a live completed prompt against v2, audit the saved full sessions, extend sparse domains, and seal the baseline before S1. No training has started.
+
+### 2026-11-24 21:14 EST — Measure the math baseline and repair missing pass metadata
+
+The valid S0 math16k session contains **12 confirmed loops / 512 prompts (2.34375%)**, zero unassessed responses, UB12, and **390 native full-credit passes (76.171875%)**. Correctness unavailable/error counts are both zero after the native adapter repair. Length stops: 108/ 512; open thinking at cap: 107/ 512. Response lengths p50/p90/p99: 3142.5/16384/16384. The paired candidate math gates are UB ≤ 6 and at least 365 passes.
+
+The original native checkers emitted scores but left `verification.passed` null, including successful score 1 checks. Source `4ff39edb2e` makes the Verifyit adapter preserve full-credit passes and adds an explicit inclusive `StdoutReward.pass_at_least=1` contract for campaign script checkers. Partial credit is a non-pass. Missing flags count as correctness-unavailable in the auditor. The original checker outputs and generation dumps remain immutable. The CPU replay ran the repaired native adapters on those exact saved scores, changing only the absent pass flag. It did not regenerate responses or rerun checkers. Future campaign tasks declare the same threshold, so baseline and candidates use one correctness contract.
+
+Completed audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v4/math16k-native-pass.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Faudits%2Fs0-v4%2Fmath16k-native-pass.json)). SHA-256: `ca7eb185f6efd51a0465913a9b4af710cc3dfcd23e05f06294e1a382b0f6082a`. The [frozen v2 manifest](cohorts-manifest-v2.json) digest and all 512 prompt hashes match. Source-to-derived dump hashes and the precise replay operation are in `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v4/math-native-grades-v1/receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Faudits%2Fs0-v4%2Fmath-native-grades-v1%2Freceipt.json)).
+
+Math generation completed at 20:52:53 EST; the greedy 32K panel began immediately afterward. GPU coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-cc75b435e5-in-7985a1b9-2026.11.24.4-coordinator-6bbb3801`; child suffix `a8f0fc0dbf9a`. CPU audit `/benfeuer/mochi-doom-audit-math16k-20261124a` succeeded (55.73s). CPU metadata replay/audit `/benfeuer/mochi-doom-replay-math16k-20261124a` submitted at 21:12:22 EST and succeeded (31.71s), zero failures/preemptions. Native grade tests: 61 passed; audit tests: 16 passed; all 768 frozen panel tasks preserve their native prompts under the new pass declaration, and 2304 local adapter replays preserve every field except `passed`. Required lint/type checks passed.
+
+The 32K greedy and sampled panels remain in progress. This is a partial baseline milestone; sparse-domain reserve decisions and training wait for the full measurement.
 
 ## Final decision
 
