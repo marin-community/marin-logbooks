@@ -308,6 +308,12 @@ Immediately before cancellation, all 28 old replicas were still `SchedulingGated
 
 Measurement and full-config proof: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-memory-planning-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-memory-planning-receipt.json)).
 
+### 2026-11-25 09:01 EST — Revised S2 admitted
+
+S2 v3 was admitted by **08:56:23 EST November 25**: task0 changed from SchedulingGated at08:56:09.810 to PodInitializing at08:56:23.361. All28 four-GPU replicas were running at08:58:16, with zero failures/preemptions. Root `0fc0c701`, GPU child `ae1aa30c1c31`; production112GB20008a. This is a bounded admission time from task events, not an exact Kueue reservation timestamp.
+
+The actual cloud config confirms720GiB per pod, fresh SFT400407,16384 generated/2048 prompt/18432 model window, mathbatch64, MuonH3e-6, R3/top32 and the pilot/retention guards. Resolved SHA-256 `def57cd5162afd8037e4f29107aab17ae39f1676f18fab54eb70d521ea4fd9ff`. Runtime receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/math-v3-runtime-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fmath-v3-runtime-receipt.json)).
+
 ## Final decision
 
 The baseline and target set are sealed. S1 completed with a pilot regression and a verified export. S2 v3 is submitted from fresh SFT with a measured memory request; no trained candidate has completed the paired full-panel gate.
