@@ -13,3 +13,20 @@ On the first live tool turn, Claude Code included its environment instructions a
 The Iris CPU orchestrator needs the Daytona evaluation credential and regional storage credentials as mounted secrets. Launch the module from the repository root with `python -m logbooks.12108-swebench-science-claude-code.run --cluster <iris-peer> --output <private-regional-prefix> --deadline <UTC-epoch-seconds>`. It acquires a single four-H100 inference allocation. This entry point submits only task 013. The remaining five require a separate launch after inspection of the graded pilot, tool results and wire metadata.
 
 **Task 013 passed** at experimental commit `e50c6ebf70`. The authors also solved it. Claude Code made 22 requests, all with 32,000 requested and forwarded output tokens and `xhigh`. The largest prompt was 49,582 tokens and the largest reply was 3,038. The saved tool results include 23 Read, nine Bash and three Edit calls. This case fit inside the earlier Pi limits. Run `python -m logbooks.12108-swebench-science-claude-code.check_pilot <pilot-directory>` to check the grade and the request records. The `panel` module accepts the same launch arguments as `run` plus `--graded-pilot <pilot-directory>` and checks those records before requesting GPUs for 001, 003, 012, 015 and 028.
+
+## Matched six-task result
+
+All six tasks graded. Marin Claude Code solved three, Marin Pi solved three, and the authors’ Claude Code solved four. The Marin Claude Code grades agreed with the authors on five of six IDs. We selected these tasks using earlier model outcomes. The rates describe this panel only. [Authors’ task matrix](https://github.com/swescience/swescience.github.io/blob/f16153e5c47c46b2f6f2ebf0aaefae34bdf8c8bd/data/task-matrix.json) · [Marin Pi comparison](https://github.com/marin-community/marin/issues/12108)
+
+| Task | Marin Claude Code private tests | Marin Pi solved | Authors solved | Claude Code requests | Largest prompt | Largest reply |
+| --- | ---: | --- | --- | ---: | ---: | ---: |
+| 001 | 1/3 | No | No | 85 | 175,757 | 12,142 |
+| 003 | 4/6 | No | No | 38 | 107,222 | 9,499 |
+| 012 | 8/10 | Yes | Yes | 26 | 65,990 | 12,324 |
+| 013 | 5/5 | Yes | Yes | 22 | 49,582 | 3,038 |
+| 015 | 31/31 | No | Yes | 124 | 227,683 | 18,820 |
+| 028 | 10/10 | Yes | Yes | 27 | 72,335 | 4,823 |
+
+Every graded attempt passed its public test. The six graded attempts made 322 model requests. Claude Code requested 32,000 output tokens at `xhigh` on each, and the Qwen server received those settings. Five tasks exceeded Pi’s 65,536-token window. One task, 015, also exceeded Pi’s 16,384-token reply cap. The comparison changes both harness and token budget, so it cannot identify which caused the difference on 015.
+
+The original job timer interrupted the first attempts on 001 and 015. Marin preserved the other grades and started fresh attempts on these two IDs under the extended allocation. Run `python -m logbooks.12108-swebench-science-claude-code.check_panel <panel-directory>` to reproduce the grade and request audit. Across the five companion tasks, all 447 requests, including the interrupted attempts, matched the outgoing message digest, requested reply ceiling and reasoning effort. The task 013 pilot stored checks on limits and usage separately.
