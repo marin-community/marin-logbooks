@@ -2533,3 +2533,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: correction revision + pinned curriculum record + pool SHAs [R].
 - Interpretation and limitations: the correction restores the original data bytes while carrying a fresh holdout identity; gates remain pending before any submission.
 - Decision and next action: record the corrected regional gate outcome.
+
+### 2026-11-25 11:30 UTC - Addendum: Exp4 original-pools CPU preparer submitted (`.131`; source `3d1806570f`); superseded serving gate KILLED 4/4
+
+- Question or hypothesis and reason for trying it: record the CPU preparer that realizes the corrected original-bytes pools (watchdog ID for later evidence checks).
+- Published source revision: `/benfeuer/mochi-exp4-original-pools-20261125a` SUBMITTED — 4 CPU / 64 GB / 0 GPU, PRODUCTION 08a; landed source **`3d1806570f5aa3ad137dbc56eee228f4e6c98788`** via loop-push; 99 focused tests/lint/types/docs PASS; review 43 inherited / 0 own.
+- Command or material configuration: verifies the original `.71` full parquet hashes from the pinned recovery82 plan (`a0ddb064…`), preserves serialized task bytes/scorers, draws 200 (seed 20261020) and removes them; NEW curriculum derived `cde16ecb` / min-180. Output: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-exp4-dspark/long-loop/mochi-exp4-original-rl-pools/2026.11.25.131`.
+- External inputs and artifact references: worker cc over Rhizome (~11:3x UTC) [R]; records under `mochi-fixes/mochi-exp4-dspark/` [R].
+- Environment and hardware when relevant: no RL launch; the corrected V5 round and CPU/logprob gates follow real publication.
+- Result, including failure or restart: the superseded step400407 serving gate is confirmed KILLED 4/4 by own cancellation; `.129` untouched.
+- Evidence: submission cc + landed source + S3 output prefix [R].
+- Interpretation and limitations: preparer-only stage; the pools publication gates the corrected round and gates.
+- Decision and next action: record the pools publication and the corrected gate outcomes when they land.
