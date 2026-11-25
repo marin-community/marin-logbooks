@@ -312,3 +312,66 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
 - Remaining uncertainty: judged precision of the newly admitted records; the cap needs counts that skip likely
   copies (an item held more than 100 times gets no key set); paraphrased and translated copies (an embedding
   audit); accent-stripped copies on real data.
+
+### 2026-11-25 09:40 UTC - Follow-up program: questions for the stage 1 v2 PR and the review
+
+- Question: nine analyses for the follow-up PR and the review of marin#11993 (fresh-shard retest, judged removal
+  check of the new keys' removals, counts without copies, embedding audit, planted paraphrases, width 16 on
+  edits, a shorter CJK window, a fixed regression set, MATH `[asy]` false matches in the current removals).
+- Published source revision: this branch from `25a22898bb` on (each script is committed before its run).
+- External inputs: production keys `stage1-v11`, locators of `catalog-v11-full`, item table `decon-g1v7`, models
+  `encoder-it16-s{0,1}`, the v11 catalog pair files and removal list, judges GLM-5.3 and DeepSeek-v4.1-flash.
+
+### 2026-11-25 09:20 UTC - Fresh-shard retest of the proposed stage 1 (F1, F9, F12, F12b)
+
+- Question: do the tuned numbers (78 of 79 misses at 0.44x pairs, 80 shards) hold on shards no step used?
+- Shards (F1): one per source, seed 53, outside the key reference shards, the measure shards and every survey
+  shard; 128 of 160 sources have such a shard (6 from encoding-survey shards). The 32 small sources without one
+  held 20 of the 209 earlier misses (all NuminaMath 1.5).
+- Jobs: `decon-fd-p*` (dense survey) and `decon-fs-p*` (key-set scan: spread, cap 100, >= 3 of 8, add-on pairs
+  with the production excerpt), 64 parts each; scores `decon-fresh-score-s{0,1}`.
+- Result (128 shards, 20.9M records):
+  - Confirmed key-1 misses (dense-only, >= 60% of >= 8 windows, mean score >= 0.6, no `[asy]` boilerplate):
+    174 pairs in 122 records; the key set catches 169 (97%). ASDiv 69/69, SQuAD completion 33/33, MMLU-Pro 8/8.
+  - Pairs: v11 has 151,819 on these shards; the question-key drop removes 116,757 (76.9%, exact from the pair
+    files' matched stream); the add-on adds 17,706. Proposed / v11: 0.35x unweighted, 0.76x catalog-weighted
+    (each shard weighted by its source's shard count).
+  - Removals: 2,026 records at >= 0.6 that v11 does not remove (v11 removes 1,372 here). Catalog-weighted:
+    +168,001 records on 303,081 (+55%; the weighting predicts the actual 315,887 v11 removals). 1,192 of the
+    2,026 are in one shard of `cp/data_provenance`. Families: ASDiv 546, SQuAD 412, WNLI 389, HellaSwag 389.
+- Interpretation: recall holds out of sample. The added removals are large and concentrated; their precision
+  decides adoption (set 29, next).
+
+### 2026-11-25 09:30 UTC - Planted paraphrases and translations (F4, F4b, F4c)
+
+- Command: `f4_paraphrase.py` (job `decon-paraphrase-gen-2`, DeepSeek-v4.1-flash on the GLM relay): one item
+  per eval with no passage and a question of >= 40 characters, paraphrased; a third also translated into one of
+  Chinese, Spanish, German, French, Russian, Japanese. Valid rewrites (same number of choices): 551 paraphrases,
+  184 translations of 1,102 requests. Planted as in `planted.py` (F4b); scored by both models (F4c).
+- Result (stage 1: key 1 / key 1 or key 2 / proposed; stage 2: share at >= 0.6, median score):
+  plain control 1.000 / 1.000 / 1.000, 0.998, 0.999; paraphrase 0.083 / 0.131 / 0.134, 0.054, 0.005;
+  translation 0.049 / 0.076 / 0.071, 0.033, 0.000.
+- Interpretation: neither stage sees a full paraphrase or translation; both count as `EDITED` under the rubric.
+  A first stage that finds them (embeddings) would also need a judge, not the current models, to remove them.
+
+### 2026-11-25 09:10 UTC - Fixed regression set (F8)
+
+- Built (`f8_regression.py build`): 7,450 (record, item) rows with the record text: 209 key-1 misses (the
+  non-boilerplate confirmed misses of the dense survey), 12 encoded copies (raw record text), and the pairs of
+  sets 19, 23, 26, 27 and 28 that both judges call COPY (1,610) or EDITED (1,825), or clean (3,794).
+- Check (`f8_regression.py check`), stage-1 hit rate: key 1 / key 1 or key 2 / proposed:
+  judged COPY 0.970 / 0.978 / 0.989; judged EDITED 0.871 / 0.896 / 0.917; key-1 misses 0.000 / 0.120 / 0.971
+  (in sample: these tuned the key set); URL-encoded 0 / 0 / 0 (9); HTML 0-1 of 3; judged clean 0.647 / 0.677 /
+  0.660. Key 1 misses come from sets drawn under earlier keys: set 19 0.92 / 0.72 (copy / edited), set 23
+  0.99 / 0.83, set 28 (records only the earlier keys removed) 0.47 / 0.40.
+- Interpretation: the proposed stage 1 recovers part of what the earlier keys found and v11 lost. The set is a
+  regression check for any key or model change; it lives with the private label data.
+
+### 2026-11-25 09:05 UTC - MATH `[asy]` false matches in the current removals (F6, F6b)
+
+- Job `decon-asy-pairs-1` collected the excerpts of the 3,040 removal pairs at 0.6 whose item holds `[asy]`.
+- Result: none holds less than half of the item's words outside the drawing (22 at 0.5-0.8, 967 at 0.8-0.95,
+  2,051 at >= 0.95); 6 contain the axis boilerplate. The lowest-share cases read as copies (LaTeX reformatted,
+  shortened); one is a Vietnamese translation that key 1 found through the identical drawing code.
+- Interpretation: the current list has no measurable `[asy]` false matches; the risk is the key set's windows
+  inside drawing code. On the fresh shards, the cap-100 add-on removed no boilerplate pair (0 of 2,681).
