@@ -2389,3 +2389,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step-0539 receipt + published S3 evidence [R].
 - Interpretation and limitations: baseline-only state; the first finite optimizer/full update remains pending; other runs and the full permanent native SFT 2100 untouched.
 - Decision and next action: 05:49 UTC native checkpoint; then the optimizer/full-update watch.
+
+### 2026-11-25 06:00 UTC - Addendum: V5 exp3 RL `.129` baseline-0 at 197/200 (3000 s); next bounded wake 06:04 UTC
+
+- Question or hypothesis and reason for trying it: continued read-only RL checkpoint on `.129` (same root/child/source/recipe).
+- Published source revision: unchanged — source `fe606ec554929130839f39c0253c8bc465b2ca9d`, recipe `rounds/mochi-v5-exp3-rl.yaml` version 2026.11.25.129.
+- Command or material configuration: baseline-0 reached **197/200 completed at 05:49:19.277 UTC (3000 s; three pending)** — completion progress only, scored coverage UNAVAILABLE; all 200 retained / min-180 scored unchanged.
+- External inputs and artifact references: worker checkpoint cc over Rhizome (~06:0x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0549-receipt.json` (separate SQL/JSONL + numeric window alongside); permanent prefix `s3://marin-us-east-08a/marin/users/benfeuer/mochi-v5-exp3-rl/launches/2026.11.25.129/` (Filer link) [R].
+- Environment and hardware when relevant: bounded exact-child completion/native selections through 05:49:32.483 contain no baseline completion, optimizer completion, full training step, or new publication; selected new errors 0 rows (bounded classes, not a full audit); no fatal/stall inference.
+- Result, including failure or restart: no run/config/code changes. The 05:49 wake verified 1 run/exit 0/empty stderr, saved/removed that label only; exactly one next bounded native wake 06:04 UTC (KeepAlive/RunAtLoad false).
+- Evidence: rl-first-step-0549 receipt + published S3 evidence [R].
+- Interpretation and limitations: initial-publish-0/baseline-0 are not updates; the first finite optimizer/full update remains pending; the normal terminal/stage watchdog is unchanged; other runs/checkpoints untouched.
+- Decision and next action: 06:04 UTC bounded wake; then the optimizer/full-update watch.
