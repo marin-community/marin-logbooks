@@ -27,17 +27,19 @@ from rigging.log_setup import configure_logging
 from transformers import AutoModel, AutoTokenizer
 
 logger = logging.getLogger(__name__)
-MODEL = "intfloat/multilingual-e5-small"
+# Encoders: name -> (input prefix, pooling). bge-m3 is the default: e5-small retrieved 10% of planted translations.
+ENCODERS = {"intfloat/multilingual-e5-small": ("query: ", "mean"), "BAAI/bge-m3": ("", "cls")}
+MODEL = "BAAI/bge-m3"
 LABELS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 CATALOG = "s3://marin-us-east-08a/tmp/ttl=7d/rav/decon-poc/catalog-v11-full"
 SHARDS = 400
 RECORDS_PER_SHARD = 5000
-CHUNK, STRIDE, MAX_CHUNKS = 1000, 800, 40
+CHUNK, STRIDE, MAX_CHUNKS = 1000, 500, 60
 CONTEXT = 1000
-TOP_PER_CHUNK, TOP_PER_RECORD = 5, 3
-MIN_SIMILARITY = 0.80
+TOP_PER_CHUNK, TOP_PER_RECORD = 10, 10
+MIN_SIMILARITY = 0.0
 EXCERPT_TOP, EXCERPT_RANDOM = 1000, 250
-BATCH = 512
+BATCH = 256
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -58,19 +60,22 @@ def embed(tokenizer, model, texts: list[str], max_length: int) -> torch.Tensor:
     out = []
     for start in range(0, len(texts), BATCH):
         batch = tokenizer(
-            ["query: " + t for t in texts[start : start + BATCH]],
+            [ENCODERS[MODEL][0] + t for t in texts[start : start + BATCH]],
             max_length=max_length,
             truncation=True,
             padding=True,
             return_tensors="pt",
         ).to(DEVICE)
         hidden = model(**batch).last_hidden_state
-        mask = batch["attention_mask"].unsqueeze(-1).to(hidden.dtype)
-        pooled = (hidden * mask).sum(1) / mask.sum(1).clamp(min=1)
+        if ENCODERS[MODEL][1] == "cls":
+            pooled = hidden[:, 0]
+        else:
+            mask = batch["attention_mask"].unsqueeze(-1).to(hidden.dtype)
+            pooled = (hidden * mask).sum(1) / mask.sum(1).clamp(min=1)
         out.append(
             torch.nn.functional.normalize(pooled.float(), dim=-1).to(torch.half if DEVICE == "cuda" else torch.float)
         )
-    return torch.cat(out) if out else torch.empty(0, 384, dtype=torch.half, device=DEVICE)
+    return torch.cat(out) if out else torch.empty(0, model.config.hidden_size, dtype=torch.half, device=DEVICE)
 
 
 def item_text(question: str, choices) -> str:
@@ -92,9 +97,13 @@ def run_items(items_dir: str, output: str) -> None:
     logger.info("embedded %d items", len(items))
 
 
+# Calibration shards (records with a known item, under a normalized/ path) are embedded with the sample.
+EXTRA_SHARDS: list[str] = []
+
+
 def sampled_shards() -> list[str]:
     shards = json.loads(StoragePath(f"{CATALOG}/shards.json").read_text())
-    return random.Random(61).sample(shards, SHARDS)
+    return EXTRA_SHARDS + random.Random(61).sample(shards, SHARDS)
 
 
 def _name(shard: str) -> str:
@@ -103,7 +112,7 @@ def _name(shard: str) -> str:
 
 def run_chunks(output: str, part: int, parts: int) -> None:
     item_vectors = torch.from_numpy(np.load(io.BytesIO(StoragePath(prefix_join(output, "items.npy")).read_bytes())))
-    item_vectors = item_vectors.to(DEVICE)
+    item_vectors = item_vectors.to(DEVICE, dtype=torch.half if DEVICE == "cuda" else torch.float)
     items = read_frame(prefix_join(output, "items.parquet"))
     ids, evals = items["id"].to_numpy(object), items["eval"].to_numpy(object)
     tokenizer, model = _encoder()
@@ -203,7 +212,9 @@ def main() -> None:
     parser.add_argument("--output", required=True)
     parser.add_argument("--part", type=int, default=0)
     parser.add_argument("--parts", type=int, default=1)
+    parser.add_argument("--extra-shards", nargs="*", default=[], help="chunks: calibration shards embedded first")
     args = parser.parse_args()
+    EXTRA_SHARDS.extend(args.extra_shards)
     if args.mode == "items":
         run_items(args.items, args.output)
     elif args.mode == "chunks":
