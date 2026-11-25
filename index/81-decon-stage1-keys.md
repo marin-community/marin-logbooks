@@ -1,7 +1,7 @@
 # Is there a cheaper, higher-recall stage 1 for encoder decontamination?
 
 - Task issue — [#81](https://github.com/marin-community/marin-logbooks/issues/81)
-- Status — Active; recommended a spread key set (78 of 79 real misses at 0.44x the pairs), not yet validated with a judged removal check
+- Status — Active; a spread key set validated on fresh shards (169 of 174 misses; added removals 0.784 [0.742] judged); reworded copies in synthetic and SFT data remain the main gap
 - Research branch — [codex/81-decon-stage1-keys](https://github.com/marin-community/marin-logbooks/tree/codex/81-decon-stage1-keys)
-- Notebook at commit — [Notebook](https://github.com/marin-community/marin-logbooks/blob/f2f0cdc3c3ca1679a40c05f324170e57c4afaf5f/logbooks/81-decon-stage1-keys/notebook.md)
+- Notebook at commit — [Notebook](https://github.com/marin-community/marin-logbooks/blob/ac0583137f0e8e62d8ea2569a30551c7aa596f75/logbooks/81-decon-stage1-keys/notebook.md)
 - Marin contributions — [marin#11993](https://github.com/marin-community/marin/pull/11993)
