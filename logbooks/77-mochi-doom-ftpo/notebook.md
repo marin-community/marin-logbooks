@@ -218,6 +218,16 @@ CPU `/benfeuer/mochi-doom-seal-baseline-20261125b`, submitted **00:42:25 EST Nov
 
 Source `311dc5c211` binds the qualified selections, exact quotas, filtered pilot and effective panels. All 16 presets pass native composer/driver preflight; focused suites pass 32 native guard/audit/replay, 61 script-grader, and six cohort/gate tests. Planning receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/qualified-config-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fqualified-config-receipt.json)). The two-update 32K S1 smoke is ready with 112 GPUs and temporary output storage; submit after the owned S0 allocation finishes.
 
+### 2026-11-25 01:30 EST — Finalize quota provenance and smoke observability
+
+The qualified data version is now **2026.11.25.2**. The earlier math-only summary recorded the campaign's mixed quotas even though the resolved math preset correctly used 64 math prompts. The new immutable version records the math-only quota as 64, preserves the mixed 21/11/11/11/10 quotas, and distinguishes its own recipe version from parent cohort version 2026.11.24.2. Training prompts, native grader declarations, held-out identities, effective cohort hashes and counts are unchanged. The old publication remains intact and is superseded before any training.
+
+CPU `/benfeuer/mochi-doom-qualify-targets-20261125c`, submitted 01:03:58 EST, succeeded in 2m34.8s. Canonical summary SHA-256: targets `f5f655d7acaff0801e89f72dbb362219388a3ca6bc9f2412ac2fb4c8feeab357`; math `8ca742f5833c606e25fba28238b25f3f54afb71593f94ba152e4ca12f59ca981`.
+
+Source `20ee97b685` explicitly enables console, durable records and W&B for training. All twelve qualified presets pass native composer/driver preflight at version 2026.11.25.2; the four unchanged baseline presets retain their passes. The resolved run specifications match each published selection's exact quotas. Planning receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/qualified-config-receipt-v3.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fqualified-config-receipt-v3.json)). S1 preflight confirms 28 four-GPU hosts, 112 GB200 at production priority, and an explicit ttl=3d output root. No training has started.
+
+The initial temperature-0.7 baseline profile finished at 01:11:29 EST in 2,587 seconds. Its fixed-reserve profile began at 01:11:34 EST and has completed 585/768 prompts by 01:29:32 EST, without job failures or preemptions. S1 submission waits for this final owned baseline profile and its output verification.
+
 ## Final decision
 
-Pending measured baseline and candidate results.
+The greedy baseline and target set are sealed. Baseline sampling is still running; no intervention or final candidate has been measured.
