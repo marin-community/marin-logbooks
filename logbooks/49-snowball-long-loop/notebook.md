@@ -2569,3 +2569,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: pools receipt + gate submission receipt + manifest/curriculum SHAs [R].
 - Interpretation and limitations: gate-pending state — CPU/native pass is required before the strict logprob gate runs.
 - Decision and next action: record the CPU/native and logprob gate outcomes.
+
+### 2026-11-25 12:00 UTC - Addendum: Exp4 V5 logprob validation submitted on the corrected round (`20c8baee…`) — CPU/native gates PASS; strict GPU gate pending
+
+- Question or hypothesis and reason for trying it: record the V5-side logprob validation submitted on the corrected round (watchdog ID for later evidence checks).
+- Published source revision: `/benfeuer/mochi-exp4-v5-dspark-logprob-20261125a` SUBMITTED on landed `20c8baeebe03f86e3119fee355407b7a7cc81673` — one 16-GB200 serving gang, 0 trainer GPUs, PRODUCTION 08a, r136 excluded, 2 h / 0 retry; flow plain V5 → unchanged 766M/four-proposal DSpark → independent plain-V5 exact-prefix rescore; frozen numerical limits unchanged; no throughput benchmark, optimizer, or RL launch.
+- Command or material configuration: **native no-run and regional real-agent preflight BOTH PASS at the exact source** — real Pi, 16 train/eval source constructions, all original-derived pool hashes in region, vocab 128256 / fingerprint `9e4b1007…55b9763`, 48+80 planned geometry. New holdout identity `d143fff8` from original `cde16ecb` source (200/min-180; 160,361 train; manifest `5535bb0d…`).
+- External inputs and artifact references: worker cc over Rhizome (~12:0x UTC) [R]; receipts `mochi-fixes/mochi-exp4-dspark/preflight-v5-original-receipt.json` and `v5-logprob-gate-submission-receipt.json` [R].
+- Environment and hardware when relevant: the worker requested a wake on the validation's terminal event (their own watchdog chain — outside this record's scope); no terminal event yet.
+- Result, including failure or restart: validation in flight; strict frozen sampled-token/logprob qualification pending.
+- Evidence: preflight + gate-submission receipts [R].
+- Interpretation and limitations: CPU-side gates pass at the exact corrected source; the GPU-side strict gate decides progression.
+- Decision and next action: record the logprob validation's terminal outcome when it lands.
