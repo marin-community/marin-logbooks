@@ -192,6 +192,32 @@ Audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v5
 
 GPU coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-32k-757bfc9804-in-ac3b27d4-2026.11.24.5-coordinator-57b4baeb`, child suffix `ae3b4421b775`. Initial 32K generation took **3,797 seconds** after startup. CPU audit `/benfeuer/mochi-doom-audit-initial32k-20261124b` submitted **23:45 EST**, succeeded in **41.34 seconds**, zero failures/preemptions. Source `9de9bd7ebb`; full repository lint and focused native guards/audit tests pass.
 
+### 2026-11-25 00:54 EST — Sealed greedy baseline and target curriculum
+
+The **greedy baseline is sealed**. All seven cohorts have zero unassessed responses, unavailable correctness flags and errors. The fixed reserve changes math32K to 13 loops/256 and IF to 6/256; IF is non-target under the declared rule.
+
+| Cohort | N | Baseline confirmed / UB | Baseline passes | Candidate UB max | Candidate passes min |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| code32k | 128 | 30 | 26 | 15 | 20 |
+| if32k (non-target) | 256 | 6 | 242 | 9 | 230 |
+| math16k | 512 | 12 | 390 | 6 | 365 |
+| math32k | 256 | 13 | 202 | 6 | 190 |
+| mcq32k | 128 | 37 | 48 | 18 | 42 |
+| rgym32k | 128 | 23 | 61 | 11 | 55 |
+| struct32k | 128 | 11 | 59 | 5 | 53 |
+
+The pooled 32K panel is **1,024 prompts**, with **638 baseline passes** and a candidate minimum of **618**. Every domain must satisfy both its loop and correctness limits on identical prompt hashes; math16K is evaluated separately. The temperature-0.7 baseline profiles are still running, and no training has started.
+
+Baseline audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v5/baseline-greedy.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Faudits%2Fs0-v5%2Fbaseline-greedy.json)), SHA-256 `b0a9f978726d48bcade59c3ab852965b0733b2b99b8bc777a7bbeb4d81f15892`.
+
+Qualified selection version **2026.11.25.1** publishes 16,879 math and 29,334 mixed training prompts, a filtered pilot of 128, and the effective 1,024-prompt 32K panel. All 1,792 held-out and reserve identities remain excluded from training. Mixed batches have 64 prompts: math21, coding11, reasoning_gym11, MCQ11, structured10; structured training balances calendar/closure at 1,307 each. IF remains a saved-model regression check.
+
+The fallback calendar population uses numeric FileReward graders. Source `18cdab53c1` declares exact full credit through the native exclusive threshold and shares its native parser with replay. All 1,792 prompt hashes are unchanged; original checker scores and generation evidence remain intact. The first seal job failed on the unsupported adapter before audit/publication; its partial replay outputs are excluded. The corrected receipt is under `audits/s0-v5/reserve-native-grades-v2/receipt.json`.
+
+CPU `/benfeuer/mochi-doom-seal-baseline-20261125b`, submitted **00:42:25 EST November 25**, succeeded in **3m24s**, zero failures/preemptions. The greedy reserve profile finished **00:28:18 EST** (2,768s), and sampled initial began **00:28:22 EST**. GPU coordinator remains `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-32k-757bfc9804-in-ac3b27d4-2026.11.24.5-coordinator-57b4baeb`, child `ae3b4421b775`.
+
+Source `311dc5c211` binds the qualified selections, exact quotas, filtered pilot and effective panels. All 16 presets pass native composer/driver preflight; focused suites pass 32 native guard/audit/replay, 61 script-grader, and six cohort/gate tests. Planning receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/qualified-config-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fqualified-config-receipt.json)). The two-update 32K S1 smoke is ready with 112 GPUs and temporary output storage; submit after the owned S0 allocation finishes.
+
 ## Final decision
 
 Pending measured baseline and candidate results.
