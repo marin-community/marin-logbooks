@@ -63,6 +63,16 @@ The RL criterion above is quantitative: treatment repeat-turn share must be no g
 
 Non-target cohorts do not need a 50% loop reduction. Report all registered loop measures and flag increases rather than hiding them in a pooled gain; the design does not specify a separate numerical loop-regression tolerance. The correctness tolerances and validity requirement above remain applicable. No baseline result is available yet.
 
+### 2026-11-25 23:00 UTC — Spread CPU workers after a driver host OOM
+
+S0 v7 failed at approximately 22:48 UTC, after 149/267 TB2 trials had returned. Task 0 exited 137 with OOMKilled; its 31 peers stopped with the gang. No completed baseline or intervention result is inferred from this partial collection.
+
+Hub Finelog `iris.task`, exact task-0 attempt 0 and origin cw-us-east-08a, recorded 54 samples from 21:54:38 through 22:47:44 UTC. The last sample was 130,860 MiB (127.79 GiB) against the 128 GiB host limit. The other 31 hosts peaked at at most 65.2 GiB. Task 0 grew from 44.1 GiB before rollout workers to 83.8 GiB after startup, then to its limit. The native pool hard-pinned all 32 CPU rollout workers to the driver's node; individual workers were approximately 2.5–3.2 GiB late in collection. This identifies host-memory concentration, not a CUDA HBM error.
+
+[Source a56109c38e2f331ef2f659a8e70e116780ed6ef7](https://github.com/marin-community/marin/commit/a56109c38e2f331ef2f659a8e70e116780ed6ef7) adds explicit worker placement and sets panels to spread across existing hosts. Training retains its default driver placement. GPU geometry, 128 GiB requests, production priority and all-rack eligibility remain unchanged. The materialized scientific SkyRL configuration was compared with v7 and is identical after removing worker placement. The real S0 plan, 52 focused tests, lint and typecheck pass. A real two-node Ray regression observed both workers on the driver under driver placement and on two nodes under spread placement. Canonical schema generation also now preserves the unchanged antithrash defaults.
+
+S0 v8 was accepted at 23:00:26 UTC; first admission inspection is pending. The original clock and frozen protocol remain unchanged. S2 periodic checkpoints were separately validated on regional CPUs against the real pool, but N remains unfixed and neither RL arm has been submitted.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
