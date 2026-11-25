@@ -281,39 +281,7 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
 - Decision and next action: README limits and the edit forms land in marin#11993; the key set goes to a
   follow-up PR with a judged removal check.
 
-## Scripts
-
-| Entry | Scripts |
-|---|---|
-| E1 planted encodings and tokens | `e1_planted.py`, `e1b_fix.py`, `e1c_tokens.py`, `check_bpe.py` |
-| E2 decoding survey reading and scoring | `e2_local.py`, `e2_read.py`, `e2_judge.py` |
-| E3 dense rule, misses | `e3_local.py`, `e3_read.py`, `e3_read2.py`, `e3_speed.py` |
-| Load concentration and the question-key drop | `load_conc.py`, `load_thresh.py`, `load_value.py` |
-| E5 planted edits | `e5_edits.py` |
-| E6-E9 key sets, caps, boundary-safe keys | `e6_local.py`, `e6_analyze.py`, `e6_final.py`, `e6_misses.py`, `e7_boundary.py`, `e8_local.py`, `e9_compare.py`, `check_cap.py` |
-| E10 TF-IDF / BM25-style rare words | `e10_tfidf.py`, `e10b.py` |
-| E11-E14 proposed stage 1 planted, misses read, review numbers | `e11_planted_v2.py`, `e12_read.py`, `e12b_asy.py`, `e13_review.py`, `e13b_review.py`, `e14_key2_misses.py` |
-| Planted edits at scale | `e15_edited.py`, `e16_planted_stats.py`, `e16b_plain_misses.py` |
-
-## Final decision
-
-- Selected approach and evidence (recommended, not yet validated): drop the question key of a passage item when
-  the reference holds it more than 10 times and the item has a count-0 passage or choices key (-29% of pairs, no
-  removal lost); add a spread key set for the other items (the rarest window in each eighth of the question,
-  windows held at most 100 times in the reference, a candidate at 3 of 8): 78 of 79 stage-2-confirmed misses on
-  80 shards at 0.44x today's pairs; no planted form loses recall. Optional: signature-gated URL and HTML decoding.
-- Rejected alternatives and why: word-level TF-IDF/BM25 (at most 25% of misses at 574x the pairs), MinHash/LSH
-  (short items in long records), embedding retrieval (cost at 1.9e10 records), the dense half-of-windows rule
-  (noisy), key 1 or key 2 (12% of real misses), width 16 (+0.008 planted recall at 3x candidates), base64,
-  homoglyph, ROT13, line-number and GPT-2 token decodings (no real copies).
-- Marin contribution PRs: marin#11993 (stage-1 limits and planted edit forms, commit 37ba98bd1a); the key set
-  is not yet in a PR.
-- Reproduction instructions: the commands in each entry; survey modules take `--part K --parts N`.
-- Remaining uncertainty: judged precision of the newly admitted records; the cap needs counts that skip likely
-  copies (an item held more than 100 times gets no key set); paraphrased and translated copies (an embedding
-  audit); accent-stripped copies on real data.
-
-### 2026-11-25 09:40 UTC - Follow-up program: questions for the stage 1 v2 PR and the review
+### 2026-11-25 08:40 UTC - Follow-up program: questions for the stage 1 v2 PR and the review
 
 - Question: nine analyses for the follow-up PR and the review of marin#11993 (fresh-shard retest, judged removal
   check of the new keys' removals, counts without copies, embedding audit, planted paraphrases, width 16 on
@@ -321,6 +289,28 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
 - Published source revision: this branch from `25a22898bb` on (each script is committed before its run).
 - External inputs: production keys `stage1-v11`, locators of `catalog-v11-full`, item table `decon-g1v7`, models
   `encoder-it16-s{0,1}`, the v11 catalog pair files and removal list, judges GLM-5.3 and DeepSeek-v4.1-flash.
+
+### 2026-11-25 09:05 UTC - MATH `[asy]` false matches in the current removals (F6, F6b)
+
+- Job `decon-asy-pairs-1` collected the excerpts of the 3,040 removal pairs at 0.6 whose item holds `[asy]`.
+- Result: none holds less than half of the item's words outside the drawing (22 at 0.5-0.8, 967 at 0.8-0.95,
+  2,051 at >= 0.95); 6 contain the axis boilerplate. The lowest-share cases read as copies (LaTeX reformatted,
+  shortened); one is a Vietnamese translation that key 1 found through the identical drawing code.
+- Interpretation: the current list has no measurable `[asy]` false matches; the risk is the key set's windows
+  inside drawing code. On the fresh shards, the cap-100 add-on removed no boilerplate pair (0 of 2,681).
+
+### 2026-11-25 09:10 UTC - Fixed regression set (F8)
+
+- Built (`f8_regression.py build`): 7,450 (record, item) rows with the record text: 209 key-1 misses (the
+  non-boilerplate confirmed misses of the dense survey), 12 encoded copies (raw record text), and the pairs of
+  sets 19, 23, 26, 27 and 28 that both judges call COPY (1,610) or EDITED (1,825), or clean (3,794).
+- Check (`f8_regression.py check`), stage-1 hit rate: key 1 / key 1 or key 2 / proposed:
+  judged COPY 0.970 / 0.978 / 0.989; judged EDITED 0.871 / 0.896 / 0.917; key-1 misses 0.000 / 0.120 / 0.971
+  (in sample: these tuned the key set); URL-encoded 0 / 0 / 0 (9); HTML 0-1 of 3; judged clean 0.647 / 0.677 /
+  0.660. Key 1 misses come from sets drawn under earlier keys: set 19 0.92 / 0.72 (copy / edited), set 23
+  0.99 / 0.83, set 28 (records only the earlier keys removed) 0.47 / 0.40.
+- Interpretation: the proposed stage 1 recovers part of what the earlier keys found and v11 lost. The set is a
+  regression check for any key or model change; it lives with the private label data.
 
 ### 2026-11-25 09:20 UTC - Fresh-shard retest of the proposed stage 1 (F1, F9, F12, F12b)
 
@@ -353,28 +343,6 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   translation 0.049 / 0.076 / 0.071, 0.033, 0.000.
 - Interpretation: neither stage sees a full paraphrase or translation; both count as `EDITED` under the rubric.
   A first stage that finds them (embeddings) would also need a judge, not the current models, to remove them.
-
-### 2026-11-25 09:10 UTC - Fixed regression set (F8)
-
-- Built (`f8_regression.py build`): 7,450 (record, item) rows with the record text: 209 key-1 misses (the
-  non-boilerplate confirmed misses of the dense survey), 12 encoded copies (raw record text), and the pairs of
-  sets 19, 23, 26, 27 and 28 that both judges call COPY (1,610) or EDITED (1,825), or clean (3,794).
-- Check (`f8_regression.py check`), stage-1 hit rate: key 1 / key 1 or key 2 / proposed:
-  judged COPY 0.970 / 0.978 / 0.989; judged EDITED 0.871 / 0.896 / 0.917; key-1 misses 0.000 / 0.120 / 0.971
-  (in sample: these tuned the key set); URL-encoded 0 / 0 / 0 (9); HTML 0-1 of 3; judged clean 0.647 / 0.677 /
-  0.660. Key 1 misses come from sets drawn under earlier keys: set 19 0.92 / 0.72 (copy / edited), set 23
-  0.99 / 0.83, set 28 (records only the earlier keys removed) 0.47 / 0.40.
-- Interpretation: the proposed stage 1 recovers part of what the earlier keys found and v11 lost. The set is a
-  regression check for any key or model change; it lives with the private label data.
-
-### 2026-11-25 09:05 UTC - MATH `[asy]` false matches in the current removals (F6, F6b)
-
-- Job `decon-asy-pairs-1` collected the excerpts of the 3,040 removal pairs at 0.6 whose item holds `[asy]`.
-- Result: none holds less than half of the item's words outside the drawing (22 at 0.5-0.8, 967 at 0.8-0.95,
-  2,051 at >= 0.95); 6 contain the axis boilerplate. The lowest-share cases read as copies (LaTeX reformatted,
-  shortened); one is a Vietnamese translation that key 1 found through the identical drawing code.
-- Interpretation: the current list has no measurable `[asy]` false matches; the risk is the key set's windows
-  inside drawing code. On the fresh shards, the cap-100 add-on removed no boilerplate pair (0 of 2,681).
 
 ### 2026-11-25 10:10 UTC - Set 29: judged removal check of the key set's added removals (F13, F13b)
 
@@ -500,3 +468,69 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   about 60,000 H100-hours; a targeted pass over synthetic and SFT sources, with a judge for the pairs the
   models score low, is the affordable next step. The sample is small (25 copies); the `sim_high` estimate in
   particular rests on 2 records.
+
+### 2026-11-25 12:50 UTC - Removals the question-key drop loses on the fresh shards (F12d)
+
+- On the 128 fresh shards, 1,372 records have a v11 pair at mean score >= 0.6; for 2 of them every such pair is a
+  dropped question-key pair (both DROP items, a family at 0.35 removal precision in set 20). The drop loses
+  0.15% of the removals there and 76.9% of the pairs.
+
+## Scripts
+
+| Entry | Scripts |
+|---|---|
+| E1 planted encodings and tokens | `e1_planted.py`, `e1b_fix.py`, `e1c_tokens.py`, `check_bpe.py` |
+| E2 decoding survey reading and scoring | `e2_local.py`, `e2_read.py`, `e2_judge.py` |
+| E3 dense rule, misses | `e3_local.py`, `e3_read.py`, `e3_read2.py`, `e3_speed.py` |
+| Load concentration and the question-key drop | `load_conc.py`, `load_thresh.py`, `load_value.py` |
+| E5 planted edits | `e5_edits.py` |
+| E6-E9 key sets, caps, boundary-safe keys | `e6_local.py`, `e6_analyze.py`, `e6_final.py`, `e6_misses.py`, `e7_boundary.py`, `e8_local.py`, `e9_compare.py`, `check_cap.py` |
+| E10 TF-IDF / BM25-style rare words | `e10_tfidf.py`, `e10b.py` |
+| E11-E14 proposed stage 1 planted, misses read, review numbers | `e11_planted_v2.py`, `e12_read.py`, `e12b_asy.py`, `e13_review.py`, `e13b_review.py`, `e14_key2_misses.py` |
+| Planted edits at scale | `e15_edited.py`, `e16_planted_stats.py`, `e16b_plain_misses.py` |
+| F1-F2 fresh and count shard lists | `f1_fresh_shards.py`, `f2_count_shards.py` |
+| F4 planted paraphrases and translations | `f4_paraphrase.py`, `f4b_plant.py`, `f4c_scores.py` |
+| F5 embedding audit and set 30 | `f5_embed_audit.py`, `f5b_calibration.py`, `f5c_audit_sample.py`, `f5d_set30_eval.py`, `f5e_set30_copies.py` |
+| F6 `[asy]` removals | `f6_asy_pairs.py`, `f6b_asy_overlap.py` |
+| F8 regression set | `f8_regression.py` |
+| F9, F12 fresh-shard retest; F13 set 29 | `f9_fresh_pairs.py`, `f12_fresh_eval.py`, `f12b_fresh_weighted.py`, `f12c_exclusions.py`, `f12d_qdrop_loss.py`, `f13_set29.py`, `f13b_set29_eval.py` |
+| F10, F11, F15 key builds at other widths, CJK | `f10_keys_width.py`, `f11_cjk_items.py`, `f15_cjk_eval.py` |
+| F14, F16 counts without copies | `f14_nocopy_keysets.py`, `f16_nocopy_eval.py` (survey option `key_set_survey count --exclude-copies`) |
+
+## Final decision
+
+- Selected approach and evidence (for the stage 1 v2 PR; recommended, validated on fresh shards):
+  1. Drop the question key of a passage item when the reference holds it more than 10 times and the item has a
+     count-0 passage or choices key (76.9% of the pairs on the fresh shards; 2 of 1,372 v11 removals
+     there lost, both DROP).
+  2. Add a spread key set for items without a count-0 passage or choices key: the rarest window in each eighth
+     of the question, windows held at most 100 times in the reference, a candidate at >= 3 of 8; not for QNLI,
+     WNLI, SQuAD, HLE and Uncheatable. Fresh shards (128, 20.9M records): 120 of 124 confirmed key-1 misses
+     outside those families caught (169 of 174 with them); proposed / v11 pairs 0.76x catalog-weighted.
+     Set 29: added removals 0.784 [0.742] family-weighted with every family (passes the floor), 0.974
+     record-weighted without the excluded families. Added removals (every family): +168,001 catalog records,
+     5-95% 100,506 - 243,658 (+39% to +84% of v11's).
+  3. Key CJK streams at width 10 (planted 0.834 -> 0.963, ZhoBLiMP 0.734 -> 0.942, no measurable load) or 8.
+  4. Optional: signature-gated URL and HTML decodings (about 2,000 catalog records).
+  The regression set (F8) checks any of these: v11 key 1 finds 0.970 of judged copies and 0.871 of judged
+  edited copies; the proposed key set 0.989 and 0.917.
+- Rejected alternatives and why: word-level TF-IDF/BM25 (at most 25% of misses at 574x the pairs); MinHash/LSH;
+  the dense half-of-windows rule (noisy); key 1 or key 2 (helps planted edits, finds 12% of the real misses);
+  counts without likely copies using the >= 3-window copy test (5.4x the add-on pairs from template text);
+  multilingual-e5-small for the audit (10% of planted translations); keeping the add-on for QNLI, WNLI and
+  SQuAD (their added removals are 0.00-0.50 precise: reused passages and sentences, VARIANT under the rubric).
+- Marin contribution PRs: marin#11993 (stage-1 limits and planted edit forms, commit 37ba98bd1a). The stage 1
+  v2 PR (items 1-3 above as a new key version) is not opened.
+- Reproduction instructions: the commands in each entry; the scripts in `scripts/`; the outputs in the private
+  Open Athena labels dataset (`stage1-survey-2026-11-24/`, `stage1-survey-2026-11-25/`,
+  `regression-2026-11-25/`).
+- Remaining uncertainty:
+  - Reworded copies that no key finds (set 30): about 186,000 catalog records that the models would remove
+    (127,062 - 251,450) and about 147,000 that neither stage sees (0 - 310,473, from 2 judged copies); lower
+    bounds (the audit finds 76-85%). Mostly synthetic and SFT data. A targeted embedding pass over those sources
+    with a judge is the next step; the whole catalog would cost about 60,000 H100-hours.
+  - Stage 2 removes VARIANT and GENERIC matches for passage and sentence-pair evals; whether a reused passage
+    or sentence counts as contamination is a policy question.
+  - Set 29 has 9-35 judged records per family; the added-removal count rests on few records of large sources.
+  - 32 small sources (NuminaMath 1.5 among them) had no fresh shard.
+  - Width 16 on edited copies: WIDTH16_PLACEHOLDER
