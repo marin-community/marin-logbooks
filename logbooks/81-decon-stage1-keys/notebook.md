@@ -450,3 +450,23 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   summed over the CJK keys: 0 / 8 / 1,558 (width 8: about 1% more catalog pairs).
 - Decision: a width-10 window for streams that are mostly CJK closes most of the gap with no measurable load;
   width 8 closes the rest for about 1% more pairs. Neither changes non-CJK items.
+
+### 2026-11-25 11:55 UTC - Counts without likely copies (review point 3; F14, F16)
+
+- Question: window counts include the copies of an item, so a widely copied item's windows look common. Does
+  counting without likely copies change the key sets, and does it help?
+- Recount (`key_set_survey count --exclude-copies 3`, jobs `decon-cn-p*`): the same 160 count shards; a record
+  that holds >= 3 of an item's dense windows does not count toward that item's windows. Part 1 (2 shards) ran
+  over 2 hours on records with very many window hits and was cancelled after its first shard: 159 of 160 shards.
+- Counts (F14): item median window count with copies (rows) against without (columns): of 20,843 items at
+  1-10, 12,874 drop to 0; of 4,473 at 11-100, 1,013 drop to 0 and 1,590 to 1-10; of 509 above 100, 138 drop to
+  0, 70 to 1-10, 161 to 11-100, 140 stay. The bias is real.
+- Key sets (spread, cap 100): items with windows but no key set 42 with copies, 27 without (all among the
+  items above 100); items with fewer than 3 key-set windows 107,500 and 107,449 (short items).
+- Rescan of the fresh shards (F16, jobs `decon-fsn-p*`): add-on pairs 17,706 with copies, 95,950 without (5.4x);
+  confirmed misses caught 169 and 174 of 174. The pairs only the copy-free counts admit: Uncheatable GitHub C++
+  51,056, DROP 5,478, Uncheatable Python 5,354, QQP 1,595.
+- Interpretation: the ">= 3 windows" copy test also catches records that share template text with an item
+  (license headers, DROP stems), so their windows look rare and pass the cap. Copy-free counting needs a
+  stricter copy test (most of the item's windows) or a template filter before it can replace the plain counts.
+  With the plain counts, the bias costs few key sets (42 items) and the cap keeps the load down; keep them.
