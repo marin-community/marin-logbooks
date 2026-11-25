@@ -2365,3 +2365,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step receipt + published S3 evidence [R].
 - Interpretation and limitations: baseline-only state; the first finite optimizer/update remains pending. The standalone SFT 2100Micro210 stays coordinator-owned; native 2100 untouched.
 - Decision and next action: watch for the first finite optimizer/update; the 05:29 UTC check proceeds.
+
+### 2026-11-25 05:45 UTC - Addendum: V5 exp3 RL `.129` baseline-0 at 167/200 (1800 s); no completion events yet, next check after the 2280 s attempt boundary
+
+- Question or hypothesis and reason for trying it: continued read-only RL checkpoint on `.129` (same root/child/source/recipe as the 05:25 addendum).
+- Published source revision: unchanged — source `fe606ec554`, `rounds/mochi-v5-exp3-rl.yaml`.
+- Command or material configuration: baseline-0 reached **167/200 completed at 05:29:19.250 UTC (1800 s; 33 pending)**, up from 162 at 05:26 and 166 at 05:27 — completion progress, NOT scored coverage. No baseline/optimizer/full-step or native timing completion observed through the bounded 05:29 read; no new selected error rows.
+- External inputs and artifact references: worker checkpoint cc over Rhizome (~05:4x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0529-receipt.json`; published under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-v5-exp3-rl/launches/2026.11.25.129/` [R].
+- Environment and hardware when relevant: the 30-minute turn boundary is not cancellation authorization or stall proof — longer attempt/verifier/cleanup work can still run.
+- Result, including failure or restart: baseline still progressing; no run/config changes. The 05:29 timer verified 1 run/exit 0/empty stderr/saved/removed; one useful next check 05:39 UTC, after the nominal 2280 s attempt boundary.
+- Evidence: rl-first-step-0529 receipt + published S3 evidence [R].
+- Interpretation and limitations: baseline-only state; the first finite optimizer/full update remains pending; other runs and native SFT 2100 untouched.
+- Decision and next action: watch for the first finite optimizer/full update after the 05:39 UTC check.
