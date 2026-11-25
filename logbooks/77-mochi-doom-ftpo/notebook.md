@@ -77,6 +77,20 @@ The W&B credential is now available for training. S0 retains console and native 
 
 Next: audit exact saved token IDs, extend any 32K domain with fewer than ten confirmed loops to its fixed reserve, and seal the target set before S1.
 
+### 2026-11-24 19:17 EST — Validate the audit and prepare target-qualified pools
+
+S0 began generating the 512 math16k responses at 19:10 EST, about 19 minutes after coordinator submission. Its immutable runtime remains source `a620d5ce2e`, version `2026.11.24.2`. No loop-incidence count is available yet. The cohort builder ran source `7c4069cce5`; the frozen v1 manifest and Parquet files remain unchanged.
+
+Source `31ca3c1b2a` adds the fixed-reserve decision to the audit. A sparse initial 32K domain requires its complete 128-row reserve before demotion. Candidate audits use `--baseline` to keep the sealed baseline's prompt hashes, cohort size, and target decision. An improved candidate cannot shrink its cohort or demote a domain because it now has fewer loops. Native audit tests report 15 passes; a synthetic CLI baseline/candidate file round-trip also passes. These fixture results are software checks, not Mochi measurements. All seven frozen cohort hashes match the shared hashing implementation.
+
+The training-selection builder reads the frozen raw pools after sealing. It retains math and qualified target domains, balances calendar against closure, and records explicit per-batch quotas approximating math 2 : each other target 1 in batches of 64. It caps each other-domain pool at 4,000 eligible rows. Three publication and selection tests pass, including the native task-family identity consumed by the sampler. Before S3, bind these recorded quotas and the filtered pilot into the launch config and inspect its preflight. Mixed and long stages now require an explicit candidate selection. No training has been submitted.
+
+Two advisory reviews completed. Follow-up changes reuse the existing Parquet reader and one shared selection publisher, remove ignored recipe fields, share prompt/cohort hashing, clarify upper-bound and callback behavior, and count unavailable grading as non-pass. The original frozen receipt retains its original requested recipe; its actual counts describe raw candidate pools. Orchestration remains in the experiment entrypoints, and the canonical storage environment overrides remain documented and tested. Native pilot classification consumes typed batches; offline classification additionally checks saved prompt identities and damaged rows. Both call the unchanged native detector.
+
+The refreshed affected suite reports 1,547 passes, five skips, and six failures. Four unchanged failures reproduce on clean main; the two additional sandbox timeouts pass a focused rerun (three tests). The focused cohort/geometry/locality suite reports 84 passes. Required lint, formatting, and type checks pass.
+
+The runner takes its explicit RL artifact version from `Preset.revision`; the CLI `--version` does not replace that pin. Upcoming runtime revision `2026.11.24.3` passes the S1 preflight with 48 policy/reference GPUs and 64 rollout GPUs, permanent outputs on 08a, and native checkpoints under the 08a three-day temporary root. S1 still waits for baseline sealing.
+
 ## Final decision
 
 Pending measured baseline and candidate results.
