@@ -470,3 +470,33 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   (license headers, DROP stems), so their windows look rare and pass the cap. Copy-free counting needs a
   stricter copy test (most of the item's windows) or a template filter before it can replace the plain counts.
   With the plain counts, the bias costs few key sets (42 items) and the cap keeps the load down; keep them.
+
+### 2026-11-25 12:00 UTC - The add-on without the rejected families (F12c)
+
+- On the fresh shards, the add-on without QNLI, WNLI, SQuAD, HLE and Uncheatable: 11,227 add-on pairs (17,706
+  with them), 1,249 added removals (2,118), and 120 of the 124 confirmed misses outside those families caught
+  (97%). With set 29's record-weighted precision of 0.974 on the kept families, this is the recommended form.
+
+### 2026-11-25 12:30 UTC - Embedding audit result: set 30 (F5, F5c, F5d, F5e)
+
+- Run: 400 catalog shards, 1,972,687 records (of 47.6M in those shards; about 0.01% of the catalog), 28.2M
+  chunks embedded with bge-m3 on 8 H100s (about 6 H100-hours); 502,500 pairs with excerpts scored by both
+  iteration-16 models. Jobs `decon-embed2-*`, `decon-set30-sample`, `decon-judge-set30`.
+- Set 30 (one pair per record, not a stage-1 candidate; calibration shards excluded), strata, judged:
+  - `model` (mean score >= 0.6): all 221 records; 209 labeled; copy share 0.110 (5-95% 0.077-0.148).
+  - `sim_high` (score < 0.6, similarity >= 0.85): 300 of 2,167; copy share 0.007 (2 of 298).
+  - `sim_mid` (0.80-0.85): 150 of 15,778: 0 copies. `random` (any similarity): 150 of 97,613: 0 copies.
+  - Labels: GENERIC/GENERIC 273, UNRELATED/UNRELATED 220, GENERIC/UNRELATED 184, VARIANT/VARIANT 45,
+    EDITED/EDITED 23.
+- Catalog estimate of records holding a copy that stage 1 never sent (each sampled record stands for about
+  10,000; shard bootstrap): models would remove them: 186,150 (127,062 - 251,450, 109 shards); neither stage
+  sees them: 147,396 (0 - 310,473; from 2 judged copies). The audit finds 76-85% of what is there (F5b), so
+  these are lower bounds. Against 376,124 records on the final removal list, the misses are of the same order.
+- The 25 judged copies sit in 22 shards of 13 sources (Nemotron STEM SFT 6, synthetic Nemotron-CC 4, stack-v3
+  4, dolma4pdfs 2): mostly reworded questions with changed choices and the answer shown (CareQA, MMLU-Pro,
+  MMLU). Their excerpts hold key 1 in 0, key 1 or key 2 in 1, the proposed key set in 4 of 25.
+- Interpretation: the largest remaining gap is reworded copies, mostly in synthetic and SFT data, which no
+  text-overlap key finds and the models partly recognize. Embedding the whole catalog at this rate would cost
+  about 60,000 H100-hours; a targeted pass over synthetic and SFT sources, with a judge for the pairs the
+  models score low, is the affordable next step. The sample is small (25 copies); the `sim_high` estimate in
+  particular rests on 2 records.
