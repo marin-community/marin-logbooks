@@ -2341,3 +2341,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: no state change this window.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-25 05:13 UTC - Hourly catch-up (Iris primary evidence; multi-hour window): V5 SFT SUCCEEDED; Exp6 SFT done, `.157` RL checkpoint leg FAILED, `.158` RL relaunch RUNNING
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence. This window spans ~22:13 Nov 24 → 05:13 UTC Nov 25.
+- Published source revision: **V5 bankadam-128 SFT `/benfeuer/mochi-sft-exp3-v5-bankadam-128-20261124a` SUCCEEDED** (root and grug-train both succeeded; grug-train had run since 10:30:11 Nov 24). **Exp6 `.157`** `/benfeuer/mochi-exp6-2026.11.24.157`: the SFT task succeeded (sft since 04:17:01 Nov 24), `export_shared_sft` succeeded 23:51:37 Nov 24; the RL checkpoint leg `users-benfeuer-checkpoints-mochi-exp6-rl-2026.11.24.157-aeb54ad6b066` **FAILED 00:20:12 Nov 25 — "Cumulative failed task attempts exceeded max_task_failures"**, its `-retrieval` child killed by user 00:13:12. **Exp6 `.158`** `/benfeuer/mochi-exp6-2026.11.24.158` RUNNING: root submitted 02:23:21 Nov 25; verify_inputs succeeded 02:25:33; long-loop eval preflight succeeded 02:32:37; RL checkpoint task `…-rl-2026.11.24.158-a2fe5813bdc4` running since 02:34:42 (retrieval child running since 02:27:17).
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-exp6` and `--prefix /benfeuer/mochi-sft-exp3-v5-bankadam` (05:13 UTC).
+- External inputs and artifact references: Iris job lists [R]; V5 restart diagnosis addendum (c64b0c4bfe) [R].
+- Environment and hardware when relevant: the `.158` relaunch follows the `.157` RL checkpoint failure; the SFT legs of both are complete.
+- Result, including failure or restart: V5 SFT complete; Exp6 moved from SFT (complete, exported) to the RL leg — `.157`'s first attempt failed on cumulative task failures and was relaunched as `.158`, now running.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: the `.157` failure cause beyond "max_task_failures exceeded" is not established from job state alone; the RL leg's throughput evidence is pending `.158` progress.
+- Decision and next action: watch `.158`'s RL checkpoint task; hourly checks continue.
