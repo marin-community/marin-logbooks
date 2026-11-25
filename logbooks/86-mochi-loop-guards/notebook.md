@@ -85,6 +85,14 @@ S0 remained unsealed after its planned T+6 window. Apply the design's drop order
 
 Keep target status inherited from S0 for every retained cohort. SWE100 will have a baseline result and an explicit budget-drop marker in follow-up tables; follow-up effect claims cover the 723 measured trials, not SWE100. N remains unfixed pending valid S0 timings. The original clock, T+20 start cutoff and T+32 update cutoff remain fixed. No threshold was relaxed and no detector was widened.
 
+### 2026-11-25 23:35 UTC — Repair actor export after the placement change
+
+S0 v8 loaded models and captured graphs, but failed before trials during Ray actor-class export: `PicklingError: Cannot pickle files that are not opened for reading: a`. An initialization diagnostic added to the worker captured the configured Loguru append-only file sink. W&B finish timeouts were secondary cleanup failures. The exact task-0 attempt was checked in hub Finelog; root error sequence 32045445029 was recorded at 23:28:18.480 UTC. The earlier two-node placement test used a lightweight actor, so it did not exercise serialization of the production class.
+
+The failure reproduced locally by exporting the real modified RolloutWorker class with an appended runtime log sink. [Source 496dd1b5a876f5a4f9750115a79c4715e2897ee8](https://github.com/marin-community/marin/commit/496dd1b5a876f5a4f9750115a79c4715e2897ee8) uses stdlib logging for that diagnostic and adds the reproduced actor-class regression. Both the real-class serialization check and two-node placement test pass, as do the real native S0 plan and required lint/typecheck. Scientific SkyRL settings and allocation compare equal to v8; the full 823-trial S0 is retained.
+
+S0 v9 was accepted at 23:35:32 UTC, with first admission inspection pending. V8 produced no trial collection and cannot validate the post-rollout memory behavior of spread placement. V9 must verify actual actor distribution and memory after initialization. Original T0 and cutoffs remain fixed; no baseline or intervention result is claimed.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
