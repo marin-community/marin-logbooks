@@ -286,6 +286,16 @@ Checkpoint saves took 949.94s and 946.35s. Update 2 took 2,279.08s rollout, 26.4
 
 Metric receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/smoke-v2-final-metric-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fsmoke-v2-final-metric-receipt.json)).
 
+### 2026-11-25 08:11 EST — Recover and submit the fresh math round
+
+S2 math was accepted at **08:07:44 EST November 25**, **112 GB200, production priority, cw-us-east-08a**. Coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-math-889d30ff9a-in-728208ba-2026.11.25.2-coordinator-ded73123`. It starts fresh from Mochi SFT step400407, with 16K generated tokens, batch64 math-only, MuonH3e-6, pilot at0/3/6/9/12 and the declared correctness/plateau guards. Source `70d1ffb38a`, qualified data/runtime `2026.11.25.2`.
+
+The recovered S1 root is succeeded with zero failures/preemptions; terminal model is global_step2, manifest identity `sha256:f33d4f09cd9e431fc56dd79c100c74661fc7d730c6e924c989f73f298340269c`, 221 files. Its native consumer preflight passes. S1's pilot regression is retained as measured; no smoke weights seed S2.
+
+The only S2 configuration adjustment is existing periodic checkpoint retention at3/6/9/12 in TTL storage, so update6 remains available for the predeclared LR decision even when an earlier model is best. Best-only HF export is unchanged. All twelve qualified native preflights, twelve existing terminal-retention cases and required lint/type checks pass; a full-config comparison finds only `trainer.checkpoint_keep_every=3` changed for math. Other stages keep their previous retention.
+
+The account-change interruption touched no Iris jobs. Submission does not wait on V5 or other jobs; Kueue schedules/preempts. The deadline remains November26 17:46 EST.
+
 ## Final decision
 
-The baseline and target set are sealed. S1 training completed with a pilot regression; its export verification is pending. S2 starts fresh from SFT. No trained candidate has completed the paired full-panel gate.
+The baseline and target set are sealed. S1 completed with a pilot regression and a verified export. S2 is submitted from fresh SFT; no trained candidate has completed the paired full-panel gate.
