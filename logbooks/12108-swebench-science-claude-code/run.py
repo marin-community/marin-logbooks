@@ -1,4 +1,4 @@
-"""Run the Claude Code pilot and then the remaining five paired tasks inside an Iris job."""
+"""Run the task 013 Claude Code pilot inside an Iris job."""
 
 import argparse
 import asyncio
@@ -174,6 +174,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
     parser.add_argument("--deadline", required=True, type=int)
+    parser.add_argument("--cluster", required=True, choices=("cw-us-east-02a", "cw-rno2a"))
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
     configure_coreweave_s3()
@@ -188,7 +189,7 @@ def main():
     ids = ("013",)
     root = shared / "pilot"
     dataset = corpus(root, ids)
-    hardware = AcceleratorChoice(Platform.GPU, gpu_type="H100", gpu_count=4, target_cluster="cw-us-east-02a")
+    hardware = AcceleratorChoice(Platform.GPU, gpu_type="H100", gpu_count=4, target_cluster=args.cluster)
     service = inference_config_for_model(model, hardware, env_vars={}, priority=0, instances=1)
     service = replace(
         service,
