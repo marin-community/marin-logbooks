@@ -251,6 +251,23 @@ Actual cloud configuration confirms PP12/EP4/TP1/CP1 on policy and reference, bo
 
 Smoke outputs and checkpoints use ttl=3d storage; S2 starts fresh from SFT. Model startup is underway. Active-objective, two-applied-update, finite-gradient, actual R3/top-32, checkpoint and HF-export gates remain pending. Configuration SHA-256: `63402b5d230467dacaae1d9bf401f39a882ca580d481e3af8ee8f2f645ae25c9`. Preserved runtime receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/smoke-v2-runtime-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fsmoke-v2-runtime-receipt.json)).
 
+### 2026-11-25 04:05 EST — First applied FTPO update
+
+**S1 update 1 applied at 03:53:36 EST November 25.** The native worker reports `policy_update_steps=1`, `skipped_steps=0`, five active FTPO examples /64, loss 9.778979, and finite raw gradient norm 823.837 with clip0.5. LR is 3e-6. `chosen_win=0` is the pre-update measurement.
+
+Actual int16 R3 tensor payloads were logged in training workers, and the nonempty FTPO batch passed native top-32 admission. The first 32K policy/reference pass completed without OOM; serving compilation and CUDA graphs remain enabled.
+
+| Measured phase | Time |
+| --- | ---: |
+| Rollout: 64 trajectories, 542,798 response tokens, staleness0 | 42m20s |
+| Forward/reference | 7m09s |
+| Policy training | 4m09s |
+| Weight synchronization | 5.97s |
+
+The step-zero pilot was fully assessed: 13 loops and 80 passes /128; its math subset had 3 loops and 53 passes /64. These are pilot controls, not full-panel intervention results. Checkpoint1 is being saved; final step metrics are committed after the step-end pilot. The smoke still requires its second applied update, checkpoint2 and verified HF export before S2 starts fresh from SFT.
+
+Coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-smoke-71205dc7ec-in-728208ba-2026.11.25.2-coordinator-9a097f98`, child `a780bde9cd33`; 112 GB200 production08a, source `20ee97b685`. Worker evidence: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/smoke-v2-update1-worker-status.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fsmoke-v2-update1-worker-status.json)).
+
 ## Final decision
 
 The baseline and target set are sealed. S1 is running; no trained candidate has completed the paired full-panel gate.
