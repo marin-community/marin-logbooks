@@ -42,6 +42,10 @@ ACTOR_INSTRUCTIONS = (
 )
 
 
+class ReplayMismatch(RuntimeError):
+    """A prefix could not be restored to the recorded action boundary."""
+
+
 @dataclass(frozen=True)
 class Prefix:
     episode: Episode
@@ -89,7 +93,7 @@ def sandbox(client: Daytona, image: str, base_commit: str):
     try:
         revision = workspace.process.exec("git rev-parse HEAD", cwd=WORKDIR, timeout=20)
         if revision.exit_code or revision.result.strip() != base_commit:
-            raise RuntimeError("sandbox repository differs from the benchmark base commit")
+            raise ReplayMismatch("sandbox repository differs from the benchmark base commit")
         yield workspace
     finally:
         client.delete(workspace, timeout=60)
@@ -121,7 +125,7 @@ def replay(workspace, prefix: Prefix) -> Replayed:
         messages.append(episode.messages[point])
         messages.append({"role": "tool", "content": json.dumps({"returncode": code, "output": output})})
     if tuple(exit_codes) != prefix.archived_codes:
-        raise RuntimeError(f"archive and replay exit codes differ: {prefix.archived_codes} vs {tuple(exit_codes)}")
+        raise ReplayMismatch(f"archive and replay exit codes differ: {prefix.archived_codes} vs {tuple(exit_codes)}")
     digest = hashlib.sha256(patch(workspace).encode()).hexdigest()
     return Replayed(messages, tuple(exit_codes), digest)
 
@@ -286,7 +290,7 @@ def run_case(client, instance, prefixes, model_dir, args, actor):
                 restored = replay(workspace, prefixes[branch])
                 reference = outputs[branch]
                 if (restored.exit_codes, restored.diff_sha256) != (reference.exit_codes, reference.diff_sha256):
-                    raise RuntimeError("replaying a branch changed its workspace patch or tool exit codes")
+                    raise ReplayMismatch("replaying a branch changed its workspace patch or tool exit codes")
                 proposed, usage = continue_branch(
                     workspace,
                     actor,
@@ -338,7 +342,10 @@ def main():
                 or prefixes[0].episode.goal != prefixes[1].episode.goal
             ):
                 raise ValueError("expected two equivalent goals for the selected instance")
-            result = run_case(client, instance, prefixes, model_dir, args, actor)
+            try:
+                result = run_case(client, instance, prefixes, model_dir, args, actor)
+            except ReplayMismatch as error:
+                result = {"issue": instance["instance_id"], "replay_error": str(error)}
             payload = json.dumps(result)
             handle.write(payload + "\n")
             handle.flush()
