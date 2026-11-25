@@ -172,6 +172,26 @@ The first completed v5 trajectory reproduces its frozen native prompt hash exact
 
 Source through `9de9bd7ebb` includes the targeted advisory-review fixes. Shared protocol constants and separate generation/training builders preserve all six complete configuration snapshots exactly. The pilot and checkpoint selector now admit a loss of exactly five percentage points without binary-subtraction rounding, and missing stage state raises through the callback handler. Pilot state is persisted as a typed stage record. The native guard/audit suite passed 28 tests, the rendering/publication/selection suite passed five, and required lint/type checks passed. Qualified selections now declare their held-out exclusion URIs. Their actual family quotas, filtered pilot and effective saved-model panels will be bound only after the baseline is sealed.
 
+### 2026-11-24 23:48 EST — Initial 32K greedy incidence, before reserve qualification
+
+The valid initial 32K greedy audit completed at **23:42 EST on November 24**. All 768 responses are assessed; generation/grade errors and unavailable correctness flags are zero.
+
+| Cohort | N | Confirmed loops / UB | Full-credit passes | Length stops | Decision |
+| --- | ---: | ---: | ---: | ---: | --- |
+| math16k (previous valid pass) | 512 | 12 | 390 | 108 | target |
+| math32k | 128 | 6 | 99 | 25 | extend to 256 |
+| IF | 128 | 2 | 123 | 2 | extend to 256 |
+| coding | 128 | 30 | 26 | 97 | target |
+| reasoning_gym | 128 | 23 | 61 | 29 | target |
+| structured outputs | 128 | 11 | 59 | 11 | target |
+| STEM MCQ | 128 | 37 | 48 | 41 | target |
+
+The fixed reserve profile began at **23:42:10 EST**. Only math and IF will add reserve rows; unused reserves cannot change the other domains. Training waits for the sealed baseline and baseline temperature-0.7 measurement.
+
+Audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v5/initial-greedy32k.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Faudits%2Fs0-v5%2Finitial-greedy32k.json)); SHA-256 `e27eb2a63a3b7e5aed08ad6e363fdda52ce18f6ec49aca0e2512a484be561a4a`. Native metadata replay changes only pass flags on saved checker scores, with original/derived SHA receipts in `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v5/initial-native-grades-v1/receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Faudits%2Fs0-v5%2Finitial-native-grades-v1%2Freceipt.json)).
+
+GPU coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-32k-757bfc9804-in-ac3b27d4-2026.11.24.5-coordinator-57b4baeb`, child suffix `ae3b4421b775`. Initial 32K generation took **3,797 seconds** after startup. CPU audit `/benfeuer/mochi-doom-audit-initial32k-20261124b` submitted **23:45 EST**, succeeded in **41.34 seconds**, zero failures/preemptions. Source `9de9bd7ebb`; full repository lint and focused native guards/audit tests pass.
+
 ## Final decision
 
 Pending measured baseline and candidate results.
