@@ -42,6 +42,8 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 def _encoder():
+    # As in score.py: the cuDNN attention kernel has no plan for these shapes on the cluster's H100s.
+    torch.backends.cuda.enable_cudnn_sdp(False)
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     model = (
         AutoModel.from_pretrained(MODEL, torch_dtype=torch.float16 if DEVICE == "cuda" else torch.float32)
