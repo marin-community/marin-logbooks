@@ -26,3 +26,11 @@ The offline diagnostic compares goal-only difficulty, terminal states, and same-
 ### 2026-11-25 UTC — Define the continuation trial
 
 A branch must restore both its agent history and the workspace state visible at the cutoff. Prefer replay from an identical task image, with explicit checks for deterministic observations and file state. Run a feasibility trial through the patch verifier before expanding the paired comparison. Record the actor checkpoint, benchmark version, replay coverage, action and token allocations, and actual consumption with the experiment source revision.
+
+### 2026-11-25 UTC — Implement the paired continuation pilot
+
+The runner replays four archived Bash actions in a private workspace at the verified instance base commit. It checks the recorded exit codes, scores the live observations with the frozen value head, and restores a chosen branch by replaying it again. The selected continuation must reproduce the reference workspace diff hash and action exit codes. The actor is frozen Qwen3-14B at `40c069824f4251a91eefaf281ebe4c544efd3e18`. The pilot gives each arm one continuation, paired seeds, up to 20 model calls, and up to 6,144 generated tokens. If both arms select the same branch, they share that branch's seeded continuation. Account for this shared continuation as equal allocated budget.
+
+The verifier runs in a separate fresh workspace with SWE-bench 4.1.0 and the Verified dataset at `c104f840cc67f8b6eec6f759ebc8b2693d585d4a`. The actor receives the issue and observed history. Test fixtures enter only the verifier workspace. Feasibility runs check image availability, replay, action generation, patch extraction, and grading before the paired sample expands.
+
+Run `python -m experiments.post_training.goal_value.resampling MANIFEST HEAD OUTPUT --actions 20 --tokens 6144 --replicates 1` with Python 3.12, PyTorch 2.9.1, Transformers 4.57.6, and Daytona SDK 0.200.2. The uncommitted manifest and checkpoint are inputs to the run. The manifest contains issue IDs, two four-action prefixes per issue, and the corresponding recorded exit codes. The checkpoint is the saved 65k scalar readout.
