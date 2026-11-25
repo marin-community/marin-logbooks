@@ -21,6 +21,8 @@ Use up to 128 GB200 on cw-us-east-08a at production priority. Submit stages when
 
 ## Baseline
 
+V2 cohorts are published and [the complete native-rendered manifest](cohorts-manifest-v2.json) is verified. Corrected S0 was submitted at 19:45:04 EST on November 24; its 128-GPU child is running. No valid loop-incidence counts are available yet.
+
 The first S0 attempt was cancelled at 19:25 EST: preparation hashed source conversations while the native harness also appended answer-format instructions. Its outputs and v1 hash table are excluded from measurement. Cohort v2 is being rebuilt with the native renderer; no valid loop-incidence counts are available.
 
 Pending the fixed-cohort greedy generation audit. Temperature 0.7 is reported separately. The detector is SkyRL's `tail_loop`, requiring eight exact suffix copies, with full-window search and period caps of 2,048 at 16K and 4,096 at 32K. Missing or damaged responses enter the upper bound and do not count as correctness passes.
@@ -106,6 +108,28 @@ Source `5f2b2f931c` now calls the native shell prompt renderer, including its an
 Submitted `/benfeuer/mochi-doom-cohorts-20261124c` at 19:32:59 EST on cw-us-east-08a, CPU16 / 96 GB / 64 GB disk, production priority. It publishes new cohort version `2026.11.24.2`, records the rendering contract, and preserves the invalid v1 receipt as superseded. Upcoming S0 uses fresh preset runtime revision `2026.11.24.4`. No GPU job is currently active for this task.
 
 Next: verify CPU publication, preflight the new baseline, submit immediately, and compare a completed live prompt with v2 before accepting the audit. Seal all required domains and reserves before S1.
+
+### 2026-11-24 19:45 EST — Publish native-rendered v2 and resubmit S0
+
+CPU job `/benfeuer/mochi-doom-cohorts-20261124c` succeeded. The v2 manifest was published at 19:42:56 EST; its SHA-256 is `1c2f2b83a3b895b518e7745d3a1fe05af857f56273449c6a3aad9087f9354af3`. Its expected prompt hash exactly matches the saved native prompt used to diagnose v1. All seven cohort hashes verify. All 512 original DAPO validation task IDs remain eligible. See [the manifest](cohorts-manifest-v2.json) and [selection summary](cohorts-summary-v2.json).
+
+| Cohort | Initial N | Reserve N | Cohort SHA-256 |
+| --- | ---: | ---: | --- |
+| math16k | 512 | 0 | `baca68d0a62f8ab6823694ac09bab00889660a63645f5e7c94e3f3fe84c1d6df` |
+| math32k | 128 | 128 | `3645a35331040ad003782ee8938236782e4581bc8ae2e3c3384cc9e40d4e205c` |
+| if32k | 128 | 128 | `8a7b7acf2c737045e880783e00ea6e59a1ab03d14894f5a2219acc31dcec9790` |
+| code32k | 128 | 128 | `b5312e27017fa4896e3e6b19c104331fcf814a949e7fb807dba00c84bcdeeae5` |
+| rgym32k | 128 | 128 | `382773c43bc215645f189afd1c81a6e595e2ca95d093e6da44ebe1f9c48b5a17` |
+| mcq32k | 128 | 128 | `026750d3c3999c46819c0a8741b449b9da8c7ab576cabe39687bd4b1820f7dcb` |
+| struct32k | 128 | 128 | `e0119f50e982582c27f912949530adf114101be4d9f25fc69b87758328cea52f` |
+
+The eligible training pools contain 183,111 rows, with 16,879 math rows. Complete native rendering drops 56 additional over-cap rows relative to v1: seven calendar, five reasoning_gym, and 44 IF. The heldout union contains 1,792 distinct task IDs; the provisional pilot has 144 rows. All evaluation and reserve identities are excluded from training. Target qualification and the final pilot remain pending baseline counts.
+
+Published source: `1661a15e9f`; native-renderer implementation: `5f2b2f931c`. The new baseline preflight resolves runtime version `2026.11.24.4`, cohort version `2026.11.24.2`, 32 four-GPU hosts, TP1/BF16, CUDA graphs, production priority, and in-region outputs. Submission was accepted at 19:45:04 EST.
+
+Coordinator (marin hub): `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-cc75b435e5-in-7985a1b9-2026.11.24.4-coordinator-6bbb3801`. GPU child appends `/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-cc75b435e5-in-7985a1b9-2026.11.24.4-a8f0fc0dbf9a`, submitted at 19:46:03 EST, 32 replicas with NVLink-domain placement. Parent and child are running. The watchdog is registered and validated.
+
+Next: check a live completed prompt against v2, audit the saved full sessions, extend sparse domains, and seal the baseline before S1. No training has started.
 
 ## Final decision
 

@@ -1,0 +1,193 @@
+{
+  "full_validation_rows": 1792,
+  "grader_kind_counts": {
+    "full_validation": {
+      "harness": 0,
+      "image": 0,
+      "in_process": 896,
+      "package": 896,
+      "remote_judge": 0
+    },
+    "math16k": {
+      "harness": 0,
+      "image": 0,
+      "in_process": 512,
+      "package": 0,
+      "remote_judge": 0
+    },
+    "math_train": {
+      "harness": 0,
+      "image": 0,
+      "in_process": 16879,
+      "package": 0,
+      "remote_judge": 0
+    },
+    "panel32k": {
+      "harness": 0,
+      "image": 0,
+      "in_process": 320,
+      "package": 448,
+      "remote_judge": 0
+    },
+    "reserve32k": {
+      "harness": 0,
+      "image": 0,
+      "in_process": 320,
+      "package": 448,
+      "remote_judge": 0
+    },
+    "train": {
+      "harness": 0,
+      "image": 0,
+      "in_process": 78389,
+      "package": 104722,
+      "remote_judge": 0
+    },
+    "validation": {
+      "harness": 0,
+      "image": 0,
+      "in_process": 88,
+      "package": 56,
+      "remote_judge": 0
+    }
+  },
+  "math16k_rows": 512,
+  "math_train_rows": 16879,
+  "panel32k_rows": 768,
+  "recipe": {
+    "admitted_selection": "s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k/2026.11.19.1/summary.json",
+    "corpus": "s3://marin-us-east-02a/marin/rl-data/campaigns/snowball-100k-full-2026.10.24.3/corpus.json",
+    "drops": {
+      "calendar/eligible": 1435,
+      "calendar/over2048": 5148,
+      "closure/duplicate": 2814,
+      "closure/eligible": 54498,
+      "code32k/duplicate": 2314,
+      "code32k/eligible": 5426,
+      "code32k/over2048": 16,
+      "if32k/eligible": 7396,
+      "if32k/over2048": 1612,
+      "math/eligible": 17391,
+      "mcq32k/eligible": 2097,
+      "rgym32k/duplicate": 6566,
+      "rgym32k/eligible": 96660,
+      "rgym32k/over2048": 644
+    },
+    "exclusions": [
+      {
+        "uri": "s3://marin-us-east-02a/marin/rl-data/task-selection/eval-lite/2026.11.17.1/full_validation.parquet"
+      },
+      {
+        "uri": "hf://datasets/open-athena/micro210-prepared-tasks@d8fa0e259ae63b1978388b20a17f72036642dd05/rollouts.parquet"
+      }
+    ],
+    "heldout": [],
+    "prompt_rendering": {
+      "assistant_prefix": "rolloutengine.harness.assistant_prefix.assistant_prefix_prompt",
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      },
+      "normal": "rolloutengine.harness.shell.task_prompt",
+      "shell_tool": {
+        "command_parameter": "command",
+        "name": "shell"
+      }
+    },
+    "selection_recipe": {
+      "exclusions": [
+        {
+          "format": "task_spec",
+          "rows": 1500,
+          "uri": "s3://marin-us-east-02a/marin/rl-data/task-selection/eval-lite/2026.11.17.1/full_validation.parquet",
+          "version": "2026.11.17.1"
+        }
+      ],
+      "name": "mochi-doom-ftpo",
+      "sources": {
+        "MarinSkyRL:dapo_math": "math",
+        "MarinSkyRL:nemotron_ultra_rlvr1/ultra_sft_step3200_calendar_v2": "calendar",
+        "MarinSkyRL:nemotron_ultra_rlvr1/ultra_sft_step3200_comp_coding": "code32k",
+        "MarinSkyRL:nemotron_ultra_rlvr1/ultra_sft_step3200_stem_mcqa": "mcq32k",
+        "MarinSkyRL:reasoning_gym": "rgym32k",
+        "SnowballV01:structure-closure": "closure",
+        "Task Trove:laion__nemotron-gym-instruction-following-calendar-v3": "calendar",
+        "Task Trove:laion__nemotron-gym-instruction-following-structured-v3": "if32k"
+      },
+      "version": "2026.11.24.2"
+    },
+    "sources": [
+      {
+        "family": "calendar",
+        "root": "s3://marin-us-east-02a/marin/rl-data/inputs/snowball-admitted-030/2026.11.04/source-7",
+        "source_id": "MarinSkyRL:nemotron_ultra_rlvr1/ultra_sft_step3200_calendar_v2"
+      },
+      {
+        "family": "competitive_coding",
+        "root": "s3://marin-us-east-02a/marin/rl-data/inputs/snowball-admitted-030/2026.11.04/source-8",
+        "source_id": "MarinSkyRL:nemotron_ultra_rlvr1/ultra_sft_step3200_comp_coding"
+      },
+      {
+        "family": "stem",
+        "root": "s3://marin-us-east-02a/marin/rl-data/inputs/snowball-admitted-030/2026.11.04/source-10",
+        "source_id": "MarinSkyRL:nemotron_ultra_rlvr1/ultra_sft_step3200_stem_mcqa"
+      },
+      {
+        "family": "reasoning_gym",
+        "root": "s3://marin-us-east-02a/marin/rl-data/inputs/snowball-admitted-030/2026.11.04/source-6",
+        "source_id": "MarinSkyRL:reasoning_gym"
+      },
+      {
+        "family": "structural",
+        "root": "s3://marin-us-east-02a/marin/rl-data/inputs/snowball-admitted-030/2026.11.04/source-12",
+        "source_id": "SnowballV01:structure-closure"
+      },
+      {
+        "family": "calendar",
+        "root": "s3://marin-us-east-02a/marin/rl-data/inputs/snowball-admitted-030/2026.11.04/source-4",
+        "source_id": "Task Trove:laion__nemotron-gym-instruction-following-calendar-v3"
+      },
+      {
+        "family": "structural",
+        "root": "s3://marin-us-east-02a/marin/rl-data/inputs/snowball-admitted-030/2026.11.04/source-5",
+        "source_id": "Task Trove:laion__nemotron-gym-instruction-following-structured-v3"
+      }
+    ],
+    "supersedes": {
+      "manifest": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/cohorts/2026.11.24.1/manifest.json",
+      "reason": "source-only prompt hashes omitted native answer-format instructions"
+    },
+    "tokenizer": "marin-community/marin-tokenizer-tools",
+    "tokenizer_revision": "3f6879acdaf3dae7874b2d48c7d11b9d8c6faf09"
+  },
+  "reserve32k_rows": 768,
+  "selection_strata": {
+    "active_files": [
+      "train.parquet",
+      "full_validation.parquet"
+    ],
+    "difficulty_bands": null,
+    "family_quotas": {},
+    "name": "users/benfeuer/mochi-doom-ftpo",
+    "parent": null,
+    "reference_revisions": [],
+    "sampling": "fixed prompt-token hashes; full reserves excluded before training",
+    "schema_version": 1,
+    "task_files": [
+      "train.parquet",
+      "full_validation.parquet"
+    ],
+    "version": "2026.11.24.2"
+  },
+  "train_rows": 183111,
+  "training_family_counts": {
+    "calendar": 1307,
+    "closure": 54370,
+    "code32k": 5170,
+    "if32k": 7140,
+    "math": 16879,
+    "mcq32k": 1841,
+    "rgym32k": 96404
+  },
+  "training_rows": 183111,
+  "validation_rows": 144
+}
