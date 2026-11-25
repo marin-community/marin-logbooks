@@ -193,7 +193,7 @@ def main():
     service = replace(
         service,
         broker=None,
-        iris=replace(service.iris, cache_ttl_days=0, max_retries_failure=0, max_retries_preemption=0),
+        iris=replace(service.iris, cache_ttl_days=0, max_retries_failure=0, max_retries_preemption=1),
     )
     with remote_inference(service) as session:
         asyncio.run(evaluate(session, model, dataset, root, ids))
