@@ -77,6 +77,14 @@ S0 v8 was accepted at 23:00:26 UTC; first admission inspection is pending. The o
 
 [Source c1fa4d2f4ded70a6f7a6e1d8db8ccc38f322df8a](https://github.com/marin-community/marin/commit/c1fa4d2f4ded70a6f7a6e1d8db8ccc38f322df8a) runs the panel-binding adapter in Marin's environment and invokes the detector through the existing frozen SkyRL CPU command. The standalone SkyRL environment does not install Marin, so using it for the binding module would fail before auditing. Both import/CLI-help checks pass. This changes CPU postprocessing only; the v8 GPU source remains a56109c38e. Seven author-schema tests also pass, supplementing the 52 focused checks above. S0 v8 placed all 32 hosts at 23:02:30 UTC; actual worker distribution remains pending model startup.
 
+### 2026-11-25 23:24 UTC — Apply the registered budget drop before baseline results
+
+S0 remained unsealed after its planned T+6 window. Apply the design's drop order: omit the optional report-only panels, then omit SWE100 from S1 and S3 to protect time for both required guard arms and paired RL. This decision precedes inspection of baseline loop incidence, validity or correctness results. S0 still evaluates the full 823 trials. Follow-ups evaluate TB2 267, TBLite 200 and SWESmith held-out 256: 723 trials per arm. Task IDs, repetitions, seeds, protocol and detector on those cohorts are unchanged.
+
+[Source 19e1f10b0593de7d085be4199cd2cd62f244f9b5](https://github.com/marin-community/marin/commit/19e1f10b0593de7d085be4199cd2cd62f244f9b5) records the follow-up subset in both guard presets and the S3 factory; the audit adapter records excluded cohorts explicitly. Both real native S1 plans and required lint/typecheck pass, with 64 GPUs per arm. The live S0 v8 bundle is unchanged. Neither guard arm has been submitted.
+
+Keep target status inherited from S0 for every retained cohort. SWE100 will have a baseline result and an explicit budget-drop marker in follow-up tables; follow-up effect claims cover the 723 measured trials, not SWE100. N remains unfixed pending valid S0 timings. The original clock, T+20 start cutoff and T+32 update cutoff remain fixed. No threshold was relaxed and no detector was widened.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
