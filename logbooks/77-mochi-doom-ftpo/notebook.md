@@ -268,6 +268,24 @@ The step-zero pilot was fully assessed: 13 loops and 80 passes /128; its math su
 
 Coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-smoke-71205dc7ec-in-728208ba-2026.11.25.2-coordinator-9a097f98`, child `a780bde9cd33`; 112 GB200 production08a, source `20ee97b685`. Worker evidence: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/smoke-v2-update1-worker-status.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fsmoke-v2-update1-worker-status.json)).
 
+### 2026-11-25 06:38 EST — Two applied updates and a smoke regression
+
+S1 training succeeded at 06:30 EST November 25: all 28 replicas completed, zero failures/preemptions and no OOM. Both actual optimizer updates applied with zero skips, five and three active FTPO examples /64, finite raw gradient norms 823.837 and 1058.944, and router-replay hit fraction 1.0 with native top-32 admission. Pre-update `chosen_win` was 0 on both batches.
+
+The 32K pilot worsened:
+
+| Update | Pilot loops / UB | Passes /128 | Math loops /64 | Math passes /64 |
+| --- | ---: | ---: | ---: | ---: |
+| 0 | 13 | 80 | 3 | 53 |
+| 1 | 13 | 74 | 4 | 54 |
+| 2 | 18 | 72 | 3 | 53 |
+
+All pilots have zero unassessed responses and 128 scored prompts. The final correctness loss is 6.25 percentage points. This is a real smoke regression, not a full-panel improvement; there will be no rerun of this result. S1 has read-only pilot gates and its checkpoint is discarded by design. S2 starts fresh from SFT at 16K, with correctness and plateau stopping enabled.
+
+Checkpoint saves took 949.94s and 946.35s. Update 2 took 2,279.08s rollout, 26.44s forward/reference, 88.03s policy, and 6.01s weight sync. The 112-GPU training allocation has finished; the separate 12×4=48-GPU export was accepted at 06:32:50 EST. Native manifest verification and consumer preflight remain pending before S2 submission. Source `20ee97b685`, runtime/selection `2026.11.25.2`; coordinator suffix `9a097f98`, training attempt `a780bde9cd33`, export child suffix `a780bde9cd33-export-2`.
+
+Metric receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/smoke-v2-final-metric-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fsmoke-v2-final-metric-receipt.json)).
+
 ## Final decision
 
-The baseline and target set are sealed. S1 is running; no trained candidate has completed the paired full-panel gate.
+The baseline and target set are sealed. S1 training completed with a pilot regression; its export verification is pending. S2 starts fresh from SFT. No trained candidate has completed the paired full-panel gate.
