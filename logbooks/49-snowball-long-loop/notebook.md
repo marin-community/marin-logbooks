@@ -2473,3 +2473,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step-0719 receipts + finite-loss proof + published S3 evidence [R].
 - Interpretation and limitations: the run has now qualified its first real training update — full step-1 wall 4,403.6 s (baseline eval 3,258.6 s + rollout 3,315.0 s + optimizer 659.2 s components overlap in the total). Later actual export/eval IDs register as stages enter; no standalone SFT-2100 eval launched; other runs/checkpoints untouched.
 - Decision and next action: normal terminal/stage watchdog; the same automatic best+distinct-final frozen Micro210 graph and permanent retention remain.
+
+### 2026-11-25 10:13 UTC - Hourly catch-up (Iris primary evidence): RL129 running with training update 1 qualified; Exp6 `.158` RL leg still running
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence per the practice correction.
+- Published source revision: **V5 exp3 RL `.129`** `/benfeuer/long-loop-mochi-v5-exp3-rl-micro210-final-preserve-2026.11.25.129-coordinator-86dea96c` RUNNING (root 04:38:01, GPU child 04:40:07); training update 1 qualified at 07:07 UTC (final loss 0.00955, avg final rewards 0.6403; full step 4,403.6 s; baseline pass@1 0.6878). **V5 bankadam-128 SFT succeeded** (10:29/10:30 Nov 24). **Exp6 `.158`** RL checkpoint task + retrieval still running (since 02:27/02:34 UTC).
+- Command or material configuration: `iris --cluster=marin job list` for /benfeuer/long-loop-mochi-v5-exp3-rl, /benfeuer/mochi-exp6, and /benfeuer/mochi-sft-exp3-v5-bankadam (10:13 UTC).
+- External inputs and artifact references: Iris job lists [R]; #49 addenda (c64b0c4bfe, 0c3a7670f5) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: all three states confirmed live by Iris; the RL129 milestone matches the recorded addendum.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only; per-update RL progress comes from the worker checkpoints.
+- Decision and next action: hourly checks continue.
