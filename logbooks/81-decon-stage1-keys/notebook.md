@@ -434,3 +434,19 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   ("is the above reasoning correct", "what is the first city mentioned?"): VARIANT under the rubric (the item is
   the passage with its question). Whether a reused passage alone counts is the open policy question the
   encoder README notes for CoLA and SST-2.
+
+### 2026-11-25 11:15 UTC - A shorter key window for CJK items (F10, F11, F15)
+
+- Question (review point 4): would a shorter window for CJK text key the short items and the numbered and JSON
+  layouts that width 20 misses, at what load?
+- CJK items (F11): 80,319 items in 190 evals whose question stream is at least half CJK (mostly KMMLU, also
+  xstorycloze-zh, AGIEval JEC-QA, ZhoBLiMP); 99.4% keyed at width 20.
+- Build (F10): the production key build (`_prepare_windows`, `_make_count` over the 320 reference shards,
+  `_choose_keys`) on the 190 evals' item files at widths 10 and 8; planted check (`planted.py`, 50 items per
+  eval) at each width. Jobs `decon-cjk{10,8}-{prepare,count2-p*,choose,planted}`.
+- Result (width 20 / 10 / 8): all 14 layouts 0.834 / 0.963 / 0.991; plain 1.000 at every width; numbered
+  0.400 / 0.844 / 0.962; JSON 0.557 / 0.919 / 0.980; question only 0.400 / 0.846 / 0.963; ZhoBLiMP layouts
+  0.734 / 0.942 / 0.986; items without a key 84 / 1 / 0. Load proxy, reference records holding a chosen key,
+  summed over the CJK keys: 0 / 8 / 1,558 (width 8: about 1% more catalog pairs).
+- Decision: a width-10 window for streams that are mostly CJK closes most of the gap with no measurable load;
+  width 8 closes the rest for about 1% more pairs. Neither changes non-CJK items.

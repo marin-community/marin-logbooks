@@ -41,3 +41,6 @@ print(
     .round(3)
     .to_string()
 )
+buckets_b = pd.cut(median_b, [-0.5, 0.5, 10, 100, 1e12], labels=["0", "1-10", "11-100", ">100"])
+print("median window count bucket, with copies (rows) against without copies (columns):")
+print(pd.crosstab(buckets[has], buckets_b[has]).to_string())
