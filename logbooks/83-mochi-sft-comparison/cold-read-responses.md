@@ -26,3 +26,20 @@ secrets or private dataset contents flagged.
 
 No notes were declined outright; note 7 is partially declined with reasons
 above (missing facts are stated as unknown instead of inferred).
+
+## Round 2 — PR #84, 2026-11-25, verdict NOTES
+
+Reader report: `84-r2-20261125T185033Z` (private working directory; notes
+summarized below). Scope: merged PR head `da357b1db`, notebook `8b77d27d`. No
+public-safety exposures identified.
+
+| # | Note (summary) | Disposition |
+|---|---|---|
+| 1 | PR review surfaces still lead to the superseded notebook: PR #84 body/diff pin `90b062782`; REST head `da357b1db` | Accepted — root cause: a maintainer merged PR #84 at 18:50:26Z, before the corrected index pin (`5ceaf7ad8`) landed on its branch, so `main` pinned the superseded notebook. Fixed by a follow-up index-record PR against `main` pinning the corrected notebook; PR #84 carries a pointer comment. The merged PR body itself is immutable. |
+| 2 | pass@1 numerator underdefined for partial-credit benchmarks (MRCR mean-similarity etc.); state the predicate or mark it unavailable | Accepted — investigated: the aggregation is not in the public marin tree at the pinned runtime commit (`5ca48a7ee9`) or on `main`, and the archived records do not state it. Baseline now explicitly marks the pass predicate unavailable and points to per-benchmark verifier rewards in `record.json`. |
+| 3 | Reproduction claims a fresh `--prefix` creates a fresh recipe version; `MOCHI_SFT` fixes `version="2026.11.10"` and `resolve_version` returns a supplied version unchanged | Accepted — Final decision corrected: the prefix isolates outputs, the version label stays `2026.11.10`. |
+| 4 | Chronology unqualified (2026-11-24/25 vs older policy posted 2026-11-21); correction-entry timestamp 19:05 vs commit 18:50:09Z | Accepted — Baseline dates scoped per policy; entry headings now record the UTC commit time that published each entry (convention stated under Entries). |
+| 5 | "Match to integer rounding" understates partial-block sampling; receipt is a deterministic sampler reconstruction | Accepted — round-2 entry item 1 refines the phrasing with the reader's examples and names the `basis` field. |
+
+No notes declined in round 2.
+

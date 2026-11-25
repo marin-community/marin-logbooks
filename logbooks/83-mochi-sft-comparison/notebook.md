@@ -48,7 +48,10 @@ status: active
 
 ## Baseline
 
-- Date: checkpoint used by both arms; evals run 2026-11-24/25.
+- Date: checkpoint used by both arms. The 2026.11.23-policy evaluations ran
+  2026-11-24/25 (record versions `2026.11.24.x`, records written 2026-11-25);
+  the 2026.11.20-together evaluations ran earlier and were posted
+  2026-11-21T04:27:28Z — their exact execution times are not in this record.
 - Published source revision: for the 2026.11.23-policy runs, eval runtime git
   SHA `5ca48a7e`, frozen Micro210 policy digest `9d850b9f`, sealed table
   `2280f01a` — the `provenance` and `eval.source_digest` fields copied verbatim
@@ -71,7 +74,13 @@ status: active
   `NonZeroAgentExitCodeError` grades count as real grades, and timeouts get no
   automatic zero. "pass@1" is correct attempts over scored attempts on the
   sealed table; the 2026.11.20-together headline is the pooled verifier-score
-  mean over valid attempts. The 2026.11.20-together judge was Together
+  mean over valid attempts. How partial-credit verifier rewards (for example,
+  MRCR's mean sequence similarity) map into the binary pass@1 counts
+  (110/249/245) is not stated in the archived records, and the aggregation is
+  not part of the public marin tree at the pinned runtime commit (`5ca48a7ee9`),
+  so the pass predicate is unavailable here; per-benchmark verifier rewards
+  are in each `record.json` `metrics` field, and the two headline numbers are
+  quoted as recorded. The 2026.11.20-together judge was Together
   GLM-5.3-Flash (per its comment); the 2026.11.23 records leave the judge
   field null and its comment names none. Length behavior differs by run (e.g.
   92/434 base trials and 128/434 V5 trials stopped on length on the 2026.11.23
@@ -99,7 +108,10 @@ status: active
 
 ## Entries
 
-### 2026-11-25 18:45 UTC - Verified every eval number from record.json
+Entry headings record the UTC commit time that published the entry. Corrections
+supersede earlier statements without rewriting them.
+
+### 2026-11-25 18:40 UTC - Verified every eval number from record.json
 
 - Question or hypothesis and reason for trying it: the comparison table came
   from a human-maintained CSV; before publishing, re-read each eval's
@@ -130,7 +142,7 @@ status: active
 - Decision and next action: numbers verified; document the two arms' configs
   and data mixes.
 
-### 2026-11-25 18:46 UTC - Full-SFT arm: config and data mix
+### 2026-11-25 18:40 UTC - Full-SFT arm: config and data mix
 
 - Question or hypothesis and reason for trying it: document exactly what
   `hero-sft-fullab-step393k-v2` was configured to train on, so its 0.5971 has
@@ -197,7 +209,7 @@ status: active
   configured 0.2035 because blocks round to whole steps.
 - Decision and next action: full-SFT arm documented; document the V5 arm.
 
-### 2026-11-25 18:47 UTC - V5 arm: config and data mix
+### 2026-11-25 18:40 UTC - V5 arm: config and data mix
 
 - Question or hypothesis and reason for trying it: document the Exp3 V5 arm —
   the long-loop prototype's Mochi SFT round — whose config exists only on a
@@ -265,7 +277,7 @@ status: active
   arm consumed each SFT source at most once.
 - Decision and next action: V5 arm documented; assemble the results table.
 
-### 2026-11-25 18:48 UTC - Results and reading
+### 2026-11-25 18:40 UTC - Results and reading
 
 - Question or hypothesis and reason for trying it: compare the arms on the
   shared Micro210 policies and read what the difference does and does not
@@ -305,7 +317,7 @@ status: active
 - Decision and next action: publish the branch and index record; no further
   experiments are in scope for this task.
 
-### 2026-11-25 19:05 UTC - Cold-read round 1: corrections to the V5 arm entries
+### 2026-11-25 18:50 UTC - Cold-read round 1: corrections to the V5 arm entries
 
 - Question or hypothesis and reason for trying it: a fresh cold reader of PR
   #84 found material errors in the two V5 entries above and smaller slips
@@ -423,6 +435,56 @@ status: active
   the planned epoch.
 - Decision and next action: re-run the cold-read loop on the updated head.
 
+### 2026-11-25 18:57 UTC - Cold-read round 2: refinements
+
+- Question or hypothesis and reason for trying it: the second cold read
+  confirmed the round-1 corrections and raised four refinements plus one
+  publishing defect (the merged index PR still pinned the superseded
+  notebook). This entry applies the refinements; the publishing defect is
+  fixed by a follow-up index-record PR against logbooks `main`.
+- Published source revision: unchanged — marin `a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9`
+  (long-loop code), `cc3706eb2` (hero recipe files), runtime `5ca48a7ee9`.
+- Command or material configuration: code reads of
+  `lib/levanter/src/levanter/training_budget.py`,
+  `experiments/post_training/long_loop/sft_epoch.py`,
+  `experiments/grug/moe_hero_ep/sft_recipe.py`,
+  `lib/marin/src/marin/execution/build_context.py`, and the Micro210 seal
+  commit `5ca48a7ee9` ("[eval] Seal Micro210"); receipt re-aggregation.
+- Refinements:
+  1. **Partial-block sampling, not just integer rounding.** This refines
+     correction item 1's phrase "match ... to integer rounding": the
+     2,100-update run consumed one complete 64,000-draw block plus 3,200
+     draws of the next shuffled block, so per-family realized shares are
+     approximately inventory-proportional, with integer quota allocation plus
+     seed-specific partial-block effects. Examples: finance proportional
+     4,707.65 draws vs 4,704 actual; instruction_chat 3,971.98 vs 3,991. The
+     exposure receipt is a deterministic sampler reconstruction (its `basis`
+     field: `seed_specific_native_sampler_reconstruction`), not independently
+     measured draw telemetry.
+  2. **pass@1 predicate unavailable.** How partial-credit verifier rewards
+     map into the binary pass@1 counts is not stated in the archived records
+     and the aggregation is not part of the public marin tree at the pinned
+     runtime commit; the Baseline section now says so explicitly and points
+     to the per-benchmark verifier rewards in each `record.json`.
+  3. **Reproduction version claim corrected.** A fresh `--prefix` isolates a
+     rerun's outputs; the preset retains the historical version label
+     `2026.11.10` because `resolve_version` returns a supplied version
+     unchanged. Final decision updated.
+  4. **Chronology scoped and entry timestamps fixed.** Baseline now scopes
+     the 2026-11-24/25 dates to the 2026.11.23-policy evaluations and dates
+     the 2026.11.20-together evaluations by their posting
+     (2026-11-21T04:27:28Z). Entry headings now record the UTC commit time
+     that published each entry (18:40 for the initial four, 18:50 for the
+     round-1 corrections), matching the commit history.
+- Result: notebook updated; follow-up index-record PR opened against
+  logbooks `main` (the round-1 index PR was merged by a maintainer before the
+  corrections landed, so `main` briefly pinned the superseded notebook).
+- Evidence: same receipts and code reads as round 1; the round-2 cold-read
+  report is summarized in [cold-read-responses.md](cold-read-responses.md).
+- Interpretation and limitations: none of the refinements changes the
+  headline comparison or the corrected V5 consumption picture.
+- Decision and next action: cold-read round 3 against the new index-record PR.
+
 ## Known limits
 
 - Token figures (≈319.1B and ≈17.6B) are packed-slot upper bounds: sequence
@@ -470,11 +532,13 @@ status: active
   - Full-SFT arm: check out Marin `dca3b9c0eb486986f49d8407dfc09efe1590f486`
     (the file-identical preset lives there and at `main`); run
     `uv run python experiments/post_training/mochi_sft.py --preset mixture-262k-176node --export --run`
-    with a fresh `--prefix` (the recipe resolves a new output version). This
-    launches 704 GB200s for 6,916 updates. The archived run's own recipe
-    recorded `source_revision 406dff47f217637ceca499b266989588cb0df5ab` and
-    version `2026.11.10`; those identify the historical execution, not the
-    archive commit.
+    with a fresh `--prefix` to isolate the rerun's outputs from the archived
+    run's artifact path. The preset keeps the historical version label
+    `2026.11.10` — `resolve_version` returns a supplied version unchanged — so
+    the prefix, not the version, separates a rerun. This launches 704 GB200s
+    for 6,916 updates. The archived run's own recipe recorded
+    `source_revision 406dff47f217637ceca499b266989588cb0df5ab`; that
+    identifies the historical execution, not the archive commit.
   - V5 arm: check out Marin `a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9`;
     preflight with
     `uv run python -m experiments.post_training.long_loop.round_runner --round experiments/post_training/long_loop/rounds/mochi-sft-exp3-v5-bankadam-128.yaml --version <new-version> --through sft --source-revision a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9 --validation-output /tmp/mochi-v5-repro`
