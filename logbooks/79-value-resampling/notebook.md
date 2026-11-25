@@ -36,3 +36,7 @@ The verifier runs in a separate fresh workspace with SWE-bench 4.1.0 and the Ver
 Run `python -m experiments.post_training.goal_value.resampling MANIFEST HEAD OUTPUT --actions 20 --tokens 6144 --replicates 1` with Python 3.12, PyTorch 2.9.1, Transformers 4.57.6, and Daytona SDK 0.200.2. The uncommitted manifest and checkpoint are inputs to the run. The manifest contains issue IDs, two four-action prefixes per issue, and the corresponding recorded exit codes. The checkpoint is the saved 65k scalar readout.
 
 The pilot manifest selects at most six issues by a fixed issue hash from the eligible archive groups. Eligibility requires two prefixes with four Bash actions, a recorded exit code for each action, and matching goal text. A replay mismatch excludes the issue and records its reason. The launcher is [run-pilot.sh](run-pilot.sh).
+
+### 2026-11-25 UTC — Restore the benchmark commit explicitly
+
+The first setup run reached the workspace revision check. The public SWE-bench image starts at a packaging commit titled `SWE-bench`. A fresh sandbox probe found the benchmark commit in that image and verified that it has the same tracked file tree. The detached checkout succeeded. The runner now verifies tree equivalence and checks out the benchmark commit before replay. It also records prompt tokens and time spent scoring prefixes. Budgets and case selection stay fixed for the retry.

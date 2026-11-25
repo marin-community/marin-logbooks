@@ -10,6 +10,7 @@ import os
 import random
 import shlex
 import tempfile
+import time
 from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -91,9 +92,14 @@ def sandbox(client: Daytona, image: str, base_commit: str):
     )
     workspace = client.create(params, timeout=240)
     try:
-        revision = workspace.process.exec("git rev-parse HEAD", cwd=WORKDIR, timeout=20)
-        if revision.exit_code or revision.result.strip() != base_commit:
-            raise ReplayMismatch("sandbox repository differs from the benchmark base commit")
+        base = shlex.quote(base_commit)
+        checkout = workspace.process.exec(
+            f"git diff --quiet {base} -- . && git checkout --quiet --detach {base} && git rev-parse HEAD",
+            cwd=WORKDIR,
+            timeout=30,
+        )
+        if checkout.exit_code or checkout.result.strip() != base_commit:
+            raise ReplayMismatch("sandbox source tree differs from the benchmark base or checkout failed")
         yield workspace
     finally:
         client.delete(workspace, timeout=60)
@@ -171,7 +177,7 @@ class Actor:
         self.model.requires_grad_(False)
 
     @torch.inference_mode()
-    def next_action(self, goal: str, history: list[dict], seed: int, tokens: int) -> tuple[str, int]:
+    def next_action(self, goal: str, history: list[dict], seed: int, tokens: int) -> tuple[str, int, int]:
         for start in range(len(history) + 1):
             observed = "\n".join(json.dumps(row, ensure_ascii=False) for row in history[start:])
             messages = [
@@ -197,7 +203,7 @@ class Actor:
             temperature=0.7,
             top_p=0.9,
         )[0, len(ids) :]
-        return self.tokenizer.decode(generated, skip_special_tokens=True), len(generated)
+        return self.tokenizer.decode(generated, skip_special_tokens=True), len(generated), len(ids)
 
 
 def parse_action(text: str) -> dict:
@@ -217,14 +223,16 @@ def continue_branch(workspace, actor, prefix, state, seed, actions, token_budget
     history = state.messages[prefix.episode.predict_before[0] :]
     tokens = 0
     commands = 0
+    prompt_tokens = 0
     attempted_actions = 0
     for action_index in range(actions):
         if tokens >= token_budget:
             break
-        text, produced = actor.next_action(
+        text, produced, consumed = actor.next_action(
             prefix.episode.goal, history, seed + action_index, min(MAX_ACTION_TOKENS, token_budget - tokens)
         )
         tokens += produced
+        prompt_tokens += consumed
         attempted_actions += 1
         action = parse_action(text)
         if action == {"submit": True}:
@@ -236,7 +244,12 @@ def continue_branch(workspace, actor, prefix, state, seed, actions, token_budget
         else:
             code, output = 2, "Expected a command or submit JSON object"
         history.append({"role": "tool", "returncode": code, "output": output})
-    return patch(workspace), {"generated_tokens": tokens, "commands": commands, "actor_calls": attempted_actions}
+    return patch(workspace), {
+        "generated_tokens": tokens,
+        "prompt_tokens": prompt_tokens,
+        "commands": commands,
+        "actor_calls": attempted_actions,
+    }
 
 
 def verify(workspace, spec, proposed_patch: str) -> int:
@@ -264,18 +277,18 @@ def verify(workspace, spec, proposed_patch: str) -> int:
     return int(report[spec.instance_id]["resolved"])
 
 
-def run_case(client, instance, prefixes, model_dir, args, actor):
+def run_case(client, instance, prefixes, scorer, args, actor):
     spec = make_test_spec(instance, namespace="swebench")
     image = spec.instance_image_key
     outputs, values = [], []
-    scorer = Value(args.head, model_dir)
+    scoring_seconds = 0.0
     for prefix in prefixes:
         with sandbox(client, image, instance["base_commit"]) as workspace:
             observed = replay(workspace, prefix)
         outputs.append(observed)
+        start = time.monotonic()
         values.append(scorer.score(prefix, observed))
-    del scorer
-    torch.cuda.empty_cache()
+        scoring_seconds += time.monotonic() - start
 
     issue_seed = stable_hash("resampling-seed", spec.instance_id) % (2**31)
     random_branch = random.Random(issue_seed).randrange(2)
@@ -308,6 +321,7 @@ def run_case(client, instance, prefixes, model_dir, args, actor):
     return {
         "issue": spec.instance_id,
         "values": values,
+        "scoring_seconds": scoring_seconds,
         "guided_branch": selected,
         "random_branch": random_branch,
         "continuations": results,
@@ -331,6 +345,7 @@ def main():
     model_dir = snapshot_download(MODEL_ID, revision=MODEL_REVISION)
     client = Daytona(DaytonaConfig(api_key=os.environ["DAYTONA_API_KEY"]))
     actor = Actor()
+    scorer = Value(args.head, model_dir)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("a") as handle:
         for case in cases:
@@ -343,7 +358,7 @@ def main():
             ):
                 raise ValueError("expected two equivalent goals for the selected instance")
             try:
-                result = run_case(client, instance, prefixes, model_dir, args, actor)
+                result = run_case(client, instance, prefixes, scorer, args, actor)
             except ReplayMismatch as error:
                 result = {"issue": instance["instance_id"], "replay_error": str(error)}
             payload = json.dumps(result)
