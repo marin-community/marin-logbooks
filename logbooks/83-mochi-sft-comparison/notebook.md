@@ -7,7 +7,7 @@ related_issues:
 research_branch: "codex/83-mochi-sft-comparison"
 marin_base_revision: "cc3706eb2cdb5e1fec695bc4bfb6582177af82ec"
 archive_template_revision: "fc1cb30da0967f6ab78ffd47444ed9144f50cba9"
-status: active
+status: complete
 ---
 
 # Mochi SFT comparison: base, full SFT, and V5 SFT on Micro210
@@ -538,6 +538,33 @@ supersede earlier statements without rewriting them.
 - Interpretation and limitations: none; the comparison is unchanged.
 - Decision and next action: synchronize entry-point pins and run cold-read
   round 6.
+
+### 2026-11-25 19:34 UTC - Cold-read rounds 6-7: label fix and SATISFIED
+
+- Question or hypothesis and reason for trying it: complete the cold-read
+  loop required by the task.
+- Published source revision: unchanged.
+- Command or material configuration: none (pin-label fix in the index PR
+  body; loop closure).
+- Result: round 6 raised one note — the index PR body's notebook-link label
+  read `b4b8dc5ea` while its URL and every other entry point targeted
+  `001cb667c`; the label was fixed with the URL unchanged. Round 7 returned
+  **SATISFIED** with no actionable notes, after independently verifying the
+  five headline scores and coverage counts against the public eval posts,
+  the four archived source copies against their named source commits, the
+  four published metadata hashes, the exposure arithmetic (968,596 SFT packs
+  + 248,620 replay draws = 319,085,871,104 packed-slot tokens over 6,916
+  updates; 53,774 + 13,426 = 17,616,076,800 over 2,100 updates; 18.1133×
+  ratio; 12.3457% of the 17,010-update planned epoch), the family-draw
+  totals, the no-repeat SFT accounting, the maximum-updates stop, and the
+  warmup/decay provenance. Its assessment: a competent ML researcher new to
+  Marin can understand and assess the comparison within its stated
+  limitations; the record does not claim a controlled ablation.
+- Evidence: [cold-read-responses.md](cold-read-responses.md) rounds 6-7.
+- Interpretation and limitations: the record is complete; the index-record
+  update PR remains open pending merge authorization.
+- Decision and next action: none; the task is done on the research-branch
+  side.
 
 ## Known limits
 

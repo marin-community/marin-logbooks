@@ -80,3 +80,23 @@ notes.
 
 
 
+## Round 6 — PR #85, 2026-11-25, verdict NOTES
+
+Reader report: `85-r6-20261125T192019` (private working directory). Scores,
+source copies, hashes, exposure arithmetic, and the warmup correction verified;
+no public-safety exposures; no settled limitations reopened.
+
+| # | Note (summary) | Disposition |
+|---|---|---|
+| 1 | PR #85 body's notebook-link label reads `b4b8dc5ea` while its URL targets `001cb667c` | Accepted — label updated to `001cb667c`, URL unchanged (a replace-ordering slip in the round-5 body edit). |
+
+## Round 7 — PR #85, 2026-11-25, verdict SATISFIED
+
+Reader report: `85-r7-20261125T192729` (private working directory). "No
+actionable notes." The reader independently verified all five headline scores
+and coverage counts against the public eval posts, the four archived source
+copies against their named commits, the four published metadata hashes, the
+exposure arithmetic (319,085,871,104 vs 17,616,076,800 packed-slot tokens,
+18.1133×; 12.3457% of the planned epoch), the family-draw totals, no-repeat
+SFT accounting, the maximum-updates stop, and the warmup/decay provenance.
+No dispositions required.
