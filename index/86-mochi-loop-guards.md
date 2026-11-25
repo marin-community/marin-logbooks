@@ -1,0 +1,7 @@
+# Which guards reduce Mochi action loops without losing correctness?
+
+- Task issue — [#86](https://github.com/marin-community/marin-logbooks/issues/86)
+- Status — Active; baseline collecting, no intervention result yet
+- Research branch — [codex/86-mochi-loop-guards](https://github.com/marin-community/marin-logbooks/tree/codex/86-mochi-loop-guards)
+- Notebook at commit — [Notebook](https://github.com/marin-community/marin-logbooks/blob/4ddf162d39ef63014a430868d1d2eb6a90827369/logbooks/86-mochi-loop-guards/notebook.md)
+- Marin contributions — None yet; [tracking issue](https://github.com/marin-community/marin/issues/12264)
