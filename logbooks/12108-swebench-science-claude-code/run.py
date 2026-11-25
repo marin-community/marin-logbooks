@@ -30,7 +30,7 @@ from openai import AsyncOpenAI
 from rigging.filesystem.s3_compat import configure_coreweave_s3
 from rigging.filesystem.storage_path import StoragePath
 from rigging.secrets import require_secret
-from rolloutengine.agents.claude_code import CONTEXT, VERSION, claude_harness
+from rolloutengine.agents.claude_code import CONTEXT, VERSION, claude_harness, message_digest
 from rolloutengine.agents.model_relay import VllmTokenizer
 from rolloutengine.chat import ChatModel
 from taskcompendium.evaluation.corpus import evaluation_cases
@@ -129,6 +129,7 @@ async def evaluate(session, model, dataset, root, ids):
                         "max_tokens": cap,
                         "reasoning_effort": body["reasoning_effort"],
                         "enable_thinking": True,
+                        "messages_sha256": message_digest(body["messages"]),
                     }
                 ),
                 auto_mkdir=True,
@@ -170,12 +171,15 @@ async def evaluate(session, model, dataset, root, ids):
     print("SWE-BENCH SCIENCE NATIVE GRADES", list(ids), list(grades.values()), flush=True)
 
 
-def main():
+def launch_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
     parser.add_argument("--deadline", required=True, type=int)
     parser.add_argument("--cluster", required=True, choices=("cw-us-east-02a", "cw-rno2a"))
-    args = parser.parse_args()
+    return parser
+
+
+def launch(args, ids: tuple[str, ...], phase: str):
     logging.basicConfig(level=logging.INFO)
     configure_coreweave_s3()
 
@@ -185,9 +189,7 @@ def main():
     signal.signal(signal.SIGALRM, expired)
     signal.alarm(max(1, args.deadline - int(time.time()) - 100))
     model = resolve_model_config(None, Path(__file__).with_name("model.yaml"))
-    shared = StoragePath(args.output)
-    ids = ("013",)
-    root = shared / "pilot"
+    root = StoragePath(args.output) / phase
     dataset = corpus(root, ids)
     hardware = AcceleratorChoice(Platform.GPU, gpu_type="H100", gpu_count=4, target_cluster=args.cluster)
     service = inference_config_for_model(model, hardware, env_vars={}, priority=0, instances=1)
@@ -201,4 +203,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    launch(launch_parser().parse_args(), ("013",), "pilot")

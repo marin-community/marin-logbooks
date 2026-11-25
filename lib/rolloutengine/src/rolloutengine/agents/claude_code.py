@@ -1,6 +1,7 @@
 """Experimental Claude Code harness for the SWE-bench Science text and tool protocol."""
 
 import asyncio
+import hashlib
 import json
 import shlex
 from collections.abc import Callable
@@ -18,6 +19,10 @@ from rolloutengine.models import ContextWindowExceeded, RolloutEnded
 MODEL = "Qwen3.8-27B"
 CONTEXT = 262144
 VERSION = "2.1.330"
+
+
+def message_digest(messages: list[dict]) -> str:
+    return hashlib.sha256(json.dumps(messages, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 def text(blocks: str | list[dict]) -> str:
@@ -191,6 +196,7 @@ async def run_agent(context: HarnessContext, complete: AgentCompletion, *, token
             "forwarded_effort": "xhigh",
             "client_model": body["model"],
             "context_window": CONTEXT,
+            "messages_sha256": message_digest(payload["messages"]),
         }
         record(context.run_id, call, metadata)
         try:
