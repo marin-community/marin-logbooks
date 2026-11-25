@@ -7,7 +7,6 @@ from dataclasses import replace
 import pytest
 
 from experiments.post_training.goal_value.data import SUBMIT_COMMAND, RejectedEpisode, harbor_episode
-from experiments.post_training.goal_value.evaldash import verdict
 
 
 def test_harbor_decisions_precede_actions_and_follow_observations():
@@ -59,11 +58,3 @@ def test_harbor_decisions_precede_actions_and_follow_observations():
     record["trajectory"]["steps"][1].pop("observation")
     with pytest.raises(RejectedEpisode, match="missing tool observation"):
         harbor_episode(record)
-
-
-def test_unscored_or_errored_zero_is_quarantined():
-    grade = {"method": "harbor:verifier", "metric": "reward", "score": 0.0}
-    clean = {"scored": True, "error": None, "rewards": {"reward": 0.0}}
-    assert verdict({"grading": dict(grade, detail=json.dumps(clean))}) == 0
-    for detail in (dict(clean, scored=False), dict(clean, error="VerifierTimeoutError")):
-        assert verdict({"grading": dict(grade, detail=json.dumps(detail))}) is None

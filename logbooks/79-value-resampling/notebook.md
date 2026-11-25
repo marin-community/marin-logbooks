@@ -21,6 +21,10 @@ The scalar head reads a frozen Qwen3-4B-Instruct-2507 state before an agent acti
 
 The offline diagnostic compares goal-only difficulty, terminal states, and same-issue prefixes at fixed action counts. Useful checks include a tiny balanced memorization fit and within-issue pass/fail concordance. The controlled experiment uses a cut after four completed actions and changes how branches are selected.
 
+The research tree includes the [trajectory converter](../../experiments/post_training/goal_value/data.py), [frozen-backbone trainer](../../experiments/post_training/goal_value/train.py), and [typed-decision evaluator](../../experiments/post_training/goal_value/typed_decisions.py). The converter keeps one copy of each clean trajectory and indexes decision boundaries. Its goal combines the task with a public description of what counts as success. The trainer learns a linear head from binary outcomes and evaluates calibration and discrimination on task-disjoint splits.
+
+The offline comparisons include released Clef and released and adapted Kev, which return yes/no probabilities, and frozen generative verifiers at 4B and 14B, which return PASS/FAIL probabilities after a short analysis. The paired terminal analysis uses the same held-out attempts and measures predictions before the last validation action, after its visible output, and around submission. The environment-selection analysis scores the goal before any agent action. The particle-selection analysis compares two attempts from the same task and checkpoint at the same completed-action count.
+
 ## Entries
 
 ### 2026-11-25 UTC — Define the continuation trial
