@@ -2377,3 +2377,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step-0529 receipt + published S3 evidence [R].
 - Interpretation and limitations: baseline-only state; the first finite optimizer/full update remains pending; other runs and native SFT 2100 untouched.
 - Decision and next action: watch for the first finite optimizer/full update after the 05:39 UTC check.
+
+### 2026-11-25 05:55 UTC - Addendum: V5 exp3 RL `.129` baseline-0 at 193/200 (2400 s); all 200 remain eligible, next native checkpoint 05:49 UTC
+
+- Question or hypothesis and reason for trying it: continued read-only RL checkpoint on `.129` (same root/child/source/recipe).
+- Published source revision: unchanged — source `fe606ec554`, `rounds/mochi-v5-exp3-rl.yaml`.
+- Command or material configuration: baseline-0 reached **193/200 completed at 05:39:19.253 UTC (2400 s; seven pending)**; previous readings 190 at 05:35:49 and 192 at 05:36:54 — completion progress, not scored coverage or eligibility; all 200 remain, no truncation.
+- External inputs and artifact references: worker checkpoint cc over Rhizome (~05:5x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0539-receipt.json`; published under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-v5-exp3-rl/launches/2026.11.25.129/` [R].
+- Environment and hardware when relevant: request starts/verifier/retry/cleanup can differ from the nominal 1800/2280 s boundaries — no fatal/stall inference or cancellation.
+- Result, including failure or restart: no baseline completion, optimizer/full-step completion, or native timing completion in the bounded 05:39 read; no new selected error rows; run/config unchanged. The 05:39 timer verified 1 run/exit 0/empty stderr/saved/removed; one next native checkpoint 05:49 UTC.
+- Evidence: rl-first-step-0539 receipt + published S3 evidence [R].
+- Interpretation and limitations: baseline-only state; the first finite optimizer/full update remains pending; other runs and the full permanent native SFT 2100 untouched.
+- Decision and next action: 05:49 UTC native checkpoint; then the optimizer/full-update watch.
