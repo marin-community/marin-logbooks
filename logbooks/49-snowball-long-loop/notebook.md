@@ -2449,3 +2449,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step-0649 receipt + published S3 evidence [R].
 - Interpretation and limitations: the 64-group/512-trajectory batch at zero staleness matches the admission requirement; the first finite optimizer/full update remains the qualification gate.
 - Decision and next action: one next native wake 07:04 UTC; watch for the optimizer/full step.
+
+### 2026-11-25 07:15 UTC - Addendum: V5 exp3 RL `.129` 07:04 check — optimizer/full step still pending after the completed rollout batch; CancelledError rows accumulating in the terminal stream
+
+- Question or hypothesis and reason for trying it: continued read-only RL checkpoint on `.129` during the optimizer wait.
+- Published source revision: unchanged — source `fe606ec554…`, recipe `rounds/mochi-v5-exp3-rl.yaml` version 2026.11.25.129.
+- Command or material configuration: through 07:04:34.050 UTC — no optimizer completion, full training step, new publication, or first training metric; the only completion row re-retains the known step-1 rollout batch (06:48:56.665; 64 groups/512 trajectories/3,314.987 s/staleness 0) in the 60 s overlap; refined native completion and first-train queries each 0 rows (finite-loss evidence UNAVAILABLE, not zero). The last completion does not establish the current learner phase.
+- External inputs and artifact references: worker cc over Rhizome (~07:1x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0704-receipt.json` (numeric window + SQL/JSONL); permanent S3 prefix [R].
+- Environment and hardware when relevant: 33 overlap-inclusive headings (31 timestamped after the previous END); terminal selection 30 CancelledError rows + 3 Hermes JSONDecodeErrors (invalid control character; two missing comma delimiters) — individual exception observations, not 33 distinct failures or a failure fraction; no selected RuntimeError/OOM/CUDA/NCCL or root-fatal proof.
+- Result, including failure or restart: no run/config/code/checkpoint changes or retry proposed; baseline 189/200 scored/min-180 and all run policies unchanged.
+- Evidence: rl-first-step-0704 receipt + published S3 evidence [R].
+- Interpretation and limitations: the learner remains between batch admission/completion and the first finite optimizer update; no stall inference drawn.
+- Decision and next action: exactly one native wake 07:19 UTC; continue the first-finite-optimizer/full-update watch.
