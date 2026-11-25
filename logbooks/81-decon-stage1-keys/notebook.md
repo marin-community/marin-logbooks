@@ -375,3 +375,28 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   shortened); one is a Vietnamese translation that key 1 found through the identical drawing code.
 - Interpretation: the current list has no measurable `[asy]` false matches; the risk is the key set's windows
   inside drawing code. On the fresh shards, the cap-100 add-on removed no boilerplate pair (0 of 2,681).
+
+### 2026-11-25 10:10 UTC - Set 29: judged removal check of the key set's added removals (F13, F13b)
+
+- Question: are the records only the proposed key set removes (fresh shards, mean score >= 0.6, not removed by
+  v11) contamination, at the floor of the production removals (precision >= 0.75, 5% bound >= 0.65)?
+- Sample (F13, as set 27): per record its best add-on pair; up to 35 records per family drawn uniformly, plus
+  200 uniform; 570 pairs; strata weighted by catalog-weighted removals. Judges as set 27 (job
+  `decon-judge-set29`): 343 copy, 184 not, 43 split.
+- Result:
+  - Family-weighted precision 0.784 [5% bound 0.742]: passes the floor rule fixed before the draw.
+  - Uniform sample 0.633 (147): dominated by one `cp/data_provenance` shard (precision 0.33 on 216 judged).
+    Weighting each judged record by its source's catalog weight and its stratum's sampling rate: 0.849 (high
+    variance: HellaSwag records of one large source carry most of the weight).
+  - By eval: HellaSwag 0.96 (24), MMLU high-school math 0.94, MMLU-Pro 0.95, ASDiv 0.97 (35), ARC 0.67-0.75,
+    AQuA-RAT 1.00, HumanEval 0.89, Hendrycks math 0.82, PIQA 0.91; QNLI 0.00 (33), WNLI 0.00 (35), SQuAD
+    completion 0.50 (34), Humanity's Last Exam 0 (1). Labels: EDITED/EDITED 190, VARIANT/VARIANT 159,
+    COPY/COPY 123.
+  - Without QNLI, WNLI, SQuAD, HLE and Uncheatable: record-weighted precision 0.974, 87% of the weight kept.
+- Interpretation: the added removals are mostly real copies (ASDiv, MMLU math, MMLU-Pro, HellaSwag, AQuA).
+  The failures are sentence-pair and passage items (QNLI, WNLI, SQuAD completion), the families already
+  weak in the v11 removals (QNLI 0.31, SQuAD 0.41 in sets 26/27): stage 2 removes their VARIANT and GENERIC
+  matches. So the "confirmed misses" of the dense surveys hold false ones in those families too: stage 2 at
+  0.6 is not ground truth there.
+- Decision: recommend the key set without those families (or with them only after a stage-2 fix), and report
+  both estimates.
