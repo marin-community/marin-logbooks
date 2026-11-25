@@ -105,7 +105,7 @@ def corpus(root: StoragePath, ids: tuple[str, ...]) -> str:
     return str(output)
 
 
-async def evaluate(session, model, dataset, root, ids):
+async def evaluate(session, model, dataset, root, ids, tokenizer=None):
     settings = CuratedSettings(
         concurrency=len(ids),
         max_tokens=CONTEXT - 1,
@@ -154,7 +154,7 @@ async def evaluate(session, model, dataset, root, ids):
                         VllmTokenizer(client, config.model.name), record
                     )
                 },
-                tokenizer=load_tokenizer(
+                tokenizer=tokenizer if tokenizer is not None else load_tokenizer(
                     config.model.tokenizer, revision=config.model.tokenizer_revision, trust_remote_code=False
                 ),
             )
@@ -179,7 +179,7 @@ def launch_parser():
     return parser
 
 
-def launch(args, ids: tuple[str, ...], phase: str):
+def configure_deadline(args):
     logging.basicConfig(level=logging.INFO)
     configure_coreweave_s3()
 
@@ -188,17 +188,24 @@ def launch(args, ids: tuple[str, ...], phase: str):
 
     signal.signal(signal.SIGALRM, expired)
     signal.alarm(max(1, args.deadline - int(time.time()) - 100))
-    model = resolve_model_config(None, Path(__file__).with_name("model.yaml"))
-    root = StoragePath(args.output) / phase
-    dataset = corpus(root, ids)
-    hardware = AcceleratorChoice(Platform.GPU, gpu_type="H100", gpu_count=4, target_cluster=args.cluster)
+
+
+def inference_service(model, cluster):
+    hardware = AcceleratorChoice(Platform.GPU, gpu_type="H100", gpu_count=4, target_cluster=cluster)
     service = inference_config_for_model(model, hardware, env_vars={}, priority=0, instances=1)
-    service = replace(
+    return replace(
         service,
         broker=None,
         iris=replace(service.iris, cache_ttl_days=0, max_retries_failure=0, max_retries_preemption=1),
     )
-    with remote_inference(service) as session:
+
+
+def launch(args, ids: tuple[str, ...], phase: str):
+    configure_deadline(args)
+    model = resolve_model_config(None, Path(__file__).with_name("model.yaml"))
+    root = StoragePath(args.output) / phase
+    dataset = corpus(root, ids)
+    with remote_inference(inference_service(model, args.cluster)) as session:
         asyncio.run(evaluate(session, model, dataset, root, ids))
 
 
