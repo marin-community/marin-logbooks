@@ -183,8 +183,9 @@ def main():
     signal.alarm(max(1, args.deadline - int(time.time()) - 100))
     model = resolve_model_config(None, Path(__file__).with_name("model.yaml"))
     shared = StoragePath(args.output)
-    panels = [("pilot", ("013",)), ("remaining", ("001", "003", "012", "015", "028"))]
-    datasets = [corpus(shared / name, ids) for name, ids in panels]
+    ids = ("013",)
+    root = shared / "pilot"
+    dataset = corpus(root, ids)
     hardware = AcceleratorChoice(Platform.GPU, gpu_type="H100", gpu_count=4, target_cluster="cw-us-east-02a")
     service = inference_config_for_model(model, hardware, env_vars={}, priority=0, instances=1)
     service = replace(
@@ -193,8 +194,7 @@ def main():
         iris=replace(service.iris, cache_ttl_days=0, max_retries_failure=0, max_retries_preemption=0),
     )
     with remote_inference(service) as session:
-        for (name, ids), dataset in zip(panels, datasets, strict=True):
-            asyncio.run(evaluate(session, model, dataset, shared / name, ids))
+        asyncio.run(evaluate(session, model, dataset, root, ids))
 
 
 if __name__ == "__main__":
