@@ -160,7 +160,16 @@ class MiniSweAgent(EvaluationModel):
     kind: Literal["mini-swe-agent"] = "mini-swe-agent"
 
 
-EpisodeAgent = Annotated[ShellAgent | TerminusAgent | PiAgent | MiniSweAgent, Field(discriminator="kind")]
+class ClaudeCodeAgent(EvaluationModel):
+    """Pinned Claude Code in the experimental SWE-bench Science solver image."""
+
+    kind: Literal["claude-code"] = "claude-code"
+    version: Literal["2.1.330"] = "2.1.330"
+
+
+EpisodeAgent = Annotated[
+    ShellAgent | TerminusAgent | PiAgent | MiniSweAgent | ClaudeCodeAgent, Field(discriminator="kind")
+]
 
 
 class AgentEpisode(EvaluationModel):

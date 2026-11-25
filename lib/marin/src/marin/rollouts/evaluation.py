@@ -83,6 +83,7 @@ from taskcompendium.evaluation.spec import (
     MetricKind,
     MiniSweAgent,
     OperationKind,
+    ClaudeCodeAgent,
     PiAgent,
     TextGeneration,
 )
@@ -568,7 +569,7 @@ async def _score_rollout(
         agent_options = {**options, "extra_body": {**options["extra_body"], **config.agent_extra_body}}
         policy_model = (
             model
-            if isinstance(operation.harness, PiAgent | MiniSweAgent)
+            if isinstance(operation.harness, PiAgent | MiniSweAgent | ClaudeCodeAgent)
             else partial(episode_turn, model=model, options=agent_options)
         )
     else:

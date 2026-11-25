@@ -81,7 +81,7 @@ def _offline_image(env: dict) -> str:
     return re.sub(r":[^/:@]+(?=@)", "", env["docker_image"])
 
 
-def lower_package(directory: Path, row: RawRow) -> TaskSpec:
+def lower_package(directory: Path, row: RawRow, *, install: str | None = None) -> TaskSpec:
     """Build a TaskSpec directly from a pinned SWE-bench Science release package."""
     config = tomllib.loads((directory / "task.toml").read_text())
     agent, verifier = config["agent"], config["verifier"]
@@ -94,7 +94,7 @@ def lower_package(directory: Path, row: RawRow) -> TaskSpec:
         raise ValueError("SWE-bench Science requires the native no-network protocol")
 
     solver = LoweredSource(_offline_image(solver_env), None, solver_env["workdir"])
-    solver = extend_source(solver, pi_install(PI))
+    solver = extend_source(solver, pi_install(PI) if install is None else install)
     hook = (directory / "pre_artifacts.sh").read_text()
     command = f"cd {shlex.quote(solver_env['workdir'])} && sh -c {shlex.quote(hook)}"
     episode = EpisodeInputs(
@@ -153,11 +153,11 @@ def lower_package(directory: Path, row: RawRow) -> TaskSpec:
     )
 
 
-def convert(row: RawRow, _context: ConversionContext) -> TaskSpec:
+def convert(row: RawRow, _context: ConversionContext, *, install: str | None = None) -> TaskSpec:
     with TemporaryDirectory(prefix=f"{BENCHMARK}-") as root:
         package = Path(root) / row.data["name"]
         extract_package(row.data["archive"], package)
-        return lower_package(package, row)
+        return lower_package(package, row, install=install)
 
 
 def benchmarks() -> list[EvaluationBenchmark]:

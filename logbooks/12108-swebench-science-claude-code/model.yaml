@@ -1,0 +1,17 @@
+name: qwen3.8-27b-claude-code-xhigh
+location: Qwen/Qwen3.8-27B
+revision: 37561816e66b5b9153b1b64c10968c18c1e6f4a0
+tokenizer_revision: 37561816e66b5b9153b1b64c10968c18c1e6f4a0
+apply_chat_template: true
+resource_hint:
+  gpu:
+    H100: 4
+serve:
+  tensor_parallel_size: 4
+  data_parallel_size: 1
+  max_model_len: 262144
+  limit_mm_per_prompt: '{"image":0,"video":0}'
+  tool_call_parser: qwen3_coder
+  reasoning_parser: qwen3
+  vllm_extra_args:
+    - --enable-prefix-caching
