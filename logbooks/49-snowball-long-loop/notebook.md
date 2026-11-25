@@ -2353,3 +2353,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: the `.157` failure cause beyond "max_task_failures exceeded" is not established from job state alone; the RL leg's throughput evidence is pending `.158` progress.
 - Decision and next action: watch `.158`'s RL checkpoint task; hourly checks continue.
+
+### 2026-11-25 05:25 UTC - Addendum: new V5 exp3 RL run `.129` submitted — baseline-0 progressing (130/200 at 943 s); Hermes JSONDecodeError headings benign
+
+- Question or hypothesis and reason for trying it: read-only RL checkpoint on the new V5 exp3 RL run following the completed V5 SFT.
+- Published source revision: root `/benfeuer/long-loop-mochi-v5-exp3-rl-micro210-final-preserve-2026.11.25.129-coordinator-86dea96c`; GPU child suffix `long-loop-mochi-v5-exp3-rl-2026.11.25.129-a45ca2a4f2e2`; clean source `fe606ec554`; recipe `rounds/mochi-v5-exp3-rl.yaml`.
+- Command or material configuration: baseline-0 reached **130/200 completed at 05:15:01.931 UTC (943 s)**, up from 120/200 at 05:12:26 and 124/200 at 05:13:32 — completion progress, NOT scored coverage. No optimizer/full-step/native completion observed through 05:14:45.
+- External inputs and artifact references: worker checkpoint cc over Rhizome (~05:2x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0514-receipt.json`; published under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-v5-exp3-rl/launches/2026.11.25.129/` [R].
+- Environment and hardware when relevant: five new Hermes traceback headings were classified from 75 bounded context rows as **JSONDecodeError from malformed delimiters/control characters, with subsequent eval progress** — NOT five confirmed failed tasks/groups or a failure fraction; no selected RuntimeError/OOM/CUDA/NCCL. Correction: the retained graph-capture range is 10–25 s, not the earlier 10–22 summary.
+- Result, including failure or restart: startup progressing; no run/config changes or cancellation. The 05:14 timer verified 1 run/exit 0/empty stderr/saved/removed; one next check 05:29 UTC (the baseline 30-min turn boundary is not a cancellation deadline).
+- Evidence: rl-first-step receipt + published S3 evidence [R].
+- Interpretation and limitations: baseline-only state; the first finite optimizer/update remains pending. The standalone SFT 2100Micro210 stays coordinator-owned; native 2100 untouched.
+- Decision and next action: watch for the first finite optimizer/update; the 05:29 UTC check proceeds.
