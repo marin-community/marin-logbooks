@@ -2509,3 +2509,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: regional-CPU + gate-submission receipts [R].
 - Interpretation and limitations: gate-pending state — the strict frozen-logprob qualification must pass before the actual-agent gate chain proceeds; no RL submission yet.
 - Decision and next action: record the logprob gate outcome when it lands.
+
+### 2026-11-25 11:00 UTC - Addendum: DSpark Exp4 PREPARED/CPU-PASS — full config detail recorded; strict GPU sampled-token gate PENDING, RL UNSUBMITTED
+
+- Question or hypothesis and reason for trying it: record the Exp4 DSpark prepared state in full (config, diff vs `.129`, test evidence, planned GPU shape).
+- Published source revision: LANDED `10246164ddcf5317de0e6881255138b468cb87f5`, round `rounds/mochi-exp4-dspark-rl.yaml` `.130`; **PREPARED/CPU-PASS; strict GPU qualification PENDING; RL remains UNSUBMITTED.**
+- Command or material configuration: exact Exp4 curriculum `c34a2771` (35% SWE / 15% IF / 50% prior) → 22+42 quotas; same `.129` priority+rolling / stale 3 / 64×8 / clip 0.5 / MuonH 1e-5+offload / 98304 trajectory–24576 turn–131072 window / 43200+1800 / best+distinct-final Micro210. Draft matched to step400407; no V5-specific draft located. **Diff vs `.129`: initializer + Exp4 pool/holdout/weights/quotas, 766M 4-proposal block, HBM 0.90→0.775, isolated Nov24 ShortConv wheel, identities/output paths; remaining normalization unchanged.** Planned GPU 128 = 48 trainer + 80 rollout, no extra draft GPUs; the 16-serving-only validation job `/benfeuer/mochi-exp4-dspark-logprob-20261125a` is active with four tasks actual-bootstrap/runtime verified.
+- External inputs and artifact references: worker cc over Rhizome (~11:0x UTC) [R]; preflight receipt `s3://marin-us-east-08a/marin/users/benfeuer/mochi-exp4-dspark/2026.11.25.130/preparation/preflight-receipt.json`; resolved diff `resolved-diff-vs129.json` alongside [R].
+- Environment and hardware when relevant: native exact-source no-run + regional realPi / 16 TaskSpecs / all pool hashes / vocab 128256 PASS; 83 related tests/lint/types/landing PASS; the affected runner's baseline ANTLR bootstrap failed before collection; advisory 45 inherited / 0 own.
+- Result, including failure or restart: strict frozen sampled-token gate NOT yet passed — no launchability claim. PR 12239's 60-GPU warm-update reference (2058→1292 s = 1.593× / 37.22%) is planning context, not this 128-profile measurement.
+- Evidence: preflight receipt + resolved diff [R].
+- Interpretation and limitations: all CPU-side gates pass; the GPU-side strict gate decides launchability.
+- Decision and next action: one next qualification wake 10:50 UTC; no `.129` changes or wake-chain restart.
