@@ -422,3 +422,15 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
     0.79-0.86; other pairs median 0.67, 99th percentile 0.92-0.98 (the same question in sibling evals).
 - Interpretation: the audit finds about 85% of plain copies, 76% of paraphrases and 64% of translations of
   what is there; its counts are corrected by these recalls. Jobs: `decon-embed2-items`, `decon-embed2-chunks-p*`.
+
+### 2026-11-25 10:40 UTC - Uncertainty of the added removals; what the rejected ones are
+
+- The catalog weighting rests on few records in large web sources (one HellaSwag record of
+  `nemotron_cc_v2/medium_quality` stands for 14,843 shards). Shard bootstrap (5,000 draws over the 128 fresh
+  shards): add-on-only removals 168,001, 5-95% 100,506 - 243,658; relative to v11 removals on the same shards
+  0.55, 5-95% 0.39 - 0.84.
+- The set 29 pairs both judges reject in `cp/data_provenance` (140): WNLI 67, SQuAD completion 33, QNLI 32.
+  They are instruction-data rows that reuse an eval's passage or sentence with another question or task
+  ("is the above reasoning correct", "what is the first city mentioned?"): VARIANT under the rubric (the item is
+  the passage with its question). Whether a reused passage alone counts is the open policy question the
+  encoder README notes for CoLA and SST-2.
