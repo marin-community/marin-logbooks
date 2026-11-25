@@ -21,6 +21,8 @@ Use up to 128 GB200 on cw-us-east-08a at production priority. Submit stages when
 
 ## Baseline
 
+The first S0 attempt was cancelled at 19:25 EST: preparation hashed source conversations while the native harness also appended answer-format instructions. Its outputs and v1 hash table are excluded from measurement. Cohort v2 is being rebuilt with the native renderer; no valid loop-incidence counts are available.
+
 Pending the fixed-cohort greedy generation audit. Temperature 0.7 is reported separately. The detector is SkyRL's `tail_loop`, requiring eight exact suffix copies, with full-window search and period caps of 2,048 at 16K and 4,096 at 32K. Missing or damaged responses enter the upper bound and do not count as correctness passes.
 
 ## Entries
@@ -59,6 +61,8 @@ W&B credentials are absent from this shell's usual stores. Baseline generation w
 
 The cohort build succeeded at 18:21 EST. All 512 recovered DAPO validation prompts survived the prompt cap. The six 32K domains each contain 128 initial rows and 128 disjoint reserve rows. The manifest records the source versions, dropped prompts, row hashes, and cohort hashes; its SHA-256 is `839713ba2fd14bd755f6600782ed1fac7ca60258d7a7416ddc590de1015b345e`. See [the frozen manifest](cohorts-manifest.json). The published selection contains 183,167 eligible training candidates; these are raw source pools, not the final S3 sampling mix. The mixed round will select only baseline-qualified target domains and set their weights explicitly.
 
+The following v1 hash table is superseded by the native-rendering correction recorded below.
+
 | Cohort | Initial N | Cohort SHA-256 |
 | --- | ---: | --- |
 | math16k | 512 | `44ac92e7cc75a29872a47fd2a8e9544192548badef31088ea2773d6eb6700253` |
@@ -90,6 +94,18 @@ Two advisory reviews completed. Follow-up changes reuse the existing Parquet rea
 The refreshed affected suite reports 1,547 passes, five skips, and six failures. Four unchanged failures reproduce on clean main; the two additional sandbox timeouts pass a focused rerun (three tests). The focused cohort/geometry/locality suite reports 84 passes. Required lint, formatting, and type checks pass.
 
 The runner takes its explicit RL artifact version from `Preset.revision`; the CLI `--version` does not replace that pin. Upcoming runtime revision `2026.11.24.3` passes the S1 preflight with 48 policy/reference GPUs and 64 rollout GPUs, permanent outputs on 08a, and native checkpoints under the 08a three-day temporary root. S1 still waits for baseline sealing.
+
+### 2026-11-24 19:33 EST — Reject the first S0 attempt and refreeze native prompts
+
+A live retained prompt did not match its frozen v1 hash. The cohort builder rendered the TaskSpec's source conversation, while the native shell harness also appended the answer-format instruction. For DAPO that instruction is “Give your answer as plain text.” Reproducing the complete native request yielded exactly the saved 157 prompt token IDs. The model, tokenizer revision, and detector were unchanged. See the [hash mismatch receipt](prompt-rendering-mismatch.json).
+
+Cancelled only the owned S0 coordinator with `iris-cancel-own` at 19:25 EST. Iris confirmed both the parent and GPU child killed; the child reason was parent termination. The partial outputs do not establish loop incidence. V1's hash table and prompt eligibility are superseded, and no training ran against those pools. The original 48-hour deadline remains November 26 at 17:46 EST.
+
+Source `5f2b2f931c` now calls the native shell prompt renderer, including its answer-format instruction and advertised tools, or the native assistant-prefix renderer with its whitespace-preserving tokenization. All 512 original math validation tasks remain eligible; the longest complete prompt is 1,051 tokens. Four focused regression/publication tests pass, as do required formatting, lint, and type checks. The corrected preparer exactly reproduces the live prompt IDs.
+
+Submitted `/benfeuer/mochi-doom-cohorts-20261124c` at 19:32:59 EST on cw-us-east-08a, CPU16 / 96 GB / 64 GB disk, production priority. It publishes new cohort version `2026.11.24.2`, records the rendering contract, and preserves the invalid v1 receipt as superseded. Upcoming S0 uses fresh preset runtime revision `2026.11.24.4`. No GPU job is currently active for this task.
+
+Next: verify CPU publication, preflight the new baseline, submit immediately, and compare a completed live prompt with v2 before accepting the audit. Seal all required domains and reserves before S1.
 
 ## Final decision
 
