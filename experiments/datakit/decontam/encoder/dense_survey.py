@@ -184,13 +184,17 @@ def main() -> None:
     parser.add_argument("--input-root", required=True)
     parser.add_argument("--per-source", type=int, default=1)
     parser.add_argument("--seed", type=int, default=31)
+    parser.add_argument("--shards", help="a JSON list of shards to use instead of the seeded sample")
     parser.add_argument("--output", required=True)
     parser.add_argument("--max-workers", type=int, default=160)
     parser.add_argument("--part", type=int, default=None, help="scan part --part of --parts in this process")
     parser.add_argument("--parts", type=int, default=1)
     parser.add_argument("--ram", default="24g")
     args = parser.parse_args()
-    files = survey_shards(args.sources, args.input_root, args.per_source, args.seed)
+    if args.shards:
+        files = json.loads(StoragePath(args.shards).read_text())
+    else:
+        files = survey_shards(args.sources, args.input_root, args.per_source, args.seed)
     StoragePath(prefix_join(args.output, "shards.json")).write_text(json.dumps(files))
     if args.part is not None:
 

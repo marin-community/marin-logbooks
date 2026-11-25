@@ -23,8 +23,8 @@ from collections import Counter
 
 import numpy as np
 import pyarrow as pa
-from marin.datakit.decon_keys import MAX_DOC_CHARS, record_readings
-from marin.datakit.decon_tables import write_table
+from marin.datakit.decon_keys import MAX_DOC_CHARS, WINDOW, excerpt, record_readings
+from marin.datakit.decon_tables import read_frame, read_table, write_table
 from rigging.filesystem.storage_path import StoragePath, prefix_join
 from rigging.log_setup import configure_logging
 from zephyr.input_file import InputFileSpec
@@ -51,23 +51,37 @@ def _slots(index: DenseIndex, hashes: np.ndarray) -> np.ndarray:
     return slot[index.hashes[slot] == hashes]
 
 
-def count_shard(index: DenseIndex, path: str, output: str) -> dict:
+def count_shard(index: DenseIndex, path: str, output: str, exclude_copies: int | None = None) -> dict:
+    """Records per dense-index window. With *exclude_copies*, a record that holds at least that many of an item's
+    windows (a likely copy) does not count toward that item's windows, so a count measures how generic a window
+    is rather than how often its item is copied."""
     target = StoragePath(prefix_join(output, f"counts/{_name(path)}.npz"))
     if target.exists():
         return {"path": path, "skipped": 1}
     counts = np.zeros(len(index.hashes), dtype=np.uint32)
-    records = 0
+    records = skipped = 0
     for record in load_file(InputFileSpec(path=path, columns=["text"])):
         text = str(record.get("text") or "")
         if len(text) > MAX_DOC_CHARS:
             continue
         records += 1
-        counts[_slots(index, np.concatenate([reading.hashes for reading in record_readings(text)]))] += 1
+        slots = _slots(index, np.concatenate([reading.hashes for reading in record_readings(text)]))
+        if exclude_copies is not None and len(slots):
+            rows = np.concatenate([np.arange(index.starts[s], index.starts[s + 1]) for s in slots.tolist()])
+            holders = index.holders[rows]
+            items, held = np.unique(holders, return_counts=True)
+            copied = items[held >= exclude_copies]
+            if len(copied):
+                row_slots = np.repeat(slots, np.diff(index.starts)[slots])
+                dropped = np.unique(row_slots[np.isin(holders, copied)])
+                skipped += len(dropped)
+                slots = np.setdiff1d(slots, dropped)
+        counts[slots] += 1
     nonzero = np.nonzero(counts)[0]
     buffer = io.BytesIO()
     np.savez(buffer, slots=nonzero.astype(np.int64), counts=counts[nonzero])
     target.write_bytes(buffer.getvalue())
-    return {"path": path, "records": records, "windows_seen": len(nonzero)}
+    return {"path": path, "records": records, "windows_seen": len(nonzero), "copy_windows_skipped": skipped}
 
 
 @functools.lru_cache(maxsize=1)
@@ -109,29 +123,89 @@ def key_sets(
     return index, total, keep_rows
 
 
+@functools.lru_cache(maxsize=1)
+def _questions(locators_path: str) -> dict[str, tuple[str, int]]:
+    """Item -> its located question stream and question length, as the scan's ``excerpt`` takes them."""
+    locators = read_table(locators_path, ["item", "kind", "question", "question_chars"]).to_pydict()
+    questions: dict[str, tuple[str, int]] = {}
+    for item, kind, question, chars in zip(
+        locators["item"], locators["kind"], locators["question"], locators["question_chars"], strict=True
+    ):
+        if kind == "question" and question:
+            questions.setdefault(item, (question, int(chars)))
+    return questions
+
+
+@functools.lru_cache(maxsize=1)
+def _rare_other(keys_path: str) -> frozenset[str]:
+    """Items with a passage or choices key that no reference record holds: the key set is not added for them."""
+    keys = read_frame(keys_path, ["id", "kind", "key1_hash", "key1_count"])
+    rare = keys[(keys["kind"] != "question") & (keys["key1_hash"] != 0) & (keys["key1_count"] == 0)]
+    return frozenset(rare["id"])
+
+
 def scan_shard(
-    locators_path: str, counts_dir: str, path: str, output: str, selection: str = "rarest", cap: int | None = None
+    locators_path: str,
+    counts_dir: str,
+    path: str,
+    output: str,
+    selection: str = "rarest",
+    cap: int | None = None,
+    keys_path: str | None = None,
+    min_held: int = 3,
 ) -> dict:
+    """Key-set hits of one shard. With *keys_path*, also writes the pairs that only the key set admits (the
+    add-on: an item without a count-0 passage or choices key, at least *min_held* of its key set held, no key-1
+    hit) with the excerpt the production scan would cut, to ``pairs/<name>.parquet`` for scoring."""
     target = StoragePath(prefix_join(output, f"stats/{_name(path)}.json"))
     if target.exists():
         return json.loads(target.read_text())
     index, _total, keep_rows = key_sets(locators_path, counts_dir, selection, cap)
     key_size = np.bincount(index.holders[keep_rows], minlength=len(index.items))
+    rare_other = _rare_other(keys_path) if keys_path else frozenset()
+    questions = _questions(locators_path) if keys_path else {}
     stats: Counter = Counter()
     rows: list[dict] = []
+    pairs: list[dict] = []
     for record in load_file(InputFileSpec(path=path, columns=["id", "text"])):
         text = str(record.get("text") or "")
         stats["records"] += 1
         if len(text) > MAX_DOC_CHARS:
             continue
-        hashes = np.concatenate([reading.hashes for reading in record_readings(text)])
+        readings_of = record_readings(text)
+        hashes = np.concatenate([reading.hashes for reading in readings_of])
         key1 = {int(index.key_items[row]) for row in index.key_table.items_of(index.key_table.found(hashes))}
         slots = _slots(index, hashes)
         held: Counter = Counter()
+        first_position: dict[int, int] = {}
         for slot in slots.tolist():
             for row in range(index.starts[slot], index.starts[slot + 1]):
                 if keep_rows[row]:
-                    held[int(index.holders[row])] += 1
+                    holder = int(index.holders[row])
+                    held[holder] += 1
+                    first_position[holder] = min(first_position.get(holder, 1 << 30), int(index.positions[row]))
+        if keys_path:
+            for item, n in held.items():
+                name = index.items[item]
+                if item in key1 or name in rare_other or name not in questions or n < min(min_held, key_size[item]):
+                    continue
+                question, chars = questions[name]
+                at = first_position[item]
+                cut = excerpt(readings_of, chars, question, question[at : at + WINDOW], at)
+                stats["addon_pairs"] += 1
+                pairs.append(
+                    {
+                        "record": str(record["id"]),
+                        "item": name,
+                        "eval": index.evals[item],
+                        "right": cut.text,
+                        "held": n,
+                        "key_set": int(key_size[item]),
+                        "located": cut.at >= 0,
+                        "record_chars": len(text),
+                        "path": path,
+                    }
+                )
         stats["key1_records"] += bool(key1)
         stats["key1_pairs"] += len(key1)
         for k in (1, 2, 3):
@@ -164,6 +238,8 @@ def scan_shard(
             )
     if rows:
         write_table(pa.Table.from_pylist(rows), prefix_join(output, f"rows/{_name(path)}.parquet"))
+    if pairs:
+        write_table(pa.Table.from_pylist(pairs), prefix_join(output, f"pairs/{_name(path)}.parquet"))
     result = {"path": path, **stats}
     target.write_text(json.dumps(result))
     return result
@@ -183,15 +259,30 @@ def main() -> None:
     parser.add_argument("--output", required=True)
     parser.add_argument("--part", type=int, required=True)
     parser.add_argument("--parts", type=int, required=True)
+    parser.add_argument("--shards", help="a JSON list of shards to use instead of the seeded sample")
+    parser.add_argument("--keys", help="scan: keys.parquet; write the add-on pairs with excerpts")
+    parser.add_argument("--min-held", type=int, default=3, help="scan: key-set windows a record must hold")
+    parser.add_argument("--exclude-copies", type=int, help="count: skip an item's windows in its likely copies")
     args = parser.parse_args()
-    files = survey_shards(args.sources, args.input_root, 1, args.seed)[args.part :: args.parts]
+    if args.shards:
+        shards = json.loads(StoragePath(args.shards).read_text())
+    else:
+        shards = survey_shards(args.sources, args.input_root, 1, args.seed)
+    files = shards[args.part :: args.parts]
     logger.info("%s part %d of %d: %d shards", args.mode, args.part, args.parts, len(files))
     for path in files:
         if args.mode == "count":
-            result = count_shard(dense_index(args.locators), path, args.output)
+            result = count_shard(dense_index(args.locators), path, args.output, args.exclude_copies)
         else:
             result = scan_shard(
-                args.locators, prefix_join(args.counts, "counts"), path, args.output, args.selection, args.cap
+                args.locators,
+                prefix_join(args.counts, "counts"),
+                path,
+                args.output,
+                args.selection,
+                args.cap,
+                args.keys,
+                args.min_held,
             )
         logger.info("%s", {k: v for k, v in result.items() if isinstance(v, int)})
 
