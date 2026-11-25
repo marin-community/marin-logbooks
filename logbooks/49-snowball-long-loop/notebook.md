@@ -2413,3 +2413,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: rl-first-step-0604 receipt + published S3 evidence [R].
 - Interpretation and limitations: the baseline pass@1 (68.78%) and avg verifier score (68.39%) are the `.129` RL starting point; training-side progress pending the first finite optimizer/full update. Normal terminal/stage watchdog unchanged; no new jobs.
 - Decision and next action: qualify the first finite optimizer/full update; 06:19 UTC check.
+
+### 2026-11-25 06:30 UTC - Addendum: V5 exp3 RL `.129` 06:19 check — still no optimizer/full step after baseline; step-1 admission remains the last learner marker
+
+- Question or hypothesis and reason for trying it: continued read-only RL checkpoint on `.129` after baseline-0 completed.
+- Published source revision: unchanged — source `fe606ec554…`, recipe `rounds/mochi-v5-exp3-rl.yaml` version 2026.11.25.129.
+- Command or material configuration: through 06:19:36.576 UTC — **no new optimizer completion, full training step, post-initial publication, or first-train WANDB_MIRROR observed**; the refined native completion-only query returned 0 rows (missing finite-loss evidence UNAVAILABLE, not zero). Last retained learner marker: **step-1 batch admission 05:53:37.685 UTC (required 64 groups)** — not an instantaneous queue/phase snapshot.
+- External inputs and artifact references: worker cc over Rhizome (~06:3x UTC) [R]; receipt `mochi-fixes/mochi-v5-exp3-rl/rl-first-step-0619-receipt.json` (numeric window + completion/error/native-firsttrain SQL/JSONL alongside); permanent S3 prefix [R].
+- Environment and hardware when relevant: 3 new selected Hermes JSONDecodeError headings (bounded terminal exceptions verify ExtraData/InvalidControlCharacter/ExpectingComma) — parser events, not 3 distinct failed tasks/groups or fatal proof; no selected RuntimeError/OOM/CUDA/NCCL.
+- Result, including failure or restart: baseline-0 stands (200 complete, 189/11 scored split = 94.5%, min-180 met; pass@1 0.6878306878, wall 3,258.588 s; no override/dropped prompts). No run/config/code/checkpoint changes; user-accepted timeout/verifier policy unchanged.
+- Evidence: rl-first-step-0619 receipt + published S3 evidence [R].
+- Interpretation and limitations: step-1 admission has been the last learner marker for ~26 min; longer batch formation/verifier work is possible — no stall inference drawn.
+- Decision and next action: one next absolute-PATH wake 06:34 UTC; continue only the first-finite-optimizer/full-update qualification.
