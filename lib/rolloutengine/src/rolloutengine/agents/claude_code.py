@@ -174,6 +174,7 @@ async def run_agent(context: HarnessContext, complete: AgentCompletion, *, token
     if context.machine is None:
         raise ValueError("Claude Code requires a solver machine")
     n = 0
+    completion_lock = asyncio.Lock()
 
     async def handle(req: HttpRequest) -> HttpResponse:
         nonlocal n
@@ -200,7 +201,9 @@ async def run_agent(context: HarnessContext, complete: AgentCompletion, *, token
         }
         record(context.run_id, call, metadata)
         try:
-            turn = await complete(chat_prompt(payload))
+            # The CLI may retry while its previous request is still in the model session.
+            async with completion_lock:
+                turn = await complete(chat_prompt(payload))
         except ContextWindowExceeded:
             return HttpResponse(
                 400, b'{"type":"error","error":{"type":"invalid_request_error","message":"prompt is too long"}}'

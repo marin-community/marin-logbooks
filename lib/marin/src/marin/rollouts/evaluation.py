@@ -377,6 +377,7 @@ class _EvaluationWriter:
 
     store: DataStore
     executor: ThreadPoolExecutor
+    transaction_bytes: int | None = None
 
     async def _run(self, operation: Callable[[], object]) -> None:
         pending = asyncio.get_running_loop().run_in_executor(self.executor, operation)
@@ -389,7 +390,7 @@ class _EvaluationWriter:
 
     async def commit(self, write: Callable[[Transaction], object]) -> None:
         def commit_transaction() -> None:
-            with self.store.transaction() as transaction:
+            with self.store.transaction(max_bytes=self.transaction_bytes) as transaction:
                 write(transaction)
 
         await self._run(commit_transaction)
@@ -724,6 +725,7 @@ async def run_evaluation(
     judge_connection: JudgeConnection | None = None,
     completion_model: Model | None = None,
     likelihood: LikelihoodScorer | None = None,
+    transaction_bytes: int | None = None,
 ) -> None:
     """Stream selected source rows through RolloutEngine; resume without resampling completed trials.
 
@@ -780,7 +782,7 @@ async def run_evaluation(
         DataStore.open(output) as store,
         ThreadPoolExecutor(max_workers=1, thread_name_prefix="evaluation-writer") as executor,
     ):
-        writer = _EvaluationWriter(store, executor)
+        writer = _EvaluationWriter(store, executor, transaction_bytes)
         EvaluationStore(store)
         store.table(
             ATTEMPTS_TABLE,

@@ -148,6 +148,7 @@ async def evaluate(session, model, dataset, root, ids, tokenizer=None):
                 output,
                 config,
                 ChatModel(client, config.model.name, max_tokens=None),
+                transaction_bytes=1024 * 1024 * 1024,
                 machine_factories=machine_factories(config, daytona_connection(require_secret("DAYTONA_API_KEY"))),
                 harnesses={
                     "claude-code": lambda _agent, _budget: claude_harness(
