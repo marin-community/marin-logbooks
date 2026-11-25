@@ -400,3 +400,8 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
   0.6 is not ground truth there.
 - Decision: recommend the key set without those families (or with them only after a stage-2 fix), and report
   both estimates.
+
+### 2026-11-25 10:25 UTC - Correction: commit 9d40dcaa6c
+
+- Commit `9d40dcaa6c` is labeled as the merge of marin#11993 commit `37ba98bd1a` but holds the set 29 entry and
+  `f13b_set29_eval.py`; the merge is the next commit.

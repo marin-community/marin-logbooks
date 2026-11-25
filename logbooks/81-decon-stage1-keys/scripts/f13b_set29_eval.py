@@ -16,7 +16,12 @@ GOOD, BAD = {"COPY", "EDITED"}, {"VARIANT", "GENERIC", "UNRELATED"}
 
 
 def labels(judge: str) -> pd.DataFrame:
-    rows = [json.loads(l) for p in StoragePath(f"{L}/{judge}/batch_*.jsonl").glob() for l in p.read_text().split("\n") if l.strip()]
+    rows = [
+        json.loads(l)
+        for p in StoragePath(f"{L}/{judge}/batch_*.jsonl").glob()
+        for l in p.read_text().split("\n")
+        if l.strip()
+    ]
     return pd.DataFrame(rows).set_index("uid")[["label", "note"]].add_prefix(judge.split("-")[0] + "_")
 
 
@@ -49,11 +54,21 @@ def weighted(part: pd.DataFrame) -> tuple[float, float]:
 
 
 p, low = weighted(strat)
-print(f"add-on-only removals at 0.6: precision {p:.3f} [5% bound {low:.3f}]: {'PASS' if p >= 0.75 and low >= 0.65 else 'FAIL'} (floor 0.75, bound 0.65)")
+print(
+    f"add-on-only removals at 0.6: precision {p:.3f} [5% bound {low:.3f}]: {'PASS' if p >= 0.75 and low >= 0.65 else 'FAIL'} (floor 0.75, bound 0.65)"
+)
 uni = frame[frame["sample"] == "uniform"]
 print(f"uniform sample: {len(uni)} labeled, precision {uni.y.mean():.3f}")
 frame["source"] = frame["path"].str.split("/normalized/").str[1].str.split("/outputs/").str[0]
-print("by source:", frame.groupby("source")["y"].agg(["size", "mean"]).sort_values("size", ascending=False).head(6).round(2).to_dict("index"))
+print(
+    "by source:",
+    frame.groupby("source")["y"]
+    .agg(["size", "mean"])
+    .sort_values("size", ascending=False)
+    .head(6)
+    .round(2)
+    .to_dict("index"),
+)
 by = strat.groupby("stratum")["y"].agg(["size", "mean"])
 by["weighted_removals"] = counts.reindex(by.index).fillna(0).astype(int)
 print(by.sort_values("weighted_removals", ascending=False).head(16).round(2).to_string())
@@ -67,9 +82,13 @@ stratum_size = population.assign(family=population["eval"].str.split(r"[_ -]").s
 strat = strat.assign(family=strat["stratum"].str.removesuffix(":high"))
 judged = strat.groupby("family").size()
 strat["ht"] = strat["weight"] * strat["family"].map(stratum_size) / strat["family"].map(judged)
-print(f"record-weighted precision: {(strat['ht'] * strat['y']).sum() / strat['ht'].sum():.3f} over {len(strat)} judged records")
+print(
+    f"record-weighted precision: {(strat['ht'] * strat['y']).sum() / strat['ht'].sum():.3f} over {len(strat)} judged records"
+)
 by_eval = strat.groupby("eval").agg(judged=("y", "size"), precision=("y", "mean"), weight=("ht", "sum"))
 print(by_eval.sort_values("weight", ascending=False).head(14).round(2).to_string())
 low = {"qnli", "wnli", "squad", "Humanity's", "uncheatable"}
 keep = ~strat["family"].isin(low)
-print(f"without {sorted(low)}: record-weighted precision {(strat.loc[keep, 'ht'] * strat.loc[keep, 'y']).sum() / strat.loc[keep, 'ht'].sum():.3f}; weight kept {strat.loc[keep, 'ht'].sum() / strat['ht'].sum():.2f}")
+print(
+    f"without {sorted(low)}: record-weighted precision {(strat.loc[keep, 'ht'] * strat.loc[keep, 'y']).sum() / strat.loc[keep, 'ht'].sum():.3f}; weight kept {strat.loc[keep, 'ht'].sum() / strat['ht'].sum():.2f}"
+)
