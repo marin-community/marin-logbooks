@@ -30,6 +30,12 @@ LANGUAGES = ("Chinese", "Spanish", "German", "French", "Russian", "Japanese")
 TRANSLATED_SHARE = 1 / 3
 MIN_QUESTION_CHARS = 40
 _OBJECT = re.compile(r"\{.*\}", re.DOTALL)
+
+
+def _choices(value) -> list:
+    return list(value) if value is not None else []
+
+
 PARAPHRASE = (
     "Rewrite the exam question below so that it asks exactly the same thing and has the same answer, but "
     "with different wording and sentence structure throughout. Avoid keeping more than three consecutive "
@@ -46,7 +52,7 @@ TRANSLATE = (
 
 
 def rewrite(client: OpenAI, item: dict, instruction: str) -> dict | None:
-    task = json.dumps({"question": item["question"], "choices": list(item["choices"] or [])}, ensure_ascii=False)
+    task = json.dumps({"question": item["question"], "choices": _choices(item["choices"])}, ensure_ascii=False)
     for _ in range(3):
         reply = client.chat.completions.create(
             model=MODEL,
@@ -59,7 +65,7 @@ def rewrite(client: OpenAI, item: dict, instruction: str) -> dict | None:
         except json.JSONDecodeError:
             value = None
         if value and isinstance(value.get("question"), str) and isinstance(value.get("choices"), list):
-            if len(value["choices"]) == len(item["choices"] or []):
+            if len(value["choices"]) == len(_choices(item["choices"])):
                 return value
     return None
 
