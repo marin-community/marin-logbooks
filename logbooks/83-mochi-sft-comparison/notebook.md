@@ -22,6 +22,21 @@ status: active
   name, such as 2026.11.23, identifies the sealed prompt and grading table).
   This record consolidates numbers that were previously spread across eval
   comments in [marin#11337](https://github.com/marin-community/marin/issues/11337).
+- The model: Mochi is the 262K-context checkpoint of Marin's "hero" MoE
+  pretraining ladder (run `hero-lce-log65536sq-step390k`, version
+  `2026.08.19.2`, checkpoint step 393491). Architecture per `HERO_MODEL` in
+  `experiments/grug/moe_hero_ep/heuristic.py` (Marin `main`): 48 layers,
+  hidden 6,144, vocab 128,256, 384 routed experts with 8 active per token plus
+  2 shared experts, 48 heads (head_dim 128, 12 KV heads), sliding window 2,048
+  with global attention every fourth layer, context 262,144. This record does
+  not restate total or active parameter counts.
+- Vocabulary: "hero" names that pretraining ladder and its recipe family;
+  "Harrier cluster×quality cells" are the pretraining data store's
+  cluster/quality buckets; "long-loop" is the Snowball SFT→RL→eval round
+  prototype; "Exp3"/"V5" name the third long-loop experiment and its fifth
+  sealed SFT data-mix candidate. The full-SFT arm trains on 11 racks of 64
+  GB200s (704 GPUs, 176 packed sequences per update); the V5 arm on 128 GB200s
+  (two racks, 32 sequences per update).
 - Baseline and alternatives: Mochi base step 393491. Alternatives compared:
   full SFT (`hero-sft-fullab-step393k-v2`, step 400407) and V5 SFT
   (`long-loop-mochi-sft-exp3-v5-bankadam-128`, step 2100).
@@ -34,12 +49,40 @@ status: active
 ## Baseline
 
 - Date: checkpoint used by both arms; evals run 2026-11-24/25.
-- Published source revision: eval runtime `5ca48a7e`, frozen Micro210 policy
-  `9d850b9f` (sealed table `2280f01a`) per each `record.json` provenance.
+- Published source revision: for the 2026.11.23-policy runs, eval runtime git
+  SHA `5ca48a7e`, frozen Micro210 policy digest `9d850b9f`, sealed table
+  `2280f01a` — the `provenance` and `eval.source_digest` fields copied verbatim
+  from each `record.json` (identifiers of the private eval runtime and frozen
+  policy bundle; the public lineage lives in the linked issue comments). For
+  the older 2026.11.20-together runs, the
+  [posting comment](https://github.com/marin-community/marin/issues/11337#issuecomment-7057267101)
+  gives policy SHA `8f7ef8170fbe...`, original runtime `ea21a69e55`, base
+  recovery bundle `63a21236fb` with runtime corrections `e1fd3bcf3a`; ".7" and
+  ".9" are run-version suffixes (record versions `2026.11.20.7` / `2026.11.20.9`),
+  not sampling parameters.
+- Policy and metric: each Micro210 policy seals one attempt per row of a fixed
+  row table — 440 rows for 2026.11.20-together, 434 for 2026.11.23 — spread
+  over 20 benchmarks (NUPA, MATH-500, GPQA, MMLU-Pro, IFBench, BFCL-Parity,
+  BixBench, CRUXEval, DS-1000, HumanEval+, MBPP+, OlympiadBench, TriviaQA,
+  GSM8K, MRCR, TBLite, SWE-bench Verified, Terminal-Bench 2, TruthfulQA,
+  AIME24; 10–100 rows each per the linked comment table). Scoring follows the
+  [Marin Eval Policy 2026-10-16 (#10197)](https://github.com/marin-community/marin/issues/10197):
+  infrastructure errors stay absent, Harbor `AgentTimeoutError` and
+  `NonZeroAgentExitCodeError` grades count as real grades, and timeouts get no
+  automatic zero. "pass@1" is correct attempts over scored attempts on the
+  sealed table; the 2026.11.20-together headline is the pooled verifier-score
+  mean over valid attempts. The 2026.11.20-together judge was Together
+  GLM-5.3-Flash (per its comment); the 2026.11.23 records leave the judge
+  field null and its comment names none. Length behavior differs by run (e.g.
+  92/434 base trials and 128/434 V5 trials stopped on length on the 2026.11.23
+  policy). Whether any benchmark rows overlap training data was not checked
+  for this record and remains unknown.
 - Configuration, command, and external inputs: Mochi base step 393491, served
-  from `s3://marin-us-east-08a/marin/users/benfeuer/mochi-bringup/models/mochi-base-step393491/2026.11.17.1/hf`.
+  from `s3://marin-us-east-08a/marin/users/benfeuer/mochi-bringup/models/mochi-base-step393491/2026.11.17.1/hf`
+  (export manifest SHA-256 `fb5e8e8e0427...` per the posting comment).
 - Environment and hardware when relevant: Micro210 evals on CoreWeave GB200s
-  (16 task instances), Mochi GB200 serving profile.
+  (16 task instances), Mochi GB200 serving profile (2026.11.20-together used
+  the CW08 DP16/EP16 profile with compilation and PIECEWISE graphs).
 - Result and evidence: Micro210 2026.11.23 policy pass@1 **0.2607** (110/422
   scored attempts; 422/434 rows scored, 12 infra trials absent) —
   [EvalDash](https://marina.oa.dev/evaldash/runs/mochi-base-step393491-micro210-2026.11.23),
@@ -262,46 +305,188 @@ status: active
 - Decision and next action: publish the branch and index record; no further
   experiments are in scope for this task.
 
+### 2026-11-25 19:05 UTC - Cold-read round 1: corrections to the V5 arm entries
+
+- Question or hypothesis and reason for trying it: a fresh cold reader of PR
+  #84 found material errors in the two V5 entries above and smaller slips
+  elsewhere ([cold-read-responses.md](cold-read-responses.md) lists the notes
+  verbatim in summary and their dispositions).
+  Before writing any correction I re-derived every disputed number from the
+  run receipts and the public round-runner code at
+  `a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9`. This entry supersedes the
+  conflicting statements above; the entries are kept as written.
+- Published source revision: marin `a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9`
+  (recorded as `source_revision` in the run's `inputs.json` receipt) for the
+  long-loop code; marin `cc3706eb2` for the hero recipe files.
+- Command or material configuration: reads of `inputs.json`,
+  `actual-exposure.json`, and `selected.json` from the run directory; code
+  reads of `experiments/post_training/long_loop/sft_epoch.py`,
+  `experiments/post_training/long_loop/mochi_sft.py`,
+  `lib/levanter/src/levanter/data/mixture_epoch.py`,
+  `lib/levanter/src/levanter/training_budget.py`, and
+  `experiments/grug/moe_hero_ep/train.py` at that revision.
+- Corrections, each old claim → corrected claim:
+  1. **The proposal mixture is not what the run trained on.** The round
+     runner's `bind_sft_stopping` (`sft_epoch.py`) replaces the release
+     `train_weights` with capacity-derived epoch weights: every included SFT
+     source is drawn exactly its packed training-sequence count over one
+     planned epoch, and replay fills its declared 0.2 share. The proposal
+     family shares therefore only chose the source set and the replay share.
+     The resolved plan is 17,010 updates over 9 mixture blocks (8 × 64,000
+     draws plus a 32,320-draw final block, stage boundaries every 2,000
+     updates), 544,320 draws total, realized replay fraction 0.200015. Actual
+     family draws over the 2,100 updates run
+     (from `actual-exposure.json`, aggregated by the rationale's
+     `source_families`) were: math_v2_v3 25,123 (37.39%), replay 13,426
+     (19.98%), other_math 7,458 (11.10%), competitive_code 5,031 (7.49%),
+     finance 4,704 (7.00%), instruction_chat 3,991 (5.94%),
+     opencode_without_outcome 2,847 (4.24%), nemotron_swe 1,658 (2.47%),
+     multilingual_v2 993 (1.48%), recorded_pass_agents 961 (1.43%), science
+     828 (1.23%), relay 78 (0.12%), safety 65 (0.10%), existing_identity 36
+     (0.05%), miscellaneous 1 (0.00%). Per family these match the resolved
+     schedule's inventory-proportional allocation to integer rounding; they
+     differ materially from the proposal shares (e.g. recorded_pass_agents
+     15% proposed vs 1.43% drawn; finance 0.16% vs 7.00%). The proposal shares
+     also sum over the total mixture (replay included), not "of the SFT mass".
+  2. **Epoch denominator corrected: 17,010 updates, not the 569,291-sequence
+     inventory.** `plan_mixture_epoch` sizes the epoch from the SFT training
+     sequences alone: ceil(435,448 / (0.8 × 32)) = 17,010 updates = 544,320
+     draws. The 569,291 figure sums the whole capacity inventory (all replay
+     stores plus 56 validation reservations) and is not the training epoch.
+     The run's 2,100 updates are **12.35%** of the planned epoch (not 11.8%),
+     and each selected packed SFT sequence was drawn at most once (53,774
+     draws, 53,774 unique — no repeats).
+  3. **`context_positions` in the exposure receipt is a planned-epoch field,
+     not consumption.** It is carried over from the planned epoch exposure
+     (`samples_planned × 262,144` per component; 544,320 × 262,144 =
+     142,690,222,080 total), which is why it exceeds the 67,200 drawn slots
+     (17,616,076,800 packed slots). The measured consumption fields in that
+     receipt are `samples`, `unique_sequences`, and `coverage` (draws over the
+     source's training-sequence requirement, summed per component).
+  4. **Stop reason and restart corrected.** `selected.json` (now archived as
+     [`configs/v5-selected.json`](configs/v5-selected.json)) records
+     `stop_reason: maximum_updates` — the trainer reached its planned 2,100
+     updates; the 20-hour clock was not the binding stop. `duration_seconds`
+     72,000 is the configured budget, not measured wall-clock: the receipt's
+     deadline minus its finalization time leaves 50,449 s unused, so the SFT
+     stage finished about 5 h 59 m after its budget window opened
+     (2026-11-24T20:30:04Z → 2026-11-25T02:29:15Z, deadline
+     2026-11-25T16:30:04Z). `restored_step: 1306` records that the trainer
+     session resumed from step 1306 — one restart during the run; the receipt
+     does not record its cause.
+  5. **Comparison wording corrected.** Full SFT scored 417 of 434 rows and V5
+     421, so the arms were scored on the same policy but different scored
+     subsets. The 1.52-point gap (0.5971 vs 0.5819) is descriptive; this
+     record does not establish its cause or significance.
+  6. **V5 optimizer provenance added.** The round pins a hash-verified
+     BankAdam128 reference record; per the public long-loop README at
+     `a3d4a7c2b0`, its `MochiWeightsInitializer` loads only base weights and
+     pending router biases and starts update zero with fresh optimizer moments
+     (`initializer_mode: weights_only` in the run receipt), whereas the
+     full-SFT launcher restores the hero pretraining optimizer state. Stacked
+     4D expert banks route to Adam (`muonh_param_ndims: [2, 3]`); other matrix
+     groups keep MuonH. The run's warmup 5 and decay 210 scale the reference's
+     fractions (round(3400/34000 × 2,100)); learning rates and clip are
+     inherited from the reference record, not restated in the round yaml. The
+     run receipt records logical batch 32 = physical batch 32, one microbatch,
+     vocab 128,256, packing cap 262,144 with no lookahead, and the excluded
+     NVLink domain `dh1-r136-us-east-08a`.
+  7. **Micro210 policy definition added** to the Baseline section above (row
+     table, judge, #10197 classification, pass@1 vs pooled mean, length stops,
+     unknown overlap check). The 2026.11.20-together provenance is now scoped
+     to its own lineage instead of borrowing the 2026.11.23 pins.
+  8. **Legacy release metadata reconciled.** The release manifest's geometry
+     (batch 256, 746 updates, lookahead 128, pack 256) and
+     `training_ready: false` describe the publisher's proposal-time state
+     before the native consumer receipt existed; the data seal certifies the
+     completed release, and the round resolved its own geometry (batch 32,
+     cap 262,144, no lookahead) against a fresh capacity receipt. The
+     rationale's `position_accounting` note names a separate native consumer
+     receipt without giving a locator; this record does not include a padding
+     receipt, and the Known limits section no longer claims it does.
+  9. **Inventory/unit slips.** The full-SFT manifest has nine single-store
+     families (agenttrove and openthoughts4 the largest, seven smaller), not
+     "agenttrove, openthoughts4, and ten smaller"; one mixture block is 64,064
+     sequences = 364 updates, not "steps".
+  10. **Model and fleet introduction added** to the Question section
+      (architecture summary, hero/Harrier/long-loop/Exp3 vocabulary, 704 vs
+      128 GPUs).
+- Result: corrections applied to the summary sections and this entry;
+  `configs/v5-selected.json` archived; `configs/README.md` updated.
+- Evidence: run receipts (`inputs.json`, `actual-exposure.json`,
+  `selected.json`), the round-runner code at `a3d4a7c2b0`, and the cold-read
+  report linked above.
+- Interpretation and limitations: the corrected reading strengthens the
+  early-stop caveat — the V5 arm's realized mixture was inventory-proportional
+  over the 50 sealed SFT sources, so its 2,100-update exposure is
+  representative of the sealed mix's proportions but covers only ~12.35% of
+  the planned epoch.
+- Decision and next action: re-run the cold-read loop on the updated head.
+
 ## Known limits
 
 - Token figures (≈319.1B and ≈17.6B) are packed-slot upper bounds: sequence
-  counts × 262,144, padding not subtracted. Measured context positions and
-  padding for the V5 arm live in its native consumer receipt (referenced by
-  `position_accounting` in `v5-mixture-rationale.json`); the full-SFT arm has
-  no equivalent receipt in this record.
+  counts × 262,144, padding not subtracted. No padding receipt is included in
+  this record: the V5 rationale's `position_accounting` note names a separate
+  native consumer receipt without a locator, and the archived exposure receipt
+  measures sampled draws, not padding.
 - Both arms' data, eval rows, and run telemetry live in private Marin object
   storage. Filer and EvalDash links require Marin access. What is public-safe
-  (configs, store/epoch manifests, weights, exposure receipt) is copied into
+  (configs, store/epoch manifests, weights, run receipts) is copied into
   `configs/` of this directory; no dataset contents are copied.
 - The V5 round config exists only on `benfeuer/long-loop-prototype` at
   `a3d4a7c2b0`; per the task, no Marin PR is opened for this record.
-- The V5 score is an early-stop result at 2,100 updates (~11.8% of one
-  mixture epoch, `full_sft_coverage: false`), so it does not measure what a
-  full epoch of the V5 mix would score.
+- The V5 score is an early-stop result: 2,100 updates of the planned
+  17,010-update epoch (12.35% of its 544,320 draws), with every selected SFT
+  sequence drawn at most once and no SFT sequence repeated. It does not
+  measure what a full epoch of the V5 mix would score.
 - Micro210 scores come from one sealed policy per date with single-seed
   sampling; 2026.11.20-together numbers exist only for the base and full-SFT
-  arms. Unscored rows (12–27 per run) are infrastructure failures counted as
-  missing, not zero.
+  arms, and the two policies are not comparable to each other. Unscored rows
+  (11–27 per run) are infrastructure failures counted as missing, not zero.
+  Whether benchmark rows overlap training data was not checked.
 - The full-SFT replay fraction realized is 20.43% vs the 0.2035 target; the
   notebook shows the derivation.
+- The 2026.11.23-policy judge identity is not recorded in the archived eval
+  records (null `judge` field); the 2026.11.20-together judge is named in its
+  issue comment.
 
 ## Final decision
 
 - Selected approach and evidence: record-only comparison. Both SFT recipes
   improve the Mochi base by ~+32 points on Micro210 2026.11.23; the V5 arm
-  (≈17.6B packed-slot tokens, early-stopped) is within 1.6 points of the
-  production full-SFT arm (≈319.1B packed-slot tokens). Configs, per-component
-  mixes, and verified scores are in this notebook and `configs/`.
+  (≈17.6B packed-slot tokens, stopped at 12.35% of its planned epoch) is 1.52
+  points below the production full-SFT arm (≈319.1B packed-slot tokens) on the
+  same policy but different scored subsets. The cause and significance of the
+  gap are undetermined in this record. Configs, per-component mixes, resolved
+  schedules, and verified scores are in this notebook and `configs/`.
 - Rejected alternatives and why: no alternative presentation was tried; the
-  numbers were re-verified from `record.json` before publication instead of
-  trusting the CSV.
+  numbers were re-verified from `record.json` and the run receipts before
+  publication instead of trusting the CSV, and the cold-read round-1
+  corrections were re-derived from the run receipts and round-runner code
+  before being applied.
 - Marin contribution PRs: none (per task).
-- Reproduction instructions: full-SFT arm — run `MOCHI_SFT`'s
-  `mixture-262k-176node` preset from Marin `main` (config copied at
-  `configs/mochi_sft.py`, commit `dca3b9c0eb...`); V5 arm — apply
-  `configs/mochi-sft-exp3-v5-bankadam-128.yaml` (commit `a3d4a7c2b0` on
-  `benfeuer/long-loop-prototype`) with the long-loop round runner. Evals:
-  Micro210 policies 2026.11.23 / 2026.11.20-together under #10197 scoring.
+- Reproduction instructions:
+  - Full-SFT arm: check out Marin `dca3b9c0eb486986f49d8407dfc09efe1590f486`
+    (the file-identical preset lives there and at `main`); run
+    `uv run python experiments/post_training/mochi_sft.py --preset mixture-262k-176node --export --run`
+    with a fresh `--prefix` (the recipe resolves a new output version). This
+    launches 704 GB200s for 6,916 updates. The archived run's own recipe
+    recorded `source_revision 406dff47f217637ceca499b266989588cb0df5ab` and
+    version `2026.11.10`; those identify the historical execution, not the
+    archive commit.
+  - V5 arm: check out Marin `a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9`;
+    preflight with
+    `uv run python -m experiments.post_training.long_loop.round_runner --round experiments/post_training/long_loop/rounds/mochi-sft-exp3-v5-bankadam-128.yaml --version <new-version> --through sft --source-revision a3d4a7c2b0bb810939bb8967e5f54cb92c14f3f9 --validation-output /tmp/mochi-v5-repro`
+    (substitute a fresh version and a writable validation output), then submit
+    the same command with `--run` from an Iris CPU coordinator on 08a;
+    submission requires explicit user approval per the long-loop README. The
+    20-hour budget and the hash-pinned reference, data release, seal, capacity,
+    and initializer are inside the round yaml.
+  - Evals: Micro210 policies 2026.11.23 and 2026.11.20-together scored under
+    the #10197 eval policy; per-run posts with EvalDash, record, and Filer
+    links are in the linked marin#11337 comments.
 - Remaining uncertainty: whether the V5 arm's deficit to the full arm (if any)
   closes with a complete epoch; whether the two recipes differ on benchmarks
-  where scored rows diverge; padding-adjusted token counts for both arms.
+  where scored rows diverge; padding-adjusted token counts for both arms; the
+  2026.11.23-policy judge identity; train/eval overlap.

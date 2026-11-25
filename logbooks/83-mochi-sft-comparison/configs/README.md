@@ -39,6 +39,8 @@ and release manifest.
 | `v5-train-weights.json` | `s3://marin-us-east-08a/marin/users/benfeuer/exp3-data-mix/2026.11.15-candidate-v1/release-v5/train_weights.json` | `e365fa1d5a12b774c1e41b104b76d37c8da982a5b765d5c753408f12caa22223` |
 | `v5-mixture-rationale.json` | `s3://marin-us-east-08a/marin/users/benfeuer/exp3-data-mix/2026.11.15-candidate-v1/release-v5/mixture-rationale.json` | `ec94ee03642acc1056e14a289f8df3e7d30a717b7a444eef61a4abbbb8e840b0` |
 | `v5-actual-exposure.json` | `s3://marin-us-east-08a/marin/users/benfeuer/mochi-long-loop/long-loop-mochi-sft-exp3-v5-bankadam-128/sft/2026.11.24.128/actual-exposure.json` | not externally pinned (run output) |
+| `v5-selected.json` | `s3://marin-us-east-08a/marin/users/benfeuer/mochi-long-loop/long-loop-mochi-sft-exp3-v5-bankadam-128/sft/2026.11.24.128/selected.json` | not externally pinned (run output) |
+| `v5-inputs.json` | `s3://marin-us-east-08a/marin/users/benfeuer/mochi-long-loop/long-loop-mochi-sft-exp3-v5-bankadam-128/sft/2026.11.24.128/inputs.json` | not externally pinned (run receipt; linked, not copied — 488 KB) |
 
 `v5-release-manifest.json` also pins `data.json` (component list, SHA-256
 `12046a74b9fc95ec84268e5738dc53d489f959c9a8f3c8584da29080d4c23f19`) and the
