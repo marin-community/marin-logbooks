@@ -59,15 +59,17 @@ def corpus(root: StoragePath, ids: tuple[str, ...]) -> str:
     output = root / "corpus"
     if not (output / "evaluation_manifest.json").exists():
         package_names = [f"task_{i}" for i in ids]
-        raw = Path(
-            snapshot_download(
-                benchmark.DATASET,
-                repo_type="dataset",
-                revision=benchmark.REVISION,
-                allow_patterns=[f"tasks/{name}/*" for name in package_names],
+        with TemporaryDirectory() as directory:
+            raw = Path(
+                snapshot_download(
+                    benchmark.DATASET,
+                    repo_type="dataset",
+                    revision=benchmark.REVISION,
+                    local_dir=directory,
+                    allow_patterns=[f"tasks/{name}/*" for name in package_names],
+                )
             )
-        )
-        write_package_archives([raw / "tasks" / name for name in package_names], root / "input")
+            write_package_archives([raw / "tasks" / name for name in package_names], root / "input")
         recipe = replace(
             source.config.recipe,
             name="swebench-science-claude-code-" + "-".join(ids),
