@@ -228,6 +228,29 @@ Source `20ee97b685` explicitly enables console, durable records and W&B for trai
 
 The initial temperature-0.7 baseline profile finished at 01:11:29 EST in 2,587 seconds. Its fixed-reserve profile began at 01:11:34 EST and has completed 585/768 prompts by 01:29:32 EST, without job failures or preemptions. S1 submission waits for this final owned baseline profile and its output verification.
 
+### 2026-11-25 02:05 EST — Complete S0 and start the hard-memory smoke
+
+**S0 is complete.** All 32K profiles finished; Iris reports success with zero failures/preemptions. The final sampled reserve finished at **01:52:58 EST November 25**. Every effective sampled response is assessed, with zero errors or unavailable correctness flags.
+
+| Cohort | N | Greedy loops / UB | T0.7 loops / UB | Greedy passes | T0.7 passes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| math32k | 256 | 13 | 0 | 202 | 214 |
+| if32k | 256 | 6 | 3 | 242 | 239 |
+| code32k | 128 | 30 | 0 | 26 | 48 |
+| rgym32k | 128 | 23 | 6 | 61 | 72 |
+| struct32k | 128 | 11 | 8 | 59 | 64 |
+| mcq32k | 128 | 37 | 1 | 48 | 57 |
+
+The paired 32K totals are **120 loops and 638 passes under greedy**, versus **18 loops and 694 passes at temperature 0.7**, over 1,024 prompts. Sampling is report-only; the greedy target decisions and gates remain frozen. Sampled coding still reaches the length cap on 71/128 prompts despite zero exact suffix loops. The separate greedy math16K baseline remains 12 loops and 390 passes /512.
+
+Sampled audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v5/baseline-sampled32k.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Faudits%2Fs0-v5%2Fbaseline-sampled32k.json)), SHA-256 `2249544e3df8d42ccf512d5c691edc65af2a0257f6d9a5cd1d3cf9290c567f29`. Replay receipts verify 768 original rows in each sampled profile; only the fixed effective cohorts enter the table. CPU `/benfeuer/mochi-doom-audit-sampled32k-20261125d` submitted **01:59:48 EST**, succeeded in **41.82s**.
+
+**S1 was accepted at 01:59:54 EST**, runtime `2026.11.25.2`, source `20ee97b685`, **112 GB200 at production priority on cw-us-east-08a**. All 28 four-GPU replicas are running without failures/preemptions. Coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-smoke-71205dc7ec-in-728208ba-2026.11.25.2-coordinator-9a097f98`. Child suffix `a780bde9cd33`, submitted **02:00:46 EST**.
+
+Actual cloud configuration confirms PP12/EP4/TP1/CP1 on policy and reference, both with R3 enabled; raw top-32 rollout logprobs, batch64/math64, 32,768 generated tokens, 2,048 prompt allowance, and console/records/W&B tracking. It uses qualified selection version **2026.11.25.2**, whose math-only recipe now records its actual 64-math quota. The mixed 21/11/11/11/10 quotas and all prompt identities are unchanged from the sealed curriculum.
+
+Smoke outputs and checkpoints use ttl=3d storage; S2 starts fresh from SFT. Model startup is underway. Active-objective, two-applied-update, finite-gradient, actual R3/top-32, checkpoint and HF-export gates remain pending. Configuration SHA-256: `63402b5d230467dacaae1d9bf401f39a882ca580d481e3af8ee8f2f645ae25c9`. Preserved runtime receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.25/smoke-v2-runtime-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.25%2Fsmoke-v2-runtime-receipt.json)).
+
 ## Final decision
 
-The greedy baseline and target set are sealed. Baseline sampling is still running; no intervention or final candidate has been measured.
+The baseline and target set are sealed. S1 is running; no trained candidate has completed the paired full-panel gate.
