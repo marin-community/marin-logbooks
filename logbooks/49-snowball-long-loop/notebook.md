@@ -2557,3 +2557,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only; gate outcomes come from worker cc's.
 - Decision and next action: hourly checks continue; watch the pools preparer publication.
+
+### 2026-11-25 11:45 UTC - Addendum: Exp4 corrected round LANDED (`20c8baee…`, round `.131`); original-data pools published (160,361 train + 200 holdout); V5 CPU gate submitted
+
+- Question or hypothesis and reason for trying it: record the corrected Exp4 round landing and the published original-bytes pools that gate it.
+- Published source revision: **corrected round LANDED `20c8baeebe03f86e3119fee355407b7a7cc81673`, `rounds/mochi-exp4-dspark-rl.yaml` `.131`; 74 tests/lint/types PASS.** **Original-data CPU prep completed/published: 160,561 original rows → 160,361 train + 200 holdout (seed 20261020)** — all source entries/serialized task bytes preserved, no ID/hash overlap. New curriculum `long-loop/exp4-rl-v5-dspark@2026.11.25.131: d143fff8`, source parent `cde16ecb`, derived 22+42 / min-180. V5 initializer EXACT `.129`; draft unchanged (400407-fit / four proposals / 0.775). RL UNSUBMITTED; `.129` untouched.
+- Command or material configuration: bound pool `s3://marin-us-east-08a/marin/users/benfeuer/mochi-exp4-dspark/long-loop/mochi-exp4-original-rl-pools/2026.11.25.131` — manifest SHA `5535bb0d5170bf44f91c35f0e57d41fe3be850bb28e069358e6fd57bb33b4994`; curriculum.json alongside (SHA `8c3225f6…`). CPU real-agent preflight `/benfeuer/mochi-exp4-v5-dspark-real-agent-preflight-20261125a` (4 CPU / 16 GB / 0 GPU, PRODUCTION 08a) submitted; native no-run also active.
+- External inputs and artifact references: worker cc over Rhizome (~11:4x UTC) [R]; receipts `mochi-fixes/mochi-exp4-dspark/{original-derived-pools-receipt.json,v5-original-cpu-gate-submission-receipt.json}` [R].
+- Environment and hardware when relevant: the new V5 strict logprob gate waits for actual CPU/native PASS; the old 400407 check was killed with no result reused.
+- Result, including failure or restart: round landed; pools published; CPU gate in flight.
+- Evidence: pools receipt + gate submission receipt + manifest/curriculum SHAs [R].
+- Interpretation and limitations: gate-pending state — CPU/native pass is required before the strict logprob gate runs.
+- Decision and next action: record the CPU/native and logprob gate outcomes.
