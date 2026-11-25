@@ -2644,3 +2644,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: pipeline/acceptance-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-25 10:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `86478373a2…` to `d742856b1b…` — 23 new commits. Head `d742856b1b` [curation] Preserve the Nvidia Workplace source identity; `1d5a5f6547` [curation] Select consumer runtimes per source; `258c8528d5` [curation] Repair the stale endless native test fixture; `e6f2064bd7` [curation] Declare the PyMethods2Test native intake at its census pin; R40 cut re-pins at v13 (`8fc8b2192c`), v16 (`ba9729fdcf`), v17 (`76a9bd99b5`), and v20 (`0e5f1947c7`); infra — `87d2fcb2b0` carry the stage jobs' environment across the Iris dispatch; `eab75d5045` batch embedding by a token budget to stop CUDA OOM on long documents; release/pipeline — `831fb16858` publish the repaired MiMo release to its private registry repository; `228ce39ed3` resolve the retained sources' census bindings and the export page bound; `ad31924d3b` bind the run's landing revision through the submitter; `12d18f580c` move attested-revision containment to the submitter where git is absent.
+- Command or material configuration: `git fetch origin` + `git log 86478373a2..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: 23 landings — R40 cuts v13→v20, curation intake/runtimes/source-identity work, CUDA-OOM-safe token-budget embedding batching, Iris-dispatch environment carriage, and MiMo release publication.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: pipeline/curation-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
