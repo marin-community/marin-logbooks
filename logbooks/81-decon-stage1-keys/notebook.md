@@ -405,3 +405,20 @@ Cause: the stream keeps the letters and digits of markup (`<b>` adds "b", `&nbsp
 
 - Commit `9d40dcaa6c` is labeled as the merge of marin#11993 commit `37ba98bd1a` but holds the set 29 entry and
   `f13b_set29_eval.py`; the merge is the next commit.
+
+### 2026-11-25 10:30 UTC - Embedding audit: encoder choice and calibration (F5, F5b)
+
+- Design (F5): 400 catalog shards drawn uniformly (seed 61), up to 5,000 records each; chunks of 1,000
+  characters every 500 (at most 60 per record); each chunk's 10 nearest items (question with lettered choices,
+  no passage); per record its 10 nearest items that are not v11 stage-1 candidates; excerpts (1,000 characters
+  around the chunk) for each shard's 1,000 most similar pairs and a random 250 of the rest.
+- Calibration: two extra shards embedded with the sample: the 249 confirmed key-1 misses (real copies) and the
+  F4 plants (plain, paraphrase, translation, inside 3,000 characters of host text). Share of records whose
+  item is among their top 10 (top 3):
+  - multilingual-e5-small (chunk every 800, top 3 kept): real copies 94% (77%); plain plants 59%; paraphrases
+    47%; translations 10%. Rejected: too weak on translations.
+  - bge-m3 (CLS pooling, chunk every 500, top 10): real copies 238/249 = 96% (200); plain plants 471/554 = 85%
+    (399); paraphrases 418/551 = 76% (350); translations 118/184 = 64% (92). True-pair similarity median
+    0.79-0.86; other pairs median 0.67, 99th percentile 0.92-0.98 (the same question in sibling evals).
+- Interpretation: the audit finds about 85% of plain copies, 76% of paraphrases and 64% of translations of
+  what is there; its counts are corrected by these recalls. Jobs: `decon-embed2-items`, `decon-embed2-chunks-p*`.
