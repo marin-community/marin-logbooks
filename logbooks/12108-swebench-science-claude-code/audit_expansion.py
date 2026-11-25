@@ -3,6 +3,9 @@
 import argparse
 import json
 from collections import Counter, defaultdict
+from io import BytesIO
+
+import ijson
 
 from evalrecords.rollout_results import logical_samples, terminal_attempts
 from finestore.reader import ReadView
@@ -31,20 +34,38 @@ def audit_task(root, task):
             assert r["requested_max_tokens"] == r["forwarded_max_tokens"] and r["context_window"] == 262144
             sessions[path.split("/")[-2]].append(r)
     wire = list(records("wire/*.json").values())
-    requested = {(r["messages_sha256"], r["requested_max_tokens"]) for rows in sessions.values() for r in rows}
+    requested = Counter(
+        (r["messages_sha256"], r["requested_max_tokens"], r["requested_effort"])
+        for rows in sessions.values() for r in rows
+    )
+    forwarded = Counter((r["messages_sha256"], r["max_tokens"], r["reasoning_effort"]) for r in wire)
+    assert requested and forwarded
     assert all(r["enable_thinking"] and r["reasoning_effort"] == "xhigh" for r in wire)
-    assert all((r["messages_sha256"], r["max_tokens"]) in requested for r in wire)
+    assert forwarded.keys() <= requested.keys()
     matches = [
         rows for rows in sessions.values()
         if (sum(r.get("input_tokens", 0) for r in rows), sum(r.get("output_tokens", 0) for r in rows))
         == (attempt["prompt_tokens"], attempt["completion_tokens"])
     ]
     completed = matches[0] if len(matches) == 1 else []
+
+    # The attempt points to its own saved turns, including when client retries make the receipt totals ambiguous.
+    raw = reader.read_blob(attempt["result_blob"])
+    assert raw is not None
+    turns = list(ijson.items(BytesIO(raw), "conversations.item.steps.item.turn.usage"))
+    assert turns and all(turn is not None for turn in turns)
+    for field in ("prompt_tokens", "completion_tokens"):
+        assert sum(turn[field] for turn in turns) == attempt[field]
     return {
+        "native_max_prompt": max(turn["prompt_tokens"] for turn in turns),
+        "native_max_reply": max(turn["completion_tokens"] for turn in turns),
+        "native_turns": len(turns),
         "reward": grade,
         "final_retry": attempt["retry"],
         "wire_reply_limits_all_attempts": dict(Counter(r["max_tokens"] for r in wire)),
         "wire_requests_all_attempts": len(wire),
+        "excess_wire_receipts": (forwarded - requested).total(),
+        "excess_client_receipts": (requested - forwarded).total(),
         "matched_final_sessions": len(matches),
         "max_prompt": max((r.get("input_tokens", 0) for r in completed), default=None),
         "max_reply": max((r.get("output_tokens", 0) for r in completed), default=None),

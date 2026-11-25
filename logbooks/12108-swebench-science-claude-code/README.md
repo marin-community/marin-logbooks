@@ -42,3 +42,29 @@ The first expanded launch used commit `0585a5310f`. On task 050 the native attem
 All 32 selected tasks received native grades. Marin Claude Code solved 5 (15.6%), Marin Pi solved 6 (18.8%), and the authors’ Claude Code solved 6 (18.8%). Against Pi, Marin Claude Code gained 024 and lost 018 and 084, agreeing on 29/32. Against the authors it gained 009 and 024 and lost 018, 053 and 084, agreeing on 27/32. The paired difference was −3.1 percentage points against either reference. The finite-population sampling standard errors for the 32 selected out of 112 were 4.6 points against Pi and 6.0 against the authors. Each task contributed one graded outcome per protocol. This uncertainty covers task selection only.
 
 The first pass committed 27 grades. The five ungraded IDs (008, 016, 042, 050, 053) all received grades in the continuation at commit `23724146ec`; the original 27 grades were retained. Task 016 encountered a Daytona connection failure. Tasks 042 and 050 hit the archive size ceiling. Tasks 008 and 053 ended with CLI errors.
+
+### All eligible tasks
+
+Across the 118 matched tasks, Marin Claude Code solved 32 (27.1%), Marin Pi solved 23 (19.5%), and the authors’ Claude Code solved 35 (29.7%). The upstream release contains 119 tasks. Marin held out task 019, which the authors scored as unsolved. The table uses the same task IDs for all three runs. [Published per-task outcomes](https://github.com/swescience/swescience.github.io/blob/f16153e5c47c46b2f6f2ebf0aaefae34bdf8c8bd/data/task-matrix.json)
+
+| Tasks | Marin Claude Code | Marin Pi | Authors’ Claude Code |
+| --- | ---: | ---: | ---: |
+| Original selected six | 3/6 | 3/6 | 4/6 |
+| Frozen checkpoint | 5/32 | 6/32 | 6/32 |
+| Remaining tasks | 24/80 | 14/80 | 25/80 |
+| All eligible | 32/118 | 23/118 | 35/118 |
+
+Marin Claude Code and the authors agreed on 95/118 task outcomes. Marin alone solved 10 and the authors alone solved 13. The three-solve difference in total therefore includes 23 individual disagreements. Each protocol contributed one grade per task. The authors’ exact CLI version, context limit, and per-request reply ceiling remain unknown.
+
+Marin Claude Code and Pi agreed on 99/118 outcomes. Claude Code alone solved 14 and Pi alone solved five. This comparison changes both the agent harness and its token limits. On the 80 tasks after the frozen checkpoint, the first pass produced 74 native grades. Five ungraded tasks encountered Daytona connection failures and one had a CLI failure. All six subsequently graded. The frozen checkpoint also needed five recoveries as described above.
+
+| Reference | Solved only by Marin Claude Code | Solved only by reference |
+| --- | --- | --- |
+| Marin Pi | 004, 010, 015, 017, 024, 025, 032, 034, 074, 093, 098, 101, 107, 112 | 002, 012, 018, 084, 116 |
+| Authors’ Claude Code | 009, 010, 017, 024, 032, 034, 058, 093, 098, 103 | 007, 012, 018, 026, 038, 053, 061, 062, 063, 077, 080, 084, 091 |
+
+### Token and grade audit
+
+All 112 new grades matched their task IDs, final native attempts and saved sample rewards. Their 8,343 recorded model turns summed to the native prompt and completion totals on every task. On 107 of the 112 tasks, at least one prompt exceeded 65,536 tokens. On 35, at least one reply exceeded 16,384. Across all 118, including the original six, these counts were 112 and 36. The largest observed prompt was 230,105 tokens on task 070, and the largest reply was 32,000 tokens.
+
+Across the expansion, including interrupted attempts, all 9,018 outgoing model requests had thinking enabled and used xhigh. Claude Code requested a 32,000-token ceiling on 9,016 of those requests and 128,000 on two (one each on 051 and 053). Every outgoing request matched a recorded client message digest, reasoning effort and cap. Comparing the multiplicities of identical requests left 84 excess client receipts and one excess outgoing receipt. The per-session client usage totals exactly matched the final native attempt for 83/112 tasks. For the other 29, the native final attempt still provided verified per-turn usage. The maxima above use the native final attempts for all 112. Run the `audit_expansion` module on the private expansion directory to reproduce these checks.
