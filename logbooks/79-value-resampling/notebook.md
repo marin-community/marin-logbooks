@@ -58,3 +58,11 @@ Run the current launcher with the same manifest and head. The initial one-seed, 
 The sandbox provider returned an HTTP 502 during the paired run. The runner now retries workspace creation with the same sandbox name and bounded backoff. An exhausted gateway error becomes an explicit infrastructure exclusion. Preserve completed issues and resume only the unscored cases, with identical seeds, actor, context, and budgets.
 
 The paired estimator also measures whether selecting the higher predicted `2p(1 - p)` increases the fraction of two-rollout groups with one pass and one failure. Both policies and the uniform baseline use one starting branch for each two-rollout group.
+
+### 2026-11-25 UTC — Complete the paired pilot
+
+The pilot completed the planned paired continuations and grading across the original and resumed jobs. The archived runner and summarizer reproduce the protocol with the study manifest and frozen head. The study record holds the empirical comparison and per-issue outcomes. The continuation actor is Qwen3-14B, so the result applies to that actor and budget. The archive keeps the value head and rollout selection code available for further controlled comparisons.
+
+- [Two-seed experiment source](https://github.com/marin-community/marin-logbooks/commit/6651c9c9dcfc799fbc6ee0fd6175c828fed40017)
+- [Gateway recovery source](https://github.com/marin-community/marin-logbooks/commit/fdde00f4e4b728cc4dc54f118a592f3ff39818ba)
+- [Paired outcome summarizer](summarize-both.py)
