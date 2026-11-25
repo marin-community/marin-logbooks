@@ -30,10 +30,16 @@ def text(blocks: str | list[dict]) -> str:
 
 def translate(body: dict) -> dict:
     messages = []
-    if body.get("system"):
-        messages.append({"role": "system", "content": text(body["system"])})
+    system = [text(body["system"])] if body.get("system") else []
     for message in body["messages"]:
         blocks = message["content"]
+        # Claude Code can send its environment instructions as a system turn after the user.
+        # Qwen's template accepts one leading system message, for both text and block inputs.
+        if message["role"] == "system":
+            system.append(text(blocks))
+            continue
+        if message["role"] not in ("user", "assistant"):
+            raise ValueError(f"Unsupported Claude Code message role {message['role']}")
         if isinstance(blocks, str):
             messages.append(message)
             continue
@@ -70,6 +76,8 @@ def translate(body: dict) -> dict:
             else:
                 raise ValueError(f"Unsupported assistant content type {kind}")
         messages.append(assistant)
+    if system:
+        messages.insert(0, {"role": "system", "content": "\n\n".join(system)})
     payload = {"messages": messages, "reasoning_effort": "xhigh", "chat_template_kwargs": {"enable_thinking": True}}
     for key in ("max_tokens", "temperature", "top_p", "top_k"):
         if key in body:
