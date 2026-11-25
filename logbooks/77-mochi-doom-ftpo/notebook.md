@@ -21,7 +21,7 @@ Use up to 128 GB200 on cw-us-east-08a at production priority. Submit stages when
 
 ## Baseline
 
-The valid math16k baseline has 12 confirmed loops / 512 (2.34375%), zero unassessed responses and 390 native full-credit passes / 512 (76.171875%). The 32K greedy and temperature-0.7 panels are running; no training has started. The required math target is candidate UB ≤ 6 with at least 365 passes.
+The valid math16k baseline has 12 confirmed loops / 512 (2.34375%), zero unassessed responses and 390 native full-credit passes / 512 (76.171875%). The 32K initial and reserve panels are being rerun after correcting wall-clock censoring; no training has started. The required math target is candidate UB ≤ 6 with at least 365 passes.
 
 V2 cohorts use the complete native-rendered manifest. The first S0 attempt was cancelled at 19:25 EST because its preparer omitted native answer-format instructions from the prompt hashes; its outputs and v1 hashes are excluded. Corrected S0 was submitted at 19:45:04 EST on November 24, runtime 2026.11.24.4. Its first live prompt matches the v2 hash exactly.
 
@@ -142,6 +142,29 @@ Completed audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/au
 Math generation completed at 20:52:53 EST; the greedy 32K panel began immediately afterward. GPU coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-cc75b435e5-in-7985a1b9-2026.11.24.4-coordinator-6bbb3801`; child suffix `a8f0fc0dbf9a`. CPU audit `/benfeuer/mochi-doom-audit-math16k-20261124a` succeeded (55.73s). CPU metadata replay/audit `/benfeuer/mochi-doom-replay-math16k-20261124a` submitted at 21:12:22 EST and succeeded (31.71s), zero failures/preemptions. Native grade tests: 61 passed; audit tests: 16 passed; all 768 frozen panel tasks preserve their native prompts under the new pass declaration, and 2304 local adapter replays preserve every field except `passed`. Required lint/type checks passed.
 
 The 32K greedy and sampled panels remain in progress. This is a partial baseline milestone; sparse-domain reserve decisions and training wait for the full measurement.
+
+### 2026-11-24 22:24 EST — Remove wall-clock censoring from the 32K measurement
+
+The first complete 32K greedy panel has **221 unassessed responses / 768**. These are model-operation `AgentTimeoutError` failures. The inherited canonical TaskSpec session sets a 1,800-second model-turn deadline; long or queued requests hit it before the 32K token limit. This is a censored attempt, excluded from domain qualification.
+
+| Excluded 32K cohort | Unassessed / 128 |
+| --- | ---: |
+| math | 26 |
+| IF | 2 |
+| coding | 100 |
+| reasoning_gym | 38 |
+| structured outputs | 11 |
+| MCQ | 44 |
+
+Diagnostic audit: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/audits/s0-v4/initial-greedy.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Faudits%2Fs0-v4%2Finitial-greedy.json)), SHA-256 `a5cc8e8e4b1d21744cce98daa82252d73022d64a44f4ec5384a47d954ad2199a`. The original outputs remain intact. The completed 16K math cohort has zero unassessed responses, so its 12 confirmed loops and 390 passes / 512 remain the valid math baseline.
+
+Source `1043557f45` explicitly removes model-turn, total-turn and attempt wall-clock cutoffs for these single-turn measurements. The generated-token limit remains 32,768, prompt allowance 2,048 and serving window 34,816. Verifier and cleanup deadlines remain 300 and 60 seconds. Two local rendering/runtime regression tests pass; native lowering and the actual cloud resolved configuration confirm these limits. The current native audit/pilot suite has 17 passes. Broader validation and unchanged host/dependency failures are recorded in the private execution status.
+
+The owned v4 coordinator and child were cancelled with `iris-cancel-own` at 22:05 EST and confirmed killed. Its unfinished sampled panel is excluded. The new **128-GB200 production** `doom-baseline-32k` run was accepted at **22:20:44 EST**, runtime `2026.11.24.5`, with unchanged weights, tokenizer and cohort-v2 identities. It evaluates initial greedy, fixed-reserve greedy, initial temperature-0.7 and reserve temperature-0.7 profiles in one workload. Only domains with fewer than ten confirmed loops on the valid initial panel will include reserve rows in their final cohort.
+
+New coordinator: `/benfeuer/users-benfeuer-checkpoints-mochi-doom-ftpo-doom-baseline-32k-757bfc9804-in-ac3b27d4-2026.11.24.5-coordinator-57b4baeb`. Child suffix `ae3b4421b775`, submitted at 22:21:30 EST. All 32 four-GPU replicas are running with zero failures/preemptions at the first probe. Cloud runtime receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-doom-ftpo/diagnostics/2026.11.24/baseline32-v5-runtime-receipt.json` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-doom-ftpo%2Fdiagnostics%2F2026.11.24%2Fbaseline32-v5-runtime-receipt.json)).
+
+No training has started. Domain qualification waits for this fixed-token rerun. The 48-hour clock remains anchored at November 24 17:46 EST.
 
 ## Final decision
 
