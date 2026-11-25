@@ -2656,3 +2656,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: pipeline/curation-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-25 11:13 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `d742856b1b…` to `07f63e89b8…` — three new commits: `07f63e89b8` [curation] Bind the PyMethods2Test prepared images into the declared conversion; `c92bdf6141` Keep the acceptance task machine's sandbox renewal alive during grading; `5cb15dba2c` [rl-data] Emit the approved reduced declared limits for the repaired SWE-rebench V2.1.
+- Command or material configuration: `git fetch origin` + `git log d742856b1b..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: three landings — PyMethods2Test prepared images bound into their declared conversion, the acceptance sandbox renewal kept alive during grading, and approved reduced declared limits emitted for the repaired SWE-rebench V2.1.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: curation/acceptance-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
