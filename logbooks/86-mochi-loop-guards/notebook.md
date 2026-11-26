@@ -426,6 +426,23 @@ No TBLite repeat is triggered: passes69 are outside54–58, and the preregistere
 
 [Audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs1-2026.11.26.1%2Fstop%2Fpartial%2Ftblite%2Faudit.json) and `gate-receipt.json`: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s1-2026.11.26.1/stop/partial/tblite/`. At13:12 UTC stop26/256held-out and RP114/200TBLite, with all32 GPU hosts running and zero Iris failures/preemptions.
 
+### 2026-11-26 13:35 UTC — Full saved S0 cost distributions validated
+
+Regional CPU `/benfeuer/mochi-loop-guards-s0-cost-profile-20261126b` succeeded in31.04 seconds, zero failures/preemptions, with no new model trials. All four graded-token medians exactly match the sealed audit. Diagnostic-a failed this equality because its sampler incorrectly omitted zero-token cost rows; retaining them fixes the derived calculation without changing canonical audit data or model results.
+
+| Cohort, all saved attempts | Mean assistant-response tokens | Token p95 | Token max | Mean wall seconds | Wall p95 | Wall max |
+|---|---:|---:|---:|---:|---:|---:|
+| TB2 |8,626.32|21,709.2|23,294|1,196.28|1,877.89|2,117.23|
+| TBLite |11,226.48|24,663.45|26,071|1,051.34|1,878.18|1,989.99|
+| SWE100 |10,420.92|23,245.05|26,227|1,108.64|1,918.55|2,142.78|
+| Held-out |8,674.28|26,849.75|91,058|989.52|2,629.60|10,857.81|
+
+The graded held-out subset remains253 trials, mean963.60 seconds andp952,568.20 seconds. Per-trial attempt timing describes a saved attempt; native phase timing additionally includes concurrency, retries and tail completion. The corrected S0 held-out phase was10,863 seconds. Do not multiply the entire sandbox-bound phase by the128-to12 inference-GPU ratio; the smaller RL inference allocation must be accounted for in its model-service component alongside task tail times, optimizer work and checkpoint saves.
+
+Native primary vLLM generation counters report2,658,970 tokens over2,376.08 seconds on128 GPUs,8.74263344 tokens/second/GPU end to end. The terminal-turn response metric is only49,182 tokens and is not the full agent cost. The saved all-turn TB2 token sum is2,303,228; engine-service counters and saved-trial arrays have different scopes. Neither terminal-turn totals nor checkpoint-save time alone are a complete RL update budget.
+
+[Cost profile](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdiagnostics%2F2026.11.26%2Fs0-full-cost-profile.json): `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s0-full-cost-profile.json`. The sibling `s0-full-cost-profile-analysis.py` and `s0-full-cost-profile-receipt.json` preserve analysis source and provenance; sourceSHA`4aca7762655265f4af7065d1cb937e39b102ec6dffa0d5ce9a72e676fc85defa`. CPU watchdog validation reports informational success and its entry is retired. No RL job or fixed N follows from this cost calculation; effective budget authority is unchanged.
+
 ## Final decision
 
 Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected. The original stop arm passes TB2 but fails TBLite’s50% target; the original RP arm fails TB2’s action-loop UB target. Remaining cohorts and any required single repeat remain outstanding. I3 was dropped under the original13:01:36 UTC November26 budget cutoff; no S2, exports or S3 are run. No Marin contribution PR has been opened.
