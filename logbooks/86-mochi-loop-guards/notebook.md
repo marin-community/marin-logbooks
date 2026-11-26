@@ -620,3 +620,38 @@ The classification in `CONSOLIDATION.md` accounts for all93 archived helpers:
 41 duplicate existing tooling,11 promoted experiment logic and41 history-only scripts.
 No temporary worker scripts are required. The two S1 verdicts remain FAIL under the
 user override; correctness passes, unchanged loop gates fail, and no RP repeat is due.
+
+## November 26, 15:06 EST: treatment update verified; partial failure receipts frozen
+
+Regional native telemetry verifies treatment optimizer step1 at14:49:17.976 EST:
+256 consumed samples,702,670 response tokens and702,668 loss tokens. The training-step
+policy synchronization completed14:49:24.739 EST. Control optimizer completion remains
+unverified. The earlier training-loop-entry record is not an optimizer-completion claim.
+
+Both launches explicitly configure the checkpoint callback to save every update and
+keep every update. The treatment checkpoint prefix was absent in the15:00 metadata
+check; no durable checkpoint or trained HF export is claimed. Step-end metrics had
+not yet appeared in native telemetry or stored run records. This is not sufficient
+evidence to diagnose a checkpoint save failure. Preserve and export only committed
+checkpoints through an in-region08a CPU job.
+
+Compact published task-health receipts were copied by15:05:12 EST, frozen and hashed
+with native fsutil/jq/shasum. The standard extractor requires a stopped run and was not
+invoked. The [snapshot receipt](analysis/user-overrides-20261126/s2-r4-task-health-snapshot-1505.json)
+records the counts and limitations. Raw compact receipts and per-file SHA256 inventories
+are preserved at `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s2-r4-task-health-snapshot-1505`
+([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdiagnostics%2F2026.11.26%2Fs2-r4-task-health-snapshot-1505)).
+
+| Arm | Unique receipt attempts | Graded | Unavailable | Infrastructure error |
+|---|---:|---:|---:|---:|
+| Control |513|500|12|1|
+| Treatment |515|503|12|0|
+
+Control's non-graded exceptions are3 ConnectionErrors,2 environment-start timeouts,
+7 VerifierRuntimeErrors and1 verifier timeout. Treatment has9 ConnectionErrors,
+1 environment-start timeout and2 VerifierRuntimeErrors. No duplicate attempt IDs were
+found. The copied receipt sets are incomplete live-run diagnostics and copying is not
+atomic across files. Their97.47%/97.67% graded shares do not establish the consumed
+batch's masking rate, satisfy an evaluation validity gate or support a treatment effect.
+Next obtain committed checkpoints and step-end batch failure metrics; preserve all
+outcomes and keep the registered clocks and gates unchanged.

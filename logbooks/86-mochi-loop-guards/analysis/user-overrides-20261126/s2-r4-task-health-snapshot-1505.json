@@ -1,0 +1,47 @@
+{
+  "kind": "partial live-run task-health receipt snapshot",
+  "copied_by": "2026-11-26T15:05:12-05:00",
+  "revision": "2026.11.26.4",
+  "source_commit": "ecc9fb1bae",
+  "snapshot_root": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s2-r4-task-health-snapshot-1505",
+  "method": "Native fsutil copied compact published task-health JSONL receipts; jq counted rows/outcomes and verified unique attempt IDs; shasum recorded per-file SHA256 inventories. No executable worker script was created.",
+  "control": {
+    "attempts": 513,
+    "unique_attempt_ids": 513,
+    "graded": 500,
+    "infra_error": 1,
+    "unavailable": 12,
+    "non_graded_exceptions": {
+      "ConnectionError": 3,
+      "EnvironmentStartTimeoutError": 2,
+      "VerifierRuntimeError": 7,
+      "VerifierTimeoutError": 1
+    }
+  },
+  "treatment": {
+    "attempts": 515,
+    "unique_attempt_ids": 515,
+    "graded": 503,
+    "infra_error": 0,
+    "unavailable": 12,
+    "non_graded_exceptions": {
+      "ConnectionError": 9,
+      "EnvironmentStartTimeoutError": 1,
+      "VerifierRuntimeError": 2
+    }
+  },
+  "limitations": [
+    "Live publication is incomplete and copying is not atomic across files; these counts describe the frozen copied receipts only.",
+    "Receipt attempts are not the consumed optimizer batch and do not establish its masking rate.",
+    "Graded fractions are descriptive; no evaluation validity gate or paired treatment verdict is applied.",
+    "The standard task-health extractor requires a stopped run and was not invoked or bypassed."
+  ],
+  "optimizer_progress": {
+    "treatment_step_1_completed_at": "2026-11-26T14:49:17.976-05:00",
+    "treatment_step_1_consumed_samples": 256,
+    "treatment_step_1_consumed_loss_tokens": 702668,
+    "treatment_step_1_policy_sync_completed_at": "2026-11-26T14:49:24.739-05:00",
+    "control_optimizer_completion": "unverified",
+    "durable_checkpoint": "unverified; treatment checkpoint prefix absent at the preceding metadata check"
+  }
+}
