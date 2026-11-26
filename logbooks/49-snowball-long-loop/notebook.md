@@ -2629,3 +2629,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: audit receipt + readout + posted tracker comment [R].
 - Interpretation and limitations: **recommendation — leave `.129` unchanged** (current evidence does not show worsening numerical instability or weight collapse); **keep `.131` blocked** and investigate matched plain batching/kernel/routing first; do not weaken thresholds.
 - Decision and next action: no new jobs, wakes, or run changes; the user decides any follow-up on the `.131` tolerance investigation.
+
+### 2026-11-26 11:32 UTC - Hourly catch-up (Iris primary evidence; multi-hour window): `.129` GPU child SUCCEEDED; infra/transport-recovery runs `.2`-`.4` completed; Exp6 `.158` fully succeeded
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence. This window spans ~11:13 Nov 25 → 11:32 UTC Nov 26.
+- Published source revision: **RL `.129`** `/benfeuer/long-loop-mochi-v5-exp3-rl-micro210-final-preserve-2026.11.25.129-coordinator-86dea96c`: a second GPU child `long-loop-mochi-v5-exp3-rl-micro210-2026.11.25.129-acc93c2f5dba` (submitted 22:25:20 Nov 25) **SUCCEEDED**. Follow-on recovery chain on Nov 26: `.2` `infra-recovery` (`…-2026.11.26.2-coordinator-7002d295`) **killed by user** 04:53:20 (GPU child killed, parent terminated); `.3` `infra-recovery59` (`…-2026.11.26.3-coordinator-3a1256aa`) **SUCCEEDED** 05:08:59 (GPU child 05:11:50); `.4` `transport-recovery` (`…-2026.11.26.4-coordinator-5cc4b314`) **SUCCEEDED** 06:15:20 (GPU child 06:17:45). **Exp6 `.158`**: the RL checkpoint task `…-rl-…-a2fe5813bdc4` SUCCEEDED; its `-export-20` child SUCCEEDED 15:40:16 Nov 25; the `…-micro210-…-ac916fd933d9` task SUCCEEDED 16:06:58 (eval preflights 16:05/02:32 succeeded; the `-retrieval` child killed by user).
+- Command or material configuration: `iris --cluster=marin job list` for /benfeuer/long-loop-mochi-v5-exp3-rl and /benfeuer/mochi-exp6 (11:32 UTC).
+- External inputs and artifact references: Iris job lists [R]; prior addenda (0c3a7670f5, 1d83029755) [R].
+- Environment and hardware when relevant: no running jobs remain in either prefix as of this read.
+- Result, including failure or restart: `.129`'s run tree is terminal-succeeded; the recovery chain `.2`→`.4` ran on Nov 26 morning (user-killed, then two succeeded recovery runs); Exp6 `.158`'s whole task tree is succeeded.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only — the recovery runs' purposes (infra-recovery/transport-recovery) and their outcomes beyond state are not established from job state alone; no worker cc in hand explains them.
+- Decision and next action: hourly checks continue; watch for worker readouts on the recovery chain.
