@@ -3361,3 +3361,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt + gate/pool states [R].
 - Interpretation and limitations: n/a.
 - Decision and next action: record the source-control terminal receipt and the GPU children.
+
+### 2026-11-26 16:41 UTC - Addendum: credential-fix wave's first GPU child submitted — 006/.526 (a8cb11d1141e); all 7 secrets resolved in the compiled graph
+
+- Question or hypothesis and reason for trying it: record the credential-fix wave's first GPU child.
+- Published source revision: **actual GPU child `/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.526/rl-data-campaign-v2-mix-006-2026.11.26.526-a8cb11d1141e` SUBMITTED 16:39:48.247 UTC** — 128 GB200 (48+80). Regional real-agent gate `fe88b245` PASSED 16:38:58.812; **compiled SHA `adcebef20ccc0a3170cc3335cafecc49e134a1d7b04c7acb5dca5804daa7364f`: all 7 required names resolved including DAYTONA_EVAL_API_KEY**, realPi construction, 8 train/eval source TaskSpecs, vocab 128256 / fingerprint `9e4b1007…55b9763`.
+- Command or material configuration: native `task_environment_names` exclude all credentials, so this child exercises the **file-only worker boundary** directly.
+- External inputs and artifact references: worker cc over Rhizome (~16:4x UTC) [R].
+- Environment and hardware when relevant: runtime/Grafana execution UID not yet observed; no queued or optimizer claim. Source `3fcd0748`. The worker's first-update/stage wakes remain their own chain.
+- Result, including failure or restart: the credential-fix wave's first child is in with the complete secret bundle.
+- Evidence: gate PASS + compiled SHA [R].
+- Interpretation and limitations: the child is the live test of the file-only credential path.
+- Decision and next action: record the .527/.528 children and the first optimizer/first-update evidence.
