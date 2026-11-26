@@ -2821,3 +2821,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: served-load/v39-sources/bindings readbacks [R].
 - Interpretation and limitations: admission semantics await the user's catalog-field ruling; fail-closed is maintained meanwhile.
 - Decision and next action: record the user's admission ruling and the corrected queue launch when they land.
+
+### 2026-11-26 15:45 UTC - Addendum: R40 canonical binding implemented on `ea9b97cd0d` (not yet landed) — Available-only next mixes 032/.511, 006/.512, 008/.513 dry PASS; Pending sources stay fail-closed
+
+- Question or hypothesis and reason for trying it: record the canonical admission-binding implementation and the corrected next queue.
+- Published source revision: canonical `curriculum_entries`/`weighted_curriculum` binding implemented on `ea9b97cd0d` (not yet landed; advisory finishing) — supports immutable served pipeline entries; no holiday-branch imports or local admission exceptions. **Fifteen focused regressions + 66 related checks PASS, lint/types PASS.**
+- Command or material configuration: native CPU recipe/graph dry PASS for the actual Available-only next mixes **032/.511, 006/.512, 008/.513**; unchanged `.131` 48+80 / TP1-BF16 / DSpark / production 08a / 50 steps / no learning clock / all racks. Exact R40 status/pin/census snapshot committed as configuration; the runtime file-SHA check reads pinned HF blob metadata in 08a CPU with source literal hashes preserved.
+- External inputs and artifact references: worker cc over Rhizome (~15:4x UTC) [R]; canonical R40 readbacks/selection/proofs in `rl-data-campaign/r40/` [R].
+- Environment and hardware when relevant: the proposed High anchor Exp5/034/050 remain Pending-source mixes in place under fail-closed. All previous campaign roots are terminal with no GPU reached — old 033/009 stopped once per the new selection; 011 failed on unsupported RST integrity_contract and was not patched.
+- Result, including failure or restart: next runnable queue validated; launch awaits landing and the user's admission-field clarification (async, pending; no Pending promotion).
+- Evidence: regression + dry-run results + r40 readbacks [R].
+- Interpretation and limitations: admission semantics still await the user's ruling; fail-closed maintained.
+- Decision and next action: record the landing and the 3-launch when they occur.
