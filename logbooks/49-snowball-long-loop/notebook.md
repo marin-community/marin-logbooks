@@ -2761,3 +2761,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: canonical Atlas diagnosis + child verification behavior [R].
 - Interpretation and limitations: the campaign harness again — the data itself passed full-parquet SHA/row verification; only the per-row TaskSpec hash comparison was wrong.
 - Decision and next action: record the fix landing, regression proof, and the fresh root IDs.
+
+### 2026-11-26 14:30 UTC - Addendum: campaign `.505`–`.507` verified terminal failed (literal-JSON-byte hash fix landed); current FIRST root v2-mix-033/.508 on `390c5e318b`
+
+- Question or hypothesis and reason for trying it: record the corrected-wave terminal failure, the hash fix, and the new first root.
+- Published source revision: **`.505`–`.507` all regional CPU pools+roots VERIFIED TERMINAL FAILED before GPU** — the row checker compared canonicalized JSON instead of the published literal JSON byte SHA (the full parquet pins had matched). The fix now **matches the canonical retained importer exactly** — regression exact-bytes PASS / newline FAIL; 58 landing/lint/types PASS; native first-3 recipe/graph dry PASS. **Current FIRST root `/benfeuer/mochi-campaign-v2-mix-033-2026.11.26.508`** on clean landed `390c5e318b7522b8679419e39b7c42a1c662296f`, replacing the `.505` tracker row.
+- Command or material configuration: no data substitutions / no cancellations / no GPUs yet; production 08a 128 (48+80) / DSpark / 50 steps / no clock / all racks unchanged.
+- External inputs and artifact references: worker cc over Rhizome (~14:3x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-033/2026.11.26.508/submission-receipt.json` [R].
+- Environment and hardware when relevant: regional data / realPi / vocab gate before GPU; the worker's `.508` watchdog remains their own chain (retire `.505`).
+- Result, including failure or restart: corrected-wave roots terminal-failed pre-GPU; the hash fix is landed with regression proof; `.508` submitted.
+- Evidence: submission receipt + regression behavior [R].
+- Interpretation and limitations: third harness iteration; the data itself has passed full-parquet verification every time.
+- Decision and next action: record the `.509`/`.510` roots and the first GPU admission.
