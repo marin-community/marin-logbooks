@@ -3217,3 +3217,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: the proof gates quota placement only; no GPU/RL involvement.
 - Decision and next action: record the quota proof's terminal receipt and the .524 root.
+
+### 2026-11-26 15:40 UTC - Addendum: replacement root 015/.524 submitted on `4fdf019146`; `.522` verified terminal with the identical cause; 043/.525 validating next
+
+- Question or hypothesis and reason for trying it: record the second post-route-fix replacement root.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-015-2026.11.26.524` SUBMITTED once** on clean landed `4fdf019146` — native recipe/graph dry PASS; 50 steps / no clock, production 08a 128 GB200 (48+80) / `.131` controls unchanged. **Replaces the verified-terminal `.521` route failure.**
+- Command or material configuration: the `.522` root and its 32-task child are now also verified terminal with the identical first cause; **043/.525** serial dry validation follows — no duplicate job.
+- External inputs and artifact references: worker cc over Rhizome (~15:4x UTC) [R]; receipt `lane/runs/v2-mix-015/2026.11.26.524/submission-receipt.json` [R].
+- Environment and hardware when relevant: the worker's ordinary admission/first-full-update/terminal-refill/export/eval wakes remain their own chain.
+- Result, including failure or restart: second replacement root submitted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU.
+- Decision and next action: record the 043/.525 root and the first GPU admission on the fixed source.
