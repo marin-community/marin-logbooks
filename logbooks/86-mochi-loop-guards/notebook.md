@@ -30,7 +30,7 @@ The fixed clock begins 2026-11-25 17:01:36 UTC and ends 2026-11-27 17:01:36 UTC.
 - Hardware: cw-us-east-08a, production priority; 128 GB200, 32 hosts × 4 GPUs; eight DP16/EP16 engines, TP1/BF16, CUDA graphs enabled. Panel host memory 128 GiB based on measured peak plus headroom. All racks eligible by the user's subsequent directive.
 - Native entrypoint: `uv run python -m experiments.post_training.mochi_loop_guards --preset s0-baseline --version 2026.11.25.9 --run --wait` with regional storage credentials and EVAL provider credentials supplied out of band. Inspect `__main__.py` for environment binding and `--plan` for the resolved artifact graph. Never print credentials.
 - GPU source at initial archive creation: [595a1368f1354eac4ff13c54ce805e142bf7a4ec](https://github.com/marin-community/marin/commit/595a1368f1354eac4ff13c54ce805e142bf7a4ec). CPU audit source at archive creation: [5fedd5a5fa1ecbd2c832a0863a05ef4c56a94395](https://github.com/marin-community/marin/commit/5fedd5a5fa1ecbd2c832a0863a05ef4c56a94395).
-- Result: collecting; no baseline sealed and no intervention effect claimed.
+- Result: corrected S0 is sealed on823 trials,796assessed/27infra, allfourcohortsvalid. FullstopFAIL/no-repeat; originalRPFAIL with one full-armrepeat triggered. See the dated measurements below.
 - Execution identities and operational evidence: [tracking milestone](https://github.com/marin-community/marin/issues/12264#issuecomment-7175699574). Raw traces and diagnostics remain in their regional artifact stores, outside this public archive.
 
 ## Entries
@@ -484,6 +484,28 @@ No target correctness count lies within±2 of its raw threshold, and I1's primar
 
 Conditional repeat plans have passed with identical full scientific configuration,723 trials and explicit new revision; none was launched for stop. A regional CPU-only paired RL plan check also passed on the real pool for a draft candidate N2,60 GPUs per arm and identical configuration except antithrash. This is readiness evidence only: no N was fixed, no RL job was submitted and no original budget-drop decision was reversed. A peer notice alleges an extension but supplies conflicting final clocks and is marked informational/untrusted. Direct user clarification is pending; the recorded original clock remains effective.
 
+### 2026-11-26 16:14 UTC — Original RP arm sealed; held-out count requires the registered full repeat
+
+The original RP1.1 arm completed all723 trials. Root `4bd2a367` and all16 GPU tasks succeeded with zero failures/preemptions. Held-out completed16:03:32.725 UTC after9,075 seconds; its dump closed16:03:36.779. Regional CPU `/benfeuer/mochi-loop-guards-s1-postprocess-rp-20261126a` succeeded: full audit, verified permanent closed-sink trace copy,42 saved evaluation summaries with no report error, and verified publication for exact attempt `a824d6ccf60d`. Frozen cohort hashes and both partial audits match exactly.
+
+| Cohort | Assessed/N | Action-loop trials | Action-loop UB | UB cap | Passes vs S0 | Repeat-turn share |
+|---|---:|---:|---:|---:|---:|---:|
+| TB2 |257/267|36|46|17|61 vs54|0.1654309546|
+| TBLite |194/200|10|16|10|70 vs66|0.0680948738|
+| Held-out |250/256|18|24|6.5|103 vs117|0.1742603920|
+
+All three primary action-loop UB gates fail. The held-out share rises43.24% relative to S0, descriptive for I2. Held-out correctness103 is below its raw104.2 minimum (required integer105), while pooled234 passes meet the raw222.54 minimum. All cohorts meet90% validity:701 assessed,22 infrastructure and0 unavailable overall. Held-out token-tail UB6 is separate from action-loop UB24 and must not substitute for it.
+
+The original held-out correctness count103 lies within±2 of raw104.2. The rule registered before S1 therefore requires exactly one repeat of the entire723-trial RP arm, using the same panel and seeds. The repeat supplies **all gates regardless of direction**, including TB2 and TBLite. Original and repeat remain separate; no pooling, best-of selection or third repeat. [Original result and trigger](https://github.com/marin-community/marin/issues/12264#issuecomment-7197268511).
+
+A scratch launcher first stopped locally before submitting any job because it omitted the native entry module. [Source0f433bbb80012474fa79f11ed69d367cb136aaa2](https://github.com/marin-community/marin/commit/0f433bbb80012474fa79f11ed69d367cb136aaa2), archived here as `f1fe7ded41`, pins the selected preset's revision to2026.11.26.2 so the standard module reconstructs the same graph remotely. Required lint and the standard native plan pass. Materialized entire SkyRL, inputs, allocation and priority exactly match the original preflight. This changes run identity only; no scientific configuration or detector changes.
+
+The standard module repeat was accepted16:11:49.538 UTC: `/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s1-rp-7b66e20b68-in-d88ffd61-2026.11.26.2-coordinator-c20eb2fd`. At16:13:53.601 all16 GPU tasks were RUNNING with zero failures/preemptions; child suffix `a7384a7ca776`. It uses64GB200,16hosts128GiB,production08a,allracks,TP1/BF16 and PIECEWISE CUDA graphs, the same723 frozen trials/seeds and RP1.1. Native wait, monitor and own watchdog are attached. Stop remains FAIL with no repeat. No RL job is submitted.
+
+[Repeat launch](https://github.com/marin-community/marin/issues/12264#issuecomment-7197338886). [Receipt](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdiagnostics%2F2026.11.26%2Fs1-rp-repeat1-launch-receipt.json): `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s1-rp-repeat1-launch-receipt.json`. Original full audit/gate/report/retention receipts are under `audits/s1-2026.11.26.1/rp/`; original traces are permanently retained at `traces/s1-rp`. The failed conditional scratch helper is superseded by the standard-module launch receipt and retained as history.
+
+Host-memory receipt, bounded before15:40 UTC: stop16tasks/2804samples peaked66.25390625GiB, RP16tasks/3515samples peaked67.1298828125GiB (RP still running at that query). Both remain below128GiB requests. Bounded exact query and per-host identity are preserved in `diagnostics/2026.11.26/s1-host-memory-1038.{json,sql}`; hub forwarding can lag and native Iris state owns liveness.
+
 ## Final decision
 
-Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. The full stop arm fails: TBLite does not halve repeat-turn share and held-out correctness falls below its minimum; no boundary repeat is triggered. The original RP arm fails TB2 and TBLite action-loop UB targets, with held-out and any required single repeat pending. No intervention has been selected. I3 was dropped under the original13:01:36 UTC November26 cutoff; no S2, exports or S3 are run. No Marin contribution PR has been opened.
+Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its gate. The full stop arm fails TBLite's50% reduction and held-out correctness; no repeat is triggered. The original RP arm fails allthree action-loop UB gates and held-out correctness; its103 held-out passes trigger one full723-trial repeat. The repeat is running and will determine every RP gate regardless of direction. No intervention has been selected. I3 remains dropped under the original13:01:36 UTC November26 cutoff pending direct confirmation of revised clocks; no S2, exports or S3 are run. No Marin contribution PR has been opened.
