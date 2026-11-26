@@ -260,6 +260,31 @@ Regional CPU `/benfeuer/mochi-loop-guards-s0-v12-audit-tblite-20261126a` succeed
 
 Ten token-tail loops are report-only. The [audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.26-v12%2Fpartial%2Ftblite%2Faudit.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/partial/tblite/audit.json`; cohort hash remains `2e9b291a9b79f8af76c81c65c727ab9032717264a81e39410e1d631ca180ddda`. Native evaluation reached 200/200 after 2,162 seconds. SWE100 began at 07:22:22 UTC and reached 5/100 at 07:27:39. All 32 GPU hosts remained running at 07:28:26 with zero failures or preemptions. Full S0 remains unsealed pending SWE100 and SWESmith held-out. No S1/S2 job or fixed update count exists. [Tracking milestone](https://github.com/marin-community/marin/issues/12264#issuecomment-7185466688).
 
+### 2026-11-26 07:45 UTC — Rerun count units clarified before S1
+
+The [boundary clarification](https://github.com/marin-community/marin/issues/12264#issuecomment-7185769171) applies the ±2-trial trigger to count-based target-cohort thresholds: I2 loop UB and per-cohort correctness passes. I1's repeat-turn-share ratio has no trial-count unit, so no turn-to-trial conversion is introduced. One triggered arm repeat uses the same full 723-trial panel and seeds and supplies all gates regardless of direction. Original and repeat are reported separately; never pool or select the better result. No S1 job or outcome existed when registered.
+
+### 2026-11-26 08:10 UTC — Corrected SWE100 valid; actual Pi feedback verified
+
+Regional CPU `/benfeuer/mochi-loop-guards-s0-v12-audit-swe100-20261126a` succeeded with zero failures or preemptions. All 100 frozen trials are accounted for: 99 assessed (99%), one infrastructure outcome and no additional unavailable verdicts.
+
+| SWE100 metric | Corrected S0 v12 |
+|---|---:|
+| Confirmed agent-loop trials | 3 |
+| Confirmed trial share | 0.0303030 |
+| Agent-loop upper bound | 4/100 |
+| Repeat-turn share | 0.0466101695 |
+| Duplicate-tool fraction, median / p90 | 0.0821918 / 0.1582751 |
+| Full-credit passes | 52 |
+| Mean reward | 0.5252525253 |
+| Median turns / generated tokens / wall seconds | 31 / 6,590 / 908.15 |
+
+Its one token-tail loop is report-only. SWE100 is non-target under the frozen ten-loop minimum and remains baseline-only under the budget drop registered before scientific outcomes. Native evaluation completed at 07:58:10.554 UTC after 2,148 seconds; cohort hash is `ff32a38868afa2809044175c75adb43fc42d8b759d10ac125832d25081135727`. The [audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.26-v12%2Fpartial%2Fswe100%2Faudit.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/partial/swe100/audit.json`.
+
+CPU `/benfeuer/mochi-loop-guards-v12-first-pi-traces-20261126a` also succeeded. All five checked multi-turn Pi held-out records have verifier results and every between-turn observation: assistant turns/observation batches 5/4, 6/5, 9/8, 14/13 and 19/18. The [receipt](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdiagnostics%2F2026.11.26%2Fs0-v12-first-pi-traces.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s0-v12-first-pi-traces.json`. This verifies repaired feedback retention on actual Pi data, not population correctness or stall precision. Both terminal CPU watchdog entries were validated and retired under lock. Initial submissions lacked exported storage credentials and were rejected before job creation; sourcing the existing credentials resolved submission. The GPU run was untouched.
+
+Held-out began at 07:58:11.782 UTC and reached 64/256 at 08:05:45. All 32 GPU hosts remained running at 08:06:39 with zero failures or preemptions. Full S0 remains unsealed pending held-out; no S1/S2 has been submitted and N is unfixed. Source review confirms one trajectory sink covers all four cohorts. The prepared in-region retention copy waits for terminal GPU/root state so publication has closed. [Tracking milestone](https://github.com/marin-community/marin/issues/12264#issuecomment-7186256488).
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
