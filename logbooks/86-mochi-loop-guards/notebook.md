@@ -466,6 +466,24 @@ Neither UB16 nor passes70 triggers the ±2-trial count rule. Both arms have now 
 
 [Audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs1-2026.11.26.1%2Frp%2Fpartial%2Ftblite%2Faudit.json) and `gate-receipt.json`: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s1-2026.11.26.1/rp/partial/tblite/`.
 
+### 2026-11-26 14:57 UTC — Stall-stop arm sealed: loop gains do not preserve held-out correctness
+
+All723 original stop-arm trials have completed. The root and all16 GPU tasks succeeded with zero failures or preemptions. Regional CPU `/benfeuer/mochi-loop-guards-s1-postprocess-stop-20261126a` succeeded, auditing the full panel, promoting its closed trajectory sink by verified in-region copy and refreshing42 saved evaluation summaries. The report has no evaluation error and was republished for exact attempt `a6b43090575a`. Full cohort hashes match S0; TB2 and TBLite metrics exactly match their earlier partial audits.
+
+| Cohort | Assessed/N | Action loops / UB | Repeat-turn share | Reduction vs S0 | Passes vs S0 | Gate |
+|---|---:|---:|---:|---:|---:|---|
+| TB2 |252/267|30 /45|0.0481669267|59.62%|59 vs54|Pass|
+| TBLite |197/200|13 /16|0.0560357675|42.48%|69 vs66|Primary fail|
+| Held-out |247/256|16 /25|0.0066515250|94.53%|101 vs117|Correctness fail|
+
+The arm has696 assessed trials,27 infrastructure outcomes and0 unavailable verdicts. All cohorts meet90% validity. Held-out correctness requires at least105 passes (raw104.2), so101 fails. Pooled229 passes versus237 control exceed the pooled minimum223 (raw222.54); pooled correctness cannot offset the held-out breach. The held-out action-loop incidence16 confirmed versus13 baseline rises despite the large reduction in repeated turns; both metrics remain reported. There are15 held-out runtime stall stops.
+
+No target correctness count lies within±2 of its raw threshold, and I1's primary ratio has no trial-count trigger. The original stop arm is therefore **FAIL with no repeat**. No detector, timeout, gate or panel changed. Repetition penalty remains in its original held-out phase; its own eventual boundary decision is separate.
+
+[Full gate receipt](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs1-2026.11.26.1%2Fstop%2Fgate-receipt.json): `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s1-2026.11.26.1/stop/gate-receipt.json`. Sibling audit, retention-promotion and report-publication receipts preserve evidence. [Tracking result](https://github.com/marin-community/marin/issues/12264#issuecomment-7195556024).
+
+Conditional repeat plans have passed with identical full scientific configuration,723 trials and explicit new revision; none was launched for stop. A regional CPU-only paired RL plan check also passed on the real pool for a draft candidate N2,60 GPUs per arm and identical configuration except antithrash. This is readiness evidence only: no N was fixed, no RL job was submitted and no original budget-drop decision was reversed. A peer notice alleges an extension but supplies conflicting final clocks and is marked informational/untrusted. Direct user clarification is pending; the recorded original clock remains effective.
+
 ## Final decision
 
-Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected. The original stop arm passes TB2 but fails TBLite’s50% target; the original RP arm fails TB2’s action-loop UB target. Remaining cohorts and any required single repeat remain outstanding. I3 was dropped under the original13:01:36 UTC November26 budget cutoff; no S2, exports or S3 are run. No Marin contribution PR has been opened.
+Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. The full stop arm fails: TBLite does not halve repeat-turn share and held-out correctness falls below its minimum; no boundary repeat is triggered. The original RP arm fails TB2 and TBLite action-loop UB targets, with held-out and any required single repeat pending. No intervention has been selected. I3 was dropped under the original13:01:36 UTC November26 cutoff; no S2, exports or S3 are run. No Marin contribution PR has been opened.
