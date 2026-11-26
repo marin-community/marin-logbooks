@@ -894,3 +894,20 @@ The live CLI now exposes both presets. No S3 job was submitted. Before launching
 both output manifests/shard inventories. This preserves the128-GPU experiment cap.
 The training and conversion jobs retain their immutable sources `ecc9fb1bae` and
 `a989ad12e5`; the public-SFT/no-more-HF-copies ruling remains binding.
+
+## November 26, 16:48 EST: treatment starts regional weight publication
+
+Treatment's direct task-container log confirms14/215 HF-format weight shards published
+to the permanent regional output by16:47:18.451 EST, with shard15 starting. The16:47
+fsutil listing independently showed the first12 completed weight objects. This is
+regional S3 publication; neither converter has a Hub target. The215-shard converted
+layout is distinct from the193-shard SFT initializer.
+
+Control reached100% tensor conversion (10232/10232) and wrote local generation metadata
+at16:39:19.606 EST; its regional model-output directory was still absent at16:47 EST.
+Both roots remain RUNNING12/12 tasks, zero failures/preemptions at16:47 EST. Completed
+model manifests and indexed shard inventories remain unverified. No S3 panel submitted.
+The original treatment-step1 permanent-copy manifest remains absent and its status
+prefix has two completed-file records at16:47 EST. Continue the registered jobs;
+next native conversion/copy pass around16:57 EST, with the128-GPU S3 pair gated on
+both converters' successful termination and verified model artifacts.
