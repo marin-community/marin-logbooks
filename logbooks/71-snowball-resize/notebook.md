@@ -14,7 +14,7 @@ status: complete
 
 # Snowball RL resizing campaign
 
-Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing sprint: phase 1 maximizes Snowball decode throughput at the 65,536-token request window; phase 2 right-sizes the Snowball RL job (rollout + trainer GPUs, engine config, gates) to the smallest allocation that keeps training saturated. The experiment is owned by a fresh OpenCode worker whose primary records are `/experiments/active/snowball-resize/{BRIEF.md,REPORT.md,STATUS.md}` (the REPORT.md top table is authoritative once arms land). Open-Athena reproduction details — per-arm branches/commits, config paths, launch commands, Iris job IDs, S3 receipt paths with Filer links, finelog queries, and the results table — are tracked in the user-authorized single marin issue [marin#11969](https://github.com/marin-community/marin/issues/11969), which links the prior Mochi campaign (#11954, closed) and the concurrency-gate table (#11957).
+Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing sprint: phase 1 maximizes Snowball decode throughput at the 65,536-token request window; phase 2 right-sizes the Snowball RL job (rollout + trainer GPUs, engine config, gates) to the smallest allocation that keeps training saturated. The experiment is owned by a fresh OpenCode worker whose primary records are `/experiments/complete/snowball-resize/{BRIEF.md,REPORT.md,STATUS.md}` (the REPORT.md top table is authoritative once arms land; moved from `/experiments/active/snowball-resize/` on 2026-11-26 per the coordinator after >72h idle). Open-Athena reproduction details — per-arm branches/commits, config paths, launch commands, Iris job IDs, S3 receipt paths with Filer links, finelog queries, and the results table — are tracked in the user-authorized single marin issue [marin#11969](https://github.com/marin-community/marin/issues/11969), which links the prior Mochi campaign (#11954, closed) and the concurrency-gate table (#11957).
 
 ## Question and decision criteria
 
@@ -251,3 +251,15 @@ Secretary record (evidence-backed logbook) for the ~12-hour Snowball RL resizing
 - Evidence: native counters + REPORT rows [R].
 - Interpretation and limitations: **SMALLEST MEASURED-SATURATED H100 LAYOUT: 112 H100** (trainer 10×8 + 4 engines DP8/EP8 HBM 0.90; 16 workers ×7 CPU; gates open; staleness 2; derived quotas; cadence-3 + dp_reshardable; 30-min budgets) — **170.4 s per update at batch 64 (~5.2 GPU-hours/update)**. The residual 42.5% wait is the worker's read: the H100 decode-speed tax vs GB200 (170.4 vs 195.0 s at the same config), not a sizing error. No further rno2a arms while Exp5 RL .133 is queued/running.
 - Decision and next action: the H100 arm table + smallest saturated layout are delivered to #11969 (closed with the H100 closing comment); the extension concludes.
+
+### 2026-11-26 18:05 UTC - Record location moved: `/experiments/active/snowball-resize/` → `/experiments/complete/snowball-resize/`
+
+- Question or hypothesis and reason for trying it: coordinator notice — the Snowball-resize record directory moved to `experiments/complete/` (idle >72h, no writes); references updated per the coordinator's request.
+- Published source revision: n/a (record-keeping).
+- Command or material configuration: the standing preamble path was updated to `/experiments/complete/snowball-resize/{BRIEF.md,REPORT.md,STATUS.md}`; historical dated entries intentionally retain the `/experiments/active/` paths as written at the time (append-only record).
+- External inputs and artifact references: coordinator notice over Rhizome (2026-11-26) [R].
+- Environment and hardware when relevant: `experiments/active/snowball-resize` no longer exists locally; `experiments/complete/snowball-resize` holds BRIEF.md, REPORT.md, STATUS.md, frozen51-reference, submission logs, and receipts.
+- Result, including failure or restart: references updated; campaign history unchanged.
+- Evidence: directory listing of `experiments/complete/snowball-resize/` [R].
+- Interpretation and limitations: none.
+- Decision and next action: future references use the `complete/` path.
