@@ -2809,3 +2809,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: launcher-validation-final receipt + per-root receipts [R].
 - Interpretation and limitations: pre-GPU; the worker's 07:53 EST one-shot and watchdog requests remain their own chain.
 - Decision and next action: record pool publications and the first GPU admission/first finite update as they land.
+
+### 2026-11-26 15:30 UTC - Addendum: R40 correction audit — served v39 marks the named first-3 sources PENDING; superseded .508/.509 CPU preparations cancelled; available-only queue yields 032/006/008 next
+
+- Question or hypothesis and reason for trying it: record the R40 catalog audit that supersedes the campaign's named first-3 selection.
+- Published source revision: exact load `54405be9b4db4c2d9828549469abe759` / snapshot `assembly-r40-cut-v1` verified on Atlas `c9742a15-fb46-4d56-bc88-aa916351ebd3` (immutable v39/api/sources); the current app package is v40 with the same R40 load. **SWE-smith is Excluded, superseding the previous local admission override.**
+- Command or material configuration: superseded 033/.508 and 009/.509 CPU preparations **cancelled once per the corrected campaign selection, roots verified KILLED**; 011/.510 already failed, not re-cancelled; no GPU children existed before cancellation.
+- External inputs and artifact references: worker cc over Rhizome (~15:3x UTC) [R]; local readbacks `rl-data-campaign/r40/{served-load,served-v39-sources,served-source-bindings}.json` [R].
+- Environment and hardware when relevant: **IMPORTANT — the served v39 status is PENDING also on the first-3 named sources**: anchor Exp5 has TerminalLego + multifile; 034 has RST (all 623 unsupported unresolved Docker build context); 050 has Forge + Nemotron structured outputs + openmath reasoning. The available-only queue yields **032, 006, 008 next (11 runnable total)** — not the named first-3. The worker asked the actual user which catalog field defines admission; the canonical curriculum_entries/weighted_curriculum binding remains **fail-closed** — no Pending promotion, no holiday imports.
+- Result, including failure or restart: the named first-3 are blocked by catalog status; the queue reorders to available-only sources.
+- Evidence: served-load/v39-sources/bindings readbacks [R].
+- Interpretation and limitations: admission semantics await the user's catalog-field ruling; fail-closed is maintained meanwhile.
+- Decision and next action: record the user's admission ruling and the corrected queue launch when they land.
