@@ -598,3 +598,25 @@ watchdog; its official validation tick passed with no alerts. Native Iris waits 
 log-follow commands own monitoring. Consolidation remains unmerged until training
 activity is confirmed. Rhizome is unbound in the resumed process; STATUS and this
 notebook preserve the handoff while direct routing is unavailable.
+
+## November 26, 14:16 EST: both training loops started; consolidation adopted
+
+Control entered `_train_loop` at14:08:51.538 EST and treatment at14:09:04.855 EST.
+Both started32 rollout workers. Their initial policy synchronizations completed at
+14:08:57.392 and14:09:10.738 EST. This precedes the extended T20 cutoff,
+November27 08:01:36 EST. No completed optimizer update is verified.
+
+Both arms now emit repeated Daytona connection failures. Interrupted trajectories are
+masked by the configured default error policy. This is a validity concern requiring
+infrastructure-outcome accounting before interpreting the paired result; training-loop
+entry establishes neither completed updates nor scientific validity. Native waits,
+log followers and the central watchdog remain attached to the exact revision4 roots.
+
+After both loop entries, consolidation `27a544e838` was adopted through merge
+`1e8882d618`, with import-boundary/formatting cleanup `71297b9d15`. Required lint and
+all24 affected safe tests passed. The pushed experiment branch now contains the
+checked-in worker commands; running jobs retain immutable launch source `ecc9fb1bae`.
+The classification in `CONSOLIDATION.md` accounts for all93 archived helpers:
+41 duplicate existing tooling,11 promoted experiment logic and41 history-only scripts.
+No temporary worker scripts are required. The two S1 verdicts remain FAIL under the
+user override; correctness passes, unchanged loop gates fail, and no RP repeat is due.
