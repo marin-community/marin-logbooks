@@ -2905,3 +2905,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: native terminal proofs + regression state [R].
 - Interpretation and limitations: two distinct issues — a general sizing/ordering bug (fixable) and a genuine NL2Bash environment incompatibility (fail-closed).
 - Decision and next action: the BRIEF's 08:22 exception has been raised as a direct user clarification; source-pin admission changes await that answer.
+
+### 2026-11-26 17:30 UTC - Addendum: campaign tooling fix LANDED (`638953ca22`) — prepared-column precedence + null allocation erasure; NL2Bash still faithfully fails on both backends; admission ruling recorded in BRIEF
+
+- Question or hypothesis and reason for trying it: record the landed tooling fix and the terminal NL2Bash verdict across backends.
+- Published source revision: **tooling fix LANDED via loop-push at `638953ca229504d0c865cc231117d589dcea90b9`** (clean worktree + remote readback exact) — corrected prepared-column precedence and null allocation erasure **without changing task bytes/requirements/RL recipe**. 68 landing tests PASS; lint/types PASS; advisory 35 findings with the own path-repetition fixed, existing API findings answered, all 6 lanes/composer exit 0. Required affected runner: **1989 PASS / 12 exact retained independent baseline FAIL / 3 SKIP — no broad PASS claim.**
+- Command or material configuration: prior `.511`/`.512`/`.513` roots and real-agent gates terminal FAILED with no GPU child observed; all pools succeeded (gate IDs `long-loop-eval-preflight-ac61cc76` / `-3d8bc315` / `-7e54d978`).
+- External inputs and artifact references: worker cc over Rhizome (~17:3x UTC) [R]; 20 metadata files (809,206 bytes) uploaded with exact SHA readback — `s3://marin-us-east-08a/marin/users/benfeuer/mochi-rl-data-campaign/preparation/2026.11.26.2-r40`; receipt `r40/metadata-upload-receipt.json` [R].
+- Environment and hardware when relevant: **NL2Bash still faithfully fails** — the HostImage/package-lock verifier declares 2048 MB disk; local rejects the quota and current Daytona rejects HostImage. No stripping or silent backend/environment substitution.
+- Result, including failure or restart: the new admission ruling/placement directive is recorded in BRIEF with the user confirmations; the direct queued user message will be consumed next, with **no repeat submission of finished roots**. `runs.csv` backed up and marked CPU_GATE_FAILED.
+- Evidence: landed revision + landing-test results + metadata upload receipt [R].
+- Interpretation and limitations: the sizing fix addresses the general gate bug; NL2Bash needs either a supported binding or the user's ruling.
+- Decision and next action: record the next corrected root submissions after the queued user message is consumed.
