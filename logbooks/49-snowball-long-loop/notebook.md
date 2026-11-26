@@ -3301,3 +3301,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: terminal root/child proofs + PR link [R].
 - Interpretation and limitations: the same env-vs-file secret-delivery class as the train-org fix, now at the eval boundary.
 - Decision and next action: record the eval-org fix landing and the fresh replacements.
+
+### 2026-11-26 16:25 UTC - Addendum: `.523`/`.524`/`.525` all terminal FAILED (same DAYTONA_EVAL_API_KEY cause); comprehensive credential fix `3fcd0748f6` committed; quota fixture sizing fix `c03524e231`
+
+- Question or hypothesis and reason for trying it: record the wave's full terminal state and the single comprehensive fix.
+- Published source revision: **`.523`/`.524`/`.525` all verified terminal FAILED** — each RL child one primary failed task + 31 coscheduled siblings, the same **DAYTONA_EVAL_API_KEY env-only worker lookup**, before any qualified update. **A single comprehensive fix is committed at `3fcd0748f6d2df5b72ce2b560ea570af1e3610a3`**: file-first configured train/eval/judge secrets across native and Harbor factories, both Daytona org keys forwarded, and the regional CPU gate requires the complete campaign credential bundle and constructs the real worker without backend env mirrors. 34 focused checks + the real file-only worker test PASS; advisory all-6 + composer exit 0; affected runner still active.
+- Command or material configuration: the worker will land and replace the three terminal attempts ONCE with fresh versions. Quota — 21 real privileged pool regressions passed; the separate source fixture needed a retained-runtime sizing correction (10 GiB), committed `c03524e231`; source E2E not yet qualified.
+- External inputs and artifact references: worker cc over Rhizome (~16:2x UTC) [R].
+- Environment and hardware when relevant: upstream main PR 12368 open with cleanup findings to address; `.131` publication complete (258/429; EvalDash `marina.oa.dev/evaldash/runs/mochi-exp4-dspark-rl34-micro210-2026.11.23-bixbench-v2`).
+- Result, including failure or restart: the credential class is fixed in one commit; the wave awaits landing + fresh replacements.
+- Evidence: three terminal proofs + fix tests [R].
+- Interpretation and limitations: all three failures share one root cause; no science-config change.
+- Decision and next action: record the fix landing and the fresh `.526`-series replacements.
