@@ -107,6 +107,18 @@ Before inspecting S0 scientific results, [source fccf79e47ba14c5ea87bdfb33073567
 
 For the precision review, retain all fired identities with the native counterfactual's `--sample 823`, then select up to 30 globally by a deterministic seed-20261125 hash of cohort, task ID, attempt ID, UID and ordinal. Selection is independent of cut length and verdict; the native top-cut ordering remains diagnostic. Preserve exact identities for bounded regional review windows, and report the actual size if fewer than 30 fires exist. Detector definitions, stop threshold and success criteria stay fixed.
 
+### 2026-11-26 00:56 UTC — TB2 returns, but validity is below the seal threshold
+
+S0 v9 completed TB2 and moved to TBLite. At 00:53:15 UTC, TBLite had returned 110/200 trials; all 32 GPU hosts remained running with zero failures or preemptions. Hub Finelog memory samples through 00:29 UTC covered the point where v7 failed: the head's active-window maximum was 50.92 GiB and all peers were at most 47.06 GiB, against 128 GiB requests. This is an observed collection window, not a full-panel memory seal.
+
+The [regional CPU TB2 audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.25.9%2Fpartial%2Ftb2%2Faudit.json) (`s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.25.9/partial/tb2/audit.json`) succeeded, but TB2 is unsealed: 33 infrastructure-error trials leave 234/267 assessed (87.64%), below the required 90%. Preliminary assessed results are 35 agent-loop trials, agent-loop share 0.14957, agent-loop UB 68/267 (0.25468), repeat-turn share 0.12331 and 58 passes. Four tail-loop trials are report-only. These partial results do not establish a complete baseline or an intervention effect.
+
+The 33 errors comprise 18 AgentTimeoutError, 11 VerifierTimeoutError, three TaskMachineError and one TmuxSessionEndedError. Fifteen first-model timeouts and two advance timeouts kept `Execution has no final grade`. First-model failures occurred at about 610 seconds, consistent with the frozen 600-second model-turn deadline plus cleanup. Source inspection and two failing regressions exposed a grading gap: the engine skipped grading before the first model response and after an advance timeout, although the experiment requires agent timeouts to run the verifier.
+
+[Source 718b300206ed26702d092a1ef5f29365e3af3559](https://github.com/marin-community/marin/commit/718b300206ed26702d092a1ef5f29365e3af3559) grades known model/advance timeouts while preserving their failure identity. Both regressions now pass; the rollout file passed 236 tests, and the whole rollout package passed 362 tests with nine skipped and four deselected. Required lint/typecheck passed. The live v9 bundle remains unchanged. No limits, seeds, panel membership, detector definitions or thresholds changed.
+
+Next: recover task/repetition identities from retained trajectories, verify their frozen seeds, then define an explicit recovery for originally ungraded trials. Preserve original graded outcomes. Evaluation dump ordinals encode completion order and must not be treated as repetition seeds. The 48-hour clock and T+20/T+32 cutoffs remain fixed. I1 and I2 still follow the sealed baseline; paired RL depends on valid timings and the remaining clock.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
