@@ -2641,3 +2641,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only — the recovery runs' purposes (infra-recovery/transport-recovery) and their outcomes beyond state are not established from job state alone; no worker cc in hand explains them.
 - Decision and next action: hourly checks continue; watch for worker readouts on the recovery chain.
+
+### 2026-11-26 12:00 UTC - Addendum: Mochi RL data campaign — launcher built from `.131` controls; first three queued mixes (v2-mix-033/.009/.011) native dry PASS; no jobs submitted yet
+
+- Question or hypothesis and reason for trying it: record the new RL data campaign's launcher validation state (pre-launch, queue formation).
+- Published source revision: launcher built from the exact authored `.131` controls; **no jobs submitted yet** — landing and once-only standard roots are being finished.
+- Command or material configuration: first queued **v2-mix-033 / v2-mix-009 / v2-mix-011 all native recipe+graph dry PASS** — 50 steps / no-learning wall clock, DSpark4, TP1/BF16, graphs, 48 trainer + 80 rollout, production 08a / all racks.
+- External inputs and artifact references: worker cc over Rhizome (~12:0x UTC) [R]; receipts `/Users/benfeuer/Documents/experiments/active/rl-data-campaign/{v2-mix-033,v2-mix-009,v2-mix-011}-validation-receipt.json` [R].
+- Environment and hardware when relevant: data materialization / whole hashes and real-agent/vocab admission stay regional before each GPU; SWE-smith's existing retained SHA is pinned with its catalog user-assumed admission explicitly recorded (no substituted raw converter).
+- Result, including failure or restart: queue now 49; the BRIEF instructs launching the first 3 once ≥3 are ready.
+- Evidence: three validation receipts [R].
+- Interpretation and limitations: pre-launch state — the first-3 launch instruction comes from the campaign BRIEF; per-GPU runs remain gated on regional data admission.
+- Decision and next action: record the first-3 launches and their roots when submitted.
