@@ -3385,3 +3385,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: gate PASSes + compiled SHAs + iris execution IDs [R].
 - Interpretation and limitations: n/a.
 - Decision and next action: record the `.528` child, `.526`/`.527` first updates, and the quota-control correction.
+
+### 2026-11-26 16:50 UTC - Addendum: upstream quota cleanup regression job submitted (`2f1d3acd` — spool-FD close + delegated-cgroup quiescence)
+
+- Question or hypothesis and reason for trying it: record the main-PR cleanup proof job for PR #12368.
+- Published source revision: **`/benfeuer/mochi-local-disk-main-cleanup-20261126a` SUBMITTED once** — 4 CPU / 16 GB / 0 GPU privileged 08a, clean main-PR follow-up `2f1d3acd03d3997a23a41217c5cf28b59317d69d`. Exactly 2 new Linux regressions: **(1) timeout must close spool FDs before unmount; (2) full-disk quiescence must stop background work when delegated cgroups exist** (skip reported honestly if unsupported). Native CPU collection 2 tests PASS.
+- Command or material configuration: no inference/training/data/active-job changes — not a campaign launch; the source is committed locally awaiting real regional checks, not pushed/landed.
+- External inputs and artifact references: worker cc over Rhizome (~16:5x UTC) [R]; receipt `local-quota-main-cleanup-proof/submission-receipt.json` [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: cleanup proof job in flight.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: the regressions close the two cleanup findings on PR #12368.
+- Decision and next action: record the job's terminal receipt and the PR push/qualification.
