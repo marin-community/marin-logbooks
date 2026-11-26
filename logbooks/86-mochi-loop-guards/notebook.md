@@ -1021,3 +1021,26 @@ each,723 frozen follow-up trials each, production08a/all racks. No S3 or Hub job
 been submitted at this milestone. The original resumable-step1 copy continues
 separately; its completion is not needed to consume the verified step4 model exports.
 The public-SFT/no-more-HF-copies ruling remains binding.
+
+## November 26, 17:34 EST: paired S3 coordinators and GPU children are running
+
+Both native plans passed on clean source `cc4e3dcc62`/tree `22ae5b80cc`. Control was
+accepted17:28:51.657 EST and treatment17:29:23.641 EST, revision2026.11.26.1, exactly
+one accepted coordinator per arm. Each requests64 GB200 (16x4),128GiB per host,
+production08a/all racks and723 frozen follow-up trials:TB2 267/TBLite200/held-out256.
+Both converters had succeeded and released their GPU gangs before submission.
+
+At17:32:24 EST both coordinators and GPU children are RUNNING,16/16 GPU tasks each,
+zero failures/preemptions. Saved native configs bind each arm's verified regional
+step4 model and the frozen panel selection. They retain TP1/DP16/EP16, BF16,
+eagerfalse, seed20261125, temperature0.7/top_p1/repetition_penalty1 and stop IDs
+128001/128009. The runtime entrypoint is `skyrl_train.entrypoints.main_generate`.
+Both exact coordinator roots and GPU-child probes are registered with the watchdog.
+
+The first local control invocation stopped before submission because the current
+shell lacked DAYTONA_EVAL_API_KEY. Loading the dedicated eval key from the documented
+Secret Manager source resolved it; no generic account substitution, source change or
+duplicate accepted job. Native waits are active. Evaluation results remain pending;
+next native pass around17:42 EST. No HF Hub operation. The original resumable-step1
+copy continues separately from the verified step4 models.
+[Submission and runtime-config receipt](analysis/user-overrides-20261126/s3-pair-submission.json).

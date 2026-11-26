@@ -1,0 +1,95 @@
+{
+  "owner": "01a218ad-6f81-78f3-8e73-29b1684d79f6",
+  "stage": "S3_PAIRED_EVALUATION",
+  "source_commit": "cc4e3dcc62",
+  "source_tree": "22ae5b80cc",
+  "artifact_revision": "2026.11.26.1",
+  "cluster": "marin",
+  "target_cluster": "cw-us-east-08a",
+  "trials_per_arm": 723,
+  "gpus_per_arm": 64,
+  "gpu_cap": 128,
+  "priority": "production",
+  "restart_count": 0,
+  "resubmit_authorized": false,
+  "environment": "Source existing secrets.env and load the separately named DAYTONA_EVAL_API_KEY from the Secret Manager project/key documented in .agents/ops/daytona.md; never print values.",
+  "arms": {
+    "control": {
+      "job": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-control-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-9e9f6a58",
+      "accepted_at": "2026-11-26T17:28:51.657445-05:00",
+      "native_wait_session": 91122,
+      "command": "uv run --no-sync python -m experiments.post_training.mochi_loop_guards --preset s3-control-panel --version 2026.11.26.1 --issue 12264 --run",
+      "output": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-control-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1",
+      "gpu_child_job": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-control-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-9e9f6a58/users-benfeuer-checkpoints-mochi-loop-guards-s3-control-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-a80899aa9a3f",
+      "attempt_id": "a80899aa9a3f",
+      "root_state": "RUNNING",
+      "gpu_child_state": "RUNNING",
+      "gpu_tasks_running": 16,
+      "failures": 0,
+      "preemptions": 0,
+      "state_observed_at": "2026-11-26T17:32:24-05:00"
+    },
+    "treatment": {
+      "job": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-treatment-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-dd65e4e6",
+      "accepted_at": "2026-11-26T17:29:23.641268-05:00",
+      "native_wait_session": 83498,
+      "command": "uv run --no-sync python -m experiments.post_training.mochi_loop_guards --preset s3-treatment-panel --version 2026.11.26.1 --issue 12264 --run",
+      "output": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-treatment-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1",
+      "gpu_child_job": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-treatment-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-dd65e4e6/users-benfeuer-checkpoints-mochi-loop-guards-s3-treatment-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-a9599be43c43",
+      "attempt_id": "a9599be43c43",
+      "root_state": "RUNNING",
+      "gpu_child_state": "RUNNING",
+      "gpu_tasks_running": 16,
+      "failures": 0,
+      "preemptions": 0,
+      "state_observed_at": "2026-11-26T17:32:24-05:00"
+    }
+  },
+  "latest_signal": "2026-11-26 17:32:24 EST: both coordinators and GPU children RUNNING,16/16tasks each,zero failures/preemptions; saved configs bind correct regional step4 models",
+  "next_native_check_at": "2026-11-26T17:42:00-05:00",
+  "observed_at": "2026-11-26T17:33:00-05:00",
+  "source_dirty": false,
+  "frozen_manifest_sha256": "562bd617cd6d38369ae1c8d534b2df769888a8eec59d0017578bd001be6ef985",
+  "panel_selection": "users/benfeuer/mochi-loop-guards/panel@2026.11.25.1",
+  "cohort_trials": {
+    "tb2": 267,
+    "tblite": 200,
+    "swesmith_ho": 256
+  },
+  "saved_runtime": {
+    "entrypoint": "skyrl_train.entrypoints.main_generate",
+    "model_dtype": "bfloat16",
+    "enforce_eager": false,
+    "engines": 4,
+    "TP": 1,
+    "DP": 16,
+    "EP": 16,
+    "host_memory": "128GiB",
+    "excluded_nvlink_domains": [],
+    "seed": 20261125,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "repetition_penalty": 1.0,
+    "stop_token_ids": [
+      128001,
+      128009
+    ]
+  },
+  "model_sources": {
+    "control": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/exports/s2-control-r4/global_step_4/policy",
+    "treatment": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/exports/s2-treatment-r4/global_step_4/policy"
+  },
+  "model_manifest_identities": {
+    "control": "sha256:f47a91a9007164d11a1a415df275490f3fb89b3656e51bc72a1a425111f1d4eb",
+    "treatment": "sha256:5b63db0158f073952eaab45db7aca024943ff2679a113bbbec7ebfaef8e3a5ee"
+  },
+  "local_credential_preflight_failure": {
+    "before_any_submission": true,
+    "missing_name": "DAYTONA_EVAL_API_KEY",
+    "resolution": "Loaded the separately named eval key from the documented Secret Manager source; no generic account substitution or code/runtime change."
+  },
+  "accepted_submissions_per_arm": 1,
+  "watchdog_registered": true,
+  "evaluation_results_verified": false,
+  "further_HF_copies_authorized": false
+}
