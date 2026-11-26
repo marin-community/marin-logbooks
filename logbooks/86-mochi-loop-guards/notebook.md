@@ -1045,7 +1045,7 @@ next native pass around17:42 EST. No HF Hub operation. The original resumable-st
 copy continues separately from the verified step4 models.
 [Submission and runtime-config receipt](analysis/user-overrides-20261126/s3-pair-submission.json).
 
-## November 26, 17:48 EST: both S3 gates pass and inference is active
+## November 26, 17:48 EST: both S3 interconnect gates pass and inference is active
 
 At17:45:30 EST both S3 roots and GPU children remain RUNNING16/16 tasks, zero
 failures/preemptions. All16 per-host interconnect reports pass in each arm, covering
