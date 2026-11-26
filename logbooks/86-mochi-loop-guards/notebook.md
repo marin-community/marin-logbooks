@@ -962,3 +962,16 @@ The original treatment-step1 permanent-copy completion manifest is still absent 
 allocation or Hub operation. The registered converters remain within96/128 GPUs;
 next native pass around17:07 EST. Launch the128-GPU S3 pair only after both converter
 roots terminate successfully and both converted artifacts pass the prepared verifier.
+
+## November 26, 17:06 EST: regional uploads continue without task failures
+
+The17:05 pass verifies both converter roots RUNNING12/12 tasks, zero failures or
+preemptions. Direct logs confirm treatment138/215 shards by17:05:29.663 EST and
+control104/215 by17:05:32.195 EST. Slightly later fsutil listings contain140 and105
+weight objects respectively, with no final model manifest or index. No completed
+export verification or S3 submission is claimed.
+
+The original treatment-step1 permanent-copy completion manifest remains absent at
+17:05 EST with two completed-file records. No job changes, duplicate copy, additional
+allocation or Hub operation. Next native pass moves to17:15 EST following this refresh;
+both converters' terminal success and verified artifacts still gate the128-GPU S3 pair.
