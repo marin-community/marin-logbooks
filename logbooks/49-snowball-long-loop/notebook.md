@@ -2881,3 +2881,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: published-pool readbacks + child registrations [R].
 - Interpretation and limitations: CPU-side only; GPU admission still gated.
 - Decision and next action: record the 008 pool publication and the GPU admissions as they land.
+
+### 2026-11-26 17:00 UTC - Addendum: R40 roots .511/.512/.513 FAILED the real-agent CPU gate pre-GPU (NL2Bash verifier allocation; e2egit no machine); admission-ruling conflict flagged for the user
+
+- Question or hypothesis and reason for trying it: record the real-agent gate failure of the full R40 wave and the pending policy ruling it surfaced.
+- Published source revision: roots `.511` (mix 032), `.512` (006), `.513` (008) **failed the real-agent CPU gate before any GPU child**; pool preparation completed. First errors: **NL2Bash local verifier cannot satisfy disk/GPU allocations; e2egit validation has no selected machine.** Terminal proofs retained; the worker is checking prepared-task runtime versus validator precedence; **no GPU retry or requirements stripping**.
+- Command or material configuration: current source `ea9b97cd0df820e0fc6bf090f29e479d0eb49352`; receipts in `rl-data-campaign/r40`.
+- External inputs and artifact references: worker cc over Rhizome (~17:0x UTC) [R].
+- Environment and hardware when relevant: **POLICY CONFLICT FLAGGED (for the user, not this record to resolve)** — the BRIEF now contains an 08:22 "Admission divergence" ruling allowing Pending/Excluded and holiday-declared pins, which conflicts with the explicit 06:12 R40-only/no-holiday instruction in the worker's thread; the worker asks the coordinator to confirm the newer ruling and **retains R40-only bindings until then**.
+- Result, including failure or restart: all three R40 wave roots terminal-failed at the CPU gate; no GPU reached.
+- Evidence: gate errors + retained terminal proofs [R].
+- Interpretation and limitations: the failures are task-runtime/validator requirements (disk/GPU allocation, machine selection), not data defects — pool preparation had succeeded.
+- Decision and next action: the user rules on the admission divergence; the worker holds R40-only bindings meanwhile. This record takes no side.
