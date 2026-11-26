@@ -3325,3 +3325,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU; the gate now enforces the complete credential bundle.
 - Decision and next action: record the .527/.528 replacements and the first GPU admission.
+
+### 2026-11-26 16:36 UTC - Addendum: replacement root 015/.527 submitted on `3fcd0748f6`; replaces terminal `.524`
+
+- Question or hypothesis and reason for trying it: record the second post-credential-fix replacement root.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-015-2026.11.26.527` SUBMITTED once** on `3fcd0748f6d2df5b72ce2b560ea570af1e3610a3` — production 08a 128 GB200 (48+80), 50 steps / no clock / `.131` controls / exact 015 pins. **Replaces verified terminal `.524` only.**
+- Command or material configuration: serial native recipe/graph PASS; the complete 7-secret + real-worker regional CPU gate is pending before GPU.
+- External inputs and artifact references: worker cc over Rhizome (~16:3x UTC) [R]; receipt `runs/v2-mix-015/2026.11.26.527/submission-receipt.json` [R].
+- Environment and hardware when relevant: the worker's root and ordinary admission/first-update/stage-terminal wakes remain their own chain.
+- Result, including failure or restart: second credential-fix root submitted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU.
+- Decision and next action: record the 043 replacement and the first GPU admission.
