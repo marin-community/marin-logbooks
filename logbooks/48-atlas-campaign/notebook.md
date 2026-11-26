@@ -2680,3 +2680,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: pipeline/curation-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-26 15:12 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `9248037fb9…` to `caa31dc53b…` — 33 new commits. Head `caa31dc53b` Write the qualification summary to the task's output directory; `43334fd7f4` Add the OpenSWE dedicated converter profile; `2a02e20e5d` Add the live storage qualification the VERIFY cells wait on; `17181202a4` Fall back to the regional mirror for dead local lock paths; `c160308294` Re-mint the registry bearer when a throttle window outlives its TTL; `a96a1521cf` Configure the survey's verified disk pool and record the outcome.
+- Command or material configuration: `git fetch origin` + `git log 9248037fb9..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: 33 landings — the qualification summary output, an OpenSWE converter profile, live storage qualification for VERIFY cells, regional-mirror lock fallback, registry bearer re-minting across TTL-throttle windows, and the survey's verified disk pool.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: pipeline/storage-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
