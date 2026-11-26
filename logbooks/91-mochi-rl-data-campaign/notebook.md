@@ -71,9 +71,13 @@ Wave 1 setup, third defect: roots .511 (v2-mix-032), .512 (v2-mix-006) and .513 
 
 Wave 1 launched under the as-listed ruling: v2-mix-033 (.514), v2-mix-009 (.515) and v2-mix-017 (.516), all on landed b0457a312f, all in data prep and the agent gate. The catalog divergence is recorded per run. Separate finding (R41 survey evidence): 25 Atlas sources, 22 of them Available, declare a host-image grader with a disk quota that no production backend can host. Local cannot enforce the quota and image backends are not candidates. A host-image to container-image conversion is being built so they can run faithfully. Mixes that contain those sources may fail the agent gate until it lands.
 
+### 2026-11-26 14:45 UTC - Campaign update
+
+Wave 1 relaunched on mixes with no known grader blocker: v2-mix-006 (.517), v2-mix-015 (.518) and v2-mix-043 (.519), on landed 96a2d65926, all in data prep. Mixes containing a disk-quota (HostImage + storage_mb) grader, the unsupported RST contract, or a missing binding wait for the disk-root fix: v2-mix-033, 009, 011, 017 and others. Grafana links are added when each run's RL child is placed.
+
 ## Run table
 
-Synced 2026-11-26 09:32 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
+Synced 2026-11-26 09:45 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
 
 | Mix | Status | Steps | Reward 1–10 | Reward 41–50 | Best val step | Micro210 | Catalog divergence | Links | Note |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
@@ -81,6 +85,8 @@ Synced 2026-11-26 09:32 EST from the campaign tracker. The Grafana links use the
 | v2-mix-009 | CPU_PREPARATION_FAILED |  |  |  |  |  | {"TaskTrove:DCAgent__exp_rpt_pymethods2test-large-v2@repaired-20261118": {"repo": "open-athena/atlas-repair-pymethods-20261118-oracle-filter-v1", "revision": "3699e8ea33bda5774a045db8a25f09aa878628a8", "status": "Pending"}, "TaskTrove:tasktrove-codeforces-rebuilt-v1": {"repo": "open-athena/campaign-release-tasktrove-codeforces-rebuilt-v1-e8ef857d-retained-20261117-b-v1", "revision": "de35b4c7a7ef7ce93194659bfb0143605555c6cd", "status": "Pending"}} |  | Empty or heterogeneous pool schema: validation.parquet; noGPUchildobserved |
 | v2-mix-011 | WAITING_CATALOG |  |  |  |  |  |  |  | Superseded by binding R40 admission directive; source Pending/Excluded; CPU-only terminal, no GPU |
 | v2-mix-032 | CPU_GATE_FAILED |  |  |  |  |  |  |  | Local verifier cannot provide declared disk quota; no GPU child observed |
-| v2-mix-006 | CPU_GATE_FAILED |  |  |  |  |  |  |  | Missing selected actor machine; no GPU child observed |
+| v2-mix-006 | SUBMITTED |  |  |  |  |  | {} |  |  |
 | v2-mix-008 | CPU_GATE_FAILED |  |  |  |  |  |  |  | Local verifier cannot provide declared disk quota; no GPU child observed |
 | v2-mix-017 | CPU_GATE_FAILED |  |  |  |  |  | {"TaskTrove:laion__nemotron-gym-multichallenge-advanced-v4": {"repo": "open-athena/task-trove-laion-nemotron-gym-multichallenge-advanced-v-185e593b-retained-20261116-v1", "revision": "815ba090a64195fddf65b46ad8d906e21691eca2", "status": "Pending"}, "TaskTrove:smartie-calibforge-rebuilt-v1": {"repo": "open-athena/campaign-release-smartie-calibforge-rebuilt-v1-a179f723-retained-20261116-v1", "revision": "93f73c7fe618dc57a5527116044384515124fa18", "status": "Pending"}} |  | Full Harbor trials require Harbor and installed-agent settings; noGPUchildobserved |
+| v2-mix-015 | SUBMITTED |  |  |  |  |  | {} |  |  |
+| v2-mix-043 | SUBMITTED |  |  |  |  |  | {"TaskTrove:swesmith-verifier-repaired-v5": {"repo": "open-athena/campaign-release-swesmith-verifier-repaired-v5-0bfcd894-retained-20261116-v1", "revision": "758b28bf4cc0d0e770329f2944c9451fd578566a", "status": "Excluded"}} |  |  |
