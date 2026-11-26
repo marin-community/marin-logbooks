@@ -3229,3 +3229,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU.
 - Decision and next action: record the 043/.525 root and the first GPU admission on the fixed source.
+
+### 2026-11-26 15:41 UTC - Addendum: replacement wave 006/.523 + 015/.524 + 043/.525 complete on `4fdf019146`; CPU quota proof terminal SETUP failure retained
+
+- Question or hypothesis and reason for trying it: record the completed replacement wave and the quota proof's setup failure.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-043-2026.11.26.525` SUBMITTED once** (source `4fdf019146`; native dry recipe/graph PASS) — the current three submitted roots are **.523 (006) / .524 (015) / .525 (043)**, all production 08a 128 GB200 (48+80) / `.131` controls unchanged / 50 steps / no clock.
+- Command or material configuration: the tracker is backed up and updated with no GPU/admission/optimizer claims before evidence. The prior `.520`/`.521`/`.522` all retain their first route error plus root/32-task terminal proofs.
+- External inputs and artifact references: worker cc over Rhizome (~15:4x UTC) [R]; receipt `lane/runs/v2-mix-043/2026.11.26.525/submission-receipt.json` [R].
+- Environment and hardware when relevant: **the separate CPU quota proof has a terminal SETUP failure** — the first cause and all-task evidence are retained before any correction; no duplicate job.
+- Result, including failure or restart: replacement wave complete on the fixed source; the quota lane needs its own correction.
+- Evidence: three submission receipts + quota-proof evidence [R].
+- Interpretation and limitations: pre-GPU for the wave; the quota setup failure is separate from the route defect.
+- Decision and next action: record the quota-proof first cause and correction, then the regional gates.
