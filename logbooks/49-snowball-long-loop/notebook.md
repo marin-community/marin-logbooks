@@ -2845,3 +2845,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt + landed revision [R].
 - Interpretation and limitations: pre-GPU; the admission-field question remains with the user.
 - Decision and next action: record 006/.512 and 008/.513 submissions and the first GPU admission.
+
+### 2026-11-26 16:15 UTC - Addendum: R40 Available-only SECOND root v2-mix-006/.512 submitted on `ea9b97cd0d`
+
+- Question or hypothesis and reason for trying it: record the second root of the corrected Available-only wave.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.512` SUBMITTED once on clean landed `ea9b97cd0df820e0fc6bf090f29e479d0eb49352` — exact served R40 load and canonical curriculum helpers, no holiday imports / local admission override.
+- Command or material configuration: PRODUCTION 08a 128 GB200 (48+80) / TP1-BF16 / DSpark / graphs, 50 optimizer steps / no learning clock / all racks; native recipe/graph dry and 66 landing/lint/types PASS.
+- External inputs and artifact references: worker cc over Rhizome (~16:1x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-006/2026.11.26.512/submission-receipt.json` [R].
+- Environment and hardware when relevant: regional pool / real-agent / vocab gates pending BEFORE GPU; admission/updates not observed. Tracker new 006 row saved with backup; the superseded 033/009/011 rows remain historical waiting. The worker's `.512` watchdog stages remain their own chain.
+- Result, including failure or restart: second Available-only root submitted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU state.
+- Decision and next action: record 008/.513 and the first GPU admission.
