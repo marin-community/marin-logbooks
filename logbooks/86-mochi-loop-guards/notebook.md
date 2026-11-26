@@ -736,3 +736,33 @@ shards, with all index shards present. No model weights were downloaded again.
 records the correction and private-copy deletion. The private verification receipt is
 marked superseded. Regional S2 checkpoint conservation continues; the HF copy ban is
 recorded in the current handoff.
+
+## November 26, 15:37 EST: control reaches update2, treatment reaches update3
+
+Native regional consumed-work counters verify control update2 at15:25:03.989 EST and
+treatment update3 at15:27:15.178 EST. Policy sync completed at15:25:09.487 and
+15:27:21.949 EST. Both roots remain RUNNING with zero failures/preemptions at15:33 EST.
+N remains4 for each arm. Committed checkpoint markers are control1 and treatment2.
+
+| Arm/step | Trials | Failed instances | Failed trajectories | Masked trajectories |
+|---|---:|---:|---:|---:|
+| Control1 |256|6|34|1|
+| Treatment1 |256|7|36|2|
+| Treatment2 |256|9|27|6|
+
+These native training-batch diagnostics replace log-line counting for batch masking
+accounting. Failed trajectories are not all infrastructure failures; the counts do
+not establish evaluation validity or an antithrash effect.
+
+The treatment-step1 resumable checkpoint measures4,292,558,588,036 bytes (4.29TB,
+3.90TiB) across59 objects, with policy shards around83GiB. Its16-CPU permanent-copy
+job is RUNNING, zero failures/preemptions. Two status records verify `data.pt` and
+`policy/.metadata`; the completion manifest remains absent. Completed-file records
+do not measure in-flight multipart bytes, so no throughput or stall claim is made.
+Keep the permanent copy at one worker until it validates. Native keep_every1 retains
+newer source checkpoints meanwhile; their ttl=3d paths are not permanent copies.
+[Progress receipt](analysis/user-overrides-20261126/s2-r4-progress-1537.json).
+
+The public-SFT conservation correction remains authoritative. No HF operation, training
+configuration change, cancellation or resubmission occurred. Next verify the permanent
+copy and retain subsequent committed updates before the registered paired evaluation.

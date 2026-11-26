@@ -1,0 +1,47 @@
+{
+  "observed_at": "2026-11-26T15:37:00-05:00",
+  "source": "Regional cw-us-east-08a Finelog telemetry_v1.marinskyrl and native Iris/fsutil metadata",
+  "telemetry_window_utc": "2026-11-26 19:00:00 through 21:00:00",
+  "training_source": "ecc9fb1bae",
+  "N": 4,
+  "control": {
+    "optimizer_updates_verified": 2,
+    "latest_optimizer_completion": "2026-11-26T15:25:03.989-05:00",
+    "latest_policy_sync": "2026-11-26T15:25:09.487-05:00",
+    "committed_checkpoint_marker": 1,
+    "root_state": "RUNNING",
+    "failures": 0,
+    "preemptions": 0
+  },
+  "treatment": {
+    "optimizer_updates_verified": 3,
+    "latest_optimizer_completion": "2026-11-26T15:27:15.178-05:00",
+    "latest_policy_sync": "2026-11-26T15:27:21.949-05:00",
+    "committed_checkpoint_marker": 2,
+    "root_state": "RUNNING",
+    "failures": 0,
+    "preemptions": 0
+  },
+  "consumed_batch_diagnostics": [
+    {"arm": "control", "step": 1, "trials": 256, "failed_instances": 6, "failed_trajectories": 34, "masked_trajectories": 1},
+    {"arm": "treatment", "step": 1, "trials": 256, "failed_instances": 7, "failed_trajectories": 36, "masked_trajectories": 2},
+    {"arm": "treatment", "step": 2, "trials": 256, "failed_instances": 9, "failed_trajectories": 27, "masked_trajectories": 6}
+  ],
+  "batch_interpretation": "Native generate/num_* training counters. Failed trajectories are not an infrastructure-only count. No evaluation validity or paired treatment-effect verdict is inferred.",
+  "treatment_step1_conservation": {
+    "job": "/benfeuer/mochi-loop-guards-s2-conserve-treatment-r4-step1",
+    "state": "RUNNING",
+    "failures": 0,
+    "preemptions": 0,
+    "source_bytes": 4292558588036,
+    "source_objects": 59,
+    "verified_status_records": 2,
+    "verified_files": ["data.pt", "policy/.metadata"],
+    "completion_manifest_present": false,
+    "source_size_method": "Native fsutil du, metadata only",
+    "copy_progress_interpretation": "Completed file records only; large in-flight multipart transfers are not represented, so no byte throughput or stall diagnosis is inferred."
+  },
+  "preservation_decision": "Keep one permanent-copy worker until its completion manifest validates the path. Native keep_every=1 retains newer committed source checkpoints meanwhile; source locations remain under ttl=3d and are not yet permanent copies.",
+  "HF_copy_policy": "No further HF copies under the superseding user directive; no HF operations performed for this milestone.",
+  "next": "Verify first permanent-copy completion; preserve subsequent committed updates; continue the registered N4 pair and paired evaluation without changing gates."
+}
