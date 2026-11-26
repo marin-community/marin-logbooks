@@ -2653,3 +2653,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three validation receipts [R].
 - Interpretation and limitations: pre-launch state — the first-3 launch instruction comes from the campaign BRIEF; per-GPU runs remain gated on regional data admission.
 - Decision and next action: record the first-3 launches and their roots when submitted.
+
+### 2026-11-26 12:15 UTC - Addendum: RL data campaign FIRST root submitted — `/benfeuer/mochi-campaign-v2-mix-033-2026.11.26.502` (source `f8a8366ac2`); regional gates precede GPU
+
+- Question or hypothesis and reason for trying it: record the campaign's first root submission (v2-mix-033) as the launcher's first-3 sequence begins.
+- Published source revision: root `/benfeuer/mochi-campaign-v2-mix-033-2026.11.26.502` SUBMITTED once — clean landed source `f8a8366ac26984dc72d4caf7300feb2244145c2d`; 50 max steps / no learning clock; unchanged `.131` DSpark / 48+80 TP1-BF16 controls; PRODUCTION 08a / all racks.
+- Command or material configuration: native dry recipe + stable graph PASS; landing 57 / lint / types PASS.
+- External inputs and artifact references: worker cc over Rhizome (~12:1x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-033/submission-receipt.json` [R].
+- Environment and hardware when relevant: regional pool preparation and the actual-agent/vocab gate are dependencies before GPU; GPU child/admission/updates not yet qualified. The worker requested its own watchdog registration (regional data/gate failure, GPU admission + first finite full update, train terminal with same-hour refill campaign, export/eval IDs and terminal) — outside this record's scope; the CSV row is recorded with unobserved fields blank.
+- Result, including failure or restart: first root submitted; the next two queued entries (v2-mix-009/.011) are submitting once.
+- Evidence: submission receipt + landed source [R].
+- Interpretation and limitations: pre-GPU state; admission and first-update evidence pending.
+- Decision and next action: record the GPU admission / first finite update when it lands.
