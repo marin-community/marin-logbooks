@@ -285,6 +285,12 @@ CPU `/benfeuer/mochi-loop-guards-v12-first-pi-traces-20261126a` also succeeded. 
 
 Held-out began at 07:58:11.782 UTC and reached 64/256 at 08:05:45. All 32 GPU hosts remained running at 08:06:39 with zero failures or preemptions. Full S0 remains unsealed pending held-out; no S1/S2 has been submitted and N is unfixed. Source review confirms one trajectory sink covers all four cohorts. The prepared in-region retention copy waits for terminal GPU/root state so publication has closed. [Tracking milestone](https://github.com/marin-community/marin/issues/12264#issuecomment-7186256488).
 
+### 2026-11-26 08:38 UTC — Full feedback census prepared
+
+The standalone [feedback census](analysis/observation_census.py) will stream all completed corrected S0 dumps in the existing regional CPU postprocessing job. It reports multi-turn records with retained observations, graded coverage and bounded hashed examples with no observations. This is engineering evidence, not an additional scientific validity threshold; context-summary helper turns and invalid agent output need interpretation before inferring loss. It creates no model trials. The registered counterfactual processor and its uniform global 30-fire sample are unchanged. Required scoped lint and AST validation pass; execution awaits full collection and terminal sink publication.
+
+Held-out reached 234/256 at 08:35:12 UTC. All32 GPU hosts remained running at08:35:20 with zero failures or preemptions. The complete baseline remains unsealed and no guard/RL arm has been submitted. Original T0 and cutoffs remain fixed.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
