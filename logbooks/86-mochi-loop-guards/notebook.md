@@ -975,3 +975,27 @@ The original treatment-step1 permanent-copy completion manifest remains absent a
 17:05 EST with two completed-file records. No job changes, duplicate copy, additional
 allocation or Hub operation. Next native pass moves to17:15 EST following this refresh;
 both converters' terminal success and verified artifacts still gate the128-GPU S3 pair.
+
+## November 26, 17:19 EST: treatment export verifies and its converter succeeds
+
+Treatment's final model manifest appeared at17:16 EST. The native completed-export
+verifier passed:221 manifest files,215 indexed weight shards,56504 tensors and
+1070983169596 recorded bytes. Manifest identity is
+`sha256:5b63db0158f073952eaab45db7aca024943ff2679a113bbbec7ebfaef8e3a5ee`.
+Verification used header reads with read-ahead disabled, checking completion markers,
+manifest-file presence, indexed shard headers and recorded sizes. No weight-payload
+rehash or model-tensor download occurred.
+
+At17:18:06 EST the native treatment-converter root is SUCCEEDED, all12 tasks succeeded,
+zero failures/preemptions. The model is under the permanent regional experiment prefix;
+its parent `.conservation.json` marks permanent retention and exclusion from every
+pruning sweep and passed byte readback. Automatic sweep enforcement remains unverified.
+The small verification receipt is published under regional `decisions/`.
+[Verification and terminal-state receipt](analysis/user-overrides-20261126/s2-treatment-r4-step4-export-verification.json).
+
+Control remained RUNNING12/12 at17:15, with172/215 weight shards confirmed in its
+17:15:42.125 EST log. It must finish and pass the same verifier before the128-GPU S3
+pair launches. The original treatment-step1 permanent-copy manifest remains absent
+at17:15 with two completed-file records. No new job or Hub copy was launched.
+Next control-conversion pass around17:25 EST; the public-SFT/no-more-HF-copies ruling
+remains binding.
