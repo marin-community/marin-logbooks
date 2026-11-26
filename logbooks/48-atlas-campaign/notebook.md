@@ -2668,3 +2668,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: curation/acceptance-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-26 11:32 UTC - Hourly catch-up (fetch-first; multi-hour window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads. This window spans ~11:13 Nov 25 → 11:32 UTC Nov 26.
+- Published source revision: `origin/atlas-env-audit` advanced past `07f63e89b8…` to `9248037fb9…` — **163 new commits**. Head `9248037fb9` Add the advisory main-grader-drift stage and its re-seal queue. Theme sample: license/registry — `5f33632913` restore the selected license registry bytes; `2a1f69da76` license receipt appends never modify existing shards; `7abbc47a47` bind the release card to the cohort's true original upstream via intake provenance; `5d71bba5ed` prepare the card rebinding in fresh scratch; `82421aed51` run the hosted release check on the published revision; `4c0734907d` publish the release manifest with the declared pin and input-release identity; `cea77af416` derive the release tail's exposure and hosted checks from sealed documents. Registry/conversion hardening — `4ba69424e1` registry resolution hardening for the native source conversion; `ad86ff2cd8` native TaskSpec conversion pins Dockerfile FROM bases to registry digests; `0c3c830d63` adopt a receipt through a complete immutable selection namespace; `d189588425` cache base-digest resolutions per process. Curation/census — `00b1f67cc2` bundle shellbox's demand vocabulary into the packaged preview; `36d80c7a2b`/`dea67a064c` extend the census-demand exemption to Deprecated/Excluded sources with empty populations; `9937ad8d3f` patch the defining all_sources binding for offline unit tests. Diagnostics — `69bf4b8740` label every backend blocker with its taxonomy reason; `44ca80743d` type the unsupported-environment-kind backend blocker; `91d0f7f389` classify the lock-satisfied machine field under its packages lock; `e48b248125` make the SAMPLE QC campaign preemption-resilient + staged panel summary fixes.
+- Command or material configuration: `git fetch origin` + `git log 07f63e89b8..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: 163 landings across a day of work — the advisory main-grader-drift stage with its re-seal queue, license-registry/card provenance hardening, registry-digest-pinned TaskSpec conversion, census-demand exemptions, and QC-campaign preemption resilience.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: pipeline/curation-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
