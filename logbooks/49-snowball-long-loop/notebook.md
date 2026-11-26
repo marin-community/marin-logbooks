@@ -3121,3 +3121,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three submission receipts + tracker rows [R].
 - Interpretation and limitations: pre-GPU for all three.
 - Decision and next action: record regional gate outcomes and the first GPU admission as they land.
+
+### 2026-11-26 21:45 UTC - Milestone addendum: FIRST campaign GPU child EXECUTING — mix 006/.520 (child a9bb79bd6487); gates PASS; all 32 Ray task keys started
+
+- Question or hypothesis and reason for trying it: the campaign's first actual GPU child is executing after the credential fix — record the milestone.
+- Published source revision: **actual GPU child `/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.520/rl-data-campaign-v2-mix-006-2026.11.26.520-a9bb79bd6487` EXECUTING.** All 32 distinct Ray task keys started 15:09:13.713–15:09:17.347 UTC (native success rows — not a queue claim). Regional real-agent/vocab/task gate `2e0d2850` PASS 15:06:27. Source `2e8d58e119`; 128 GB200 (48+80) / PRODUCTION 08a / all racks / `.131` TP1-BF16 DSpark controls / 50 steps.
+- Command or material configuration: bounded selected errors 0 through the mounted-fix window (not a full audit). Loading/graphs/sync/baseline/optimizer and execution/Grafana identity unavailable until observed.
+- External inputs and artifact references: worker cc over Rhizome (~21:4x UTC) [R]; raw proof `r40/mounted-fix-phase.jsonl`; child report/CSV being recorded [R].
+- Environment and hardware when relevant: `.521`'s actual CPU gate `81842296` also PASS 15:09:40 — its GPU identity not yet observed in that bound. The worker's startup/first-full-update/terminal/eval wakes remain their own chain.
+- Result, including failure or restart: the credential-fix chain reached a live GPU child on the first try.
+- Evidence: native success rows + gate PASS + raw proof [R].
+- Interpretation and limitations: startup-stage evidence only — no throughput/update claims yet.
+- Decision and next action: record the first full update and the `.521`/`.522` GPU children as observed.
