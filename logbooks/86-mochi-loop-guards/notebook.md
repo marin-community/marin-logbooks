@@ -331,6 +331,12 @@ Source c4b5bf17ca fixes the launcher report reader for the native panel's `task_
 
 The11:26:36/39 UTC probe still found both S1 children16/16SchedulingGated, with zero failures/preemptions. Read-only Kueue inspection confirms priority1000/production, required16-host nvlink.domain gangs and no node affinity or rack exclusions. The stop workload reports18 additional GPU/RDMA quota units needed; RP has no admission status yet. No other job was touched and neither S1 arm was resubmitted. OriginalT20 remains13:01:36 UTC. S2 N stays unfixed and the placeholder8 is prohibited from submission.
 
+### 2026-11-26 11:40 UTC — Saved-data reporting repaired without model reruns
+
+The first regional refresh confirmed all54 S0 evaluation summaries and zero failed evaluation invariants, then exposed a second publication defect: generation-only attempts have no training data, and AttemptSummary rejected the empty data identity. Source808482fb50 now identifies such attempts using their recorded validation and additional-evaluation sources, preserving training-run identities. An actual native generation fixture reproduces the Pydantic failure before the fix; all12 publication tests, required lint and type checking pass afterward. Regional CPU `/benfeuer/mochi-loop-guards-s0-report-refresh-20261126b` succeeded after the failed diagnostic-a. Both are CPU-only; no model trial or audit outcome changed. Saved reporting is under the existing S0 audit prefix as `refreshed-evaluation-status.json`, `refreshed-attempt-summary.json` and `report-refresh-receipt.json`.
+
+IndexPR87 now pins notebookc7d25919d6 and describes the sealed baseline and submitted guard arms. CIvalidatepassed,publishskipped. The previous12-hour wait timed out; after this index push, a new attached feedback wait owns review monitoring. No merge is authorized or attempted.
+
 ## Final decision
 
 Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 must be dropped if actual S2 training cannot start by13:01:36 UTC on November26. No Marin contribution PR has been opened.
