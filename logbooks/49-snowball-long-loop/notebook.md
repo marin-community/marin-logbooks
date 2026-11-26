@@ -3013,3 +3013,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: seal manifest + EvalDash live link + failure logs [R].
 - Interpretation and limitations: two distinct harness defects (schema mixing; protocol forcing) — the science config is unaffected.
 - Decision and next action: record the tooling fixes and the corrected resubmission when they land.
+
+### 2026-11-26 19:30 UTC - Addendum: campaign protocol-binding fix committed (`96a2d65926`, pre-loop-push); shellbox local backend needs a faithful HostImage implementation before retry
+
+- Question or hypothesis and reason for trying it: record the correction checkpoint between the failed wave and fresh roots.
+- Published source revision: **committed `96a2d65926`** — focused 12 / related 71 and required lint/types PASS for the native-vs-full-Harbor protocol binding plus heterogeneous validation metadata; advisory in progress before loop-push.
+- Command or material configuration: roots `.514`/`.515`/`.516` remain terminal CPU failures with no GPU child — they will not be duplicated. Remaining exact environment contract: **the campaign source's shellbox `local/machine.py` explicitly rejects every `storage_mb` and contains no LocalDiskPool/disk_root implementation — affected HostImage graders need a faithful backend implementation before retry, not just a harness correction.**
+- External inputs and artifact references: worker cc over Rhizome (~19:3x UTC) [R].
+- Environment and hardware when relevant: no requirements stripped, no RL controls changed; `.131` remains fully sealed/published/live verified (258/429 = 0.6013986014, 429/434 valid; EvalDash + seal manifest as recorded); CSV backup-first updated.
+- Result, including failure or restart: one fix committed; a genuine backend-implementation gap identified before any fresh root.
+- Evidence: committed revision + contract diagnosis [R].
+- Interpretation and limitations: the HostImage gap is an implementation task, distinct from the protocol-binding fix.
+- Decision and next action: record the loop-push landing and the backend implementation, then fresh roots.
