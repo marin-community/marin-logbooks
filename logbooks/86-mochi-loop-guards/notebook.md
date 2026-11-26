@@ -1060,3 +1060,24 @@ objects. Its completion manifest remains absent at17:45 EST. Staging verificatio
 does not establish completed permanent promotion. No source/job changes or further
 Hub copies. Next native pass around17:55 EST, including cohort progress and copy
 completion checks. [Runtime/copy receipt](analysis/user-overrides-20261126/s3-runtime-and-copy-progress-1748.json).
+
+## November 26, 17:58 EST: first TB2 returned-rollout counts are visible
+
+Native progress shows control67/267 TB2 rollouts returned at17:55:24.299 EST and
+treatment54/267 at17:55:25.911 EST. Source inspection confirms the progress counter
+advances after a rollout returns, including terminal errors. These are not counts of
+successful or valid trials. Both GPU children remain RUNNING16/16, zero Iris task
+failures/preemptions at17:55; both coordinators remain RUNNING at17:56:54 EST.
+
+Partial logs show AgentTimeoutError in both arms, a sandbox-IP TaskMachineError, and
+TmuxBatchProtocolError. The latter logs the native explicit default mask treatment.
+Ray-deduplicated and repeated log lines do not provide per-trial error counts. No
+correctness, infrastructure-rate, validity or treatment-effect verdict is inferred.
+Frozen timeouts, sampling, detector and error classification remain unchanged.
+
+The original resumable-copy manifest remains absent17:55 EST; its status inventory
+still has43 records, matching the prior file-name inventory. Its native job is RUNNING
+0fail/preempt at17:57:32 EST. The last summed staging
+snapshot remains2.858TB at17:46 EST. Continue the registered jobs without resubmission
+or Hub operations; next native pass around18:05 EST.
+[TB2 progress receipt](analysis/user-overrides-20261126/s3-tb2-progress-1758.json).
