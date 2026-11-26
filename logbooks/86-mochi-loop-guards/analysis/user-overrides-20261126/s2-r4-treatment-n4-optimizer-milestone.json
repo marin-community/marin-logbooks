@@ -1,0 +1,45 @@
+{
+  "observed_at": "2026-11-26T16:03:00-05:00",
+  "source": "Native regional telemetry_v1.marinskyrl, Iris job/task state, and fsutil checkpoint markers",
+  "training_source": "ecc9fb1bae",
+  "N": 4,
+  "treatment": {
+    "optimizer_updates_verified": 4,
+    "step4_optimizer_completed_at": "2026-11-26T15:47:56.397-05:00",
+    "committed_checkpoint_marker": 3,
+    "GPU_child_state": "RUNNING",
+    "GPU_tasks_running": 15,
+    "failures": 0,
+    "preemptions": 0
+  },
+  "control": {
+    "optimizer_updates_verified": 3,
+    "step3_optimizer_completed_at": "2026-11-26T15:45:13.811-05:00",
+    "committed_checkpoint_marker": 2,
+    "GPU_child_state": "RUNNING",
+    "GPU_tasks_running": 15,
+    "failures": 0,
+    "preemptions": 0
+  },
+  "state_observation_times": {
+    "checkpoint_markers": "approximately 2026-11-26 15:59 EST",
+    "GPU_child_states": "approximately 2026-11-26 16:01 EST"
+  },
+  "new_consumed_batch_diagnostics": [
+    {"arm": "control", "step": 2, "trials": 256, "failed_instances": 8, "failed_trajectories": 22, "masked_trajectories": 3},
+    {"arm": "treatment", "step": 3, "trials": 256, "failed_instances": 10, "failed_trajectories": 52, "masked_trajectories": 1}
+  ],
+  "batch_interpretation": "Training counters only. Failed trajectories are not an infrastructure-only count; no evaluation-validity or antithrash-effect verdict is inferred.",
+  "permanent_copy": {
+    "job": "/benfeuer/mochi-loop-guards-s2-conserve-treatment-r4-step1",
+    "state": "RUNNING",
+    "verified_files": ["data.pt", "policy/.metadata"],
+    "completion_manifest_present": false,
+    "source_bytes": 4292558588036,
+    "source_objects": 59,
+    "observability": "Native verified-copy CLI prints completion only; per-file status records do not show in-flight multipart bytes. iris.task query returned no samples for this direct CPU task, so resource activity or transfer throughput is not established."
+  },
+  "conversion_gate": "Not admitted: treatment step4 is not yet committed and neither training GPU gang has released its allocation. No conversion submitted.",
+  "copy_policy": "No new Hub copies. Existing in-region permanent copy continues; newer source updates retained by native keep_every1, still under ttl=3d.",
+  "next": "Check committed step4 and terminal GPU child/released allocation before detached regional conversion; verify permanent-copy manifest before claiming conservation completion."
+}

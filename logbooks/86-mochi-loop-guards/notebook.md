@@ -791,3 +791,27 @@ converter is108; adding conversion while both60-GPU arms are allocated would exc
 the128-GPU experiment cap. Use native detached submission and register the accepted ID.
 Only a verified completed conversion can initialize a registered S3 panel. The public
 SFT conservation/no-more-HF-copies ruling remains binding.
+
+## November 26, 16:03 EST: treatment completes the fixed four optimizer updates
+
+Treatment optimizer step4 completed15:47:56.397 EST; control step3 completed
+15:45:13.811 EST. This is optimizer progress, not a terminal-training or checkpoint
+conservation claim. At15:59 EST the committed markers were treatment3/control2;
+at16:01 EST both children still had15/15 GPU tasks RUNNING, zero failures/preemptions.
+The prepared48-GPU conversion remains gated on a committed step4 and a released
+training allocation. No conversion or Hub copy was submitted.
+
+New native batch diagnostics: control step2 has256 trials,8 failed instances,
+22 failed trajectories and3 masked; treatment step3 has256 trials,10 failed instances,
+52 failed trajectories and1 masked. Failure counts are not all infrastructure errors,
+and the training metrics do not establish evaluation validity or an antithrash effect.
+
+The4.29TB treatment-step1 permanent-copy job remains RUNNING. It still has two completed
+verification records (`data.pt`, `policy/.metadata`) and no completion manifest.
+Source inspection confirms the native CLI prints only its final result. Per-file
+records do not expose in-flight multipart bytes; the direct CPU task also returned no
+iris.task resource samples. Neither transfer throughput nor a stall is inferred.
+[Milestone receipt](analysis/user-overrides-20261126/s2-r4-treatment-n4-optimizer-milestone.json).
+Next verify final checkpoint publication and GPU release, then submit the prepared
+regional conversion within the128-GPU experiment cap. The public-SFT conservation
+correction remains authoritative; make no more Hub copies.
