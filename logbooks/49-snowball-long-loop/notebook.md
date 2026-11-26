@@ -2785,3 +2785,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU state.
 - Decision and next action: record the `.510` root and the first GPU admission.
+
+### 2026-11-26 15:00 UTC - Addendum: campaign third root v2-mix-011/.510 accepted — current wave 033/.508 + 009/.509 + 011/.510 complete on `390c5e318b`; six older CPU-only attempts historical
+
+- Question or hypothesis and reason for trying it: record the completed current wave on the hash-fixed source.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-011-2026.11.26.510` ACCEPTED — the current wave is **033/.508, 009/.509, 011/.510** on clean landed `390c5e318b7522b8679419e39b7c42a1c662296f`; production 08a 128 (48+80) each / all racks / 50 steps / no clock / `.131` DSpark unchanged. Exactly six older CPU-only failed attempts `.502`–`.507` are historical (`.501` was only a dry version, not a submitted campaign root); no GPUs / cancellations.
+- Command or material configuration: the actual 033 CPU pool child `/benfeuer/mochi-campaign-v2-mix-033-2026.11.26.508/prepare_pools-d222ce29` is observed running (submitted 12:47:02.982 UTC).
+- External inputs and artifact references: worker cc over Rhizome (~15:0x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-011/2026.11.26.510/submission-receipt.json` [R].
+- Environment and hardware when relevant: tracker has exactly 3 updated rows; regional pool / real-agent / vocab gates pending before GPU. The worker's watchdog (register `.510` + CPU child, retire `.507`) and a bounded continuation at 07:53 EST are their own chain.
+- Result, including failure or restart: current wave fully submitted; the 033 CPU pool child is running.
+- Evidence: three receipts + the running prepare_pools child [R].
+- Interpretation and limitations: CPU-side progress; GPU admission still gated.
+- Decision and next action: record pool publication and GPU admission as they land.
