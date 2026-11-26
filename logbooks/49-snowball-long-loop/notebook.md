@@ -3169,3 +3169,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: forwarded rows + first traceback [R].
 - Interpretation and limitations: another harness/classification defect — the science config is unaffected.
 - Decision and next action: record the provenance-preserving fix and the fresh `.520`-replacement root when they land.
+
+### 2026-11-26 15:31 UTC - Addendum: `.522` GPU child registered (a2e3a31fcc9c); `.520`/`.521` terminal proofs complete (driver failure + 31 siblings each); route fix `4fdf019146` committed
+
+- Question or hypothesis and reason for trying it: record the third GPU child's registration and the committed route-classification fix.
+- Published source revision: **actual GPU child `/benfeuer/mochi-campaign-v2-mix-043-2026.11.26.522/rl-data-campaign-v2-mix-043-2026.11.26.522-a2e3a31fcc9c` registered — submitted 15:17:37 UTC**, source `2e8d58e…`; regional real-agent gate `06c2c36c` PASS. **`.520` and `.521` both now have retained terminal root AND 32-task child proofs — one route-classification driver failure plus 31 coscheduled siblings each.**
+- Command or material configuration: **fix `4fdf019146` committed** — required lint/types and 9 focused dataset/CPU-admission tests PASS; advisory/affected runner currently finishing. It uses `teacher_route` when stamped, `source.dataset` for unstamped pools, and rejects unknown keys before GPU.
+- External inputs and artifact references: worker cc over Rhizome (~15:3x UTC) [R].
+- Environment and hardware when relevant: no manual job changes — fresh replacements only after landing and terminal-proof/queue guards; the merged-78 selection will be recomputed.
+- Result, including failure or restart: all three wave children have identities; one fix is committed pending landing.
+- Evidence: child registration + gate PASS + fix tests [R].
+- Interpretation and limitations: `.522` may still hit the same route defect (its source predates the fix landing).
+- Decision and next action: record the fix landing, the merged-78 recompute, and fresh replacement roots.
