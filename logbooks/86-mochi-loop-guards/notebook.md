@@ -382,6 +382,27 @@ The [decision receipt](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a
 
 STATUS.md was rewritten around current jobs, sealed evidence, thresholds and this budget decision. Its complete previous history remains in STATUS-history-through-20261126_0802.md. Invalid old controls and obsolete TB2 stitching instructions are explicitly superseded.
 
+### 2026-11-26 13:10 UTC — Repetition penalty fails the TB2 action-loop gate
+
+S1-rp completed267/267 TB2 at12:57:03.358 UTC after2,291 seconds. Its dump closed at12:57:04.677; TBLite began at12:57:05.255. Regional CPU `/benfeuer/mochi-loop-guards-s1-rp-audit-tb2-20261126a` succeeded in38.36 seconds with zero failures/preemptions and no new model trials. The audit pins the sealed S0 baseline and exact frozen TB2 cohort hash.
+
+| TB2 metric | S0 control | S1-rp original |
+|---|---:|---:|
+| Assessed / N |250/267|257/267|
+| Infrastructure / unavailable |17 /0|10 /0|
+| Confirmed action-loop trials |34|36|
+| Action-loop UB |51/267|46/267|
+| Repeat-turn share |0.1192787795|0.1654309546|
+| Full-credit passes |54|61|
+| Mean reward |0.216000|0.237354|
+| Median turns |17.5|17|
+| Median generated tokens |7,196|5,619|
+| Median wall seconds |1,109.13|1,023.60|
+
+I2 requires candidate action-loop UB≤17, half S0's34 confirmed action loops. The observed36 confirmed+10 unassessed=46 fails. Repeat-turn share also rises38.69% (descriptive, not the I2 primary). Correctness61passes exceeds the raw40.65 minimum; validity257/267=96.25% meets90%. Neither46UB nor61passes is within its ±2-trial boundary. Five token-tail loops and tailUB15 are report-only: using15 as the action UB would wrongly reverse this result.
+
+The [audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs1-2026.11.26.1%2Frp%2Fpartial%2Ftb2%2Faudit.json) and `gate-receipt.json` are under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s1-2026.11.26.1/rp/partial/tb2/`. Both panels continue; a boundary trigger from another target cohort would still require one full-arm repeat that replaces all gates, regardless of direction. No original trial is discarded or selected best-of.
+
 ## Final decision
 
 Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 was dropped under the original13:01:36 UTC November26 budget cutoff; no S2, exports or S3 are run. No Marin contribution PR has been opened.
