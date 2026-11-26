@@ -2857,3 +2857,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU state.
 - Decision and next action: record 008/.513 and the first GPU admission.
+
+### 2026-11-26 16:30 UTC - Addendum: R40 Available-only THIRD root v2-mix-008/.513 submitted — corrected wave 032/.511 + 006/.512 + 008/.513 complete (384 GPUs planned total)
+
+- Question or hypothesis and reason for trying it: record the completed corrected Available-only wave.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-008-2026.11.26.513` SUBMITTED once on clean landed `ea9b97cd0df820e0fc6bf090f29e479d0eb49352` — the current 3 are **032/.511, 006/.512, 008/.513**; 128 GB200 = 48 trainer + 80 rollout each (**384 planned total**), PRODUCTION 08a / all racks / TP1-BF16 / DSpark / graphs / 50 steps / no learning clock.
+- Command or material configuration: catalog R40 load `54405be9…` through canonical curriculum helpers; no holiday imports / admission overrides. Proposed High anchor / 034 / 050 stay in place Pending; the actual R40 readbacks show extra Pending beyond the two SWE sources.
+- External inputs and artifact references: worker cc over Rhizome (~16:3x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-008/2026.11.26.513/submission-receipt.json` [R].
+- Environment and hardware when relevant: actual candidate data + real-agent + vocab gates remain before GPU; no admission/update qualification yet. Tracker now 6 rows (3 historical waiting + 3 new submitted, backups first, no duplicated mix rows). The worker's `.513` watchdog stages remain their own chain.
+- Result, including failure or restart: the corrected wave is fully submitted.
+- Evidence: three receipts + tracker rows [R].
+- Interpretation and limitations: pre-GPU state for all three.
+- Decision and next action: record pool publications and GPU admissions as they land.
