@@ -2953,3 +2953,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: directory listing of `experiments/complete/long-loop-exp3/` [R].
 - Interpretation and limitations: none.
 - Decision and next action: future references use the `complete/` path.
+
+### 2026-11-26 18:15 UTC - Addendum: `.131` audited result (NOT SEALED) — 258/429 = 0.6014 pass@1 with Bix, 429/434 = 98.85% valid; admission exception landed; queue 033/009/017 preparing
+
+- Question or hypothesis and reason for trying it: record the `.131` audited result ahead of sealing, plus the campaign admission-exception landing.
+- Published source revision: **`.131` audited result (NOT SEALED until archive verification): 258/429 = 0.6013986014 pass@1 with Bix; 429/434 = 98.8479% valid.** Frozen offline BixBench `4fd392c07a` regrade 3/10 — no new model responses. Five VerifierTimeoutError UIDs (265/266/353/393/394) remain absent. All 434 archives joined; **all 53 scored AGENT zeros have positive actual tokens/assistant turns; the frozen uniform no-work transport rule reclassifies none.**
+- Command or material configuration: CPU-only `/benfeuer/mochi131-micro210-preserve-20261126a` running — at 14:07 metadata 3,741 staged objects / 1,259,864,896 bytes; actual completion markers absent, no terminal claim. Seal/EvalDash/CSV scripts prepared with guards. **Campaign admission exception LANDED `b0457a312f`** — 69 landing + 17 focused/lint/types PASS; the broad affected command hits the unchanged OmegaConf/antlr bootstrap before collection; advisory 36 / 6 lanes + composer exit 0 / no timeout. Preparing queue-order **033/009/017**; the known RST unsupported-contract mixes 011/014 are held as broken runtime bindings, not status gating; no stripping.
+- External inputs and artifact references: worker cc over Rhizome (~18:1x UTC) [R].
+- Environment and hardware when relevant: no new GPU job yet; the `.131` original eval/export untouched.
+- Result, including failure or restart: audited result recorded pending seal; admission exception landed.
+- Evidence: audited-result numbers + landed revision + preserve metadata [R].
+- Interpretation and limitations: the pass@1 figure is explicitly unsealed pending archive verification; the 53 AGENT zeros are verified as real work (transport rule reclassifies none).
+- Decision and next action: record the seal/EvalDash/CSV publication and the corrected queue submissions when they land.
