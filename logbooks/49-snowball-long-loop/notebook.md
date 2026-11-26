@@ -3073,3 +3073,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: terminal root proofs + validation results [R].
 - Interpretation and limitations: environment/secret-delivery harness issue; the science config is unaffected.
 - Decision and next action: record the fix landing and fresh retries after terminal evidence.
+
+### 2026-11-26 20:45 UTC - Addendum: fresh root 006/.520 submitted on the secret-fix source (`2e8d58e119`); prior `.517` terminal proof retained
+
+- Question or hypothesis and reason for trying it: record the first post-fix fresh root.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.520` SUBMITTED once** on clean landed `2e8d58e1194f99be67a808665c39c0d3547adaef` (the proved secret-resolution fix) — standard main, 50 steps / no learning clock, PRODUCTION 08a / all racks / 128 GB200 (48+80) / `.131` controls unchanged. New native recipe/graph PASS; regional preparation/gate pending, no GPU admission claim.
+- Command or material configuration: the prior `.517` is terminal failed before GPU at KeyError TOGETHER_API_KEY despite the actual-agent/vocab gate PASS — proof + 8 source TaskSpecs retained. The fix stands at 24 focused / 71+24 landing / lint/types PASS, advisory 42 with own-open 0, all 6 lanes + composer exit 0; the affected runner's known bootstrap failure before collection is unchanged.
+- External inputs and artifact references: worker cc over Rhizome (~20:4x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-006/2026.11.26.520/submission-receipt.json` [R].
+- Environment and hardware when relevant: all local validations/submissions are now strictly serialized (no local native validation fan-out); the worker's wake registrations remain their own chain.
+- Result, including failure or restart: post-fix root submitted.
+- Evidence: submission receipt + fix validation [R].
+- Interpretation and limitations: pre-GPU.
+- Decision and next action: record the remaining post-fix roots and the first GPU admission.
