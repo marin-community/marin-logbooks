@@ -3373,3 +3373,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: gate PASS + compiled SHA [R].
 - Interpretation and limitations: the child is the live test of the file-only credential path.
 - Decision and next action: record the .527/.528 children and the first optimizer/first-update evidence.
+
+### 2026-11-26 16:44 UTC - Addendum: `.527` GPU child submitted (a98391882552, all 7 secrets); `.526` native execution `iris:1f2ed2a6…`; quota source control `-c` terminal FAILED (verifier-spec read)
+
+- Question or hypothesis and reason for trying it: record the second credential-fix GPU child and the quota control's failure.
+- Published source revision: **actual `.527` GPU child `/benfeuer/mochi-campaign-v2-mix-015-2026.11.26.527/rl-data-campaign-v2-mix-015-2026.11.26.527-a98391882552` SUBMITTED 16:42:44.202 UTC** — regional CPU gate `c67fd2c5` PASS 16:41:48.607; compiled `72380a8f73f7c3769eb1942d8f2fd0220a65e904830ff274a979ba279db3984c`; all 7 secret names resolved, 8 source tasks / realPi.
+- Command or material configuration: **`.526`'s native execution is `iris:1f2ed2a6c6e5148f`** (lifecycle started 16:41:35.978); its pinned Grafana URL is being filled in runs.csv. **The source-only quota control `-c` is terminal FAILED (1 task exit 1) on INVALID_TASK: cannot read verifier spec `/tests/…`, after real LOCAL allocation** — the exact error/CPU output is retained before any fix or further source attempt; no quota mix released. The main PR cleanup follow-up `2f1d3acd` is committed locally, not pushed/qualified.
+- External inputs and artifact references: worker cc over Rhizome (~16:4x UTC) [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: two of three credential-fix children are in; the quota source lane needs a verifier-spec fix.
+- Evidence: gate PASSes + compiled SHAs + iris execution IDs [R].
+- Interpretation and limitations: n/a.
+- Decision and next action: record the `.528` child, `.526`/`.527` first updates, and the quota-control correction.
