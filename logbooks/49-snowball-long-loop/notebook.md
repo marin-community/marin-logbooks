@@ -3025,3 +3025,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: committed revision + contract diagnosis [R].
 - Interpretation and limitations: the HostImage gap is an implementation task, distinct from the protocol-binding fix.
 - Decision and next action: record the loop-push landing and the backend implementation, then fresh roots.
+
+### 2026-11-26 19:45 UTC - Addendum: campaign root 006/.517 submitted on the protocol-fix source (`96a2d65926`); disk_root census holds 30 IDs; next unaffected 015 → 043
+
+- Question or hypothesis and reason for trying it: record the fresh root on the protocol/schema-fixed source and the queue census.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.517` SUBMITTED once** on clean landed `96a2d65926` — native recipe/graph no-run PASS; standard main, max_steps 50 / no learning clock, 128 GB200 (48+80) / PRODUCTION 08a / all racks, unchanged `.131` controls. **Replaces the terminal `.512` with retained proof; exact source pins preserved.**
+- Command or material configuration: regional data / actual-agent gate pending; no GPU admission claim.
+- External inputs and artifact references: worker cc over Rhizome (~19:4x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-006/2026.11.26.517/submission-receipt.json` [R].
+- Environment and hardware when relevant: **the catalog census independently shows 30 IDs with local grader disk_root failures** — affected mixes are held, along with the original unsupported RST/binding gaps; the next unaffected in queue are **015, then 043**. The protocol/schema fix stands at 12 focused / 71 related / 71 landing PASS, lint/types PASS, advisory 41 outside the correction with own 0; the affected runner's bootstrap failure before collection is known.
+- Result, including failure or restart: one fresh root on the fixed source; the queue holds for the disk_root census.
+- Evidence: submission receipt + census readback [R].
+- Interpretation and limitations: pre-GPU; the disk_root backend work remains the blocker for the held mixes.
+- Decision and next action: record .515-era queue movements (015/.043) and the first GPU admission as they land.
