@@ -2965,3 +2965,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: audited-result numbers + landed revision + preserve metadata [R].
 - Interpretation and limitations: the pass@1 figure is explicitly unsealed pending archive verification; the 53 AGENT zeros are verified as real work (transport rule reclassifies none).
 - Decision and next action: record the seal/EvalDash/CSV publication and the corrected queue submissions when they land.
+
+### 2026-11-26 18:30 UTC - Addendum: campaign root v2-mix-033/.514 submitted on the admission-exception source (`b0457a312f`); 009/.515 and 017/.516 validated, not yet submitted
+
+- Question or hypothesis and reason for trying it: record the post-ruling campaign wave — the original named mixes resume under the admission divergence.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-033-2026.11.26.514` SUBMITTED once** on clean landed `b0457a312f0fcad58afc34bf2328b78a0f2a7f31` (the admission-exception landing).
+- Command or material configuration: standard campaign main `--mix-id v2-mix-033 --max-steps 50 --run`, PRODUCTION 08a, 128 GB200 = 48 trainer + 80 rollout — GPU waits for the regional pools/real-agent CPU gate. Same `.131` recipe/model/draft; **the explicit Pending/Excluded admission divergence is retained in source metadata and the tracker.** No GPU child yet.
+- External inputs and artifact references: worker cc over Rhizome (~18:3x UTC) [R].
+- Environment and hardware when relevant: the next selected **009/.515 and 017/.516** have clean native dry validation PASS; not yet submitted. The worker's stage/admission/first-full-update/terminal-refill/eval wakes remain their own chain.
+- Result, including failure or restart: the ruling-driven wave begins with 033/.514.
+- Evidence: submission cc + landed revision [R].
+- Interpretation and limitations: pre-GPU; the divergence is explicit and recorded rather than silent.
+- Decision and next action: record .515/.516 submissions and the first GPU admission.
