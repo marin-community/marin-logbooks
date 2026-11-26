@@ -3085,3 +3085,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt + fix validation [R].
 - Interpretation and limitations: pre-GPU.
 - Decision and next action: record the remaining post-fix roots and the first GPU admission.
+
+### 2026-11-26 21:00 UTC - Addendum: quota-provenance correction — PR #11349 (72f807c8ff) was based on atlas-env-audit, not main; upstream needs the adapted quota implementation + e2fsprogs
+
+- Question or hypothesis and reason for trying it: verify the quota PR's provenance before claiming upstream coverage.
+- Published source revision: **PR #11349 merged at `72f807c8ff` on 2026-11-13, but its base was `atlas-env-audit`, not main** (narrow `gh pr view` JSON retained at `r40/upstream-quota-pr-provenance.json`). The clean main checkout was fetched/fast-forwarded to `7af5fd0e8d` — **`72f807` is not its ancestor, and main also lacks `local/disk.py` and Harbor `taskcompendium.py`.** Therefore upstream needs the actual adapted quota implementation as well as e2fsprogs — not an image-only claim. The existing implementation is being reused/adapted; no replacement quota mechanism.
+- Command or material configuration: n/a (provenance audit).
+- External inputs and artifact references: worker cc over Rhizome (~21:0x UTC) [R]; provenance JSON `r40/upstream-quota-pr-provenance.json` [R].
+- Environment and hardware when relevant: the new `.520` mix-006 root stands on the secret-fix source `2e8d58e119`; native validation/submission of 015 then 043 is serialized on Mac with no fan-out.
+- Result, including failure or restart: provenance corrected in the record.
+- Evidence: PR JSON + git ancestry check [R].
+- Interpretation and limitations: any upstreaming plan must carry the adapted implementation, not assume the PR covers main.
+- Decision and next action: record the serialized 015/043 submissions and the first GPU admission.
