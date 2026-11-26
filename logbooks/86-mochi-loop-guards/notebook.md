@@ -325,6 +325,12 @@ First checks11:16:57/11:17:02 UTC found both children16/16SchedulingGated, not p
 
 S1 source and science settings are frozen while its jobs run. The separate report-reader schema repair is being validated locally and will refresh reporting from saved data. It does not require repeating model work. No intervention outcome is established, no S2 is submitted, and equal N is still unfixed. T20 remains13:01:36 UTC.
 
+### 2026-11-26 11:34 UTC — Reporting repair validated; S1 admission pending
+
+Source c4b5bf17ca fixes the launcher report reader for the native panel's `task_rollout_spec` column. It reads both canonical source formats already accepted by SourceTaskDataset, extracts the native task identity, and hashes the complete serialized record. A regression reproduced the live ArrowInvalid before the fix and checks identity preservation, order-independent hashing and sensitivity to rollout-limit changes. The focused tests pass; the complete gate/publication files pass44 tests, required lint passes, and type checking reports zero errors. The live S1 bundles remain immutable source d080; no model measurement is repeated. Regional CPU `/benfeuer/mochi-loop-guards-s0-report-refresh-20261126a` refreshes saved S0 reporting using the repaired reader and the regional selection root.
+
+The11:26:36/39 UTC probe still found both S1 children16/16SchedulingGated, with zero failures/preemptions. Read-only Kueue inspection confirms priority1000/production, required16-host nvlink.domain gangs and no node affinity or rack exclusions. The stop workload reports18 additional GPU/RDMA quota units needed; RP has no admission status yet. No other job was touched and neither S1 arm was resubmitted. OriginalT20 remains13:01:36 UTC. S2 N stays unfixed and the placeholder8 is prohibited from submission.
+
 ## Final decision
 
-Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
+Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 must be dropped if actual S2 training cannot start by13:01:36 UTC on November26. No Marin contribution PR has been opened.
