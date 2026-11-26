@@ -2725,3 +2725,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt + regression behavior [R].
 - Interpretation and limitations: pre-GPU state as before.
 - Decision and next action: record `.506`/`.507` corrections and the first GPU admission.
+
+### 2026-11-26 13:45 UTC - Addendum: corrected campaign SECOND root accepted — v2-mix-009/.506; replaces terminal-failed .503
+
+- Question or hypothesis and reason for trying it: record the corrected second root replacing the terminal-failed `.503`.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-009-2026.11.26.506` ACCEPTED on landed `219b7202872f4b57c991c60da3a3925806ed58cb`; **replaces the verified-terminal CPU-only-failed 009/.503** — fresh version, no cancellations.
+- Command or material configuration: production 08a / all racks, 50 steps / no learning clock, unchanged `.131` DSpark / 128 GB200 48+80 controls.
+- External inputs and artifact references: worker cc over Rhizome (~13:4x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-009/2026.11.26.506/submission-receipt.json` [R].
+- Environment and hardware when relevant: regional data/real-agent admission pending before GPU; the tracker's existing row is replaced and all old receipts retained; the worker's `.506` stage/terminal watchdog remains their own chain.
+- Result, including failure or restart: corrected second root accepted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU state, matching the `.505` pattern.
+- Decision and next action: record the `.507` correction and the first GPU admission.
