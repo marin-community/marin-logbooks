@@ -214,6 +214,12 @@ Full S0 v12 was accepted at 05:50:45 UTC and placed on all 32 GPU hosts at 05:52
 
 Regional CPU `/benfeuer/mochi-loop-guards-v12-first-traces-20261126a` will inspect the first five retained multi-turn records during collection; it creates no model trials and is a retention diagnostic, not a scientific gate. Original v9/v10 and v11 loop/CF material remains superseded diagnostics. S0 is unsealed; targets and N await valid measurement. S1/S2 are unsubmitted, and all original cutoffs remain fixed. [Placed replacement on #12264](https://github.com/marin-community/marin/issues/12264#issuecomment-7183898379).
 
+### 2026-11-26 06:13 UTC — Actual retained feedback verified
+
+Regional CPU `/benfeuer/mochi-loop-guards-v12-first-traces-20261126a` succeeded. All five first multi-turn TB2 records have verifier results and retain every between-turn observation: assistant turns/observation batches are 7/6, 5/4, 6/5, 5/4 and 9/8. The [receipt](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdiagnostics%2F2026.11.26%2Fs0-v12-first-traces.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s0-v12-first-traces.json`. This validates retention on actual generated data; five early returns do not estimate population correctness, establish loop incidence or seal the baseline. The CPU watchdog entry was retired after terminal success and receipt verification; the GPU entry remains active.
+
+Exact GPU-head Finelog shows TB2 evaluation starting at 06:06:42.423 UTC (sequence 32066554602) and 5/267 returned at 06:11:42 (sequence 32066617802). All 32 hosts remained healthy at 06:11:55, with zero failures or preemptions. [Verified W&B run](https://wandb.ai/marin-community/marin-mochi-rl/runs/aa4cc7ddd162), confirmed on the exact head attempt at sequence 32066299947. The saved runtime configuration independently confirms the pinned regional SFT 400407 source, 128 GB200, 128 GiB hosts, production priority, all racks, TP1/BF16 and PIECEWISE CUDA graphs. Both S1 native plans pass on clean source d0801e23e2 at 64 GPUs and 723 trials per arm. No S1/S2 job has been submitted. [Tracking comment](https://github.com/marin-community/marin/issues/12264#issuecomment-7184235732).
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
