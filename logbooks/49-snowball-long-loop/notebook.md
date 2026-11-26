@@ -3409,3 +3409,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: gate PASS + compiled SHA + iris UIDs [R].
 - Interpretation and limitations: pre-optimizer; first-update evidence pending.
 - Decision and next action: record the first full updates and initial syncs as observed.
+
+### 2026-11-26 17:10 UTC - Addendum: campaign startup consolidation — LANDED `3fcd0748` + live gate; 22-file startup snapshot SHA-verified on S3; PR #12368 cleanup passes both real Linux tests
+
+- Question or hypothesis and reason for trying it: consolidation checkpoint on the credential-fixed wave (startup state + bookkeeping).
+- Published source revision: clean **LANDED `3fcd0748`** — comprehensive file-first worker credentials with the **all-7-secret CPU gate active**. Fresh production roots `.526`/`.527`/`.528` (mixes 006/015/043) all passed the actual regional realPi/source/vocab gates and have actual 128 GB200 GPU children registered; exact child paths / native iris UIDs / stall-safe Grafana links are in `campaign/runs.csv` and the regional `secret-fixed-grafana-receipt.json`.
+- Command or material configuration: through 16:56:58 bounded logs — 006/015 graph captures, selected errors 0 (not a full audit), native completion 0 / first-train 0: sync/baseline/full finite update and mismatch/acceptance UNAVAILABLE, not zero; no qualified optimizer claim. A **22-file current receipt snapshot is SHA-readback verified**: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-rl-data-campaign/preparation/2026.11.26.4-startup/` (Filer link); Echo 1089 / worklog 7207.
+- External inputs and artifact references: worker cc over Rhizome (~17:1x UTC) [R].
+- Environment and hardware when relevant: the LOCAL source control `-c` remains terminal FAILED INVALID_TASK (spec read/parse) with no blind rerun/data change — holds remain. **Main PR #12368 cleanup (`2f1d`) passed BOTH real Linux tests with no skips; canonical types 0; affected runner 1944 PASS / 10 FAIL / 3 SKIP (9 parent-reproduced + 1 fake-killpg flake PASS on current replay)** — the broader contract review is unresolved and the commit is NOT pushed. `.131` final publication unchanged (258/429 = 60.13986%, EvalDash live). The single 17:09 startup checkpoint fired 1/exit 0/stderr 0 with its label removed (old labels preserved; no duplicate timers/jobs).
+- Result, including failure or restart: the wave is in bounded startup; bookkeeping is current.
+- Evidence: startup snapshot + PR cleanup results [R].
+- Interpretation and limitations: startup-only — no update/throughput claims.
+- Decision and next action: record sync/baseline/first-finite-update evidence as it lands.
