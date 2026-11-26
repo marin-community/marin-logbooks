@@ -2833,3 +2833,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: regression + dry-run results + r40 readbacks [R].
 - Interpretation and limitations: admission semantics still await the user's ruling; fail-closed maintained.
 - Decision and next action: record the landing and the 3-launch when they occur.
+
+### 2026-11-26 16:00 UTC - Addendum: R40 Available-only FIRST root v2-mix-032/.511 submitted — canonical binding LANDED (`ea9b97cd0d`); Pending anchors stay held
+
+- Question or hypothesis and reason for trying it: record the landed canonical binding and the corrected wave's first root.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-032-2026.11.26.511` SUBMITTED once on **clean LANDED `ea9b97cd0df820e0fc6bf090f29e479d0eb49352`** — shared `curriculum_entries`/`weighted_curriculum` over the R40 load `54405be9…` / `assembly-r40-cut-v1` / served v39 pins.
+- Command or material configuration: 15 focused + 66 related + 66 landing/lint/types PASS; advisory 34 findings / 0 new catalog-own open / 6 lanes + composer complete. To obey fail-closed and keep 3 slots, the actual next Available queue entries **032, 006, 008** are used; the proposed High anchor / 034 / 050 are held Pending — no source promotion, no holiday imports. Layout unchanged: 128 = 48 trainer + 80 rollout per run, production 08a / all racks / 50 steps / no learning clock.
+- External inputs and artifact references: worker cc over Rhizome (~16:0x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-032/2026.11.26.511/submission-receipt.json` [R].
+- Environment and hardware when relevant: regional pool / real-agent / vocab gates before GPU still pending — no GPU/admission/update claim. Existing historical rows retained; the new 032 row is appended with backup. The worker's `.511` watchdog stages remain their own chain.
+- Result, including failure or restart: the corrected Available-only wave begins with 032/.511.
+- Evidence: submission receipt + landed revision [R].
+- Interpretation and limitations: pre-GPU; the admission-field question remains with the user.
+- Decision and next action: record 006/.512 and 008/.513 submissions and the first GPU admission.
