@@ -3349,3 +3349,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three submission receipts + CSV backups [R].
 - Interpretation and limitations: pre-GPU for all three.
 - Decision and next action: record the CPU gate outcomes and the first GPU admission.
+
+### 2026-11-26 16:39 UTC - Addendum: serving-free quota source control `-c` submitted; `.526`/`.527`/`.528` initial snapshots running (006 gate `fe88b245` live)
+
+- Question or hypothesis and reason for trying it: record the source-level quota control and the wave's CPU-gate progress.
+- Published source revision: **`/benfeuer/mochi-campaign-local-source-proof-20261126c` SUBMITTED once** (4 CPU / 16 GB / 64 GB disk, 0 GPU, privileged 08a, source `3fcd0748`) — it runs the unchanged catalog-bound OpenMathReasoning programmatic verifier through the actual LOCAL factory with retained 10 GiB storage, a fixed control answer, and verifies pool cleanup. The prior 21 real enforcement regressions are reused, not rerun; standalone native collection passed after excluding an unrelated HF-archive test conftest (no dependencies/requirements weakened).
+- Command or material configuration: current `.526`/`.527`/`.528` root initial snapshots are running — **006 pools succeeded and the actual CPU gate `fe88b245` is running**; 015/043 pool preparation running. GPU children not yet observed in the retained bound.
+- External inputs and artifact references: worker cc over Rhizome (~16:3x UTC) [R]; receipt `local-quota-source-proof-c/submission-receipt.json` [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: source control in flight; wave gates progressing.
+- Evidence: submission receipt + gate/pool states [R].
+- Interpretation and limitations: n/a.
+- Decision and next action: record the source-control terminal receipt and the GPU children.
