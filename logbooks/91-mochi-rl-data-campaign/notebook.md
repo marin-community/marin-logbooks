@@ -63,9 +63,13 @@ status: active
 
 Wave 1 setup: the as-listed ruling (user, 11/26) reached the campaign owner after it had launched two Available-only mixes under the earlier interim rule: v2-mix-032 (.511) and v2-mix-006 (.512), both clean queue entries. They keep running. v2-mix-033 and v2-mix-009 run next under the as-listed ruling. v2-mix-011's RST source failed its integrity contract and runs only if that can be fixed.
 
+### 2026-11-26 13:35 UTC - Campaign update
+
+Wave 1 setup, third defect: roots .511 (v2-mix-032), .512 (v2-mix-006) and .513 (v2-mix-008) built their training pools (76,083 and 23,114 tasks for the first two), then failed the real-agent CPU gate before any GPU allocation. NL2Bash's local verifier asks for disk/GPU allocations it cannot get, and e2egit validation has no selected machine. This is a runtime-vs-validator precedence bug in the campaign tooling. It is being fixed at the root, with no requirements stripped and no RL config change. Relaunch order: v2-mix-033 and v2-mix-009 under the as-listed ruling, then the next runnable mixes.
+
 ## Run table
 
-Synced 2026-11-26 08:16 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
+Synced 2026-11-26 08:35 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
 
 | Mix | Status | Steps | Reward 1–10 | Reward 41–50 | Best val step | Micro210 | Catalog divergence | Links | Note |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
