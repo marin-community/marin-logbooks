@@ -3277,3 +3277,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: `-c` submission receipt + parser-fix tests [R].
 - Interpretation and limitations: the two prior failures were operator/overlay selection errors, not disk-system failures.
 - Decision and next action: record the `-c` terminal receipt and the parser fix's landing.
+
+### 2026-11-26 15:56 UTC - Addendum: LOCAL pool enforcement proven on real 08a (`-d`: 21/21 regressions PASS); fixture fix `e7014b3fda` + v3-ID fix `48c2836f` LANDED; affected-source control submitted
+
+- Question or hypothesis and reason for trying it: record the LOCAL disk-pool enforcement proof and the two landed fixes.
+- Published source revision: **`/benfeuer/mochi-campaign-local-disk-proof-20261126d` ran 21 manual loop/ext4/overlay/ENOSPC/neighbor/cleanup regressions — ALL PASS** (JUnit extracted from the actual 1.07 KiB attempt archive and hashed; receipt `lane/local-quota-proof-d/pool-regression-receipt.json`). The overall job failed only because the affected-source fixture imported a launcher-only draccus — **the minimal fixture fix `e7014b3fda65fad1e3c0c5cb04613f50ea6e9d70` LANDED** with frozen native CPU collection PASS. **The v3 ID fix `48c2836f` also LANDED** (20 related tests PASS).
+- Command or material configuration: submitted ONLY the missing affected-source control `/benfeuer/mochi-campaign-local-source-proof-20261126a` (4 CPU / 16 GB / 0 GPU privileged 08a) — the 21 passing tests are NOT repeated.
+- External inputs and artifact references: worker cc over Rhizome (~15:5x UTC) [R].
+- Environment and hardware when relevant: the current RL roots `.523`/`.524`/`.525` remain source `4fdf…` and unchanged; 006/015 have actual 32 Ray tasks each with native execution Grafana links now in the tracker.
+- Result, including failure or restart: LOCAL pool enforcement is now backed by real 08a evidence.
+- Evidence: pool-regression receipt (21/21, hashed JUnit) + two landed fixes [R].
+- Interpretation and limitations: the `-d` job-level failure was fixture-only; the disk-system evidence is the 21/21 pass set.
+- Decision and next action: record the affected-source control's terminal receipt.
