@@ -766,3 +766,28 @@ newer source checkpoints meanwhile; their ttl=3d paths are not permanent copies.
 The public-SFT conservation correction remains authoritative. No HF operation, training
 configuration change, cancellation or resubmission occurred. Next verify the permanent
 copy and retain subsequent committed updates before the registered paired evaluation.
+
+## November 26, 15:54 EST: regional S2x conversion command validated
+
+The existing export-command template omitted native manual export's required model
+path. Its dry run reproduced the parser error before any job submission. Source
+`a989ad12e5` binds the replayable path/URI/identity from `inputs.model`, uses an explicit
+regional destination and the existing frozen SkyRL CPU environment, and safely quotes
+the generated command. The preflight receipt now binds the actual authored launch
+document instead of an unresolved placeholder. A CLI-wire regression covers the model
+locator and paths containing spaces.
+
+Required lint, all5 affected safe tests, all7 fixture stage plans, the generated native
+conversion dry run and a dry run against the actual saved treatment launch passed.
+[Conversion preflight receipt](analysis/user-overrides-20261126/s2x-regional-conversion-preflight.json).
+No conversion or other new Iris job was submitted, and no local model tensors were
+loaded. The live training source remains `ecc9fb1bae`.
+
+The planned step4 conversion uses48 policy GPUs (12x4 GB200) at production priority on
+08a, all racks, and writes a model artifact to the permanent regional experiment prefix.
+It has no Hub target. Before submission, require the committed step4 marker and a
+training GPU gang's verified termination/release. One60-GPU training gang plus the48-GPU
+converter is108; adding conversion while both60-GPU arms are allocated would exceed
+the128-GPU experiment cap. Use native detached submission and register the accepted ID.
+Only a verified completed conversion can initialize a registered S3 panel. The public
+SFT conservation/no-more-HF-copies ruling remains binding.

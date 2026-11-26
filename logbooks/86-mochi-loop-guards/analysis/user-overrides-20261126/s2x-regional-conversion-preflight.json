@@ -1,0 +1,40 @@
+{
+  "milestone": "Regional policy conversion prepared; no conversion job submitted",
+  "recorded_at": "2026-11-26T15:54:00-05:00",
+  "source_commit": "a989ad12e5",
+  "training_source_unchanged": "ecc9fb1bae",
+  "failure_reproduced": "Native manual exporter rejected the previous command because --model_path was missing",
+  "fix": "Require the replayable model locator and explicit regional destination; bind path, URI and identity from the authored launch document's inputs.model; quote argv through shlex.join; use the existing frozen SkyRL CPU command builder",
+  "validation": {
+    "required_lint": "passed",
+    "affected_safe_tests": 5,
+    "fixture_stage_plans": 7,
+    "generated_native_exporter_dry_run": "passed",
+    "actual_treatment_saved_launch_dry_run": "passed",
+    "model_tensors_loaded_locally": false,
+    "Iris_jobs_submitted": 0
+  },
+  "planned_conversion": {
+    "step": 4,
+    "cluster": "cw-us-east-08a",
+    "priority": "production",
+    "nodes": 12,
+    "gpus_per_node": 4,
+    "total_gpus": 48,
+    "gpu_variant": "GB200",
+    "excluded_racks": [],
+    "model_uri": "s3://marin-us-east-08a/marin/models/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+    "model_identity": "models/mochi-sft/hero-sft-fullab-step393k-v2/step-400407@2026.11.13:57fb15e9",
+    "model_local_path": "/tmp/marinskyrl/models/step-400407",
+    "treatment_checkpoint_root": "s3://marin-us-east-08a/tmp/ttl=3d/marin/users/benfeuer/checkpoints/mochi-loop-guards/s2-antithrash-treatment-c568ddc7d1-in-db57e3bd/2026.11.26.4/checkpoints",
+    "treatment_saved_launch": "s3://marin-us-east-08a/tmp/ttl=3d/marin/users/benfeuer/checkpoints/mochi-loop-guards/s2-antithrash-treatment-c568ddc7d1-in-db57e3bd/2026.11.26.4/resolved-launch.yaml",
+    "treatment_export_root": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/exports/s2-treatment-r4",
+    "treatment_model_output": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/exports/s2-treatment-r4/global_step_4/policy",
+    "hf_hub_repo_id": null,
+    "hub_copy_or_publication": false
+  },
+  "submission_gate": "Require committed step4 and verify a S2 GPU child has terminated and released its allocation before starting conversion. One remaining60-GPU training gang plus48 conversion GPUs is108, within the128-GPU experiment cap; both training gangs plus conversion is prohibited.",
+  "submission_mode": "Use native --no-wait for an actual manual conversion and register its exact accepted job; verify completion separately before any S3 panel.",
+  "scientific_constraints": "No change to fixed N4, initializer, task pool, intervention, sampling, evaluation gates or all-rack placement. No eager execution.",
+  "current_other_work": "Existing S2 pair and treatment-step1 permanent verified-copy job continue; no new Hub copy is authorized."
+}
