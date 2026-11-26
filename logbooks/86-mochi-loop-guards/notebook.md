@@ -220,6 +220,29 @@ Regional CPU `/benfeuer/mochi-loop-guards-v12-first-traces-20261126a` succeeded.
 
 Exact GPU-head Finelog shows TB2 evaluation starting at 06:06:42.423 UTC (sequence 32066554602) and 5/267 returned at 06:11:42 (sequence 32066617802). All 32 hosts remained healthy at 06:11:55, with zero failures or preemptions. [Verified W&B run](https://wandb.ai/marin-community/marin-mochi-rl/runs/aa4cc7ddd162), confirmed on the exact head attempt at sequence 32066299947. The saved runtime configuration independently confirms the pinned regional SFT 400407 source, 128 GB200, 128 GiB hosts, production priority, all racks, TP1/BF16 and PIECEWISE CUDA graphs. Both S1 native plans pass on clean source d0801e23e2 at 64 GPUs and 723 trials per arm. No S1/S2 job has been submitted. [Tracking comment](https://github.com/marin-community/marin/issues/12264#issuecomment-7184235732).
 
+### 2026-11-26 06:56 UTC — Corrected TB2 meets validity
+
+Regional CPU `/benfeuer/mochi-loop-guards-s0-v12-audit-tb2-20261126a` succeeded on the completed TB2 dump. All 267 frozen trials are accounted for: 250 assessed (93.63%), 17 infrastructure outcomes and no additional unavailable verdicts. This meets the design's 90% requirement. No TB2 repair or stricter completeness gate is needed.
+
+| TB2 metric | Corrected S0 v12 |
+|---|---:|
+| Confirmed agent-loop trials | 34 |
+| Confirmed trial share | 0.136 |
+| Agent-loop upper bound | 51/267 (0.19101) |
+| Repeat-turn share | 0.1192787795 |
+| Duplicate-tool fraction, median / p90 | 0.13333 / 0.54615 |
+| Full-credit passes | 54 |
+| Mean reward | 0.216 |
+| Median turns / generated tokens / wall seconds | 17.5 / 7,196 / 1,109.13 |
+
+Ten token-tail loops are report-only. TB2 qualifies as a target under the frozen ten-agent-loop minimum. The [audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.26-v12%2Fpartial%2Ftb2%2Faudit.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/partial/tb2/audit.json`; cohort hash remains `0befdc85f0c1f81c515d13ab49e4e1fead14c9c690208192237e425f06ed8ec1`. TB2 completed at 06:46:16.978 UTC, after 2,374.6 seconds of native evaluation. Per-trial timing describes the final attempt, so the native phase duration and retries must also inform any later RL update budget. No N has been chosen.
+
+S0 moved to TBLite, with 90/200 returned at the 06:59:45 probe. All 32 hosts remained running with zero failures or preemptions. Across all 32 GPU tasks, telemetry through 06:32:41 showed a maximum sampled and cumulative-attempt host peak of 69.26 GiB against 128 GiB requested. The complete S0 baseline remains unsealed pending TBLite, SWE100 and SWESmith held-out. No guard or RL job is submitted. [Tracking milestone](https://github.com/marin-community/marin/issues/12264#issuecomment-7184928437).
+
+### 2026-11-26 06:38 UTC — Boundary rerun interpretation registered before S1
+
+The coordinator confirmed the DESIGN section 6 interpretation proposed before any guard outcomes: if a target cohort is within two trials of its decision threshold, repeat the implicated guard arm once on the same panel and seeds. The repeat supplies the gate measurement regardless of direction. Report both measurements separately; never pool them or choose the better result. Keep the S0 control, target rule, intervention settings and thresholds fixed. This [pre-registration](https://github.com/marin-community/marin/issues/12264#issuecomment-7184629056) adds no launch gate and resets no clock. S1 remains unsubmitted.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
