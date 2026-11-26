@@ -129,6 +129,14 @@ The [stitching processor](analysis/stitch_tb2_recovery.py) was tested regionally
 
 V9 remains live and unsealed. TBLite had returned 190/200 trials at 01:12:37 UTC. Host-memory samples through 01:05 UTC show a head active-window maximum of 54.04 GiB and peer maxima at most 47.59 GiB; the head's cumulative attempt peak remains 68.01 GiB against its 128 GiB request. The watchdog reported running with no alerts at 01:10:41 UTC. Next: complete v9, apply the registered recovery, audit the combined baseline and inspect the stall sample before S1. The original cutoffs still apply.
 
+### 2026-11-26 01:28 UTC — TBLite meets the validity requirement
+
+The [TBLite audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.25.9%2Fpartial%2Ftblite%2Faudit.json) (`s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.25.9/partial/tblite/audit.json`) reports 190/200 assessed trials (95%), with ten infrastructure outcomes and no additional unavailable verdicts. It meets the design's numerical validity requirement. There are 23 confirmed agent-loop trials, confirmed share 0.12105, agent-loop UB 33/200 (0.165), repeat-turn share 0.12988 and 63 full-credit passes. Mean reward is 0.35636. Four token-tail loops are report-only. TBLite qualifies as a target cohort under the frozen minimum of ten confirmed agent loops.
+
+Native evaluation callbacks write their results beneath cohort directories such as `exports/tblite/dumped_evals`, while the first cohort writes beneath `exports/dumped_evals`. The CPU adapter's original main-directory glob would miss callback cohorts. [Source fc2591ddecb0dd4e7d312a273208e1aa2263daaf](https://github.com/marin-community/marin/commit/fc2591ddecb0dd4e7d312a273208e1aa2263daaf) searches `exports/**/dumped_evals/*/eval_only/*.jsonl`; the existing frozen task-ID filter still selects each cohort. Required lint/typecheck passed, and the regional 200-trial TBLite audit succeeded against the actual callback output. The live GPU bundle is unchanged.
+
+[S0 v9 on W&B](https://wandb.ai/marin-community/marin-mochi-rl/runs/a54355029268) completed TBLite at 01:13:28 UTC and moved to SWE100, with 15/100 returned at 01:22:20 UTC. All 32 GPU hosts remain running with zero failures or preemptions. The full baseline remains unsealed: TB2 requires its registered recovery, and SWE100 plus SWESmith held-out remain pending. No guard arm or recovery GPU job has been launched while v9 occupies the budget.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
