@@ -655,3 +655,40 @@ atomic across files. Their97.47%/97.67% graded shares do not establish the consu
 batch's masking rate, satisfy an evaluation validity gate or support a treatment effect.
 Next obtain committed checkpoints and step-end batch failure metrics; preserve all
 outcomes and keep the registered clocks and gates unchanged.
+
+## November 26, 15:18 EST: both arms updated; permanent conservation started
+
+Control completed optimizer step1 at15:06:13.607 EST; treatment completed step2 at
+15:08:08.281 EST. Both roots remain RUNNING with zero failures/preemptions at15:11 EST.
+Treatment step1's native batch metrics are256 requested trials,7 failed instances,
+36 failed trajectories and2 masked trajectories (0.78125%). The failed-trajectory
+count is not an infrastructure-error count. These training diagnostics do not replace
+evaluation validity gates or establish an antithrash effect.
+
+Treatment's committed checkpoint marker reads1. Its step directory contains policy
+shards, trainer state and1.5GB rollout state. An08a CPU job accepted15:16:37 EST is
+running native `fsutil verified-copy` into the permanent conservation prefix. The
+verified-copy completion manifest is still required before claiming successful
+permanent conservation. [Receipt with exact job IDs and destinations](analysis/user-overrides-20261126/s2-r4-conservation-start-1518.json).
+
+The consolidated CPU launcher's CLI failed locally before any submission because its
+parser named `--secret` as `secret` while the launcher read `secrets`. Regression
+coverage reproduced that failure; source `d11235af4d` sets the explicit destination.
+Required lint and all7 affected safe tests passed before committing, pushing and using
+the repaired command. No temporary worker script was introduced.
+
+The archive lane freed1.350TB of HF private storage. Retrying the original Mochi repo's
+privacy change still returned403; the repo contains63.2TB across its history. A new
+private destination for only the sealed SFT revision was created and its private
+visibility verified before copy. An08a CPU job accepted15:17:39 EST invokes native
+`hf repos cp` on the pinned source commit, using server-side copy operations.
+The source model card has both required paragraphs, and LICENSE byte-matches official
+OpenMDW1.1. The source generation config lacks Marin sampling defaults; after copying,
+upload [the prepared generation config](analysis/user-overrides-20261126/sft-private-copy-generation_config.json)
+and verify the final private inventory. Tokenizer metadata verifies EOS128001 and
+chat-template end-of-turn128009. Private conservation remains pending these checks.
+
+Both CPU jobs are registered in the central watchdog with native waits. Training
+continues on immutable source `ecc9fb1bae`; GPU allocations and scientific gates are
+unchanged. Next verify conservation-job completion, private-copy metadata and content,
+then preserve later committed checkpoints and evaluate the registered paired panels.

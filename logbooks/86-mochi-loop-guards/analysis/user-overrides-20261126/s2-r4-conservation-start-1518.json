@@ -1,0 +1,48 @@
+{
+  "observed_at": "2026-11-26T15:18:30-05:00",
+  "training_source": "ecc9fb1bae",
+  "worker_source": "d11235af4d",
+  "control_step_1_optimizer_completed_at": "2026-11-26T15:06:13.607-05:00",
+  "treatment_step_2_optimizer_completed_at": "2026-11-26T15:08:08.281-05:00",
+  "treatment_step_1_batch": {
+    "reported_at": "2026-11-26T15:05:56.215-05:00",
+    "num_trials": 256,
+    "num_failed_instances": 7,
+    "num_failed_trajectories": 36,
+    "num_masked_trajectories": 2,
+    "masked_fraction": 0.0078125,
+    "interpretation": "Native training-batch diagnostics, not evaluation validity or a paired treatment effect. Failed trajectories are not all classified as infrastructure failures."
+  },
+  "treatment_step_1_checkpoint": {
+    "source": "s3://marin-us-east-08a/tmp/ttl=3d/marin/users/benfeuer/checkpoints/mochi-loop-guards/s2-antithrash-treatment-c568ddc7d1-in-db57e3bd/2026.11.26.4/checkpoints/global_step_1",
+    "latest_checkpoint_marker": "1",
+    "trainer_state_present": true,
+    "rollout_state_present": true,
+    "permanent_destination": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/conservation/s2-treatment-r4/global_step_1",
+    "copy_job": "/benfeuer/mochi-loop-guards-s2-conserve-treatment-r4-step1",
+    "accepted_at": "2026-11-26T15:16:37-05:00",
+    "cluster": "cw-us-east-08a",
+    "resources": "16 CPU, 64GB memory, 128GB disk, no GPU",
+    "copy_method": "Native fsutil verified-copy --workers 32 from the checked-in cpu-submit command",
+    "verification_status": "pending completion manifest"
+  },
+  "sft_private_conservation": {
+    "original_repo": "open-athena/Marin-Mochi-535B-A23B",
+    "original_repo_visibility": "public",
+    "original_repo_storage_reported": "63.2 TB",
+    "visibility_retry": "HF403 private storage limit persists after the archive lane freed 1.350 TB",
+    "source_commit": "cfc315a0dcd12d8be5eb0023c0693c435af98998",
+    "private_destination": "open-athena/Marin-Mochi-535B-A23B-sft-fullab-v2-step-400407-conserved",
+    "destination_visibility_verified": "private, empty before copy",
+    "copy_job": "/benfeuer/mochi-loop-guards-sft400407-private-copy",
+    "accepted_at": "2026-11-26T15:17:39-05:00",
+    "cluster": "cw-us-east-08a",
+    "resources": "4 CPU, 8GB memory, 32GB disk, no GPU",
+    "copy_method": "Native hf repos cp pinned revision to private destination; SDK uses server-side CommitOperationCopy and copies the selected tree, not repository history",
+    "verification_status": "pending copy, generation-config correction and final inventory verification",
+    "metadata_checks": "Source model card contains both required warnings; LICENSE byte-matches official OpenMDW 1.1; tokenizer.json identifies chat end-of-turn token 128009 and EOS 128001",
+    "required_generation_config": "sft-private-copy-generation_config.json"
+  },
+  "monitoring": "Both CPU jobs registered in the central watchdog; native waits attached. No S2 training jobs were changed or resubmitted.",
+  "worker_fix_validation": "CLI regression reproduced Namespace.secrets AttributeError before any submission; explicit parser destination fixes it. Required lint and all 7 affected safe tests passed before commit, push and use."
+}
