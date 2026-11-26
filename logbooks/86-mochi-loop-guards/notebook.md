@@ -1081,3 +1081,21 @@ still has43 records, matching the prior file-name inventory. Its native job is R
 snapshot remains2.858TB at17:46 EST. Continue the registered jobs without resubmission
 or Hub operations; next native pass around18:05 EST.
 [TB2 progress receipt](analysis/user-overrides-20261126/s3-tb2-progress-1758.json).
+
+## November 26, 18:07 EST: TB2 returned-rollout counts advance past half
+
+Native progress records control152/267 returned TB2 rollouts at18:05:13.971 EST and
+treatment147/267 at18:04:44.571 EST. These include terminal errors; successful/valid
+counts and error rates remain unaudited. Both coordinator roots remain RUNNING at
+18:05:37; GPU children RUNNING16/16, zero Iris failures/preemptions at18:05:39 EST.
+
+AgentTimeoutError and sandbox-IP TaskMachineError remain visible. The newer control
+excerpt also logs VerifierTimeoutError with native default-mask handling. Earlier
+TmuxBatchProtocolError remains part of the qualitative error record. No classification
+or frozen-parameter changes, restart, resubmission or Hub operation. Continue the
+paired panels without an interim correctness/validity/effect verdict.
+
+The original copy is RUNNING0fail/preempt18:05:38, completion manifest absent and
+status inventory unchanged at43 files. The last summed staging snapshot remains
+2.858TB at17:46; permanent promotion remains unverified. Next pass18:15 EST.
+[TB2 progress receipt](analysis/user-overrides-20261126/s3-tb2-progress-1807.json).
