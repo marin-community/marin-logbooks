@@ -3109,3 +3109,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU.
 - Decision and next action: record the 043 root and the first GPU admission.
+
+### 2026-11-26 21:30 UTC - Addendum: fresh root 043/.522 submitted — post-fix wave 006/.520 + 015/.521 + 043/.522 complete on `2e8d58e119`
+
+- Question or hypothesis and reason for trying it: record the completed post-credential-fix wave.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-043-2026.11.26.522` SUBMITTED once** on clean landed `2e8d58e119` — the three current roots are **006/.520, 015/.521, 043/.522**; the prior `.517`–`.519` all terminal-failed before GPU after passing the real-agent gates. New native recipe/graph PASS; production 08a / all racks / 128 GB200 (48+80) each / 50 steps / no learning clock / exact `.131` controls and declared pins.
+- Command or material configuration: actual new GPU children/placement/executions unavailable until observed — no fabricated Grafana. Local native validation/submission was strictly serial.
+- External inputs and artifact references: worker cc over Rhizome (~21:3x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-043/2026.11.26.522/submission-receipt.json` [R].
+- Environment and hardware when relevant: qualification of the existing LOCAL quota implementation continues — affected sources remain held and no source requirements/scorers will be stripped. The worker's wake registrations remain their own chain.
+- Result, including failure or restart: post-fix wave fully submitted.
+- Evidence: three submission receipts + tracker rows [R].
+- Interpretation and limitations: pre-GPU for all three.
+- Decision and next action: record regional gate outcomes and the first GPU admission as they land.
