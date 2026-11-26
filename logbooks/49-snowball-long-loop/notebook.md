@@ -3205,3 +3205,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU.
 - Decision and next action: record the .521/.522 replacements and the first GPU admission on the fixed source.
+
+### 2026-11-26 15:39 UTC - Addendum: privileged CPU-only LOCAL quota proof submitted (`local-disk-proof-20261126a`); 015/.524 validation finishing
+
+- Question or hypothesis and reason for trying it: record the 0-GPU privileged regional proof gating the quota-dependent mixes.
+- Published source revision: **`/benfeuer/mochi-campaign-local-disk-proof-20261126a` SUBMITTED once at 15:38:23 UTC** — source `4fdf019146`, 08a 4 CPU / 16 GB / 64 GB disk / 0 GPU, production profile PRIVILEGED, 0 retries. It runs the existing loop/ext4/overlay/ENOSPC/cleanup regressions plus one unchanged pinned Atlas LOCAL verifier with a fixed control answer (no inference/RL).
+- Command or material configuration: the earlier wrapper invocation created no job (regionalNotFound retained) — this is the only actual submission. **Quota placement remains opt-in and not enabled until receipt inspection.**
+- External inputs and artifact references: worker cc over Rhizome (~15:3x UTC) [R]; receipt `lane/local-quota-proof/submission-receipt.json` [R].
+- Environment and hardware when relevant: fresh 006/.523 is already submitted/registered; **015/.524** native validation is finishing serially; 043/.522's terminal same-route-failure proof is retained.
+- Result, including failure or restart: quota proof in flight.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: the proof gates quota placement only; no GPU/RL involvement.
+- Decision and next action: record the quota proof's terminal receipt and the .524 root.
