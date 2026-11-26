@@ -75,9 +75,13 @@ Wave 1 launched under the as-listed ruling: v2-mix-033 (.514), v2-mix-009 (.515)
 
 Wave 1 relaunched on mixes with no known grader blocker: v2-mix-006 (.517), v2-mix-015 (.518) and v2-mix-043 (.519), on landed 96a2d65926, all in data prep. Mixes containing a disk-quota (HostImage + storage_mb) grader, the unsupported RST contract, or a missing binding wait for the disk-root fix: v2-mix-033, 009, 011, 017 and others. Grafana links are added when each run's RL child is placed.
 
+### 2026-11-26 15:11 UTC - Campaign update
+
+The user rated the v3 mixes. v2 and v3 now form one queue of 78 runnable mixes (21 v3 Skips dropped): clean mixes first, High (2) > Medium (15) > Low (15), then mixes with a stale-grader source (High 7 / Medium 17 / Low 22). Runs .520 (v2-mix-006), .521 (v2-mix-015) and .522 (v2-mix-043) were resubmitted after the secret-resolution fix 2e8d58e119.
+
 ## Run table
 
-Synced 2026-11-26 09:45 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
+Synced 2026-11-26 10:11 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
 
 | Mix | Status | Steps | Reward 1–10 | Reward 41–50 | Best val step | Micro210 | Catalog divergence | Links | Note |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
