@@ -3097,3 +3097,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: PR JSON + git ancestry check [R].
 - Interpretation and limitations: any upstreaming plan must carry the adapted implementation, not assume the PR covers main.
 - Decision and next action: record the serialized 015/043 submissions and the first GPU admission.
+
+### 2026-11-26 21:15 UTC - Addendum: fresh root 015/.521 submitted on `2e8d58e119`; 043 validating serially next
+
+- Question or hypothesis and reason for trying it: record the second post-credential-fix fresh root.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-015-2026.11.26.521` SUBMITTED once** on clean landed `2e8d58e119` — same production 08a / all racks / 50 steps / 128 GB200 (48+80) / `.131` controls; the only queued equal-weight mix. Native recipe + graph dry PASS; regional data/agent/vocab gate pending — no GPU admission claim.
+- Command or material configuration: the prior `.518` terminal-failed before GPU with the actual 8 source TaskSpecs gate PASS and the KeyError proof retained; the CSV unique row is replaced with a backup.
+- External inputs and artifact references: worker cc over Rhizome (~21:1x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-015/2026.11.26.521/submission-receipt.json` [R].
+- Environment and hardware when relevant: 043 validates serially next — no local native fan-out; the worker's wake registrations remain their own chain.
+- Result, including failure or restart: second post-fix root submitted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU.
+- Decision and next action: record the 043 root and the first GPU admission.
