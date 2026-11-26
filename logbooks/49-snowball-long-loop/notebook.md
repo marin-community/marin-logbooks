@@ -2737,3 +2737,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU state, matching the `.505` pattern.
 - Decision and next action: record the `.507` correction and the first GPU admission.
+
+### 2026-11-26 14:00 UTC - Addendum: corrected campaign THIRD root accepted (v2-mix-011/.507) — corrected wave 505/506/507 complete; first CPU child RUNNING (proves the placement fix)
+
+- Question or hypothesis and reason for trying it: record the corrected third root completing the corrected wave, and the first observed regional CPU child confirming the placement fix.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-011-2026.11.26.507` ACCEPTED (source `219b7202872f4b57c991c60da3a3925806ed58cb`), **replacing the verified-terminal CPU-only-failed 011/.504**. The corrected wave **505/506/507 is now all submitted once** — standard PRODUCTION 08a / 128 GB200 (48+80) each / all racks / 50 steps / no learning clock, same `.131` DSpark recipe.
+- Command or material configuration: the actual 033 regional CPU child is observed RUNNING: `/benfeuer/mochi-campaign-v2-mix-033-2026.11.26.505/prepare_pools-d5c6b69b`, submitted 12:39:11.067 UTC — **this proves the corrected nested placement was accepted**. GPU children/real-agent gates still pending, not claimed qualified.
+- External inputs and artifact references: worker cc over Rhizome (~14:0x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-011/2026.11.26.507/submission-receipt.json` [R].
+- Environment and hardware when relevant: the tracker's 3 existing rows are updated; the failed `.502`–`.504` history is retained. The worker's watchdog registrations remain their own chain.
+- Result, including failure or restart: corrected wave fully submitted; the placement fix is validated by a running CPU child.
+- Evidence: three corrected receipts + the running prepare_pools child [R].
+- Interpretation and limitations: CPU-side progress only; GPU admission still gated on real-agent/vocab admission.
+- Decision and next action: record GPU children/admission and first finite updates as they land.
