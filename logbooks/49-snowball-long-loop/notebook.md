@@ -2797,3 +2797,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three receipts + the running prepare_pools child [R].
 - Interpretation and limitations: CPU-side progress; GPU admission still gated.
 - Decision and next action: record pool publication and GPU admission as they land.
+
+### 2026-11-26 15:15 UTC - Addendum: RL data campaign launcher validation COMPLETE — wave 033/.508 + 009/.509 + 011/.510 submitted on `390c5e318b`; 033 CPU child lowered cohorts and verified SWE-smith rows
+
+- Question or hypothesis and reason for trying it: record the launcher-validation completion and the CPU-side data evidence from the running children.
+- Published source revision: current first-3 standard roots submitted — **033/.508, 009/.509, 011/.510** — on clean landed `390c5e318b7522b8679419e39b7c42a1c662296f`. Exact first-3 native recipe/graph dry PASS; 58 targeted/related + lint/types PASS; the broader affected run's 18 failures independently reproduce the clean base (not broad PASS). Same authored `.131` initializer/draft/DSpark4/TP1-BF16/graphs/48 trainer + 80 rollout, 50 steps / no learning clock, production 08a / all racks; the mixture 200-holdout / derived-route and retention operational differences are itemized in the final receipt.
+- Command or material configuration: the first 033 CPU child **actually lowered DAPO + both Nemotron cohorts and verified SWE-smith 7,016 rows + full parquet SHA**; the second actual CPU child is `009/.509/prepare_pools-fe8b40b0`. Through 12:48:52, bounded selected errors 0 (not a full audit).
+- External inputs and artifact references: worker cc over Rhizome (~15:1x UTC) [R]; final receipt published 166,494 bytes / 11 files on 08a with exact SHA-256 readback — `s3://marin-us-east-08a/marin/users/benfeuer/mochi-rl-data-campaign/preparation/2026.11.26.1/launcher-validation-final.json` (Filer link); root receipts + `wave1-submission-receipt.json` + STATUS/REPORT at the same prefix [R].
+- Environment and hardware when relevant: pools/realPi/vocab gates and GPU admission/updates remain PENDING — no fabricated metrics. All six older `.502`–`.507` roots/pool tasks terminal failed before GPU; two setup defects fixed with historical proofs retained, no cancellations. Tracker exactly 3 rows updated with backups, unobserved fields blank.
+- Result, including failure or restart: launcher validated; the corrected wave stands as the campaign's active set.
+- Evidence: launcher-validation-final receipt + per-root receipts [R].
+- Interpretation and limitations: pre-GPU; the worker's 07:53 EST one-shot and watchdog requests remain their own chain.
+- Decision and next action: record pool publications and the first GPU admission/first finite update as they land.
