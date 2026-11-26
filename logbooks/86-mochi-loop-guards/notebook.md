@@ -550,3 +550,27 @@ Both real S2 coordinators were accepted on source0987bdac6f (tree6658f0dae1), re
 The final module entrypoint explicitly configures CoreWeave storage before artifact construction, matching the regional preflight environment. The corrected local native plan passed. Local launcher diagnostics also showed time spent in native configuration composition; the earlier storage explanation alone did not establish the entire delay. Stopped local pre-submit attempts created no Iris jobs. Both final submissions used the standard module entrypoint and passed its native plan/candidate checks.
 
 The shared job watchdog owns both exact coordinator IDs under fresh session01a218ad; the lane monitor's first scheduled probe is11:48:44.993 EST and then every570 seconds. Native foreground waits remain attached. I3 training must start before November27 08:01:36 EST, and no new update may start after November27 20:01:36 EST. Export and preserve both trained arms; private HF upload remains blocked until organization storage capacity is resolved.
+
+## November 26, 11:57 EST: initial S2 fails before training; upstream NVML fix validated
+
+Both initial S2 roots and GPU children failed before model startup. Control's root failed
+at11:49:32 EST and treatment's at11:49:57 EST. The earlier15/15 RUNNING observations were
+startup states. No optimizer update, trained checkpoint or antithrash result was produced.
+
+All30 per-host NCCL gate reports passed60-rank collectives and PyNCCL initialization. The
+subsequent `task_runtime.main -> node_physical_labels` check failed because the NVML
+probe passed a ctypes output structure by value. Current Marin main uses `byref(info)`.
+The minimal upstream pointer fix and writable-result regression were adopted without
+changing the health gate, topology, science or resource settings. All eight physical-role
+tests pass; the new regression fails when the pointer fix is removed.
+
+The coordinator authorized one paired restart after validation on a fresh revision,
+`2026.11.26.4`, retaining N4, repeat-turn share, production08a and all racks. Source
+`d08093273e` is committed; the focused safe suite is finishing before push and relaunch.
+The [incident record](https://marina.oa.dev/echo/wiki/1090) preserves the diagnostic
+discriminator. Private HF conservation remains blocked on organization storage capacity.
+
+The coordinator preserved all93 temporary helpers in archive commit `b866da0521` and
+assigned their consolidation to a separate branch. New worker operations use checked-in
+experiment commands and central Iris/watchdog tooling. Adopt the consolidation after S2
+is training; no new temporary scripts are created.
