@@ -2893,3 +2893,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: gate errors + retained terminal proofs [R].
 - Interpretation and limitations: the failures are task-runtime/validator requirements (disk/GPU allocation, machine selection), not data defects — pool preparation had succeeded.
 - Decision and next action: the user rules on the admission divergence; the worker holds R40-only bindings meanwhile. This record takes no side.
+
+### 2026-11-26 17:15 UTC - Addendum: campaign .511/.512/.513 terminal proofs confirmed (all failed, one CPU task each); sizing fix in progress; NL2Bash incompatibility stays fail-closed
+
+- Question or hypothesis and reason for trying it: confirm the wave's terminal state and record the in-progress fix plus the genuine NL2Bash incompatibility.
+- Published source revision: **native terminal proofs confirmed for .511/.512/.513 — all failed, one failed CPU task each, no preemptions, no GPU child observed.**
+- Command or material configuration: fix in progress keeps the RL recipe unchanged — **admit the prepared `task_rollout_spec` (as production does), then apply non-null catalog sizing before native declared-minima/deadline lowering.** CPU regressions currently 8 campaign + 1 real-worker test PASS.
+- External inputs and artifact references: worker cc over Rhizome (~17:1x UTC) [R].
+- Environment and hardware when relevant: **NL2Bash has a genuine additional incompatibility** — the pinned TaskSpec verifier requires storage_mb=2048, the package lock requires HostImage, `.131` selects the local backend, and local explicitly cannot supply disk quotas. The worker will not strip the requirement or silently switch its environment/backend — **it stays fail-closed unless a faithful supported binding is available.**
+- Result, including failure or restart: terminal proofs retained; the sizing fix and the NL2Bash decision are tracked separately.
+- Evidence: native terminal proofs + regression state [R].
+- Interpretation and limitations: two distinct issues — a general sizing/ordering bug (fixable) and a genuine NL2Bash environment incompatibility (fail-closed).
+- Decision and next action: the BRIEF's 08:22 exception has been raised as a direct user clarification; source-pin admission changes await that answer.
