@@ -574,3 +574,27 @@ The coordinator preserved all93 temporary helpers in archive commit `b866da0521`
 assigned their consolidation to a separate branch. New worker operations use checked-in
 experiment commands and central Iris/watchdog tooling. Adopt the consolidation after S2
 is training; no new temporary scripts are created.
+
+## November 26, 13:56 EST: revision4 accepted and physical placement verified
+
+The resumed worker verified that `d08093273e` was pushed and no revision4 jobs existed.
+Completing the upstream regression exposed a second pre-training defect: Ray rejects
+`UUID:clique` as a label value. Source `ecc9fb1bae` adopts main's `UUID.clique` encoding
+and validates the produced labels with Ray itself. The regression failed on the colon
+encoding; all eight physical-placement tests pass with the correction. The earlier
+pointer fix also passed176 affected safe tests.
+
+Both revision4 arms were submitted once from the checked-in module on source
+`ecc9fb1bae`, tree `c568ddc7d1`, with the same N4/science/production08a/all-rack allocation.
+Control accepted13:51:23.963 EST, root suffix `85cd69d1`, GPU child `a3144ba94e53`.
+Treatment accepted13:51:46.099 EST, root suffix `c98995d1`, GPU child `a00eaf3f9e28`.
+Exact identities are in [the submission receipt](analysis/user-overrides-20261126/s2-r4-submission-receipt.json).
+
+Iris verified15/15 GPU tasks RUNNING in both children with zero failures/preemptions.
+The native runtime verified physical placement and launched the training drivers at
+13:54:26 EST control and13:54:39 EST treatment. First rollout/update has not yet been
+observed. Both roots and their child progress probes are registered in the central
+watchdog; its official validation tick passed with no alerts. Native Iris waits and
+log-follow commands own monitoring. Consolidation remains unmerged until training
+activity is confirmed. Rhizome is unbound in the resumed process; STATUS and this
+notebook preserve the handoff while direct routing is unavailable.
