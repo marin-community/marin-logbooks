@@ -351,6 +351,27 @@ Actual resolved-launch readbacks confirm both regional SFT400407 bindings,64GB20
 
 A reporting-only follow-up, source05016bd66a, preserves training-source multiplicity when multiple files share one artifact identity. A two-file native receipt regression fails before the fix; all13 publication tests, required lint and type checking pass. S0's published generation record remains valid; live S1 bundles stay on source d080. Both own watchdog entries remain active. No S2 is submitted and N remains unfixed; originalT20 is13:01:36 UTC.
 
+### 2026-11-26 12:39 UTC — Stall stop meets the TB2 cohort gates
+
+S1-stop completed267/267 TB2 trials at12:33:47.918 UTC after2,163 seconds of native evaluation. The cohort dump closed at12:33:49.272; TBLite began at12:33:49.851. Regional CPU `/benfeuer/mochi-loop-guards-s1-stop-audit-tb2-20261126a` succeeded in36.86 seconds, zero failures/preemptions, without creating model trials. Its audit is paired to sealed S0 and retains the exact frozen TB2 cohort hash.
+
+| TB2 metric | S0 control | S1-stop original |
+|---|---:|---:|
+| Assessed / N |250/267|252/267|
+| Infrastructure / unavailable |17 /0|15 /0|
+| Action-loop trials |34|30|
+| Action-loop UB |51/267|45/267|
+| Repeat-turn share |0.1192787795|0.0481669267|
+| Full-credit passes |54|59|
+| Mean reward |0.216000|0.234127|
+| Median turns |17.5|14|
+| Median generated tokens |7,196|4,327.5|
+| Median wall seconds |1,109.13|801.85|
+
+Repeat-turn share falls59.62%, exceeding the registered50% reduction. Passes59 exceed the raw40.65 minimum and are far from its ±2-trial repeat boundary. Validity252/267=94.38% meets90%. There are23 runtime repeat_stall stops. Three token-tail loops are report-only; their separate UB18/267 is not the action-loop UB45/267.
+
+The [audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs1-2026.11.26.1%2Fstop%2Fpartial%2Ftb2%2Faudit.json) and `gate-receipt.json` are under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s1-2026.11.26.1/stop/partial/tb2/`. This is a cohort result, not the full-arm verdict: TBLite, held-out and pooled correctness remain outstanding. A repeat triggered by a later target cohort would replace every arm gate, including TB2, regardless of direction. Original and repeat would stay separate. Both GPU arms remain16/16RUNNING, with RP94/267 TB2 at the12:34:09 probe. OriginalT20 remains13:01:36 UTC and no S2 is submitted.
+
 ## Final decision
 
 Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 must be dropped if actual S2 training cannot start by13:01:36 UTC on November26. No Marin contribution PR has been opened.
