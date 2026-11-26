@@ -3289,3 +3289,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: pool-regression receipt (21/21, hashed JUnit) + two landed fixes [R].
 - Interpretation and limitations: the `-d` job-level failure was fixture-only; the disk-system evidence is the 21/21 pass set.
 - Decision and next action: record the affected-source control's terminal receipt.
+
+### 2026-11-26 16:06 UTC - Addendum: `.523` failed at eval workers on DAYTONA_EVAL_API_KEY (env-only lookup); file-first org-secret fix in progress; upstream main PR #12368 opened
+
+- Question or hypothesis and reason for trying it: record the new first failure after the route fix and the fix-in-progress at the worker boundary.
+- Published source revision: **006/.523 progressed through graphs and route construction, then evaluation RolloutWorkers failed 16:00:47 on `KeyError: DAYTONA_EVAL_API_KEY` at `task_machine_factories.py:29` (os.environ-only eval-org lookup).** Root + 32-task child terminal FAILED retained (one primary failed + 31 coscheduled) — no optimizer.
+- Command or material configuration: fix in progress at the actual worker boundary — **Rigging file-first `require_secret` for the selected train/eval org, and the native launcher forwarding both explicitly configured org names**; the regression constructs the real lazy worker factory with files only, verifies the selected org, and fail-closes a missing key. No cancellation or blind resubmit.
+- External inputs and artifact references: worker cc over Rhizome (~16:0x UTC) [R].
+- Environment and hardware when relevant: `.524`/`.525` unchanged until actual failure/terminal evidence. The quota source control `-b` was submitted (4 CPU / 0 GPU, from `f0c8`) with the 21 pool tests already PASS. **Upstream main PR opened: https://github.com/marin-community/marin/pull/12368 (agent-generated/agentic-lint, no reviewers requested)** — main lint/types and 4 eval / 199 safe-Shellbox / 18 Harbor pass with independently reproduced baseline caveats.
+- Result, including failure or restart: the route fix worked past route construction; the next boundary (eval-org credentials) failed.
+- Evidence: terminal root/child proofs + PR link [R].
+- Interpretation and limitations: the same env-vs-file secret-delivery class as the train-org fix, now at the eval boundary.
+- Decision and next action: record the eval-org fix landing and the fresh replacements.
