@@ -3313,3 +3313,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three terminal proofs + fix tests [R].
 - Interpretation and limitations: all three failures share one root cause; no science-config change.
 - Decision and next action: record the fix landing and the fresh `.526`-series replacements.
+
+### 2026-11-26 16:35 UTC - Addendum: replacement root 006/.526 submitted on the comprehensive credential fix (`3fcd0748f6`); all-7-secret CPU gate pending
+
+- Question or hypothesis and reason for trying it: record the first post-credential-fix replacement root.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.526` SUBMITTED once at 16:34 UTC** on `3fcd0748f6d2df5b72ce2b560ea570af1e3610a3` — standard campaign main, production 08a, 128 GB200 (48+80), 50 steps / no clock, same `.131` controls and exact 006 pins. **Replaces verified terminal `.523` only.**
+- Command or material configuration: serial native recipe/graph validation PASS; the real regional CPU **all-7-secret + agent/input/vocabulary gate** is pending before any GPU child.
+- External inputs and artifact references: worker cc over Rhizome (~16:3x UTC) [R]; receipt `runs/v2-mix-006/2026.11.26.526/submission-receipt.json` [R].
+- Environment and hardware when relevant: the worker's root + CPU/GPU admission/first-step/stage-terminal wakes remain their own chain; no duplicate submission.
+- Result, including failure or restart: the credential-fix wave begins.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU; the gate now enforces the complete credential bundle.
+- Decision and next action: record the .527/.528 replacements and the first GPU admission.
