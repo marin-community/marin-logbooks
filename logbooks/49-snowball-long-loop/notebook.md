@@ -3397,3 +3397,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: the regressions close the two cleanup findings on PR #12368.
 - Decision and next action: record the job's terminal receipt and the PR push/qualification.
+
+### 2026-11-26 16:53 UTC - Addendum: `.528` GPU child submitted (a3f22ca4577c, iris:41146f9c…) — all three replacements now have actual GPU children
+
+- Question or hypothesis and reason for trying it: record the third credential-fix GPU child and the wave's unified state.
+- Published source revision: **actual `.528` GPU child `/benfeuer/mochi-campaign-v2-mix-043-2026.11.26.528/rl-data-campaign-v2-mix-043-2026.11.26.528-a3f22ca4577c` SUBMITTED 16:48:26.591 UTC** — native execution `iris:41146f9c10cec931` (driver 16:50:47.279), 128 GB200 (48+80). Regional CPU gate `0f370933` PASS 16:47:25.443; compiled `2b1b7f5355c4087fea7ec4c40f1468166e3754a569269a0a5d95afec53933c0d` — all 7 secret names / realPi / **14 source TaskSpecs**.
+- Command or material configuration: **all 3 replacements now have actual GPU children** — 006/015 each with 32 Ray task keys retained; 043's driver execution proved (all-rank inventory pending). 006's graph-capture rows at 16:52 are retained — no 80-engine coverage claim. Selected incremental errors 0 through 16:52:50 (not a full audit). No initial sync/baseline/optimizer qualified yet.
+- External inputs and artifact references: worker cc over Rhizome (~16:5x UTC) [R].
+- Environment and hardware when relevant: every pinned Grafana link is being written to runs.csv — the report uses actual iris UIDs, never `$__all`.
+- Result, including failure or restart: the full wave is on GPU.
+- Evidence: gate PASS + compiled SHA + iris UIDs [R].
+- Interpretation and limitations: pre-optimizer; first-update evidence pending.
+- Decision and next action: record the first full updates and initial syncs as observed.
