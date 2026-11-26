@@ -2749,3 +2749,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three corrected receipts + the running prepare_pools child [R].
 - Interpretation and limitations: CPU-side progress only; GPU admission still gated on real-agent/vocab admission.
 - Decision and next action: record GPU children/admission and first finite updates as they land.
+
+### 2026-11-26 14:15 UTC - Addendum: RL data campaign second SETUP defect before GPU — row check compared canonicalized JSON instead of literal task_spec bytes; strict-byte fix in progress
+
+- Question or hypothesis and reason for trying it: record the second pre-GPU setup defect and its root cause before the corrected relaunch.
+- Published source revision: the corrected 033/.505 CPU child `d5c6b69b` **verified the entire DAPO parquet SHA and 16,901 rows, then the campaign's row check rejected the first TaskSpec**. Diagnosis from canonical Atlas `retained_release.py`: **`task_sha256` is the SHA-256 of the literal task_spec JSON bytes; the campaign incorrectly compared canonicalized JSON.** Source parquet bytes did NOT change.
+- Command or material configuration: the fix preserves the strict byte hash (not relaxing pins); a targeted regression accepts the exact published serialization and rejects even a newline mutation.
+- External inputs and artifact references: worker cc over Rhizome (~14:1x UTC) [R].
+- Environment and hardware when relevant: collecting all 3 CPU/root terminals and landing the fix before fresh versions; **no GPU, no cancellation, no data substitution**. The existing 505–507 should not be counted as GPU experiments.
+- Result, including failure or restart: second setup defect isolated to the verification logic, not the data.
+- Evidence: canonical Atlas diagnosis + child verification behavior [R].
+- Interpretation and limitations: the campaign harness again — the data itself passed full-parquet SHA/row verification; only the per-row TaskSpec hash comparison was wrong.
+- Decision and next action: record the fix landing, regression proof, and the fresh root IDs.
