@@ -999,3 +999,25 @@ pair launches. The original treatment-step1 permanent-copy manifest remains abse
 at17:15 with two completed-file records. No new job or Hub copy was launched.
 Next control-conversion pass around17:25 EST; the public-SFT/no-more-HF-copies ruling
 remains binding.
+
+## November 26, 17:25 EST: both S2x exports are verified and converters succeed
+
+Control's final regional manifest appeared at17:22 EST. The native verifier passed
+221 manifest files,215 indexed shards,56504 tensors and1070983169596 recorded bytes,
+with identity `sha256:f47a91a9007164d11a1a415df275490f3fb89b3656e51bc72a1a425111f1d4eb`.
+Header/size verification used read-ahead disabled; no weight-payload rehash or tensor
+download. Its parent permanent/exclude-every-sweep marker passed byte readback;
+automatic pruning enforcement remains unverified.
+
+At17:23:49 EST, control's converter root is SUCCEEDED, all12 tasks succeeded with
+zero failures/preemptions. Treatment already succeeded and verified. A direct pod
+check finds treatment's rank0 pod deleted and control rank0 Succeeded with both task
+and uploader exited0. Both GPU gangs are finished; no experiment GPU allocation
+remains before S3. Both small verification receipts are in regional `decisions/`.
+[Control verification and terminal-state receipt](analysis/user-overrides-20261126/s2-control-r4-step4-export-verification.json).
+
+The next milestone is the native S3 plan followed by one submission per arm,64 GB200
+each,723 frozen follow-up trials each, production08a/all racks. No S3 or Hub job has
+been submitted at this milestone. The original resumable-step1 copy continues
+separately; its completion is not needed to consume the verified step4 model exports.
+The public-SFT/no-more-HF-copies ruling remains binding.
