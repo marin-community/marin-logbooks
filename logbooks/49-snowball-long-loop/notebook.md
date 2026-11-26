@@ -3181,3 +3181,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: child registration + gate PASS + fix tests [R].
 - Interpretation and limitations: `.522` may still hit the same route defect (its source predates the fix landing).
 - Decision and next action: record the fix landing, the merged-78 recompute, and fresh replacement roots.
+
+### 2026-11-26 15:37 UTC - Addendum: route-classification fix LANDED (`4fdf019146`, incl. disabled-by-default LOCAL quota port); `.522` hit the same route ValueError 15:35:33; fresh 006/.523 validating
+
+- Question or hypothesis and reason for trying it: record the fix landing and `.522`'s predicted same-defect failure.
+- Published source revision: **route classification fix LANDED `4fdf01914625f5277b7085f08bd99bd292e9f9f8`** (includes the disabled-by-default LOCAL quota port `593f67c9`/`c94eaf0f`). Landing: 71 campaign + 24 native + 1 disk-pool + 18 Harbor + 8 dataset tests PASS, 2 Harbor skips; required lint/types PASS. Advisory 45 findings outside the new route/quota code (one prior campaign `filesystem_for` finding answered per storage skill); all 6 lanes + composer 0 / no timeout. The affected runner retains the independently reproduced clean-`2e8` missing-humanfriendly collection blocker.
+- Command or material configuration: **`.522` raised the same real route ValueError at 15:35:33** — its actual 32-task terminal proof is retained before replacement. Fresh **006/.523** no-run validation is underway, strictly serial.
+- External inputs and artifact references: worker cc over Rhizome (~15:3x UTC) [R].
+- Environment and hardware when relevant: quota-dependent mixes remain held pending the separate 0-GPU privileged regional proof. No job cancelled or patched.
+- Result, including failure or restart: fix landed; `.522` confirmed the defect class; the replacement queue begins.
+- Evidence: landing tests + `.522` terminal proof [R].
+- Interpretation and limitations: `.520`–`.522` all failed on the same route defect (now fixed); the quota lane is separately gated.
+- Decision and next action: record the fresh .523 root and the merged-78 recompute.
