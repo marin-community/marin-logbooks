@@ -1,0 +1,77 @@
+import subprocess
+from pathlib import Path
+inner = r'''
+import hashlib,json,sys
+from collections import Counter
+from pathlib import Path
+import pyarrow.parquet as pq
+from omegaconf import OmegaConf
+from cloud.iris.launch_config import load_launch_config
+from rigging.filesystem.s3_compat import configure_coreweave_s3
+from rigging.filesystem.storage_path import StoragePath
+from rolloutengine.machines import _machine_spec
+from rolloutengine.models import TASK_ROLLOUT_COLUMN,TaskRolloutSpec
+from shellbox.backends.daytona.snapshot import snapshot_request_for_spec
+from skyrl_train.dataset.tasks import _canonical_task_prompt
+from taskcompendium.models import grader_environment
+configure_coreweave_s3()
+config=load_launch_config(Path(sys.argv[1]))
+environments=OmegaConf.to_container(config.skyrl.environment.task_sessions,resolve=True)
+pool='s3://marin-us-east-08a/marin/rl-data/task-selection/users/benfeuer/mochi-loop-guards/snowball-100k-agentic-ho-excluded/2026.11.25.1'
+output='s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.25/s2-environments'
+counts=Counter();families=Counter();requests={};roles=Counter();runtimes={}
+with (StoragePath(pool)/'train.parquet').open('rb') as stream:
+    for batch in pq.ParquetFile(stream).iter_batches(batch_size=128,columns=['family','task_spec']):
+        for row in batch.to_pylist():
+            families[row['family']]+=1
+            if row['family']!='agentic':continue
+            bound=_canonical_task_prompt(row,0,environment_configs=environments)
+            spec=TaskRolloutSpec.model_validate_json(bound[TASK_ROLLOUT_COLUMN])
+            for role,requirements,runtime in [('task',spec.task.environment_requirements,spec.task_machine),('verifier',grader_environment(spec.task.grader),spec.verifier_machine)]:
+                if runtime is None:continue
+                roles[(role,runtime.backend)]+=1
+                if runtime.backend not in ('daytona','daytona-eval'):continue
+                assert requirements is not None
+                with _machine_spec(requirements,runtime) as machine:
+                    request=snapshot_request_for_spec(machine)
+                    payload=request.as_dict()
+                    if 'dockerfile' in payload:
+                        payload['source_kind']='dockerfile'
+                        payload['dockerfile_sha256']=hashlib.sha256(Path(payload.pop('dockerfile')).read_bytes()).hexdigest()
+                    else:
+                        payload['source_kind']='registry_image'
+                        assert '@sha256:' in payload['image']
+                    requests[request.name]=payload
+                    counts[request.name]+=1
+                    runtimes[request.name]=runtime.model_dump(mode='json')
+assert families['agentic']==5480 and sum(families.values())==105480
+specs=sorted(requests.values(),key=lambda x:x['name'])
+result={'gpu_submitted':False,'provider_mutations':False,'config_sha256':hashlib.sha256(Path(sys.argv[1]).read_bytes()).hexdigest(),'pool':pool,'families':dict(families),'unique_snapshot_requests':len(specs),'machine_roles':[{'role':role,'backend':backend,'count':n} for (role,backend),n in roles.items()],'request_counts':dict(counts),'runtimes':runtimes}
+(StoragePath(output)/'required-snapshots.json').write_text(json.dumps(specs,indent=2)+'\n')
+(StoragePath(output)/'receipt.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k not in ('request_counts','runtimes')}))
+'''
+outer = '\n'.join([
+'import os,subprocess',
+'from pathlib import Path',
+'from marin.execution.lazy import materialized_config',
+'from marin.rl.skyrl import skyrl_cpu_command',
+'from rigging.filesystem.s3_compat import configure_coreweave_s3',
+'from rigging.filesystem.storage_path import StoragePath',
+'from experiments.post_training import rl_compose',
+'from experiments.post_training.mochi_loop_guards.presets import S2_CONTROL',
+"configure_coreweave_s3()",
+"os.environ['MARIN_PREFIX']='s3://marin-us-east-08a/tmp/ttl=3d/marin'",
+"rl_compose.SELECTION_ROOT='s3://marin-us-east-08a/marin/rl-data/task-selection'",
+"spec=rl_compose.run_spec(S2_CONTROL,name=S2_CONTROL.name,model_name='mochi')",
+"step=rl_compose.run_step(S2_CONTROL,spec)",
+"source=materialized_config(step,os.environ['MARIN_PREFIX']).launch_config_yaml",
+"Path('/tmp/s2-environment-launch.yaml').write_text(source)",
+"StoragePath('s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.25/s2-environments/planned-native-launch.yaml').write_text(source)",
+"os.environ['PYTHONPATH']=':'.join(str(Path.cwd()/p) for p in ('vendor/skyrl','vendor/skyrl/skyrl-train','vendor/skyrl/skyrl-gym'))",
+f"subprocess.run(skyrl_cpu_command('python','-c',{inner!r},'/tmp/s2-environment-launch.yaml'),check=True)",
+])
+compile(inner,'s2-environment-census','exec')
+compile(outer,'s2-environment-census-driver','exec')
+args=['uv','run','--no-sync','iris','--cluster','cw-us-east-08a','job','run','--no-wait','--priority','production','--cpu','16','--memory','64GB','--disk','128GB','--enable-extra-resources','--timeout','3600','--sync-package','marin-core','--job-name','mochi-loop-guards-s2-environment-census-20261125b','--','uv','run','--package','marin-core','python','-c',outer]
+raise SystemExit(subprocess.run(args).returncode)
