@@ -861,3 +861,19 @@ at16:26 EST; its completion manifest is still absent at16:25 EST. No further ful
 copy or HF Hub copy was launched. Require both regional conversions to succeed and
 verify their model manifests and shard inventories before the paired S3 panels.
 [Control conversion receipt](analysis/user-overrides-20261126/s2x-control-r4-step4-submission.json).
+
+## November 26, 16:39 EST: converters advance; durable exports remain pending
+
+At16:37 EST both regional conversion roots have12/12 GPU tasks RUNNING with zero
+failures/preemptions. Direct Kubernetes task-container logs show treatment's tensor
+conversion at100% (10232/10232) and local generation-config creation at16:34:27.972 EST.
+Control restored its model state at16:34:02.087 EST. These are intermediate stages;
+both permanent model-output directories were absent at16:38 EST. No completed export,
+model-manifest verification or paired S3 evaluation is claimed.
+
+Regional Iris log reads returned no task lines; direct container logs supplied the
+progress observations above. The reason for the log-read gap is unresolved. No job
+was canceled or resubmitted. The original regional checkpoint-copy completion manifest
+is absent at16:37 EST and its completed-file status prefix still has two records.
+Both fixed-N4 training arms remain succeeded. The public-SFT/no-more-HF-copies ruling
+is unchanged. Next native conversion pass is due around16:47 EST.
