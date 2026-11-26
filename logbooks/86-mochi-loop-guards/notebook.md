@@ -372,6 +372,16 @@ Repeat-turn share falls59.62%, exceeding the registered50% reduction. Passes59 e
 
 The [audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs1-2026.11.26.1%2Fstop%2Fpartial%2Ftb2%2Faudit.json) and `gate-receipt.json` are under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s1-2026.11.26.1/stop/partial/tb2/`. This is a cohort result, not the full-arm verdict: TBLite, held-out and pooled correctness remain outstanding. A repeat triggered by a later target cohort would replace every arm gate, including TB2, regardless of direction. Original and repeat would stay separate. Both GPU arms remain16/16RUNNING, with RP94/267 TB2 at the12:34:09 probe. OriginalT20 remains13:01:36 UTC and no S2 is submitted.
 
+### 2026-11-26 13:04 UTC — I3 dropped at the original T20 cutoff
+
+The original13:01:36 UTC (08:01:36 EST) S2 start cutoff passed without a submitted or started S2 training job. The scheduled clock watcher observed this at13:02:08 UTC; the receipt was written at13:03:34. The ordered S1 panels were still collecting. The13:03:06/09 probes show stop152/200 TBLite and RP30/200 TBLite, with both16-host GPU children running and zero Iris failures/preemptions. A fresh13:03:34 hub query for the exact experiment S2 root prefix returned no jobs.
+
+Apply DESIGN section4's budget drop: I3 is not run. There is no S2 admission, first rollout, first update, applied update or fixed N; the placeholder8 was never submitted. S2x trained-checkpoint exports and S3 trained-export panels are also not run. No SFT checkpoint will stand in for a trained export, and no antithrash effect is claimed. OriginalT0,T32 and the48-hour deadline remain unchanged. No shared snapshot deletion follows from this drop.
+
+The [decision receipt](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdecisions%2Fi3-t20-budget-drop-2026.11.26.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/i3-t20-budget-drop-2026.11.26.json`, with a separate redacted native S2-job-absence log. S1-stop and S1-rp continue through the same723 trials and frozen limits; the registered one-repeat boundary rule remains unchanged. Stop's TB2 cohort result remains59.62% lower repeat-turn share with59 versus54 passes, but the full-arm verdict still awaits TBLite, held-out and pooled correctness.
+
+STATUS.md was rewritten around current jobs, sealed evidence, thresholds and this budget decision. Its complete previous history remains in STATUS-history-through-20261126_0802.md. Invalid old controls and obsolete TB2 stitching instructions are explicitly superseded.
+
 ## Final decision
 
-Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 must be dropped if actual S2 training cannot start by13:01:36 UTC on November26. No Marin contribution PR has been opened.
+Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 was dropped under the original13:01:36 UTC November26 budget cutoff; no S2, exports or S3 are run. No Marin contribution PR has been opened.
