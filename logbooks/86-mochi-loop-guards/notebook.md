@@ -97,9 +97,15 @@ S0 v9 was accepted at 23:35:32 UTC, with first admission inspection pending. V8 
 
 S0 v9 initialized all 32 rollout workers and began TB2 at approximately 2026-11-25 23:59 UTC. At 00:05:57 UTC, 14/267 TB2 trials had returned. These are returned counts, not scored, valid or passing counts. Current logs contain a task-level TmuxSessionEnded interruption and a native transient Daytona retry; their scoring disposition awaits persisted records. No PicklingError, OOM or snapshot-quota error appears in this window.
 
-Root logs show worker processes on at least 11 remote hosts; log deduplication prevents an exact census from those messages. Hub Finelog `iris.task`, origin cw-us-east-08a, all 32 v9 task IDs at attempt 0 over 23:59–00:09 UTC, reports a post-startup head maximum of 48.76 GiB, with all peers at most 44.88 GiB. The attempt's model-startup peak is 68.01 GiB. Requests remain 128 GiB. This verifies initial distribution and memory behavior; it is not a full-cohort stress result. Source remains 496dd1b5a876f5a4f9750115a79c4715e2897ee8.
+Root logs show worker processes on at least 11 remote hosts; log deduplication prevents an exact census from those messages. Hub Finelog `iris.task`, origin cw-us-east-08a, all 32 v9 task IDs at attempt 0 with query bounds 23:59–00:10 UTC and samples available through 00:07 UTC, reports a post-startup head maximum of 48.76 GiB, with all peers at most 44.88 GiB. The attempt's model-startup peak is 68.01 GiB. Requests remain 128 GiB. This verifies initial distribution and memory behavior; it is not a full-cohort stress result. Source remains 496dd1b5a876f5a4f9750115a79c4715e2897ee8.
 
 Next: finish all S0 cohorts, audit validity and action loops, select targets from S0 and review offline stall fires before intervention claims. No baseline is sealed and no effect is claimed.
+
+### 2026-11-26 00:14 UTC — Keep counterfactual outcomes absent when unassessed
+
+Before inspecting S0 scientific results, [source fccf79e47ba14c5ea87bdfb330735672eec95902](https://github.com/marin-community/marin/commit/fccf79e47ba14c5ea87bdfb330735672eec95902) corrects the offline stopped-trial pass-rate denominator. Fired trials with unknown outcomes are counted explicitly and excluded from that rate, rather than lowering it. The shared #10197 policy also keeps infrastructure errors absent even if a raw verdict was saved, while preserving graded agent-limit outcomes. The main audit's existing classification is unchanged; the counterfactual now uses that same policy. Thirty-nine audit/counterfactual tests and required lint/typecheck pass. This is CPU reporting only; GPU v9 remains at source 496dd1b5a8.
+
+For the precision review, retain all fired identities with the native counterfactual's `--sample 823`, then select up to 30 globally by a deterministic seed-20261125 hash of cohort, task ID, attempt ID, UID and ordinal. Selection is independent of cut length and verdict; the native top-cut ordering remains diagnostic. Preserve exact identities for bounded regional review windows, and report the actual size if fewer than 30 fires exist. Detector definitions, stop threshold and success criteria stay fixed.
 
 ## Final decision
 
