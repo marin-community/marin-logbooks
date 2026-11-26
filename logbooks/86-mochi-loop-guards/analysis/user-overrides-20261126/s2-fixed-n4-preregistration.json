@@ -1,0 +1,37 @@
+{
+  "registered_before_submit_at": "2026-11-26T16:38:44.759510+00:00",
+  "source_commit": "855c6c4c4f",
+  "revision": "2026.11.26.3",
+  "N": 4,
+  "primary_measure": "agent_loop/repeat_turn_share",
+  "success_rule": "Treatment repeat_turn_share <=0.5*paired RL control on every inherited target cohort; correctness thresholds computed from paired control then multiplied by user override0.75; validity>=90%",
+  "targets": [
+    "tb2",
+    "tblite",
+    "swesmith-ho"
+  ],
+  "paired_replicates": 1,
+  "gpus_per_arm": 60,
+  "total_gpus": 120,
+  "cluster": "cw-us-east-08a",
+  "priority": "production",
+  "all_racks_eligible": true,
+  "TP": 1,
+  "dtype": "bfloat16",
+  "CUDA_graphs": "PIECEWISE",
+  "budget": {
+    "update_hours_estimate": 7,
+    "startup_reserve_hours": 3,
+    "total_hours_estimate": 31,
+    "GPU_hours_estimate": 3720,
+    "T20": "2026-11-27T08:01:36-05:00",
+    "T32": "2026-11-27T20:01:36-05:00",
+    "deadline": "2026-11-28T12:01:36-05:00"
+  },
+  "preflight": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s2-fixed-n4-preflight/receipt.json",
+  "checkpoint_every": 1,
+  "keep_every": 1,
+  "private_HF_export_required": true,
+  "private_HF_storage_quota_blocker": true,
+  "permanent_regional_exports_required": true
+}

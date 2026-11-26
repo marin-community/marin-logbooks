@@ -529,3 +529,12 @@ The RP repeat exact root `/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards
 
 S2 plan: N4 fixed identically before submission on source855c6c4c4f, primary measure repeat-turn share, based on the existing conservative7h/update budget plus3h startup reserve. Two60-GB200 arms (48policy+12inference each), production08a/all racks/TP1BF16/PIECEWISE graphs, same frozen pool/seed/LR/initializer; antithrash is the only treatment difference. Preserve each completed update; no new update after T32. Submission pending completed override receipts and final N4 native plans. Existing N2 native preflight passed; do not redo completed environment preparation.
 
+
+
+## November 26, 11:38 EST: S2 preflight and checkpoint inventory verified
+
+The corrected final native N4 preflight `/benfeuer/mochi-loop-guards-s2-fixed-n4-plan-20261126b` SUCCEEDED in32.64 seconds with zero failures/preemptions. Both arms use source855c6c4c4f, revision2026.11.26.3, four updates,60 GB200/15hosts/704GiB per arm, production08a/all racks/TP1BF16/PIECEWISE graphs. Entire inputs and every SkyRL setting match except antithrash. The primary measure, repeat-turn share, and budget were fixed in `decisions/s2-fixed-n4-preregistration.json` before either launcher started. Preserve every update; stop new updates after November27 20:01:36 EST. The31-hour paired estimate corresponds to at most3,720 GPU-hours if both allocations run for the full budget. This is an estimate, not observed cost.
+
+Regional conservation check `/benfeuer/mochi-loop-guards-conservation-check-20261126b` SUCCEEDED. All199 common files match in hashes and sizes, including all193 weight shards and every shard referenced by the model index. Weight SHA256 values were compared with the retained regional verified-copy/model manifest; current regional sizes were checked and small model files rehashed. The weights were not rehashed afresh. HF has seven repository-only metadata/card files. Regional verification receipt: `conservation/sft-400407-verification-receipt.json`. HF remains public and private conversion is blocked on open-athena private-storage capacity.
+
+The first fresh CPU publication/preflight attempts used BELAY credentials that could list but returned403 on reads. They were canceled and replaced with the established `secrets.env` credential source. No model trials were created by these CPU attempts. The already-published override decisions and permanent marker were read back successfully.

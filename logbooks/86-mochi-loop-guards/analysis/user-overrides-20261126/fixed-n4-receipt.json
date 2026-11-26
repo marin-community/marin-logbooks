@@ -1,0 +1,65 @@
+{
+  "status": "FIXED_BEFORE_SUBMISSION_USER_OVERRIDE",
+  "N": 4,
+  "N_fixed": true,
+  "GPU_submitted": false,
+  "RL_training_started": false,
+  "model_trials_created": 0,
+  "source_commit": "855c6c4c4f",
+  "real_regional_pool": "users/benfeuer/mochi-loop-guards/snowball-100k-agentic-ho-excluded@2026.11.25.1",
+  "native_cli_plans_pass": true,
+  "scientific_difference_only": "generator.trajectory_reward_shaping.antithrash",
+  "same_inputs_and_all_other_skyrl_fields": true,
+  "checkpoint_every": 1,
+  "keep_every": 1,
+  "arms": [
+    {
+      "arm": "s2-antithrash-control",
+      "N": 4,
+      "N_fixed": true,
+      "revision": "2026.11.26.3",
+      "native_cli_plan_exit": 0,
+      "allocation": {
+        "num_nodes": 15,
+        "gpus_per_node": 4,
+        "gpu_variant": "GB200",
+        "cpu": 120,
+        "memory": "704GiB",
+        "disk": "2TB"
+      },
+      "antithrash": {
+        "enabled": false,
+        "applies_to": "all"
+      },
+      "CUDA_graphs": "PIECEWISE",
+      "TP": 1,
+      "model_dtype": "bfloat16",
+      "priority": "production",
+      "all_racks_eligible": true
+    },
+    {
+      "arm": "s2-antithrash-treatment",
+      "N": 4,
+      "N_fixed": true,
+      "revision": "2026.11.26.3",
+      "native_cli_plan_exit": 0,
+      "allocation": {
+        "num_nodes": 15,
+        "gpus_per_node": 4,
+        "gpu_variant": "GB200",
+        "cpu": 120,
+        "memory": "704GiB",
+        "disk": "2TB"
+      },
+      "antithrash": {
+        "enabled": true,
+        "applies_to": "correct_only"
+      },
+      "CUDA_graphs": "PIECEWISE",
+      "TP": 1,
+      "model_dtype": "bfloat16",
+      "priority": "production",
+      "all_racks_eligible": true
+    }
+  ]
+}
