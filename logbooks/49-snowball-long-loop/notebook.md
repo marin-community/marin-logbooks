@@ -3061,3 +3061,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three submission receipts + tracker rows [R].
 - Interpretation and limitations: pre-GPU for all three.
 - Decision and next action: record regional gate outcomes and the first GPU admission as they land.
+
+### 2026-11-26 20:30 UTC - Addendum: `.517`/`.518` failed pre-GPU on TOGETHER_API_KEY (launcher read env, not the mounted file); file-first secret fix in validation; `.519` still observing
+
+- Question or hypothesis and reason for trying it: record the new first cause for the two fresh roots and the fix in validation.
+- Published source revision: **`.517` (006) and `.518` (015) PASSED the regional actual-agent/vocab/task gates, then failed BEFORE GPU submission at native `iris_backend.config_task_environment` with `KeyError: 'TOGETHER_API_KEY'`** — coordinators deliver the approved key as a named mounted file; the launcher read `os.environ` only. Both terminal root proofs saved — no GPU child/admission.
+- Command or material configuration: the canonical Rigging **file-first secret resolution fix is in validation — 24 native credential/launch tests PASS + lint/types PASS**; secret values stay out of launch documents/logs. Fresh retries only after the landed fix + terminal evidence, not duplicates.
+- External inputs and artifact references: worker cc over Rhizome (~20:3x UTC) [R].
+- Environment and hardware when relevant: `.519` (043) remains under bounded observation — no cancellation or blind retry. The LOCAL quota port from `72f807c8ff` is preserved separately as an UNQUALIFIED WIP stash `d8fbc5f` on base `96a2d`; no submitted job uses it — quota-affected sources remain held. The `.131` seal/EvalDash/CSV is complete with no rerun.
+- Result, including failure or restart: credential-resolution defect identified; fix validating.
+- Evidence: terminal root proofs + validation results [R].
+- Interpretation and limitations: environment/secret-delivery harness issue; the science config is unaffected.
+- Decision and next action: record the fix landing and fresh retries after terminal evidence.
