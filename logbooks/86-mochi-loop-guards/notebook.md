@@ -948,3 +948,17 @@ remain16:47 EST: absent manifest and two completed-file records. Keep the existi
 copy; no cancellation, resubmission, duplicate checkpoint copy or new allocation.
 Next conversion/copy pass remains16:57 EST. The public-SFT/no-more-HF-copies ruling
 is unchanged.
+
+## November 26, 16:58 EST: both converted models are publishing regional shards
+
+Direct task-container logs confirm treatment84/215 weight shards published by
+16:57:35.307 EST and control51/215 by16:57:34.727 EST. Earlier16:57 fsutil listings
+independently showed83 and50 completed objects. Both roots remain RUNNING12/12 tasks,
+zero failures/preemptions at16:57:30 EST. Neither listing has the final model manifest
+or weight index; final export verification and S3 submission remain pending.
+
+The original treatment-step1 permanent-copy completion manifest is still absent at
+16:57 EST, with two completed-file records. No cancellation, resubmission, new copy,
+allocation or Hub operation. The registered converters remain within96/128 GPUs;
+next native pass around17:07 EST. Launch the128-GPU S3 pair only after both converter
+roots terminate successfully and both converted artifacts pass the prepared verifier.
