@@ -3133,3 +3133,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: native success rows + gate PASS + raw proof [R].
 - Interpretation and limitations: startup-stage evidence only — no throughput/update claims yet.
 - Decision and next action: record the first full update and the `.521`/`.522` GPU children as observed.
+
+### 2026-11-26 15:12 UTC - Hourly catch-up (Iris primary evidence) + TIMESTAMP-DRIFT CORRECTION for this logbook's recent entries
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence. **Correction:** the secretary's entry headings between roughly "12:00 UTC" and "21:45 UTC" (the RL-data-campaign and `.131` sequence) were written on a drifting clock — the true write window was ~11:45–15:12 UTC Nov 26. The authoritative times are the worker-cc internal timestamps (e.g., preserve submitted 13:53:14 UTC; `.520` gate PASS 15:06:27 UTC; Ray keys 15:09:13–17 UTC) and Iris submission times; entry content and evidence are unaffected. This heading uses the verified clock.
+- Published source revision: **RL-data campaign wave LIVE on Iris** — `.520` (006) GPU child `rl-data-campaign-v2-mix-006-2026.11.26.520-a9bb79bd6487` RUNNING (submitted 15:07:32; eval preflight `2e0d2850` succeeded 15:05:42); `.521` (015) GPU child `…-521-a374ef566b08` RUNNING (submitted 15:10:39; preflight `81842296` + pools `792ea810` succeeded); `.522` (043) root RUNNING 15:06:12 with `prepare_pools-5370b6c5` running. RL `.129`/recovery trees and Exp6 `.158` remain terminal-succeeded (unchanged).
+- Command or material configuration: `iris --cluster=marin job list` for /benfeuer/mochi-campaign and /benfeuer/long-loop-mochi-v5-exp3-rl (15:12 UTC).
+- External inputs and artifact references: Iris job lists [R]; the GPU-child milestone cc (already recorded, 815c9d46f5) [R].
+- Environment and hardware when relevant: two GPU children running concurrently; the third root still in CPU preparation.
+- Result, including failure or restart: the post-fix wave is live on GPU for mixes 006 and 015.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only; update/throughput claims await the first full updates.
+- Decision and next action: hourly checks continue with verified clock stamps; watch the first full updates.
