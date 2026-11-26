@@ -291,6 +291,29 @@ The standalone [feedback census](analysis/observation_census.py) will stream all
 
 Held-out reached 234/256 at 08:35:12 UTC. All32 GPU hosts remained running at08:35:20 with zero failures or preemptions. The complete baseline remains unsealed and no guard/RL arm has been submitted. Original T0 and cutoffs remain fixed.
 
+### 2026-11-26 11:12 UTC — Corrected S0 sealed; offline stall review passes
+
+S0 v12's coordinator and all32 GPU tasks finished SUCCEEDED with zero failures or preemptions. Held-out reached256/256 at10:59:15.267 UTC after10,863 seconds of native evaluation. The root remains `/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s0-baseline-8d1a0b19d0-in-af5ab9b8-2026.11.25.9-coordinator-15fbdce1`, GPU child suffix `aa4cc7ddd162`, source d0801e23e2. All823 frozen trials are accounted for,796 assessed and27 infrastructure outcomes, with no additional unavailable verdicts. The first three full-audit cohorts exactly match their earlier partial audits and hashes.
+
+| Cohort | Assessed / N | Action-loop trials | Loop UB | Repeat-turn share | Passes | Mean reward | Target |
+|---|---:|---:|---:|---:|---:|---:|---|
+| TB2 | 250/267 | 34 | 51/267 | 0.1192787795 | 54 | 0.216000 | Yes |
+| TBLite | 194/200 | 20 | 26/200 | 0.0974277259 | 66 | 0.372441 | Yes |
+| SWE100 | 99/100 | 3 | 4/100 | 0.0466101695 | 52 | 0.525253 | No; baseline-only |
+| SWESmith held-out | 253/256 | 13 | 16/256 | 0.1216524559 | 117 | 0.462451 | Yes |
+
+The [full audit and seal](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.26-v12%2Fbaseline-seal.json) are under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/`. Regional CPU `/benfeuer/mochi-loop-guards-s0-postprocess-20261126v12a` completed the full audit, unchanged counterfactual processor, feedback census and in-region verified retention copy. The permanent trace prefix is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s0-v12`, [Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Ftraces%2Fs0-v12). Its completion-manifest SHA-256 is `ea6aaa6d788b935b7362780c5b9b01cf3263a3162a7f5c3ce5a58de584ef6c5a`.
+
+Every multi-turn record contains observations. Assistant-call counts exceed feedback counts because compaction and handoff helpers also generate responses, sometimes shaped like commands that are not executed. The census and bounded gap review are engineering diagnostics, not a new validity threshold; the frozen parser and detector stay unchanged. The launcher status reader separately expects a `task_spec` column instead of the native panel's `task_rollout_spec`, so its evaluation-summary collection failed. The model run and frozen-panel audit succeeded. Fix the reporting reader without repeating model work.
+
+The unchanged offline counterfactual fires on61/823 trials:28 TB2,17 TBLite,3 SWE100 and13 held-out. Their final full-credit passing counts are0,4,0 and3 respectively; all seven passing cases have later turns that would be cut. These are at-risk recorded passes, not counterfactual grading outcomes. Wait-only exclusions suppress121 TB2,140 TBLite and3 SWE100 windows.
+
+The registered global30 sample uses the smallest SHA256(seed20261125, cohort, task identity) ranks, independent of cut length and verdict. All30 windows were reviewed with verdicts, cut lengths and later turns hidden. Result:29 genuine stalls and one non-genuine summary-helper output sequence with empty feedback, observed precision29/30=96.67%, meeting the90% requirement. The false fire remains in the frozen analysis; no detector retuning or resampling occurred. Labels and provenance: `counterfactual/precision-labels.json` under the audit prefix, [Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.26-v12%2Fcounterfactual%2Fprecision-labels.json).
+
+Before any S1 outcomes, the fixed723-trial follow-up requires pooled passes at least223 versus237 control passes. Target-cohort minimum passes are41 TB2,56 TBLite and105 held-out. I1 repeat-turn-share maxima are0.0596393897,0.0487138630 and0.0608262279. I2 maximum integer UB counts are17,10 and6 (raw held-out threshold6.5). The ±2-trial rerun trigger uses the unrounded registered count thresholds, not display rounding: correctness counts39–42/54–58/103–106 and I2 UB counts15–19/8–12/5–8, respectively. One repeat supplies every gate regardless of direction; report both runs separately and never pool or best-of. No count conversion is introduced for the I1 ratio.
+
+Both guard arms remain the unchanged source-d080 presets at64GPUs and723trials each. S2 N is unfixed, the placeholder8 is not executable, and original T20/T32/deadline remain. No intervention effect is established by these baseline or offline results.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
