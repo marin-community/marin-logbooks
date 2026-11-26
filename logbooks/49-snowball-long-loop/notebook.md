@@ -3145,3 +3145,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only; update/throughput claims await the first full updates.
 - Decision and next action: hourly checks continue with verified clock stamps; watch the first full updates.
+
+### 2026-11-26 15:16 UTC - Addendum: `.521` GPU child retained with driver identity; both live children's Grafana links pinned (iris:1bb7db5f… / iris:cf04ed4f…)
+
+- Question or hypothesis and reason for trying it: record the `.521` GPU child identity and the pinned execution/Grafana fields for both live children.
+- Published source revision: **`.521` GPU child `/benfeuer/mochi-campaign-v2-mix-015-2026.11.26.521/rl-data-campaign-v2-mix-015-2026.11.26.521-a374ef566b08` RETAINED** — all 32 Ray task keys; first Ray 15:12:25.247 UTC; driver lifecycle **`iris:cf04ed4f3dfaf07b`** at 15:12:57.775. `.520`'s driver lifecycle **`iris:1bb7db5f6d4d6b46`** also observed. Recipe source `2e8d58e119`.
+- Command or material configuration: the tracker is backed up with both actual-child and Grafana fields filled — **mix 006 Grafana**: https://grafana.oa.dev/d/marin-rl-runs/rl-post-training?orgId=1&timezone=utc&from=now-3h&to=now&var-training_type=async&var-cluster=cw-us-east-08a&var-run=rl-data-campaign%2Fv2-mix-006-2026.11.26.520&var-job=%2Fbenfeuer%2Fmochi-campaign-v2-mix-006-2026.11.26.520%2Frl-data-campaign-v2-mix-006-2026.11.26.520-a9bb79bd6487&var-execution=iris%3A1bb7db5f6d4d6b46 ; **mix 015 Grafana**: https://grafana.oa.dev/d/marin-rl-runs/rl-post-training?orgId=1&timezone=utc&from=now-3h&to=now&var-training_type=async&var-cluster=cw-us-east-08a&var-run=rl-data-campaign%2Fv2-mix-015-2026.11.26.521&var-job=%2Fbenfeuer%2Fmochi-campaign-v2-mix-015-2026.11.26.521%2Frl-data-campaign-v2-mix-015-2026.11.26.521-a374ef566b08&var-execution=iris%3Acf04ed4f3dfaf07b — both pin the actual RL child path and native iris:execution with now-3h→now and no `$__all`, per the confirmed link rule.
+- External inputs and artifact references: worker cc over Rhizome (~15:1x UTC) [R]; receipt `r40/actual-gpu-grafana-receipt.json` [R].
+- Environment and hardware when relevant: no optimizer/full-step claim; selected errors 0 through the saved startup-current-window (not a full audit). `.522` remains pending its actual child readout. The worker's 521 GPU-child/stage/fullstep/terminal wakes remain their own chain.
+- Result, including failure or restart: both live children now have pinned identities.
+- Evidence: actual-gpu-grafana receipt [R].
+- Interpretation and limitations: startup-stage evidence only.
+- Decision and next action: record first full updates and the `.522` child as observed.
