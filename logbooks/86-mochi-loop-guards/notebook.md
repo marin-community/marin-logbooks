@@ -343,6 +343,14 @@ At11:45:54.515915 UTC, S1-stop childa6b43090575a had all16 hosts running with ze
 
 S0's final host-memory census covers9,850 samples across all32 tasks through11:00:34 UTC. Maximum sampled and cumulative-attempt peak RAM are both69.2568359375GiB against128GiB requested. Receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s0-v12-final-host-memory.json`. The refreshed S0 dashboard record was also verified by the publication API for exact attemptaa4cc7ddd162; its receipt is `report-publication-receipt.json` under the full S0 audit prefix. These diagnostics do not change measurements or resource requests.
 
+### 2026-11-26 12:09 UTC — Both guard arms placed; actual runtime verified
+
+Both S1 children are16/16RUNNING at12:05:10/13 UTC, with zero failures or preemptions and128 GPUs combined. Stop returned14/267 TB2 trials at12:04:21. RP's head task duration was7m16.43s at its first positive probe, implying startup at approximately11:57:57.5 UTC; this estimate is separate from the observed probe time.
+
+Actual resolved-launch readbacks confirm both regional SFT400407 bindings,64GB200/16hosts per arm,128GiB host memory, production priority, all racks, four engines withTP1/DP16/EP16,BF16 andPIECEWISE CUDA graphs, eager execution false. Stop uses the three retained stop-enabled cohort files andRP1.0; RP uses stop-off files andRP1.1. SWE100 is absent from both follow-ups. Readbacks: `diagnostics/2026.11.26/s1-{stop,rp}-actual-runtime-identity.json` under the experiment S3 prefix. Exact head logs verify [stop W&B](https://wandb.ai/marin-community/marin-mochi-rl/runs/a6b43090575a), sequence32074177656, and [RP W&B](https://wandb.ai/marin-community/marin-mochi-rl/runs/a824d6ccf60d), sequence32074733594. Separate `s1-{stop,rp}-verified-wandb.json` receipts retain provenance.
+
+A reporting-only follow-up, source05016bd66a, preserves training-source multiplicity when multiple files share one artifact identity. A two-file native receipt regression fails before the fix; all13 publication tests, required lint and type checking pass. S0's published generation record remains valid; live S1 bundles stay on source d080. Both own watchdog entries remain active. No S2 is submitted and N remains unfixed; originalT20 is13:01:36 UTC.
+
 ## Final decision
 
 Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 must be dropped if actual S2 training cannot start by13:01:36 UTC on November26. No Marin contribution PR has been opened.
