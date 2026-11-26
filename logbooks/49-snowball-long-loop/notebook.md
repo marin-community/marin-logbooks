@@ -3337,3 +3337,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU.
 - Decision and next action: record the 043 replacement and the first GPU admission.
+
+### 2026-11-26 16:37 UTC - Addendum: replacement wave 006/.526 + 015/.527 + 043/.528 complete on `3fcd0748f6`
+
+- Question or hypothesis and reason for trying it: record the completed post-credential-fix wave.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-043-2026.11.26.528` SUBMITTED once** on `3fcd0748f6d2df5b72ce2b560ea570af1e3610a3` — the three fresh roots are **.526 (006) / .527 (015) / .528 (043)**, all production 08a 128 GB200 (48+80), 50 steps / no clock / `.131` controls / exact pins. Each replaces its verified terminal predecessor (.523/.524/.525) only.
+- Command or material configuration: serial native recipe/graph PASS; the complete 7-secret + real-worker CPU gate pending before GPU; no optimizer qualification yet. The CSV is updated with backup per mutation.
+- External inputs and artifact references: worker cc over Rhizome (~16:3x UTC) [R]; receipt `runs/v2-mix-043/2026.11.26.528/submission-receipt.json` [R].
+- Environment and hardware when relevant: the worker's root and ordinary admission/first-update/stage-terminal wakes remain their own chain.
+- Result, including failure or restart: the credential-fix wave is fully submitted.
+- Evidence: three submission receipts + CSV backups [R].
+- Interpretation and limitations: pre-GPU for all three.
+- Decision and next action: record the CPU gate outcomes and the first GPU admission.
