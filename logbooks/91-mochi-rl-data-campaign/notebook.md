@@ -61,10 +61,10 @@ status: active
 
 ## Run table
 
-Updated as runs start, finish and get evaluated. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
+Synced 2026-11-26 08:05 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
 
-| Mix | Priority | Status | Steps | Reward 1–10 | Reward 41–50 | Best val step | Micro210 | Catalog divergence | Links |
-| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
-| v2-mix-033 | High | relaunching | 0 | | | | | swesmith-v5 (Excluded in served R40; sealed retained release @758b28bf) | |
-| v2-mix-009 | Medium | relaunching | 0 | | | | | | |
-| v2-mix-011 | Medium | relaunching | 0 | | | | | | |
+| Mix | Status | Steps | Reward 1–10 | Reward 41–50 | Best val step | Micro210 | Catalog divergence | Links | Note |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
+| v2-mix-033 | SUBMITTED |  |  |  |  |  |  |  |  |
+| v2-mix-009 | SUBMITTED |  |  |  |  |  |  |  |  |
+| v2-mix-011 | SUBMITTED |  |  |  |  |  |  |  |  |
