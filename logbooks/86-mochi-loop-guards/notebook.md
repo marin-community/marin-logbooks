@@ -312,7 +312,18 @@ The registered global30 sample uses the smallest SHA256(seed20261125, cohort, ta
 
 Before any S1 outcomes, the fixed723-trial follow-up requires pooled passes at least223 versus237 control passes. Target-cohort minimum passes are41 TB2,56 TBLite and105 held-out. I1 repeat-turn-share maxima are0.0596393897,0.0487138630 and0.0608262279. I2 maximum integer UB counts are17,10 and6 (raw held-out threshold6.5). The ±2-trial rerun trigger uses the unrounded registered count thresholds, not display rounding: correctness counts39–42/54–58/103–106 and I2 UB counts15–19/8–12/5–8, respectively. One repeat supplies every gate regardless of direction; report both runs separately and never pool or best-of. No count conversion is introduced for the I1 ratio.
 
-Both guard arms remain the unchanged source-d080 presets at64GPUs and723trials each. S2 N is unfixed, the placeholder8 is not executable, and original T20/T32/deadline remain. No intervention effect is established by these baseline or offline results.
+Both guard arms remain the unchanged source-d080 presets at64GPUs and723trials each. S2 N is unfixed, the placeholder8 must not be submitted, and original T20/T32/deadline remain. No intervention effect is established by these baseline or offline results.
+
+### 2026-11-26 11:18 UTC — Both S1 arms submitted; admission pending
+
+After the baseline seal and complete offline review, S1-stop was accepted at11:14:24.766 UTC and S1-rp at11:14:41.643. Both use immutable source d0801e23e2, actual artifact revision2026.11.25.9,64GB200,128GiB hosts, production cw-us-east-08a, all racks,TP1/BF16 and CUDA graphs. Each measures the same723 follow-up trials and seeds; SFT400407 remains the initializer. The estimated duration is4–5 hours per arm, subject to admission and frozen limits.
+
+- Stop root: `/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s1-stop-8d1a0b19d0-in-d88ffd61-2026.11.25.9-coordinator-328ce3e4`; GPU child suffix `a6b43090575a`.
+- RP root: `/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s1-rp-8d1a0b19d0-in-d88ffd61-2026.11.25.9-coordinator-4bd2a367`; GPU child suffix `a824d6ccf60d`.
+
+First checks11:16:57/11:17:02 UTC found both children16/16SchedulingGated, not placed, with zero failures/preemptions. Both own watchdog entries are registered and validated at11:17:55 with no alerts; native waits72140/80470 and sharedmonitor46930 own monitoring. The earlier S0 monitor and native wait completed. Full S0 postprocessing succeeded in1m49.92s; the bounded helper-gap diagnostic succeeded in35.44s. Its terminal watchdog entry was already absent from the live registry before S1 registration; no other owner's entries were changed. [Submission milestone](https://github.com/marin-community/marin/issues/12264#issuecomment-7190560763), [baseline seal and pre-S1 thresholds](https://github.com/marin-community/marin/issues/12264#issuecomment-7190461858).
+
+S1 source and science settings are frozen while its jobs run. The separate report-reader schema repair is being validated locally and will refresh reporting from saved data. It does not require repeating model work. No intervention outcome is established, no S2 is submitted, and equal N is still unfixed. T20 remains13:01:36 UTC.
 
 ## Final decision
 
