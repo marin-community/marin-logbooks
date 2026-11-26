@@ -932,3 +932,19 @@ No live export verification, new job or model download occurred. The latest live
 observations remain the16:47 conversion/publication pass above. Successful terminal
 converters plus verified model artifacts still gate the128-GPU S3 pair. Next native
 conversion/copy pass remains16:57 EST; no further Hub copies are authorized.
+
+## November 26, 16:55 EST: regional resumable-copy worker activity is verified
+
+The original treatment-step1 verified-copy job remains RUNNING0fail/preempt at16:53
+EST, after1h37m. Kubernetes Metrics API is unavailable, and the container lacks `ps`.
+Direct read-only proc/cgroup inspection identifies the live `fsutil` process and
+shows task cumulative CPU time increasing from9724544763 to9743614679 microseconds
+between samples. Current task memory is about7.3GiB; observed peak is10.6GiB.
+
+These observations establish worker activity, without establishing transfer throughput,
+remaining time or verified checkpoint completion. Host-network interface counters
+cannot be attributed to this task. The latest completion-manifest/status observations
+remain16:47 EST: absent manifest and two completed-file records. Keep the existing
+copy; no cancellation, resubmission, duplicate checkpoint copy or new allocation.
+Next conversion/copy pass remains16:57 EST. The public-SFT/no-more-HF-copies ruling
+is unchanged.
