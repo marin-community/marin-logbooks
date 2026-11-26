@@ -137,6 +137,14 @@ Native evaluation callbacks write their results beneath cohort directories such 
 
 [S0 v9 on W&B](https://wandb.ai/marin-community/marin-mochi-rl/runs/a54355029268) completed TBLite at 01:13:28 UTC and moved to SWE100, with 15/100 returned at 01:22:20 UTC. All 32 GPU hosts remain running with zero failures or preemptions. The full baseline remains unsealed: TB2 requires its registered recovery, and SWE100 plus SWESmith held-out remain pending. No guard arm or recovery GPU job has been launched while v9 occupies the budget.
 
+### 2026-11-26 02:08 UTC — SWE100 qualifies; SWESmith collection continues
+
+The [SWE100 audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.25.9%2Fpartial%2Fswe100%2Faudit.json) (`s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.25.9/partial/swe100/audit.json`) reports 98/100 assessed trials, two infrastructure outcomes and no additional unavailable verdicts. There are ten confirmed agent-loop trials, agent-loop UB 12/100, repeat-turn share 0.01764 and 52 full-credit passes; mean reward is 0.53061. Two token-tail loops are report-only. Ten confirmed loops reach the frozen target minimum. SWE100 remains baseline-only under the budget drop registered before results; it will not be restored to S1/S3 in response to this measurement.
+
+SWESmith held-out began around 01:46:45 UTC and reached 116/256 returned trials at 02:00:11 UTC. All 32 GPU hosts remained healthy at 02:01:13 UTC, with zero failures or preemptions. A read-only retention snapshot at 01:55:25 UTC contained 62 returned records: 58 verified and four infrastructure outcomes. Early returns are not representative, so final validity and loop incidence await the completed cohort. Per-request tool-parser logs have not caused a GPU job failure; no execution setting changed.
+
+Host-memory samples across all 32 v9 attempt-0 tasks, query bounds 01:05–02:03 UTC with samples through 02:01:47 UTC, show a head active-window maximum of 54.66 GiB and peer maxima at most 48.14 GiB. The head's cumulative attempt peak remains 68.01 GiB against a 128 GiB request. The full baseline remains unsealed. Next: finish v9, perform the registered TB2 infrastructure recovery, then audit the combined baseline and review the stall sample before S1.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
