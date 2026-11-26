@@ -2677,3 +2677,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU state, matching the first root's pattern.
 - Decision and next action: record the third root (v2-mix-011) and subsequent admission evidence.
+
+### 2026-11-26 12:45 UTC - Addendum: RL data campaign THIRD root submitted (v2-mix-011/.504) — first wave complete (033/.502, 009/.503, 011/.504)
+
+- Question or hypothesis and reason for trying it: record the campaign's third root submission completing the first wave.
+- Published source revision: root `/benfeuer/mochi-campaign-v2-mix-011-2026.11.26.504` SUBMITTED once — first wave now **033/.502, 009/.503, 011/.504**, all on source `f8a8366ac26984dc72d4caf7300feb2244145c2d`. All 3 standard roots accepted; the tracker holds 3 rows with actual roots (no fabricated children/metrics).
+- Command or material configuration: PRODUCTION 08a / all racks, 128 GB200 (48 trainer + 80 rollout) each; 50 steps / no learning clock; regional pool preparation + actual-agent/vocab gate before GPU; unchanged `.131` DSpark controls.
+- External inputs and artifact references: worker cc over Rhizome (~12:4x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-011/submission-receipt.json` [R].
+- Environment and hardware when relevant: the first root's initial describe at 12:31:31 UTC confirms coordinator running 1/1 with zero failures/preemptions; GPU children/admission not yet observed. The worker's three-run watchdog registration (data/gate failures, GPU admission + first finite full update, train terminal / same-hour refill, export/eval IDs + terminal) remains their own chain — outside this record's scope.
+- Result, including failure or restart: first wave fully submitted and accepted.
+- Evidence: three submission receipts + tracker rows [R].
+- Interpretation and limitations: pre-GPU state; admission and first-update evidence pending for all three.
+- Decision and next action: record GPU admission / first finite updates as they land.
