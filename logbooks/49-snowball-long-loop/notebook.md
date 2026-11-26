@@ -2977,3 +2977,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission cc + landed revision [R].
 - Interpretation and limitations: pre-GPU; the divergence is explicit and recorded rather than silent.
 - Decision and next action: record .515/.516 submissions and the first GPU admission.
+
+### 2026-11-26 18:45 UTC - Addendum: `.131` SEALED — archive verified (8,887 files / 3.10 GB), seal posted on marin #10197 (258/429 = 0.6014 pass@1, 98.85% coverage); campaign root 009/.515 submitted
+
+- Question or hypothesis and reason for trying it: record the `.131` seal and the second fresh campaign root.
+- Published source revision: **`.131` archive VERIFIED — 8,887 files / 3,101,033,043 bytes; seal posted at https://github.com/marin-community/marin/issues/10197#issuecomment-7194471168 with 258/429 = 0.6013986014 pass@1 and 98.85% coverage.** EvalDash/results/CSV publication underway; no model rerun; the original eval/export untouched.
+- Command or material configuration: **second fresh campaign root `/benfeuer/mochi-campaign-v2-mix-009-2026.11.26.515` SUBMITTED once** on clean landed `b0457a312f0fcad58afc34bf2328b78a0f2a7f31` — same `.131` controls, 50 steps / no learning clock, PRODUCTION 08a, 128 GB200 48+80 after the regional pools/real-Pi gate. Explicit `catalog_divergence` records Pending pymethods and codeforces exact retained pins; original statuses unchanged. The old `.509` killed root is verified terminal and not reused.
+- External inputs and artifact references: worker cc over Rhizome (~18:4x UTC) [R]; seal comment [R].
+- Environment and hardware when relevant: the worker's stage/admission/full-update/terminal-refill/eval wakes remain their own chain.
+- Result, including failure or restart: seal complete; the fresh wave continues (033/.514, 009/.515).
+- Evidence: seal comment + verified archive metadata [R].
+- Interpretation and limitations: the sealed numbers match the earlier audited result exactly; publication of EvalDash/results/CSV is in progress.
+- Decision and next action: record .516 and the first GPU admission; then the EvalDash/results/CSV publication.
