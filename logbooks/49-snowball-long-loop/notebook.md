@@ -2773,3 +2773,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt + regression behavior [R].
 - Interpretation and limitations: third harness iteration; the data itself has passed full-parquet verification every time.
 - Decision and next action: record the `.509`/`.510` roots and the first GPU admission.
+
+### 2026-11-26 14:45 UTC - Addendum: campaign current SECOND root v2-mix-009/.509 accepted on `390c5e318b`; replaces terminal-failed .506
+
+- Question or hypothesis and reason for trying it: record the second root on the hash-fixed source.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-009-2026.11.26.509` ACCEPTED on clean landed `390c5e318b7522b8679419e39b7c42a1c662296f`; **replaces the VERIFIED-terminal CPU/hash-contract failure .506**; the old `.501`–`.507` attempts are not active GPU.
+- Command or material configuration: byte-hash fix strict / no data change; 58 landing/lint/native-3-dry PASS. Standard PRODUCTION 08a 128 GB200 (48+80) / unchanged `.131` DSpark / 50 steps / no learning clock / all racks.
+- External inputs and artifact references: worker cc over Rhizome (~14:4x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-009/2026.11.26.509/submission-receipt.json` [R].
+- Environment and hardware when relevant: regional pools + real-agent/vocab gate pending before GPU; tracker row replaced with backup, old receipts retained; the worker's `.509` watchdog remains their own chain.
+- Result, including failure or restart: second root on the fixed source accepted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU state.
+- Decision and next action: record the `.510` root and the first GPU admission.
