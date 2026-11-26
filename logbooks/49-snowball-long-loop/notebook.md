@@ -2989,3 +2989,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: seal comment + verified archive metadata [R].
 - Interpretation and limitations: the sealed numbers match the earlier audited result exactly; publication of EvalDash/results/CSV is in progress.
 - Decision and next action: record .516 and the first GPU admission; then the EvalDash/results/CSV publication.
+
+### 2026-11-26 19:00 UTC - Addendum: campaign third root 017/.516 submitted — fresh wave 033/.514 + 009/.515 + 017/.516 complete; `.131` best-34 seal stands
+
+- Question or hypothesis and reason for trying it: record the completed fresh campaign wave.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-017-2026.11.26.516` SUBMITTED once** (source `b0457a312f0fcad58afc34bf2328b78a0f2a7f31`) — the three selected roots are **033/.514, 009/.515, 017/.516**, each PRODUCTION 08a with 128 GB200 (48 trainer + 80 rollout) after the mandatory regional pools/real-agent CPU gate; **Kueue schedules, no self-throttle**.
+- Command or material configuration: exact retained pins and Pending/Excluded divergences recorded in `runs.csv`; old terminal roots not reused.
+- External inputs and artifact references: worker cc over Rhizome (~19:0x UTC) [R].
+- Environment and hardware when relevant: first GPU IDs / actual admission / updates unavailable until observed. `.131` best-34 remains sealed at 258/429 = 0.6013986014 under #10197 comment 7194471168; EvalDash metadata published, downstream publication completing.
+- Result, including failure or restart: fresh wave fully submitted.
+- Evidence: submission cc + tracker rows [R].
+- Interpretation and limitations: pre-GPU for all three; the wake registrations are the worker's own chain.
+- Decision and next action: record GPU IDs/admission and first full updates as observed; then the downstream publication.
