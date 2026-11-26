@@ -3037,3 +3037,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt + census readback [R].
 - Interpretation and limitations: pre-GPU; the disk_root backend work remains the blocker for the held mixes.
 - Decision and next action: record .515-era queue movements (015/.043) and the first GPU admission as they land.
+
+### 2026-11-26 20:00 UTC - Addendum: campaign root 015/.518 submitted on `96a2d65926`; mix 043 submission in progress
+
+- Question or hypothesis and reason for trying it: record the second unaffected-mix root in the current queue.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-015-2026.11.26.518` SUBMITTED once** on clean landed `96a2d65926` — standard main, native recipe + graph no-run PASS, 50 steps / no learning clock, 128 GB200 (48+80) / PRODUCTION 08a / all racks / `.131` controls unchanged.
+- Command or material configuration: regional pools / real-agent gate pending — no GPU child/admission claim yet; exact source pins preserved; tracker backed up before the unique row creation.
+- External inputs and artifact references: worker cc over Rhizome (~20:0x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-015/2026.11.26.518/submission-receipt.json` [R].
+- Environment and hardware when relevant: the third next unaffected mix 043's submission is in progress (actual ID to be reported, no duplicate). The worker's stage/admission/first-full-update/terminal-refill/eval wakes remain their own chain.
+- Result, including failure or restart: second unaffected root submitted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU state.
+- Decision and next action: record the 043 root ID and the first GPU admission.
