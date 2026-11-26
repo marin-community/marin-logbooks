@@ -877,3 +877,20 @@ was canceled or resubmitted. The original regional checkpoint-copy completion ma
 is absent at16:37 EST and its completed-file status prefix still has two records.
 Both fixed-N4 training arms remain succeeded. The public-SFT/no-more-HF-copies ruling
 is unchanged. Next native conversion pass is due around16:47 EST.
+
+## November 26, 16:44 EST: paired S3 presets are available in the live CLI
+
+Source `1cad6c984e` exposes `s3-control-panel` and `s3-treatment-panel`, each pinned
+to its own regional S2 revision4/step4 export. Both use the existing frozen panel
+builder:723 follow-up trials, seed20261125, temperature0.7/top_p1, TP1/BF16,
+CUDA graphs, four DP16 engines (64 GB200 per arm), production08a/all racks.
+The stage revision is2026.11.26.1. The CLI budget text now states64 GPUs per panel.
+
+Required lint, all5 affected safe tests, the7-stage fixture preflight and both native
+live-model plan paths passed. Fixture plans validate protocol wiring using the SFT
+stand-in; native plan success does not verify that the converted model exists.
+The live CLI now exposes both presets. No S3 job was submitted. Before launching the
+128-GPU pair, require both48-GPU converters to terminate successfully and verify
+both output manifests/shard inventories. This preserves the128-GPU experiment cap.
+The training and conversion jobs retain their immutable sources `ecc9fb1bae` and
+`a989ad12e5`; the public-SFT/no-more-HF-copies ruling remains binding.
