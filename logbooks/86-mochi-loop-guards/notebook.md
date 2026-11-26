@@ -815,3 +815,27 @@ iris.task resource samples. Neither transfer throughput nor a stall is inferred.
 Next verify final checkpoint publication and GPU release, then submit the prepared
 regional conversion within the128-GPU experiment cap. The public-SFT conservation
 correction remains authoritative; make no more Hub copies.
+
+## November 26, 16:22 EST: treatment succeeds and regional conversion is accepted
+
+[Treatment training](https://wandb.ai/marin-community/marin-mochi-rl/runs/a00eaf3f9e28)
+succeeded at16:07:30.092 EST with all15 GPU tasks succeeded, zero failures/preemptions,
+and committed checkpoint4. The control root remained RUNNING at16:21 EST; its
+checkpoint marker reached4 at16:22 EST. Both arms retain their fixed N4 configuration.
+
+Iris accepted `/benfeuer/mochi-loop-guards-s2x-treatment-r4-step4` at about16:21 EST:
+production08a,12x4 GB200, all racks, immutable source `a989ad12e5`. It converts
+treatment step4 into the permanent regional `exports/s2-treatment-r4/global_step_4/policy`
+prefix with no Hub target. The treatment training allocation had terminated before
+submission; the remaining control60 plus conversion48 bounds total use at108/128 GPUs.
+The exact conversion root is registered with the central watchdog. At16:23:29 EST,
+all12 GPU tasks are RUNNING with zero failures/preemptions.
+
+The first native submission failed locally on S3 credentials before Iris submission;
+the regional inventory confirmed no job was accepted. Standard AWS/fsspec environment
+settings using the existing CW credentials resolved it, and the same native command
+then submitted once. No executable temporary worker script or source change was used.
+Conversion completion and its model manifest are still required before S3 evaluation.
+The original4.29TB treatment-step1 permanent copy still has two completed file records;
+no conservation-completion claim is made. The public-SFT/no-more-HF-copies ruling holds.
+[Submission receipt](analysis/user-overrides-20261126/s2x-treatment-r4-step4-submission.json).

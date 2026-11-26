@@ -1,0 +1,71 @@
+{
+  "observed_at": "2026-11-26T16:23:29-05:00",
+  "training_source": "ecc9fb1bae",
+  "treatment_training": {
+    "attempt": "a00eaf3f9e28",
+    "state": "SUCCEEDED",
+    "finished_at": "2026-11-26T16:07:30.092-05:00",
+    "optimizer_updates": 4,
+    "committed_checkpoint_marker": 4,
+    "gpu_tasks_succeeded": 15,
+    "failures": 0,
+    "preemptions": 0,
+    "observed_at": "2026-11-26T16:13:38-05:00"
+  },
+  "control": {
+    "root_state": "RUNNING",
+    "root_observed_at": "2026-11-26T16:21:32-05:00",
+    "committed_checkpoint_marker": 4,
+    "marker_observed_at": "2026-11-26T16:22:21-05:00",
+    "failures": 0,
+    "preemptions": 0
+  },
+  "conversion": {
+    "job": "/benfeuer/mochi-loop-guards-s2x-treatment-r4-step4",
+    "cluster": "cw-us-east-08a",
+    "submitted_at_approximately": "2026-11-26T16:21:21-05:00",
+    "source": "a989ad12e5",
+    "source_tree": "29981e517f",
+    "dirty": false,
+    "submission": "DETACH",
+    "priority": "production",
+    "nodes": 12,
+    "gpus_per_node": 4,
+    "gpu_variant": "GB200",
+    "excluded_nvlink_domains": [],
+    "checkpoint_step": 4,
+    "output": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/exports/s2-treatment-r4/global_step_4/policy",
+    "hub_target": null,
+    "watchdog_registered": true,
+    "iris_state": "RUNNING",
+    "gpu_tasks_running": 12,
+    "failures": 0,
+    "preemptions": 0,
+    "state_observed_at": "2026-11-26T16:23:29-05:00",
+    "completion_verified": false
+  },
+  "gpu_budget_check": {
+    "treatment_gpu_tasks_terminal": true,
+    "remaining_training_gpu_upper_bound": 60,
+    "conversion_gpus": 48,
+    "total_gpu_upper_bound": 108,
+    "experiment_gpu_cap": 128
+  },
+  "local_failed_attempt": {
+    "failure": "NoCredentialsError in launch.execute_launch before previous_path.exists completed",
+    "iris_accepted_job": false,
+    "inventory_verified_at": "2026-11-26T16:18:28-05:00",
+    "resolution": "Exported existing CW credentials to standard AWS variables with configured external endpoint, auto signing and virtual-hosted fsspec settings. Retried the same native CLI once; no worker scripts or source changes."
+  },
+  "permanent_copy": {
+    "job": "/benfeuer/mochi-loop-guards-s2-conserve-treatment-r4-step1",
+    "last_verified_state": "RUNNING",
+    "state_observed_at": "2026-11-26T16:13:38-05:00",
+    "completed_file_records": 2,
+    "records_observed_at": "approximately 2026-11-26 16:22 EST",
+    "completion_manifest_last_checked_present": false,
+    "manifest_observed_at": "approximately 2026-11-26 16:13 EST"
+  },
+  "policy": "Public sealed SFT plus never-prune regional source; no further HF Hub copies. No S3 evaluation before conversion success and model-manifest verification.",
+  "scientific_verdict": "Pending registered paired S3 evaluation; training completion does not establish an antithrash effect."
+}
