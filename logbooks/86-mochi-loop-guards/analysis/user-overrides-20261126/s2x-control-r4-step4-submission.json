@@ -1,0 +1,75 @@
+{
+  "observed_at": "2026-11-26T16:28:06-05:00",
+  "training_source": "ecc9fb1bae",
+  "artifact_revision": "2026.11.26.4",
+  "fixed_updates_per_arm": 4,
+  "control_training": {
+    "attempt": "a3144ba94e53",
+    "state": "SUCCEEDED",
+    "finished_at": "2026-11-26T16:23:47.809-05:00",
+    "committed_checkpoint_marker": 4,
+    "gpu_tasks_succeeded": 15,
+    "failures": 0,
+    "preemptions": 0,
+    "native_job_state_observed_at": "2026-11-26T16:25:28-05:00"
+  },
+  "treatment_training": {
+    "attempt": "a00eaf3f9e28",
+    "state": "SUCCEEDED",
+    "finished_at": "2026-11-26T16:07:30.092-05:00",
+    "committed_checkpoint_marker": 4,
+    "gpu_tasks_succeeded": 15,
+    "failures": 0,
+    "preemptions": 0,
+    "native_job_state_observed_at": "2026-11-26T16:13:38-05:00"
+  },
+  "control_conversion": {
+    "job": "/benfeuer/mochi-loop-guards-s2x-control-r4-step4",
+    "cluster": "cw-us-east-08a",
+    "submitted_at_approximately": "2026-11-26T16:26:16-05:00",
+    "source": "a989ad12e5",
+    "source_tree": "29981e517f",
+    "dirty": false,
+    "submission": "DETACH",
+    "priority": "production",
+    "nodes": 12,
+    "gpus_per_node": 4,
+    "gpu_variant": "GB200",
+    "excluded_nvlink_domains": [],
+    "checkpoint_step": 4,
+    "output": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/exports/s2-control-r4/global_step_4/policy",
+    "hub_target": null,
+    "watchdog_registered": true,
+    "iris_state": "RUNNING",
+    "gpu_tasks_running": 12,
+    "failures": 0,
+    "preemptions": 0,
+    "state_observed_at": "2026-11-26T16:28:06-05:00",
+    "completion_verified": false,
+    "accepted_submissions": 1
+  },
+  "treatment_conversion": {
+    "job": "/benfeuer/mochi-loop-guards-s2x-treatment-r4-step4",
+    "gpus": 48,
+    "last_observed_state": "RUNNING",
+    "state_observed_at": "2026-11-26T16:23:29-05:00"
+  },
+  "gpu_budget_check": {
+    "both_training_gpu_gangs_terminal": true,
+    "remaining_training_gpus": 0,
+    "conversion_gpus_per_arm": 48,
+    "total_gpu_upper_bound": 96,
+    "experiment_gpu_cap": 128
+  },
+  "permanent_copy": {
+    "job": "/benfeuer/mochi-loop-guards-s2-conserve-treatment-r4-step1",
+    "state": "RUNNING",
+    "state_observed_at": "2026-11-26T16:26:09-05:00",
+    "completion_manifest_present": false,
+    "manifest_observed_at": "approximately 2026-11-26 16:25 EST",
+    "completed_file_records_last_observed": 2,
+    "records_observed_at": "approximately 2026-11-26 16:22 EST"
+  },
+  "policy": "Public sealed SFT plus never-prune regional source; no further HF Hub copies. Native conversion writes regional model artifacts. No S3 evaluation before both converted models are verified.",
+  "scientific_verdict": "Pending registered paired S3 evaluation; successful training is not an antithrash-effect measurement."
+}

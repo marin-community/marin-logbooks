@@ -839,3 +839,25 @@ Conversion completion and its model manifest are still required before S3 evalua
 The original4.29TB treatment-step1 permanent copy still has two completed file records;
 no conservation-completion claim is made. The public-SFT/no-more-HF-copies ruling holds.
 [Submission receipt](analysis/user-overrides-20261126/s2x-treatment-r4-step4-submission.json).
+
+## November 26, 16:26 EST: both N4 arms succeed; control conversion is accepted
+
+[Control training](https://wandb.ai/marin-community/marin-mochi-rl/runs/a3144ba94e53)
+succeeded at16:23:47.809 EST with checkpoint4 committed. Native root and all15 GPU
+tasks are SUCCEEDED, zero failures/preemptions. Treatment had already succeeded
+at16:07:30.092 EST. Both arms completed their fixed four updates from source
+`ecc9fb1bae`; the paired S3 evaluation still determines the antithrash result.
+
+The native manual exporter submitted control checkpoint4 once as
+`/benfeuer/mochi-loop-guards-s2x-control-r4-step4` about16:26 EST. It uses the same
+clean source `a989ad12e5`, production08a/all racks and12x4 GB200 as treatment,
+with output `exports/s2-control-r4/global_step_4/policy` and no Hub target.
+The exact root is registered with the central watchdog. At16:28:06 EST all12 control
+conversion tasks are RUNNING, zero failures/preemptions. Both training gangs have
+terminated, so the two48-GPU converters bound total GPU use at96/128.
+
+The original treatment-step1 permanent-copy CPU job remains RUNNING0fail/preempt
+at16:26 EST; its completion manifest is still absent at16:25 EST. No further full-state
+copy or HF Hub copy was launched. Require both regional conversions to succeed and
+verify their model manifests and shard inventories before the paired S3 panels.
+[Control conversion receipt](analysis/user-overrides-20261126/s2x-control-r4-step4-submission.json).
