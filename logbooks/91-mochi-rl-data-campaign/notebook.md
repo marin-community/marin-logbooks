@@ -83,6 +83,10 @@ The user rated the v3 mixes. v2 and v3 now form one queue of 78 runnable mixes (
 
 The run table moved to the body of issue #91, which is now the single source of truth for run state. The tracker artifact mirrors it, and runs.csv is retired.
 
+### 2026-11-26 19:51 UTC - Campaign update
+
+Reset: trainer layout PP12 to PP16 (64 trainer + 80 rollout = 144 GB200) after OOMs in .527 and .528. Every earlier run retired and its checkpoints deleted; the queue restarts from the first 3 runnable mixes. Another OOM halts the queue for review.
+
 ## Run table
 
 The run table lives in one place, the body of [marin-logbooks #91](https://github.com/marin-community/marin-logbooks/issues/91). It is updated there with `campaign-runs set` and is not copied here.
