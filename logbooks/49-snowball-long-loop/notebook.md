@@ -3265,3 +3265,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission cc + gate PASS + compiled SHA [R].
 - Interpretation and limitations: the first child carries the route fix — its progress is the first live test of the fix.
 - Decision and next action: record the .523 child's admission/first update and the .524/.525 children.
+
+### 2026-11-26 15:47 UTC - Addendum: quota proof `-c` submitted with the frozen validated command; v3 queue-parser correction `48c2836f` committed
+
+- Question or hypothesis and reason for trying it: record the third quota-proof attempt and the queue-parser fix.
+- Published source revision: **`/benfeuer/mochi-campaign-local-disk-proof-20261126c` SUBMITTED once** from clean immutable `4fdf019146` — 4 CPU / 16 GB / 0 GPU privileged 08a, using the locally validated frozen CPU command with explicit test-only pytest/asyncio/xdist/timeout overlays.
+- Command or material configuration: the earlier `-a`/`-b` are terminal setup failures before probes (omitted pytest / nonexistent group respectively) with first-cause/all-task proof saved; no production run changed. **The v3 queue-parser correction `48c2836f` is committed/reviewing** — the v3 CSV already includes the v3- prefix while v2 does not; exact CSV bytes/pins unchanged; 20 related tests/lint/types PASS.
+- External inputs and artifact references: worker cc over Rhizome (~15:4x UTC) [R]; receipt `local-quota-proof-c/submission-receipt.json` [R].
+- Environment and hardware when relevant: the next queue selection will distinguish actual quota/schema/binding holds instead of treating every v3 ID as missing.
+- Result, including failure or restart: third quota-proof attempt in flight with the validated command.
+- Evidence: `-c` submission receipt + parser-fix tests [R].
+- Interpretation and limitations: the two prior failures were operator/overlay selection errors, not disk-system failures.
+- Decision and next action: record the `-c` terminal receipt and the parser fix's landing.
