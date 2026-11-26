@@ -692,3 +692,29 @@ Both CPU jobs are registered in the central watchdog with native waits. Training
 continues on immutable source `ecc9fb1bae`; GPU allocations and scientific gates are
 unchanged. Next verify conservation-job completion, private-copy metadata and content,
 then preserve later committed checkpoints and evaluate the registered paired panels.
+
+## November 26, 15:24 EST: private SFT conservation verified
+
+The private copy succeeded on08a in21.89 seconds. Final destination
+[`open-athena/Marin-Mochi-535B-A23B-sft-fullab-v2-step-400407-conserved`](https://huggingface.co/open-athena/Marin-Mochi-535B-A23B-sft-fullab-v2-step-400407-conserved)
+is verified private at commit `239fd384cc99a04d3a61c0f6931f24de4ee41b73`.
+All206 source paths are present. All193 weight shards match the retained regional
+manifest in SHA256 and size;205 unchanged files also match the pinned source HF tree
+in size, Git blob ID and LFS metadata. The only file change is the prepared generation
+config, adding Marin sampling defaults and EOS IDs128001/128009. Its70-byte size
+difference is intentional. Every shard referenced by the index is present.
+
+The published model card, official OpenMDW1.1 LICENSE and generation config were read
+back and byte-compared with the checked candidates. Both required model-card
+paragraphs and license metadata are present. Model weights were not downloaded to the
+Mac or rehashed afresh. [Verification receipt](analysis/user-overrides-20261126/sft-400407-private-conservation-receipt.json)
+records the exact method and remaining retention-enforcement limitation.
+
+The regional permanent marker was updated to reference this private copy and read
+back successfully. The superseding **user override** decision is
+`decisions/checkpoint-conservation-private-copy-user-override-2026.11.26.json` at the
+experiment prefix; the older blocked receipt is retained as history. The original
+63.2TB HF repository remains public and its visibility change remains quota-blocked.
+Private conservation of the sealed SFT revision is complete through the separate copy.
+The completed CPU-copy watchdog entry can be retired after this verified handoff.
+The S2 treatment-step1 permanent verified copy remains in progress.
