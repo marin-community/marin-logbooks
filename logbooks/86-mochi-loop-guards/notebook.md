@@ -911,3 +911,24 @@ The original treatment-step1 permanent-copy manifest remains absent and its stat
 prefix has two completed-file records at16:47 EST. Continue the registered jobs;
 next native conversion/copy pass around16:57 EST, with the128-GPU S3 pair gated on
 both converters' successful termination and verified model artifacts.
+
+## November 26, 16:52 EST: native export-verification command is ready
+
+Source `cc4e3dcc62` adds the direct module
+`experiments.post_training.mochi_loop_guards.export_verification`. It calls SkyRL's
+existing completed-export verifier and writes a small receipt containing manifest
+identity and indexed shard/tensor counts. The native checks cover completion markers,
+manifest-file presence, indexed shard headers and recorded sizes. Weight payloads are
+not rehashed. Run in the SkyRL CPU environment with
+`FSSPEC_S3_DEFAULT_CACHE_TYPE=none` to disable read-ahead when reading headers.
+
+Required lint passed. The affected-test selector selected zero tests; all8 existing
+native CPU export-completion tests passed separately. Direct CLI checks accepted a
+tiny valid export and wrote its receipt, and rejected an incomplete export without
+writing a receipt. The direct module avoids the top-level experiment CLI's Marin
+dependency, which is absent from the standalone SkyRL environment.
+
+No live export verification, new job or model download occurred. The latest live
+observations remain the16:47 conversion/publication pass above. Successful terminal
+converters plus verified model artifacts still gate the128-GPU S3 pair. Next native
+conversion/copy pass remains16:57 EST; no further Hub copies are authorized.
