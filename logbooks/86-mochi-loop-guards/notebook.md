@@ -443,6 +443,29 @@ Native primary vLLM generation counters report2,658,970 tokens over2,376.08 seco
 
 [Cost profile](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdiagnostics%2F2026.11.26%2Fs0-full-cost-profile.json): `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s0-full-cost-profile.json`. The sibling `s0-full-cost-profile-analysis.py` and `s0-full-cost-profile-receipt.json` preserve analysis source and provenance; sourceSHA`4aca7762655265f4af7065d1cb937e39b102ec6dffa0d5ce9a72e676fc85defa`. CPU watchdog validation reports informational success and its entry is retired. No RL job or fixed N follows from this cost calculation; effective budget authority is unchanged.
 
+### 2026-11-26 13:47 UTC — Repetition penalty also misses the TBLite UB target
+
+S1-rp completed200/200 TBLite at13:32:15.932 UTC after2,111 seconds; the dump closed at13:32:17.198. Regional CPU `/benfeuer/mochi-loop-guards-s1-rp-audit-tblite-20261126a` succeeded in35.82 seconds, zero failures/preemptions and no model trials. The cohort hash exactly matches sealed S0.
+
+| TBLite metric | S0 control | S1-rp original |
+|---|---:|---:|
+| Assessed / N |194/200|194/200|
+| Infrastructure / unavailable |6 /0|6 /0|
+| Confirmed action-loop trials |20|10|
+| Action-loop UB |26/200|16/200|
+| Repeat-turn share |0.0974277259|0.0680948738|
+| Full-credit passes |66|70|
+| Mean reward |0.372441|0.384725|
+| Median turns |14|12|
+| Median generated tokens |7,778|6,313|
+| Median wall seconds |847.24|711.65|
+
+Confirmed action loops halve20→10, but the registered I2 gate uses the candidate upper bound:10confirmed+6unassessed=16, exceeding the cap10 (half S0's20 confirmed). Primary FAIL; correctness70≥56 and validity97% hold. Repeat-turn share falls30.11%, descriptive for I2. Tail4/UB10 is a separate report-only measure and must not substitute for actionUB16. A valid97% cohort is not rerun to improve its UB.
+
+Neither UB16 nor passes70 triggers the ±2-trial count rule. Both arms have now completed TB2 and TBLite without a boundary trigger; held-out may still trigger the registered single full-arm repeat, replacing all gates regardless of direction. At13:41 UTC stop235/256held-out and RP77/256held-out, all32 GPU hosts running with zero Iris failures/preemptions. Original trials remain intact.
+
+[Audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs1-2026.11.26.1%2Frp%2Fpartial%2Ftblite%2Faudit.json) and `gate-receipt.json`: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s1-2026.11.26.1/rp/partial/tblite/`.
+
 ## Final decision
 
 Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected. The original stop arm passes TB2 but fails TBLite’s50% target; the original RP arm fails TB2’s action-loop UB target. Remaining cohorts and any required single repeat remain outstanding. I3 was dropped under the original13:01:36 UTC November26 budget cutoff; no S2, exports or S3 are run. No Marin contribution PR has been opened.
