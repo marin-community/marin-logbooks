@@ -2941,3 +2941,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: native error + succeeded eval child + recovery submission [R].
 - Interpretation and limitations: harness-side failure only — the training/eval artifacts are intact and being preserved, not recomputed.
 - Decision and next action: record the preserve recovery's terminal state and the seal/publication after the audit.
+
+### 2026-11-26 18:05 UTC - Record location moved: `/experiments/active/long-loop-exp3/` → `/experiments/complete/long-loop-exp3/`
+
+- Question or hypothesis and reason for trying it: coordinator notice — the long-loop-exp3 record directory moved to `experiments/complete/` (idle >72h, no writes); references updated per the coordinator's request.
+- Published source revision: n/a (record-keeping).
+- Command or material configuration: the standing secretary note (STATUS.md "Long loop note" lines) now points to `/experiments/complete/long-loop-exp3/`; historical dated entries in this logbook intentionally retain the `/experiments/active/long-loop-exp3/` paths as written at the time (append-only record).
+- External inputs and artifact references: coordinator notice over Rhizome (2026-11-26) [R].
+- Environment and hardware when relevant: `experiments/active/long-loop-exp3` no longer exists locally; `experiments/complete/long-loop-exp3` holds BRIEF.md, exp3-recipe.md, and artifacts/.
+- Result, including failure or restart: references updated; campaign history unchanged.
+- Evidence: directory listing of `experiments/complete/long-loop-exp3/` [R].
+- Interpretation and limitations: none.
+- Decision and next action: future references use the `complete/` path.
