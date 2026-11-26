@@ -3049,3 +3049,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt [R].
 - Interpretation and limitations: pre-GPU state.
 - Decision and next action: record the 043 root ID and the first GPU admission.
+
+### 2026-11-26 20:15 UTC - Addendum: campaign root 043/.519 submitted — current wave 006/.517 + 015/.518 + 043/.519 complete on `96a2d65926`
+
+- Question or hypothesis and reason for trying it: record the completed current wave of unaffected mixes.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-043-2026.11.26.519` SUBMITTED once** on clean landed `96a2d65926` — the current three roots are **006/.517, 015/.518, 043/.519**; standard main, native recipe + graph PASS, 50 steps / no learning clock, 128 GB200 (48+80) / PRODUCTION 08a / all racks / `.131` controls unchanged.
+- Command or material configuration: no GPU admission/optimizer claim yet — regional preparation/gate precedes allocation; exact source pins and the Pending/Excluded divergence recorded; queue order preserved among mixes without known LOCAL quota, unsupported RST, or missing-binding blockers.
+- External inputs and artifact references: worker cc over Rhizome (~20:1x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-043/2026.11.26.519/submission-receipt.json` [R].
+- Environment and hardware when relevant: the three current roots `.517`/`.518`/`.519` should not be duplicated. The worker's wake registrations remain their own chain.
+- Result, including failure or restart: current wave fully submitted.
+- Evidence: three submission receipts + tracker rows [R].
+- Interpretation and limitations: pre-GPU for all three.
+- Decision and next action: record regional gate outcomes and the first GPU admission as they land.
