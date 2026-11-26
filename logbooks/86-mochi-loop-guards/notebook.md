@@ -145,6 +145,14 @@ SWESmith held-out began around 01:46:45 UTC and reached 116/256 returned trials 
 
 Host-memory samples across all 32 v9 attempt-0 tasks, query bounds 01:05–02:03 UTC with samples through 02:01:47 UTC, show a head active-window maximum of 54.66 GiB and peer maxima at most 48.14 GiB. The head's cumulative attempt peak remains 68.01 GiB against a 128 GiB request. The full baseline remains unsealed. Next: finish v9, perform the registered TB2 infrastructure recovery, then audit the combined baseline and review the stall sample before S1.
 
+### 2026-11-26 03:34 UTC — Held-out tail and RL environment readiness
+
+S0 v9 had returned 254/256 SWESmith held-out trials at 03:26:46 UTC. All 32 GPU hosts remained running with zero failures or preemptions at 03:27:21 UTC. The final two trials continued generating within their frozen limits. The baseline remains unsealed; no recovery or intervention GPU job has been queued. Both S1 native plans passed again on source `869dc58f203265e40677ee2db4781ed6da067ae7`, at 64 GPUs and 723 trials per arm.
+
+Regional CPU job `/benfeuer/mochi-loop-guards-s2-environment-census-20261125b` succeeded. It loaded the planned native S2 control configuration and used the trainer's `_canonical_task_prompt`, RolloutEngine's `_machine_spec`, and Shellbox's `snapshot_request_for_spec` on all 5,480 agentic rows. The unchanged pool contains 105,480 rows, and the agentic tasks map to four effective Dockerfile snapshot identities. An earlier diagnostic stopped on an overly strict registry-only assertion; that diagnostic assumption was removed to complete the census. Neither job created model trials or provider resources.
+
+All four identities were absent from the dedicated RL account's snapshot inventory at 03:26 UTC, when its snapshot quota was 40/40 used. Live RL usage was 321/6,000 CPU and 1,284/12,000 GiB; live sandbox capacity and snapshot quota are separate constraints. The issue was reported to the coordinator. No shared snapshots were removed, no account was substituted, and no task or environment was rewritten. Recheck before S2; the original T+20/T+32 cutoffs remain fixed. The census [receipt](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdiagnostics%2F2026.11.25%2Fs2-environments%2Freceipt.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.25/s2-environments/receipt.json`; the same prefix contains `snapshot-comparison-2226.json`.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
