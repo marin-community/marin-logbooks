@@ -1044,3 +1044,19 @@ duplicate accepted job. Native waits are active. Evaluation results remain pendi
 next native pass around17:42 EST. No HF Hub operation. The original resumable-step1
 copy continues separately from the verified step4 models.
 [Submission and runtime-config receipt](analysis/user-overrides-20261126/s3-pair-submission.json).
+
+## November 26, 17:48 EST: both S3 gates pass and inference is active
+
+At17:45:30 EST both S3 roots and GPU children remain RUNNING16/16 tasks, zero
+failures/preemptions. All16 per-host interconnect reports pass in each arm, covering
+all64 local GPU-rank results per gang. Native vLLM logs show active requests and
+generated tokens in both arms, with cold-shape JIT compilation enabled. Completed
+benchmark-trial counts remain unverified; no validity or treatment-effect verdict.
+Small gate reports are preserved under permanent regional `diagnostics/s3-r1/`.
+
+The original resumable-step1 copy now has43 unique verified staging records, including
+32 policy shards, totaling2857885578414 bytes against4292558588036 source bytes/59
+objects. Its completion manifest remains absent at17:45 EST. Staging verification
+does not establish completed permanent promotion. No source/job changes or further
+Hub copies. Next native pass around17:55 EST, including cohort progress and copy
+completion checks. [Runtime/copy receipt](analysis/user-overrides-20261126/s3-runtime-and-copy-progress-1748.json).
