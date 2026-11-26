@@ -718,3 +718,21 @@ experiment prefix; the older blocked receipt is retained as history. The origina
 Private conservation of the sealed SFT revision is complete through the separate copy.
 The completed CPU-copy watchdog entry can be retired after this verified handoff.
 The S2 treatment-step1 permanent verified copy remains in progress.
+
+## November 26: superseding user decision accepts public SFT conservation
+
+New coordinator inbox entries labeled15:25 and15:30 EST relay the user's decision to
+leave the SFT repo public, and confirm that the coordinator deleted the1.07TB private
+copy. That decision supersedes the earlier private-copy instruction. No more HF copies
+will be made. This lane did not delete the copy. The preceding private-conservation
+milestone is historical and no longer describes a surviving repository.
+
+Current conservation is the sealed public
+`open-athena/Marin-Mochi-535B-A23B@sft-fullab-v2-step-400407`, commit
+`cfc315a0dcd12d8be5eb0023c0693c435af98998`, plus the permanent never-prune08a source.
+Its existing verification remains206 HF files,199 common files and193 verified weight
+shards, with all index shards present. No model weights were downloaded again.
+[Superseding user-override receipt](analysis/user-overrides-20261126/sft-400407-public-conservation-user-override.json)
+records the correction and private-copy deletion. The private verification receipt is
+marked superseded. Regional S2 checkpoint conservation continues; the HF copy ban is
+recorded in the current handoff.
