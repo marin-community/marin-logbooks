@@ -3193,3 +3193,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: landing tests + `.522` terminal proof [R].
 - Interpretation and limitations: `.520`–`.522` all failed on the same route defect (now fixed); the quota lane is separately gated.
 - Decision and next action: record the fresh .523 root and the merged-78 recompute.
+
+### 2026-11-26 15:38 UTC - Addendum: fresh replacement root 006/.523 submitted on the route-fix source (`4fdf019146`); .521/.522 replacements to follow
+
+- Question or hypothesis and reason for trying it: record the first post-route-fix replacement root.
+- Published source revision: **`/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.523` SUBMITTED once** on clean landed `4fdf01914625f5277b7085f08bd99bd292e9f9f8` — recipe/native graph dry PASS; 50 steps, no learning clock, production 08a 128 GB200 (48+80), DSpark4 / 0.775 / TP1-BF16 / graphs / all racks.
+- Command or material configuration: regional data and actual-agent CPU gate pending — no GPU/admission/optimizer claim. Replaces the terminal `.520` route-classification failure with all 32-task proof retained.
+- External inputs and artifact references: worker cc over Rhizome (~15:3x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-006/2026.11.26.523/submission-receipt.json` [R].
+- Environment and hardware when relevant: `.521`/`.522` are also terminal with the same cause — their fresh serial validations/replacements follow. The quota root is NOT yet submitted (the wrapper's non-submission was verified as regionalNotFound before correction); the worker's watchdog stages remain their own chain.
+- Result, including failure or restart: the replacement queue begins on the fixed source.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU.
+- Decision and next action: record the .521/.522 replacements and the first GPU admission on the fixed source.
