@@ -2869,3 +2869,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three receipts + tracker rows [R].
 - Interpretation and limitations: pre-GPU state for all three.
 - Decision and next action: record pool publications and GPU admissions as they land.
+
+### 2026-11-26 16:45 UTC - Addendum: R40 wave startup — CPU children registered; first two pools published (032: 76,083+200; 006: 23,114+200); 008 verification proceeding
+
+- Question or hypothesis and reason for trying it: record the corrected wave's CPU pool progress.
+- Published source revision: actual CPU children registered — 032/.511 `prepare_pools-f375d939`, 006/.512 `prepare_pools-871f4634`, 008/.513 `prepare_pools-b4cb9d30` (source `ea9b97cd0d`).
+- Command or material configuration: at 13:18:10 UTC the first two pools published — **032 training 76,083 + 200 holdout; 006 training 23,114 + 200 holdout**; the third (008) actual cohort parquet verification / native lowering is proceeding. Through 13:19:13 the bounded window shows selected errors 0 (not a full audit).
+- External inputs and artifact references: worker cc over Rhizome (~16:4x UTC) [R]; data/current SQL readbacks in `rl-data-campaign/r40/` [R].
+- Environment and hardware when relevant: sources bound only to R40 Available with exact HF/catalog pins via canonical curriculum helpers. No GPU/admission/optimizer claim; the actual agent/vocab gate remains before GPU. Other experiments/checkpoints unchanged.
+- Result, including failure or restart: two of three pools published; the third is in verification.
+- Evidence: published-pool readbacks + child registrations [R].
+- Interpretation and limitations: CPU-side only; GPU admission still gated.
+- Decision and next action: record the 008 pool publication and the GPU admissions as they land.
