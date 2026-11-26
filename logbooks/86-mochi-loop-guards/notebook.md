@@ -173,6 +173,25 @@ Regional CPU `/benfeuer/mochi-loop-guards-s2-snapshot-preflight-20261125c` then 
 
 S0 v9 reached 255/256 held-out returns at 04:33:46 UTC, with all 32 hosts running and zero failures/preemptions at 04:43:56 UTC. Native progress rounds this to 100%; one trial remains. Preserve its frozen timeout and retry policy. The baseline remains unsealed and no intervention GPU job is queued. S2 still follows S0 repair/seal and S1; N remains unfixed pending valid measured timings. Original T+20/T+32 cutoffs are unchanged.
 
+### 2026-11-26 05:25 UTC — Original collection complete; TB2 recovery placed
+
+S0 v9 completed all 823 model trials. SWESmith held-out returned 256/256 at 04:48:11 UTC and saved its dump two seconds later. The original job then failed during task-machine shutdown: exact GPU attempt `a54355029268/0:0`, Finelog sequence 32064654609, raised `DaytonaRateLimitError` (HTTP 429) while looking up a sandbox for deletion. W&B finish warnings were secondary. Preserve the terminal failure and all four completed cohort dumps; no original model trial needs to be repeated for teardown.
+
+Regional CPU job `/benfeuer/mochi-loop-guards-s0-audit-20261125a` succeeded against all 823 original rows. The [original audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.25.9%2Faudit.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.25.9/audit.json`. These are agent-loop metrics; token-tail loops remain separate.
+
+| Cohort | Valid | Infrastructure | Confirmed loops | Agent UB count | Repeat-turn share | Full-credit passes |
+|---|---:|---:|---:|---:|---:|---:|
+| TB2 | 234/267 (87.64%) | 33 | 35 | 68 | 0.12331 | 58 |
+| TBLite | 190/200 (95%) | 10 | 23 | 33 | 0.12988 | 63 |
+| SWE100 | 98/100 (98%) | 2 | 10 | 12 | 0.01764 | 52 |
+| SWESmith held-out | 252/256 (98.44%) | 4 | 25 | 29 | 0.23590 | 117 |
+
+All four cohorts reach the frozen ten-loop target minimum. Only TB2 falls below 90% validity. SWE100 remains baseline-only under the budget drop registered before results. No held-out rerun is required. The baseline remains unsealed until the registered TB2 replacement is audited.
+
+[Source 51c1f95f34fccc370b77f70fe402512d94e46e6c](https://github.com/marin-community/marin/commit/51c1f95f34fccc370b77f70fe402512d94e46e6c) adds HTTP 429 to the existing bounded Daytona cleanup retry classifier. Two GET/DELETE regressions failed before the fix; all seven focused cleanup cases passed afterward. Required lint and type checking passed. The broader Shellbox suite returned 201 passed, 169 skipped and one Mac setsid failure; the same failure was reproduced on parent source 869dc58. No timeout, model, detector, sampling, resource or logging-mode setting changed.
+
+Registered TB2 recovery v10 was accepted at 05:10:19 UTC and placed on all 32 GPU hosts by 05:13:57. Root: `/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s0-infra-recovery-tb2-a7b495a850-in-4f4a7bd0-2026.11.25.10-coordinator-f67c9a5b`. [Verified W&B run](https://wandb.ai/marin-community/marin-mochi-rl/runs/ad3bc8701b71). It remains running with zero failures or preemptions at 05:23:30. Its 128-GPU allocation and generator equal v9; only the registered 54-trial selection and removal of other-cohort callbacks differ. All racks remain eligible, TP1/BF16 and CUDA graphs remain enabled. Replace only the 33 originally ungraded identities, preserve the 234 original graded outcomes, and ignore the 21 additional replayed graded identities. The recovery watchdog is active. Next: stitch regionally, audit validity, seal S0, review I1's precision sample, then run both 723-trial S1 arms. No S1/S2 job has been submitted; N and the original T+20/T+32 cutoffs remain unchanged.
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
