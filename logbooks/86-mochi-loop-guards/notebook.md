@@ -1099,3 +1099,32 @@ The original copy is RUNNING0fail/preempt18:05:38, completion manifest absent an
 status inventory unchanged at43 files. The last summed staging snapshot remains
 2.858TB at17:46; permanent promotion remains unverified. Next pass18:15 EST.
 [TB2 progress receipt](analysis/user-overrides-20261126/s3-tb2-progress-1807.json).
+
+## November 26, 18:33 EST: obsolete S2 checkpoints removed under storage directive
+
+The coordinator's latest inbox directive authorized cleanup as 08a storage filled.
+One native `fsutil rm` invocation removed seven obsolete temporary S2 checkpoint
+prefixes: control steps 1–4 and treatment steps 2–4. Deletion receipts total 413
+objects; the pre-delete inventory totals 30,046,684,020,052 bytes (30.047 decimal TB).
+Recursive post-delete listings and exact remaining object counts confirm every
+allowlisted prefix is absent. Region-wide free capacity and unfinished multipart
+uploads were not measured. The [cleanup manifest](analysis/user-overrides-20261126/storage-cleanup-20261126.json)
+records every exact prefix, inventory and proof-log digest.
+
+Treatment step 1 remains intact at 4,292,558,588,036 bytes / 59 objects because the
+original conservation-copy job still reads it. Permanent step-4 exports (2.142 TB),
+the ongoing conservation copy (2.858 TB listed across staging and status records),
+and the protected SFT 400407 regional copy (1.071 TB) retain their prior inventories.
+The copy completion manifest remains absent at 18:32 EST. S3 uses the permanent
+exports without a distributed training checkpoint or resume input. All S3 outputs
+and scratch were retained: 89,531,149 output bytes and 4,081,393,123 scratch bytes
+at this snapshot. The S2 runs retain 12,225,809,280 bytes of non-checkpoint evidence;
+failed-launch metadata was also kept. No conserved checkpoint or SFT object was deleted.
+
+Both S3 arms returned all 267 TB2 rollouts at native event times 18:22:54 EST and
+began TBLite's 200 trials at 18:22:56. Returned rollouts include terminal errors;
+panel correctness, validity and treatment-effect verdicts await audited results.
+At 18:31:11 EST both roots and GPU children remain RUNNING, 16/16 GPU tasks per arm,
+zero Iris failures/preemptions. The original copy job is also RUNNING with zero
+failures/preemptions. No restart, resubmission, new allocation or HF operation.
+Next native pass around 18:45 EST: TBLite progress and copy completion.
