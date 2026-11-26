@@ -3157,3 +3157,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: actual-gpu-grafana receipt [R].
 - Interpretation and limitations: startup-stage evidence only.
 - Decision and next action: record first full updates and the `.522` child as observed.
+
+### 2026-11-26 15:27 UTC - Addendum: `.520`/`.521` reached vLLM graph capture; `.520` then failed on route classification (`teacher_route` vs `data_source`); `.522` gate PASS 15:16:38
+
+- Question or hypothesis and reason for trying it: record the campaign checkpoint — graph-capture progress, the `.520` route-classification failure, and the `.522` gate pass.
+- Published source revision: **`.520`/`.521` reached actual vLLM graph capture** (retained forwarded rows, not an all-engine audit). **`.520` then raised ValueError at 15:25:02: missing consumed-route classification for all four original TaskSpec `source.dataset` names** — the campaign stamps `teacher_route` and the config maps those exact curriculum labels, but `TrainingContext` currently classifies `data_source`. The first traceback/all-task terminal proof is retained; a provenance-preserving regression fix is being prepared. No cancellation/restart or new submission.
+- Command or material configuration: **`.522`'s regional actual-agent gate PASSED at 15:16:38** — GPU child not yet observed in the retained bounded query. Current roots remain immutable `2e8d58e…`. The LOCAL quota port commits `593f67c9`/`c94eaf0f` are reviewed (40 inherited findings, no quota findings) — not landed/enabled or regionally qualified yet. The merged-78 queue is verified; future refill will refresh its selection hash.
+- External inputs and artifact references: worker cc over Rhizome (checkpoint 15:28 UTC) [R].
+- Environment and hardware when relevant: `.131` final publication is complete (258/429 = 0.6013986, live EvalDash, CSV and seal already delivered).
+- Result, including failure or restart: graph capture reached on two live children; one route-classification defect isolated on `.520`.
+- Evidence: forwarded rows + first traceback [R].
+- Interpretation and limitations: another harness/classification defect — the science config is unaffected.
+- Decision and next action: record the provenance-preserving fix and the fresh `.520`-replacement root when they land.
