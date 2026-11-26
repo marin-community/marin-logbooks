@@ -2701,3 +2701,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: regional rejection message [R].
 - Interpretation and limitations: a campaign-harness bug (nested CPU resources pinning a cluster explicitly), not a science-config issue; the first wave never reached GPU.
 - Decision and next action: record the corrected launcher's regression proof and the fresh resubmission when they land.
+
+### 2026-11-26 13:15 UTC - Addendum: RL data campaign initial roots VERIFIED TERMINAL FAILED (all 3, CPU exit 1/1); fix `219b720287` with regression proof; fresh dry runs underway
+
+- Question or hypothesis and reason for trying it: confirm the first wave's terminal state and record the fix with its regression evidence.
+- Published source revision: **ALL initial roots 033/.502, 009/.503, 011/.504 VERIFIED TERMINAL FAILED** — each sole CPU task exit 1/1 failure, 0 preemptions; the same rejected CPU `prepare_pools` submission; no GPU allocation or data/model work reached; no jobs cancelled.
+- Command or material configuration: **fix `219b720287` removes the redundant child cluster pin for pool/storage CPU stages, inheriting the production-08a coordinator route.** The new regression passes the current 6 tests and FAILS the old f8 source precisely at the emitted Iris cluster constraint; lint/types PASS; loop-push 57 tests and fresh native dry 505/506/507 underway.
+- External inputs and artifact references: worker cc over Rhizome (~13:1x UTC) [R]; proof `rl-data-campaign/setup-failure-receipt.json` [R].
+- Environment and hardware when relevant: the original 3 are being retired as failed in the tracker; rows will be replaced with fresh root IDs after landing, preserving all old receipts.
+- Result, including failure or restart: first wave terminal-failed pre-GPU; fix landed with regression proof; corrected dry runs in flight.
+- Evidence: setup-failure receipt + regression behavior [R].
+- Interpretation and limitations: the harness bug is isolated to the redundant child cluster pin; scientific controls were never reached.
+- Decision and next action: record the fresh root IDs and their dry/validation results after landing.
