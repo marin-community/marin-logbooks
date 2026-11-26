@@ -2929,3 +2929,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: campaign-confirmations-0645-receipt.json [R].
 - Interpretation and limitations: policy-only update; the campaign's launch state is unchanged.
 - Decision and next action: apply the selector/queue/link rules to future rows; record the next root submissions.
+
+### 2026-11-26 18:00 UTC - Addendum: `.131` preserve failure confirmed (KeyError 'artifacts' — known envelope-reader bug); CPU-only preserve recovery submitted; eval child succeeded 4/4
+
+- Question or hypothesis and reason for trying it: record the `.131` preserve-stage failure and its CPU-only recovery.
+- Published source revision: `long-loop/mochi-exp4-dspark-rl/micro210/preserve_84be2cde` raises **KeyError: 'artifacts'** — the same old launch-envelope reader bug already fixed in `d4635f734d`. The eval child `a136b0c367a9` is **terminal SUCCEEDED 4/4** — no failures/preemptions, completed 11:45:08 UTC; native 434 identities retained.
+- Command or material configuration: **CPU-only preserve recovery submitted once 13:53:14 UTC: `/benfeuer/mochi131-micro210-preserve-20261126a`** (8 CPU / 32 GB / 0 GPU, PRODUCTION 08a) on clean landed `36098` source containing the existing fix; **adopts the SHA-pinned step-34 export + the completed eval** — no model/eval rerun.
+- External inputs and artifact references: worker cc over Rhizome (~18:0x UTC) [R]; receipts `mochi-fixes/mochi131-preserve/` [R].
+- Environment and hardware when relevant: the worker requested a CPU terminal wake (their chain). Auditing native coverage, the BixBench fix, and AGENT zeros before sealing/publication — **no score invented**.
+- Result, including failure or restart: preserve-stage failure attributed to the known reader bug; recovery in flight on the fixed source.
+- Evidence: native error + succeeded eval child + recovery submission [R].
+- Interpretation and limitations: harness-side failure only — the training/eval artifacts are intact and being preserved, not recomputed.
+- Decision and next action: record the preserve recovery's terminal state and the seal/publication after the audit.
