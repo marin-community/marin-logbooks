@@ -1070,7 +1070,7 @@ successful or valid trials. Both GPU children remain RUNNING16/16, zero Iris tas
 failures/preemptions at17:55; both coordinators remain RUNNING at17:56:54 EST.
 
 Partial logs show AgentTimeoutError in both arms, a sandbox-IP TaskMachineError, and
-TmuxBatchProtocolError. The latter logs the native explicit default mask treatment.
+TmuxBatchProtocolError. The latter logs native default-mask handling.
 Ray-deduplicated and repeated log lines do not provide per-trial error counts. No
 correctness, infrastructure-rate, validity or treatment-effect verdict is inferred.
 Frozen timeouts, sampling, detector and error classification remain unchanged.
