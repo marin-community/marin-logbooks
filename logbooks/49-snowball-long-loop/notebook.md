@@ -2713,3 +2713,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: setup-failure receipt + regression behavior [R].
 - Interpretation and limitations: the harness bug is isolated to the redundant child cluster pin; scientific controls were never reached.
 - Decision and next action: record the fresh root IDs and their dry/validation results after landing.
+
+### 2026-11-26 13:30 UTC - Addendum: corrected campaign FIRST root accepted — v2-mix-033/.505 on fixed source `219b7202872`; replaces terminal-failed .502
+
+- Question or hypothesis and reason for trying it: record the corrected first root replacing the terminal-failed `.502`.
+- Published source revision: `/benfeuer/mochi-campaign-v2-mix-033-2026.11.26.505` ACCEPTED on clean landed `219b7202872f4b57c991c60da3a3925806ed58cb`; **replaces the VERIFIED-terminal CPU-only-failed 033/.502** — no cancellation, no old GPU. The fix touches only nested CPU placement.
+- Command or material configuration: new native recipe+graph dry PASS; regression fails the old source / passes the fix; landing 57 / lint / types PASS. Standard production-08a root with the same 50-step / `.131` / 48+80 controls, all racks.
+- External inputs and artifact references: worker cc over Rhizome (~13:3x UTC) [R]; receipt `rl-data-campaign/runs/v2-mix-033/2026.11.26.505/submission-receipt.json` [R].
+- Environment and hardware when relevant: the tracker's existing 033 row is updated; old receipts retained. The worker's `.505` watchdog stages (failures/first GPU/full update/train terminal/refill/eval) remain their own chain — outside this record's scope.
+- Result, including failure or restart: corrected first root accepted; regional data/gate dependencies still precede GPU.
+- Evidence: submission receipt + regression behavior [R].
+- Interpretation and limitations: pre-GPU state as before.
+- Decision and next action: record `.506`/`.507` corrections and the first GPU admission.
