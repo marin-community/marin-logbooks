@@ -1128,3 +1128,21 @@ At 18:31:11 EST both roots and GPU children remain RUNNING, 16/16 GPU tasks per 
 zero Iris failures/preemptions. The original copy job is also RUNNING with zero
 failures/preemptions. No restart, resubmission, new allocation or HF operation.
 Next native pass around 18:45 EST: TBLite progress and copy completion.
+
+## November 26, 18:44 EST: TBLite returned rollouts pass half
+
+Native progress records control 120/200 returned TBLite rollouts at 18:43:35.558 EST
+and treatment 124/200 at 18:43:41.396. Both arms previously returned all 267 TB2
+rollouts. These counters include terminal errors; audited valid/successful counts,
+error rates and correctness/loop/treatment-effect verdicts remain pending.
+Both S3 roots and GPU children are RUNNING at 18:43:39 EST, with 16/16 GPU tasks
+per arm and zero Iris failures/preemptions. Partial logs continue to show timeout
+and Daytona errors; Ray-deduplicated log lines do not establish per-trial error counts.
+
+The original conservation-copy job remains RUNNING with zero failures/preemptions.
+Its completion manifest is absent, and its 43-record status listing matches the
+18:25 snapshot. The last summed staging snapshot remains 2.858 TB from 17:46;
+permanent promotion remains unverified. Its source stays protected. During this pass
+there were no frozen parameter/classification changes, restart, resubmission, further
+deletion, new allocation or HF operation. Next native pass around 18:55 EST.
+[TBLite progress receipt](analysis/user-overrides-20261126/s3-tblite-progress-1844.json).
