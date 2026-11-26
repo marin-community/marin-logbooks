@@ -79,18 +79,10 @@ Wave 1 relaunched on mixes with no known grader blocker: v2-mix-006 (.517), v2-m
 
 The user rated the v3 mixes. v2 and v3 now form one queue of 78 runnable mixes (21 v3 Skips dropped): clean mixes first, High (2) > Medium (15) > Low (15), then mixes with a stale-grader source (High 7 / Medium 17 / Low 22). Runs .520 (v2-mix-006), .521 (v2-mix-015) and .522 (v2-mix-043) were resubmitted after the secret-resolution fix 2e8d58e119.
 
+### 2026-11-26 18:13 UTC - Campaign update
+
+The run table moved to the body of issue #91, which is now the single source of truth for run state. The tracker artifact mirrors it, and runs.csv is retired.
+
 ## Run table
 
-Synced 2026-11-26 10:11 EST from the campaign tracker. The Grafana links use the stall-safe form, pinned to the job and execution, until marin #12292 merges.
-
-| Mix | Status | Steps | Reward 1–10 | Reward 41–50 | Best val step | Micro210 | Catalog divergence | Links | Note |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
-| v2-mix-033 | CPU_GATE_FAILED |  |  |  |  |  | {"TaskTrove:swesmith-verifier-repaired-v5": {"repo": "open-athena/campaign-release-swesmith-verifier-repaired-v5-0bfcd894-retained-20261116-v1", "revision": "758b28bf4cc0d0e770329f2944c9451fd578566a", "status": "Excluded"}, "TaskTrove:tasktrove-codeforces-rebuilt-v1": {"repo": "open-athena/campaign-release-tasktrove-codeforces-rebuilt-v1-e8ef857d-retained-20261117-b-v1", "revision": "de35b4c7a7ef7ce93194659bfb0143605555c6cd", "status": "Pending"}} |  | Full Harbor trials require Harbor and installed-agent settings; noGPUchildobserved |
-| v2-mix-009 | CPU_PREPARATION_FAILED |  |  |  |  |  | {"TaskTrove:DCAgent__exp_rpt_pymethods2test-large-v2@repaired-20261118": {"repo": "open-athena/atlas-repair-pymethods-20261118-oracle-filter-v1", "revision": "3699e8ea33bda5774a045db8a25f09aa878628a8", "status": "Pending"}, "TaskTrove:tasktrove-codeforces-rebuilt-v1": {"repo": "open-athena/campaign-release-tasktrove-codeforces-rebuilt-v1-e8ef857d-retained-20261117-b-v1", "revision": "de35b4c7a7ef7ce93194659bfb0143605555c6cd", "status": "Pending"}} |  | Empty or heterogeneous pool schema: validation.parquet; noGPUchildobserved |
-| v2-mix-011 | WAITING_CATALOG |  |  |  |  |  |  |  | Superseded by binding R40 admission directive; source Pending/Excluded; CPU-only terminal, no GPU |
-| v2-mix-032 | CPU_GATE_FAILED |  |  |  |  |  |  |  | Local verifier cannot provide declared disk quota; no GPU child observed |
-| v2-mix-006 | SUBMITTED |  |  |  |  |  | {} |  |  |
-| v2-mix-008 | CPU_GATE_FAILED |  |  |  |  |  |  |  | Local verifier cannot provide declared disk quota; no GPU child observed |
-| v2-mix-017 | CPU_GATE_FAILED |  |  |  |  |  | {"TaskTrove:laion__nemotron-gym-multichallenge-advanced-v4": {"repo": "open-athena/task-trove-laion-nemotron-gym-multichallenge-advanced-v-185e593b-retained-20261116-v1", "revision": "815ba090a64195fddf65b46ad8d906e21691eca2", "status": "Pending"}, "TaskTrove:smartie-calibforge-rebuilt-v1": {"repo": "open-athena/campaign-release-smartie-calibforge-rebuilt-v1-a179f723-retained-20261116-v1", "revision": "93f73c7fe618dc57a5527116044384515124fa18", "status": "Pending"}} |  | Full Harbor trials require Harbor and installed-agent settings; noGPUchildobserved |
-| v2-mix-015 | SUBMITTED |  |  |  |  |  | {} |  |  |
-| v2-mix-043 | SUBMITTED |  |  |  |  |  | {"TaskTrove:swesmith-verifier-repaired-v5": {"repo": "open-athena/campaign-release-swesmith-verifier-repaired-v5-0bfcd894-retained-20261116-v1", "revision": "758b28bf4cc0d0e770329f2944c9451fd578566a", "status": "Excluded"}} |  |  |
+The run table lives in one place, the body of [marin-logbooks #91](https://github.com/marin-community/marin-logbooks/issues/91). It is updated there with `campaign-runs set` and is not copied here.
