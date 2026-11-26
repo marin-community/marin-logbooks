@@ -3253,3 +3253,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: terminal-setup-failure receipt + `-b` submission receipt + port regression [R].
 - Interpretation and limitations: a qualification-harness selection error, not an enforcement failure.
 - Decision and next action: record the `-b` proof's terminal receipt.
+
+### 2026-11-26 15:44 UTC - Addendum: replacement 006/.523 GPU child submitted (a05722419649) with the consumed-route admission in the compiled graph
+
+- Question or hypothesis and reason for trying it: record the fixed-source wave's first GPU child.
+- Published source revision: **actual GPU child `/benfeuer/mochi-campaign-v2-mix-006-2026.11.26.523/rl-data-campaign-v2-mix-006-2026.11.26.523-a05722419649` SUBMITTED 15:43:28.587 UTC** — 32 tasks, 128 GB200 (48+80). Regional actual-agent `b1a74a41` PASS 15:42:37; compiled `8a267f57…9931`; source `4fdf019146` **including the new consumed-route admission**.
+- Command or material configuration: bounded new-root error selection 0 rows through 15:44 (not a full audit). Admission/lifecycle execution/optimizer unavailable until observed; the Grafana link will use the actual native iris UID.
+- External inputs and artifact references: worker cc over Rhizome (~15:4x UTC) [R].
+- Environment and hardware when relevant: no native local validation fan-out — all three new roots (.523/.524/.525) submitted serially. The worker's child/stage watchdog remains their own chain.
+- Result, including failure or restart: the fixed-source wave's first GPU child is in.
+- Evidence: submission cc + gate PASS + compiled SHA [R].
+- Interpretation and limitations: the first child carries the route fix — its progress is the first live test of the fix.
+- Decision and next action: record the .523 child's admission/first update and the .524/.525 children.
