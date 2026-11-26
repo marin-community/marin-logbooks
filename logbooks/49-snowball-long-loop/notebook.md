@@ -3241,3 +3241,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three submission receipts + quota-proof evidence [R].
 - Interpretation and limitations: pre-GPU for the wave; the quota setup failure is separate from the route defect.
 - Decision and next action: record the quota-proof first cause and correction, then the regional gates.
+
+### 2026-11-26 15:43 UTC - Addendum: quota proof `-a` terminal SETUP failure (harbor-test without pytest test group); corrected `-b` submitted; upstream main port shares MachineDiskFull category
+
+- Question or hypothesis and reason for trying it: record the quota proof's setup failure cause and the corrected rerun.
+- Published source revision: **`local-disk-proof-20261126a` terminal FAILED 1/1 exit 1** — e2fsprogs/busybox installed, but the operator selected harbor-test without the test group, so `/app/.venv/bin/python` had no pytest; **no pool probe or affected-source work ran** (first cause/all-task terminal retained at `local-quota-proof/terminal-setup-failure-receipt.json`).
+- Command or material configuration: **fresh corrected CPU-only `/benfeuer/mochi-campaign-local-disk-proof-20261126b` SUBMITTED once** — source `4fdf019146`, same 4 CPU / 16 GB / 0 GPU privileged 08a, explicit frozen test group. The three actual campaign roots `.523`/`.524`/`.525` unchanged.
+- External inputs and artifact references: worker cc over Rhizome (~15:4x UTC) [R]; receipt `local-quota-proof-b/submission-receipt.json` [R].
+- Environment and hardware when relevant: the **upstream-main port `1938711b`** narrow review found the LOCAL disk outcome needs to share main's existing MachineDiskFull scoring category — the regression now passes both Daytona and LOCAL before-agent/agent-owned cases 4/4, preserving infra-vs-submission semantics; no running-source mutation.
+- Result, including failure or restart: quota qualification rerun in flight; the port's semantics are settled.
+- Evidence: terminal-setup-failure receipt + `-b` submission receipt + port regression [R].
+- Interpretation and limitations: a qualification-harness selection error, not an enforcement failure.
+- Decision and next action: record the `-b` proof's terminal receipt.
