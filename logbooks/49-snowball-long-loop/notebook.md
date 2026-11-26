@@ -2689,3 +2689,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: three submission receipts + tracker rows [R].
 - Interpretation and limitations: pre-GPU state; admission and first-update evidence pending for all three.
 - Decision and next action: record GPU admission / first finite updates as they land.
+
+### 2026-11-26 13:00 UTC - Addendum: RL data campaign SETUP FAILURE before any GPU — first root's CPU prepare_pools rejected (federation-peer error); original 3 IDs now historical
+
+- Question or hypothesis and reason for trying it: record the first-wave setup failure caught before any GPU allocation.
+- Published source revision: the first root 033/.502's CPU `prepare_pools` submission was **rejected by the regional controller: "pins cluster cw-us-east-08a, which is not a configured federation peer."** The native root already executes on 08a; the remote CPU helper mistakenly repeats an explicit `target_cluster` 08a. **The original 3 IDs (.502/.503/.504) remain historical — do not count them as active GPU experiments.**
+- Command or material configuration: correcting the data/storage nested CPU resources to inherit the regional parent (the established `validate_before_allocation` pattern); RL scientific controls unchanged.
+- External inputs and artifact references: worker cc over Rhizome (~13:0x UTC) [R].
+- Environment and hardware when relevant: root terminal/all-root errors are being retained now.
+- Result, including failure or restart: setup failure recorded; **no cancellations and no blind resubmit** — fresh versions only after real terminal proof and regression/loop-push.
+- Evidence: regional rejection message [R].
+- Interpretation and limitations: a campaign-harness bug (nested CPU resources pinning a cluster explicitly), not a science-config issue; the first wave never reached GPU.
+- Decision and next action: record the corrected launcher's regression proof and the fresh resubmission when they land.
