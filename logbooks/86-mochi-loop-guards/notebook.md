@@ -337,6 +337,12 @@ The first regional refresh confirmed all54 S0 evaluation summaries and zero fail
 
 IndexPR87 now pins notebookc7d25919d6 and describes the sealed baseline and submitted guard arms. CIvalidatepassed,publishskipped. The previous12-hour wait timed out; after this index push, a new attached feedback wait owns review monitoring. No merge is authorized or attempted.
 
+### 2026-11-26 11:47 UTC — S1-stop placed; RP admission pending
+
+At11:45:54.515915 UTC, S1-stop childa6b43090575a had all16 hosts running with zero failures/preemptions; its task duration was19.36 seconds. S1-rp childa824d6ccf60d remained16/16SchedulingGated at11:45:57.997858. Both retain64GB200,128GiB hosts, production priority, all racks,TP1/BF16 and CUDA graphs. There is no configuration change or resubmission. Native resolved-launch and exact-head W&B readback are pending early startup publication.
+
+S0's final host-memory census covers9,850 samples across all32 tasks through11:00:34 UTC. Maximum sampled and cumulative-attempt peak RAM are both69.2568359375GiB against128GiB requested. Receipt: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/2026.11.26/s0-v12-final-host-memory.json`. The refreshed S0 dashboard record was also verified by the publication API for exact attemptaa4cc7ddd162; its receipt is `report-publication-receipt.json` under the full S0 audit prefix. These diagnostics do not change measurements or resource requests.
+
 ## Final decision
 
 Baseline incidence and all four cohort validities are sealed. Offline stall precision is29/30 and passes its registered gate. No intervention has been selected: S1 outcomes and any required single repeat remain outstanding. I3 must be dropped if actual S2 training cannot start by13:01:36 UTC on November26. No Marin contribution PR has been opened.
