@@ -2665,3 +2665,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission receipt + landed source [R].
 - Interpretation and limitations: pre-GPU state; admission and first-update evidence pending.
 - Decision and next action: record the GPU admission / first finite update when it lands.
+
+### 2026-11-26 12:30 UTC - Addendum: RL data campaign SECOND root submitted — `/benfeuer/mochi-campaign-v2-mix-009-2026.11.26.503` (queue order preserved)
+
+- Question or hypothesis and reason for trying it: record the campaign's second root submission (v2-mix-009) in the first-3 sequence.
+- Published source revision: root `/benfeuer/mochi-campaign-v2-mix-009-2026.11.26.503` SUBMITTED once (source `f8a8366ac26984dc72d4caf7300feb2244145c2d`); queue order preserved; PRODUCTION 08a / all racks; `.131` DSpark controls, 128 GB200 48+80, 50 steps / no learning clock.
+- Command or material configuration: regional pool/hash and real-agent/vocab admission pending — no GPU/update claim.
+- External inputs and artifact references: worker cc over Rhizome (~12:3x UTC) [R]; tracker row + receipt `rl-data-campaign/runs/v2-mix-009/submission-receipt.json` [R].
+- Environment and hardware when relevant: the worker's stage/terminal watchdog registration and same-hour refill wake remain their own chain — outside this record's scope.
+- Result, including failure or restart: second root submitted.
+- Evidence: submission receipt [R].
+- Interpretation and limitations: pre-GPU state, matching the first root's pattern.
+- Decision and next action: record the third root (v2-mix-011) and subsequent admission evidence.
