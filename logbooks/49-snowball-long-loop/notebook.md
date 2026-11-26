@@ -2917,3 +2917,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: landed revision + landing-test results + metadata upload receipt [R].
 - Interpretation and limitations: the sizing fix addresses the general gate bug; NL2Bash needs either a supported binding or the user's ruling.
 - Decision and next action: record the next corrected root submissions after the queued user message is consumed.
+
+### 2026-11-26 17:45 UTC - Addendum: campaign confirmations recorded — validation-reward best selector (EMA5); shared clean-first queue; Grafana-link rules; tracker link audit clean
+
+- Question or hypothesis and reason for trying it: record the coordinator/user confirmations governing campaign evaluation and bookkeeping.
+- Published source revision: confirmations recorded in BRIEF/STATUS/REPORT and `campaign-confirmations-0645-receipt.json` — **(1) evaluate best selected by validation reward, preserving `.131`'s eval/all/avg_verifier_score selector and EMA5; (2) v2/v3 share the coordinator-owned clean-first queue, rated within clean/stale groups; (3) Grafana links must pin the actual RL child path and native iris:execution with now-3h→now and no `$__all`.**
+- Command or material configuration: all 6 tracker rows audited — no unsafe links; all are CPU-only historical/failed attempts without an actual RL child, so links remain blank rather than fabricated.
+- External inputs and artifact references: worker cc over Rhizome (~17:4x UTC) [R]; campaign-confirmations receipt [R].
+- Environment and hardware when relevant: no queue reorder, RL recipe change, or job submission for this confirmation.
+- Result, including failure or restart: policy confirmations on file.
+- Evidence: campaign-confirmations-0645-receipt.json [R].
+- Interpretation and limitations: policy-only update; the campaign's launch state is unchanged.
+- Decision and next action: apply the selector/queue/link rules to future rows; record the next root submissions.
