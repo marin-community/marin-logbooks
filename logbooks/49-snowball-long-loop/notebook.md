@@ -3001,3 +3001,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: submission cc + tracker rows [R].
 - Interpretation and limitations: pre-GPU for all three; the wake registrations are the worker's own chain.
 - Decision and next action: record GPU IDs/admission and first full updates as observed; then the downstream publication.
+
+### 2026-11-26 19:15 UTC - Addendum: `.131` COMPLETE_SEALED_PUBLISHED_LIVE_VERIFIED (seal manifest SHA 284735b8…, EvalDash LIVE); fresh-wave CPU gates failed pre-GPU (009 schema mix; 033/017 Harbor protocol)
+
+- Question or hypothesis and reason for trying it: record the `.131` end-to-end completion and the fresh wave's CPU-gate failures before any fix.
+- Published source revision: **`.131` step34 COMPLETE_SEALED_PUBLISHED_LIVE_VERIFIED — 258/429 = 0.6013986014 pass@1 including Bix 3/10; 429/434 = 98.8479% valid.** Five verifier timeouts absent; all 53 scored AGENT zeros have actual work. The CPU-only preserve recovered the known KeyError artifacts using the landed reader fix — the original eval/export NOT rerun. Archive 8,887 files / 3,101,033,043 bytes: inventory + producer hashes verified. Native final marker 34 equals best 34 (no distinct final eval). **Seal URI `s3://marin-us-east-08a/marin/users/benfeuer/mochi-exp4-dspark-rl/preserve-recovery/2026.11.26.131/seal/manifest.json` SHA `284735b83dd84f39b81547281bc539f6cf24e4fe4cfc10b861fddb9bb76b2435`; EvalDash LIVE API verified https://marina.oa.dev/evaldash/runs/mochi-exp4-dspark-rl34-micro210-2026.11.23-bixbench-v2; #10197 comment 7194471168 / #11337 comment 7194544910.** CSV backed up / new .131 row / all 10 columns / other 6 rows unchanged; final receipts + 10 metadata files uploaded with exact readback under `preserve-recovery/2026.11.26.131/complete`; no `.131` wake remains.
+- Command or material configuration: campaign follow-up — bounded 14:24 logs catch **all 3 fresh CPU failures before GPU**: **009**'s data writer rejects mixed validation schemas; **033/017**'s real worker sees an incorrect forced Harbor protocol on native TaskSpecs (no Harbor tag), so FullHarbor settings are missing. Terminal/all-task proof retained BEFORE the fix; no blind resubmit.
+- External inputs and artifact references: worker cc over Rhizome (~19:1x UTC) [R].
+- Environment and hardware when relevant: root tooling fixes will preserve TaskSpec bytes/columns/native protocol and the `.131` RL config; no GPU child observed; the existing 09:33 timer will be reconciled with the latest terminal state.
+- Result, including failure or restart: `.131` is fully sealed/published/live; the fresh wave is pre-GPU-failed pending two tooling fixes.
+- Evidence: seal manifest + EvalDash live link + failure logs [R].
+- Interpretation and limitations: two distinct harness defects (schema mixing; protocol forcing) — the science config is unaffected.
+- Decision and next action: record the tooling fixes and the corrected resubmission when they land.
