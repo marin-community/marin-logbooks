@@ -1146,3 +1146,25 @@ permanent promotion remains unverified. Its source stays protected. During this 
 there were no frozen parameter/classification changes, restart, resubmission, further
 deletion, new allocation or HF operation. Next native pass around 18:55 EST.
 [TBLite progress receipt](analysis/user-overrides-20261126/s3-tblite-progress-1844.json).
+
+## November 26, 18:55 EST: all 59 checkpoint files have native staging records
+
+The original conservation copy advanced from 43 to 59 native verified staging
+records. The 18:54 snapshot has 59 unique paths, including 48 policy shards,
+totaling 4,292,558,588,036 bytes, matching the source inventory. Each record carries
+a SHA-256 and source identity. A fresh source listing at 18:57 independently matches
+the 59-record path set exactly; source identities were recorded by native copy and
+were not independently refreshed during this pass. The destination listing at 18:54 contains only
+two objects / 1,662,097,797 bytes; the completion manifest remains absent at 18:55.
+Native fsutil promotes staged files before publishing that manifest. Final promotion
+and completion remain unverified, and the source stays protected.
+
+TBLite progress is control 140/200 returned rollouts at 18:53:15.431 EST and treatment
+150/200 at 18:53:25.870. Counts include terminal errors; audited valid/successful
+counts, error rates and correctness/loop/effect verdicts remain pending. Both S3
+roots/GPU children are RUNNING at 18:53:43 EST, with 16/16 GPU tasks per arm and zero
+Iris failures/preemptions. The original copy job is also RUNNING with zero failures
+or preemptions. During this pass there were no frozen parameter/classification
+changes, restart, resubmission, further deletion, new allocation or HF operation.
+Next native pass around 19:05 EST: copy completion and TBLite progress.
+[Progress and staging receipt](analysis/user-overrides-20261126/s3-progress-and-copy-staging-1855.json).
