@@ -243,6 +243,23 @@ S0 moved to TBLite, with 90/200 returned at the 06:59:45 probe. All 32 hosts rem
 
 The coordinator confirmed the DESIGN section 6 interpretation proposed before any guard outcomes: if a target cohort is within two trials of its decision threshold, repeat the implicated guard arm once on the same panel and seeds. The repeat supplies the gate measurement regardless of direction. Report both measurements separately; never pool them or choose the better result. Keep the S0 control, target rule, intervention settings and thresholds fixed. This [pre-registration](https://github.com/marin-community/marin/issues/12264#issuecomment-7184629056) adds no launch gate and resets no clock. S1 remains unsubmitted.
 
+### 2026-11-26 07:27 UTC — Corrected TBLite meets validity
+
+Regional CPU `/benfeuer/mochi-loop-guards-s0-v12-audit-tblite-20261126a` succeeded. All 200 frozen trials are accounted for: 194 assessed (97%), six infrastructure outcomes and no additional unavailable verdicts. TBLite meets the design's 90% validity requirement and the ten-loop target rule; no repair is needed.
+
+| TBLite metric | Corrected S0 v12 |
+|---|---:|
+| Confirmed agent-loop trials | 20 |
+| Confirmed trial share | 0.1030928 |
+| Agent-loop upper bound | 26/200 (0.13) |
+| Repeat-turn share | 0.0974277259 |
+| Duplicate-tool fraction, median / p90 | 0.1327434 / 0.4454443 |
+| Full-credit passes | 66 |
+| Mean reward | 0.3724413859 |
+| Median turns / generated tokens / wall seconds | 14 / 7,778 / 847.24 |
+
+Ten token-tail loops are report-only. The [audit](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Faudits%2Fs0-2026.11.26-v12%2Fpartial%2Ftblite%2Faudit.json) is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/partial/tblite/audit.json`; cohort hash remains `2e9b291a9b79f8af76c81c65c727ab9032717264a81e39410e1d631ca180ddda`. Native evaluation reached 200/200 after 2,162 seconds. SWE100 began at 07:22:22 UTC and reached 5/100 at 07:27:39. All 32 GPU hosts remained running at 07:28:26 with zero failures or preemptions. Full S0 remains unsealed pending SWE100 and SWESmith held-out. No S1/S2 job or fixed update count exists. [Tracking milestone](https://github.com/marin-community/marin/issues/12264#issuecomment-7185466688).
+
 ## Final decision
 
 Pending measurement. No intervention has been selected. Remaining uncertainties are baseline loop incidence, per-cohort validity, stall precision, and whether enough time remains for paired RL. No Marin contribution PR has been opened.
