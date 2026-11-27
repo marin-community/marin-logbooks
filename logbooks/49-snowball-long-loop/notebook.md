@@ -3421,3 +3421,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: startup snapshot + PR cleanup results [R].
 - Interpretation and limitations: startup-only — no update/throughput claims.
 - Decision and next action: record sync/baseline/first-finite-update evidence as it lands.
+
+### 2026-11-27 12:53 UTC - Hourly catch-up (Iris primary evidence; multi-hour window): credential-fix wave TERMINAL — `.526` killed, `.527`/`.528` failed on max_task_failures
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence. Window spans ~15:12 Nov 26 → 12:53 UTC Nov 27 (includes the 07:21 Mac reboot; no local agents installed per the standing rule).
+- Published source revision: **the credential-fix wave is TERMINAL** — **`.526` (006) root KILLED by user** (GPU child `a8cb11d1141e` killed, "Parent job terminated"); **`.527` (015) root and GPU child `a98391882552` FAILED — "Cumulative failed task attempts exceeded max_task_failures"**; **`.528` (043) root and GPU child `a3f22ca4577c` FAILED — same reason**. Eval preflights `fe88b245`/`c67fd2c5`/`0f370933` all succeeded before their children.
+- Command or material configuration: `iris --cluster=marin job list` for the three campaign roots (12:53 UTC); `git fetch origin` for the Atlas head.
+- External inputs and artifact references: Iris job lists [R]; prior addenda (d012334663) [R].
+- Environment and hardware when relevant: the children ran ~16:39–unknown Nov 26; no worker cc explaining the failure mode beyond the job-state reason is in hand.
+- Result, including failure or restart: all three credential-fix attempts are terminal; the campaign awaits the worker's terminal-cause readout and any further fix.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only — the specific runtime failure is not established from state alone; the earlier consolidation readout (through 16:56:58) had shown graph captures with 0 selected errors, so the failures postdate that window.
+- Decision and next action: watch for the worker's terminal-cause readout; hourly checks continue.
