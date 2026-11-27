@@ -1204,3 +1204,22 @@ and the source stays protected. During this pass there were no parameter/classif
 changes, restart, resubmission, further deletion, new allocation or HF operation.
 Next native pass around 19:25 EST: held-out completion and copy publication.
 [Held-out progress receipt](analysis/user-overrides-20261126/s3-heldout-progress-1914.json).
+
+## November 26, 19:24 EST: both held-out returned-rollout counts exceed 200
+
+Native held-out progress is control 210/256 returned at 19:23:27.190 EST and
+treatment 215/256 at 19:22:58.672. Both arms previously returned all 267 TB2 and
+200 TBLite rollouts. Counters include terminal errors; audited valid/successful
+counts, error rates and correctness/loop/effect verdicts remain pending. At 19:23:32
+EST both S3 roots/GPU children remain RUNNING, with 16/16 GPU tasks per arm and
+zero Iris failures/preemptions.
+
+The original conservation copy remains RUNNING with zero failures/preemptions.
+Destination inventory is still 34 objects / 2,857,868,226,661 bytes, unchanged from
+19:03; its completion manifest remains absent. Final publication remains incomplete
+and the source stays protected. During this pass there were no parameter/classification
+changes, restart, resubmission, further deletion, new allocation or HF operation.
+The coordinator's latest user ruling routes loop-guards issue updates to logbooks
+#86 only; no further #91 posts or edits. Next native pass around 19:35 EST:
+held-out completion and copy publication.
+[Held-out progress receipt](analysis/user-overrides-20261126/s3-heldout-progress-1924.json).
