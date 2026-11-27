@@ -2740,3 +2740,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree; publish notice [R].
 - Interpretation and limitations: v44's difficulty-column fix is pending — the published v43 carries the known gap.
 - Decision and next action: record the v44 landing when it comes; continue hourly checks.
+
+### 2026-11-27 21:15 UTC - Hourly catch-up (fetch-first): R41 release landing being assembled (two merges into `atlas-release-r41-landing`)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `087b53002a…` to `455fd8186c…` — six new commits: `455fd8186c` Restore Big-Math's ingest licence to the license receipt index; `2ff9e2d50b` Regenerate the source-status extras at the landing merge; `d0ba80d035` Merge remote-tracking branch 'origin/atlas-env-audit' into **atlas-release-r41-landing**; `ca717ed5bf` Compare the backend survey's input fingerprint in the hosted check; `053ae12deb` Merge remote-tracking branch 'origin/atlas-env-audit' into **atlas-release-r41-landing**; `722a962379` [atlas] Hold sources Pending only for real missing work.
+- Command or material configuration: `git fetch origin` + `git log 087b53002a..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: six landings — **two merges into `atlas-release-r41-landing` indicate the R41 release landing is being assembled** (following the v43 publish and the pending v44 difficulty-column fix), plus Big-Math licence restoration, source-status regeneration, hosted-check fingerprint comparison, and the tightened Pending-hold rule.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: release-assembly progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks; watch for the v44 fix.
