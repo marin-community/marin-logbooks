@@ -1,0 +1,108 @@
+{
+  "kind": "S3-I3-paired-verdict-and-CPU-completion",
+  "recorded_at": "2026-11-26T20:38:00-05:00",
+  "comparison_source_commit": "7191758004",
+  "CPU_source_commit": "8939ee19df",
+  "GPU_source_commit": "cc4e3dcc62",
+  "decision_uri": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/i3-paired-verdict-20261126.json",
+  "decision_sha256": "f3b12ae26a8656b2cda5efbf3450d9fa574f572692745f391a1c81efa7e13f9f",
+  "verdict": "FAIL",
+  "repeat_required": false,
+  "validity_pass": true,
+  "correctness_pass": true,
+  "primary_pass": false,
+  "arms": {
+    "control": {
+      "CPU_job": "/benfeuer/mochi-loop-guards-s3-postprocess-control-r1",
+      "state": "SUCCEEDED",
+      "failures": 0,
+      "preemptions": 0,
+      "assessed": 700,
+      "N": 723,
+      "unassessed": 23,
+      "unavailable": 0,
+      "trace_files": 724,
+      "trace_bytes": 24143936,
+      "postprocessing_receipt": {
+        "run_output": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-control-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1",
+        "baseline": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/audit.json",
+        "steps": [
+          "audit",
+          "retain-traces",
+          "report-refresh"
+        ],
+        "model_trials_created": 0,
+        "complete": true,
+        "counterfactual_module_sha256": null
+      },
+      "report_refresh_receipt": {
+        "run_output": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-control-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1",
+        "attempt_id": "a80899aa9a3f",
+        "model_trials_created": 0,
+        "evaluation_error": null,
+        "evaluations": 42,
+        "failed_facts": [],
+        "summary_status": "succeeded",
+        "summary_output": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/control/refreshed-attempt-summary.json"
+      },
+      "retention_receipt": {
+        "source": "s3://marin-us-east-08a/tmp/ttl=3d/skyrl/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-control-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1/attempts/trajectories",
+        "destination": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-control-r1",
+        "completion_manifest": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-control-r1/.verified-copy-manifest.json",
+        "manifest_sha256": "3995a876ed27b109ce89c821f76562b0f48879656ba076f2ad433e39c139279d",
+        "same_region": true
+      }
+    },
+    "treatment": {
+      "CPU_job": "/benfeuer/mochi-loop-guards-s3-postprocess-treatment-r1",
+      "state": "SUCCEEDED",
+      "failures": 0,
+      "preemptions": 0,
+      "assessed": 693,
+      "N": 723,
+      "unassessed": 30,
+      "unavailable": 0,
+      "trace_files": 724,
+      "trace_bytes": 24370922,
+      "postprocessing_receipt": {
+        "run_output": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-treatment-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1",
+        "baseline": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/audit.json",
+        "steps": [
+          "audit",
+          "retain-traces",
+          "report-refresh"
+        ],
+        "model_trials_created": 0,
+        "complete": true,
+        "counterfactual_module_sha256": null
+      },
+      "report_refresh_receipt": {
+        "run_output": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-treatment-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1",
+        "attempt_id": "a9599be43c43",
+        "model_trials_created": 0,
+        "evaluation_error": null,
+        "evaluations": 42,
+        "failed_facts": [],
+        "summary_status": "succeeded",
+        "summary_output": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/treatment/refreshed-attempt-summary.json"
+      },
+      "retention_receipt": {
+        "source": "s3://marin-us-east-08a/tmp/ttl=3d/skyrl/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-treatment-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1/attempts/trajectories",
+        "destination": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-treatment-r1",
+        "completion_manifest": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-treatment-r1/.verified-copy-manifest.json",
+        "manifest_sha256": "89eac73358933787ee6080dfdd43991b4445d030e08d92cf12099afeca3b3e6d",
+        "same_region": true
+      }
+    }
+  },
+  "limitations": [
+    "Single registered paired N4 run; no statistical causal-harm claim.",
+    "S2 per-update antithrash fire-rate/mean-penalty exposure evidence remains to consolidate; no underpowered classification yet.",
+    "Broad affected tests stopped at Harbor: same9failures independently reproduced on clean main; later broad Marin groups not run."
+  ],
+  "validation": {
+    "focused_tests": "33 passed in6.44s",
+    "required_lint": "passed",
+    "broad_affected_tests": "9failed/1945passed/3skipped/2deselected; known macOS Harbor failures, later groups not run"
+  }
+}

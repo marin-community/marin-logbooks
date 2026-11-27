@@ -1337,3 +1337,55 @@ audits are report-only for I3. W&B emitted finishing/upload warnings; native dum
 and terminal Iris states were verified independently. No repeat or retuning was
 submitted. Reporting remains on #86 only.
 [Terminal proofs and exact CPU submissions](analysis/user-overrides-20261126/s3-terminal-cpu-submissions-2030.json).
+
+## November 26, 20:38 EST: I3 fails the registered loop-reduction gate; no repeat
+
+At the fixed four training updates, antithrash did not halve repeat-turn share
+against the concurrent RL control on any frozen target. The measured share was
+higher in treatment on every cohort. This single registered pair does not establish
+a statistically significant causal increase.
+
+| Cohort | Control repeat-turn share | Treatment share | Relative increase | Primary gate |
+|---|---:|---:|---:|---|
+| TB2 | 0.1501067499 | 0.2138755238 | 42.48% | Fail |
+| TBLite | 0.0765120233 | 0.0814704421 | 6.48% | Fail |
+| Held-out | 0.1321535607 | 0.2021508130 | 52.97% | Fail |
+
+Correctness passes both original and overridden gates. Control passes are
+52/75/109, pooled236; treatment59/70/106, pooled235. The concurrent-control raw
+floors38.65/65/96.2 and pooled221.54 become28.9875/48.75/72.15 and166.155 under the
+user's0.75 multiplier (integer minima29/49/73 and167). Every target is more than
+two trials from its overridden unrounded correctness floor, so no repeat trigger
+fires. The primary share is far above its halving threshold in every cohort;
+secondary action-loop UB cannot replace it. No repeat or retuning was submitted.
+
+Control has700/723 assessed rollouts and treatment693/723, with zero unavailable
+outputs. Cohort assessed counts are253/267,197/200,250/256 for control and
+251/267,196/200,246/256 for treatment. Every cohort passes the90% validity gate.
+Action-loop UB counts are39/18/24 for control and53/19/29 for treatment, reported
+as secondary outcomes. Frozen cohort hashes match both arms and sealed S0.
+S0 comparisons remain report-only for I3.
+
+Both CPU postprocessors succeeded with zero Iris failures/preemptions. Their
+completion receipts cover the audit, permanent same-region verified trace copy and
+saved-report refresh. Each refresh has42 evaluations and no reporting error.
+Permanent trace manifests passed byte-hash readback:724files/24,143,936bytes control,
+724files/24,370,922bytes treatment. No model trials were created by postprocessing.
+
+The checked-in `i3-verdict` command on source `7191758004` reproduces the comparison
+from the three regional audit JSON files. Required lint and all33 focused tests
+pass. The broad affected-test rerun stopped in Harbor:9failed/1945passed/3skipped/
+2deselected. These same nine failures were independently reproduced on clean main
+(GNU chown --reference and tmux lifecycle on macOS); later broad Marin groups did
+not run. The S2 per-update
+antithrash fire-rate and mean-penalty evidence remains to consolidate for the final
+report; no underpowered classification is claimed yet. The I3 result follows its
+registered gate regardless of that diagnostic. Overall, both inference guards and
+the fixed-N4 RL intervention fail their registered loop-reduction measures.
+
+[Paired decision receipt](analysis/user-overrides-20261126/s3-i3-paired-verdict-20261126.json),
+[CPU completion and conservation receipt](analysis/user-overrides-20261126/s3-i3-completion-receipt-2038.json).
+The regional decision is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/i3-paired-verdict-20261126.json`
+([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdecisions%2Fi3-paired-verdict-20261126.json));
+SHA256`f3b12ae26a8656b2cda5efbf3450d9fa574f572692745f391a1c81efa7e13f9f`.
+Regional readback matches the local calculation and all three audit input hashes.

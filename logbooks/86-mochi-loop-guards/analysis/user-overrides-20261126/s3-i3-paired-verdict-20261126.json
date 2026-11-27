@@ -1,0 +1,150 @@
+{
+  "registration": "https://github.com/marin-community/marin/issues/12264#issuecomment-7171525899",
+  "primary_measure": "repeat_turn_share",
+  "comparator": "concurrent RL control",
+  "target_cohorts": [
+    "tb2",
+    "tblite",
+    "swesmith-ho"
+  ],
+  "correctness_multiplier": 0.75,
+  "cohorts": [
+    {
+      "cohort": "tb2",
+      "passes": 59,
+      "correctness_min_raw": 28.987499999999997,
+      "original_correctness_min_raw": 38.65,
+      "correctness_min_integer": 29,
+      "cohort_correctness_pass": true,
+      "correctness_boundary_repeat_trigger": false,
+      "target": true,
+      "N": 267,
+      "control_passes": 52,
+      "original_correctness_pass": true,
+      "control_assessed": 253,
+      "treatment_assessed": 251,
+      "valid": true,
+      "control_repeat_turn_share": 0.15010674987682707,
+      "treatment_repeat_turn_share": 0.21387552382430544,
+      "primary_cap": 0.07505337493841353,
+      "primary_pass": false,
+      "control_action_loop_trials": 25,
+      "treatment_action_loop_trials": 37,
+      "control_action_loop_UB": 39,
+      "treatment_action_loop_UB": 53,
+      "control_cost": {
+        "turns_p50": 15.0,
+        "tokens_p50": 5055.0,
+        "wall_seconds_p50": 908.8949886709452
+      },
+      "treatment_cost": {
+        "turns_p50": 16.0,
+        "tokens_p50": 4665.0,
+        "wall_seconds_p50": 947.9107895195484
+      },
+      "S0_repeat_turn_share": 0.11927877947295423
+    },
+    {
+      "cohort": "tblite",
+      "passes": 70,
+      "correctness_min_raw": 48.75,
+      "original_correctness_min_raw": 65.0,
+      "correctness_min_integer": 49,
+      "cohort_correctness_pass": true,
+      "correctness_boundary_repeat_trigger": false,
+      "target": true,
+      "N": 200,
+      "control_passes": 75,
+      "original_correctness_pass": true,
+      "control_assessed": 197,
+      "treatment_assessed": 196,
+      "valid": true,
+      "control_repeat_turn_share": 0.07651202331794997,
+      "treatment_repeat_turn_share": 0.08147044212617983,
+      "primary_cap": 0.038256011658974985,
+      "primary_pass": false,
+      "control_action_loop_trials": 15,
+      "treatment_action_loop_trials": 15,
+      "control_action_loop_UB": 18,
+      "treatment_action_loop_UB": 19,
+      "control_cost": {
+        "turns_p50": 14.0,
+        "tokens_p50": 6810.0,
+        "wall_seconds_p50": 714.09597280249
+      },
+      "treatment_cost": {
+        "turns_p50": 13.0,
+        "tokens_p50": 7096.0,
+        "wall_seconds_p50": 731.3531460714876
+      },
+      "S0_repeat_turn_share": 0.0974277259276121
+    },
+    {
+      "cohort": "swesmith-ho",
+      "passes": 106,
+      "correctness_min_raw": 72.15,
+      "original_correctness_min_raw": 96.2,
+      "correctness_min_integer": 73,
+      "cohort_correctness_pass": true,
+      "correctness_boundary_repeat_trigger": false,
+      "target": true,
+      "N": 256,
+      "control_passes": 109,
+      "original_correctness_pass": true,
+      "control_assessed": 250,
+      "treatment_assessed": 246,
+      "valid": true,
+      "control_repeat_turn_share": 0.1321535607249893,
+      "treatment_repeat_turn_share": 0.20215081295608756,
+      "primary_cap": 0.06607678036249465,
+      "primary_pass": false,
+      "control_action_loop_trials": 18,
+      "treatment_action_loop_trials": 19,
+      "control_action_loop_UB": 24,
+      "treatment_action_loop_UB": 29,
+      "control_cost": {
+        "turns_p50": 21.0,
+        "tokens_p50": 5364.0,
+        "wall_seconds_p50": 693.1826175386668
+      },
+      "treatment_cost": {
+        "turns_p50": 21.0,
+        "tokens_p50": 4924.0,
+        "wall_seconds_p50": 670.6111686499789
+      },
+      "S0_repeat_turn_share": 0.12165245586645851
+    }
+  ],
+  "pooled": {
+    "N": 723,
+    "control_passes": 236,
+    "treatment_passes": 235,
+    "original_correctness_min_raw": 221.54,
+    "original_correctness_pass": true,
+    "correctness_min_raw": 166.155,
+    "correctness_min_integer": 167,
+    "correctness_pass": true
+  },
+  "validity_pass": true,
+  "correctness_pass": true,
+  "primary_pass": false,
+  "repeat_triggers": [],
+  "repeat_required": false,
+  "repeat_policy": "Target-cohort correctness within +/-2 of overridden unrounded floor; primary share has no trial-count window; secondary UB is report-only",
+  "S0_comparison": "report-only",
+  "verdict": "FAIL",
+  "audit_inputs": {
+    "control": {
+      "path": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/control/audit.json",
+      "sha256": "98c7bb6f0ce71ed7fa1952e217affaeb986f913382665cda592f0dd3edfdc18d"
+    },
+    "treatment": {
+      "path": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/treatment/audit.json",
+      "sha256": "21c6f026f7a387bf0a24acfbaad02558d1de2f27bc963143ada2f58b1e28a8b3"
+    },
+    "baseline": {
+      "path": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/audit.json",
+      "sha256": "9c9308cad92cce3d78b5499e82a1bb3f40a175f769c93e6a44749cf7955bd6bf"
+    }
+  }
+}
