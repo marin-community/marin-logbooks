@@ -3481,3 +3481,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only.
 - Decision and next action: watch the export recovery and the first updates; hourly checks continue.
+
+### 2026-11-27 22:14 UTC - Hourly catch-up (Iris primary evidence): `.714`/`.712` unchanged; MILESTONE — V10.2 SEALED (seal sha `228929e6`, marin#12371 updated, logbooks #94/#95)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence; record the coordinator-announced V10.2 seal.
+- Published source revision: **MILESTONE (coordinator notice) — V10.2 SEALED at 16:5x EST (≈22:5x UTC Nov 27): seal sha `228929e6`; marin#12371 updated; recorded in logbooks #94/#95** — a separate campaign lane's record, noted here for cross-reference rather than duplicated. The RL-data campaign states are unchanged: **`.714` (014) RUNNING** (child since 18:29:45, ~3h45m), **`.712` (009) RUNNING** (child since 17:26:45, ~4h45m); `.713`'s max_task_failures failure stands.
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (22:14 UTC).
+- External inputs and artifact references: Iris job lists [R]; coordinator V10.2 seal notice [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: no campaign-state change this window; the V10.2 lane sealed.
+- Evidence: Iris job lists + coordinator notice [R].
+- Interpretation and limitations: the seal's details live in #94/#95 and #12371 — not restated here.
+- Decision and next action: hourly checks continue.
