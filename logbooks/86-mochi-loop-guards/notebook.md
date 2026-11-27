@@ -1168,3 +1168,22 @@ or preemptions. During this pass there were no frozen parameter/classification
 changes, restart, resubmission, further deletion, new allocation or HF operation.
 Next native pass around 19:05 EST: copy completion and TBLite progress.
 [Progress and staging receipt](analysis/user-overrides-20261126/s3-progress-and-copy-staging-1855.json).
+
+## November 26, 19:04 EST: TBLite returns complete and held-out rollouts begin
+
+Both arms returned all 200 TBLite rollouts: control at native 18:58:30.253 EST,
+treatment at 18:57:27.614. The 256-trial held-out cohort began at 18:58:31.740 and
+18:57:29.166 respectively. Latest held-out progress is control 26/256 returned at
+19:03:07.861 EST and treatment 39/256 at 19:02:49.729. Counters include terminal
+errors; audited valid/successful counts, error rates and correctness/loop/effect
+verdicts remain pending. Both S3 roots/GPU children remain RUNNING at 19:03:32 EST,
+with 16/16 GPU tasks per arm and zero Iris failures/preemptions.
+
+The original conservation-copy destination advanced to 34 objects totaling
+2,857,868,226,661 bytes. Its job remains RUNNING with zero failures/preemptions;
+the completion manifest is still absent. This is partial promotion of the previously
+verified staging set, not completed permanent publication. The source stays protected.
+During this pass there were no parameter/classification changes, restart, resubmission,
+further deletion, new allocation or HF operation. Next native pass around 19:15 EST:
+held-out progress and copy completion.
+[Held-out progress receipt](analysis/user-overrides-20261126/s3-heldout-progress-1904.json).
