@@ -2752,3 +2752,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: release-assembly progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks; watch for the v44 fix.
+
+### 2026-11-27 22:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `455fd8186c…` to `5c406388de…` — one new commit: `5c406388de` Restore Big-Math's ingest licence to the license receipt index (a re-land of the same title from the previous hour, superseding the prior attempt).
+- Command or material configuration: `git fetch origin` + `git log 455fd8186c..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one re-land — Big-Math's ingest licence restored to the license receipt index.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: single-commit fix-up; no campaign-state change evident from the title alone.
+- Decision and next action: continue fetch-first hourly checks.
