@@ -2704,3 +2704,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: curation/grader-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-27 16:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `e92b11bbbf…` to `da159fb630…` — seven new commits: `da159fb630` Admit Nemotron:nemotron_if at its version-2 retained release (grader re-seal); `a70fd19bf7` Admit the tier-repaired crosscodeeval conversions: the grader-defect claims leave the manual exclusion registry; `d0015fffe6` Ride the pointer families for the basepin receipts (conversion admissions, lexical measurements, SAMPLE receipts at repaired release pins); `309c8be752` Register the basepin SAMPLE receipts (csharp 0 issues, java 4 content notes, typescript 1); `10d5f4027f` Repair the public conversation message too (the SAMPLE QC gap); `1ee9a51694` swe-repair: register the sealed SWE-rebench V2.1 cohort's exact-pin license receipt and repin the license index.
+- Command or material configuration: `git fetch origin` + `git log e92b11bbbf..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: seven landings — Nemotron:nemotron_if re-sealed admission, the crosscodeeval conversions leaving the manual exclusion registry, basepin receipt families, the SAMPLE QC public-message repair, and the SWE-rebench V2.1 license receipt/index.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: curation/admission-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
