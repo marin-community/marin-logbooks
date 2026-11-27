@@ -3457,3 +3457,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only; the recurring failure cause across 009/014 attempts is not established from state alone.
 - Decision and next action: watch for worker readouts on the recurring failure; hourly checks continue.
+
+### 2026-11-27 19:14 UTC - Hourly catch-up (Iris primary evidence): new `.714` (014) attempt RUNNING; `.712` (009) still running (~1h47m)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence.
+- Published source revision: **v3-mix-014/.714 RUNNING** — a new attempt (root 18:26:34; GPU child `a48807e487cb` since 18:29:45) after `.713`'s max_task_failures failure. **v2-mix-009/.712 still RUNNING** (child `a1c41d97cfe4` since 17:26:45, ~1h47m). The `.532`/`.534` retain_campaign_checkpoints tasks and the v3-mix-036/.540 RL run continue unchanged.
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (19:14 UTC).
+- External inputs and artifact references: Iris job lists [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: a fresh 014 attempt is live; the 009 attempt continues past the previous attempts' failure window.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only.
+- Decision and next action: watch whether `.712`/`.714` clear the recurring max_task_failures window; hourly checks continue.
