@@ -1241,3 +1241,38 @@ pass there were no parameter/classification changes, restart, resubmission,
 further deletion, new allocation or HF operation. Issue updates remain on #86 only.
 Next native pass around 19:45 EST: held-out completion and copy publication.
 [Progress receipt](analysis/user-overrides-20261126/s3-heldout-and-copy-progress-1934.json).
+
+## November 26, 19:53 EST: checkpoint conservation completes and audit inputs are explicit
+
+The original treatment-step1 conservation job is SUCCEEDED with zero failures or
+preemptions, observed at 19:47:43 EST. Its completion manifest records 59 data files
+and 4,292,558,588,036 bytes. Every path, size, SHA-256 and source identity matches the
+native staging records. The manifest SHA-256 is
+`e212783fc5f64836448548bde420402320ad93d764039050f47085595e8fedab`.
+The permanent destination contains 60 objects including that manifest. Its parent
+conservation marker declares permanent retention and exclusion from every pruning
+sweep; byte readback passed. Automatic sweep enforcement remains unverified.
+The temporary source was retained during this completion check; no HF operation.
+
+Postprocessing source `8939ee19df` now requires `--manifest` and forwards it to the
+existing audit command. The unchanged 95,280-byte frozen manifest is published at a
+regional URI; byte readback, canonical/file hashes and all published task IDs/order
+match the sealed S0 panel. The live bundle collector includes the ignored local
+manifest in this environment. Explicit regional input removes dependence on that
+file being present in a fresh submitter checkout. GPU run source remains `cc4e3dcc62`;
+scientific parameters, detectors and error classification are unchanged.
+
+Lint, CLI help and all 31 focused loop-guards tests pass. The broad affected-test
+runner stopped in Harbor with nine failures and 1,945 passes. All nine failures
+independently reproduce on clean `origin/main` commit `8c629544b1` under Python 3.12:
+GNU `chown --reference` and tmux lifecycle operations fail on macOS. Later broad
+Marin test groups were not run after that stop. The main checkout was not modified.
+
+Latest S3 observations remain the 19:45 pass: both roots/GPU children RUNNING,
+16/16 GPU tasks per arm, zero Iris failures/preemptions; held-out returns 248/256
+control and 246/256 treatment. Counts include terminal errors; audited panel verdicts
+remain pending. No CPU analysis has been submitted: terminal roots/children and
+final dumps must be checked first. The prepared analysis excludes baseline-only
+SWE100 and uses the sealed S0 audit. Reporting stays on #86 only.
+[Readiness and validation receipt](analysis/user-overrides-20261126/s3-postprocessing-readiness-20261126.json),
+[permanent checkpoint marker](analysis/user-overrides-20261126/s2-treatment-step1-conservation-complete.json).

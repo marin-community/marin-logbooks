@@ -1,0 +1,83 @@
+{
+  "kind": "S3-postprocessing-manifest-readiness",
+  "source_commit": "8939ee19df035f41c99c3ffaf86d0917fbbfe154",
+  "archive_code_commit": "3b1d114375",
+  "GPU_run_source_commit": "cc4e3dcc62",
+  "manifest": {
+    "uri": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/frozen-panel-562bd617cd6d3836.json",
+    "bytes": 95280,
+    "file_sha256": "2be679dcfac272318ae1475d9cedbf210504d0c8749a030cf9aea0e8bd0da6bc",
+    "canonical_sha256": "562bd617cd6d38369ae1c8d534b2df769888a8eec59d0017578bd001be6ef985",
+    "regional_byte_readback_matches": true,
+    "both_hashes_match_sealed_S0": true,
+    "published_task_ids_and_order_match_sealed_S0": true,
+    "cohort_task_counts": {
+      "tb2": 89,
+      "tblite": 100,
+      "swe100": 100,
+      "swesmith-ho": 128
+    }
+  },
+  "implementation": {
+    "postprocess_manifest_argument_required": true,
+    "forwarded_to_existing_audit": true,
+    "current_live_bundle_includes_ignored_local_manifest": true,
+    "reason": "Explicit regional URI removes reliance on an ignored file being present in the submitter checkout. Prior inference that the live collector omitted it was incorrect.",
+    "scientific_parameters_or_error_classification_changed": false
+  },
+  "validation": {
+    "lint": "passed",
+    "CLI_help": "passed",
+    "focused_tests_passed": 31,
+    "focused_test_duration_seconds": 6.4,
+    "broad_affected_runner": "Stopped in isolated Harbor suite: 9 failed, 1945 passed, 3 skipped, 2 deselected. Later broad Marin groups were not run.",
+    "baseline_commit": "8c629544b164fc0ab015e5d74ab51f75971ecd92",
+    "baseline_python": "3.12",
+    "same_nine_Harbor_failures_reproduced_on_clean_origin_main": true,
+    "baseline_failure_causes": [
+      "GNU chown --reference unsupported on macOS",
+      "tmux foreground-job lifecycle on macOS"
+    ],
+    "Harbor_source_diff_from_origin_main": "empty",
+    "main_checkout_modified": false
+  },
+  "prepared_analysis": {
+    "entrypoint": "python -m experiments.post_training.mochi_loop_guards postprocess",
+    "manifest_argument": "--manifest <regional URI above>",
+    "exclude_cohort": "swe100",
+    "baseline": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/audit.json",
+    "precondition": "Both the coordinator and GPU job must be terminal, and final cohort dumps present. No analysis job submitted at this readiness checkpoint."
+  },
+  "copy_conservation": {
+    "job": "/benfeuer/mochi-loop-guards-s2-conserve-treatment-r4-step1",
+    "state": "SUCCEEDED",
+    "observed_at": "2026-11-26T19:47:43-05:00",
+    "failures": 0,
+    "preemptions": 0,
+    "total_data_files": 59,
+    "total_data_bytes": 4292558588036,
+    "completion_manifest_sha256": "e212783fc5f64836448548bde420402320ad93d764039050f47085595e8fedab",
+    "all_file_paths_sizes_hashes_source_identities_match_staging": true,
+    "destination_objects_including_manifest": 60,
+    "destination_bytes_including_manifest": 4292558599792,
+    "conservation_marker_byte_readback_matches": true,
+    "permanent": true,
+    "exclude_from_every_pruning_sweep": true,
+    "automatic_sweep_enforcement_verified": false,
+    "temporary_source_not_deleted_during_this_milestone": true
+  },
+  "latest_S3_snapshot": {
+    "observed_at": "2026-11-26T19:45:26-05:00",
+    "both_roots_and_GPU_children": "RUNNING",
+    "GPU_tasks_per_arm": 16,
+    "Iris_failures_per_arm": 0,
+    "Iris_preemptions_per_arm": 0,
+    "control_heldout_returned": 248,
+    "control_native_progress_at": "2026-11-26T19:45:31.816-05:00",
+    "treatment_heldout_returned": 246,
+    "treatment_native_progress_at": "2026-11-26T19:45:29.248-05:00",
+    "heldout_total": 256,
+    "interpretation": "Counts include terminal errors; audited panel verdicts remain pending."
+  },
+  "reporting_issue": "https://github.com/marin-community/marin-logbooks/issues/86"
+}
