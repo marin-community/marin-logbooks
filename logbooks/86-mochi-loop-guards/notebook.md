@@ -1312,3 +1312,28 @@ reference without turning their S0 comparison into the final paired I3 verdict.
 No scientific measure, threshold policy, classification or model setting changed.
 Next native check around 20:20 EST, with per-arm CPU submission only when eligible.
 [Final-trial wait and registration reference](analysis/user-overrides-20261126/s3-final-trial-wait-2016.json).
+
+## November 26, 20:30 EST: S3 completed; both CPU postprocessors submitted
+
+Both S3 coordinator roots and their 16-task GPU children succeeded with zero Iris
+failures or preemptions. Each arm returned all 723 frozen rollouts. The final held-out
+returns were at 20:26:12.848 EST for treatment and 20:26:41.713 for control; final
+cohort dumps were written at 20:26:15.049 and 20:26:43.727, respectively. Native
+storage listings independently confirm both final per-trial dumps. Returned counts
+include terminal errors; valid counts and correctness/loop verdicts await the audits.
+
+The checked-in CPU postprocessing module on source `8939ee19df` was submitted once
+per arm after terminal-job confirmation: treatment at 20:28:48 EST and control at
+20:29:43. Each job requests 16 CPUs, 64 GB memory, 128 GB disk and zero GPUs at
+production priority in 08a. Both jobs are registered with the coordinator and the
+shared watchdog. They audit saved outputs against the explicit frozen manifest,
+exclude baseline-only SWE100, conserve closed traces through same-region verified
+copies and refresh saved reports. They create no model trials.
+
+The final I3 comparison remains pending. Its primary measure is repeat-turn share
+against concurrent RL control on the three S0-frozen targets. The user's correctness
+multiplier and registered repeat policy remain binding. S0 comparisons in the raw
+audits are report-only for I3. W&B emitted finishing/upload warnings; native dumps
+and terminal Iris states were verified independently. No repeat or retuning was
+submitted. Reporting remains on #86 only.
+[Terminal proofs and exact CPU submissions](analysis/user-overrides-20261126/s3-terminal-cpu-submissions-2030.json).

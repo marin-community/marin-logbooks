@@ -1,0 +1,88 @@
+{
+  "kind": "S3-terminal-panels-and-CPU-postprocess-submissions",
+  "recorded_at": "2026-11-26T20:30:00-05:00",
+  "gpu_source_commit": "cc4e3dcc62",
+  "gpu_artifact_revision": "2026.11.26.1",
+  "cpu_source_commit": "8939ee19df035f41c99c3ffaf86d0917fbbfe154",
+  "frozen_manifest_uri": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/frozen-panel-562bd617cd6d3836.json",
+  "baseline_reference": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/audit.json",
+  "target_cohorts": [
+    "tb2",
+    "tblite",
+    "swesmith-ho"
+  ],
+  "excluded_cohorts": [
+    "swe100"
+  ],
+  "trials_returned_per_arm": 723,
+  "returned_counts_include_terminal_errors": true,
+  "final_verdict": "PENDING audits and paired I3 comparison",
+  "cpu_resources_per_arm": {
+    "cpu": 16,
+    "memory": "64GB",
+    "disk": "128GB",
+    "gpu": 0,
+    "priority": "production",
+    "cluster": "cw-us-east-08a",
+    "timeout": 14400
+  },
+  "arms": {
+    "control": {
+      "coordinator": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-control-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-9e9f6a58",
+      "gpu_child": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-control-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-9e9f6a58/users-benfeuer-checkpoints-mochi-loop-guards-s3-control-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-a80899aa9a3f",
+      "attempt": "a80899aa9a3f",
+      "coordinator_state": "SUCCEEDED",
+      "gpu_child_state": "SUCCEEDED",
+      "gpu_tasks_succeeded": 16,
+      "failures": 0,
+      "preemptions": 0,
+      "terminal_state_observed_at": "2026-11-26T20:29:24-05:00",
+      "heldout_returned": 256,
+      "heldout_total": 256,
+      "heldout_completed_at": "2026-11-26T20:26:41.713-05:00",
+      "final_dump_at": "2026-11-26T20:26:43.727-05:00",
+      "final_dump": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-control-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1/exports/swesmith_ho/dumped_evals/a80899aa9a3f/eval_only/long-loop-smartie-swesmith.jsonl",
+      "final_dump_storage_listing_verified": true,
+      "cpu_job": "/benfeuer/mochi-loop-guards-s3-postprocess-control-r1",
+      "cpu_accepted_at": "2026-11-26T20:29:43-05:00",
+      "cpu_command": "set -a; source /Users/benfeuer/Documents/secrets.env; set +a; uv run --no-sync python -m experiments.post_training.mochi_loop_guards cpu-submit --job-name mochi-loop-guards-s3-postprocess-control-r1 --cpu 16 --memory 64GB --disk 128GB --timeout 14400 --env MARIN_PREFIX=s3://marin-us-east-08a/marin --env MARIN_TEMP_PREFIX=s3://marin-us-east-08a/tmp/ttl=3d --secret WANDB_API_KEY --secret HF_TOKEN -- python -m experiments.post_training.mochi_loop_guards postprocess --run-output 's3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-control-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1' --manifest 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/frozen-panel-562bd617cd6d3836.json' --output 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/control' --baseline 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/audit.json' --exclude-cohort swe100 --retain-traces 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-control-r1' --preset-name s3-control-panel",
+      "cpu_output": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/control",
+      "trace_destination": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-control-r1",
+      "submissions": 1,
+      "registered_with_coordinator": true,
+      "registered_with_watchdog": true
+    },
+    "treatment": {
+      "coordinator": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-treatment-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-dd65e4e6",
+      "gpu_child": "/benfeuer/users-benfeuer-checkpoints-mochi-loop-guards-s3-treatment-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-coordinator-dd65e4e6/users-benfeuer-checkpoints-mochi-loop-guards-s3-treatment-panel-22ae5b80cc-in-d88ffd61-2026.11.26.1-a9599be43c43",
+      "attempt": "a9599be43c43",
+      "coordinator_state": "SUCCEEDED",
+      "gpu_child_state": "SUCCEEDED",
+      "gpu_tasks_succeeded": 16,
+      "failures": 0,
+      "preemptions": 0,
+      "terminal_state_observed_at": "2026-11-26T20:28:25-05:00",
+      "heldout_returned": 256,
+      "heldout_total": 256,
+      "heldout_completed_at": "2026-11-26T20:26:12.848-05:00",
+      "final_dump_at": "2026-11-26T20:26:15.049-05:00",
+      "final_dump": "s3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-treatment-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1/exports/swesmith_ho/dumped_evals/a9599be43c43/eval_only/long-loop-smartie-swesmith.jsonl",
+      "final_dump_storage_listing_verified": true,
+      "cpu_job": "/benfeuer/mochi-loop-guards-s3-postprocess-treatment-r1",
+      "cpu_accepted_at": "2026-11-26T20:28:48-05:00",
+      "cpu_command": "set -a; source /Users/benfeuer/Documents/secrets.env; set +a; uv run --no-sync python -m experiments.post_training.mochi_loop_guards cpu-submit --job-name mochi-loop-guards-s3-postprocess-treatment-r1 --cpu 16 --memory 64GB --disk 128GB --timeout 14400 --env MARIN_PREFIX=s3://marin-us-east-08a/marin --env MARIN_TEMP_PREFIX=s3://marin-us-east-08a/tmp/ttl=3d --secret WANDB_API_KEY --secret HF_TOKEN -- python -m experiments.post_training.mochi_loop_guards postprocess --run-output 's3://marin-us-east-08a/marin/users/benfeuer/checkpoints/mochi-loop-guards/s3-treatment-panel-22ae5b80cc-in-d88ffd61/2026.11.26.1' --manifest 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/frozen-panel-562bd617cd6d3836.json' --output 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/treatment' --baseline 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s0-2026.11.26-v12/audit.json' --exclude-cohort swe100 --retain-traces 's3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-treatment-r1' --preset-name s3-treatment-panel",
+      "cpu_output": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/audits/s3-2026.11.26.1/treatment",
+      "trace_destination": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/traces/s3-treatment-r1",
+      "submissions": 1,
+      "registered_with_coordinator": true,
+      "registered_with_watchdog": true
+    }
+  },
+  "interpretation": "CPU jobs audit saved outputs, perform same-region verified trace conservation and refresh saved reports. Zero new model trials. Raw S0 audit comparisons are report-only; final I3 uses concurrent control, frozen S0 target cohorts, primary repeat_turn_share and user's 0.75 correctness multiplier. No retuning or repeat submitted. W&B finishing/upload warnings occurred; native S3 dumps and terminal states are independently verified.",
+  "evidence": [
+    "/tmp/mochi-loop-guards/s3-{control,treatment}-2029b-{root,child}.log",
+    "/tmp/mochi-loop-guards/s3-control-2030b-root.log",
+    "/tmp/mochi-loop-guards/s3-{control,treatment}-final-dump-list.log",
+    "/tmp/mochi-loop-guards/s3-postprocess-{control,treatment}-submit.log"
+  ]
+}
