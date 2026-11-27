@@ -131,6 +131,26 @@ class ValueHead(nn.Linear):
         super().__init__(hidden_size, 1)
 
 
+def load_checkpoint(path: Path, model_dir: str) -> tuple[TurnEncoder, ValueHead, Context]:
+    """Load a value head and its pinned encoder and context policy."""
+    device = torch.device("cuda")
+    checkpoint = torch.load(path, weights_only=True)
+    if (checkpoint["model"], checkpoint["revision"], checkpoint["encoding_version"]) != (
+        MODEL_ID,
+        MODEL_REVISION,
+        ENCODING_VERSION,
+    ):
+        raise ValueError("checkpoint uses a different backbone or encoding")
+    encoder = TurnEncoder(model_dir, device)
+    head = ValueHead(encoder.model.config.hidden_size).to(device).eval()
+    head.load_state_dict(checkpoint["state_dict"])
+    return (
+        encoder,
+        head,
+        Context(checkpoint["max_tokens"], ContextPolicy(checkpoint.get("context_policy", ContextPolicy.PREFIX_LIMIT))),
+    )
+
+
 def cache_key(shard: Path, context: Context) -> str:
     with shard.open("rb") as handle:
         digest = hashlib.file_digest(handle, "sha256")

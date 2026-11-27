@@ -30,6 +30,7 @@ from experiments.post_training.goal_value.model import (
     decision_windows,
     extract,
     feature_rows,
+    load_checkpoint,
 )
 
 
@@ -291,25 +292,6 @@ def train(args: argparse.Namespace) -> None:
             handle.write(json.dumps(row) + "\n")
     (args.output / "metrics.json").write_text(json.dumps(results, indent=2, sort_keys=True) + "\n")
     print(json.dumps(results["evaluation"]["overall"], indent=2), flush=True)
-
-
-def load_checkpoint(path: Path, model_dir: str) -> tuple[TurnEncoder, ValueHead, Context]:
-    device = torch.device("cuda")
-    checkpoint = torch.load(path, weights_only=True)
-    if (checkpoint["model"], checkpoint["revision"], checkpoint["encoding_version"]) != (
-        MODEL_ID,
-        MODEL_REVISION,
-        ENCODING_VERSION,
-    ):
-        raise ValueError("checkpoint uses a different backbone or encoding")
-    encoder = TurnEncoder(model_dir, device)
-    head = ValueHead(encoder.model.config.hidden_size).to(device).eval()
-    head.load_state_dict(checkpoint["state_dict"])
-    return (
-        encoder,
-        head,
-        Context(checkpoint["max_tokens"], ContextPolicy(checkpoint.get("context_policy", ContextPolicy.PREFIX_LIMIT))),
-    )
 
 
 def inference(args: argparse.Namespace) -> None:

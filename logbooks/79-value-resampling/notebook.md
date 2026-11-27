@@ -66,3 +66,13 @@ The pilot completed the planned paired continuations and grading across the orig
 - [Two-seed experiment source](https://github.com/marin-community/marin-logbooks/commit/6651c9c9dcfc799fbc6ee0fd6175c828fed40017)
 - [Gateway recovery source](https://github.com/marin-community/marin-logbooks/commit/fdde00f4e4b728cc4dc54f118a592f3ff39818ba)
 - [Paired outcome summarizer](summarize-both.py)
+
+### 2026-11-27 UTC — Test same-issue ranking on Nebius trajectories
+
+The offline transfer test uses [Nebius SWE-rebench OpenHands traces](https://huggingface.co/datasets/nebius/SWE-rebench-openhands-trajectories) at revision `35455389ab51bf5e2306bfd436ef72d0f98bf882`. The dataset card identifies Qwen3-Coder-480B-A35B-Instruct and OpenHands 0.54.0 as the collection policy and harness. Require explicit submissions and a binary `resolved` label. Exclude every issue ID in the Snowball value-head source corpus, then select 192 of the remaining mixed-outcome issues by a fixed issue hash. Retain all distinct submitted attempts from the selected issues and preserve their recorded labels for evaluation.
+
+Score the frozen Qwen3-4B value head before the next assistant decision following 0, 1, 2, 4, 8, or 16 completed tool-use turns. Count a tool-use turn after all calls in that assistant message return. Preserve the task and visible tool observations, including local validation output when the agent observed it. The final patch and the external grade stay outside the model input. Use the checkpoint's 65,536-token middle-pruning policy. The primary cutoffs are four and eight turns.
+
+Within each issue and cutoff, average over all pass/fail comparisons with half credit for a tie. Then average issues equally, using an issue bootstrap for the interval. Report how many issues remain mixed at each cutoff. Compare four with eight again on the same attempts and issues to isolate the effect of the later cutoff from coverage changes. A task-only score is constant within an issue and yields 0.5.
+
+Run [run-nebius.sh](run-nebius.sh) with the frozen checkpoint and the Snowball issue exclusion list. It reads the pinned public Parquet file directly from the Hub. The study record holds the checkpoint checksum, issue exclusion list checksum, execution identity, and outcome comparison.
