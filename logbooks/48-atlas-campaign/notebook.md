@@ -2716,3 +2716,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: curation/admission-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-27 18:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `da159fb630…` to `40b8ea0417…` — six new commits: `40b8ea0417` Record OpenSWE ingest-time licence provenance; `4664824bcb` [atlas] Land the licence-ingest-provenance gate: a licence is ingest-time provenance; `7ff21662fd` [atlas] Convert QASPER Verifiable's paper-workspace questions with the exact-answer grader; `e25240a8ef` [atlas] Convert the ORZ math collection with the shipped boxed-answer verifier; `6f27d60568` Record a licence once at ingest; every revision inherits the record; `58a73d3ff1` Pin openswe's keep-only release at its full immutable revision.
+- Command or material configuration: `git fetch origin` + `git log da159fb630..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: six landings — the licence-ingest-provenance gate (record once at ingest, revisions inherit), OpenSWE keep-only release pin, and two collection conversions (QASPER Verifiable exact-answer grader; ORZ math boxed-answer verifier).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: curation/licensing-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
