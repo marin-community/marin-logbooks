@@ -2728,3 +2728,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: curation/licensing-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-27 19:14 UTC - Hourly catch-up (fetch-first) + MILESTONE: atlas-2026.11.27 PUBLISHED as applet `c9742a15` v43 (13:29 EST); v44 difficulty-column fix pending
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads; record the coordinator-announced publication.
+- Published source revision: **MILESTONE — atlas-2026.11.27 PUBLISHED at 13:29 EST (18:29 UTC) as applet `c9742a15` v43, with a v44 difficulty-column fix pending** (coordinator notice [R]). Separately, `origin/atlas-env-audit` advanced past `40b8ea0417…` to `087b53002a…` — six new commits: `087b53002a` Keep the served FACET and mimo conversion versions in the census-routing landing; `599a7a94ec` Route census and identity counting through declared required_backend; `575a50df6b` [atlas] Admit pafitis:hardmath@rhs at recipe version 2 with the QC weakness documented; `3e142e469a` [atlas] Register the rotation sources' ingest-time licence provenance; `49f82143ec` Track the OpenSWE per-admission fingerprint index and locator pointers; `18bfe87c66` [atlas] Register the ingest-B rotation sources' ingest-time licence provenance.
+- Command or material configuration: `git fetch origin` + `git log 40b8ea0417..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref + coordinator publish notice [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the campaign's daily release is published (v43); six more landings — census routing through declared required_backend, the hardmath@rhs v2 admission (QC weakness documented), rotation-source ingest-time licence provenance, and the OpenSWE fingerprint index.
+- Evidence: `git log` + `ls-remote` agree; publish notice [R].
+- Interpretation and limitations: v44's difficulty-column fix is pending — the published v43 carries the known gap.
+- Decision and next action: record the v44 landing when it comes; continue hourly checks.
