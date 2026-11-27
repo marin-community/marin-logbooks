@@ -76,3 +76,9 @@ Score the frozen Qwen3-4B value head before the next assistant decision followin
 Within each issue and cutoff, average over all pass/fail comparisons with half credit for a tie. Then average issues equally, using an issue bootstrap for the interval. Report how many issues remain mixed at each cutoff. Compare four with eight again on the same attempts and issues to isolate the effect of the later cutoff from coverage changes. A task-only score is constant within an issue and yields 0.5.
 
 Run [run-nebius.sh](run-nebius.sh) with the frozen checkpoint and the Snowball issue exclusion list. It reads the pinned public Parquet file directly from the Hub. The study record holds the checkpoint checksum, issue exclusion list checksum, execution identity, and outcome comparison.
+
+### 2026-11-27 UTC — Prepare a TPU fallback for the same test
+
+While the H100 request waits in the queue, the fallback packs the identical token windows, cutoff positions, and frozen linear readout. A single-host TPU slice uses the pinned Qwen3 backbone through Levanter and returns only cutoff probabilities and scoring telemetry. The local join uses the same issue bootstrap and preserves the exact cohort. Hardware can introduce numerical differences in the backbone states; the scorer on each execution uses one backbone implementation throughout.
+
+Use `python -m experiments.post_training.goal_value.nebius_pack pack PARQUET HEAD EXCLUDED OUTPUT` to prepare the payload and a local join manifest. The [TPU launcher](run-nebius-tpu.sh) stages the payload into the worker. After scoring, run `python -m experiments.post_training.goal_value.nebius_pack join LAYOUT VALUES TELEMETRY OUTPUT` to produce the same metrics schema.

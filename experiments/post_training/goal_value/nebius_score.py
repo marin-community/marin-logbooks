@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from huggingface_hub import hf_hub_download
+from transformers import PreTrainedTokenizerBase
 
 from experiments.post_training.goal_value.context import Context, ContextPolicy
 from experiments.post_training.goal_value.model import (
@@ -38,11 +39,11 @@ class Window:
     cutoffs: tuple[int, ...]
 
 
-def windows_for(case: Scorable, encoder: TurnEncoder, context: Context) -> list[Window]:
+def windows_for(case: Scorable, tokenizer: PreTrainedTokenizerBase, context: Context) -> list[Window]:
     """Keep the checkpoint's pruning schedule and gather only prespecified decision states."""
     windows = []
     start = 0
-    for window, unpruned in decision_windows(case.episode, encoder.tokenizer, context):
+    for window, unpruned in decision_windows(case.episode, tokenizer, context):
         end = start + len(window.positions)
         decisions = case.episode.predict_before[start:end]
         selected = [i for i, point in enumerate(decisions) if point in case.cutoffs]
@@ -62,7 +63,7 @@ def windows_for(case: Scorable, encoder: TurnEncoder, context: Context) -> list[
 def score(cohort: list[Scorable], encoder: TurnEncoder, head: ValueHead, context: Context) -> tuple[list[dict], dict]:
     """Run length-sorted batches and retain only cutoff scores and their labels."""
     started = time.monotonic()
-    windows = [window for case in cohort for window in windows_for(case, encoder, context)]
+    windows = [window for case in cohort for window in windows_for(case, encoder.tokenizer, context)]
     windows.sort(key=lambda window: len(window.encoded.ids))
     print(f"Encoded {len(windows)} windows in {time.monotonic() - started:.1f}s", flush=True)
 
