@@ -3469,3 +3469,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only.
 - Decision and next action: watch whether `.712`/`.714` clear the recurring max_task_failures window; hourly checks continue.
+
+### 2026-11-27 21:15 UTC - Hourly catch-up (Iris primary evidence): `.540` export-50 recovery running; `.714`/`.712` continue past the 1-hour mark
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence.
+- Published source revision: **`v3-mix-036/.540` has an `export-50-recovery-a` child RUNNING since 20:13:05** — an export-stage recovery for the long-running RL run. **`.714` (014) still RUNNING** (child since 18:29:45, ~2h45m) and **`.712` (009) still RUNNING** (child since 17:26:45, ~3h45m) — both past the earlier attempts' failure window.
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (21:15 UTC).
+- External inputs and artifact references: Iris job lists [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the two live attempts continue; `.540` moved into an export-recovery stage.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only.
+- Decision and next action: watch the export recovery and the first updates; hourly checks continue.
