@@ -1389,3 +1389,58 @@ The regional decision is `s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop
 ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-loop-guards%2Fdecisions%2Fi3-paired-verdict-20261126.json));
 SHA256`f3b12ae26a8656b2cda5efbf3450d9fa574f572692745f391a1c81efa7e13f9f`.
 Regional readback matches the local calculation and all three audit input hashes.
+
+## November 26, 20:47 EST: antithrash logged zero exposure; I3 is underpowered
+
+The exact treatment run logged an antithrash fire fraction of0 and mean penalty0
+at every consumed update1–4. W&B's four history rows agree with the four persisted
+native metric rows. The saved launch confirms antithrash enabled with `correct_only`,
+penalty0.02 per repeat and cap0.1; the control's antithrash is disabled and its four
+rows are also zero. After the consumed-batch shaping refresh, fire fraction averages
+indicators of negative trajectory-level antithrash components; mean penalty averages
+the signed components. These are observed values, not zeros inferred from missing logs.
+
+| Update | Treatment fired fraction | Treatment mean penalty | Control fired fraction |
+|---|---:|---:|---:|
+| 1 | 0 | 0 | 0 |
+| 2 | 0 | 0 | 0 |
+| 3 | 0 | 0 | 0 |
+| 4 | 0 | 0 | 0 |
+
+This fires the preregistered diagnostic: below2% after two updates means report
+underpowered and retain the fixed update budget without retuning. N remained4.
+I3's measured FAIL and no-repeat decision stand. The pair does not establish the
+efficacy or causal harm of actively applied antithrash: its logged penalty exposure
+was zero. This diagnostic supplies a limitation, not a replacement success measure.
+
+[Training exposure decision](analysis/user-overrides-20261126/s2-antithrash-exposure-decision-20261126.json),
+[treatment W&B run](https://wandb.ai/marin-community/marin-mochi-rl/runs/a00eaf3f9e28),
+[control W&B run](https://wandb.ai/marin-community/marin-mochi-rl/runs/a3144ba94e53).
+The small native/W&B snapshots are retained under the permanent regional
+`diagnostics/s2-r4/` prefix. A schema-discovered Finelog query on08a over
+18:45–22:00UTC returned no matching metric log lines; that absence was not used as
+evidence of zero exposure. Native run records and W&B supplied the observations.
+
+The relevant training exports/run records and sampled trajectory sinks total about
+6MB, so native verified copies preserve them outside the three-day TTL prefix.
+Both launch files are retained beside them. The larger diagnostic Ray logs remain
+under TTL. No checkpoints, SFT objects or prior conserved data were removed. No new
+Iris job, model trial, parameter change or Hub operation was needed.
+
+Training evidence conservation completed:541 data files/6,019,985 bytes across both
+arms, plus four verified-copy completion manifests and a permanent/exclude-every-sweep
+marker. Each launch file matches its original bytes. The permanent FineStore copies
+independently reproduce the four metric rows per arm using
+`finestore.rl.run_records.read_attempt_metrics(<permanent exports prefix>, <attempt>)`;
+they no longer rely on the original TTL prefix. Automatic pruning enforcement was
+not verified. [Conservation receipt](analysis/user-overrides-20261126/s2-training-evidence-conservation-20261126.json).
+
+The measured-arm conclusion is now complete: S0 sealed the frozen targets; stall
+stopping failed the universal halving rule because TBLite fell42.48%; RP failed all
+three unchanged action-UB caps; fixed-N4 RL failed its paired repeat-turn-share gate
+and logged zero antithrash exposure. All interventions pass user-overridden
+correctness. No registered repeat remains. Checkpoints, final S3 traces and relevant
+training evidence are conserved. I4's CPU-only SFT-filter audit was not performed:
+the required pinned216-store manifest remains unavailable, as previously recorded.
+No SFT training or additional model trial is proposed. The issue remains available
+for coordinator disposition of that unperformed audit.

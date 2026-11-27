@@ -1,0 +1,111 @@
+{
+  "kind": "I3-preregistered-training-exposure-diagnostic",
+  "recorded_at": "2026-11-26T20:46:00-05:00",
+  "training_source_commit": "ecc9fb1bae",
+  "inspection_source_commit": "719175800443d6ef07057f8ad0ae746103694142",
+  "fixed_updates": 4,
+  "registered_condition": "If antithrash_fired_fraction <2% after2updates, report underpowered and retain fixedN without retuning",
+  "condition_fired": true,
+  "classification": "UNDERPOWERED: zero logged antithrash exposure at all4updates",
+  "I3_gate_verdict": "FAIL",
+  "repeat_required": false,
+  "effect_interpretation": "The paired N4 result does not establish efficacy or causal harm of actively applied antithrash, because recorded treatment fire fraction and mean penalty are zero at every consumed update.",
+  "metrics_definition": {
+    "fired_fraction": "Mean of trajectory-level antithrash component <0 after consumed-batch shaping refresh",
+    "mean_penalty": "Mean trajectory-level antithrash component; signed negative when charged"
+  },
+  "native_snapshot_uri": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/s2-r4/antithrash-native-per-update.json",
+  "native_snapshot_sha256": "ef9b919d35767e203e8481bbf7bd34800e7dfef647919e48b3415bc87442cf5f",
+  "wandb_snapshot_uri": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/diagnostics/s2-r4/antithrash-wandb-per-update.json",
+  "wandb_snapshot_sha256": "da95157e1462a35b98af50825bac3a0427a2c2ec4ebbecb29ea210626675f0d0",
+  "arms": {
+    "control": {
+      "attempt_id": "a3144ba94e53",
+      "wandb_run": "https://wandb.ai/marin-community/marin-mochi-rl/runs/a3144ba94e53",
+      "wandb_state": "finished",
+      "saved_antithrash_config": {
+        "applies_to": "all",
+        "cap": 0.1,
+        "enabled": false,
+        "per_repeat_penalty": 0.02
+      },
+      "updates": [
+        {
+          "global_step": 1,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        },
+        {
+          "global_step": 2,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        },
+        {
+          "global_step": 3,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        },
+        {
+          "global_step": 4,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        }
+      ],
+      "native_and_wandb_match": true,
+      "permanent_training_evidence": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/training-evidence/s2-control-r4"
+    },
+    "treatment": {
+      "attempt_id": "a00eaf3f9e28",
+      "wandb_run": "https://wandb.ai/marin-community/marin-mochi-rl/runs/a00eaf3f9e28",
+      "wandb_state": "finished",
+      "saved_antithrash_config": {
+        "applies_to": "correct_only",
+        "cap": 0.1,
+        "enabled": true,
+        "per_repeat_penalty": 0.02
+      },
+      "updates": [
+        {
+          "global_step": 1,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        },
+        {
+          "global_step": 2,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        },
+        {
+          "global_step": 3,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        },
+        {
+          "global_step": 4,
+          "fired_fraction": 0.0,
+          "mean_penalty": 0.0
+        }
+      ],
+      "native_and_wandb_match": true,
+      "permanent_training_evidence": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/training-evidence/s2-treatment-r4"
+    }
+  },
+  "finelog": {
+    "deployment": "cw-us-east-08a",
+    "namespace": "log",
+    "schema_discovered": true,
+    "window_UTC": [
+      "2026-11-26T18:45:00Z",
+      "2026-11-26T22:00:00Z"
+    ],
+    "key_like": "%a00eaf3f9e28%",
+    "data_like": "%antithrash_fired_fraction%",
+    "matching_rows": 0,
+    "interpretation": "No matching log rows; absence not used as evidence of zero exposure. W&B and persisted native metrics provide observed zeros."
+  },
+  "model_trials_created": 0,
+  "retuning_performed": false,
+  "training_evidence_conservation_complete": true,
+  "training_evidence_conservation_receipt": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/s2-training-evidence-conservation-20261126.json",
+  "permanent_native_records_reproduce_all_updates": true
+}
