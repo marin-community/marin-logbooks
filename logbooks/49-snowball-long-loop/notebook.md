@@ -3445,3 +3445,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only — the 009 failure cause beyond the state is not established; no worker cc in hand yet.
 - Decision and next action: watch for worker readouts on the 009 failures and the retention tasks; hourly checks continue.
+
+### 2026-11-27 18:14 UTC - Hourly catch-up (Iris primary evidence): v3-mix-036 still running (~17h); `.713` (014) failed on max_task_failures; third 009 attempt `.712` running
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence.
+- Published source revision: **v3-mix-036/.540** RL RUNNING (child `aa8fd6b3392d` since 01:05:43, ~17h). **v3-mix-014/.713 FAILED** 17:25:57 — root + GPU child `a8d47b4218b3` (17:29:12), "Cumulative failed task attempts exceeded max_task_failures". **v2-mix-009/.712 RUNNING** — the third 009 attempt (root 17:23:26; child `a1c41d97cfe4` since 17:26:45). The `.532`/`.534` retain_campaign_checkpoints tasks remain running (14:35:21/14:32:43).
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (18:14 UTC).
+- External inputs and artifact references: Iris job lists [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one more v3 attempt failed with the recurring max_task_failures signature; a third 009 attempt is live.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only; the recurring failure cause across 009/014 attempts is not established from state alone.
+- Decision and next action: watch for worker readouts on the recurring failure; hourly checks continue.
