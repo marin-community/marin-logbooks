@@ -1444,3 +1444,22 @@ training evidence are conserved. I4's CPU-only SFT-filter audit was not performe
 the required pinned216-store manifest remains unavailable, as previously recorded.
 No SFT training or additional model trial is proposed. The issue remains available
 for coordinator disposition of that unperformed audit.
+
+## November 26, 21:01 EST: final user disposition closes the experiment
+
+The user directed final closeout. The SFT-filter CPU audit (I4) is UNPERFORMED
+because its required pinned216-store manifest is unavailable; there will be no
+follow-up run. The three measured interventions retain their registered verdicts.
+Antithrash RL (I3) remains FAIL and UNDERPOWERED with zero logged penalty exposure.
+No registered repeat remains.
+
+Stall stopping came closest: it missed only TBLite's50% loop-reduction bar, achieving
+42.5% (42.48% to two decimals). Its correctness passes the user's×0.75 threshold override.
+Repetition penalty fails all three unchanged action-loop upper-bound caps.
+Antithrash RL fails its concurrent-control repeat-turn-share gate, with its
+zero-exposure limitation recorded above. No tested guard met the full success rule.
+
+The user authorized marking index PR87 ready for review and closing logbooks86 as
+completed after its final summary. The coordinator will merge the index PR. All
+conserved artifacts stay unchanged. No exports, new compute or deletions; stop the
+lane after closeout.
