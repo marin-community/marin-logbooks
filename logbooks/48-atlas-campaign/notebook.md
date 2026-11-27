@@ -2692,3 +2692,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: pipeline/storage-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-27 12:53 UTC - Hourly catch-up (fetch-first; multi-hour window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads. Window spans ~15:12 Nov 26 → 12:53 UTC Nov 27 (includes the 07:21 Mac reboot; no local agents installed per the standing rule).
+- Published source revision: `origin/atlas-env-audit` advanced past `caa31dc53b…` to `e92b11bbbf…` — **106 new commits**. Theme sample: head `e92b11bbbf` Bump the hardmath_rhs recipe to version 2 for the positive-symbol converter; `570c3fb69b` [atlas] Admit AceCode-89K with its shipped assert-case grader; `f351163e21` [atlas] Pin sortedcontainers into the LeetCode grader environment; `c3a8597001` [atlas] Rebind LeetCode's context to the source's complete query framing with harness qualification; `e496e5ba54` Re-bind csharp's conversion admission to the tier-repaired release and register typescript's; `47188aa80b` [atlas] Convert StructEval's non-renderable rows with the official path validator.
+- Command or material configuration: `git fetch origin` + `git log caa31dc53b..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: the Mac rebooted 07:21 local; the secretary holds no launchd/cron/boot agents or local pollers (standing rule) — all watches are revive-driven.
+- Result, including failure or restart: 106 landings over ~21h — grader-environment/harness qualification work (AceCode-89K admission, LeetCode env pin + context rebind, csharp/typescript admission rebinds, StructEval path validation, hardmath_rhs v2).
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: curation/grader-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
