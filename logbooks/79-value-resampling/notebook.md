@@ -81,4 +81,10 @@ Run [run-nebius.sh](run-nebius.sh) with the frozen checkpoint and the Snowball i
 
 While the H100 request waits in the queue, the fallback packs the identical token windows, cutoff positions, and frozen linear readout. A single-host TPU slice uses the pinned Qwen3 backbone through Levanter and returns only cutoff probabilities and scoring telemetry. The local join uses the same issue bootstrap and preserves the exact cohort. Hardware can introduce numerical differences in the backbone states; the scorer on each execution uses one backbone implementation throughout.
 
-Use `python -m experiments.post_training.goal_value.nebius_pack pack PARQUET HEAD EXCLUDED OUTPUT` to prepare the payload and a local join manifest. The [TPU launcher](run-nebius-tpu.sh) stages the payload into the worker. After scoring, run `python -m experiments.post_training.goal_value.nebius_pack join LAYOUT VALUES TELEMETRY OUTPUT` to produce the same metrics schema.
+Use `python -m experiments.post_training.goal_value.nebius_pack pack PARQUET HEAD EXCLUDED OUTPUT` to prepare the payload and a local join manifest. The [TPU launcher](run-nebius-tpu.sh) stages the payload into the worker. After scoring, run `python -m experiments.post_training.goal_value.nebius_pack join LAYOUT PACKED_INPUTS VALUES TELEMETRY OUTPUT` to produce the same metrics schema.
+
+### 2026-11-27 UTC — Finish the offline ranking comparison
+
+The regional TPU execution scored every selected decision window. The H100 request was canceled before admission. The study record stores the issue-weighted results, intervals, per-attempt predictions, and coverage.
+
+At the initial cutoff, the same causal token prefix can appear in differently padded windows and receive small numerical differences. The final estimator treats identical token prefixes as ties, preserving the raw probabilities for auditing. This correction affects the initial control. The estimated ordering at every later cutoff is unchanged.

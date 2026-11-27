@@ -14,7 +14,7 @@ from transformers import AutoTokenizer
 from experiments.post_training.goal_value.context import Context, ContextPolicy
 from experiments.post_training.goal_value.model import ENCODING_VERSION, MODEL_ID, MODEL_REVISION
 from experiments.post_training.goal_value.nebius import prepare
-from experiments.post_training.goal_value.nebius_score import summarize, windows_for
+from experiments.post_training.goal_value.nebius_score import prefix_fingerprints, summarize, windows_for
 
 
 def pack(args: argparse.Namespace) -> None:
@@ -66,9 +66,18 @@ def join(args: argparse.Namespace) -> None:
     manifest = json.loads(args.layout.read_text())
     values = np.load(args.values)
     records = {}
-    for entry, window_scores in zip(manifest["windows"], values, strict=True):
+    with np.load(args.packed_inputs) as payload:
+        ids, id_offsets = payload["ids"], payload["id_offsets"]
+        positions, index_offsets = payload["indices"], payload["index_offsets"]
+    for index, (entry, window_scores) in enumerate(zip(manifest["windows"], values, strict=True)):
         row = records.setdefault(
-            entry["trajectory_id"], {k: v for k, v in entry.items() if k != "cutoffs"} | {"scores": {}}
+            entry["trajectory_id"],
+            {k: v for k, v in entry.items() if k != "cutoffs"} | {"scores": {}, "prefix_fingerprints": {}},
+        )
+        window_ids = ids[id_offsets[index] : id_offsets[index + 1]]
+        selected = positions[index_offsets[index] : index_offsets[index + 1]].tolist()
+        row["prefix_fingerprints"].update(
+            zip(map(str, entry["cutoffs"]), prefix_fingerprints(window_ids, selected), strict=True)
         )
         for cut, score in zip(entry["cutoffs"], window_scores[: len(entry["cutoffs"])], strict=True):
             if str(cut) in row["scores"] or not np.isfinite(score):
@@ -90,7 +99,7 @@ def main():
     packer.add_argument("--issues", type=int, default=192)
     packer.set_defaults(func=pack)
     joiner = modes.add_parser("join")
-    for field in ("layout", "values", "telemetry", "output"):
+    for field in ("layout", "packed_inputs", "values", "telemetry", "output"):
         joiner.add_argument(field, type=Path)
     joiner.set_defaults(func=join)
     args = parser.parse_args()

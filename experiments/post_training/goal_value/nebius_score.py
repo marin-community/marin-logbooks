@@ -4,6 +4,7 @@
 """Score matched decision points and macro-average pass/fail ranking by issue."""
 
 import argparse
+import hashlib
 import json
 import os
 import time
@@ -37,6 +38,11 @@ PADDED_TOKEN_BUDGET = 32768
 class Window:
     encoded: EncodedEpisode
     cutoffs: tuple[int, ...]
+
+
+def prefix_fingerprints(ids: np.ndarray, positions: list[int]) -> list[str]:
+    """Identify equivalent inputs at causal decision positions."""
+    return [hashlib.sha256(ids[: position + 1].tobytes()).hexdigest() for position in positions]
 
 
 def windows_for(case: Scorable, tokenizer: PreTrainedTokenizerBase, context: Context) -> list[Window]:
@@ -90,9 +96,12 @@ def score(cohort: list[Scorable], encoder: TurnEncoder, head: ValueHead, context
                     "issue": episode.task_id,
                     "outcome": episode.outcome,
                     "scores": {},
+                    "prefix_fingerprints": {},
                 },
             )
             row["scores"].update({str(cut): next(values) for cut in window.cutoffs})
+            fingerprints = prefix_fingerprints(np.asarray(window.encoded.ids, dtype=np.int32), window.encoded.positions)
+            row["prefix_fingerprints"].update(zip(map(str, window.cutoffs), fingerprints, strict=True))
         padded_tokens += (end - start) * len(batch[-1].encoded.ids)
         start = end
         batches += 1
@@ -112,25 +121,35 @@ def score(cohort: list[Scorable], encoder: TurnEncoder, head: ValueHead, context
 def issue_auc(rows: list[dict], cut: int) -> tuple[dict[str, float], dict]:
     """Compute one AUC per issue for a fixed cutoff."""
     groups = defaultdict(lambda: ([], []))
+    key = str(cut)
     for row in rows:
-        if str(cut) in row["scores"]:
-            groups[row["issue"]][row["outcome"]].append(row["scores"][str(cut)])
+        if key in row["scores"]:
+            fingerprint = row.get("prefix_fingerprints", {}).get(key, "")
+            groups[row["issue"]][row["outcome"]].append((row["scores"][key], fingerprint))
     scores = {}
     pairs = 0
     ties = 0
+    identical_pairs = 0
     for issue, (negative, positive) in groups.items():
         if negative and positive:
-            difference = np.asarray(positive)[:, None] - np.asarray(negative)
-            tied = np.abs(difference) <= TIE_TOLERANCE
-            scores[issue] = float(np.mean((difference > TIE_TOLERANCE) + 0.5 * tied))
+            pos_values, pos_ids = zip(*positive, strict=True)
+            neg_values, neg_ids = zip(*negative, strict=True)
+            difference = np.asarray(pos_values)[:, None] - np.asarray(neg_values)
+            pos_prefix = np.asarray(pos_ids)[:, None]
+            neg_prefix = np.asarray(neg_ids)
+            identical = (pos_prefix != "") & (pos_prefix == neg_prefix)
+            tied = (np.abs(difference) <= TIE_TOLERANCE) | identical
+            scores[issue] = float(np.mean(((difference > TIE_TOLERANCE) & ~tied) + 0.5 * tied))
             pairs += difference.size
             ties += int(tied.sum())
+            identical_pairs += int(identical.sum())
     return scores, {
         "covered_attempts": sum(len(pass_scores) + len(fail_scores) for fail_scores, pass_scores in groups.values()),
         "covered_issues": len(groups),
         "mixed_issues": len(scores),
         "descriptive_pairs": pairs,
         "ties": ties,
+        "identical_prefix_pairs": identical_pairs,
     }
 
 
