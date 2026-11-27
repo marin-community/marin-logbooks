@@ -87,6 +87,20 @@ The run table moved to the body of issue #91, which is now the single source of 
 
 Reset: trainer layout PP12 to PP16 (64 trainer + 80 rollout = 144 GB200) after OOMs in .527 and .528. Every earlier run retired and its checkpoints deleted; the queue restarts from the first 3 runnable mixes. Another OOM halts the queue for review.
 
+### 2026-11-27 16:28 UTC — Final-checkpoint protocol and storage readiness
+
+The user authorized a protocol change at 11:15–11:16 EST: **validation dropped, final checkpoint is the deliverable, user-authorized 2026-11-27**. New launches will have no holdout validation, validation evaluations, or best-by-val selection. They must save every five steps, keep at most two rolling checkpoints (latest and one previous resume fallback), and always save the final step. Export and canonical Micro210 use the final checkpoint. Micro210 scoring and coverage requirements do not change.
+
+This takes effect at the first new campaign root after implementation, tests and loop-push. No root under this protocol has been submitted yet; its actual identity will be recorded at submission. This is a comparability break alongside the earlier repeat-stall-stop cutover (`f163b89b94`, qualified at `ef09a1e250`). It supersedes the original best-by-validation decision criterion above. The PP16 reset already changed each run to 144 GB200 (64 trainer + 80 rollout).
+
+For finished runs .532 (v3-mix-048) and .534 (v2-mix-043), use final step 50; both final exports already succeeded. For running .540 (v3-mix-036), leave its config unchanged, let it finish, and export/evaluate its final checkpoint, ignoring its best-by-val selection. No new export or evaluation was submitted for this record.
+
+The immediate storage audit removed **zero objects and freed 0 TiB**. At 2026-11-27 16:28 UTC, both finished runs' retain_campaign_checkpoints stages were still running, with 15 final-native copy objects staged each and no completed copy manifest or retention artifact. Their source checkpoints remain protected until retention succeeds. The obsolete .532 step-18 checkpoint is 4,292,491,064,101 bytes (3.904 TiB), deferred until that condition is met. .534 has only final step 50. Running .540 has only best step 3 and latest step 45, so the immediate rule to remove checkpoints older than its protected best and latest selects no objects. Final checkpoints, pending evaluation inputs, .131, the SFT conservation copy and other owners' objects were untouched.
+
+The deletion ledger is unchanged (SHA256 `730ccc1ddb08184841b2192901c84b34180a99109458e1e7f1089facb14aed91`). Exact key/size inventories and the no-deletion receipt will support reconciliation if the maintained retention stage removes temporary checkpoints itself. Evidence: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-rl-data-campaign/storage/2026.11.27T1628/operator/` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-rl-data-campaign%2Fstorage%2F2026.11.27T1628%2Foperator%2F)).
+
+Next: implement and qualify the new protocol and fix the .711 LOCAL disk lease race before another GPU launch. The reader fix is landed at `cb0907513c16b86ff498a7e74a12c8e2a11a3bac`; the lease-race diagnosis remains a hypothesis pending a failing regression and privileged Linux proof.
+
 ## Run table
 
 The run table lives in one place, the body of [marin-logbooks #91](https://github.com/marin-community/marin-logbooks/issues/91). It is updated there with `campaign-runs set` and is not copied here.
