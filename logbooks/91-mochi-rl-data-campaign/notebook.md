@@ -101,6 +101,23 @@ The deletion ledger is unchanged (SHA256 `730ccc1ddb08184841b2192901c84b34180a99
 
 Next: implement and qualify the new protocol and fix the .711 LOCAL disk lease race before another GPU launch. The reader fix is landed at `cb0907513c16b86ff498a7e74a12c8e2a11a3bac`; the lease-race diagnosis remains a hypothesis pending a failing regression and privileged Linux proof.
 
+### 2026-11-27 17:12 UTC — Final-only protocol and guardian cleanup landed
+
+The no-validation policy and two-checkpoint retention landed through loop-push at [`6c915ab36e`](https://github.com/marin-community/marin/commit/6c915ab36edfa1da764471acf9c1d7eed645d426). Campaign pools now keep every source row in training, publish no validation parquet, and record a zero-size holdout. The native launch has no validation inputs, evaluation callback or best-checkpoint selection. It exports the latest final checkpoint, saves every five steps, keeps two rolling states and saves on train end even off cadence. The pool fingerprint includes the protocol era so older holdout pools cannot be adopted silently.
+
+The companion guardian fix `e14de3760b` accepts FileNotFoundError only when concurrent cleanup has already removed the allocation directory. Other cleanup failures still propagate. A deterministic two-cleaner reproduction fails on the clean previous source `cb0907513c`; current tests also check that PermissionError and a missing child in a surviving directory fail closed. This follows the user's 11:51 EST direction to fix and launch, without another regional guardian qualification campaign. The fix is CPU-regression-tested; the first fresh production launch will test it operationally.
+
+Checks: 37 final focused tests and 37 post-rebase landing tests passed; 50 related tests passed before the final targeted edits. Lint and types passed. All six advisory lanes and composer completed, with 36 inherited findings and none on the change. The required affected runner had 1,989 passes, 12 failures and three skips in Harbor, then stopped before the root suite. All 12 failures reproduced independently on clean parent `cb0907513c`; this is not a broad pass.
+
+Two standard regional CPU pool builds were submitted once, at production on 08a with zero GPUs:
+
+- `/benfeuer/mochi-campaign-pool-proof-v2-mix-009-2026-11-27-712`, accepted 17:10:23 UTC.
+- `/benfeuer/mochi-campaign-pool-proof-v3-mix-014-2026-11-27-713`, accepted 17:10:57 UTC.
+
+These fresh data artifacts restore the former 200 holdout rows to training at unchanged source pins. They are the existing campaign pool dependency, not extra guardian qualification jobs. Actual completion, fresh native validation, normal real-agent admission and protected snapshot checks remain pending before RL submission. No new RL/GPU root exists yet, so the effective first run under the new protocol is still pending. Record its actual identity at submission.
+
+Existing .540 is unchanged. Its final checkpoint, and final step50 for .532/.534, remain the authorized deliverables. The two final50 retention copies showed payload growth over 12m53s: +200,258,012,043 bytes (.532) and +266,996,354,619 bytes (.534), with no completed manifests at 2026-11-27 16:41 UTC. Byte growth proves copying activity, not verified retention completion. No cancellation or deletion was needed. Evidence is under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-rl-data-campaign/protocol/2026.11.27.1/` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-rl-data-campaign%2Fprotocol%2F2026.11.27.1%2F)).
+
 ## Run table
 
 The run table lives in one place, the body of [marin-logbooks #91](https://github.com/marin-community/marin-logbooks/issues/91). It is updated there with `campaign-runs set` and is not copied here.
