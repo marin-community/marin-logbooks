@@ -118,6 +118,18 @@ These fresh data artifacts restore the former 200 holdout rows to training at un
 
 Existing .540 is unchanged. Its final checkpoint, and final step50 for .532/.534, remain the authorized deliverables. The two final50 retention copies showed payload growth over 12m53s: +200,258,012,043 bytes (.532) and +266,996,354,619 bytes (.534), with no completed manifests at 2026-11-27 16:41 UTC. Byte growth proves copying activity, not verified retention completion. No cancellation or deletion was needed. Evidence is under `s3://marin-us-east-08a/marin/users/benfeuer/mochi-rl-data-campaign/protocol/2026.11.27.1/` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-rl-data-campaign%2Fprotocol%2F2026.11.27.1%2F)).
 
+### 2026-11-27 17:27 UTC — Two final-only RL coordinators submitted
+
+The first submitted coordinator configured for the user-authorized no-validation/final-checkpoint protocol is `/benfeuer/mochi-campaign-v2-mix-009-2026.11.27.712` (submission receipt 17:23:27 UTC). The second is `/benfeuer/mochi-campaign-v3-mix-014-2026.11.27.713` (17:26:00 UTC). Both use landed source `6c915ab36edfa1da764471acf9c1d7eed645d426`, production priority on 08a, 144 planned GB200 GPUs per run (64 trainer + 80 rollout), 50 steps, and repeat-stall-stop enabled. This records the effective protocol boundary by submitted run identity; GPU admission and training have not been established.
+
+Each new pool root and its prepare_pools child succeeded with exit0. Full-row proofs and serial candidate native validations passed: mix-009 has 83,495 training rows; v3-mix-014 has 111,790. Both have zero holdout rows and preserve the declared source pins. These are fresh full-population artifacts, not silent reuse of older holdout pools. The regional real-agent, credential and vocabulary gate still precedes each GPU child. GPU child IDs, driver execution IDs, initial sync and optimizer metrics remain unavailable at this milestone.
+
+Fresh conservative reference registries protected every currently existing provider snapshot plus current sandbox and verified pool references. The maintained purge check completed for each submission with zero deletions; its account quota readback was zero free RL snapshot slots and 36 free EVAL slots. No quota headroom was inferred from deletion counts or reclaimed. These checks do not establish that a future source requiring a missing snapshot can be admitted.
+
+A fresh final50 copy inventory at 17:17:47 UTC showed continued progress over 36m32s: .532 staged payload rose by 603,485,743,275 bytes to 1,628,964,581,486 bytes; .534 rose by 536,747,400,699 bytes to 1,634,154,361,710 bytes. Both had 27 staged objects, only step50 groups, and no completed copy manifests. This proves movement during that interval, not verified preservation completion. No job cancellation or checkpoint deletion occurred.
+
+The root IDs are reported in the issue table and STATUS for coordinator/watchdog registration; watchdog acceptance is not yet confirmed. Existing .540 and other owners' data are unchanged. No local timer or poller was installed. Evidence: `s3://marin-us-east-08a/marin/users/benfeuer/mochi-rl-data-campaign/protocol/2026.11.27.2/` ([Filer](https://filer.marina.oa.dev/#s3%3A%2F%2Fmarin-us-east-08a%2Fmarin%2Fusers%2Fbenfeuer%2Fmochi-rl-data-campaign%2Fprotocol%2F2026.11.27.2%2F)).
+
 ## Run table
 
 The run table lives in one place, the body of [marin-logbooks #91](https://github.com/marin-community/marin-logbooks/issues/91). It is updated there with `campaign-runs set` and is not copied here.
