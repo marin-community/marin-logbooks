@@ -1,0 +1,55 @@
+{
+  "kind": "S3-final-trial-wait-and-existing-I3-contract",
+  "observed_at": "2026-11-26T20:15:21-05:00",
+  "GPU_source_commit": "cc4e3dcc62",
+  "postprocessing_source_commit": "8939ee19df035f41c99c3ffaf86d0917fbbfe154",
+  "arms": {
+    "control": {
+      "heldout_returned": 255,
+      "heldout_total": 256,
+      "native_progress_at": "2026-11-26T20:14:31.912-05:00"
+    },
+    "treatment": {
+      "heldout_returned": 255,
+      "heldout_total": 256,
+      "native_progress_at": "2026-11-26T20:14:29.359-05:00"
+    }
+  },
+  "liveness": {
+    "both_coordinator_roots": "RUNNING",
+    "both_GPU_children": "RUNNING",
+    "GPU_tasks_per_arm": 16,
+    "Iris_failures_per_arm": 0,
+    "Iris_preemptions_per_arm": 0
+  },
+  "interpretation": "Returned rollouts include terminal errors. 255/256 is not complete despite rounded native display of 100%. No final dump/terminal-job eligibility and no CPU postprocessing submitted.",
+  "existing_registration": {
+    "recorded_at": "2026-11-25T18:52:35.710865+00:00",
+    "source_issue_comment": "https://github.com/marin-community/marin/issues/12264#issuecomment-7171525899",
+    "local_original_receipt": "/Users/benfeuer/Documents/experiments/active/mochi-loop-guards/scratch/20261125_s2_measure_preregistration.json",
+    "primary_measure": "repeat_turn_share",
+    "primary_comparator": "Concurrent RL control, not S0",
+    "primary_rule": "Treatment <= 0.5 * concurrent RL control on every frozen S0 target cohort",
+    "target_cohorts": [
+      "tb2",
+      "tblite",
+      "swesmith-ho"
+    ],
+    "target_selection": "Frozen from sealed S0 confirmed looping-trial count >=10; do not reselect from S3 control",
+    "secondary_measures": [
+      "trial_share",
+      "trial_share_ub"
+    ],
+    "secondary_measures_can_replace_primary": false,
+    "correctness": "Per target cohort and pooled against named concurrent control, with user's0.75 multiplier applied to registered unrounded correctness floors and existing repeat-window policy",
+    "S0_comparison": "Report-only for I3; raw S0-baseline audit comparisons do not establish the I3 final verdict",
+    "validity": "At least90% valid trials per cohort; infrastructure absent from correctness under#10197; unchanged"
+  },
+  "conservation_state": "SUCCEEDED; permanent59-data-file copy retained; obsolete temporary source retired and verified",
+  "cumulative_deleted_logical_bytes": 34339242608088,
+  "actions": "No new job, restart, resubmission, deletion, model parameter/error classification change or HF operation in this check. #86-only reporting.",
+  "next_native_check_at": "2026-11-26T20:20:00-05:00",
+  "local_evidence": [
+    "/tmp/mochi-loop-guards/s3-{control,treatment}-2016-{root,child,container}.log"
+  ]
+}

@@ -1293,3 +1293,22 @@ non-checkpoint report evidence and S3 outputs/scratch were retained. This cleanu
 launched no model trials and changed no parameters or error classification. No HF
 operation. Reporting remains on #86 only.
 [Exact retirement manifest](analysis/user-overrides-20261126/storage-step1-source-retirement-20261126.json).
+
+## November 26, 20:16 EST: both held-out panels await their final returned trial
+
+Both arms have returned 255/256 held-out rollouts, control at 20:14:31.912 EST and
+treatment at 20:14:29.359. Returned counts include terminal errors. The rounded
+native display says 100%, but each arm still lacks one return. At 20:15:21 EST both
+roots/GPU children are RUNNING, with 16/16 GPU tasks per arm and zero Iris failures
+or preemptions. No CPU postprocessing was submitted before terminal states/final dumps.
+
+The [existing I3 registration](https://github.com/marin-community/marin/issues/12264#issuecomment-7171525899)
+names repeat-turn share against the concurrent RL control as primary. Targets remain
+TB2, TBLite and held-out, frozen by sealed S0; they are not reselected from S3 control.
+Trial share and its upper bound remain secondary. Correctness gates are paired
+against the named control, with the user's 0.75 multiplier and existing repeat-window
+policy. Treatment versus S0 is report-only for I3. The raw audits can use S0 as a
+reference without turning their S0 comparison into the final paired I3 verdict.
+No scientific measure, threshold policy, classification or model setting changed.
+Next native check around 20:20 EST, with per-arm CPU submission only when eligible.
+[Final-trial wait and registration reference](analysis/user-overrides-20261126/s3-final-trial-wait-2016.json).
