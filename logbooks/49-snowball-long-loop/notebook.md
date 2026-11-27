@@ -3433,3 +3433,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only — the specific runtime failure is not established from state alone; the earlier consolidation readout (through 16:56:58) had shown graph captures with 0 selected errors, so the failures postdate that window.
 - Decision and next action: watch for the worker's terminal-cause readout; hourly checks continue.
+
+### 2026-11-27 16:14 UTC - Hourly catch-up (Iris primary evidence): v3-mix-036 RL running ~15h; `.532`/`.534` checkpoint-retention tasks running; 009 attempts `.701`/`.711` both failed
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence.
+- Published source revision: **v3-mix-036 `/benfeuer/mochi-campaign-v3-mix-036-2026.11.26.540` RUNNING since 01:02:34 Nov 27** (GPU child `aa8fd6b3392d` since 01:05:43) — ~15h of RL. **`v3-mix-048/.532`** (root since 20:30:01 Nov 26) and **`v2-mix-043/.534`** (root since 20:33:05 Nov 26) are running with `retain_campaign_checkpoints` tasks live (14:35:21 / 14:32:43 Nov 27). **v2-mix-009 attempts `.701` and `.711` both FAILED** — root+GPU child each, "Cumulative failed task attempts exceeded max_task_failures" (children 14:05:21 / 15:47:42; their eval preflights `51dc728a`/`171e7e69` succeeded first).
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (16:14 UTC).
+- External inputs and artifact references: Iris job lists [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the campaign has moved to a v3/v2 mixed fleet with checkpoint-retention work; the 009 mix failed twice with the same signature as the .527/.528 attempts.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only — the 009 failure cause beyond the state is not established; no worker cc in hand yet.
+- Decision and next action: watch for worker readouts on the 009 failures and the retention tasks; hourly checks continue.
