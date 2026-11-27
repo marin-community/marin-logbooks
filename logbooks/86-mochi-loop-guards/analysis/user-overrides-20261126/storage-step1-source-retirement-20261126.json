@@ -1,0 +1,60 @@
+{
+  "kind": "retire-superseded-temporary-checkpoint-after-verified-conservation",
+  "status": "completed-and-post-delete-verified",
+  "authority": "COORDINATOR-INBOX.md 2026-11-26 18:25 EST storage directive: delete obsolete S2 temporary checkpoints while preserving conserved checkpoints and SFT400407.",
+  "target": "s3://marin-us-east-08a/tmp/ttl=3d/marin/users/benfeuer/checkpoints/mochi-loop-guards/s2-antithrash-treatment-c568ddc7d1-in-db57e3bd/2026.11.26.4/checkpoints/global_step_1",
+  "bytes_before": 4292558588036,
+  "objects_before": 59,
+  "reason": "Native verified-copy has SUCCEEDED and published the complete permanent checkpoint; the temporary source has no remaining active reader.",
+  "preconditions": {
+    "copy_job_succeeded_observed_at": "2026-11-26T19:47:43-05:00",
+    "copy_job_failures": 0,
+    "copy_job_preemptions": 0,
+    "permanent_data_files": 59,
+    "permanent_data_bytes": 4292558588036,
+    "completion_manifest_sha256": "e212783fc5f64836448548bde420402320ad93d764039050f47085595e8fedab",
+    "file_paths_sizes_hashes_and_source_identities_match_staging": true,
+    "permanent_marker_byte_readback_matches": true,
+    "both_S3_initializers_are_permanent_step4_exports": true
+  },
+  "protected": {
+    "permanent_checkpoint": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/conservation/s2-treatment-r4/global_step_1",
+    "permanent_conservation": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/conservation",
+    "exports": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/exports",
+    "SFT400407": "s3://marin-us-east-08a/marin/models/mochi-sft/hero-sft-fullab-step393k-v2/step-400407/2af3f828aa-cpu-a1",
+    "S3_outputs_scratch_and_report_evidence": true
+  },
+  "limitations": "Logical listed object bytes; region-wide free capacity is not measured. Automatic pruning-sweep enforcement remains unverified; permanent markers declare exclusion.",
+  "completed_at": "2026-11-26T20:01:23-05:00",
+  "objects_deleted": 59,
+  "bytes_deleted": 4292558588036,
+  "temporary_prefix_objects_after": 0,
+  "remaining_control_checkpoint_objects": 1,
+  "remaining_control_checkpoint_bytes": 1,
+  "remaining_treatment_checkpoint_objects": 1,
+  "remaining_treatment_checkpoint_bytes": 1,
+  "protected_inventory_after": {
+    "permanent_checkpoint_objects_including_manifest": 60,
+    "permanent_checkpoint_bytes_including_manifest": 4292558599792,
+    "completion_manifest_byte_readback_unchanged": true,
+    "exports_objects": 466,
+    "exports_bytes": 2141966438750,
+    "SFT400407_objects": 396,
+    "SFT400407_bytes": 1070990318666
+  },
+  "cumulative_S2_temporary_checkpoint_deletions": {
+    "prefixes": 8,
+    "objects": 472,
+    "logical_bytes": 34339242608088,
+    "remaining_checkpoint_root_markers": 2,
+    "remaining_checkpoint_root_marker_bytes": 2
+  },
+  "evidence": {
+    "native_delete_invocations_for_this_prefix": 1,
+    "native_delete_elapsed_seconds": 130.5,
+    "native_delete_log_sha256": "bd47a4087cf9776fdd3b622b2f95a1c8644031e7b66c6d2d5eb9fb3f51964ee4",
+    "post_delete_parent_listing_sha256": "d3ab8fa425730c7bbf3e67392c4824cf98b2ef54406ebb7be144784c391a81e9",
+    "permanent_manifest_sha256": "e212783fc5f64836448548bde420402320ad93d764039050f47085595e8fedab",
+    "regional_evidence_prefix": "s3://marin-us-east-08a/marin/users/benfeuer/mochi-loop-guards/decisions/storage-step1-source-retirement-20261126-evidence"
+  }
+}

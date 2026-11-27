@@ -1276,3 +1276,20 @@ final dumps must be checked first. The prepared analysis excludes baseline-only
 SWE100 and uses the sealed S0 audit. Reporting stays on #86 only.
 [Readiness and validation receipt](analysis/user-overrides-20261126/s3-postprocessing-readiness-20261126.json),
 [permanent checkpoint marker](analysis/user-overrides-20261126/s2-treatment-step1-conservation-complete.json).
+
+## November 26, 20:02 EST: superseded temporary checkpoint source removed
+
+After verified permanent publication and successful copy-job completion, one native
+fsutil invocation removed the old treatment-step1 temporary source under the existing
+storage directive: 59 objects / 4,292,558,588,036 logical bytes. Deletion completed at
+20:01:23 EST. Post-delete listings show only one-byte metadata markers in both S2
+temporary checkpoint roots. The permanent checkpoint still contains all 59 data files
+plus its completion manifest; manifest byte readback matches. Permanent step-4 exports
+and SFT 400407 inventories are unchanged. No conserved checkpoint or SFT object was removed.
+
+Cumulative temporary-checkpoint cleanup is eight prefixes / 472 objects /
+34,339,242,608,088 logical bytes. Region-wide free capacity was not measured. All
+non-checkpoint report evidence and S3 outputs/scratch were retained. This cleanup
+launched no model trials and changed no parameters or error classification. No HF
+operation. Reporting remains on #86 only.
+[Exact retirement manifest](analysis/user-overrides-20261126/storage-step1-source-retirement-20261126.json).
