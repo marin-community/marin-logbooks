@@ -3493,3 +3493,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists + coordinator notice [R].
 - Interpretation and limitations: the seal's details live in #94/#95 and #12371 — not restated here.
 - Decision and next action: hourly checks continue.
+
+### 2026-11-27 23:14 UTC - Hourly catch-up (Iris primary evidence): new `.715` (026) attempt RUNNING; `.714`/`.712` unchanged
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence.
+- Published source revision: **v2-mix-026/.715 RUNNING** — a new mix on the queue (root 22:39:41; GPU child `a1cf6d71443d` since 22:42:45). **`.714` (014) and `.712` (009) unchanged** — running since 18:29:45 / 17:26:45 (~4h45m / ~5h45m).
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (23:14 UTC).
+- External inputs and artifact references: Iris job lists [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: a fresh 026 attempt is live alongside the two long-running attempts.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only.
+- Decision and next action: watch the three live attempts; hourly checks continue.
