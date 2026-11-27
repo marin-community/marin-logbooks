@@ -1223,3 +1223,21 @@ The coordinator's latest user ruling routes loop-guards issue updates to logbook
 #86 only; no further #91 posts or edits. Next native pass around 19:35 EST:
 held-out completion and copy publication.
 [Held-out progress receipt](analysis/user-overrides-20261126/s3-heldout-progress-1924.json).
+
+## November 26, 19:34 EST: held-out returns reach 90% and copy promotion advances
+
+Native held-out progress is control 231/256 returned at 19:32:37.557 EST and
+treatment 236/256 at 19:33:29.204. Both arms previously returned all 267 TB2 and
+200 TBLite rollouts. Counters include terminal errors; audited valid/successful
+counts, error rates and correctness/loop/effect verdicts remain pending. At 19:33:33
+EST both S3 roots/GPU children remain RUNNING, with 16/16 GPU tasks per arm and
+zero Iris failures/preemptions.
+
+The original conservation-copy destination advanced from 34 objects / 2.858 TB
+at 19:23 to 45 objects / 3,037,106,831,211 bytes at this snapshot. The job remains
+RUNNING with zero failures/preemptions, and its completion manifest is absent.
+Final publication remains incomplete and the source stays protected. During this
+pass there were no parameter/classification changes, restart, resubmission,
+further deletion, new allocation or HF operation. Issue updates remain on #86 only.
+Next native pass around 19:45 EST: held-out completion and copy publication.
+[Progress receipt](analysis/user-overrides-20261126/s3-heldout-and-copy-progress-1934.json).

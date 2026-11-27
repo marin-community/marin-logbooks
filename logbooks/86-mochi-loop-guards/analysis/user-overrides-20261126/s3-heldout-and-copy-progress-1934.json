@@ -1,0 +1,57 @@
+{
+  "kind": "S3-heldout-and-copy-promotion-progress",
+  "observed_at": "2026-11-26T19:33:56-05:00",
+  "source_commit": "cc4e3dcc62",
+  "source_tree": "22ae5b80cc",
+  "artifact_revision": "2026.11.26.1",
+  "arms": {
+    "control": {
+      "heldout_returned": 231,
+      "heldout_total": 256,
+      "native_progress_at": "2026-11-26T19:32:37.557-05:00"
+    },
+    "treatment": {
+      "heldout_returned": 236,
+      "heldout_total": 256,
+      "native_progress_at": "2026-11-26T19:33:29.204-05:00"
+    }
+  },
+  "prior_cohorts": {
+    "TB2_returned_per_arm": 267,
+    "TB2_total": 267,
+    "TBLite_returned_per_arm": 200,
+    "TBLite_total": 200
+  },
+  "liveness": {
+    "observed_at": "2026-11-26T19:33:33-05:00",
+    "both_coordinator_roots": "RUNNING",
+    "both_GPU_children": "RUNNING",
+    "GPU_tasks_per_arm": 16,
+    "Iris_failures_per_arm": 0,
+    "Iris_preemptions_per_arm": 0
+  },
+  "interpretation": "Returned rollouts include terminal errors. Audited valid/successful counts, error rates and correctness/loop/treatment-effect verdicts remain pending.",
+  "copy": {
+    "job": "/benfeuer/mochi-loop-guards-s2-conserve-treatment-r4-step1",
+    "state": "RUNNING",
+    "failures": 0,
+    "preemptions": 0,
+    "destination_bytes": 3037106831211,
+    "destination_objects": 45,
+    "previous_destination_bytes": 2857868226661,
+    "previous_destination_objects": 34,
+    "previous_snapshot": "2026-11-26 19:23 EST",
+    "completion_manifest_present": false,
+    "permanent_promotion_complete": false,
+    "source_preserved": true,
+    "prior_verified_staging_records": 59,
+    "prior_verified_staging_bytes": 4292558588036
+  },
+  "reporting_issue": "https://github.com/marin-community/marin-logbooks/issues/86",
+  "actions": "During this monitoring pass: no parameter/classification change, restart, resubmission, further deletion, new allocation or HF operation. No #91 posts or edits.",
+  "next_native_check_at": "2026-11-26T19:45:00-05:00",
+  "local_evidence": [
+    "/tmp/mochi-loop-guards/s3-{control,treatment}-1933-{root,child,container}.log",
+    "/tmp/mochi-loop-guards/s2-copy-1933-{state,manifest,destination-du}.log"
+  ]
+}
