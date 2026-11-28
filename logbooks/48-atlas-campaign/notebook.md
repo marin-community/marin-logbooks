@@ -2776,3 +2776,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: ingestion-side repair; no campaign-state change evident from the title alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-28 00:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `6956e2d91c…` to `34d8f26bf7…` — one new commit: `34d8f26bf7` lexical launcher: a failed iris submission raises with the submission's stderr.
+- Command or material configuration: `git fetch origin` + `git log 6956e2d91c..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: one landing — the lexical launcher now surfaces a failed iris submission's stderr on raise.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: tooling-side improvement; no campaign-state change evident from the title alone.
+- Decision and next action: continue fetch-first hourly checks.
