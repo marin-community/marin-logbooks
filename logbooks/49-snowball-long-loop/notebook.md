@@ -3517,3 +3517,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: coordinator notice + Iris job lists [R].
 - Interpretation and limitations: 0.620 is the v3-mix-048 Micro210 result as announced; the running SFT 400407 baseline eval will supply the comparison point — no independent verification yet from this record.
 - Decision and next action: record the baseline-eval result and further mix results as they land.
+
+### 2026-11-28 12:15 UTC - Hourly catch-up (Iris primary evidence; multi-hour window): ALL Nov 27 attempts terminal-failed on max_task_failures; Nov 28 attempts `.721`/`.723` running; v3-anchor-r41-compact `.722`/`.724` failed
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence.
+- Published source revision: **every Nov 27 RL-data attempt is terminal-failed with the same signature** — `.712` (009), `.713` (014), `.714` (014), `.715` (026) all "Cumulative failed task attempts exceeded max_task_failures" (after their preflights succeeded). **Nov 28: `v2-mix-019/.721` RUNNING** (child `a0eec30608bf` since 10:03:00) and **`v2-mix-028/.723` RUNNING** (root 12:06:52; child `a6e6de627bb3` since 12:09:59; preflight `73e1cc7f` succeeded). **The new `v3-anchor-r41-compact` type failed twice** — `.722` and `.724` both max_task_failures (10:06:58 / 11:54:42).
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (12:15 UTC).
+- External inputs and artifact references: Iris job lists [R].
+- Environment and hardware when relevant: the successful lanes remain v3-mix-036/.540 and v3-mix-048/.532 (the latter holding the first Micro210 result, 0.620).
+- Result, including failure or restart: the recurring max_task_failures signature has now consumed six attempts across four mixes plus both anchor runs.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only — the shared cause is not established from state; a worker readout is needed.
+- Decision and next action: watch for the terminal-cause readout; hourly checks continue.
