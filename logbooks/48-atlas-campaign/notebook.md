@@ -2800,3 +2800,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: curation/infrastructure-side progress; no campaign-state change evident from titles alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-28 14:14 UTC - Hourly catch-up (fetch-first)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads.
+- Published source revision: `origin/atlas-env-audit` advanced past `f0e7c39fe6…` to `618cef1eb0…` — six new commits: `618cef1eb0` Extract the SAMPLE QC archive into a clean directory and assert one root; `e3a9d6d9e2` Use module imports for preflight record access; `728b513ebe` Restore catalog decoding and preflight dependency checks; `1a3ad0e993` Derive the SAMPLE QC archive root instead of assuming the ref string; `7813644ef0` Preserve preflight attempts across release retries; `b8c8899154` Commit the ingest-B neighbor-prepared append's per-admission registry pointers.
+- Command or material configuration: `git fetch origin` + `git log f0e7c39fe6..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: six landings — SAMPLE QC archive-root hygiene, preflight record access via module imports, catalog-decoding/preflight-dependency restoration, preflight-attempt preservation across release retries, and the ingest-B append's registry pointers.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: QC/preflight-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
