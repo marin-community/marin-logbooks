@@ -3529,3 +3529,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only — the shared cause is not established from state; a worker readout is needed.
 - Decision and next action: watch for the terminal-cause readout; hourly checks continue.
+
+### 2026-11-28 14:14 UTC - Hourly catch-up (Iris primary evidence): `.540`'s RL child terminal-failed after ~34h (same signature); `.723` failed; same-day retry `.726` running
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; Iris primary evidence.
+- Published source revision: **v3-mix-036/.540's RL child `aa8fd6b3392d` terminal FAILED — "Cumulative failed task attempts exceeded max_task_failures"** (ran from 01:05:43 Nov 27, ~34h; its `export-50-recovery-a` had succeeded 20:13 Nov 27). **`.723` (028) FAILED** with the same signature. **Same-day retry `v2-mix-028-2026.11.28.726` RUNNING** (root 13:52:19; child `a10a5203ad6c` since 13:55:17). **`.721` (019) still RUNNING** (child since 10:03:00, ~4h).
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (14:14 UTC).
+- External inputs and artifact references: Iris job lists [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the recurring max_task_failures signature has now reached the previously-successful `.540` after ~34h; two fresh attempts continue.
+- Evidence: Iris job lists [R].
+- Interpretation and limitations: job-state evidence only — the shared cause remains unestablished; `.540`'s long survival suggests the trigger accumulates over runtime rather than being a startup defect.
+- Decision and next action: watch for the terminal-cause readout and the fresh attempts; hourly checks continue.
