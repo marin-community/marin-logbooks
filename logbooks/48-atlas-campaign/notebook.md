@@ -2788,3 +2788,15 @@ This section lists what cannot be fixed in this public record by policy or by ab
 - Evidence: `git log` + `ls-remote` agree [R].
 - Interpretation and limitations: tooling-side improvement; no campaign-state change evident from the title alone.
 - Decision and next action: continue fetch-first hourly checks.
+
+### 2026-11-28 12:15 UTC - Hourly catch-up (fetch-first; multi-hour window)
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; fetch before reading heads. Window spans ~00:14 → 12:15 UTC Nov 28.
+- Published source revision: `origin/atlas-env-audit` advanced past `34d8f26bf7…` to `f0e7c39fe6…` — **70 new commits**. Theme sample: head `f0e7c39fe6` Declare marin-dupekit as a marina dependency; `eaa66689ab` SAMPLE reviewer profile V5: V4 with max_tokens and retry_max_tokens at 32768; `c65abb42df` Read the workplace qualification lazily and inject it at the test boundary; `1f2b4ce56c` Select each Goedel-Lean recipe's own subset at the source; `b74394f5bc` Adopt an empty-shell private publication repo; `e583e0fe6c` Format the licence publication module.
+- Command or material configuration: `git fetch origin` + `git log 34d8f26bf7..origin/atlas-env-audit`; cross-checked with `git ls-remote`.
+- External inputs and artifact references: fetched ref [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: 70 landings over ~12h — the SAMPLE reviewer profile V5 (32,768-token budget), marin-dupekit dependency declaration, lazy workplace-qualification injection, Goedel-Lean per-recipe subset selection, and private-publication scaffolding.
+- Evidence: `git log` + `ls-remote` agree [R].
+- Interpretation and limitations: curation/infrastructure-side progress; no campaign-state change evident from titles alone.
+- Decision and next action: continue fetch-first hourly checks.
