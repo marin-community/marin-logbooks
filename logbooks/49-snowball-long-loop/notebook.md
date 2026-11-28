@@ -3505,3 +3505,15 @@ The November 17 entries end at SFT update 230 and the V5 census; the coordinator
 - Evidence: Iris job lists [R].
 - Interpretation and limitations: job-state evidence only.
 - Decision and next action: watch the three live attempts; hourly checks continue.
+
+### 2026-11-28 00:14 UTC - Hourly catch-up (Iris primary evidence) + MILESTONE: first campaign Micro210 result — `.532` v3-mix-048 = 0.620
+
+- Question or hypothesis and reason for trying it: hourly Phase-2 catch-up per the standing brief; record the coordinator-announced first campaign result.
+- Published source revision: **MILESTONE (coordinator notice) — the first campaign Micro210 result is in: `.532` v3-mix-048 scored 0.620**; **the SFT 400407 baseline eval is running** (the reference point for that score).
+- Command or material configuration: `iris --cluster=marin job list --prefix /benfeuer/mochi-campaign` (00:14 UTC): **`.540`'s `export-50-recovery-a` SUCCEEDED**; `.715` (026) and `.714` (014) still RUNNING (children since 22:42:45 / 18:29:45).
+- External inputs and artifact references: Iris job lists [R]; coordinator result notice [R].
+- Environment and hardware when relevant: n/a.
+- Result, including failure or restart: the campaign produced its first scored result; the fleet continues.
+- Evidence: coordinator notice + Iris job lists [R].
+- Interpretation and limitations: 0.620 is the v3-mix-048 Micro210 result as announced; the running SFT 400407 baseline eval will supply the comparison point — no independent verification yet from this record.
+- Decision and next action: record the baseline-eval result and further mix results as they land.
